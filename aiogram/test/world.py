@@ -1,9 +1,12 @@
 from __future__ import annotations
 
 import datetime
+from collections.abc import Callable, Iterable, Mapping
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Any
+from typing import TYPE_CHECKING, Any, TypeAlias, cast
+
+from pydantic import BaseModel
 
 from aiogram.enums import ChatMemberStatus, ChatType
 from aiogram.types import (
@@ -38,6 +41,15 @@ from aiogram.types import (
     User,
 )
 
+from .errors import ApiRejection
+from .mounting import detached_copy, mount, owned_or_copied
+from .waiting import DEFAULT_WAIT_TIMEOUT, describe_callable, poll_until
+
+if TYPE_CHECKING:
+    from aiogram.client.bot import Bot
+
+    from .blueprint import TopicSpec, UserSpec
+
 BASE_DATE: datetime.datetime = datetime.datetime(
     2026,
     1,
@@ -50,6 +62,121 @@ BASE_DATE: datetime.datetime = datetime.datetime(
 
 DEFAULT_TOPIC_ICON_COLOR = 0x6FB9F0
 GENERAL_TOPIC_NAME = "General"
+#: How much of a message's text a failure message shows before cutting it off.
+MESSAGE_PREVIEW_LIMIT = 60
+
+#: Administrator rights the Bot API only reports in some chat types, and in which. Outside
+#: them the real API leaves the field unset, so a bot that reads
+#: ``member.can_post_messages`` in a supergroup gets ``None`` there and must not get a
+#: fabricated ``True`` here either.
+CHAT_TYPE_SCOPED_RIGHTS: dict[str, frozenset[str]] = {
+    "can_post_messages": frozenset({ChatType.CHANNEL}),
+    "can_edit_messages": frozenset({ChatType.CHANNEL}),
+    "can_manage_direct_messages": frozenset({ChatType.CHANNEL}),
+    "can_pin_messages": frozenset({ChatType.GROUP, ChatType.SUPERGROUP}),
+    "can_manage_tags": frozenset({ChatType.GROUP, ChatType.SUPERGROUP}),
+    "can_manage_topics": frozenset({ChatType.SUPERGROUP}),
+}
+
+#: Every administrator right, denied. Both masks the toolkit hands out start here, so the
+#: "all False" shape is derived from ``model_fields`` once rather than in each of them.
+_NO_ADMIN_RIGHTS: dict[str, bool] = dict.fromkeys(ChatAdministratorRights.model_fields, False)
+
+#: What an administrator promoted the ordinary way can do: everything a moderator needs,
+#: minus the two things a chat owner grants deliberately (promoting others, stories).
+#: Rights a future Bot API version adds default to ``False`` rather than breaking the call.
+_ORDINARY_ADMIN_RIGHTS: dict[str, bool] = {
+    "is_anonymous": False,
+    "can_manage_chat": True,
+    "can_delete_messages": True,
+    "can_manage_video_chats": True,
+    "can_restrict_members": True,
+    "can_promote_members": False,
+    "can_change_info": True,
+    "can_invite_users": True,
+    "can_post_stories": False,
+    "can_edit_stories": False,
+    "can_delete_stories": False,
+    "can_post_messages": True,
+    "can_edit_messages": True,
+    "can_manage_direct_messages": True,
+    "can_pin_messages": True,
+    "can_manage_tags": True,
+    "can_manage_topics": True,
+}
+
+
+def mask(model: type[BaseModel], source: Any, *, coerce: bool = False) -> dict[str, Any]:
+    """
+    Read every field of ``model`` off ``source``, by name.
+
+    The Bot API's rights and permissions objects are flat boolean masks, and the fake reads
+    them off differently-shaped sources: a rights object, a permissions object, a request
+    that simply omits what it does not grant. ``coerce`` turns an unset flag into a denied
+    one, which is what an omitted request parameter and an unset permission both mean —
+    so the coercion is stated once instead of in each reader's own comprehension.
+
+    Reflecting over ``model_fields`` rather than a hand-kept list is what makes a right a
+    future Bot API version adds flow through every one of these readers unchanged.
+    """
+    return {
+        name: bool(getattr(source, name, None)) if coerce else getattr(source, name, None)
+        for name in model.model_fields
+    }
+
+
+def scoped_rights(rights: ChatAdministratorRights, chat_type: str) -> ChatAdministratorRights:
+    """
+    Fit the rights to what the Bot API reports for ``chat_type``.
+
+    The single normalizer, applied where the chat type is in hand — which is only when a
+    membership is *read*. A right that cannot exist in a chat reads back as ``None`` there
+    however it was set, and a right that *can* exist reads back as a plain boolean even
+    when it was left unstated, which is how the real API answers and what a bot writing
+    ``if member.can_pin_messages:`` relies on.
+    """
+    values = mask(ChatAdministratorRights, rights)
+    for name, chat_types in CHAT_TYPE_SCOPED_RIGHTS.items():
+        values[name] = bool(values[name]) if chat_type in chat_types else None
+    return ChatAdministratorRights(**values)
+
+
+def administrator_rights(**overrides: bool | None) -> ChatAdministratorRights:
+    """
+    The rights of an ordinary administrator, with ``overrides``.
+
+    The one place the permissive default is built: it is what an administrator declared
+    or promoted without explicit rights gets, and it is how a test declares an
+    almost-ordinary admin without spelling out seventeen fields::
+
+        administrator_rights(can_delete_messages=False)
+
+    The mask is deliberately *unscoped* — every right the Bot API knows carries a plain
+    boolean, including the ones only a channel or only a supergroup reports. Which of them
+    a given chat actually reports is :func:`scoped_rights`' job, at the moment the
+    membership is read and the chat type is known. Scoping here as well would mean
+    declaring a right explicitly grants *fewer* rights than saying nothing at all::
+
+        # In a channel, both of these report `can_post_messages is True`.
+        set_member(channel, bot, rights=administrator_rights(can_post_messages=True))
+        set_member(channel, bot, status=ChatMemberStatus.ADMINISTRATOR)
+    """
+    values: dict[str, Any] = dict(_NO_ADMIN_RIGHTS)
+    values.update(_ORDINARY_ADMIN_RIGHTS)
+    values.update(overrides)
+    return ChatAdministratorRights(**values)
+
+
+def no_administrator_rights() -> ChatAdministratorRights:
+    """
+    Every right the Bot API knows, denied.
+
+    What ``getMyDefaultAdministratorRights`` reports for a bot that never set any, and the
+    floor :func:`administrator_rights` builds its permissive default on top of — one
+    all-``False`` mask, derived from ``model_fields`` in a single place, so a right a future
+    Bot API version adds is denied by both without either being edited.
+    """
+    return ChatAdministratorRights(**_NO_ADMIN_RIGHTS)
 
 
 class QueryKind(str, Enum):
@@ -62,7 +189,144 @@ class QueryKind(str, Enum):
 
 
 class WorldLookupError(LookupError):
-    """Raised when the world is asked about a chat, user or message it does not contain."""
+    """
+    Raised when a test asks the world for something its blueprint never declared.
+
+    A setup gap, not a Bot API rejection: an undeclared user, a chat that is not in this
+    world, a sticker set or a business connection nobody described, a poll this environment
+    never saw. Nothing converts it — it propagates out of the call the bot made and fails
+    the test with the message that says what to declare, instead of arriving as a
+    :class:`~aiogram.exceptions.TelegramBadRequest` the bot's own ``except`` branch would
+    swallow. See :class:`aiogram.test.errors.ApiRejection` for the other half.
+    """
+
+
+def describe_message(message: Message) -> str:
+    """
+    Identify one stored message in a failure message.
+
+    Shows what a test would recognise it by — its id, a truncated text or caption, and
+    whether it carries an inline keyboard — rather than a full dump nobody reads.
+    """
+    body = message.text if message.text is not None else message.caption
+    if body is None:
+        preview = "<no text>"
+    elif len(body) > MESSAGE_PREVIEW_LIMIT:
+        preview = f"{body[:MESSAGE_PREVIEW_LIMIT]!r}..."
+    else:
+        preview = repr(body)
+    keyboard = " [inline keyboard]" if message.reply_markup is not None else ""
+    return f"#{message.message_id} {preview}{keyboard}"
+
+
+def _describe_messages(messages: list[Message], noun: str) -> str:
+    """One-line-per-message rendering of a message view, for failure messages."""
+    if not messages:
+        return f"The {noun} holds no messages."
+    lines = [f"The {noun} holds {len(messages)} message(s):"]
+    lines.extend(f"  {describe_message(message)}" for message in messages)
+    return "\n".join(lines)
+
+
+def newest_match(
+    messages: list[Message],
+    predicate: Callable[[Message], object] | None,
+    *,
+    raised: dict[int, Exception] | None = None,
+) -> Message | None:
+    """
+    The newest message ``predicate`` accepts, by id rather than by position.
+
+    The matching rule every waiting helper in the toolkit shares, stated once: every match
+    is evaluated and the highest ``message_id`` among them wins, because "the last one the
+    list holds" is not the same thing as "the newest" for a chat that was told about a
+    message minted in another environment. ``predicate=None`` accepts anything.
+
+    **A predicate that raises counts as no match**, and the exception is not lost: pass
+    ``raised`` and it is collected there by message id, so the wait that gives up can
+    report a predicate that is simply buggy instead of quietly finding nothing. A chat
+    holds messages of every shape, and the natural ``m.text.startswith(...)`` blows up on
+    the first service message it meets.
+    """
+    newest: Message | None = None
+    for message in messages:
+        if predicate is not None:
+            try:
+                matched = predicate(message)
+            except Exception as error:
+                if raised is not None:
+                    raised[message.message_id] = error
+                continue
+            if not matched:
+                continue
+        if newest is None or message.message_id > newest.message_id:
+            newest = message
+    return newest
+
+
+async def _wait_for_message(
+    view: Callable[[], list[Message]],
+    predicate: Callable[[Message], object] | None,
+    description: str | None,
+    *,
+    noun: str,
+    where: str,
+    timeout: float,
+    interval: float,
+) -> Message:
+    """
+    The polling core behind :meth:`ChatState.wait_for_message` and its topic-scoped twin.
+
+    ``view`` is a callable rather than a list because a topic's messages are a filtered
+    view recomputed on every read — capturing the list once would wait on a snapshot taken
+    before the message being waited for arrived. ``noun`` and ``where`` are how the failure
+    message names the view ("the topic holds…", "…in topic #7 'Support' of chat -100").
+
+    **The newest match wins, by id and not by position.** Every match is evaluated and the
+    highest ``message_id`` among them is returned, rather than the last one the list
+    happens to hold: a chat is normally sorted by id, but "normally" is not a promise a
+    caller can act on, and the one path that could break it — a message registered from
+    another environment — is exactly the one where a test then asks for the newest reply
+    and would silently get a stale one instead.
+    """
+    # message id -> what the predicate raised on it during the most recent pass.
+    raised: dict[int, Exception] = {}
+
+    def find() -> Message | None:
+        raised.clear()
+        return newest_match(view(), predicate, raised=raised)
+
+    def describe_timeout() -> str:
+        if description is not None:
+            wanted = description
+        elif predicate is None:
+            wanted = "any message"
+        else:
+            wanted = f"a message matching {describe_callable(predicate)}"
+        problems = ""
+        if raised:
+            details = "; ".join(
+                f"{type(error).__name__}({str(error)!r}) on message #{message_id}"
+                for message_id, error in sorted(raised.items())
+            )
+            problems = (
+                f" The predicate raised on {len(raised)} of them, which counted as no "
+                f"match: {details}."
+            )
+        return (
+            f"Timed out after {timeout}s waiting for {wanted} in {where}. "
+            f"{_describe_messages(view(), noun)}{problems}"
+        )
+
+    return cast(
+        Message,
+        await poll_until(
+            find,
+            timeout=timeout,
+            interval=interval,
+            describe_timeout=describe_timeout,
+        ),
+    )
 
 
 @dataclass
@@ -89,7 +353,14 @@ class UserState:
 
 @dataclass
 class MemberState:
-    """Membership of a user in a chat."""
+    """
+    Membership of a user in a chat, including what that membership lets them do.
+
+    The rights are stored rather than invented on conversion: ``promoteChatMember`` and a
+    blueprint declaration both write them here, so ``getChatMember`` reports exactly what
+    was granted — a bot that gates itself on ``can_delete_messages`` sees the right it was
+    actually given, not a flattering default.
+    """
 
     user_id: int
     status: str = ChatMemberStatus.MEMBER
@@ -98,57 +369,50 @@ class MemberState:
     custom_title: str | None = None
     tag: str | None = None
     until_date: datetime.datetime | None = None
+    #: What an administrator (or an anonymous owner) may do. ``None`` means "not stated",
+    #: which reads back as the ordinary administrator rights of the chat's type.
+    rights: ChatAdministratorRights | None = None
+    #: What a restricted member may do. ``None`` means every permission is denied, which is
+    #: what a restriction with no permissions passed amounts to.
+    permissions: ChatPermissions | None = None
 
     @property
     def is_present(self) -> bool:
         return self.status not in {ChatMemberStatus.LEFT, ChatMemberStatus.KICKED}
 
-    def as_chat_member(self, user: User) -> ChatMemberUnion:
+    def as_chat_member(self, user: User, chat_type: str) -> ChatMemberUnion:
+        """
+        The Bot API's view of this membership in a chat of ``chat_type``.
+
+        The chat type is a parameter because the answer depends on it: the Bot API reports
+        ``can_post_messages`` only for channels and ``can_manage_topics`` only for
+        supergroups, so a variant built without knowing where the member is cannot be
+        truthful about either.
+        """
         if self.status == ChatMemberStatus.CREATOR:
             return ChatMemberOwner(
                 user=user,
-                is_anonymous=False,
+                is_anonymous=self.rights.is_anonymous if self.rights is not None else False,
                 custom_title=self.custom_title,
             )
         if self.status == ChatMemberStatus.ADMINISTRATOR:
+            declared = self.rights if self.rights is not None else administrator_rights()
             return ChatMemberAdministrator(
                 user=user,
                 custom_title=self.custom_title,
                 can_be_edited=False,
-                is_anonymous=False,
-                can_manage_chat=True,
-                can_delete_messages=True,
-                can_manage_video_chats=True,
-                can_restrict_members=True,
-                can_promote_members=False,
-                can_change_info=True,
-                can_invite_users=True,
-                can_post_stories=False,
-                can_edit_stories=False,
-                can_delete_stories=False,
+                **mask(ChatAdministratorRights, scoped_rights(declared, chat_type)),
             )
         if self.status == ChatMemberStatus.RESTRICTED:
+            permissions = self.permissions if self.permissions is not None else ChatPermissions()
             return ChatMemberRestricted(
                 user=user,
                 is_member=True,
-                can_send_messages=False,
-                can_send_audios=False,
-                can_send_documents=False,
-                can_send_photos=False,
-                can_send_videos=False,
-                can_send_video_notes=False,
-                can_send_voice_notes=False,
-                can_send_polls=False,
-                can_send_other_messages=False,
-                can_add_web_page_previews=False,
-                can_react_to_messages=False,
-                can_edit_tag=False,
-                can_change_info=False,
-                can_invite_users=False,
-                can_pin_messages=False,
-                can_manage_topics=False,
                 tag=self.tag,
                 until_date=self.until_date or BASE_DATE,
+                # An unset permission is a denied one: the Bot API's own restricted member
+                # carries plain booleans, while a request omits what it does not grant.
+                **mask(ChatPermissions, permissions, coerce=True),
             )
         if self.status == ChatMemberStatus.KICKED:
             return ChatMemberBanned(user=user, until_date=self.until_date or BASE_DATE)
@@ -185,6 +449,56 @@ class TopicState:
             item for item in self.chat.messages if item.message_thread_id == self.message_thread_id
         ]
 
+    @property
+    def label(self) -> str:
+        """How a failure message names this topic."""
+        # A topic is always registered on a chat; a hand-built one still names itself.
+        chat = "" if self.chat is None else f" of chat {self.chat.id}"
+        if self.is_general:
+            return f"the General topic{chat}"
+        return f"topic #{self.message_thread_id} {self.name!r}{chat}"
+
+    @property
+    def default_wait_timeout(self) -> float:
+        """The environment's wait timeout, read through the chat this topic belongs to."""
+        # A topic is always registered on a chat; a hand-built one still has a timeout.
+        return self.chat.default_wait_timeout if self.chat is not None else DEFAULT_WAIT_TIMEOUT
+
+    async def wait_for_message(
+        self,
+        predicate: Callable[[Message], object] | None = None,
+        description: str | None = None,
+        *,
+        timeout: float | None = None,
+        interval: float = 0.01,
+    ) -> Message:
+        """
+        Wait until a message matching ``predicate`` is in **this topic**, and return it.
+
+        :meth:`ChatState.wait_for_message` scoped to one topic: it waits on the same
+        filtered view :attr:`messages` exposes, so a message posted into a sibling topic
+        never satisfies it, and the failure message enumerates this topic rather than the
+        whole forum. Everything else — matching against messages that are already there,
+        the newest match winning, ``description``, ``timeout``, a raising predicate counting
+        as "no match", the reporting of what it raised — works exactly as it does for a
+        chat, because it is the same implementation.
+
+        :raises aiogram.test.errors.WaitTimeoutError: if no such message ever appeared.
+        """
+        return await _wait_for_message(
+            lambda: self.messages,
+            predicate,
+            description,
+            noun="topic",
+            where=self.label,
+            timeout=self.default_wait_timeout if timeout is None else timeout,
+            interval=interval,
+        )
+
+    def describe_messages(self) -> str:
+        """One-line-per-message rendering of the topic, for failure messages."""
+        return _describe_messages(self.messages, "topic")
+
     def as_forum_topic(self) -> ForumTopic:
         if self.message_thread_id is None:
             msg = "The General topic is not represented as a ForumTopic by the Bot API"
@@ -210,6 +524,8 @@ class BusinessConnectionState:
     date: datetime.datetime = BASE_DATE
 
     def as_business_connection(self, user: User) -> BusinessConnection:
+        # The rights are the world's own object, and a result gets mounted — see the note
+        # on `StickerSetState.as_sticker_set`.
         return BusinessConnection(
             id=self.id,
             user=user,
@@ -217,7 +533,7 @@ class BusinessConnectionState:
             date=self.date,
             is_enabled=self.is_enabled,
             can_reply=self.can_reply,
-            rights=self.rights,
+            rights=detached_copy(self.rights),
         )
 
 
@@ -241,14 +557,24 @@ class StickerSetState:
             if sticker.file_id == file_id:
                 return index
         msg = f"Sticker {file_id!r} is not in set {self.name!r}"
-        raise WorldLookupError(msg)
+        raise ApiRejection(msg)
 
     def as_sticker_set(self) -> StickerSet:
+        """
+        The Bot API's view of this set, carrying copies of the stickers.
+
+        A result is mounted to the calling bot, and the world's stickers are *value*
+        objects a test compares against declared ones — pydantic counts a binding in
+        ``__eq__`` while hiding it from ``__repr__``, so handing out the stored instances
+        would bind the world's own state and break ``set.stickers == DECLARED`` with two
+        identical-looking sides. Messages are the deliberate exception: their identity
+        with what the chat holds is the feature.
+        """
         return StickerSet(
             name=self.name,
             title=self.title,
             sticker_type=self.sticker_type,
-            stickers=list(self.stickers),
+            stickers=detached_copy(self.stickers),
         )
 
 
@@ -439,6 +765,39 @@ class CommunityState:
         return Community(id=self.id, name=self.name)
 
 
+def derive_message(original: Message, changes: dict[str, Any], bot: Bot | None) -> Message:
+    """
+    A copy of ``original`` with ``changes`` applied, belonging to ``bot``.
+
+    Every message the world derives from another goes through here: an edit replacing the
+    message it derives from, a forward and a copy landing in some other chat. They differ
+    in where the result goes, not in what it is, and what it is has to be said once.
+
+    **Only the changes are new.** The ``changes`` go through
+    :func:`~aiogram.test.mounting.owned_or_copied`, which is the same rule the input side of
+    a trigger uses and had to become the same rule here: an edit carries the caller's own
+    ``reply_markup`` or entities, and what the world stores must not be an object the code
+    under test still holds — but an edit may equally carry an object the world *already*
+    owns, and ``edit(fields={"reply_to_message": some_world_message})`` copying it is how a
+    field that should alias a stored message stopped tracking edits to it, while the very
+    same ``fields`` passed to ``send`` aliased it correctly. Copies are minted already bound
+    to ``bot``, and the root shell :meth:`~pydantic.BaseModel.model_copy` produces is bound
+    explicitly — because ``model_copy`` carries the original's ``_bot`` over, and a derived
+    message that goes to another chat is not the original's to own.
+
+    Everything the change did *not* touch is the original's own subtree, shared with it.
+    That is deliberate on both counts. Detaching the copy — as this used to — walks that
+    shared subtree and unbinds the **original's** children with it, so a message the chat
+    still holds loses its shortcuts as a side effect of something else being edited. And
+    even when nothing broke, unbinding the whole tree only to bind it again on the way into
+    the chat cost about six walks over it per edit, forward or copy, where the changes alone
+    need one.
+    """
+    derived = original.model_copy(update=owned_or_copied(changes, owner=bot, bind=bot))
+    derived.as_(bot)
+    return derived
+
+
 @dataclass
 class ChatState:
     """Mutable state of a single chat: its members, its messages and what is pinned."""
@@ -468,9 +827,45 @@ class ChatState:
     general_topic: TopicState = field(
         default_factory=lambda: TopicState(message_thread_id=None, is_general=True),
     )
+    #: The world this chat is part of, installed by :class:`ChatRegistry` when the chat is
+    #: registered. Excluded from equality and repr — it is wiring, not state a test asserts
+    #: on, and comparing it would recurse straight back into this chat.
+    world: World | None = field(default=None, compare=False, repr=False)
 
     def __post_init__(self) -> None:
         self.general_topic.chat = self
+
+    @property
+    def bound_bot(self) -> Bot | None:
+        """
+        The bot every message stored here is bound to, derived from the world.
+
+        Derived rather than stored: a copy of the owner kept per chat has to be refreshed
+        whenever either side changes, and a chat that missed a refresh silently stores
+        unbound messages. There is one owner — the world's — and this reads it.
+        """
+        return self.world.bound_bot if self.world is not None else None
+
+    @property
+    def label(self) -> str:
+        """
+        How a failure message names this chat, the counterpart of :attr:`TopicState.label`.
+
+        Both are dumped by the same failure messages — a wait told to ``watch=`` a mix of
+        chats and topics — so both have to be able to say what they are.
+        """
+        return f"chat {self.id}"
+
+    @property
+    def default_wait_timeout(self) -> float:
+        """
+        How long :meth:`wait_for_message` waits when the call does not say, from the world.
+
+        Derived rather than stored, for the reason :attr:`bound_bot` is: there is one
+        setting, configured once on the environment, and a per-chat copy would be one more
+        thing to keep in step.
+        """
+        return self.world.default_wait_timeout if self.world is not None else DEFAULT_WAIT_TIMEOUT
 
     def as_chat(self) -> Chat:
         return Chat(
@@ -488,8 +883,30 @@ class ChatState:
         return self.last_message_id
 
     def add_message(self, message: Message) -> Message:
-        self.messages.append(message)
-        return message
+        """
+        Store a message in message-id order, bound to the bot this world belongs to.
+
+        Storage is the moment an object *enters* the fake world, and it is the only such
+        moment for every producer at once — a user actor's message, a modeled send, a
+        service message no result ever carries. Binding here is therefore what makes the
+        rule "everything the world holds is usable" hold without a special case per
+        producer: ``chat.messages[-1].answer(...)`` works whoever put the message there.
+
+        It is also the only moment that can keep :attr:`messages` sorted by id, which every
+        reader assumes — ``messages[-1]`` for the newest, ``messages[:n]`` for a prefix, a
+        failure message listing a chat in the order it happened. Almost every producer
+        allocates its id here and appends, but not all: an update built by *another*
+        environment is registered by
+        :meth:`aiogram.test.BotTestEnvironment._register_carried_message` carrying whatever
+        id it was minted with over there, and appending that one left the list unsorted for
+        everything after it. The scan runs backwards from the end, so the overwhelming
+        append case costs one comparison.
+        """
+        index = len(self.messages)
+        while index and self.messages[index - 1].message_id > message.message_id:
+            index -= 1
+        self.messages.insert(index, message)
+        return self._bind(message)
 
     def find_message(self, message_id: int) -> Message | None:
         for message in self.messages:
@@ -501,15 +918,25 @@ class ChatState:
         message = self.find_message(message_id)
         if message is None:
             msg = f"Message {message_id} does not exist in chat {self.id}"
-            raise WorldLookupError(msg)
+            raise ApiRejection(msg)
         return message
 
     def update_message(self, message_id: int, **changes: Any) -> Message:
         """Replace a stored message with an edited copy — API types are frozen."""
         message = self.require_message(message_id)
-        edited = message.model_copy(update=changes)
+        edited = derive_message(message, changes, self.bound_bot)
         self.messages[self.messages.index(message)] = edited
-        return edited
+        return self._bind(edited)
+
+    def add_derived(self, original: Message, **changes: Any) -> Message:
+        """Store a copy of ``original`` in this chat — see :func:`derive_message`."""
+        return self.add_message(derive_message(original, changes, self.bound_bot))
+
+    def _bind(self, message: Message) -> Message:
+        """Mount a message and everything new in it to the world's bot, if there is one."""
+        if self.bound_bot is not None:
+            mount(message, self.bound_bot)
+        return message
 
     def delete_message(self, message_id: int) -> None:
         message = self.require_message(message_id)
@@ -518,12 +945,72 @@ class ChatState:
         if message_id in self.pinned_message_ids:
             self.pinned_message_ids.remove(message_id)
 
+    async def wait_for_message(
+        self,
+        predicate: Callable[[Message], object] | None = None,
+        description: str | None = None,
+        *,
+        timeout: float | None = None,
+        interval: float = 0.01,
+    ) -> Message:
+        """
+        Wait until a message matching ``predicate`` is in this chat, and return it.
+
+        The specialized form of :meth:`aiogram.test.BotTestEnvironment.wait_for` for the
+        case that dominates tests of bots with background work: something the test did not
+        await is expected to post into this chat. Between checks it yields to the event
+        loop, which is what lets those tasks run at all.
+
+        ``predicate`` is matched against **every** message the chat holds, not only the
+        ones that arrive after the call: a message that is already there satisfies the
+        wait immediately, so a test never has to race the send it is waiting for. When
+        several match, the one with the highest ``message_id`` is returned — the newest,
+        as Telegram numbers them, not merely the last one the list holds.
+        ``predicate=None`` waits for any message::
+
+            reply = await bot_chat.wait_for_message(lambda m: m.text.startswith("Night"))
+
+        ``description`` names what was awaited in the failure message, and is the second
+        positional parameter because for the lambdas this is written with it is the only
+        thing that message can say::
+
+            await bot_chat.wait_for_message(lambda m: m.text == "Dawn", "the dawn message")
+
+        ``timeout`` defaults to the ``default_wait_timeout`` of the environment this chat
+        belongs to — a bot whose background work is slow sets it once there instead of on
+        every call — and passing one here still wins.
+
+        A predicate that *raises* on a message counts as "does not match" rather than
+        failing the wait, because a chat holds messages of every shape: the natural
+        ``m.text.startswith(...)`` above blows up on the first service message —
+        ``forum_topic_created``, a pin — whose ``text`` is ``None``, and a wait has no
+        business dying on a message it was not asking about. The exceptions are not
+        swallowed, though: if the wait times out, the failure message reports what the
+        predicate raised and on which message, so a predicate that is simply buggy still
+        fails visibly and with its real cause.
+
+        :raises aiogram.test.errors.WaitTimeoutError: if no such message ever appeared.
+        """
+        return await _wait_for_message(
+            lambda: self.messages,
+            predicate,
+            description,
+            noun="chat",
+            where=self.label,
+            timeout=self.default_wait_timeout if timeout is None else timeout,
+            interval=interval,
+        )
+
+    def describe_messages(self) -> str:
+        """One-line-per-message rendering of the chat, for failure messages."""
+        return _describe_messages(self.messages, "chat")
+
     def invite_link(self, url: str) -> InviteLinkState:
         for link in self.invite_links:
             if link.invite_link == url:
                 return link
         msg = f"Invite link {url} does not exist in chat {self.id}"
-        raise WorldLookupError(msg)
+        raise ApiRejection(msg)
 
     @property
     def primary_invite_link(self) -> InviteLinkState | None:
@@ -557,10 +1044,23 @@ class ChatState:
         user_id: int,
         reaction: list[ReactionTypeUnion],
     ) -> None:
-        """Replace a reactor's reactions; an empty list removes them entirely."""
+        """
+        Replace a reactor's reactions; an empty list removes them entirely.
+
+        The reactions are stored as copies. The very same instances travel on the update
+        that announces them, where they are mounted to the bot like everything an update
+        carries — and pydantic counts that binding in ``__eq__`` while hiding it from
+        ``__repr__``. Reactions, unlike messages, are value objects a test compares against
+        plainly declared ones::
+
+            assert chat.reactions_for(message.message_id) == {alice.id: [THUMBS_UP]}
+
+        Sharing the instances would make that assertion fail with two identical-looking
+        sides, so the store keeps its own unbound copies.
+        """
         per_message = self.reactions.setdefault(message_id, {})
         if reaction:
-            per_message[user_id] = list(reaction)
+            per_message[user_id] = detached_copy(list(reaction))
         else:
             per_message.pop(user_id, None)
 
@@ -572,8 +1072,11 @@ class ChatState:
                 key = reaction.model_dump_json()
                 current = totals.get(key)
                 totals[key] = (reaction, (current[1] if current else 0) + 1)
+        # Copies again, for the reason `set_reaction` explains: a count travels outwards,
+        # on an update or in a result, and gets mounted there.
         return [
-            ReactionCount(type=reaction, total_count=count) for reaction, count in totals.values()
+            ReactionCount(type=detached_copy(reaction), total_count=count)
+            for reaction, count in totals.values()
         ]
 
     def topic(self, message_thread_id: int | None) -> TopicState:
@@ -582,7 +1085,7 @@ class ChatState:
         topic = self.topics.get(message_thread_id)
         if topic is None:
             msg = f"Topic {message_thread_id} does not exist in chat {self.id}"
-            raise WorldLookupError(msg)
+            raise ApiRejection(msg)
         return topic
 
     def member(self, user_id: int) -> MemberState:
@@ -648,6 +1151,86 @@ class BotProfileState:
             texts.pop(key, None)
 
 
+#: What the mutating halves of the mapping protocol accept.
+_Chats: TypeAlias = "Mapping[int, ChatState] | Iterable[tuple[int, ChatState]]"
+
+
+class ChatRegistry(dict[int, ChatState]):
+    """
+    The world's chats, which hand every chat put into them a way back to the world.
+
+    A chat needs the world to know which bot its messages are bound to, and there is
+    exactly one moment when a chat becomes part of a world: when it is put here. Doing the
+    wiring at that moment rather than in a later sweep is what lets every reader be a plain
+    reader — ``world.chats.get(id)`` is as safe as :meth:`World.chat`, and a test that
+    drops a chat straight into the mapping gets a working one.
+
+    *Every* way of putting one in, that is. :class:`dict` implements ``update``,
+    ``setdefault`` and ``|=`` in C, without going through ``__setitem__``, so overriding
+    that alone left three doors into the world that skipped the wiring and produced a chat
+    whose messages were silently never bound. They are routed here instead.
+
+    **Ownership is enforced per chat, not per assignment.** Registering a
+    :class:`ChatState` that already belongs to another world is refused, because the wiring
+    this does is a *rewrite*: ``chat.world = self.world`` on an object the donor world still
+    holds leaves the donor with a chat that answers "my world is the other one" and binds
+    its messages to the other bot. :meth:`World.__setattr__` used to be the only place that
+    said so, which caught ``w2.chats = w1.chats`` and missed the very recipe it recommended
+    instead — ``w2.chats = dict(w1.chats)`` unwrapped the registry, passed the check, and
+    corrupted the donor one ``__setitem__`` at a time. The rule belongs where the mutation
+    happens.
+    """
+
+    def __init__(self, world: World) -> None:
+        super().__init__()
+        self.world = world
+
+    def __setitem__(self, chat_id: int, chat: ChatState) -> None:
+        if chat.world is not None and chat.world is not self.world:
+            msg = (
+                f"Chat {chat.id} already belongs to another world, and registering it here "
+                f"would rewrite `chat.world` on the very object that world still holds — "
+                f"binding its messages to this world's bot. Worlds own their chats.\n"
+                f"Detaching is what says which of these you meant, and every one of them "
+                f"needs it — a chat straight out of `blueprint.build()` is owned by the "
+                f"world that built it, so handing it on undetached lands right back here:\n"
+                f"  # an independent copy, leaving the donor untouched\n"
+                f"  clone = copy.deepcopy(chat)\n"
+                f"  clone.world = None\n"
+                f"  world.chats[{chat.id}] = clone\n"
+                f"  # or a fresh chat of the same shape, from the declaration\n"
+                f"  clone = blueprint.build().chats[{chat.id}]\n"
+                f"  clone.world = None\n"
+                f"  world.chats[{chat.id}] = clone\n"
+                f"  # or this very object, moved — the donor gives it up\n"
+                f"  del donor.chats[{chat.id}]\n"
+                f"  chat.world = None\n"
+                f"  world.chats[{chat.id}] = chat"
+            )
+            raise WorldLookupError(msg)
+        chat.world = self.world
+        super().__setitem__(chat_id, chat)
+
+    def update(self, other: _Chats = (), /) -> None:  # type: ignore[override]
+        items = other.items() if isinstance(other, Mapping) else other
+        for chat_id, chat in items:
+            self[chat_id] = chat
+
+    def setdefault(self, chat_id: int, chat: ChatState | None = None) -> ChatState:
+        existing = self.get(chat_id)
+        if existing is not None:
+            return existing
+        if chat is None:
+            msg = f"Chat {chat_id} is not in this world, and no chat was given to add"
+            raise WorldLookupError(msg)
+        self[chat_id] = chat
+        return chat
+
+    def __ior__(self, other: _Chats) -> ChatRegistry:  # type: ignore[misc,override]
+        self.update(other)
+        return self
+
+
 @dataclass
 class World:
     """Everything the environment knows: the bot, the users, the chats and the counters."""
@@ -669,6 +1252,97 @@ class World:
     sticker_sets: dict[str, StickerSetState] = field(default_factory=dict)
     last_update_id: int = 0
     last_query_id: int = 0
+    #: The bot this world belongs to; see :meth:`bind`.
+    bound_bot: Bot | None = field(default=None, compare=False, repr=False)
+    #: How long the waiting helpers wait when the call does not say. Set by
+    #: :class:`aiogram.test.BotTestEnvironment` from its ``default_wait_timeout``, and read
+    #: by every :meth:`ChatState.wait_for_message` in this world. Configuration rather than
+    #: state, so two worlds that hold the same things still compare equal.
+    default_wait_timeout: float = field(default=DEFAULT_WAIT_TIMEOUT, compare=False)
+
+    def __setattr__(self, name: str, value: Any) -> None:
+        """
+        Keep :attr:`chats` a :class:`ChatRegistry`, whenever and however it is assigned.
+
+        The registry is what hands a chat its way back to the world, and it used to be
+        installed once in ``__post_init__`` — which covered the declared mapping and
+        nothing else. ``world.chats = {chat.id: chat}`` after construction, the obvious way
+        to rebuild a world in a test, silently replaced it with a plain :class:`dict`: the
+        chats went in unwired, ``chat.bound_bot`` was ``None`` for all of them, and every
+        message stored afterwards was unbound — a failure that surfaces much later, as a
+        shortcut raising on a message that looks perfectly ordinary. Converting on
+        assignment makes the guarantee hold for the attribute rather than for one moment in
+        its life, and covers ``__post_init__`` too: the generated ``__init__`` assigns
+        ``chats`` like anything else, so the declared mapping is converted right here.
+
+        A live :class:`ChatRegistry` **belonging to another world is refused outright**.
+        ``w2.chats = w1.chats`` passes the ``isinstance`` check as-is, so the first fix was
+        to rewrap it — and rewrapping is worse than the bug it fixed. A registry holds the
+        donor's own :class:`ChatState` objects, not copies, and registering them here
+        rewrites ``chat.world`` on the shared objects: w1 keeps a registry full of chats
+        that now answer "my world is w2" and bind their messages to *w2's* bot. Stealing
+        one world's chats to fix another's wiring is not a trade this can make silently, so
+        it does not make it at all.
+
+        This check is now the *outer* one rather than the only one:
+        :meth:`ChatRegistry.__setitem__` refuses a foreign-owned chat whatever container it
+        arrived in, which is what closes the hole this message used to point straight at —
+        ``dict(other.chats)`` unwraps the registry and corrupts the donor one item at a
+        time. So the message no longer recommends that; what it recommends instead is what
+        the rule leaves genuinely open, and each of those lines runs.
+
+        A plain mapping is still converted, which is the case that motivated all of this:
+        ``world.chats = {chat.id: chat}`` is the obvious way to rebuild a world in a test,
+        and a plain :class:`dict` there means unwired chats whose messages are silently
+        never bound. A registry that already belongs to *this* world is left alone by
+        identity, so ``world.chats = world.chats`` stays a no-op rather than rebuilding the
+        mapping.
+        """
+        if name == "chats" and not (isinstance(value, ChatRegistry) and value.world is self):
+            if isinstance(value, ChatRegistry):
+                msg = (
+                    "Cannot assign another world's live ChatRegistry: a world owns its "
+                    "chats, and registering them here would rewrite `chat.world` on the "
+                    "very objects the donor world still holds — binding its messages to "
+                    "this world's bot.\n"
+                    "Unwrapping it does not help — `world.chats = dict(other.chats)` is "
+                    "refused chat by chat for the same reason.\n"
+                    "If a world of that shape is what you want, build one and use it "
+                    "whole rather than transplanting its chats into this one:\n"
+                    "  world = blueprint.build()\n"
+                    "If moving these very objects is what you meant, detach them first — "
+                    "the donor gives them up:\n"
+                    "  for chat in other.chats.values():\n"
+                    "      chat.world = None\n"
+                    "  world.chats = dict(other.chats)"
+                )
+                raise WorldLookupError(msg)
+            registry = ChatRegistry(self)
+            registry.update(value)
+            value = registry
+        super().__setattr__(name, value)
+
+    def bind(self, bot: Bot) -> None:
+        """
+        Declare which bot owns this world, and claim what it already holds.
+
+        Called once by :class:`aiogram.test.BotTestEnvironment` as soon as it has a bot.
+        A world without an owner still works — it just stores unbound objects, which is
+        all a world built and inspected on its own can offer.
+
+        One assignment, and every chat follows for everything stored *after* it: a chat
+        reads the owner off the world it was registered in rather than keeping a copy that
+        would have to be kept in step. Content stored *before* it needs the one sweep this
+        does — :meth:`aiogram.test.Blueprint.build` materializes a declared forum topic
+        through the same path ``createForumTopic`` takes, so its ``forum_topic_created``
+        service message is in the chat before any bot exists, and without this sweep
+        ``chat.messages[0].bot`` would be ``None`` and every shortcut on it would raise.
+        One walk over the stored messages, once per environment, and :func:`mount` prunes
+        at anything already bound.
+        """
+        self.bound_bot = bot
+        for chat in self.chats.values():
+            mount(chat.messages, bot)
 
     def user(self, user_id: int) -> UserState:
         if user_id == self.bot_user.id:
@@ -686,10 +1360,47 @@ class World:
             raise WorldLookupError(msg)
         return chat
 
+    def ensure_private_chat(self, user: UserState | UserSpec | int) -> ChatState:
+        """
+        The user's private chat with the bot, opened if it does not exist yet.
+
+        Every Telegram user *can* open a private chat with a bot, and some actions — tapping
+        a `/start` deep link, most of all — open it as a side effect. A blueprint that did
+        not declare one is therefore not saying "this user has no private chat"; it is only
+        saying the test did not need to name it. So the chat is created here, from the same
+        description :meth:`aiogram.test.Blueprint.add_private_chat` declares one from,
+        rather than the world refusing an interaction Telegram itself would allow.
+
+        ``user`` accepts a `UserSpec`, a `UserState` or a bare id, so a test does not have to
+        resolve the user itself first — all three of these name the same chat::
+
+            world.ensure_private_chat(alice)                 # a UserSpec
+            world.ensure_private_chat(alice.id)               # a bare id
+            world.ensure_private_chat(world.user(alice.id))  # a UserState — still works
+
+        A `UserSpec` or an id goes through :meth:`user`, so it is validated the same way
+        every other lookup is: an id the blueprint never declared raises `WorldLookupError`
+        rather than opening a chat for nobody. A `UserState` is trusted as already resolved,
+        since the only way to hold one is to have gotten it from this world in the first
+        place.
+        """
+        if not isinstance(user, UserState):
+            user = self.user(user if isinstance(user, int) else user.id)
+        chat = self.chats.get(user.id)
+        if chat is None:
+            chat = ChatState(
+                **private_chat_shape(user),
+                members={user.id: MemberState(user_id=user.id)},
+            )
+            # Registering is what hands the chat the world, so its messages are bound like
+            # any declared chat's.
+            self.chats[user.id] = chat
+        return chat
+
     def business_connection(self, connection_id: str) -> BusinessConnectionState:
         connection = self.business_connections.get(connection_id)
         if connection is None:
-            msg = f"business connection {connection_id} not found"
+            msg = f"Business connection {connection_id!r} is not declared in the blueprint"
             raise WorldLookupError(msg)
         return connection
 
@@ -756,10 +1467,43 @@ class World:
                 "query is too old and response timeout expired or query ID is invalid "
                 f"({kind} {query_id!r} is not outstanding)"
             )
-            raise WorldLookupError(msg)
+            raise ApiRejection(msg)
 
     def next_date(self) -> datetime.datetime:
         return BASE_DATE + datetime.timedelta(seconds=self.last_update_id)
+
+
+def private_chat_shape(user: UserState | UserSpec) -> dict[str, Any]:
+    """
+    What a private chat between the bot and ``user`` looks like.
+
+    A private chat is described in two places — declared by
+    :meth:`aiogram.test.Blueprint.add_private_chat`, opened on demand by
+    :meth:`World.ensure_private_chat` — and the two must agree, or a user whose chat the
+    blueprint happened to declare would live in a differently-shaped chat than one whose
+    chat a deep link opened. The shape is stated here; each caller only adds the membership
+    in the type it deals in.
+    """
+    return {
+        "id": user.id,
+        "type": ChatType.PRIVATE,
+        "username": user.username,
+        "first_name": user.first_name,
+        "last_name": user.last_name,
+    }
+
+
+def resolve_topic(chat: ChatState, topic: TopicSpec | TopicState | int) -> TopicState:
+    """
+    The topic a declaration, a state or a thread id names, within ``chat``.
+
+    A topic can be addressed by any of the three, and every caller that accepts one accepts
+    all three; an unknown thread id fails here rather than producing an untagged message.
+    """
+    if isinstance(topic, TopicState):
+        return topic
+    thread_id = topic if isinstance(topic, int) else topic.message_thread_id
+    return chat.topic(thread_id)
 
 
 def create_topic(

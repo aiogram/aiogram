@@ -8,6 +8,7 @@ from aiogram.methods import TelegramMethod
 from aiogram.methods.base import TelegramType
 
 from .errors import NoFileContentError
+from .mounting import mount
 
 if TYPE_CHECKING:
     from aiogram.client.bot import Bot
@@ -40,7 +41,11 @@ class FakeTelegramSession(BaseSession):
     ) -> TelegramType:
         self.closed = False
         result: TelegramType = await self.environment.handle_call(bot, method)
-        return result
+        # The single choke point for every answer — modeled, synthesized or overridden —
+        # so a freshly minted result is mounted to the bot exactly like a parsed one would
+        # be. Objects the world already owns come back already bound, and `mount` leaves
+        # them to their owner rather than claiming them for `bot`.
+        return mount(result, bot)  # type: ignore[no-any-return]
 
     async def stream_content(
         self,

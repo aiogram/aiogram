@@ -4,7 +4,7 @@ import pytest
 
 from aiogram import Dispatcher
 from aiogram.exceptions import TelegramBadRequest
-from aiogram.test import Blueprint, BotTestEnvironment
+from aiogram.test import Blueprint, BotTestEnvironment, WorldLookupError
 from aiogram.test.modeling import SUBSCRIPTION_PERIOD
 
 
@@ -45,7 +45,7 @@ class TestCreatingLinks:
         assert link.expire_date == expires
 
     async def test_creating_in_an_unknown_chat_fails(self, env):
-        with pytest.raises(TelegramBadRequest, match="chat not found"):
+        with pytest.raises(WorldLookupError, match="not declared in the blueprint"):
             await env.bot.create_chat_invite_link(chat_id=-99)
 
 

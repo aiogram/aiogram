@@ -4,7 +4,7 @@ import pytest
 
 from aiogram.exceptions import TelegramBadRequest
 from aiogram.methods import EditMessageMedia, SendChatAction
-from aiogram.test import Blueprint, BotTestEnvironment
+from aiogram.test import Blueprint, BotTestEnvironment, WorldLookupError
 from aiogram.test.modeling import EDITABLE_MEDIA_FIELDS, media_field
 from aiogram.types import (
     InlineKeyboardButton,
@@ -118,7 +118,7 @@ class TestEditingMedia:
             media=InputMediaPhoto(media="b"),
         )
 
-        assert edited.reply_markup == markup
+        assert edited.reply_markup.model_dump() == markup.model_dump()
 
     @pytest.mark.parametrize(
         "member",
@@ -294,7 +294,7 @@ class TestEditingUnknownTargets:
 
     async def test_inline_message_targets_fail_loudly(self, env):
         """Inline messages have no chat to live in, so the fake says so rather than guessing."""
-        with pytest.raises(TelegramBadRequest, match="inline messages are not modeled"):
+        with pytest.raises(WorldLookupError, match="inline messages are not modeled"):
             await env.bot.edit_message_media(
                 inline_message_id="inline-1",
                 media=InputMediaPhoto(media="x"),
@@ -365,12 +365,86 @@ class TestBatchForwardAndCopy:
 
     @pytest.mark.parametrize("method_name", ["forward_messages", "copy_messages"])
     async def test_an_unknown_source_chat_fails(self, env, team, method_name):
-        with pytest.raises(TelegramBadRequest, match="chat not found"):
+        with pytest.raises(WorldLookupError, match="not declared in the blueprint"):
             await getattr(env.bot, method_name)(
                 chat_id=team.id,
                 from_chat_id=-99,
                 message_ids=[1],
             )
+
+
+class TestADerivedMessageIsAFreshObject:
+    """
+    A forward, a copy and an edit all derive one message from another.
+
+    ``model_copy`` carries the original's binding over, which makes ``mount`` prune the
+    derived message at its root and leave everything the derivation brought along — a new
+    chat, a new sender, a forward origin — unbound. The damaged message is then *stored*,
+    so a bot reading it back out of the chat gets shortcuts that raise, long after the call
+    that made it. All three go through one derive primitive, and this asserts it.
+    """
+
+    async def test_a_forward_binds_what_it_brought_with_it(self, env, private, team, alice):
+        await alice.send("original")
+
+        forwarded = await env.bot.forward_message(
+            chat_id=team.id,
+            from_chat_id=private.id,
+            message_id=private.messages[-1].message_id,
+        )
+
+        assert forwarded.bot is env.bot
+        assert forwarded.chat.bot is env.bot
+        assert forwarded.forward_origin.bot is env.bot
+        # A shortcut on the new chat is what a bot actually reaches for next.
+        assert await forwarded.chat.get_member(alice.user.id)
+
+    async def test_the_stored_forward_is_the_damaged_one_if_anything_is(
+        self,
+        env,
+        private,
+        team,
+        alice,
+    ):
+        """The result may look fine while the message the world keeps does not."""
+        await alice.send("original")
+
+        await env.bot.forward_message(
+            chat_id=team.id,
+            from_chat_id=private.id,
+            message_id=private.messages[-1].message_id,
+        )
+
+        stored = team.messages[-1]
+        assert stored.chat.bot is env.bot
+        assert stored.chat.id == team.id
+
+    async def test_a_copy_binds_what_it_brought_with_it(self, env, private, team, alice):
+        await alice.send("original")
+
+        await env.bot.copy_message(
+            chat_id=team.id,
+            from_chat_id=private.id,
+            message_id=private.messages[-1].message_id,
+        )
+
+        stored = team.messages[-1]
+        assert stored.chat.bot is env.bot
+        assert stored.from_user.bot is env.bot
+
+    async def test_the_original_is_left_alone(self, env, private, team, alice):
+        await alice.send("original")
+        original = private.messages[-1]
+
+        await env.bot.forward_message(
+            chat_id=team.id,
+            from_chat_id=private.id,
+            message_id=original.message_id,
+        )
+
+        assert private.messages[-1] is original
+        assert original.chat.id == private.id
+        assert original.forward_origin is None
 
 
 class TestUnpinningEverything:
@@ -386,7 +460,7 @@ class TestUnpinningEverything:
         assert private.pinned_message_ids == []
 
     async def test_unpin_all_on_an_unknown_chat_fails(self, env):
-        with pytest.raises(TelegramBadRequest, match="chat not found"):
+        with pytest.raises(WorldLookupError, match="not declared in the blueprint"):
             await env.bot.unpin_all_chat_messages(chat_id=-99)
 
 
@@ -396,7 +470,7 @@ class TestSeededAnswers:
         assert env.calls.last(SendChatAction).action == "typing"
 
     async def test_chat_action_against_an_unknown_chat_fails(self, env):
-        with pytest.raises(TelegramBadRequest, match="chat not found"):
+        with pytest.raises(WorldLookupError, match="not declared in the blueprint"):
             await env.bot.send_chat_action(chat_id=-99, action="typing")
 
     async def test_get_file_echoes_the_requested_id(self, env, private):
@@ -485,4 +559,4 @@ class TestEditingMediaWithMarkup:
             reply_markup=replacement,
         )
 
-        assert edited.reply_markup == replacement
+        assert edited.reply_markup.model_dump() == replacement.model_dump()

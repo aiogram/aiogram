@@ -1,0 +1,68 @@
+from __future__ import annotations
+
+import asyncio
+import inspect
+from collections.abc import Awaitable, Callable
+from typing import Any
+
+from .errors import WaitTimeoutError
+
+__all__ = ("DEFAULT_WAIT_TIMEOUT", "describe_callable", "poll_until")
+
+#: How long a wait runs before giving up, when neither the call nor the environment says.
+#: :class:`aiogram.test.BotTestEnvironment` takes a ``default_wait_timeout`` that replaces
+#: it for every wait in that environment, and an explicit ``timeout=`` replaces it for one
+#: call; this is only the floor under both.
+DEFAULT_WAIT_TIMEOUT = 5.0
+
+
+async def poll_until(
+    predicate: Callable[[], object | Awaitable[object]],
+    *,
+    timeout: float,
+    interval: float,
+    describe_timeout: Callable[[], str],
+) -> Any:
+    """
+    Re-run ``predicate`` until it produces something truthy, and return that value.
+
+    The polling core of the toolkit's waiting helpers. It lives in a module of its own
+    because both ends use it — :meth:`aiogram.test.BotTestEnvironment.wait_for` and
+    :meth:`aiogram.test.world.ChatState.wait_for_message` — while
+    :mod:`aiogram.test.world` must not import :mod:`aiogram.test.environment`.
+
+    ``predicate`` may be synchronous or return an awaitable; both are supported so that a
+    test can wait on a coroutine reading the state under test. It is checked once before
+    any sleeping, so an already-satisfied wait costs nothing, and once more after the
+    deadline has passed, so a change that lands exactly on the deadline still counts.
+
+    Sleeping between checks is what makes this useful at all: the bot's own background
+    tasks only run while the test yields to the event loop.
+
+    ``describe_timeout`` builds the failure message and is called only when the wait
+    actually fails, so an expensive description costs nothing on the happy path.
+
+    Sleeps are clamped to what is left of the timeout, so ``timeout`` is the promise it
+    reads as: a wait with a coarse ``interval`` gives up on time instead of overshooting by
+    up to a full interval.
+    """
+    loop = asyncio.get_running_loop()
+    deadline = loop.time() + timeout
+    while True:
+        result = predicate()
+        if inspect.isawaitable(result):
+            result = await result
+        if result:
+            return result
+        remaining = deadline - loop.time()
+        if remaining <= 0:
+            raise WaitTimeoutError(describe_timeout())
+        await asyncio.sleep(min(interval, remaining))
+
+
+def describe_callable(target: object) -> str:
+    """Best-effort identification of a predicate for a failure message."""
+    name = getattr(target, "__qualname__", None)
+    if isinstance(name, str) and name:
+        return name
+    return repr(target)

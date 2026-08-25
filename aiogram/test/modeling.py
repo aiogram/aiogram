@@ -1,3 +1,39 @@
+"""
+What each Bot API method does to the fake world.
+
+One handler per method, registered with :func:`models`, found by
+:meth:`aiogram.test.BotTestEnvironment.handle_call` and handed ``(env, method)``. A handler
+returns what the call returns; anything it does not model falls through to
+:func:`~aiogram.test.synthesis.synthesize_result`.
+
+**The copy boundary — read this before adding a handler.** Objects cross between the code
+under test and the world in both directions, and each direction has exactly one rule:
+
+*In: already done for you.* ``handle_call`` hands every handler a
+:func:`~aiogram.test.mounting.detached_copy` of the method, made after the call log has
+recorded the caller's own object. So whatever a handler reads off ``method`` — a
+``reply_markup``, a ``ChatPermissions`` constant, a list of ``BotCommand`` — is already the
+world's to keep, and storing it directly is correct. There is nothing to copy in a handler,
+and the eight hand-written copies that used to sit in this module are gone: one copy at the
+choke point does what all of them did, and cannot be forgotten by the next handler.
+
+*Out: messages by identity, value objects by copy.* A :class:`~aiogram.types.Message` the
+world stores is handed back **as it is**, so ``chat.messages[-1] is returned_message`` holds
+and an edit through either lands on both — that identity is a feature tests rely on.
+Everything else the world stores is a *value* a test compares against a declared constant
+(``chat.permissions == DECLARED``), and a result gets mounted to the calling bot on its way
+out — so handing out the stored instance would bind the world's own state and leave that
+comparison failing with two identical-looking sides. Those are copied out explicitly, at the
+handler that returns them.
+
+**Refusing a call.** Raise :class:`~aiogram.test.errors.ApiRejection` with Telegram's own
+wording for something the real API would refuse; ``handle_call`` turns it into a
+:class:`~aiogram.exceptions.TelegramBadRequest`. Raise
+:class:`~aiogram.test.WorldLookupError` for a gap in the test's own setup or a limit of the
+fake — that one propagates and fails the test instead of arriving as an error the bot might
+catch.
+"""
+
 from __future__ import annotations
 
 import datetime
@@ -197,6 +233,7 @@ from aiogram.types import (
     ChatAdministratorRights,
     ChatFullInfo,
     ChatInviteLink,
+    ChatPermissions,
     File,
     ForumTopic,
     ForumTopicClosed,
@@ -226,6 +263,8 @@ from aiogram.types import (
     User,
 )
 
+from .errors import ApiRejection
+from .mounting import detached_copy
 from .synthesis import annotation_accepts, synthesize
 from .world import (
     BASE_DATE,
@@ -240,6 +279,8 @@ from .world import (
     TopicState,
     WorldLookupError,
     create_topic,
+    mask,
+    no_administrator_rights,
     scope_key,
 )
 
@@ -390,7 +431,27 @@ def find_handler(method: TelegramMethod[Any]) -> MethodHandler | None:
 
 
 def resolve_chat(env: BotTestEnvironment, chat_id: Any) -> ChatState:
-    """Resolve a ``chat_id`` (numeric or ``@username``) against the world."""
+    """
+    Resolve a ``chat_id`` (numeric or ``@username``) against the world.
+
+    **A chat this world does not have is a gap in the test's setup, not an API rejection.**
+    This is the *outbound* path — the bot calling ``sendMessage``, ``banChatMember``,
+    ``getChat`` — and it deliberately does not open a private chat on demand the way the
+    actor paths do. A real bot cannot write into a private chat first: it may only answer a
+    user who wrote to it, so a test in which the bot's first move is a message to an
+    undeclared private chat is describing something Telegram would never let happen, and
+    the toolkit has no honest world state to invent for it.
+
+    What it must not do is *look* like Telegram refusing it. Answering "chat not found" as
+    a :class:`~aiogram.exceptions.TelegramBadRequest` handed the bot's own ``except``
+    branch — almost always the "the user blocked me" branch — a case the test never meant
+    to exercise, and the test passed while asserting on the wrong path entirely. So this
+    raises :class:`~aiogram.test.WorldLookupError` like every other undeclared thing, and
+    the message says which chats exist and how to declare the missing one. A test that
+    genuinely wants the real API branch declares it:
+    ``env.on(SendMessage).raises(TelegramBadRequest, "Bad Request: chat not found")``
+    produces the rejection without pretending the world is short of a chat.
+    """
     if isinstance(chat_id, int):
         chat = env.world.chats.get(chat_id)
         if chat is not None:
@@ -400,8 +461,46 @@ def resolve_chat(env: BotTestEnvironment, chat_id: Any) -> ChatState:
         for chat in env.world.chats.values():
             if chat.username == wanted:
                 return chat
-    msg = "chat not found"
-    raise WorldLookupError(msg)
+    raise WorldLookupError(_undeclared_chat_message(env, chat_id))
+
+
+def _undeclared_chat_message(env: BotTestEnvironment, chat_id: Any) -> str:
+    """Say what this world does have, and how to add the chat the bot asked for."""
+    declared = env.world.chats.values()
+    if declared:
+        listing = "\n".join(f"  {chat.id} ({chat.type}){_chat_label(chat)}" for chat in declared)
+        known = f"Declared chats:\n{listing}"
+    else:
+        known = "This world declares no chats at all."
+    user = env.world.users.get(chat_id) if isinstance(chat_id, int) else None
+    if user is not None:
+        hint = (
+            f"\nUser {user.id} is declared, but their private chat with the bot is not. A "
+            f"bot cannot write into a private chat first — it may only answer a user who "
+            f"wrote to it — so this path does not open one on demand the way a user actor "
+            f"does. Declare it with `blueprint.add_private_chat(user)`, open it with "
+            f"`env.world.ensure_private_chat({user.id})`, or have the user write first."
+        )
+    else:
+        hint = (
+            "\nDeclare it on the blueprint (`add_private_chat`, `add_group`, "
+            "`add_supergroup`, `add_channel`), or register a `ChatState` in "
+            "`env.world.chats`."
+        )
+    return (
+        f"Chat {chat_id!r} is not declared in the blueprint, so this environment has no "
+        f"state to answer for it. {known}{hint}\nTo test how the bot handles the real Bot "
+        f"API refusing a chat, declare that refusal instead: "
+        f"`env.on(<Method>).raises(TelegramBadRequest, 'Bad Request: chat not found')`."
+    )
+
+
+def _chat_label(chat: ChatState) -> str:
+    """The readable half of a chat's identity in a listing, if it has one."""
+    for value in (chat.title, chat.username and f"@{chat.username}", chat.first_name):
+        if value:
+            return f" {value}"
+    return ""
 
 
 def _nonempty(annotation: Any, env: BotTestEnvironment, name: str) -> Any:
@@ -533,7 +632,7 @@ def _edit_target(env: BotTestEnvironment, method: TelegramMethod[Any]) -> tuple[
     message_id: int | None = getattr(method, "message_id", None)
     if message_id is None or chat.find_message(message_id) is None:
         msg = "message to edit not found"
-        raise WorldLookupError(msg)
+        raise ApiRejection(msg)
     return chat, message_id
 
 
@@ -577,22 +676,20 @@ def forward_one(
 ) -> Message:
     original = source.find_message(message_id)
     if original is None:
-        raise WorldLookupError("message to forward not found")
-    forwarded = original.model_copy(
-        update={
-            "message_id": target.allocate_message_id(),
-            "chat": target.as_chat(),
-            "date": env.world.next_date(),
-            "from_user": env.world.bot_user.as_user(),
-            # Stored messages always carry a sender; the bot stands in only for typing.
-            "forward_origin": forward_origin(
-                source,
-                original,
-                original.from_user or env.world.bot_user.as_user(),
-            ),
-        },
+        raise ApiRejection("message to forward not found")
+    return target.add_derived(
+        original,
+        message_id=target.allocate_message_id(),
+        chat=target.as_chat(),
+        date=env.world.next_date(),
+        from_user=env.world.bot_user.as_user(),
+        # Stored messages always carry a sender; the bot stands in only for typing.
+        forward_origin=forward_origin(
+            source,
+            original,
+            original.from_user or env.world.bot_user.as_user(),
+        ),
     )
-    return target.add_message(forwarded)
 
 
 @models(ForwardMessage)
@@ -624,19 +721,17 @@ def copy_one(
 ) -> Message:
     original = source.find_message(message_id)
     if original is None:
-        raise WorldLookupError("message to copy not found")
-    copied = original.model_copy(
-        update={
-            "message_id": target.allocate_message_id(),
-            "chat": target.as_chat(),
-            "date": env.world.next_date(),
-            "from_user": env.world.bot_user.as_user(),
-            "caption": caption if caption is not None else original.caption,
-            # A copy carries no trace of where it came from — that is the whole difference.
-            "forward_origin": None,
-        },
+        raise ApiRejection("message to copy not found")
+    return target.add_derived(
+        original,
+        message_id=target.allocate_message_id(),
+        chat=target.as_chat(),
+        date=env.world.next_date(),
+        from_user=env.world.bot_user.as_user(),
+        caption=caption if caption is not None else original.caption,
+        # A copy carries no trace of where it came from — that is the whole difference.
+        forward_origin=None,
     )
-    return target.add_message(copied)
 
 
 @models(CopyMessage)
@@ -789,7 +884,7 @@ def handle_edit_checklist(
 def handle_delete(env: BotTestEnvironment, method: DeleteMessage) -> bool:
     chat = resolve_chat(env, method.chat_id)
     if chat.find_message(method.message_id) is None:
-        raise WorldLookupError("message to delete not found")
+        raise ApiRejection("message to delete not found")
     chat.delete_message(method.message_id)
     return True
 
@@ -807,7 +902,7 @@ def handle_delete_many(env: BotTestEnvironment, method: DeleteMessages) -> bool:
 def handle_pin(env: BotTestEnvironment, method: PinChatMessage) -> bool:
     chat = resolve_chat(env, method.chat_id)
     if method.message_id is None or chat.find_message(method.message_id) is None:
-        raise WorldLookupError("message to pin not found")
+        raise ApiRejection("message to pin not found")
     if method.message_id not in chat.pinned_message_ids:
         chat.pinned_message_ids.append(method.message_id)
     return True
@@ -872,17 +967,35 @@ def handle_get_user_personal_chat_messages(
 ) -> list[Message]:
     chat = env.world.chats.get(method.user_id)
     if chat is None:
-        raise WorldLookupError("user has no personal chat")
+        raise ApiRejection("user has no personal chat")
     return chat.messages[-method.limit :]
 
 
 # -- membership ------------------------------------------------------------------------
 
 
+def _not_the_owner(chat: ChatState, user_id: int) -> MemberState:
+    """
+    The member, provided they are not the chat's owner.
+
+    The one rule ``banChatMember``, ``restrictChatMember`` and ``promoteChatMember`` share:
+    a chat owner's standing is not the bot's to take away, and Telegram answers all three
+    with the same "can't remove chat owner". Without it the fake was *more* permissive than
+    the API it stands in for, and in the direction a test cannot notice — a bot that bans or
+    mutes a list of users would quietly kick the owner out here and fail only in production.
+    Banning first also used to be a way *around* the promote guard: the ex-owner came back as
+    ``KICKED``, which the guard no longer recognised, and could then be promoted at will.
+    """
+    member = chat.member(user_id)
+    if member.status == ChatMemberStatus.CREATOR:
+        raise ApiRejection("can't remove chat owner")
+    return member
+
+
 @models(BanChatMember)
 def handle_ban(env: BotTestEnvironment, method: BanChatMember) -> bool:
     chat = resolve_chat(env, method.chat_id)
-    member = chat.member(method.user_id)
+    member = _not_the_owner(chat, method.user_id)
     member.status = ChatMemberStatus.KICKED
     member.until_date = _as_datetime(method.until_date)
     return True
@@ -897,22 +1010,136 @@ def handle_unban(env: BotTestEnvironment, method: UnbanChatMember) -> bool:
 
 @models(PromoteChatMember)
 def handle_promote(env: BotTestEnvironment, method: PromoteChatMember) -> bool:
+    """
+    Promote or demote a member, persisting exactly the rights the request granted.
+
+    ``promoteChatMember`` sets the *whole* rights mask on every call, so this stores the
+    whole mask: a right the request does not pass is not granted, and a later
+    ``getChatMember`` reports it as not granted rather than as whatever an earlier
+    promotion or a permissive default would have claimed. A request that passes only
+    ``can_pin_messages`` therefore produces an administrator who can pin and nothing else.
+
+    The Bot API documents demotion as "pass :code:`False` for all boolean parameters", and
+    an omitted parameter is not granted either — so a request in which nothing comes out
+    true is a demotion to a plain member. Anything true keeps the member an administrator,
+    including ``is_anonymous`` alone: hiding an administrator's presence is a right like
+    any other, and reading it as a demotion is what made
+    ``promote_chat_member(is_anonymous=True)`` silently strip an admin here before.
+
+    **Demotion drops the custom title with the status**, as the real API does. A title is
+    an administrator's: :class:`~aiogram.types.chat_member_administrator.ChatMemberAdministrator`
+    and :class:`~aiogram.types.chat_member_owner.ChatMemberOwner` carry ``custom_title`` and
+    :class:`~aiogram.types.chat_member_member.ChatMemberMember` has no field for one, so a
+    title outliving the status is not something ``getChatMember`` could ever report — it
+    could only reappear, ungranted, on a later promotion, which is exactly what it did here.
+    ``tag`` is *not* cleared alongside it, and the asymmetry is the models': ``tag`` is a
+    field of ``ChatMemberMember`` (and of ``ChatMemberRestricted``) as much as of the
+    administrator variants, so it belongs to the membership rather than to the
+    administrator status, and a demotion is not the Bot API's way of taking one away.
+
+    The chat's owner is neither promotable nor demotable — see :func:`_not_the_owner`.
+    """
     chat = resolve_chat(env, method.chat_id)
-    member = chat.member(method.user_id)
-    demoted = not any(
-        getattr(method, name, None)
-        for name in type(method).model_fields
-        if name.startswith("can_")
-    )
-    member.status = ChatMemberStatus.MEMBER if demoted else ChatMemberStatus.ADMINISTRATOR
+    member = _not_the_owner(chat, method.user_id)
+    granted = mask(ChatAdministratorRights, method, coerce=True)
+    if not any(granted.values()):
+        member.status = ChatMemberStatus.MEMBER
+        member.rights = None
+        member.custom_title = None
+        return True
+    member.status = ChatMemberStatus.ADMINISTRATOR
+    member.rights = ChatAdministratorRights(**granted)
     return True
+
+
+#: The message kinds that ``can_send_other_messages`` and ``can_add_web_page_previews``
+#: bring with them when permissions are not set independently.
+_IMPLIED_MESSAGE_PERMISSIONS = (
+    "can_send_messages",
+    "can_send_audios",
+    "can_send_documents",
+    "can_send_photos",
+    "can_send_videos",
+    "can_send_video_notes",
+    "can_send_voice_notes",
+)
+
+#: Permission -> the permissions granting it also grants, unless the request passed
+#: ``use_independent_chat_permissions=True``. Stated by ``restrictChatMember`` and
+#: ``setChatPermissions`` in identical words, on that very parameter.
+_COUPLED_PERMISSIONS: dict[str, tuple[str, ...]] = {
+    "can_send_other_messages": _IMPLIED_MESSAGE_PERMISSIONS,
+    "can_add_web_page_previews": _IMPLIED_MESSAGE_PERMISSIONS,
+    "can_send_polls": ("can_send_messages",),
+}
+
+#: Permission -> the one it copies when the request leaves it unset. Unlike the couplings
+#: above, these hold however permissions are set:
+#: :class:`~aiogram.types.chat_permissions.ChatPermissions` states them on the fields
+#: themselves rather than on the methods, so ``use_independent_chat_permissions`` does not
+#: switch them off.
+_PERMISSION_DEFAULTS: dict[str, str] = {
+    "can_react_to_messages": "can_send_messages",
+    "can_edit_tag": "can_pin_messages",
+    "can_manage_topics": "can_pin_messages",
+}
+
+
+def granted_permissions(
+    permissions: ChatPermissions,
+    use_independent_chat_permissions: bool | None,
+) -> ChatPermissions:
+    """
+    What a permissions request actually grants, once the Bot API's couplings are applied.
+
+    ``restrictChatMember`` and ``setChatPermissions`` do not store the mask they are handed.
+    Unless the request passes ``use_independent_chat_permissions=True``, granting
+    ``can_send_other_messages`` or ``can_add_web_page_previews`` also grants every kind of
+    message — a sticker is a message, and Telegram will not let a user send one while
+    forbidding text — and granting ``can_send_polls`` grants ``can_send_messages``. A fake
+    that stored the raw mask reported a member who may send stickers but not text, a state
+    the real API cannot produce, and a bot gating itself on ``can_send_messages`` took the
+    wrong branch against it.
+
+    Independently of that switch, three permissions default to another when the request
+    leaves them unset — ``can_react_to_messages`` to ``can_send_messages``, ``can_edit_tag``
+    and ``can_manage_topics`` to ``can_pin_messages`` — because the Bot API documents those
+    defaults on the fields rather than on the methods. They are filled after the couplings,
+    so a permission a coupling granted is one they can inherit.
+
+    The result is a fresh object either way, so nothing a caller still holds is mutated, and
+    ``model_copy`` rather than a new instance keeps whatever a future Bot API version parked
+    in the request's extra fields.
+    """
+    values = mask(ChatPermissions, permissions)
+    if not use_independent_chat_permissions:
+        for source, implied in _COUPLED_PERMISSIONS.items():
+            if values[source]:
+                values.update(dict.fromkeys(implied, True))
+    for name, fallback in _PERMISSION_DEFAULTS.items():
+        if values[name] is None:
+            values[name] = values[fallback]
+    return permissions.model_copy(update=values)
 
 
 @models(RestrictChatMember)
 def handle_restrict(env: BotTestEnvironment, method: RestrictChatMember) -> bool:
+    """
+    Restrict a member, persisting the permissions the request actually grants.
+
+    Which is not always the mask it passed — see :func:`granted_permissions` for the
+    couplings ``use_independent_chat_permissions`` switches off. What is stored is a fresh
+    object, so nothing the caller holds is in the world. The chat's owner cannot be
+    restricted — see :func:`_not_the_owner`.
+    """
     chat = resolve_chat(env, method.chat_id)
-    member = chat.member(method.user_id)
+    member = _not_the_owner(chat, method.user_id)
     member.status = ChatMemberStatus.RESTRICTED
+    member.permissions = granted_permissions(
+        method.permissions,
+        method.use_independent_chat_permissions,
+    )
+    member.rights = None
     member.until_date = _as_datetime(method.until_date)
     return True
 
@@ -928,11 +1155,19 @@ def handle_leave(env: BotTestEnvironment, method: LeaveChat) -> bool:
 def handle_get_chat_member(env: BotTestEnvironment, method: GetChatMember) -> Any:
     chat = resolve_chat(env, method.chat_id)
     user = env.world.user(method.user_id)
-    return chat.member(method.user_id).as_chat_member(user.as_user())
+    return chat.member(method.user_id).as_chat_member(user.as_user(), chat.type)
 
 
 @models(GetChat)
 def handle_get_chat(env: BotTestEnvironment, method: GetChat) -> ChatFullInfo:
+    """
+    The chat as the Bot API reports it, carrying copies of what the world stores.
+
+    The permissions and the photo are the chat's own objects, and a result is mounted to
+    the calling bot — so handing them out directly would bind the world's state and leave
+    ``chat.permissions == DECLARED`` failing with two identical-looking sides. Only value
+    objects are copied; a message the world holds is deliberately shared.
+    """
     chat = resolve_chat(env, method.chat_id)
     template: ChatFullInfo = synthesize(ChatFullInfo, env.synthesis_context(), name="chat")
     updated: ChatFullInfo = template.model_copy(
@@ -945,8 +1180,8 @@ def handle_get_chat(env: BotTestEnvironment, method: GetChat) -> ChatFullInfo:
             "last_name": chat.last_name,
             "is_forum": chat.is_forum or None,
             "description": chat.description,
-            "permissions": chat.permissions,
-            "photo": chat.photo,
+            "permissions": detached_copy(chat.permissions),
+            "photo": detached_copy(chat.photo),
             "sticker_set_name": chat.sticker_set_name,
             "invite_link": (
                 chat.primary_invite_link.invite_link
@@ -1000,7 +1235,7 @@ def _next_sticker_file_id(env: BotTestEnvironment) -> str:
 def handle_create_sticker_set(env: BotTestEnvironment, method: CreateNewStickerSet) -> bool:
     if method.name in env.world.sticker_sets:
         msg = f"Sticker set name {method.name!r} is already occupied"
-        raise WorldLookupError(msg)
+        raise ApiRejection(msg)
     env.world.sticker_sets[method.name] = StickerSetState(
         name=method.name,
         title=method.title,
@@ -1127,7 +1362,13 @@ def _gift_cost(gift_id: str) -> int:
     for known_id, star_count in GIFT_CATALOGUE:
         if known_id == gift_id:
             return star_count
-    msg = f"Gift {gift_id!r} is not in the catalogue"
+    known = ", ".join(repr(known_id) for known_id, _ in GIFT_CATALOGUE)
+    msg = (
+        f"Gift {gift_id!r} is not in this environment's gift catalogue. The fake offers "
+        f"{known}; `getAvailableGifts` returns exactly those, so a handler that picks a "
+        f"gift from it works, and a hard-coded real gift id has to be overridden with "
+        f"`env.on(SendGift)`."
+    )
     raise WorldLookupError(msg)
 
 
@@ -1199,7 +1440,7 @@ def handle_refund_star_payment(env: BotTestEnvironment, method: RefundStarPaymen
     charge = env.world.stars.charge(method.telegram_payment_charge_id)
     if charge.is_refunded:
         msg = f"Charge {charge.id!r} has already been refunded"
-        raise WorldLookupError(msg)
+        raise ApiRejection(msg)
     charge.is_refunded = True
     _spend(env, charge.amount, charge_id=charge.id)
     return True
@@ -1225,7 +1466,7 @@ def handle_send_gift(env: BotTestEnvironment, method: SendGift) -> bool:
     owner_id = method.user_id if method.user_id is not None else method.chat_id
     if owner_id is None:
         msg = "sendGift needs a user_id or a chat_id"
-        raise WorldLookupError(msg)
+        raise ApiRejection(msg)
     cost = _gift_cost(method.gift_id)
     owned_gift_id = env.world.next_query_id()
     env.world.owned_gifts[owned_gift_id] = OwnedGiftState(
@@ -1363,7 +1604,7 @@ def handle_create_subscription_invite_link(
     seconds = _as_seconds(method.subscription_period)
     if seconds != SUBSCRIPTION_PERIOD:
         msg = f"subscription period must be {SUBSCRIPTION_PERIOD}"
-        raise WorldLookupError(msg)
+        raise ApiRejection(msg)
     link = InviteLinkState(
         invite_link=_next_invite_link(env),
         creator_id=env.world.bot_user.id,
@@ -1399,7 +1640,7 @@ def handle_edit_subscription_invite_link(
     link = resolve_chat(env, method.chat_id).invite_link(method.invite_link)
     if link.subscription_period is None:
         msg = "the link is not a subscription invite link"
-        raise WorldLookupError(msg)
+        raise ApiRejection(msg)
     link.name = method.name
     return _invite_link_result(env, link)
 
@@ -1434,7 +1675,7 @@ def _administrable(env: BotTestEnvironment, method: TelegramMethod[Any]) -> Chat
     chat = resolve_chat(env, method.chat_id)  # type: ignore[attr-defined]
     if chat.type == ChatType.PRIVATE:
         msg = "method is available for supergroup and channel chats only"
-        raise WorldLookupError(msg)
+        raise ApiRejection(msg)
     return chat
 
 
@@ -1454,8 +1695,19 @@ def handle_set_chat_description(env: BotTestEnvironment, method: SetChatDescript
 
 @models(SetChatPermissions)
 def handle_set_chat_permissions(env: BotTestEnvironment, method: SetChatPermissions) -> bool:
-    """Stored, never enforced: the fake models the shape of administration, not its policy."""
-    _administrable(env, method).permissions = method.permissions
+    """
+    Stored, never enforced: the fake models the shape of administration, not its policy.
+
+    What is stored is what the request grants rather than the mask it passed — the same
+    couplings ``restrictChatMember`` applies, documented on this method in identical words;
+    see :func:`granted_permissions`. It is a fresh object for the reason
+    :func:`handle_restrict` gives: what a later ``getChat`` hands back — and mounts to the
+    calling bot — must not be the caller's own object.
+    """
+    _administrable(env, method).permissions = granted_permissions(
+        method.permissions,
+        method.use_independent_chat_permissions,
+    )
     return True
 
 
@@ -1510,7 +1762,10 @@ def handle_get_chat_administrators(
         ]
     # Creator first, then a stable order, so a test indexing [0] is not flaky.
     admins.sort(key=lambda member: (member.status != ChatMemberStatus.CREATOR, member.user_id))
-    return [member.as_chat_member(env.world.user(member.user_id).as_user()) for member in admins]
+    return [
+        member.as_chat_member(env.world.user(member.user_id).as_user(), chat.type)
+        for member in admins
+    ]
 
 
 def _annotated_member(
@@ -1524,7 +1779,7 @@ def _annotated_member(
     env.world.user(user_id)
     member = chat.member(user_id)
     if member.status not in allowed:
-        raise WorldLookupError(complaint)
+        raise ApiRejection(complaint)
     return member
 
 
@@ -1571,10 +1826,11 @@ def handle_get_my_commands(env: BotTestEnvironment, method: GetMyCommands) -> li
     """
     Exactly what was set for this scope and language, or nothing.
 
-    The Bot API does not fall back to a broader scope here — see design decision D2.
+    The Bot API does not fall back to a broader scope here — see design decision D2. The
+    commands come back as copies, for the reason :func:`handle_get_chat` gives.
     """
     key = scope_key(method.scope, method.language_code)
-    return list(env.world.profile.commands.get(key, []))
+    return detached_copy(env.world.profile.commands.get(key, []))  # type: ignore[no-any-return]
 
 
 @models(DeleteMyCommands)
@@ -1661,10 +1917,8 @@ def handle_get_default_admin_rights(
 ) -> ChatAdministratorRights:
     stored = env.world.profile.default_admin_rights.get(bool(method.for_channels))
     if stored is not None:
-        return stored
-    return ChatAdministratorRights(
-        **dict.fromkeys(ChatAdministratorRights.model_fields, False),
-    )
+        return detached_copy(stored)  # type: ignore[no-any-return]
+    return no_administrator_rights()
 
 
 @models(SetChatMenuButton)
@@ -1682,7 +1936,8 @@ def handle_get_chat_menu_button(env: BotTestEnvironment, method: GetChatMenuButt
     buttons = env.world.profile.menu_buttons
     if method.chat_id is not None:
         resolve_chat(env, method.chat_id)
-    return buttons.get(method.chat_id, buttons.get(None, MenuButtonDefault()))
+    stored = buttons.get(method.chat_id, buttons.get(None))
+    return MenuButtonDefault() if stored is None else detached_copy(stored)
 
 
 # -- polls -----------------------------------------------------------------------------
@@ -1715,11 +1970,11 @@ def handle_stop_poll(env: BotTestEnvironment, method: StopPoll) -> Poll:
     stored = chat.require_message(message_id)
     if stored.poll is None:
         msg = "message doesn't contain a poll"
-        raise WorldLookupError(msg)
+        raise ApiRejection(msg)
     poll = env.world.poll(stored.poll.id)
     if poll.is_closed:
         msg = "poll has already been closed"
-        raise WorldLookupError(msg)
+        raise ApiRejection(msg)
     poll.is_closed = True
     chat.update_message(message_id, poll=poll.as_poll())
     return poll.as_poll()
@@ -1735,7 +1990,7 @@ def _reaction_target(
     message_id: int = method.message_id  # type: ignore[attr-defined]
     if chat.find_message(message_id) is None:
         msg = "message to react to not found"
-        raise WorldLookupError(msg)
+        raise ApiRejection(msg)
     return chat, message_id
 
 
@@ -1786,7 +2041,7 @@ def _pending_request(env: BotTestEnvironment, method: TelegramMethod[Any]) -> Ch
     user_id: int = method.user_id  # type: ignore[attr-defined]
     if user_id not in chat.join_requests:
         msg = "USER_ALREADY_PARTICIPANT: no join request is pending for this user"
-        raise WorldLookupError(msg)
+        raise ApiRejection(msg)
     chat.join_requests.discard(user_id)
     return chat
 
@@ -2032,7 +2287,7 @@ def handle_read_business_message(
     chat = resolve_chat(env, method.chat_id)
     if chat.find_message(method.message_id) is None:
         msg = "message to read not found"
-        raise WorldLookupError(msg)
+        raise ApiRejection(msg)
     return True
 
 

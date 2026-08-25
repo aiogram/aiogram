@@ -92,3 +92,30 @@ class TestErrorPipeline:
 
         assert await alice.send("hi") == "blocked"
         assert len(private.messages) == before + 1  # only the user's own message
+
+
+class TestThePublicSurface:
+    """
+    Every error a test can meet is importable from ``aiogram.test`` itself.
+
+    ``NoFileContentError`` was reachable only as ``aiogram.test.errors.NoFileContentError``
+    while every other error the toolkit raises was re-exported — so the one exception a
+    ``pytest.raises`` around a download has to name was the one that made the test reach
+    into a private-looking module for it.
+    """
+
+    def test_every_toolkit_error_is_re_exported(self):
+        import aiogram.test as toolkit
+        from aiogram.test import errors
+
+        exported = set(toolkit.__all__)
+        for name in ("ApiRejection", "NoFileContentError", "WaitTimeoutError"):
+            assert name in exported
+            assert getattr(toolkit, name) is getattr(errors, name)
+
+    def test_the_drain_error_is_re_exported_too(self):
+        from aiogram.test import DrainedTaskError
+        from aiogram.test.errors import DrainedTaskError as internal
+
+        assert DrainedTaskError is internal
+        assert issubclass(DrainedTaskError, AssertionError)

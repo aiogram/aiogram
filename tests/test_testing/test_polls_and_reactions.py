@@ -332,9 +332,28 @@ class TestReactionTriggers:
     async def test_reacting_with_explicit_reaction_types(self, env, private, alice):
         message = await env.bot.send_message(chat_id=private.id, text="hi")
 
+        # The module-level constant itself: an actor copies what it is handed before the
+        # update carries it, so a shared constant is not bound to the bot behind the test's
+        # back and still compares equal to the unbound copy the world keeps.
         await alice.react(message, [HEART])
 
         assert private.reactions_for(message.message_id) == {alice.user.id: [HEART]}
+        assert HEART.bot is None
+
+    async def test_a_reaction_the_world_holds_is_not_bound_by_a_later_trigger(
+        self,
+        env,
+        private,
+        alice,
+    ):
+        """The old reactions travel on the update too — as copies, like the new ones."""
+        message = await env.bot.send_message(chat_id=private.id, text="hi")
+        await alice.react(message, [THUMBS_UP])
+
+        await alice.react(message, [HEART])
+
+        assert private.reactions_for(message.message_id) == {alice.user.id: [HEART]}
+        assert THUMBS_UP.bot is None
 
     async def test_reacting_to_an_unknown_message_fails(self, env, alice):
         with pytest.raises(WorldLookupError, match="does not exist"):

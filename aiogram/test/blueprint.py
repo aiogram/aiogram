@@ -31,6 +31,7 @@ from .world import (
     UserState,
     World,
     create_topic,
+    private_chat_shape,
     scope_key,
 )
 
@@ -60,12 +61,22 @@ class UserSpec:
 
 @dataclass
 class MemberSpec:
-    """Declaration of a user's membership in a chat."""
+    """
+    Declaration of a user's membership in a chat.
+
+    ``rights`` and ``permissions`` say what the membership *allows*, which the status alone
+    does not: an administrator without declared rights has the ordinary ones, but an
+    administrator the test declared as lacking one is the whole point of a test that checks
+    the bot warns about a missing right. Declare either through
+    :meth:`Blueprint.set_member`.
+    """
 
     user_id: int
     status: str = ChatMemberStatus.MEMBER
     custom_title: str | None = None
     tag: str | None = None
+    rights: ChatAdministratorRights | None = None
+    permissions: ChatPermissions | None = None
 
 
 @dataclass(eq=False)
@@ -178,14 +189,7 @@ class Blueprint:
 
     def add_private_chat(self, user: UserSpec) -> ChatSpec:
         """A private chat between the bot and ``user``; its id is the user's id."""
-        chat = ChatSpec(
-            id=user.id,
-            type=ChatType.PRIVATE,
-            username=user.username,
-            first_name=user.first_name,
-            last_name=user.last_name,
-            members=[MemberSpec(user_id=user.id)],
-        )
+        chat = ChatSpec(**private_chat_shape(user), members=[MemberSpec(user_id=user.id)])
         self.chats.append(chat)
         return chat
 
@@ -195,12 +199,14 @@ class Blueprint:
         *,
         members: dict[UserSpec, str] | None = None,
         id: int | None = None,
+        bot_status: str | None = None,
     ) -> ChatSpec:
         return self._add_group_like(
             chat_type=ChatType.GROUP,
             title=title,
             members=members,
             chat_id=id if id is not None else FIRST_GROUP_ID - len(self.chats),
+            bot_status=bot_status,
         )
 
     def add_supergroup(
@@ -209,12 +215,14 @@ class Blueprint:
         *,
         members: dict[UserSpec, str] | None = None,
         id: int | None = None,
+        bot_status: str | None = None,
     ) -> ChatSpec:
         return self._add_group_like(
             chat_type=ChatType.SUPERGROUP,
             title=title,
             members=members,
             chat_id=id if id is not None else FIRST_SUPERGROUP_ID - len(self.chats),
+            bot_status=bot_status,
         )
 
     def add_channel(
@@ -223,12 +231,14 @@ class Blueprint:
         *,
         members: dict[UserSpec, str] | None = None,
         id: int | None = None,
+        bot_status: str | None = None,
     ) -> ChatSpec:
         return self._add_group_like(
             chat_type=ChatType.CHANNEL,
             title=title,
             members=members,
             chat_id=id if id is not None else FIRST_SUPERGROUP_ID - len(self.chats),
+            bot_status=bot_status,
         )
 
     def _add_group_like(
@@ -237,19 +247,95 @@ class Blueprint:
         title: str,
         members: dict[UserSpec, str] | None,
         chat_id: int,
+        bot_status: str | None = None,
     ) -> ChatSpec:
+        members = members or {}
+        bot_membership = members.get(self.bot)
+        # `bot_status` and a `members[blueprint.bot]` entry are two ways of saying the
+        # same thing; accepting both silently would let one shadow the other, so passing
+        # `bot_status` (any value, including MEMBER) alongside an explicit entry is
+        # rejected as ambiguous rather than letting one silently win.
+        if bot_membership is not None and bot_status is not None:
+            msg = (
+                "The bot's status was given both via `members` and via `bot_status`; "
+                "pass only one of them."
+            )
+            raise ValueError(msg)
         chat = ChatSpec(
             id=chat_id,
             type=chat_type,
             title=title,
             members=[
-                MemberSpec(user_id=user.id, status=status)
-                for user, status in (members or {}).items()
+                MemberSpec(user_id=user.id, status=status) for user, status in members.items()
             ],
         )
-        chat.members.append(MemberSpec(user_id=self.bot.id, status=ChatMemberStatus.MEMBER))
+        # Almost every group bot's first move is checking its own rights, so the bot is
+        # always a member of the chats it is declared into — as itself if `members`
+        # already named it, otherwise appended with `bot_status` (default: MEMBER).
+        if bot_membership is None:
+            chat.members.append(
+                MemberSpec(user_id=self.bot.id, status=bot_status or ChatMemberStatus.MEMBER)
+            )
         self.chats.append(chat)
         return chat
+
+    def set_member(
+        self,
+        chat: ChatSpec,
+        user: UserSpec,
+        *,
+        status: str | None = None,
+        rights: ChatAdministratorRights | None = None,
+        permissions: ChatPermissions | None = None,
+        custom_title: str | None = None,
+        tag: str | None = None,
+    ) -> MemberSpec:
+        """
+        Declare, or amend, one member of a declared chat.
+
+        The ``members=`` shorthand of the ``add_*`` helpers says what a user *is*; this says
+        what they may **do**, which is what a bot gating itself on a right actually reads.
+        The bot is a member like any other, so "the bot is an admin but cannot delete
+        messages" — the case behind every "I can't do that, give me the right" branch — is
+        declarable::
+
+            team = blueprint.add_supergroup("Team")
+            blueprint.set_member(
+                team,
+                blueprint.bot,
+                rights=administrator_rights(can_delete_messages=False),
+            )
+
+        Passing ``rights`` or ``permissions`` implies the status that carries it, so the
+        common cases are one call; an explicit ``status`` wins. The two belong to different
+        statuses, so declaring both for one member is rejected rather than silently
+        resolved.
+        """
+        if rights is not None and permissions is not None:
+            msg = (
+                "A member is either an administrator with `rights` or a restricted member "
+                "with `permissions`; pass only one of them."
+            )
+            raise ValueError(msg)
+        member = next((item for item in chat.members if item.user_id == user.id), None)
+        if member is None:
+            member = MemberSpec(user_id=user.id)
+            chat.members.append(member)
+        if status is not None:
+            member.status = status
+        elif rights is not None:
+            member.status = ChatMemberStatus.ADMINISTRATOR
+        elif permissions is not None:
+            member.status = ChatMemberStatus.RESTRICTED
+        if rights is not None:
+            member.rights = rights
+        if permissions is not None:
+            member.permissions = permissions
+        if custom_title is not None:
+            member.custom_title = custom_title
+        if tag is not None:
+            member.tag = tag
+        return member
 
     def add_topic(
         self,
@@ -457,6 +543,8 @@ class Blueprint:
                         status=member.status,
                         custom_title=member.custom_title,
                         tag=member.tag,
+                        rights=member.rights,
+                        permissions=member.permissions,
                     )
                     for member in chat.members
                 },

@@ -6,7 +6,7 @@ import pytest
 from aiogram import Dispatcher
 from aiogram.methods import GetFile
 from aiogram.test import Blueprint, BotTestEnvironment
-from aiogram.test.errors import NoFileContentError
+from aiogram.test import NoFileContentError
 from aiogram.types import BufferedInputFile, File, FSInputFile, URLInputFile
 
 CONTENT = b"the quick brown fox" * 10

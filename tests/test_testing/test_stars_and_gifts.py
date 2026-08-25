@@ -2,7 +2,7 @@ import pytest
 
 from aiogram import Dispatcher
 from aiogram.exceptions import TelegramBadRequest
-from aiogram.test import Blueprint, BotTestEnvironment
+from aiogram.test import Blueprint, BotTestEnvironment, WorldLookupError
 from aiogram.test.modeling import GIFT_CATALOGUE, gift_catalogue
 
 STAR_GIFT, STAR_GIFT_COST = GIFT_CATALOGUE[0]
@@ -121,7 +121,7 @@ class TestRefunds:
     async def test_refunding_a_fabricated_charge_fails(self, shop):
         env, customer = shop
 
-        with pytest.raises(TelegramBadRequest, match="No star payment with charge id"):
+        with pytest.raises(WorldLookupError, match="No star payment with charge id"):
             await env.bot.refund_star_payment(
                 user_id=customer.user.id,
                 telegram_payment_charge_id="never-happened",
@@ -157,7 +157,7 @@ class TestSubscriptions:
     async def test_editing_an_unknown_subscription_fails(self, shop):
         env, customer = shop
 
-        with pytest.raises(TelegramBadRequest, match="No star payment with charge id"):
+        with pytest.raises(WorldLookupError, match="No star payment with charge id"):
             await env.bot.edit_user_star_subscription(
                 user_id=customer.user.id,
                 telegram_payment_charge_id="never-happened",
@@ -208,7 +208,7 @@ class TestSendingGifts:
     async def test_a_gift_outside_the_catalogue_fails(self, shop):
         env, customer = shop
 
-        with pytest.raises(TelegramBadRequest, match="not in the catalogue"):
+        with pytest.raises(WorldLookupError, match="gift catalogue"):
             await env.bot.send_gift(gift_id="gift-unicorn", user_id=customer.user.id)
 
     async def test_sending_without_a_recipient_fails(self, shop):
@@ -310,7 +310,7 @@ class TestMovingGifts:
     async def test_acting_on_an_unowned_gift_fails(self, shop, method_name, kwargs):
         env, _ = shop
 
-        with pytest.raises(TelegramBadRequest, match="not owned by anybody"):
+        with pytest.raises(WorldLookupError, match="not owned by anybody"):
             await getattr(env.bot, method_name)(
                 business_connection_id="bc",
                 owned_gift_id="nobody-owns-this",
@@ -403,7 +403,7 @@ class TestBusinessAccountStars:
     async def test_an_unknown_connection_fails(self, business, method_name, kwargs):
         env, _ = business
 
-        with pytest.raises(TelegramBadRequest, match="business connection"):
+        with pytest.raises(WorldLookupError, match="not declared in the blueprint"):
             await getattr(env.bot, method_name)(business_connection_id="missing", **kwargs)
 
 

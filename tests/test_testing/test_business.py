@@ -68,7 +68,7 @@ class TestDeclaration:
             second.dispose_sync()
 
     def test_unknown_connection(self, business_env):
-        with pytest.raises(WorldLookupError, match="not found"):
+        with pytest.raises(WorldLookupError, match="not declared in the blueprint"):
             business_env.business_connection("missing")
 
     def test_state_is_accepted_directly(self, business_env, connection):
@@ -89,7 +89,8 @@ class TestModeledMethods:
         assert result.is_enabled
 
     async def test_get_unknown_connection_fails(self, business_env):
-        with pytest.raises(TelegramBadRequest, match="business connection .* not found"):
+        """A connection the blueprint never declared is a setup gap, not a Bad Request."""
+        with pytest.raises(WorldLookupError, match="not declared in the blueprint"):
             await business_env.bot.get_business_connection(business_connection_id="missing")
 
     async def test_read_business_message(self, business_env, connection, customer_chat):

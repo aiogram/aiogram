@@ -22,8 +22,19 @@ from .blueprint import (
     default_blueprint,
 )
 from .calls import CallLog, NoSuchCallError
-from .environment import BotTestEnvironment, build_environment
-from .overrides import Outcome, OverrideBuilder
+from .environment import BotTestEnvironment, RouteRecord, build_environment
+from .errors import ApiRejection, DrainedTaskError, NoFileContentError, WaitTimeoutError
+from .overrides import (
+    ADDRESSING_FIELDS,
+    BLOCKED_BY_USER,
+    BLOCKED_METHODS,
+    DELIVERY_METHODS,
+    MethodMatcher,
+    Outcome,
+    OverrideBuilder,
+    OverrideHandle,
+    OverrideRule,
+)
 from .routing import detach_router
 from .session import FakeTelegramSession
 from .synthesis import SynthesisContext, SynthesisError, synthesize, synthesize_result
@@ -39,10 +50,16 @@ from .world import (
     UserState,
     World,
     WorldLookupError,
+    administrator_rights,
 )
 
 __all__ = (
+    "ADDRESSING_FIELDS",
     "BASE_DATE",
+    "BLOCKED_BY_USER",
+    "BLOCKED_METHODS",
+    "DELIVERY_METHODS",
+    "ApiRejection",
     "Blueprint",
     "BotProfileState",
     "BotTestEnvironment",
@@ -53,13 +70,19 @@ __all__ = (
     "ChatState",
     "CommunitySpec",
     "CommunityState",
+    "DrainedTaskError",
     "InviteLinkState",
     "FakeTelegramSession",
     "MemberSpec",
     "MemberState",
+    "MethodMatcher",
+    "NoFileContentError",
     "NoSuchCallError",
     "Outcome",
     "OverrideBuilder",
+    "OverrideHandle",
+    "OverrideRule",
+    "RouteRecord",
     "SynthesisContext",
     "SynthesisError",
     "TopicSpec",
@@ -67,8 +90,10 @@ __all__ = (
     "UserActor",
     "UserSpec",
     "UserState",
+    "WaitTimeoutError",
     "World",
     "WorldLookupError",
+    "administrator_rights",
     "build_environment",
     "default_blueprint",
     "detach_router",

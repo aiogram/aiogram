@@ -3,7 +3,7 @@ from typing import get_args
 import pytest
 
 from aiogram import Dispatcher
-from aiogram.test import Blueprint, BotTestEnvironment
+from aiogram.test import Blueprint, BotTestEnvironment, WorldLookupError
 from aiogram.test.world import scope_key
 from aiogram.types import (
     BotCommand,
@@ -21,6 +21,18 @@ from aiogram.types.menu_button_web_app import MenuButtonWebApp
 
 START = BotCommand(command="start", description="Start")
 HELP = BotCommand(command="help", description="Help")
+
+
+def declared(commands):
+    """
+    Identify commands by what they say, not by object equality.
+
+    A result is mounted to the bot that asked for it, and pydantic counts that binding in
+    ``__eq__`` while hiding it from ``__repr__`` — so a returned command never compares
+    equal to a plainly declared constant, here or against real Telegram. What the world
+    *stores* is unbound and does compare equal; that invariant has its own test below.
+    """
+    return [(command.command, command.description) for command in commands]
 
 
 def scope_members():
@@ -62,7 +74,7 @@ class TestCommands:
     async def test_commands_round_trip_for_the_default_scope(self, env):
         await env.bot.set_my_commands(commands=[START, HELP])
 
-        assert await env.bot.get_my_commands() == [START, HELP]
+        assert declared(await env.bot.get_my_commands()) == declared([START, HELP])
 
     async def test_commands_are_keyed_by_scope(self, env, private):
         await env.bot.set_my_commands(commands=[START])
@@ -71,10 +83,10 @@ class TestCommands:
             scope=BotCommandScopeChat(chat_id=private.id),
         )
 
-        assert await env.bot.get_my_commands() == [START]
-        assert await env.bot.get_my_commands(
-            scope=BotCommandScopeChat(chat_id=private.id),
-        ) == [HELP]
+        assert declared(await env.bot.get_my_commands()) == declared([START])
+        assert declared(
+            await env.bot.get_my_commands(scope=BotCommandScopeChat(chat_id=private.id)),
+        ) == declared([HELP])
 
     async def test_commands_do_not_fall_back_to_a_broader_scope(self, env, private):
         """The Bot API returns what was set for that exact key, or nothing."""
@@ -86,7 +98,7 @@ class TestCommands:
         await env.bot.set_my_commands(commands=[START], language_code="de")
 
         assert await env.bot.get_my_commands(language_code="fr") == []
-        assert await env.bot.get_my_commands(language_code="de") == [START]
+        assert declared(await env.bot.get_my_commands(language_code="de")) == declared([START])
 
     async def test_unset_commands_are_an_empty_list(self, env):
         assert await env.bot.get_my_commands() == []
@@ -100,7 +112,7 @@ class TestCommands:
 
         await env.bot.delete_my_commands(scope=BotCommandScopeChat(chat_id=private.id))
 
-        assert await env.bot.get_my_commands() == [START]
+        assert declared(await env.bot.get_my_commands()) == declared([START])
         assert (
             await env.bot.get_my_commands(
                 scope=BotCommandScopeChat(chat_id=private.id),
@@ -112,7 +124,7 @@ class TestCommands:
         await env.bot.set_my_commands(commands=[START])
         await env.bot.set_my_commands(commands=[HELP])
 
-        assert await env.bot.get_my_commands() == [HELP]
+        assert declared(await env.bot.get_my_commands()) == declared([HELP])
 
 
 class TestLocalizedTexts:
@@ -232,10 +244,60 @@ class TestMenuButton:
 
     @pytest.mark.parametrize("method_name", ["set_chat_menu_button", "get_chat_menu_button"])
     async def test_an_unknown_chat_fails(self, env, method_name):
-        from aiogram.exceptions import TelegramBadRequest
-
-        with pytest.raises(TelegramBadRequest, match="chat not found"):
+        with pytest.raises(WorldLookupError, match="not declared in the blueprint"):
             await getattr(env.bot, method_name)(chat_id=-99)
+
+
+class TestTheProfileKeepsItsOwnObjects:
+    """
+    What the profile stores is a copy, and what it reports is another one.
+
+    A result is mounted to the calling bot, so both directions matter: storing the caller's
+    ``BotCommand`` list would bind the test's constants the first time they are read back,
+    and reporting the stored objects would bind the world's own state. The stored copies
+    stay unbound, which is what makes an assertion against a declared constant possible at
+    all — on the world, where the objects are values rather than answers.
+    """
+
+    async def test_the_commands_a_test_declared_are_not_captured(self, env):
+        await env.bot.set_my_commands(commands=[START, HELP])
+
+        stored = env.world.profile.commands[scope_key(None, None)]
+        assert stored == [START, HELP]
+        assert stored[0] is not START
+        assert START.bot is None
+
+    async def test_reading_the_commands_does_not_bind_the_stored_ones(self, env):
+        await env.bot.set_my_commands(commands=[START])
+
+        first = await env.bot.get_my_commands()
+        second = await env.bot.get_my_commands()
+
+        assert first[0] is not second[0]
+        assert env.world.profile.commands[scope_key(None, None)] == [START]
+
+    async def test_the_menu_button_is_stored_and_reported_as_a_copy(self, env):
+        button = MenuButtonWebApp(text="Open", web_app=WebAppInfo(url="https://example.org"))
+
+        await env.bot.set_chat_menu_button(menu_button=button)
+        reported = await env.bot.get_chat_menu_button()
+
+        assert button.bot is None
+        assert env.world.profile.menu_buttons[None] is not button
+        assert reported is not env.world.profile.menu_buttons[None]
+        assert env.world.profile.menu_buttons[None] == button
+
+    async def test_the_default_rights_are_stored_and_reported_as_a_copy(self, env):
+        rights = ChatAdministratorRights(
+            **dict.fromkeys(ChatAdministratorRights.model_fields, False),
+        )
+
+        await env.bot.set_my_default_administrator_rights(rights=rights)
+        reported = await env.bot.get_my_default_administrator_rights()
+
+        assert rights.bot is None
+        assert env.world.profile.default_admin_rights[False] == rights
+        assert reported is not env.world.profile.default_admin_rights[False]
 
 
 class TestDeclaredProfile:
@@ -258,7 +320,7 @@ class TestDeclaredProfile:
             environment.dispose_sync()
 
     async def test_declared_commands_are_readable_without_a_setter(self, configured):
-        assert await configured.bot.get_my_commands() == [START]
+        assert declared(await configured.bot.get_my_commands()) == declared([START])
 
     async def test_declared_texts_and_button_are_readable(self, configured):
         assert (await configured.bot.get_my_name()).name == "Declared"

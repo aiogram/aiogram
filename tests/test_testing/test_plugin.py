@@ -6,14 +6,30 @@ import pytest
 
 from aiogram import Dispatcher
 from aiogram.methods import SendMessage
-from aiogram.test import Blueprint
+from aiogram.test import BASE_DATE, Blueprint
 from aiogram.test.plugin import pytest_assertrepr_compare
 from aiogram.test.world import ChatState
+from aiogram.types import Chat, Message
+
+#: Deeper than pydantic-core will serialize — see `test_a_graph_too_deep_to_dump`.
+DEEP = 1500
 
 
 def call_fixture(fixture, *args, **kwargs):
     """Fixtures cannot be called directly; reach the function they wrap."""
     return fixture.__wrapped__(*args, **kwargs)
+
+
+def _reply_chain(length):
+    chain = Message(message_id=1, date=BASE_DATE, chat=Chat(id=1, type="private"), text="0")
+    for index in range(1, length):
+        chain = Message(
+            message_id=index + 1,
+            date=BASE_DATE,
+            chat=Chat(id=1, type="private"),
+            reply_to_message=chain,
+        )
+    return chain
 
 
 class TestFixtures:
@@ -30,14 +46,21 @@ class TestFixtures:
 
         assert isinstance(call_fixture(plugin.bot_dispatcher), Dispatcher)
 
+    def test_wait_timeout_default(self):
+        from aiogram.test import plugin
+        from aiogram.test.waiting import DEFAULT_WAIT_TIMEOUT
+
+        assert call_fixture(plugin.bot_env_wait_timeout) == DEFAULT_WAIT_TIMEOUT
+
     def test_environment_is_disposed_after_the_test(self):
         from aiogram.test import plugin
 
         blueprint = call_fixture(plugin.bot_blueprint)
         dispatcher = call_fixture(plugin.bot_dispatcher)
+        wait_timeout = call_fixture(plugin.bot_env_wait_timeout)
         original_storage = dispatcher.fsm.storage
 
-        generator = call_fixture(plugin.bot_env, blueprint, dispatcher)
+        generator = call_fixture(plugin.bot_env, blueprint, dispatcher, wait_timeout)
         environment = next(generator)
         assert dispatcher.fsm.storage is not original_storage
         with pytest.raises(StopIteration):
@@ -51,15 +74,30 @@ class TestFixtures:
 
         blueprint = call_fixture(plugin.bot_blueprint)
         dispatcher = call_fixture(plugin.bot_dispatcher)
+        wait_timeout = call_fixture(plugin.bot_env_wait_timeout)
         original_storage = dispatcher.fsm.storage
 
-        generator = call_fixture(plugin.bot_env, blueprint, dispatcher)
+        generator = call_fixture(plugin.bot_env, blueprint, dispatcher, wait_timeout)
         environment = next(generator)
         with pytest.raises(RuntimeError, match="boom"):
             generator.throw(RuntimeError("boom"))
 
         assert environment.session.closed is True
         assert dispatcher.fsm.storage is original_storage
+
+    def test_environment_picks_up_the_wait_timeout_fixture(self):
+        from aiogram.test import plugin
+
+        blueprint = call_fixture(plugin.bot_blueprint)
+        dispatcher = call_fixture(plugin.bot_dispatcher)
+
+        generator = call_fixture(plugin.bot_env, blueprint, dispatcher, 12.5)
+        environment = next(generator)
+        try:
+            assert environment.world.default_wait_timeout == 12.5
+        finally:
+            with pytest.raises(StopIteration):
+                next(generator)
 
     def test_chat_and_user_accessors(self, env):
         from aiogram.test import plugin
@@ -76,7 +114,7 @@ class TestFixtures:
         blueprint = Blueprint()
         blueprint.add_user("Lonely")
         dispatcher = Dispatcher()
-        generator = call_fixture(plugin.bot_env, blueprint, dispatcher)
+        generator = call_fixture(plugin.bot_env, blueprint, dispatcher, 5.0)
         environment = next(generator)
         try:
             actor = call_fixture(plugin.bot_user, environment)
@@ -113,9 +151,54 @@ class TestAssertionReporting:
 
         assert "SendMessage != DeleteMessage" in lines[0]
 
+    async def test_objects_differing_only_in_their_binding_are_explained(self, env, private):
+        """
+        Pydantic compares private attributes, and ``_bot`` is one; the repr hides it.
+
+        So a mounted object and an identical unmounted one print the same and compare
+        unequal — a failure that reads as if pytest had lost its mind.
+        """
+        returned = await env.bot.send_message(chat_id=private.id, text="hi")
+        twin = returned.model_copy().as_(None)
+
+        lines = pytest_assertrepr_compare("==", returned, twin)
+
+        assert any("differ only in the bot they are bound to" in line for line in lines)
+        assert any("mounted to bot id=42" in line and "not mounted" in line for line in lines)
+        assert any("model_dump()" in line for line in lines)
+
+    def test_a_graph_too_deep_to_dump_gets_no_explanation(self, env):
+        """
+        The hook runs on every failing `==` in every project that installs aiogram.
+
+        `model_dump` gives up on a deep chain and reports the depth as a circular
+        reference; unguarded, that traceback replaced the user's own assertion failure.
+        """
+        chain = _reply_chain(DEEP)
+        twin = _reply_chain(DEEP).as_(env.bot)
+
+        assert pytest_assertrepr_compare("==", chain, twin) is None
+
+    async def test_objects_that_really_differ_are_left_alone(self, env, private):
+        returned = await env.bot.send_message(chat_id=private.id, text="hi")
+        other = returned.model_copy(update={"text": "different"})
+
+        assert pytest_assertrepr_compare("==", returned, other) is None
+
     def test_other_comparisons_are_left_alone(self):
+        from aiogram.types import Chat, User
+
         assert pytest_assertrepr_compare("==", 1, 2) is None
         assert pytest_assertrepr_compare("<", ChatState(id=1), ChatState(id=2)) is None
+        # Same payload is not enough: these are different types.
+        assert (
+            pytest_assertrepr_compare(
+                "==",
+                Chat(id=1, type="private"),
+                User(id=1, is_bot=False, first_name="A"),
+            )
+            is None
+        )
 
 
 def _message(chat: ChatState):
@@ -162,6 +245,39 @@ class TestPluginDiscovery:
                     assert bot_env.bot.id
                     assert bot_chat.id
                     assert bot_user.user.id
+                """,
+            ),
+        )
+
+        result = subprocess.run(
+            [sys.executable, "-m", "pytest", str(test_file), "-q", "-p", "no:cacheprovider"],
+            capture_output=True,
+            text=True,
+            cwd=tmp_path,
+            check=False,
+        )
+
+        assert result.returncode == 0, result.stdout + result.stderr
+
+    def test_fixture_override_reaches_bot_env(self, tmp_path):
+        """
+        A project overrides ``bot_env_wait_timeout`` the same way it would override
+        ``bot_blueprint`` or ``bot_dispatcher`` — a plain fixture, no ``bot_env`` copy.
+        """
+        test_file = tmp_path / "test_generated.py"
+        test_file.write_text(
+            textwrap.dedent(
+                """
+                import pytest
+
+
+                @pytest.fixture
+                def bot_env_wait_timeout():
+                    return 12.5
+
+
+                def test_environment_picked_up_the_override(bot_env):
+                    assert bot_env.world.default_wait_timeout == 12.5
                 """,
             ),
         )
