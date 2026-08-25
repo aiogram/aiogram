@@ -9,17 +9,27 @@ in-memory world.
 Declare the world with :class:`aiogram.test.Blueprint` — chats, users, memberships
 (including the bot's own status in a group), forum topics, business connections,
 communities and invite links — then drive it through actors (``await user.send("/start")``,
-``await user.click(button)``, ``await user.follow_deep_link()``) and assert on the
+``await user.reply(message, "text")``, ``await user.click(button)``,
+``await user.follow_deep_link()``, ``await user.promote(**rights)``) and assert on the
 resulting chat state or on the recorded calls. There is a trigger for every
 :class:`aiogram.types.Update` variant, so no registered handler is unreachable from a test.
+Joining a group or adding the bot to one now also delivers the ``new_chat_members`` service
+message a real client shows alongside the membership update, in the order Telegram posts
+the two — pass ``service_message=False`` for the previous single-update behavior. A
+misdirected ``click()`` — a button that genuinely exists, in some chat the actor forgot to
+``.in_()`` — is named in the failure instead of reading identically to a plain typo in
+``callback_data``.
 A user's own private chat with the bot does not have to be declared at all: Telegram lets
 anyone open one, so it opens on demand, shaped exactly like a declared one — on the paths a
 user drives, which are the only ones where it can happen, since a bot cannot write into a
 private chat first. It can also be opened directly with
 :meth:`aiogram.test.World.ensure_private_chat`, which accepts the user's spec, its resolved
-state, or a bare id. Deep links are followed the way tapping them behaves — including a bare
-profile link, which replays as a plain ``/start``, and a link carrying an explicit ``start``
-with a non-empty value alongside anything else, which a real client reads as that start.
+state, or a bare id, and :meth:`aiogram.test.BotTestEnvironment.chat` now opens the same
+chat for a bare id naming a declared user, agreeing with the actor path instead of raising
+where that path already succeeds. Deep links are followed the way tapping them behaves —
+including a bare profile link, which replays as a plain ``/start``, and a link carrying an
+explicit ``start`` with a non-empty value alongside anything else, which a real client reads
+as that start.
 Every other link format `Telegram documents <https://core.telegram.org/api/links>`_ is
 classified against that spec and refused by name with what a real client does instead — an
 invoice link and a boost link point at ``pay()`` and ``boost()``, a phone-number link is told
@@ -33,6 +43,9 @@ refused rather than delivered to the handler, unless the call opts out with
 Results are mounted to the bot exactly as parsed responses are, so shortcuts work on them
 and on every object nested inside them, while the objects a test hands to a call stay the
 test's own — the world keeps copies of them, and hands out copies of what it stores.
+Assigning one world's live chat registry to another's ``chats`` now raises instead of
+silently rewiring the donor's own chats to the receiving world's bot; copy explicitly
+(``dict(other.chats)``) when sharing the chat objects is what a test means.
 
 The world models the surfaces a bot's own logic depends on: sending, editing, moving,
 pinning and deleting messages; polls and reactions; chat administration and membership,
@@ -44,7 +57,17 @@ topics; business connections; invite links; sticker sets; and Telegram Stars and
 credits a real balance and a refund resolves the charge id the handler was given. Methods
 it does not model are recorded and answered with a schema-valid result derived from their
 declared return type, so no test has to pre-register results just to keep the bot running, and
-:meth:`aiogram.test.BotTestEnvironment.on` overrides any of them per test. The
+:meth:`aiogram.test.BotTestEnvironment.on` overrides any of them per test. An override can
+now be targeted to a call's resolved fields (``chat_id=alice.id``) or an arbitrary predicate
+(``.where(...)``), so two calls of the same method made from one trigger — a group message
+and a per-player DM — can be given different outcomes without reordering the production
+code to serve the interesting recipient first; a rule whose fields do not match a call is
+skipped without spending its ``times`` budget. ``env.blocked(chat_id=...)`` is the common
+case of one recipient refusing every delivery method at once, scoped with ``with`` or
+cancelled by hand through the handle every ``.on(...)`` call now also returns. Every
+recorded call, including one an override goes on to refuse, is logged **before** the
+override answers it, so a test can assert both that the bot tried to reach the right
+addressee and that it coped with being refused. The
 documentation names which surfaces are deliberately left that way, and which are merely
 waiting for demand.
 
@@ -62,6 +85,17 @@ catch and pass. A test that wants that branch declares the refusal outright with
 with a different message the destination environment already holds fails the same way,
 naming both messages, rather than silently keeping the one already there and leaving a
 handler working on a message the world will never store.
+
+Where an update actually went is now inspectable, not only what came back: the new
+:attr:`aiogram.test.BotTestEnvironment.last_route` reports whether the dispatcher considered
+the most recently fed update handled, which handler and router won, and the exception raised
+inside the middleware chain or the handler even when the bot's own error handler goes on to
+swallow it — so an update lost in a middleware, or caught by a catch-all logging handler
+instead of the one under test, no longer looks identical to one that reached its intended
+handler.
+:meth:`~aiogram.test.BotTestEnvironment.assert_handled_by` is the assertion spelled directly,
+matched against the winning handler's qualified name, and it fails naming where the update
+actually went.
 
 File content is supported where it can be honest: a file uploaded as a
 :class:`aiogram.types.input_file.BufferedInputFile` can be downloaded again in the same
@@ -81,6 +115,21 @@ was awaited and what the chat holds instead. How long they wait is one setting p
 environment, ``BotTestEnvironment(..., default_wait_timeout=...)``, with an explicit
 ``timeout=`` still winning per call. The pytest plugin reads it from its own overridable
 ``bot_env_wait_timeout`` fixture, so a suite changes it without reconstructing ``bot_env``.
+``wait_for`` also takes ``watch=`` — one chat or topic, or several — to dump their contents
+into the timeout message, since the answer to "why did the condition never become true" is
+usually in what the bot said instead. The new
+:meth:`~aiogram.test.BotTestEnvironment.wait_for_message_in` is the broadcast form: it polls
+several chats at once for a bot that fans one event out to many of them, returning a
+``chat_id -> Message`` mapping once every one of them holds a match, and naming in its
+failure only the chats that are still missing one.
+
+A test that leaves the bot's own background tasks running — a scheduler, a timer — can clean
+them up explicitly with ``await env.drain(timeout=...)``, which cancels and awaits every task
+the test itself spawned instead of letting asyncio complain about a destroyed pending task
+after the test that caused it has already passed. It is opt-in rather than automatic, since
+the pytest fixture's teardown is synchronous and cannot await a cancellation, and cancelling
+tasks a test never mentioned as an invisible side effect of a fixture going out of scope
+would turn a stopped scheduler into a mystery.
 
 .. warning::
 

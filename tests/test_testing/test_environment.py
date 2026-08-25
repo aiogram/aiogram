@@ -1,3 +1,5 @@
+import asyncio
+
 import pytest
 
 from aiogram import Dispatcher, F
@@ -6,7 +8,13 @@ from aiogram.enums import ChatMemberStatus, ChatType
 from aiogram.filters import Command
 from aiogram.fsm.state import State, StatesGroup
 from aiogram.methods import SendMessage
-from aiogram.test import BASE_DATE, Blueprint, BotTestEnvironment, build_environment
+from aiogram.test import (
+    BASE_DATE,
+    Blueprint,
+    BotTestEnvironment,
+    WaitTimeoutError,
+    build_environment,
+)
 from aiogram.test.world import WorldLookupError
 from aiogram.types import (
     Chat,
@@ -72,6 +80,42 @@ class TestAccessors:
             assert environment.world.chats[lonely.id] is chat
         finally:
             environment.dispose_sync()
+
+    def test_env_chat_opens_a_declared_users_private_chat_too(self):
+        """
+        Regression: ``env.chat(user_id)`` raised while ``env.user(user_id).chat`` opened
+        the very same chat, so a chat was reachable through one accessor and not the
+        other. The asymmetry was the bug.
+        """
+        blueprint = Blueprint()
+        lonely = blueprint.add_user("Lonely")
+        environment = BotTestEnvironment(blueprint=blueprint)
+        try:
+            chat = environment.chat(lonely.id)
+
+            assert chat.type == ChatType.PRIVATE
+            assert chat is environment.user(lonely).chat
+            assert environment.world.chats[lonely.id] is chat
+        finally:
+            environment.dispose_sync()
+
+    def test_env_chat_resolves_the_same_chat_twice(self):
+        blueprint = Blueprint()
+        lonely = blueprint.add_user("Lonely")
+        environment = BotTestEnvironment(blueprint=blueprint)
+        try:
+            assert environment.chat(lonely.id) is environment.chat(lonely.id)
+        finally:
+            environment.dispose_sync()
+
+    def test_env_chat_still_refuses_an_id_that_is_nobody(self, env):
+        """A group the blueprint never declared is a typo, not a chat the bot can open."""
+        with pytest.raises(WorldLookupError, match="Chat -999 is not declared"):
+            env.chat(-999)
+
+    def test_env_chat_does_not_open_a_private_chat_with_the_bot_itself(self, env):
+        with pytest.raises(WorldLookupError, match="not declared"):
+            env.chat(env.world.bot_user.id)
 
 
 class TestTriggers:
@@ -512,3 +556,143 @@ class TestFsmAccess:
         context = env.state(blueprint.users[0])
 
         assert context.key.chat_id == blueprint.users[0].id
+
+
+class TestDrain:
+    """
+    ``await env.drain()`` — the opt-in cleanup for a bot that spawns its own tasks.
+
+    An engine that does ``asyncio.create_task(self._night_timer())`` leaves the task
+    sleeping when the test ends, and the loop is torn down under it: every one of them
+    prints ``Task was destroyed but it is pending!`` to stderr, after the test that caused
+    it has already passed and long after anyone could trace it back.
+    """
+
+    async def test_a_leaked_sleeping_task_is_cancelled_and_awaited(self, env):
+        started = asyncio.Event()
+
+        async def forever():
+            started.set()
+            await asyncio.sleep(3600)
+
+        task = asyncio.create_task(forever())
+        await started.wait()
+
+        assert await env.drain() == 1
+
+        assert task.cancelled()
+
+    async def test_it_reports_how_many_it_drained(self, env):
+        tasks = [asyncio.create_task(asyncio.sleep(3600)) for _ in range(3)]
+        await asyncio.sleep(0)
+
+        assert await env.drain() == 3
+        assert all(task.done() for task in tasks)
+
+    async def test_nothing_to_drain_is_free(self, env):
+        assert await env.drain() == 0
+
+    async def test_a_task_that_finished_on_its_own_is_not_counted(self, env):
+        task = asyncio.create_task(asyncio.sleep(0))
+        await task
+
+        assert await env.drain() == 0
+
+    async def test_a_task_that_fails_while_being_cancelled_is_collected_quietly(self, env):
+        """
+        Its exception is retrieved rather than left for the garbage collector to complain
+        about at some later, unrelated moment — which would be the very stderr noise this
+        exists to remove.
+        """
+        started = asyncio.Event()
+
+        async def explode_on_cancel():
+            started.set()
+            try:
+                await asyncio.sleep(3600)
+            except asyncio.CancelledError:
+                msg = "cleanup failed"
+                raise ValueError(msg) from None
+
+        task = asyncio.create_task(explode_on_cancel())
+        await started.wait()
+
+        assert await env.drain() == 1
+
+        assert not task.cancelled()
+        assert isinstance(task.exception(), ValueError)
+
+    async def test_a_task_that_already_finished_is_not_drained(self, env):
+        task = asyncio.create_task(asyncio.sleep(0))
+        await task
+
+        assert await env.drain() == 0
+
+    async def test_the_caller_is_never_cancelled(self, env):
+        await env.drain()
+
+        assert not asyncio.current_task().cancelled()
+
+    async def test_a_task_that_outlives_its_cancellation_is_reported(self, env):
+        """
+        Exactly the "a `finally` that awaits" the failure message points at: the task
+        accepts the cancellation but takes longer to unwind than the drain waits, so the
+        drain must say so rather than leave it running and claim success.
+        """
+        started = asyncio.Event()
+
+        async def slow_to_die():
+            started.set()
+            try:
+                await asyncio.sleep(3600)
+            finally:
+                await asyncio.sleep(0.2)
+
+        task = asyncio.create_task(slow_to_die())
+        await started.wait()
+
+        try:
+            with pytest.raises(WaitTimeoutError, match="still running"):
+                await env.drain(timeout=0.01)
+        finally:
+            await asyncio.wait([task], timeout=2.0)
+
+    async def test_tasks_that_predate_the_environment_are_left_alone(self, blueprint, dp):
+        """A session-scoped fixture's worker is not this test's litter."""
+        started = asyncio.Event()
+
+        async def worker():
+            started.set()
+            await asyncio.sleep(3600)
+
+        outsider = asyncio.create_task(worker())
+        await started.wait()
+
+        environment = BotTestEnvironment(blueprint=blueprint, dispatcher=dp)
+        try:
+            mine = asyncio.create_task(asyncio.sleep(3600))
+            await asyncio.sleep(0)
+
+            assert await environment.drain() == 1
+
+            assert mine.cancelled()
+            assert not outsider.done()
+        finally:
+            await environment.dispose()
+            outsider.cancel()
+
+    async def test_dispose_does_not_drain(self, blueprint, dp):
+        """
+        Deliberately not automatic: ``dispose_sync`` cannot await anything at all, so an
+        auto-drain would work in one teardown path and silently not in the other.
+        """
+        environment = BotTestEnvironment(blueprint=blueprint, dispatcher=dp)
+        task = asyncio.create_task(asyncio.sleep(3600))
+        await asyncio.sleep(0)
+
+        await environment.dispose()
+
+        try:
+            assert not task.done()
+        finally:
+            task.cancel()

@@ -1,3 +1,4 @@
+import copy
 import datetime
 
 import pytest
@@ -487,42 +488,72 @@ class TestChatRegistration:
     def test_the_mapping_is_a_registry_from_the_start(self):
         assert isinstance(World(bot_user=UserState(id=42, is_bot=True)).chats, ChatRegistry)
 
-    def test_a_foreign_registry_is_rewrapped_to_this_world(self, env):
+    def test_assigning_another_worlds_live_registry_is_refused(self, env):
         """
-        Regression: ``w2.chats = w1.chats`` passed the ``isinstance`` check as-is, so w2
-        went on literally using w1's registry — whose own ``world`` pointer still named
-        w1. Every chat added to w2 afterwards was inserted through *that* registry's
-        ``__setitem__``, so it got wired to w1 and bound to w1's bot instead of w2's.
+        Regression, twice over.
+
+        ``w2.chats = w1.chats`` first passed the ``isinstance`` check as-is, so w2 went on
+        literally using w1's registry — whose own ``world`` pointer still named w1 — and
+        every chat added to w2 afterwards was wired to w1 instead. The fix for *that* was
+        to rewrap the foreign registry, which silently traded one bug for a worse one: a
+        registry holds the donor's own `ChatState` objects, so re-registering them rewrote
+        ``chat.world`` on the shared objects and left w1 holding chats that bind their
+        messages to w2's bot.
+
+        A world owns its chats. Handing one world's live registry to another is refused,
+        and the donor is left exactly as it was.
         """
+        world_one = World(bot_user=UserState(id=1, is_bot=True))
+        world_two = World(bot_user=UserState(id=2, is_bot=True))
+        world_one.bind(env.bot)
+        chat = ChatState(id=1)
+        world_one.chats[1] = chat
+
+        with pytest.raises(WorldLookupError, match="a world owns its chats"):
+            world_two.chats = world_one.chats
+
+        assert chat.world is world_one
+        assert chat.bound_bot is env.bot
+        assert world_two.chats == {}
+
+    def test_a_plain_copy_of_another_worlds_chats_is_accepted(self, env):
+        """The explicit form the refusal points at: a plain mapping is wrapped as always."""
         world_one = World(bot_user=UserState(id=1, is_bot=True))
         world_two = World(bot_user=UserState(id=2, is_bot=True))
         world_two.bind(env.bot)
         chat = ChatState(id=1)
         world_one.chats[1] = chat
 
-        world_two.chats = world_one.chats
+        world_two.chats = dict(world_one.chats)
 
-        # w2 got its own registry, not a shared reference to w1's.
-        assert world_two.chats is not world_one.chats
         assert isinstance(world_two.chats, ChatRegistry)
-        # The chat that came along is the very object w1 held — re-registering does not
-        # copy it — but it is now wired to w2, since that is what registering it there
-        # means.
         assert world_two.chats[1] is chat
         assert chat.world is world_two
-        assert chat.bound_bot is env.bot
-
-        # The bug: w1's *registry* is untouched by the assignment — it is still the one
-        # `World.__setattr__` installed for w1 — so a chat added to it afterwards is
-        # still correctly wired to w1, not silently redirected to w2.
-        world_one.chats[2] = ChatState(id=2)
-        assert world_one.chats[2].world is world_one
 
         # And a chat added to w2 afterwards is correctly wired to w2 — this is exactly
         # what used to break: it used to land in w1's registry and bind to w1's bot.
         world_two.chats[3] = ChatState(id=3)
         assert world_two.chats[3].world is world_two
         assert world_two.chats[3].bound_bot is env.bot
+
+    def test_a_deep_copy_of_a_world_keeps_its_chats_wired_to_the_copy(self, env):
+        """
+        ``copy.deepcopy`` rebuilds the registry through ``__setitem__``, not ``__setattr__``.
+
+        Worth pinning down alongside the refusal above: the guard must not make a world
+        uncopyable, and the copy's chats must point at the *copy* rather than at the
+        original — which is exactly what the refusal is protecting.
+        """
+        world = World(bot_user=UserState(id=1, is_bot=True))
+        world.bind(env.bot)
+        world.chats[1] = ChatState(id=1)
+
+        clone = copy.deepcopy(world)
+
+        assert isinstance(clone.chats, ChatRegistry)
+        assert clone.chats[1] is not world.chats[1]
+        assert clone.chats[1].world is clone
+        assert world.chats[1].world is world
 
 
 class TestDerivedMessages:

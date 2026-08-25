@@ -98,9 +98,13 @@ every other chat must be declared. Telegram lets any user open a DM with any bot
 ``/start`` deep link does it as a side effect — so a blueprint that never called
 ``add_private_chat`` is not saying "this user has no private chat", only that the test did
 not need to name it. Both ``bot_env.user(alice).send("/start")`` and a followed deep link
-therefore work, and open a chat shaped exactly like a declared one. A *group*, on the other
-hand, is a place the bot was added to: ``.in_(chat)`` on a chat nobody declared raises,
-because a bot cannot post into a chat it does not know.
+therefore work, and open a chat shaped exactly like a declared one. So does
+``bot_env.chat(alice.id)`` on its own, for any id that names a **declared user** whose
+private chat was not — every Telegram user can open one, so this accessor agrees with the
+actor path (``bot_env.user(alice).chat``) instead of raising where that path already
+succeeds. A *group*, on the other hand, is a place the bot was added to: ``.in_(chat)`` on a
+chat nobody declared raises, because a bot cannot post into a chat it does not know, and so
+does ``bot_env.chat(...)`` on any id that names neither a declared chat nor a declared user.
 
 The bot's own calls open nothing. A real bot cannot write first — it may only answer a user
 who wrote to it — so a test whose bot opens the conversation is describing something Telegram
@@ -207,6 +211,49 @@ as handler dependencies:
         await bot_user.click("answer:no")
 
         assert bot_chat.messages[-1].text == "You chose no"
+
+Forgetting ``.in_(chat)`` before ``click`` is an easy mistake, and it fails with the same
+"no button here" message a genuine typo in ``callback_data`` would — unless the button
+exists in some *other* chat this world knows, in which case the failure names that chat
+instead of leaving the two indistinguishable:
+
+.. code-block:: python
+
+    await admin.in_(team).send("pick", fields={"reply_markup": keyboard})
+
+    await admin.click("go")   # forgot `.in_(team)` — this clicks admin's private chat
+    # WorldLookupError: No message in chat ... carries a button with callback_data='go';
+    # a button with this callback_data exists in chat -100... ('Team') — bind the actor
+    # with `.in_(...)`
+
+Replying
+--------
+
+``send`` accepts ``reply_to``, sugar for ``fields={"reply_to_message": ...}``: pass the
+``Message`` itself, or the id of one already stored in the actor's chat. ``reply()`` is the
+same thing spelled as what it reads like:
+
+.. code-block:: python
+
+    await bot_user.send("question")
+    question = bot_chat.messages[-1]
+
+    await bot_user.reply(question, "answer")
+    # equivalent: await bot_user.send("answer", reply_to=question)
+
+    assert bot_chat.messages[-1].reply_to_message is question
+
+Neither trigger returns the ``Message`` it sent — reach for ``actor.chat.messages[-1]``
+right after the call, most of all when the next step replies to what was just sent:
+
+.. code-block:: python
+
+    await alice.send("question")
+    await bob.reply(alice.chat.messages[-1], "first reply")
+    await alice.reply(bob.chat.messages[-1], "second reply")
+
+An explicit ``reply_to_message`` in ``fields`` still wins over ``reply_to``, matching every
+other field ``fields`` overrides.
 
 Deep links
 ----------
@@ -339,6 +386,9 @@ Telegram itself decides:
   while ``add_bot`` and ``remove_bot`` change the **bot's** and produce
   ``my_chat_member``. A bot that only registers ``my_chat_member`` correctly does not see
   the other.
+* In a **group or supergroup**, ``join`` and ``add_bot`` also post the ``new_chat_members``
+  service message a real join or add delivers alongside the membership update — see
+  `Joining and leaving`_.
 
 Answering queries
 -----------------
@@ -820,6 +870,164 @@ way a real response is parsed anew every time. So ``some_administrator`` above c
 module-level object shared by the whole suite — the call cannot mutate it, and it never
 ends up holding a reference to a bot from an environment that is already gone.
 
+Targeting one call among several
+---------------------------------
+
+A bare ``bot_env.on(SendMessage)`` answers *every* ``sendMessage``, which is not enough once a
+bot reacts to one event by messaging several chats — a game engine telling the group and
+every player at once. ``bot_env.on`` also takes keyword arguments, each an equality test on a
+field of the **resolved** method — after bot-level defaults such as ``parse_mode`` are
+filled in — and they are AND-ed:
+
+.. code-block:: python
+
+    bot_env.on(SendMessage, chat_id=alice.id).raises(TelegramForbiddenError, times=1)
+    bot_env.on(SendMessage, chat_id=bob.id).raises(TelegramForbiddenError, times=1)
+
+Both rules stand at once. A message to a *third* chat in between consumes neither —
+**a rule whose matcher rejects a call is skipped without its ``times`` budget moving** — so
+"these two players blocked the bot" no longer depends on which order the engine happens to
+message them in, the way a single untargeted ``.raises(times=1)`` would.
+
+``.where(predicate)`` is the escape hatch for anything a field equality cannot say — a
+substring of the text, a particular button, a chat id drawn from a set — and it composes
+with the keyword filters:
+
+.. code-block:: python
+
+    bot_env.on(SendMessage).where(lambda call: "night" in (call.text or "")).raises()
+
+Narrowing a builder with ``.where`` (or declaring a further keyword filter) after
+``.returns()``/``.raises()`` was already called on it only narrows what is declared *after*
+that point — an earlier declaration keeps the matcher it had when it was made. A field the
+method does not have raises ``TypeError`` immediately, naming the fields that do exist,
+rather than registering a rule that can never match — the misspelling would otherwise only
+surface much later, as "the bot sent the message it was supposed to fail to send".
+
+Several rules for one method are tried oldest first, and the first whose matcher accepts
+the call wins:
+
+.. code-block:: python
+
+    bot_env.on(SendMessage).returns("general")
+    bot_env.on(SendMessage, chat_id=alice.id).returns("specific")
+
+    await bot_env.bot.send_message(chat_id=alice.id, text="hi")  # "general" — registered first
+
+``bot_env.on(...)`` returns a **handle** as well as a builder: ``.cancel()`` withdraws exactly
+the rules that call registered, leaving every other rule alone, and the handle works as a
+context manager, scoping an override to one block:
+
+.. code-block:: python
+
+    with bot_env.on(SendMessage, chat_id=alice.id).raises(TelegramForbiddenError):
+        await bot_user.send("/start")
+    # from here on the bot can message alice again
+
+The player blocked the bot
+---------------------------
+
+``bot_env.blocked(chat_id=...)`` is that scenario spelled out directly, and it covers more than
+``sendMessage`` — a block a real user applies stops *every* method that delivers into their
+chat: photos, chat actions, copies, forwards, and any future ``send*``/``copy*``/``forward*``
+method a Bot API bump adds, via :data:`aiogram.test.DELIVERY_METHODS`:
+
+.. code-block:: python
+
+    with bot_env.blocked(chat_id=alice.id):
+        await bot_user.send("/start")   # the group still gets its message
+        with pytest.raises(TelegramForbiddenError, match="bot was blocked by the user"):
+            await bot_env.bot.send_message(chat_id=alice.id, text="your role")
+
+    await bot_env.bot.send_message(chat_id=alice.id, text="again")  # alice is unblocked again
+
+Two players can be blocked independently — ``with bot_env.blocked(chat_id=alice.id),
+bot_env.blocked(chat_id=bob.id):`` — which is the case a single untargeted
+``bot_env.on(SendMessage).raises(times=1)`` could not express, since it would fail whichever of
+them the engine happens to message first. Unlike a plain ``.raises()``, ``bot_env.blocked``
+carries no ``times`` budget: a blocked user stays blocked for as long as the block is in
+force rather than for exactly one call, and it can be cancelled by hand instead of scoped
+with ``with``:
+
+.. code-block:: python
+
+    block = bot_env.blocked(chat_id=alice.id)
+    ...
+    block.cancel()
+
+Pass ``message=`` to get a different refusal than a block — ``"Forbidden: user is
+deactivated"``, for instance — through the same recipe.
+
+Recording happens before an override answers
+-----------------------------------------------
+
+:attr:`~aiogram.test.BotTestEnvironment.calls` records a call **before** any override —
+``bot_env.on(...)``, ``bot_env.blocked(...)``, or the modeling and synthesis they take precedence
+over — is consulted. That ordering is what lets a test assert both halves of a refusal: that
+the bot *tried* to reach the right addressee, and that it *coped* with being refused.
+
+.. code-block:: python
+
+    with bot_env.blocked(chat_id=alice.id), pytest.raises(TelegramForbiddenError):
+        await bot_env.bot.send_message(chat_id=alice.id, text="your role")
+
+    assert bot_env.calls.last(SendMessage).chat_id == alice.id
+    assert bot_env.calls.last(SendMessage).text == "your role"
+
+Routing diagnostics
+====================
+
+A trigger returns *a* result, not the route the update actually took, so an update
+swallowed by a middleware, one caught by a catch-all logging handler, and one that reached
+the handler under test can all come back looking the same — and the test only notices
+minutes later, as a ``wait_for`` that timed out with nothing to say about why.
+:attr:`~aiogram.test.BotTestEnvironment.last_route` is where the most recently fed update
+actually went:
+
+.. code-block:: python
+
+    await bot_user.send("/join")
+
+    assert bot_env.last_route.handled
+    assert bot_env.last_route.router == "membership"
+
+:meth:`~aiogram.test.BotTestEnvironment.assert_handled_by` is the assertion spelled
+directly, matched against ``module.qualname`` as a substring — so ``"on_join"`` and
+``"handlers.membership.on_join"`` both work — and it fails naming where the update actually
+went, exception included, rather than only "not handled":
+
+.. code-block:: python
+
+    bot_env.assert_handled_by("on_join")
+    # AssertionError: Expected the last update to be handled by 'on_join', but:
+    # update id=... (message) was handled
+    #   handler: handlers.other.log_everything
+    #   router:  fallback
+
+Reach for this whenever an update "went nowhere" and the reason is not obvious: **handled**
+and **handler is not None** answer different questions. ``handled`` is aiogram's own
+definition — the dispatcher returned something other than ``UNHANDLED`` — which a
+middleware that returns ``None`` without calling the next one already satisfies, so it is
+``handler`` that says whether anything actually ran:
+
+.. code-block:: python
+
+    assert bot_env.last_route.handled is True   # a middleware answered without calling on
+    assert bot_env.last_route.handler is None   # ...but no handler ever ran
+
+``exception`` is captured **where it was raised**, not where it surfaced — including a
+handler exception the bot's own ``@dp.error()`` handler goes on to swallow, which otherwise
+leaves a test staring at a missing reply with no clue that a handler ever raised at all:
+
+.. code-block:: python
+
+    assert bot_env.last_route.handler and "boom" in bot_env.last_route.handler
+    assert isinstance(bot_env.last_route.exception, RuntimeError)
+
+``last_route`` is cleared at the start of every ``feed`` and set once that update finishes
+routing, so after a handler that itself feeds a further update it still names the *outer*
+update — the one the test's own trigger fed. It is ``None`` until the first update is fed.
+
 Finite state machine
 ====================
 
@@ -891,6 +1099,48 @@ whichever the list happens to hold last. A chat is normally in id order anyway, 
 "normally" is not something a test can act on, and the one path that could break it is a
 message registered from another environment — exactly the case where a test asking for the
 newest reply must not silently get a stale one.
+
+Dumping what the bot said instead
+----------------------------------
+
+A general ``wait_for`` can only report the condition it was given, and the condition is a
+lambda over the bot's own state — while the answer to "why did it never become true" is
+almost always in what the bot said *instead*. ``watch=`` names one chat or topic, or any
+iterable of them, and each is appended to the timeout message the way
+``wait_for_message``'s own failure already renders one:
+
+.. code-block:: python
+
+    await env.wait_for(lambda: game.mode is Mode.NIGHT, "night to fall", watch=group)
+    # WaitTimeoutError: Timed out after 5.0s waiting for night to fall.
+    # In chat -100...: The chat holds 3 message(s):
+    #   #1 'Waiting for players...'
+    #   ...
+
+Waiting for a broadcast
+-------------------------
+
+A bot that fans one event out to many chats — every player gets the night keyboard, every
+subscriber gets the digest — is otherwise tested by awaiting each chat's own
+``wait_for_message`` in turn, which is slower (the timeouts are serial) and much worse at
+failing: the first chat that never got its message ends the wait, and the rest are never
+even looked at, so a systematic failure reads as one unlucky chat.
+:meth:`~aiogram.test.BotTestEnvironment.wait_for_message_in` polls **every** named chat
+together and returns once all of them hold a match:
+
+.. code-block:: python
+
+    player_ids = [alice.id, bob.id, carol.id]
+
+    keyboards = await env.wait_for_message_in(
+        player_ids, lambda m: m.reply_markup is not None, "the night keyboard"
+    )
+    assert keyboards[alice.id].reply_markup is not None
+
+``chats`` accepts blueprint declarations, resolved chat states and bare ids, mixed freely,
+and the newest match per chat wins, exactly as a single ``wait_for_message`` picks it. A
+timeout names only the chats that are still missing a match, not the ones that already have
+one — the difference between "somebody didn't get it" and a readable diagnosis.
 
 How long a wait runs before giving up is set once, on the environment — override the
 ``bot_env_wait_timeout`` fixture to say it for a whole suite, the same way ``bot_blueprint``
@@ -1022,6 +1272,49 @@ than a second or so.
     land inside one; against a slow or remote one it is a live hazard, so mark a test
     ``looptime`` only once its database calls are mocked, faked, or genuinely local.
 
+Cleaning up background tasks
+=============================
+
+A bot with an engine of its own leaves tasks running past the end of a test —
+``asyncio.create_task(self._night_timer())`` sleeping when the test itself already
+returned. The loop is then torn down under them, and each one prints ``Task was destroyed
+but it is pending!`` to stderr after the test that caused it has already passed, which is
+noise nobody can trace back to its source. ``await bot_env.drain(timeout=...)`` cancels and
+awaits every task the test left running, and reports how many there were:
+
+.. code-block:: python
+
+    async def test_night_phase_starts(bot_env, bot_user):
+        await bot_user.send("/start")   # schedules a background timer
+
+        await bot_env.drain()
+
+Only tasks created *after* the environment was built count as this test's; a session-scoped
+fixture's own background worker is left alone. ``drain`` is deliberately **not** called by
+``dispose`` / ``dispose_sync``: the pytest fixture's teardown is synchronous and cannot
+await anything, so an automatic drain would work in one teardown path and silently not in
+the other — and cancelling tasks a test never mentioned, as an invisible side effect of a
+fixture going out of scope, turns "my bot's scheduler stopped" into a mystery. A test that
+wants its tasks gone says so.
+
+.. warning::
+
+    **A cache scoped above the test's own event loop is a different failure, and ``drain``
+    does not touch it.** A package- or session-scoped ``bot_dispatcher`` fixture — the shape
+    `Requirements and gotchas`_ already recommends, to dodge "Router is already attached" —
+    keeps its middlewares alive across every test function, while each async test gets its
+    *own* event loop by default. A middleware that opens a loop-bound resource the first
+    time it runs — a Redis client inside a ``ThrottlingMiddleware``, most commonly — binds
+    that resource to whichever loop happened to be running then, and every later test runs
+    on a *different*, freshly created loop. This is the most expensive failure users of this
+    toolkit hit, because it does not look like a caching bug: a handful of tests deep into a
+    run start failing with an opaque error about a closed event loop or a socket used from
+    the wrong one, and nothing about the failing tests themselves is wrong. Construct
+    loop-bound resources **per test** instead — a function-scoped fixture building the Redis
+    client and injecting it into the middleware, rather than the middleware opening one
+    itself — or use a client that reconnects lazily per loop. ``drain`` cancels **tasks**; a
+    stale cached connection is not a task, so no amount of draining reaches it.
+
 Bots that use a global Bot instance
 ===================================
 
@@ -1063,6 +1356,63 @@ Membership is driven by actors, and each trigger produces the update Telegram wo
     await user.leave()         # chat_member
     await user.add_bot()       # my_chat_member
     await user.remove_bot()    # my_chat_member
+
+In a **group or supergroup**, ``join`` and ``add_bot`` also post the ``new_chat_members``
+service message a real join or add delivers alongside the membership update — *after* it,
+matching the order Telegram's own clients display the two in:
+
+.. code-block:: python
+
+    async def test_welcomes_new_members(env, dp, team, alice):
+        welcomed = []
+
+        @dp.message(F.new_chat_members)
+        async def welcome(message):
+            welcomed.append([user.id for user in message.new_chat_members])
+
+        await alice.in_(team).add_bot()
+
+        assert welcomed == [[env.world.bot_user.id]]
+
+Pass ``service_message=False`` to get the old single-update behavior back. A **private**
+chat never gets one — Telegram has no concept of "adding" someone to a DM — and ``leave`` /
+``remove_bot`` are unaffected either way: only a join or an add ever produces it. The
+trigger's own return value stays the membership update's handler result regardless; the
+service message is fed but not awaited for its result, the same as any other update a
+trigger feeds only for its side effects.
+
+Promoting and demoting
+-----------------------
+
+``promote()``/``demote()`` are actor-level sugar over ``promoteChatMember``, spelled the
+way the story usually goes — *someone* promotes *someone*:
+
+.. code-block:: python
+
+    await admin.in_(team).promote()                          # promotes the bot, no rights
+    await admin.in_(team).promote(can_delete_messages=True)  # ...with one right
+    await admin.in_(team).promote(subject=alice, can_pin_messages=True)  # promotes alice
+
+    await admin.in_(team).demote()                # demotes the bot back to a plain member
+    await admin.in_(team).demote(subject=alice)
+
+``subject`` defaults to the bot itself — promoting the bot is the first thing almost every
+group bot test needs — and otherwise accepts a declared user, a resolved state, or a bare
+id. The rights passed are the *whole* mask, exactly like ``promoteChatMember`` itself: a
+right ``promote()`` does not name is denied, not inherited from an earlier promotion.
+Unlike a bare ``promoteChatMember(...)`` call, though, ``promote()`` with **no** rights at
+all still promotes rather than reading as a demotion — there is no way to "explicitly grant
+nothing" through this call, so nothing asked for is simply nothing granted; ``demote()`` is
+what says "take the status away" instead. It drops the member to ``MEMBER`` and clears both
+the granted rights and the custom title, while the member's ``tag`` survives it, since a
+tag belongs to the membership rather than to the administrator status.
+
+Both refuse to touch the chat's owner, exactly as ``promoteChatMember`` does:
+
+.. code-block:: python
+
+    await admin.in_(team).promote(subject=owner, can_delete_messages=True)
+    # ApiRejection: can't remove chat owner
 
 A join *request* is world state, so the approve and decline methods have something real to
 act on:
@@ -1579,7 +1929,7 @@ API reference
 =============
 
 .. automodule:: aiogram.test
-    :members: Blueprint, BotTestEnvironment, UserActor, CallLog, build_environment, default_blueprint, detach_router, administrator_rights
+    :members: Blueprint, BotTestEnvironment, UserActor, CallLog, RouteRecord, build_environment, default_blueprint, detach_router, administrator_rights
     :member-order: bysource
     :undoc-members: False
 
@@ -1596,6 +1946,14 @@ API reference
     :member-order: bysource
 
 .. autoclass:: aiogram.test.overrides.OverrideBuilder
+    :members:
+    :member-order: bysource
+
+.. autoclass:: aiogram.test.OverrideHandle
+    :members:
+    :member-order: bysource
+
+.. autoclass:: aiogram.test.MethodMatcher
     :members:
     :member-order: bysource
 

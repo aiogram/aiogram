@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 import re
-from collections.abc import Iterable, Iterator
+from collections.abc import Callable, Iterable, Iterator
+from types import SimpleNamespace
 from typing import TYPE_CHECKING, Any, NamedTuple
 from urllib.parse import parse_qs, urlsplit
 
@@ -10,6 +11,7 @@ from aiogram.types import (
     BotSubscriptionUpdated,
     BusinessMessagesDeleted,
     CallbackQuery,
+    ChatAdministratorRights,
     ChatBoostRemoved,
     ChatBoostUpdated,
     ChatJoinRequest,
@@ -33,6 +35,7 @@ from aiogram.types import (
     Update,
 )
 
+from .errors import ApiRejection
 from .mounting import owned_or_copied
 from .synthesis import SynthesisContext, synthesize
 from .world import (
@@ -40,10 +43,12 @@ from .world import (
     ChargeState,
     ChatState,
     CommunityState,
+    MemberState,
     QueryKind,
     TopicState,
     UserState,
     WorldLookupError,
+    mask,
     resolve_topic,
 )
 
@@ -51,7 +56,7 @@ if TYPE_CHECKING:
     from aiogram.client.bot import Bot
     from aiogram.fsm.context import FSMContext
 
-    from .blueprint import BusinessConnectionSpec, ChatSpec, CommunitySpec, TopicSpec
+    from .blueprint import BusinessConnectionSpec, ChatSpec, CommunitySpec, TopicSpec, UserSpec
     from .environment import BotTestEnvironment
 
 
@@ -404,6 +409,13 @@ _APP_SHORT_NAME = re.compile(r"[A-Za-z0-9_]+")
 # long" — https://core.telegram.org/bots/features#deep-linking.
 _START_PAYLOAD = re.compile(r"[A-Za-z0-9_-]{1,64}")
 
+#: Chat types Telegram delivers a `new_chat_members` service message in. A private chat
+#: has no such concept — a bot starting a conversation is not "added" to it — and neither
+#: does a channel, whose membership updates arrive only as `chat_member`/`my_chat_member`.
+#: Only a plain group and a supergroup get the message a real client shows in the chat
+#: itself, so `_change_membership`'s ``service_message`` only fires there.
+_MEMBER_SERVICE_MESSAGE_CHAT_TYPES = frozenset({ChatType.GROUP, ChatType.SUPERGROUP})
+
 
 def _rejection_message(url: str, deep_link: _DeepLink) -> str:
     return _LINK_KINDS[deep_link.kind].rejection.format(
@@ -621,10 +633,24 @@ class UserActor:
         text: str | None = None,
         *,
         fields: dict[str, Any] | None = None,
+        reply_to: Message | int | None = None,
         **data: Any,
     ) -> Any:
-        """Send a message as this user. ``fields`` overrides raw ``Message`` fields."""
-        message = self._build_message(text=text, fields=fields)
+        """
+        Send a message as this user. ``fields`` overrides raw ``Message`` fields.
+
+        ``reply_to`` is sugar for ``fields={"reply_to_message": ...}``: pass the
+        `Message` itself, or the id of one already stored in `self.chat` — the id form
+        resolves to the chat's own object rather than a copy, the same identity a
+        hand-built ``reply_to_message`` gets by reaching into `self.chat.messages`
+        directly. An explicit ``reply_to_message`` in ``fields`` still wins if both are
+        given, matching every other field ``fields`` overrides.
+
+        This trigger returns the handler's result, not the `Message` it sent — reach for
+        ``self.chat.messages[-1]`` right after this call to get it, most of all when the
+        next step is replying to it.
+        """
+        message = self._build_message(text=text, fields=self._with_reply_to(fields, reply_to))
         self.chat.add_message(message)
         if self.business is not None:
             return await self._feed(
@@ -635,6 +661,26 @@ class UserActor:
         if self.chat.type == ChatType.CHANNEL:
             return await self._feed(Update(update_id=update_id, channel_post=message), data)
         return await self._feed(Update(update_id=update_id, message=message), data)
+
+    async def reply(
+        self,
+        message: Message | int,
+        text: str | None = None,
+        *,
+        fields: dict[str, Any] | None = None,
+        **data: Any,
+    ) -> Any:
+        """
+        Reply to a message, as this user — sugar over ``send(reply_to=message, ...)``.
+
+        ``message`` is the `Message` to reply to, or the id of one already stored in
+        `self.chat`. Chaining a further reply onto this one reaches for
+        ``self.chat.messages[-1]``, the reply this call just stored::
+
+            await alice.reply(question, "42")
+            await bob.reply(alice.chat.messages[-1], "same here")
+        """
+        return await self.send(text, fields=fields, reply_to=message, **data)
 
     async def edit(
         self,
@@ -774,18 +820,111 @@ class UserActor:
             data,
         )
 
-    async def join(self, **data: Any) -> Any:
-        return await self._change_membership(ChatMemberStatus.MEMBER, data)
+    async def join(self, *, service_message: bool = True, **data: Any) -> Any:
+        """
+        Join this chat, producing `chat_member` — and, in a group, the
+        `new_chat_members` service message a real join delivers alongside it.
+
+        Pass ``service_message=False`` to get the old single-update behavior back.
+        See :meth:`_change_membership` for why the group-only carve-out and the ordering
+        between the two updates are what they are.
+        """
+        return await self._change_membership(
+            ChatMemberStatus.MEMBER, data, service_message=service_message
+        )
 
     async def leave(self, **data: Any) -> Any:
         return await self._change_membership(ChatMemberStatus.LEFT, data)
 
-    async def add_bot(self, **data: Any) -> Any:
-        """Add the bot to this chat, producing `my_chat_member` rather than `chat_member`."""
-        return await self._change_membership(ChatMemberStatus.MEMBER, data, subject=self.bot_user)
+    async def add_bot(self, *, service_message: bool = True, **data: Any) -> Any:
+        """
+        Add the bot to this chat, producing `my_chat_member` rather than `chat_member` —
+        and, in a group, the `new_chat_members` service message a real add delivers
+        alongside it (see :meth:`_change_membership`).
+
+        Pass ``service_message=False`` to get the old single-update behavior back.
+        """
+        return await self._change_membership(
+            ChatMemberStatus.MEMBER,
+            data,
+            subject=self.bot_user,
+            service_message=service_message,
+        )
 
     async def remove_bot(self, **data: Any) -> Any:
         return await self._change_membership(ChatMemberStatus.LEFT, data, subject=self.bot_user)
+
+    async def promote(
+        self,
+        subject: UserSpec | UserState | int | None = None,
+        **rights: bool,
+    ) -> Any:
+        """
+        Promote a member to administrator, granting exactly the ``rights`` passed.
+
+        ``subject`` names whose membership changes and defaults to the bot itself —
+        promoting the bot is the one thing almost every group bot test needs before
+        anything else works::
+
+            await admin.in_(group).promote()  # the bot becomes an administrator
+
+        Pass a `UserSpec`, a `UserState`, or a bare id to promote someone other than the
+        bot — typically a third member, promoted by whoever ``self`` is.
+
+        The rights are the *whole* mask, exactly like `promoteChatMember` itself (see
+        :func:`aiogram.test.modeling.handle_promote`): a right this call does not name is
+        denied, not inherited from an earlier promotion, so
+        ``promote(can_pin_messages=True)`` is an administrator who can pin and nothing
+        else. Unlike `promoteChatMember`, calling this with **no** rights at all still
+        promotes rather than reading as a demotion — `promoteChatMember`'s "all `False`
+        means demote" convention only makes sense when the caller is forced to state
+        every field; here nothing stops a plain ``promote()``, and reading that as a
+        demotion would make it silently do the opposite of what it says. Use `demote()`
+        for that instead — it says what it means.
+
+        Refuses to promote the chat's owner, exactly as `promoteChatMember` does: an
+        owner's standing is not something even a fellow administrator can grant.
+        """
+        target = self._resolve_member_subject(subject)
+        self._guard_not_owner(target)
+        granted = mask(ChatAdministratorRights, SimpleNamespace(**rights), coerce=True)
+
+        def _promote(member: MemberState) -> None:
+            member.rights = ChatAdministratorRights(**granted)
+
+        return await self._change_membership(
+            ChatMemberStatus.ADMINISTRATOR, {}, subject=target, mutate=_promote
+        )
+
+    async def demote(
+        self,
+        subject: UserSpec | UserState | int | None = None,
+        **data: Any,
+    ) -> Any:
+        """
+        Demote an administrator back to a plain member.
+
+        Mirrors what `promoteChatMember` does on a demotion (see
+        :func:`aiogram.test.modeling.handle_promote`): the status drops to `MEMBER`, the
+        rights are cleared, and so is the custom title — only an administrator or the
+        owner carries one, so a title outliving the status is not something
+        `getChatMember` could ever report. ``tag`` is untouched: it belongs to the
+        membership itself, not to the administrator status, the same asymmetry
+        `handle_promote` documents.
+
+        ``subject`` defaults to the bot itself, the same as `promote()`. Refuses to
+        demote the chat's owner, exactly as `promoteChatMember` does.
+        """
+        target = self._resolve_member_subject(subject)
+        self._guard_not_owner(target)
+
+        def _demote(member: MemberState) -> None:
+            member.rights = None
+            member.custom_title = None
+
+        return await self._change_membership(
+            ChatMemberStatus.MEMBER, data, subject=target, mutate=_demote
+        )
 
     async def enable_business_connection(self, **data: Any) -> Any:
         return await self._business_connection_update(is_enabled=True, data=data)
@@ -1153,6 +1292,33 @@ class UserActor:
         values.update(_detached(fields or {}, self.environment.bot))
         return Message(**values)
 
+    def _with_reply_to(
+        self,
+        fields: dict[str, Any] | None,
+        reply_to: Message | int | None,
+    ) -> dict[str, Any] | None:
+        """
+        Fold ``reply_to`` into ``fields`` as ``reply_to_message``, ``fields`` winning.
+
+        An int is resolved through `self.chat`, so the field carries the chat's own
+        stored `Message` rather than a copy — the identity `_detached` (via
+        :func:`aiogram.test.mounting.owned_or_copied`) already preserves for a
+        ``reply_to_message`` a caller builds by hand from ``chat.messages``. Resolving it
+        here rather than leaving the caller to look it up is the whole point of the
+        keyword.
+        """
+        if reply_to is None:
+            return fields
+        message = reply_to if isinstance(reply_to, Message) else self._require_message(reply_to)
+        return {"reply_to_message": message, **(fields or {})}
+
+    def _require_message(self, message_id: int) -> Message:
+        message = self.chat.find_message(message_id)
+        if message is None:
+            msg = f"Message {message_id} does not exist in chat {self.chat.id}"
+            raise WorldLookupError(msg)
+        return message
+
     @staticmethod
     def _iter_buttons(
         scope: Iterable[Message],
@@ -1172,9 +1338,33 @@ class UserActor:
                 return candidate
         msg = (
             f"No message in chat {self.chat.id} carries a button with "
-            f"callback_data={callback_data!r}"
+            f"callback_data={callback_data!r}{self._misdirected_callback_hint(callback_data)}"
         )
         raise WorldLookupError(msg)
+
+    def _misdirected_callback_hint(self, callback_data: str) -> str:
+        """
+        Point at the chat a forgotten ``.in_(...)`` left the button behind in.
+
+        A `click()` on an actor bound to the wrong chat and one on a button that never
+        existed both fail with the same plain "no button here" message, and the two are
+        easy to conflate — a test that meant ``admin.in_(group).click(...)`` but forgot
+        the binding sees a message identical to a genuine typo in ``callback_data``. This
+        scans the rest of the world for the button before giving up, so the first case
+        says so directly instead of leaving the search to whoever reads the failure.
+        """
+        this_chat_id = self.chat.id
+        for chat_id, chat in self.environment.world.chats.items():
+            if chat_id == this_chat_id:
+                continue
+            for _candidate, button in self._iter_buttons(reversed(chat.messages)):
+                if button.callback_data == callback_data:
+                    title = chat.title or chat.username or chat.first_name or str(chat_id)
+                    return (
+                        f"; a button with this callback_data exists in chat {chat_id} "
+                        f"({title!r}) — bind the actor with `.in_(...)`"
+                    )
+        return ""
 
     def _find_deep_link_url(
         self,
@@ -1343,18 +1533,61 @@ class UserActor:
     def bot_user(self) -> UserState:
         return self.environment.world.bot_user
 
+    def _resolve_member_subject(
+        self,
+        subject: UserSpec | UserState | int | None,
+    ) -> UserState:
+        """The `UserState` a membership trigger acts on — the bot itself when ``None``."""
+        if subject is None:
+            return self.bot_user
+        if isinstance(subject, UserState):
+            return subject
+        user_id = subject if isinstance(subject, int) else subject.id
+        return self.environment.world.user(user_id)
+
+    def _guard_not_owner(self, target: UserState) -> None:
+        """
+        Refuse a promotion or demotion of the chat's owner.
+
+        The rule `promoteChatMember` states and :func:`aiogram.test.modeling._not_the_owner`
+        enforces on the real call path: an owner's standing is not the bot's, or a fellow
+        administrator's, to take away. Kept as the same one-line check and the same
+        message rather than imported, since the two live on either side of the boundary
+        between the modeled API and its trigger-side sugar — this module owns triggers,
+        not `handle_promote` — but the wording matches exactly, so a test asserting on it
+        reads the same failure whichever path produced it.
+        """
+        if self.chat.member(target.id).status == ChatMemberStatus.CREATOR:
+            msg = "can't remove chat owner"
+            raise ApiRejection(msg)
+
     async def _change_membership(
         self,
         status: str,
         data: dict[str, Any],
         subject: UserState | None = None,
+        *,
+        mutate: Callable[[MemberState], None] | None = None,
+        service_message: bool = False,
     ) -> Any:
         """
         Change a membership, routing by whose it is.
 
         Telegram delivers the bot's own membership change as ``my_chat_member`` and
         everyone else's as ``chat_member``; a bot that only registers the former must not
-        see the latter.
+        see the latter. ``mutate`` runs between reading the "old" side and the "new"
+        one, so `promote`/`demote` can set rights and a custom title alongside the status
+        change and have both show up in the same truthful before/after pair.
+
+        ``service_message``, when the chat is a group or a supergroup (see
+        `_MEMBER_SERVICE_MESSAGE_CHAT_TYPES`), also stores and feeds the
+        `new_chat_members` service message a real join or add delivers alongside the
+        membership update — **after** it, mirroring the order Telegram's own apps show
+        the two in: the membership transition is the event that happened, the service
+        message the group's own announcement of it, so the announcement follows. This
+        method's own return value stays the membership update's handler result either
+        way — the service message is fed but not awaited for its result, the same as any
+        other update a trigger feeds only for its side effects.
         """
         chat = self.chat
         target = subject if subject is not None else self.user
@@ -1365,6 +1598,8 @@ class UserActor:
         # join or a leave, and rebuilding the "new" side from a subset would drop it.
         old = member.as_chat_member(user, chat.type)
         member.status = status
+        if mutate is not None:
+            mutate(member)
         new = member.as_chat_member(user, chat.type)
         event = ChatMemberUpdated(
             chat=chat.as_chat(),
@@ -1375,5 +1610,9 @@ class UserActor:
         )
         update_id = self._next_update_id()
         if target.id == self.bot_user.id:
-            return await self._feed(Update(update_id=update_id, my_chat_member=event), data)
-        return await self._feed(Update(update_id=update_id, chat_member=event), data)
+            result = await self._feed(Update(update_id=update_id, my_chat_member=event), data)
+        else:
+            result = await self._feed(Update(update_id=update_id, chat_member=event), data)
+        if service_message and chat.type in _MEMBER_SERVICE_MESSAGE_CHAT_TYPES:
+            await self._service_message({"new_chat_members": [user]}, data)
+        return result

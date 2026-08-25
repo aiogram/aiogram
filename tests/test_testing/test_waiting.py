@@ -473,3 +473,194 @@ class TestDefaultWaitTimeout:
 
         assert loose.default_wait_timeout == 5.0
         assert TopicState(message_thread_id=7).default_wait_timeout == 5.0
+
+
+class TestWatchedChatsInATimeout:
+    """
+    ``wait_for(..., watch=...)`` — the answer is usually in what the bot said instead.
+
+    A general ``wait_for`` polls a lambda over the bot's own state, so the failure it can
+    write on its own is the description it was handed and nothing else. In practice the
+    explanation is in the group's last few messages, which the test then has to go and
+    print by hand.
+    """
+
+    @pytest.fixture
+    def quick(self, blueprint, dp):
+        environment = BotTestEnvironment(
+            blueprint=blueprint,
+            dispatcher=dp,
+            default_wait_timeout=0.02,
+        )
+        try:
+            yield environment
+        finally:
+            environment.dispose_sync()
+
+    async def test_a_watched_chat_is_dumped(self, quick, blueprint):
+        chat = quick.chat(blueprint.chats[0].id)
+        await quick.bot.send_message(chat_id=chat.id, text="the real reason")
+
+        with pytest.raises(WaitTimeoutError) as exc_info:
+            await quick.wait_for(lambda: False, "night to fall", watch=chat)
+
+        message = str(exc_info.value)
+        assert "waiting for night to fall" in message
+        assert f"In chat {chat.id}:" in message
+        assert "the real reason" in message
+
+    async def test_several_chats_are_dumped(self, quick, blueprint):
+        first = quick.chat(blueprint.chats[0].id)
+        second = quick.chat(blueprint.chats[1].id)
+        await quick.bot.send_message(chat_id=first.id, text="in private")
+        await quick.bot.send_message(chat_id=second.id, text="in the group")
+
+        with pytest.raises(WaitTimeoutError) as exc_info:
+            await quick.wait_for(lambda: False, "the phase", watch=[first, second])
+
+        message = str(exc_info.value)
+        assert "in private" in message
+        assert "in the group" in message
+
+    async def test_a_topic_can_be_watched(self, quick, blueprint):
+        chat = quick.chat(blueprint.chats[1].id)
+        await quick.bot.send_message(chat_id=chat.id, text="in the general topic")
+
+        with pytest.raises(WaitTimeoutError) as exc_info:
+            await quick.wait_for(lambda: False, "the phase", watch=chat.general_topic)
+
+        message = str(exc_info.value)
+        assert "In the General topic" in message
+        assert "in the general topic" in message
+
+    async def test_an_empty_watched_chat_says_so(self, quick, blueprint):
+        chat = quick.chat(blueprint.chats[0].id)
+
+        with pytest.raises(WaitTimeoutError, match="holds no messages"):
+            await quick.wait_for(lambda: False, "anything", watch=chat)
+
+    async def test_watching_costs_nothing_on_the_happy_path(self, quick, blueprint):
+        chat = quick.chat(blueprint.chats[0].id)
+
+        assert await quick.wait_for(lambda: "done", watch=chat) == "done"
+
+    async def test_a_watch_free_wait_is_unchanged(self, quick):
+        with pytest.raises(WaitTimeoutError) as exc_info:
+            await quick.wait_for(lambda: False, "nothing in particular")
+
+        assert str(exc_info.value).splitlines() == [
+            "Timed out after 0.02s waiting for nothing in particular.",
+        ]
+
+    async def test_the_lambda_advice_survives_a_watch(self, quick, blueprint):
+        """Without a description the message still has to explain what it cannot show."""
+        chat = quick.chat(blueprint.chats[0].id)
+
+        with pytest.raises(WaitTimeoutError) as exc_info:
+            await quick.wait_for(lambda: False, watch=chat)
+
+        assert "Pass `description='...'`" in str(exc_info.value)
+
+
+class TestWaitForMessageInManyChats:
+    """
+    ``wait_for_message_in`` — one wait over N chats instead of N serial waits.
+
+    Awaiting each chat in turn is both slower (the timeouts add up) and much worse at
+    failing: the first chat that never got its message ends the wait, so a broadcast that
+    reached nobody reads as one unlucky chat.
+    """
+
+    @pytest.fixture
+    def party(self):
+        blueprint = Blueprint()
+        players = [blueprint.add_user(name) for name in ("Alice", "Bob", "Carol")]
+        for player in players:
+            blueprint.add_private_chat(player)
+        return blueprint
+
+    @pytest.fixture
+    def table(self, party):
+        environment = BotTestEnvironment(blueprint=party, default_wait_timeout=0.05)
+        try:
+            yield environment
+        finally:
+            environment.dispose_sync()
+
+    async def deal(self, environment, chat_ids, delay=0.01, text="Night falls"):
+        for chat_id in chat_ids:
+            await asyncio.sleep(delay)
+            await environment.bot.send_message(chat_id=chat_id, text=text)
+
+    async def test_it_returns_a_message_per_chat_once_all_have_one(self, table, party):
+        chat_ids = [user.id for user in party.users]
+        task = asyncio.create_task(self.deal(table, chat_ids))
+
+        try:
+            found = await table.wait_for_message_in(chat_ids, lambda m: m.text == "Night falls")
+        finally:
+            await task
+
+        assert sorted(found) == sorted(chat_ids)
+        assert all(message.text == "Night falls" for message in found.values())
+
+    async def test_it_accepts_states_specs_and_ids_mixed(self, table, party):
+        alice, _, carol = party.users
+        for user in party.users:
+            await table.bot.send_message(chat_id=user.id, text="dealt")
+
+        found = await table.wait_for_message_in([table.chat(alice.id), party.chats[1], carol.id])
+
+        assert sorted(found) == sorted(user.id for user in party.users)
+
+    async def test_the_newest_match_per_chat_wins(self, table, party):
+        alice = party.users[0]
+        await table.bot.send_message(chat_id=alice.id, text="first")
+        await table.bot.send_message(chat_id=alice.id, text="second")
+
+        found = await table.wait_for_message_in([alice.id])
+
+        assert found[alice.id].text == "second"
+
+    async def test_the_failure_names_only_the_chats_still_missing_one(self, table, party):
+        alice, bob, carol = party.users
+        await table.bot.send_message(chat_id=alice.id, text="Night falls")
+        await table.bot.send_message(chat_id=bob.id, text="something else")
+
+        with pytest.raises(WaitTimeoutError) as exc_info:
+            await table.wait_for_message_in(
+                [alice.id, bob.id, carol.id],
+                lambda m: m.text == "Night falls",
+                "the night keyboard",
+            )
+
+        message = str(exc_info.value)
+        assert "waiting for the night keyboard in all 3 watched chat(s)" in message
+        assert f"Still missing in {bob.id}, {carol.id}" in message
+        assert "something else" in message
+        # The chat that *did* get it is not dumped; that is the whole point.
+        assert f"In chat {alice.id}" not in message
+
+    async def test_without_a_description_it_names_the_predicate(self, table, party):
+        with pytest.raises(WaitTimeoutError, match="a message matching"):
+            await table.wait_for_message_in([party.users[0].id], _is_a_keyboard)
+
+    async def test_without_a_predicate_it_waits_for_any_message(self, table, party):
+        with pytest.raises(WaitTimeoutError, match="waiting for any message"):
+            await table.wait_for_message_in([party.users[0].id])
+
+    async def test_a_predicate_that_raises_counts_as_no_match(self, table, party):
+        """A chat holds messages of every shape; the single-chat wait has the same rule."""
+        alice = party.users[0]
+        await table.bot.send_message(chat_id=alice.id, text="plain")
+
+        with pytest.raises(WaitTimeoutError):
+            await table.wait_for_message_in([alice.id], lambda m: m.caption.startswith("x"))
+
+    async def test_an_explicit_timeout_wins_over_the_environments(self, table, party):
+        with pytest.raises(WaitTimeoutError, match="after 0.01s"):
+            await table.wait_for_message_in([party.users[0].id], timeout=0.01)
+
+
+def _is_a_keyboard(message):
+    return message.reply_markup is not None

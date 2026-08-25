@@ -2,9 +2,11 @@ import datetime
 
 import pytest
 
+from aiogram.client.default import DefaultBotProperties
+from aiogram.enums import ChatMemberStatus, ParseMode
 from aiogram.exceptions import TelegramBadRequest, TelegramForbiddenError, TelegramRetryAfter
 from aiogram.methods import GetChatAdministrators, GetChatMember, SendMessage
-from aiogram.test import BotTestEnvironment
+from aiogram.test import DELIVERY_METHODS, Blueprint, BotTestEnvironment
 from aiogram.test.overrides import fresh_result
 from aiogram.types import Chat, ChatMemberMember, Message, User
 
@@ -115,6 +117,286 @@ class TestOverrides:
         env.overrides.clear()
 
         assert env.overrides.take(SendMessage(chat_id=1, text="x")) is None
+
+
+@pytest.fixture
+def party():
+    """A group and three players, the shape every targeting test below needs."""
+    blueprint = Blueprint()
+    players = [blueprint.add_user(name) for name in ("Alice", "Bob", "Carol")]
+    for player in players:
+        blueprint.add_private_chat(player)
+    blueprint.add_supergroup("Table", members=dict.fromkeys(players, ChatMemberStatus.MEMBER))
+    return blueprint
+
+
+@pytest.fixture
+def table(party):
+    environment = BotTestEnvironment(blueprint=party)
+    try:
+        yield environment
+    finally:
+        environment.dispose_sync()
+
+
+class TestTargetedOverrides:
+    """
+    An override addressed to a chat, which is what makes a multi-recipient bot testable.
+
+    The motivating report: a game engine messages the group and every player from one
+    trigger, so ``env.on(SendMessage).raises(times=1)`` hit whichever call the engine
+    happened to make first. Testing "this player blocked the bot" meant reordering the
+    production code so the blocked player is served first, and testing *two* blocked
+    players was not expressible at all.
+    """
+
+    async def test_two_different_chats_are_blocked_at_once(self, table, party):
+        alice, bob, carol = (table.chat(user.id) for user in party.users)
+        group = table.chat(party.chats[-1].id)
+        table.on(SendMessage, chat_id=alice.id).raises(TelegramForbiddenError, "blocked A")
+        table.on(SendMessage, chat_id=bob.id).raises(TelegramForbiddenError, "blocked B")
+
+        with pytest.raises(TelegramForbiddenError, match="blocked A"):
+            await table.bot.send_message(chat_id=alice.id, text="hi")
+        # The group is messaged in between, and consumes neither rule.
+        assert (await table.bot.send_message(chat_id=group.id, text="round 1")).text == "round 1"
+        with pytest.raises(TelegramForbiddenError, match="blocked B"):
+            await table.bot.send_message(chat_id=bob.id, text="hi")
+        assert (await table.bot.send_message(chat_id=carol.id, text="hi")).text == "hi"
+
+    async def test_a_mismatching_rule_is_not_consumed(self, table, party):
+        """
+        The property the whole redesign rests on: a rule the call does not match is
+        skipped without its ``times`` budget moving, so an earlier message to somebody
+        else cannot use it up.
+        """
+        alice, bob, _ = (table.chat(user.id) for user in party.users)
+        table.on(SendMessage, chat_id=alice.id).raises(TelegramForbiddenError, times=1)
+
+        await table.bot.send_message(chat_id=bob.id, text="not you")
+        await table.bot.send_message(chat_id=bob.id, text="still not you")
+
+        with pytest.raises(TelegramForbiddenError):
+            await table.bot.send_message(chat_id=alice.id, text="you")
+
+    async def test_several_field_filters_are_anded(self, env, private, team):
+        env.on(SendMessage, chat_id=private.id, text="secret").returns("caught")
+
+        assert await env.bot.send_message(chat_id=private.id, text="secret") == "caught"
+        assert (await env.bot.send_message(chat_id=team.id, text="secret")).text == "secret"
+        assert (await env.bot.send_message(chat_id=private.id, text="other")).text == "other"
+
+    async def test_filters_are_matched_against_the_resolved_method(self, blueprint, dp, private):
+        """
+        Defaults are filled in before an override is consulted, so a filter names the call
+        the API would have seen rather than the one the handler literally wrote.
+        """
+        blueprint.default = DefaultBotProperties(parse_mode=ParseMode.HTML)
+        environment = BotTestEnvironment(blueprint=blueprint, dispatcher=dp)
+        try:
+            environment.on(SendMessage, parse_mode=ParseMode.HTML).returns("caught")
+
+            assert await environment.bot.send_message(chat_id=private.id, text="hi") == "caught"
+        finally:
+            environment.dispose_sync()
+
+    async def test_where_narrows_by_an_arbitrary_predicate(self, env, private):
+        env.on(SendMessage).where(lambda call: "night" in (call.text or "")).returns("caught")
+
+        assert await env.bot.send_message(chat_id=private.id, text="night falls") == "caught"
+        assert (await env.bot.send_message(chat_id=private.id, text="dawn")).text == "dawn"
+
+    async def test_where_and_field_filters_compose(self, env, private, team):
+        env.on(SendMessage, chat_id=private.id).where(lambda call: call.text == "x").returns("hit")
+
+        assert await env.bot.send_message(chat_id=private.id, text="x") == "hit"
+        assert (await env.bot.send_message(chat_id=team.id, text="x")).text == "x"
+
+    async def test_a_predicate_applies_only_to_what_is_declared_after_it(self, env, private):
+        """
+        Each outcome keeps the matcher in force when it was declared, so narrowing a
+        builder between two declarations does not retroactively narrow the first.
+        """
+        builder = env.on(SendMessage).returns("wide", times=1)
+        builder.where(lambda call: call.text == "narrow").returns("narrow", times=1)
+
+        assert await env.bot.send_message(chat_id=private.id, text="anything") == "wide"
+        assert await env.bot.send_message(chat_id=private.id, text="narrow") == "narrow"
+
+    async def test_rules_are_tried_in_registration_order(self, env, private):
+        env.on(SendMessage).returns("general")
+        env.on(SendMessage, chat_id=private.id).returns("specific")
+
+        assert await env.bot.send_message(chat_id=private.id, text="hi") == "general"
+
+    def test_a_filter_on_an_unknown_field_is_refused(self, env):
+        with pytest.raises(TypeError, match="has no field\\(s\\) chat_di"):
+            env.on(SendMessage, chat_di=1)
+
+    def test_the_refusal_names_the_fields_that_do_exist(self, env):
+        with pytest.raises(TypeError, match="known fields: .*chat_id"):
+            env.on(SendMessage, chat_di=1)
+
+    def test_a_matcher_describes_itself(self, env, private):
+        plain = env.on(SendMessage).matcher()
+        narrowed = env.on(SendMessage, chat_id=private.id).where(_is_night).matcher()
+
+        assert plain.describe() == "SendMessage"
+        assert narrowed.describe() == f"SendMessage(chat_id={private.id!r}, where(_is_night))"
+
+
+def _is_night(call):
+    return "night" in (call.text or "")
+
+
+class TestOverrideHandles:
+    async def test_cancel_withdraws_only_its_own_rules(self, env, private, team):
+        cancelled = env.on(SendMessage, chat_id=private.id).raises(TelegramForbiddenError)
+        env.on(SendMessage, chat_id=team.id).raises(TelegramForbiddenError, "kept")
+
+        cancelled.cancel()
+
+        assert (await env.bot.send_message(chat_id=private.id, text="hi")).text == "hi"
+        with pytest.raises(TelegramForbiddenError, match="kept"):
+            await env.bot.send_message(chat_id=team.id, text="hi")
+
+    async def test_cancel_is_idempotent(self, env, private):
+        handle = env.on(SendMessage).raises(TelegramForbiddenError)
+
+        handle.cancel()
+        handle.cancel()
+
+        assert (await env.bot.send_message(chat_id=private.id, text="hi")).text == "hi"
+
+    async def test_cancelling_an_already_spent_rule_is_not_an_error(self, env, private):
+        handle = env.on(SendMessage).returns("once", times=1)
+        assert await env.bot.send_message(chat_id=private.id, text="hi") == "once"
+
+        handle.cancel()
+
+        assert handle.rules  # it still remembers what it declared
+        assert env.overrides.rules == []
+
+    async def test_a_handle_is_a_context_manager(self, env, private):
+        with (
+            env.on(SendMessage).raises(TelegramForbiddenError),
+            pytest.raises(
+                TelegramForbiddenError,
+            ),
+        ):
+            await env.bot.send_message(chat_id=private.id, text="hi")
+
+        assert (await env.bot.send_message(chat_id=private.id, text="hi")).text == "hi"
+
+
+class TestBlockedSugar:
+    """``env.blocked(chat_id=...)`` — the reported scenario, spelled the way it reads."""
+
+    async def test_scoped_block_stops_delivery_and_lifts_on_exit(self, table, party):
+        alice = table.chat(party.users[0].id)
+        group = table.chat(party.chats[-1].id)
+
+        with table.blocked(chat_id=alice.id):
+            with pytest.raises(TelegramForbiddenError, match="bot was blocked by the user"):
+                await table.bot.send_message(chat_id=alice.id, text="your role")
+            assert (await table.bot.send_message(chat_id=group.id, text="go")).text == "go"
+
+        assert (await table.bot.send_message(chat_id=alice.id, text="again")).text == "again"
+
+    async def test_two_players_can_be_blocked_at_once(self, table, party):
+        """The case that was impossible before: the engine's ordering no longer matters."""
+        alice, bob, carol = (table.chat(user.id) for user in party.users)
+
+        with table.blocked(chat_id=alice.id), table.blocked(chat_id=bob.id):
+            for blocked in (alice, bob):
+                with pytest.raises(TelegramForbiddenError):
+                    await table.bot.send_message(chat_id=blocked.id, text="your role")
+            assert (await table.bot.send_message(chat_id=carol.id, text="role")).text == "role"
+
+    async def test_every_delivery_method_is_blocked_not_only_send_message(self, table, party):
+        alice = table.chat(party.users[0].id)
+        group = table.chat(party.chats[-1].id)
+        posted = await table.bot.send_message(chat_id=group.id, text="announcement")
+
+        with table.blocked(chat_id=alice.id):
+            with pytest.raises(TelegramForbiddenError):
+                await table.bot.send_photo(chat_id=alice.id, photo="file-id")
+            with pytest.raises(TelegramForbiddenError):
+                await table.bot.send_chat_action(chat_id=alice.id, action="typing")
+            with pytest.raises(TelegramForbiddenError):
+                await table.bot.forward_message(
+                    chat_id=alice.id,
+                    from_chat_id=group.id,
+                    message_id=posted.message_id,
+                )
+            with pytest.raises(TelegramForbiddenError):
+                await table.bot.copy_message(
+                    chat_id=alice.id,
+                    from_chat_id=group.id,
+                    message_id=posted.message_id,
+                )
+
+    async def test_forwarding_out_of_the_blocked_chat_still_works(self, table, party):
+        """A block is about the destination: ``from_chat_id`` is not what it names."""
+        alice = table.chat(party.users[0].id)
+        group = table.chat(party.chats[-1].id)
+        posted = await table.bot.send_message(chat_id=alice.id, text="from Alice")
+
+        with table.blocked(chat_id=alice.id):
+            forwarded = await table.bot.forward_message(
+                chat_id=group.id,
+                from_chat_id=alice.id,
+                message_id=posted.message_id,
+            )
+
+        assert forwarded.text == "from Alice"
+
+    async def test_the_call_is_still_recorded(self, table, party):
+        """
+        Recording happens before overrides apply, on purpose — see `handle_call`. It is
+        what lets a test assert the bot *tried* to reach the addressee it should have.
+        """
+        alice = table.chat(party.users[0].id)
+
+        with table.blocked(chat_id=alice.id), pytest.raises(TelegramForbiddenError):
+            await table.bot.send_message(chat_id=alice.id, text="your role")
+
+        assert table.calls.last(SendMessage).text == "your role"
+
+    async def test_an_unscoped_block_is_cancelled_by_hand(self, table, party):
+        alice = table.chat(party.users[0].id)
+        block = table.blocked(chat_id=alice.id)
+
+        with pytest.raises(TelegramForbiddenError):
+            await table.bot.send_message(chat_id=alice.id, text="hi")
+        block.cancel()
+
+        assert (await table.bot.send_message(chat_id=alice.id, text="hi")).text == "hi"
+
+    async def test_a_block_accepts_a_declaration_rather_than_an_id(self, table, party):
+        with table.blocked(chat_id=party.users[0]), pytest.raises(TelegramForbiddenError):
+            await table.bot.send_message(chat_id=party.users[0].id, text="hi")
+
+    async def test_the_wording_can_be_replaced(self, table, party):
+        alice = table.chat(party.users[0].id)
+
+        with (
+            table.blocked(chat_id=alice.id, message="Forbidden: user is deactivated"),
+            pytest.raises(TelegramForbiddenError, match="user is deactivated"),
+        ):
+            await table.bot.send_message(chat_id=alice.id, text="hi")
+
+    def test_the_delivery_set_is_derived_rather_than_hand_kept(self):
+        """
+        Guards the prefix rule in `overrides`: it must cover the methods a block stops and
+        exclude the one ``Send``-prefixed method that addresses no chat.
+        """
+        names = {method.__name__ for method in DELIVERY_METHODS}
+
+        assert {"SendMessage", "SendPhoto", "SendChatAction"} <= names
+        assert {"CopyMessage", "CopyMessages", "ForwardMessage", "ForwardMessages"} <= names
+        assert "SendChatJoinRequestWebApp" not in names
+        assert "EditMessageText" not in names
 
 
 class TestADeclaredResultStaysTheTestsOwn:

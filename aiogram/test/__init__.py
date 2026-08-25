@@ -22,9 +22,17 @@ from .blueprint import (
     default_blueprint,
 )
 from .calls import CallLog, NoSuchCallError
-from .environment import BotTestEnvironment, build_environment
+from .environment import BotTestEnvironment, RouteRecord, build_environment
 from .errors import ApiRejection, WaitTimeoutError
-from .overrides import Outcome, OverrideBuilder
+from .overrides import (
+    BLOCKED_BY_USER,
+    DELIVERY_METHODS,
+    MethodMatcher,
+    Outcome,
+    OverrideBuilder,
+    OverrideHandle,
+    OverrideRule,
+)
 from .routing import detach_router
 from .session import FakeTelegramSession
 from .synthesis import SynthesisContext, SynthesisError, synthesize, synthesize_result
@@ -45,6 +53,8 @@ from .world import (
 
 __all__ = (
     "BASE_DATE",
+    "BLOCKED_BY_USER",
+    "DELIVERY_METHODS",
     "ApiRejection",
     "Blueprint",
     "BotProfileState",
@@ -60,9 +70,13 @@ __all__ = (
     "FakeTelegramSession",
     "MemberSpec",
     "MemberState",
+    "MethodMatcher",
     "NoSuchCallError",
     "Outcome",
     "OverrideBuilder",
+    "OverrideHandle",
+    "OverrideRule",
+    "RouteRecord",
     "SynthesisContext",
     "SynthesisError",
     "TopicSpec",

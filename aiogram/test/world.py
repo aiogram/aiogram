@@ -228,6 +228,42 @@ def _describe_messages(messages: list[Message], noun: str) -> str:
     return "\n".join(lines)
 
 
+def newest_match(
+    messages: list[Message],
+    predicate: Callable[[Message], object] | None,
+    *,
+    raised: dict[int, Exception] | None = None,
+) -> Message | None:
+    """
+    The newest message ``predicate`` accepts, by id rather than by position.
+
+    The matching rule every waiting helper in the toolkit shares, stated once: every match
+    is evaluated and the highest ``message_id`` among them wins, because "the last one the
+    list holds" is not the same thing as "the newest" for a chat that was told about a
+    message minted in another environment. ``predicate=None`` accepts anything.
+
+    **A predicate that raises counts as no match**, and the exception is not lost: pass
+    ``raised`` and it is collected there by message id, so the wait that gives up can
+    report a predicate that is simply buggy instead of quietly finding nothing. A chat
+    holds messages of every shape, and the natural ``m.text.startswith(...)`` blows up on
+    the first service message it meets.
+    """
+    newest: Message | None = None
+    for message in messages:
+        if predicate is not None:
+            try:
+                matched = predicate(message)
+            except Exception as error:
+                if raised is not None:
+                    raised[message.message_id] = error
+                continue
+            if not matched:
+                continue
+        if newest is None or message.message_id > newest.message_id:
+            newest = message
+    return newest
+
+
 async def _wait_for_message(
     view: Callable[[], list[Message]],
     predicate: Callable[[Message], object] | None,
@@ -258,19 +294,7 @@ async def _wait_for_message(
 
     def find() -> Message | None:
         raised.clear()
-        newest: Message | None = None
-        for message in view():
-            if predicate is not None:
-                try:
-                    matched = predicate(message)
-                except Exception as error:
-                    raised[message.message_id] = error
-                    continue
-                if not matched:
-                    continue
-            if newest is None or message.message_id > newest.message_id:
-                newest = message
-        return newest
+        return newest_match(view(), predicate, raised=raised)
 
     def describe_timeout() -> str:
         if description is not None:
@@ -823,6 +847,16 @@ class ChatState:
         return self.world.bound_bot if self.world is not None else None
 
     @property
+    def label(self) -> str:
+        """
+        How a failure message names this chat, the counterpart of :attr:`TopicState.label`.
+
+        Both are dumped by the same failure messages — a wait told to ``watch=`` a mix of
+        chats and topics — so both have to be able to say what they are.
+        """
+        return f"chat {self.id}"
+
+    @property
     def default_wait_timeout(self) -> float:
         """
         How long :meth:`wait_for_message` waits when the call does not say, from the world.
@@ -962,7 +996,7 @@ class ChatState:
             predicate,
             description,
             noun="chat",
-            where=f"chat {self.id}",
+            where=self.label,
             timeout=self.default_wait_timeout if timeout is None else timeout,
             interval=interval,
         )
@@ -1209,15 +1243,35 @@ class World:
         its life, and covers ``__post_init__`` too: the generated ``__init__`` assigns
         ``chats`` like anything else, so the declared mapping is converted right here.
 
-        A :class:`ChatRegistry` that belongs to a *different* world is rewrapped too, not
-        merely converted: ``w2.chats = w1.chats`` passes the ``isinstance`` check as-is, so
-        without checking ``value.world`` every chat already in it — and every chat added to
-        w2 afterwards, since assignment leaves the registry's own ``world`` pointer at
-        ``w1`` — would be wired to the wrong world and bind its messages to the wrong bot.
-        A registry that already belongs to *this* world is left alone by identity, so
-        ``world.chats = world.chats`` stays a no-op rather than rebuilding the mapping.
+        A live :class:`ChatRegistry` **belonging to another world is refused outright**.
+        ``w2.chats = w1.chats`` passes the ``isinstance`` check as-is, so the first fix was
+        to rewrap it — and rewrapping is worse than the bug it fixed. A registry holds the
+        donor's own :class:`ChatState` objects, not copies, and registering them here
+        rewrites ``chat.world`` on the shared objects: w1 keeps a registry full of chats
+        that now answer "my world is w2" and bind their messages to *w2's* bot. Stealing
+        one world's chats to fix another's wiring is not a trade this can make silently, so
+        it does not make it at all.
+
+        A plain mapping is still converted, which is the case that motivated all of this:
+        ``world.chats = {chat.id: chat}`` is the obvious way to rebuild a world in a test,
+        and a plain :class:`dict` there means unwired chats whose messages are silently
+        never bound. A registry that already belongs to *this* world is left alone by
+        identity, so ``world.chats = world.chats`` stays a no-op rather than rebuilding the
+        mapping.
         """
-        if name == "chats" and (not isinstance(value, ChatRegistry) or value.world is not self):
+        if name == "chats" and not (isinstance(value, ChatRegistry) and value.world is self):
+            if isinstance(value, ChatRegistry):
+                msg = (
+                    "Cannot assign another world's live ChatRegistry: a world owns its "
+                    "chats, and registering them here would rewrite `chat.world` on the "
+                    "very objects the donor world still holds — binding its messages to "
+                    "this world's bot.\n"
+                    "If sharing the chat objects is what you meant, say so explicitly:\n"
+                    "  world.chats = dict(other.chats)      # same ChatState objects, "
+                    "moved to this world\n"
+                    "  world.chats = copy.deepcopy(dict(other.chats))  # independent copies"
+                )
+                raise WorldLookupError(msg)
             registry = ChatRegistry(self)
             registry.update(value)
             value = registry
