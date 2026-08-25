@@ -337,6 +337,16 @@ unfamiliar:
 
 .. code-block:: python
 
+    await bot_env.bot.send_message(
+        chat_id=team.id,
+        text="Boost us!",
+        reply_markup=InlineKeyboardMarkup(
+            inline_keyboard=[[
+                InlineKeyboardButton(text="Boost", url="https://t.me/boost/durov"),
+            ]],
+        ),
+    )
+
     await bot_env.user(alice).in_(team).follow_deep_link("https://t.me/boost/durov")
     # WorldLookupError: 'https://t.me/boost/durov' is a boost link, which opens the boost
     # screen of a channel, not a bot deep link; only `t.me/<username>[?start=<payload>]`
@@ -927,19 +937,54 @@ context manager, scoping an override to one block:
 The player blocked the bot
 ---------------------------
 
-``bot_env.blocked(chat_id=...)`` is that scenario spelled out directly, and it covers more than
-``sendMessage`` — a block a real user applies stops *every* method that delivers into their
-chat: photos, chat actions, copies, forwards, and any future ``send*``/``copy*``/``forward*``
-method a Bot API bump adds, via :data:`aiogram.test.DELIVERY_METHODS`:
+``bot_env.blocked(chat_id)`` is that scenario spelled out directly — despite the keyword's
+name, it accepts a bare id, a ``ChatSpec``/``ChatState`` or a ``UserSpec``/``UserState``, since
+a user's own private chat is addressed by their id. It covers more than ``sendMessage``: a real
+block stops *every* call that delivers into that chat —
+photos, chat actions, copies, forwards, and any future ``send*``/``copy*``/``forward*`` method
+a Bot API bump adds, via :data:`aiogram.test.DELIVERY_METHODS` — **and** every call that acts
+on what is already in that chat instead of delivering into it: the ``editMessage*`` family,
+``stopMessageLiveLocation``, ``stopPoll``, ``setMessageReaction``, and
+``pinChatMessage``/``unpinChatMessage``/``unpinAllChatMessages``. The full set a block stops is
+:data:`aiogram.test.BLOCKED_METHODS`, which extends ``DELIVERY_METHODS`` with those additions:
 
 .. code-block:: python
 
+    from aiogram.test import BLOCKED_BY_USER
+
     with bot_env.blocked(chat_id=alice.id):
         await bot_user.send("/start")   # the group still gets its message
-        with pytest.raises(TelegramForbiddenError, match="bot was blocked by the user"):
+        with pytest.raises(TelegramForbiddenError, match=BLOCKED_BY_USER):
             await bot_env.bot.send_message(chat_id=alice.id, text="your role")
 
     await bot_env.bot.send_message(chat_id=alice.id, text="again")  # alice is unblocked again
+
+:data:`~aiogram.test.BLOCKED_BY_USER` is the same string ``blocked()`` raises with by default,
+so a test asserts against the constant instead of a copy-pasted literal that could drift from
+it.
+
+``deleteMessage``/``deleteMessages`` are a deliberate exclusion from ``BLOCKED_METHODS``: the
+Bot API states their limits in terms of message age and administrator rights, not of
+reachability, and a bot dropping its own leftovers is not delivering anything — guessing a 403
+there would fail a cleanup path in tests that succeeds in production, the more expensive
+mistake of the two. A test that knows better declares it in one line:
+``bot_env.on(DeleteMessage, chat_id=alice.id).raises(TelegramForbiddenError)``.
+
+Some methods name the blocked party as ``user_id`` rather than ``chat_id`` — ``sendGift`` is
+the one that forces the question, since a bot thanking a user reaches for ``user_id`` with no
+``chat_id`` in sight. ``blocked(...)`` still catches it: the recipe registers a rule on every
+addressing field a blocked method actually has, ``chat_id`` **or** ``user_id``:
+
+.. code-block:: python
+
+    with bot_env.blocked(chat_id=alice.id), pytest.raises(TelegramForbiddenError):
+        await bot_env.bot.send_gift(gift_id="gift-1", user_id=alice.id)
+
+``chat_id`` (and its siblings ``from_chat_id``, ``sender_chat_id``) is resolved through the
+world before comparison, on both a block and a plain ``env.on(...)`` filter alike, so
+``'@alice'`` and Alice's numeric id compare equal: a block declared with the numeric id still
+catches a call the bot addresses as ``chat_id="@alice"``, and a filter declared with
+``chat_id="@alice"`` still catches a call addressed by the numeric id.
 
 Two players can be blocked independently — ``with bot_env.blocked(chat_id=alice.id),
 bot_env.blocked(chat_id=bob.id):`` — which is the case a single untargeted
@@ -957,6 +1002,31 @@ with ``with``:
 
 Pass ``message=`` to get a different refusal than a block — ``"Forbidden: user is
 deactivated"``, for instance — through the same recipe.
+
+An override that never fires
+-----------------------------
+
+A misspelled field filter — ``env.on(SendMessage, chat_di=alice.id)`` — is caught immediately
+if the field does not exist at all, but not if it does and simply never matches anything: a
+chat id one digit off, a ``where`` predicate that is subtly wrong, a rule declared after the
+call it meant to intercept. The rule sits in the registry doing nothing, the bot behaves as if
+it were never declared, and the test fails somewhere else entirely — "the bot sent the message
+it was supposed to fail to send."
+
+``bot_env.assert_overrides_consumed()`` names every declared override that never answered a
+call:
+
+.. code-block:: python
+
+    with bot_env.blocked(chat_id=alice.id):
+        await bot_user.send("/broadcast")
+    bot_env.assert_overrides_consumed()
+
+It is opt-in rather than automatic teardown, because a test that declares a rule for a path it
+does *not* expect to be taken is a perfectly good test — proving the bot never went there. The
+same listing is appended to every ``wait_for`` and ``wait_for_message_in`` timeout, since a
+never-matched override is the single most common reason a message a test is waiting for never
+arrives.
 
 Recording happens before an override answers
 -----------------------------------------------
@@ -999,7 +1069,8 @@ went, exception included, rather than only "not handled":
 .. code-block:: python
 
     bot_env.assert_handled_by("on_join")
-    # AssertionError: Expected the last update to be handled by 'on_join', but:
+    # AssertionError: Expected the last trigger to be handled by 'on_join', but its 1
+    # update(s) went here:
     # update id=... (message) was handled
     #   handler: handlers.other.log_everything
     #   router:  fallback
@@ -1024,9 +1095,46 @@ leaves a test staring at a missing reply with no clue that a handler ever raised
     assert bot_env.last_route.handler and "boom" in bot_env.last_route.handler
     assert isinstance(bot_env.last_route.exception, RuntimeError)
 
-``last_route`` is cleared at the start of every ``feed`` and set once that update finishes
-routing, so after a handler that itself feeds a further update it still names the *outer*
-update — the one the test's own trigger fed. It is ``None`` until the first update is fed.
+One thing a test does is often more than one update. A real join delivers a ``chat_member``
+transition *and* the group's own ``new_chat_members`` service message (see `Joining and
+leaving`_), and a bot that handles the first and ignores the second used to make
+``bot_env.assert_handled_by("on_user_joined")`` fail — "the last update" was the service
+message nobody claimed, even though the join was handled correctly. So ``last_route``,
+``routes`` and ``assert_handled_by`` all reason about a **trigger scope**, one thing the test
+did, rather than one update — which is what lets a multi-update trigger like ``join()`` /
+``add_bot()`` assert cleanly with no ceremony at all:
+
+.. code-block:: python
+
+    await member.join()  # feeds chat_member, then new_chat_members
+
+    bot_env.assert_handled_by("on_user_joined")  # matches whichever update the bot claimed
+
+A test writing a multi-update helper of its own opens the same scope explicitly with
+:meth:`~aiogram.test.BotTestEnvironment.trigger`:
+
+.. code-block:: python
+
+    with bot_env.trigger():
+        await alice.send("/deal")
+        await bob.send("/deal")
+    bot_env.assert_handled_by("on_deal")   # scans both updates
+
+:attr:`~aiogram.test.BotTestEnvironment.routes` is every record of the current scope, in the
+order routing finished. :attr:`~aiogram.test.BotTestEnvironment.last_route` is the **newest
+handled** record among them, falling back to the newest record of any kind only when nothing
+in the scope was handled at all — the ordering that lets the join example above report the
+update the handler actually claimed, rather than whichever of the two Telegram happens to
+deliver last, while a scope nothing reacted to still reports "NOT handled" instead of hiding
+behind an earlier, unrelated success. ``assert_handled_by`` scans **every** record of the
+scope, not only the newest, and its failure message dumps all of them — including any
+exception raised and swallowed along the way.
+
+Nesting is counted, so a helper that opens its own ``trigger()`` inside a wider one does not
+close the outer scope early. A bare ``feed`` — a plain ``await bot_user.send(...)`` outside any
+explicit ``trigger()`` block and not itself fed from inside a running handler — opens a scope
+of its own, which is what keeps the common one-update case free of ceremony. ``routes`` is
+empty and ``last_route`` is ``None`` until the first update is fed.
 
 Finite state machine
 ====================
@@ -1105,8 +1213,8 @@ Dumping what the bot said instead
 
 A general ``wait_for`` can only report the condition it was given, and the condition is a
 lambda over the bot's own state — while the answer to "why did it never become true" is
-almost always in what the bot said *instead*. ``watch=`` names one chat or topic, or any
-iterable of them, and each is appended to the timeout message the way
+almost always in what the bot said *instead*. ``watch=`` names one chat or topic to dump, or
+any iterable of them, and each is appended to the timeout message the way
 ``wait_for_message``'s own failure already renders one:
 
 .. code-block:: python
@@ -1116,6 +1224,13 @@ iterable of them, and each is appended to the timeout message the way
     # In chat -100...: The chat holds 3 message(s):
     #   #1 'Waiting for players...'
     #   ...
+
+``watch=`` and ``wait_for_message_in``'s ``chats=`` speak one shared vocabulary, resolved by
+:meth:`~aiogram.test.BotTestEnvironment.as_views`: a blueprint's ``ChatSpec``/``TopicSpec``
+declaration, a live ``ChatState``/``TopicState``, or a bare chat id — one of them on its own,
+or any iterable of them mixed freely. A timeout also appends a listing of any override this
+environment declared that never answered a call — see `An override that never fires`_ — since
+that is the single most common reason a message a wait is looking for never arrives.
 
 Waiting for a broadcast
 -------------------------
@@ -1137,10 +1252,15 @@ together and returns once all of them hold a match:
     )
     assert keyboards[alice.id].reply_markup is not None
 
-``chats`` accepts blueprint declarations, resolved chat states and bare ids, mixed freely,
-and the newest match per chat wins, exactly as a single ``wait_for_message`` picks it. A
-timeout names only the chats that are still missing a match, not the ones that already have
-one — the difference between "somebody didn't get it" and a readable diagnosis.
+``chats`` accepts the same vocabulary as ``watch=`` above — declarations, live chat and topic
+states, bare ids, one or an iterable, mixed freely — so a broadcast into one thread of a forum
+is expressible too, and the newest match per chat wins, exactly as a single
+``wait_for_message`` picks it. A predicate that raises on a message counts as "no match" for
+that message rather than failing the wait, and — again as the single-chat wait does — what it
+raised is reported once the wait gives up, per chat. A timeout names only the chats that are
+still missing a match, not the ones that already have one — the difference between "somebody
+didn't get it" and a readable diagnosis — and, as with any wait, appends a listing of any
+override that never fired.
 
 How long a wait runs before giving up is set once, on the environment — override the
 ``bot_env_wait_timeout`` fixture to say it for a whole suite, the same way ``bot_blueprint``
@@ -1289,13 +1409,44 @@ awaits every task the test left running, and reports how many there were:
 
         await bot_env.drain()
 
-Only tasks created *after* the environment was built count as this test's; a session-scoped
-fixture's own background worker is left alone. ``drain`` is deliberately **not** called by
-``dispose`` / ``dispose_sync``: the pytest fixture's teardown is synchronous and cannot
-await anything, so an automatic drain would work in one teardown path and silently not in
-the other — and cancelling tasks a test never mentioned, as an invisible side effect of a
-fixture going out of scope, turns "my bot's scheduler stopped" into a mystery. A test that
-wants its tasks gone says so.
+Only tasks created *after* the environment was built count as this test's; a task already
+running is left alone. "Already running" is checked twice, and the second check is the one
+that matters in practice: the ``bot_env`` fixture is synchronous, so an environment is usually
+built with no event loop running at all, and the snapshot taken at construction is empty. The
+protection is extended again at this environment's **first asynchronous entry point** — the
+first ``feed`` or the first intercepted Bot API call — which is the earliest moment a loop is
+guaranteed to exist and still before the bot under test can have spawned anything of its own.
+That is what spares a session-scoped fixture's own background worker: it is already running
+by the time this environment does anything asynchronous, so it is protected exactly like a
+task that predates construction, and the first test in a session to call ``drain()`` does not
+kill it out from under every later test.
+
+A task that fails on its own, or ends with something other than the cancellation ``drain()``
+sent it, is not swallowed: retrieving its result is what stops asyncio complaining about it
+later, and discarding that result would make ``drain()`` itself the thing hiding a real bug —
+a night timer that died with a ``KeyError`` would look exactly like one cancelled on time. So
+a failure is re-raised as :class:`aiogram.test.DrainedTaskError`, naming every task that
+failed, with the first one's real traceback chained as its cause:
+
+.. code-block:: python
+
+    from aiogram.test import DrainedTaskError
+
+    async def test_scheduler_reports_its_own_bug(bot_env, bot_user):
+        await bot_user.send("/start")   # the scheduled task has a bug and will raise
+
+        with pytest.raises(DrainedTaskError, match="ended with an exception"):
+            await bot_env.drain()
+
+A task that instead swallows its own cancellation and is still running after ``timeout``
+raises :class:`~aiogram.test.WaitTimeoutError`, distinct from a task that ran and failed —
+the two are different bugs and get different exceptions.
+
+``drain`` is deliberately **not** called by ``dispose`` / ``dispose_sync``: the pytest
+fixture's teardown is synchronous and cannot await anything, so an automatic drain would work
+in one teardown path and silently not in the other — and cancelling tasks a test never
+mentioned, as an invisible side effect of a fixture going out of scope, turns "my bot's
+scheduler stopped" into a mystery. A test that wants its tasks gone says so.
 
 .. warning::
 
@@ -1407,12 +1558,38 @@ what says "take the status away" instead. It drops the member to ``MEMBER`` and 
 the granted rights and the custom title, while the member's ``tag`` survives it, since a
 tag belongs to the membership rather than to the administrator status.
 
-Both refuse to touch the chat's owner, exactly as ``promoteChatMember`` does:
+Dispatcher data goes through the keyword-only ``data=`` mapping, spelled the same way on
+both triggers even though only ``promote()`` competes for the rest of its keyword space with
+rights:
+
+.. code-block:: python
+
+    await admin.in_(team).promote(alice, can_pin_messages=True, data={"db": db})
+    await admin.in_(team).demote(alice, data={"db": db})
+
+A right ``promote()`` does not recognise is a typo, not something silently dropped — a
+misspelled ``promote(can_pin_message=True)`` (missing the trailing ``s``) would otherwise
+grant nothing and fail later on the bot's own "missing right" branch, with no clue which
+right or why:
+
+.. code-block:: python
+
+    await admin.in_(team).promote(can_pin_message=True)
+    # TypeError: ChatAdministratorRights has no right(s) can_pin_message, so promoting
+    # with them would silently grant nothing.
+    #   known rights: ...
+
+Both refuse to touch the chat's owner, exactly as ``promoteChatMember`` does — raised as
+:class:`~aiogram.test.WorldLookupError`, not the ``ApiRejection`` the raw call itself would
+raise, since a trigger arranges the world rather than asking the API for anything:
 
 .. code-block:: python
 
     await admin.in_(team).promote(subject=owner, can_delete_messages=True)
-    # ApiRejection: can't remove chat owner
+    # WorldLookupError: can't remove chat owner: this trigger arranges the world, and no
+    # administrator can take the owner's standing away, so there is no state for it to
+    # arrange. To test how the bot handles the API refusing its own promoteChatMember
+    # call, have the bot make that call instead.
 
 A join *request* is world state, so the approve and decline methods have something real to
 act on:
@@ -1962,6 +2139,10 @@ API reference
 .. autoclass:: aiogram.test.ApiRejection
 
 .. autoclass:: aiogram.test.WaitTimeoutError
+
+.. autoclass:: aiogram.test.DrainedTaskError
+
+.. autoclass:: aiogram.test.NoFileContentError
 
 Fixtures
 --------

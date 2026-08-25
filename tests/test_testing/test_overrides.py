@@ -6,9 +6,15 @@ from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ChatMemberStatus, ParseMode
 from aiogram.exceptions import TelegramBadRequest, TelegramForbiddenError, TelegramRetryAfter
 from aiogram.methods import GetChatAdministrators, GetChatMember, SendMessage
-from aiogram.test import DELIVERY_METHODS, Blueprint, BotTestEnvironment
+from aiogram.test import (
+    BLOCKED_METHODS,
+    DELIVERY_METHODS,
+    Blueprint,
+    BotTestEnvironment,
+    WaitTimeoutError,
+)
 from aiogram.test.overrides import fresh_result
-from aiogram.types import Chat, ChatMemberMember, Message, User
+from aiogram.types import Chat, ChatMemberMember, Message, ReactionTypeEmoji, User
 
 #: Declared once and reused by every test below, the way a real suite declares a fixture
 #: response — which is exactly the object an override must never hand out by reference.
@@ -519,3 +525,268 @@ class TestADeclaredResultStaysTheTestsOwn:
         assert SHARED_ANSWER.bot is None
         assert from_first.bot is first.bot
         assert from_second.bot is second.bot
+
+
+@pytest.fixture
+def named_party():
+    """A blueprint whose users carry usernames, so `@alice` is addressable at all."""
+    blueprint = Blueprint()
+    players = [
+        blueprint.add_user(name, username=name.lower()) for name in ("Alice", "Bob", "Carol")
+    ]
+    for player in players:
+        blueprint.add_private_chat(player)
+    blueprint.add_supergroup(
+        "Table",
+        members=dict.fromkeys(players, ChatMemberStatus.MEMBER),
+    )
+    return blueprint
+
+
+@pytest.fixture
+def named_table(named_party):
+    environment = BotTestEnvironment(blueprint=named_party)
+    try:
+        yield environment
+    finally:
+        environment.dispose_sync()
+
+
+class TestUsernameAddressing:
+    """
+    A chat has two spellings and a matcher used to know only one.
+
+    The reported failure: the world resolves ``chat_id='@alice'`` to Alice's private chat
+    perfectly well — `resolve_chat` has always done it — while an override or a
+    :meth:`blocked` addressed at the numeric id compared ``'@alice' != 1`` and silently
+    never fired. The rule was simply absent, and the bot "succeeded" at a send a real
+    blocked user never receives.
+    """
+
+    async def test_a_block_by_id_catches_a_call_addressed_by_username(
+        self,
+        named_table,
+        named_party,
+    ):
+        alice = named_party.users[0]
+
+        with named_table.blocked(alice), pytest.raises(TelegramForbiddenError):
+            await named_table.bot.send_message(chat_id="@alice", text="your role")
+
+    async def test_a_rule_by_username_catches_a_call_addressed_by_id(
+        self,
+        named_table,
+        named_party,
+    ):
+        """Normalization is symmetric: it happens on both sides of the comparison."""
+        alice = named_party.users[0]
+        named_table.on(SendMessage, chat_id="@alice").raises(TelegramForbiddenError, "blocked")
+
+        with pytest.raises(TelegramForbiddenError, match="blocked"):
+            await named_table.bot.send_message(chat_id=alice.id, text="hi")
+
+    async def test_the_leading_at_is_optional_on_either_side(self, named_table, named_party):
+        named_table.on(SendMessage, chat_id="alice").raises(TelegramForbiddenError, "blocked")
+
+        with pytest.raises(TelegramForbiddenError, match="blocked"):
+            await named_table.bot.send_message(chat_id=named_party.users[0].id, text="hi")
+
+    async def test_another_chats_username_is_not_caught(self, named_table, named_party):
+        """The normalization must not make the matcher *looser* than it says it is."""
+        with named_table.blocked(named_party.users[0]):
+            assert (await named_table.bot.send_message(chat_id="@bob", text="hi")).text == "hi"
+
+    async def test_an_unknown_username_matches_nothing(self, named_table, named_party):
+        """
+        A name this world cannot resolve stays itself, so it compares unequal to every id.
+        That is the honest answer: nothing here can say whether it is the chat meant.
+        """
+        named_table.on(SendMessage, chat_id="@nobody").raises(TelegramForbiddenError)
+
+        assert (
+            await named_table.bot.send_message(chat_id=named_party.users[0].id, text="hi")
+        ).text == "hi"
+
+    def test_a_declared_user_resolves_even_before_their_chat_is_open(self, env, blueprint):
+        """
+        A private chat's id *is* the user id, so the world can answer for a user whose chat
+        nothing has opened yet — which is exactly the state a blueprint that only declared
+        the user is in.
+        """
+        alice = blueprint.users[0]
+        env.world.chats.clear()
+
+        assert env.resolve_addressing("@alice") == alice.id
+        assert env.resolve_addressing("@nobody") == "@nobody"
+        assert env.resolve_addressing(alice.id) == alice.id
+
+
+class TestBlockedCoversMoreThanDelivery:
+    """
+    A block stops everything the bot does *in* that chat, not only what it sends into it.
+
+    The gap: a bot whose fallback for a failed send is "edit the previous message" or
+    "unpin the stale one" passed a test its users never pass, because those methods sailed
+    through a block that only knew about the ``Send``/``Copy``/``Forward`` prefixes.
+    """
+
+    async def test_editing_a_message_in_the_blocked_chat_fails(self, table, party):
+        alice = table.chat(party.users[0].id)
+        posted = await table.bot.send_message(chat_id=alice.id, text="your role")
+
+        with table.blocked(chat_id=alice.id):
+            with pytest.raises(TelegramForbiddenError):
+                await table.bot.edit_message_text(
+                    chat_id=alice.id,
+                    message_id=posted.message_id,
+                    text="your new role",
+                )
+            with pytest.raises(TelegramForbiddenError):
+                await table.bot.edit_message_reply_markup(
+                    chat_id=alice.id,
+                    message_id=posted.message_id,
+                )
+
+    async def test_pinning_in_the_blocked_chat_fails(self, table, party):
+        alice = table.chat(party.users[0].id)
+        posted = await table.bot.send_message(chat_id=alice.id, text="your role")
+
+        with table.blocked(chat_id=alice.id):
+            with pytest.raises(TelegramForbiddenError):
+                await table.bot.pin_chat_message(
+                    chat_id=alice.id,
+                    message_id=posted.message_id,
+                )
+            with pytest.raises(TelegramForbiddenError):
+                await table.bot.unpin_chat_message(chat_id=alice.id)
+            with pytest.raises(TelegramForbiddenError):
+                await table.bot.unpin_all_chat_messages(chat_id=alice.id)
+
+    async def test_reacting_in_the_blocked_chat_fails(self, table, party):
+        alice = table.chat(party.users[0].id)
+        posted = await table.bot.send_message(chat_id=alice.id, text="your role")
+
+        with table.blocked(chat_id=alice.id), pytest.raises(TelegramForbiddenError):
+            await table.bot.set_message_reaction(
+                chat_id=alice.id,
+                message_id=posted.message_id,
+                reaction=[ReactionTypeEmoji(emoji="👍")],
+            )
+
+    async def test_a_gift_addressed_by_user_id_is_blocked(self, table, party):
+        """
+        ``sendGift`` takes ``user_id`` *or* ``chat_id``, and a bot thanking a user reaches
+        for the former — so a block keyed on ``chat_id`` alone let it through.
+        """
+        alice = party.users[0]
+
+        with table.blocked(chat_id=alice.id), pytest.raises(TelegramForbiddenError):
+            await table.bot.send_gift(gift_id="gift-1", user_id=alice.id)
+
+    async def test_another_chat_is_untouched_by_any_of_it(self, table, party):
+        """The whole point of a scoped block: the group still hears from the bot."""
+        alice = table.chat(party.users[0].id)
+        group = table.chat(party.chats[-1].id)
+        posted = await table.bot.send_message(chat_id=group.id, text="announcement")
+
+        with table.blocked(chat_id=alice.id):
+            edited = await table.bot.edit_message_text(
+                chat_id=group.id,
+                message_id=posted.message_id,
+                text="announcement (edited)",
+            )
+            assert edited.text == "announcement (edited)"
+            await table.bot.pin_chat_message(chat_id=group.id, message_id=posted.message_id)
+            await table.bot.set_message_reaction(
+                chat_id=group.id,
+                message_id=posted.message_id,
+                reaction=[ReactionTypeEmoji(emoji="👍")],
+            )
+
+    async def test_deleting_is_deliberately_not_blocked(self, table, party):
+        """
+        Documented exclusion, pinned so it stays a decision rather than an oversight: the
+        Bot API states deleteMessage's limits in terms of message age and rights, not of
+        reachability, and a bot dropping its own leftovers delivers nothing. A test that
+        knows better declares it in one line.
+        """
+        alice = table.chat(party.users[0].id)
+        posted = await table.bot.send_message(chat_id=alice.id, text="your role")
+
+        with table.blocked(chat_id=alice.id):
+            assert await table.bot.delete_message(
+                chat_id=alice.id,
+                message_id=posted.message_id,
+            )
+
+    def test_the_blocked_set_extends_the_delivery_set_rather_than_replacing_it(self):
+        names = {method.__name__ for method in BLOCKED_METHODS}
+
+        assert {method.__name__ for method in DELIVERY_METHODS} <= names
+        assert {"EditMessageText", "PinChatMessage", "SetMessageReaction", "StopPoll"} <= names
+        assert "DeleteMessage" not in names
+        assert "SendGift" in names
+
+
+class TestNeverMatchedOverridesAreNamed:
+    """
+    The silent failure that motivated `MethodMatcher.describe` having a caller at all.
+
+    A rule whose field is one digit off registers fine, matches nothing, and the bot goes
+    on behaving as if it had never been declared — so the test fails much later and
+    somewhere else, as "the bot sent the message it was supposed to fail to send".
+    """
+
+    async def test_the_assertion_names_the_rule_that_never_fired(self, table, party):
+        table.on(SendMessage, chat_id=party.users[0].id + 999).raises(TelegramForbiddenError)
+
+        with pytest.raises(AssertionError, match="never matched a call") as failure:
+            table.assert_overrides_consumed()
+        assert "SendMessage(chat_id=" in str(failure.value)
+
+    async def test_a_rule_that_fired_is_not_named(self, table, party):
+        alice = table.chat(party.users[0].id)
+        table.on(SendMessage, chat_id=alice.id).raises(TelegramForbiddenError)
+
+        with pytest.raises(TelegramForbiddenError):
+            await table.bot.send_message(chat_id=alice.id, text="hi")
+
+        table.assert_overrides_consumed()
+
+    async def test_a_cancelled_rule_is_not_named(self, table, party):
+        """Withdrawing a declaration is not the same as declaring one that never matched."""
+        handle = table.on(SendMessage, chat_id=party.users[0].id).raises(TelegramForbiddenError)
+        handle.cancel()
+
+        table.assert_overrides_consumed()
+
+    async def test_a_wait_timeout_names_them_too(self, table, party):
+        """
+        The cheapest place the diagnosis actually reaches a reader: the wait that is about
+        to time out *because* the override never fired.
+        """
+        alice = table.chat(party.users[0].id)
+        table.on(SendMessage, chat_id=alice.id + 999).raises(TelegramForbiddenError)
+
+        with pytest.raises(WaitTimeoutError) as failure:
+            await table.wait_for(lambda: False, "something", timeout=0.01)
+
+        assert "never matched a call" in str(failure.value)
+        assert "SendMessage(chat_id=" in str(failure.value)
+
+    async def test_a_predicate_rule_describes_itself_by_name(self, table):
+        def only_night_messages(call):  # pragma: no cover - never invoked, never matched
+            return "night" in (call.text or "")
+
+        table.on(SendMessage).where(only_night_messages).raises()
+
+        with pytest.raises(AssertionError, match="only_night_messages"):
+            table.assert_overrides_consumed()
+
+    async def test_a_broadcast_timeout_names_them_as_well(self, table, party):
+        table.on(SendMessage, chat_id=party.users[0].id + 999).raises(TelegramForbiddenError)
+
+        with pytest.raises(WaitTimeoutError) as failure:
+            await table.wait_for_message_in([party.users[0].id], timeout=0.01)
+
+        assert "never matched a call" in str(failure.value)

@@ -18,7 +18,10 @@ message a real client shows alongside the membership update, in the order Telegr
 the two — pass ``service_message=False`` for the previous single-update behavior. A
 misdirected ``click()`` — a button that genuinely exists, in some chat the actor forgot to
 ``.in_()`` — is named in the failure instead of reading identically to a plain typo in
-``callback_data``.
+``callback_data``. ``promote()``/``demote()`` take dispatcher data through a keyword-only
+``data=`` mapping rather than competing with rights for ``**kwargs``, and a right
+``promote()`` does not recognise — a misspelled ``can_pin_message`` — raises ``TypeError``
+naming the ones that do exist instead of silently granting nothing.
 A user's own private chat with the bot does not have to be declared at all: Telegram lets
 anyone open one, so it opens on demand, shaped exactly like a declared one — on the paths a
 user drives, which are the only ones where it can happen, since a bot cannot write into a
@@ -43,9 +46,15 @@ refused rather than delivered to the handler, unless the call opts out with
 Results are mounted to the bot exactly as parsed responses are, so shortcuts work on them
 and on every object nested inside them, while the objects a test hands to a call stay the
 test's own — the world keeps copies of them, and hands out copies of what it stores.
-Assigning one world's live chat registry to another's ``chats`` now raises instead of
-silently rewiring the donor's own chats to the receiving world's bot; copy explicitly
-(``dict(other.chats)``) when sharing the chat objects is what a test means.
+A chat's ownership is now enforced per chat rather than only at whole-registry assignment:
+registering a :class:`aiogram.test.ChatState` that already belongs to another world raises,
+whether it arrives through ``world.chats = other.chats``, through
+``world.chats = dict(other.chats)``, or one item at a time — a live registry holds the
+donor's own chat objects, and installing any of them here would rewrite ``chat.world`` on
+what the donor world still holds, silently binding its messages to this world's bot instead.
+Moving a chat between worlds is still possible, said explicitly: detach it first
+(``chat.world = None``) before registering it in the new world, rebuild it from its
+blueprint declaration, or hand over a deep copy.
 
 The world models the surfaces a bot's own logic depends on: sending, editing, moving,
 pinning and deleting messages; polls and reactions; chat administration and membership,
@@ -63,11 +72,21 @@ now be targeted to a call's resolved fields (``chat_id=alice.id``) or an arbitra
 and a per-player DM — can be given different outcomes without reordering the production
 code to serve the interesting recipient first; a rule whose fields do not match a call is
 skipped without spending its ``times`` budget. ``env.blocked(chat_id=...)`` is the common
-case of one recipient refusing every delivery method at once, scoped with ``with`` or
-cancelled by hand through the handle every ``.on(...)`` call now also returns. Every
-recorded call, including one an override goes on to refuse, is logged **before** the
-override answers it, so a test can assert both that the bot tried to reach the right
-addressee and that it coped with being refused. The
+case of one recipient refusing every method a block stops, not only delivery: the
+``editMessage*`` family, ``pinChatMessage`` and ``setMessageReaction`` are covered too, since
+a bot that reacts to a failed send by editing its previous message must be seen to fail at
+that as well — see :data:`aiogram.test.BLOCKED_METHODS`, whose one documented exclusion is
+``deleteMessage`` (a bot dropping its own leftovers is not *delivering* anything, so a block
+does not guess at it). A method addressed by ``user_id`` rather than ``chat_id`` —
+``sendGift`` — is blocked too, and a block or an override addressed by chat id still catches
+a call the bot spells as ``@username``, and vice versa. It is scoped with ``with`` or
+cancelled by hand through the handle every ``.on(...)`` call now also returns, and raises the
+shared :data:`aiogram.test.BLOCKED_BY_USER` message by default. Every recorded call,
+including one an override goes on to refuse, is logged **before** the override answers it, so
+a test can assert both that the bot tried to reach the right addressee and that it coped with
+being refused. ``env.assert_overrides_consumed()`` names any declared override that never
+answered a call — the usual reason a bot behaves as if it were never declared — and the same
+listing is appended to a ``wait_for``/``wait_for_message_in`` timeout. The
 documentation names which surfaces are deliberately left that way, and which are merely
 waiting for demand.
 
@@ -92,10 +111,17 @@ the most recently fed update handled, which handler and router won, and the exce
 inside the middleware chain or the handler even when the bot's own error handler goes on to
 swallow it — so an update lost in a middleware, or caught by a catch-all logging handler
 instead of the one under test, no longer looks identical to one that reached its intended
-handler.
+handler. The diagnosis is scoped to one **trigger** rather than one update, since one thing a
+test does — ``member.join()``, most of all — is routinely more than one: a bare call opens
+its own scope and an explicit :meth:`~aiogram.test.BotTestEnvironment.trigger` block groups
+several; :attr:`~aiogram.test.BotTestEnvironment.routes` lists every record of that scope and
+``last_route`` is the **newest handled** one among them, falling back to the newest record
+only when nothing in the scope was handled at all.
 :meth:`~aiogram.test.BotTestEnvironment.assert_handled_by` is the assertion spelled directly,
-matched against the winning handler's qualified name, and it fails naming where the update
-actually went.
+matched against the winning handler's qualified name, and scans every record of the scope —
+so it no longer fails a bot that correctly handled a ``chat_member`` transition just because a
+``new_chat_members`` service message delivered alongside it went unclaimed — failing with all
+of them dumped, including any exception raised and swallowed along the way.
 
 File content is supported where it can be honest: a file uploaded as a
 :class:`aiogram.types.input_file.BufferedInputFile` can be downloaded again in the same
@@ -126,7 +152,14 @@ failure only the chats that are still missing one.
 A test that leaves the bot's own background tasks running — a scheduler, a timer — can clean
 them up explicitly with ``await env.drain(timeout=...)``, which cancels and awaits every task
 the test itself spawned instead of letting asyncio complain about a destroyed pending task
-after the test that caused it has already passed. It is opt-in rather than automatic, since
+after the test that caused it has already passed. A task already running is spared, and that
+protection is now taken twice: once at construction, and again at this environment's first
+asynchronous action, which is what keeps a session-scoped fixture's own background worker
+alive across the first test in a session that calls ``drain()`` even though the (synchronous)
+``bot_env`` fixture could not see it running yet. A drained task that failed on its own is no
+longer swallowed: it now surfaces as :class:`aiogram.test.DrainedTaskError`, with the original
+traceback chained, rather than only as asyncio's own "exception was never retrieved" noise.
+It is opt-in rather than automatic, since
 the pytest fixture's teardown is synchronous and cannot await a cancellation, and cancelling
 tasks a test never mentioned as an invisible side effect of a fixture going out of scope
 would turn a stopped scheduler into a mystery.

@@ -35,7 +35,6 @@ from aiogram.types import (
     Update,
 )
 
-from .errors import ApiRejection
 from .mounting import owned_or_copied
 from .synthesis import SynthesisContext, synthesize
 from .world import (
@@ -511,6 +510,33 @@ def _require_valid_start_payload(url: str, payload: str) -> None:
     raise WorldLookupError(msg)
 
 
+def _validate_rights(rights: dict[str, bool]) -> None:
+    """
+    Reject a right `ChatAdministratorRights` does not have, loudly and immediately.
+
+    ``promote(**rights)`` opens the whole keyword space, and :func:`aiogram.test.world.mask`
+    reads the fields it knows off the namespace and ignores everything else — so a
+    misspelled right was accepted, silently dropped, and produced an administrator without
+    it. The test then failed on the bot's "you are missing a right" branch, which is the
+    correct behavior for the world it was actually given and says nothing about the typo.
+
+    The shape deliberately mirrors :func:`aiogram.test.overrides._validated_fields`: the
+    same failure — a keyword that can only ever be a mistake — reads the same way wherever
+    the toolkit meets it.
+    """
+    known = ChatAdministratorRights.model_fields
+    unknown = sorted(name for name in rights if name not in known)
+    if unknown:
+        listing = ", ".join(sorted(known))
+        msg = (
+            f"ChatAdministratorRights has no right(s) {', '.join(unknown)}, so promoting "
+            f"with them would silently grant nothing.\n"
+            f"  known rights: {listing}\n"
+            f"Dispatcher data goes to `data={{...}}`, not into the rights."
+        )
+        raise TypeError(msg)
+
+
 def _detached(value: Any, bot: Bot) -> Any:
     """
     Copy what the caller handed a trigger, before an update carries it into the world.
@@ -857,6 +883,8 @@ class UserActor:
     async def promote(
         self,
         subject: UserSpec | UserState | int | None = None,
+        *,
+        data: dict[str, Any] | None = None,
         **rights: bool,
     ) -> Any:
         """
@@ -870,6 +898,23 @@ class UserActor:
 
         Pass a `UserSpec`, a `UserState`, or a bare id to promote someone other than the
         bot — typically a third member, promoted by whoever ``self`` is.
+
+        **A right this does not recognise is a typo, and is refused.** ``**rights`` is a
+        wide-open keyword space and every name in it that is not a field of
+        `ChatAdministratorRights` used to be dropped without a word — so
+        ``promote(can_pin_message=True)`` produced an administrator who could not pin, and
+        the test failed on the bot's "you are missing a right" branch with nothing to say
+        which right or why. The names are checked against the model, exactly as
+        `env.on(Method, field=...)` checks its filters, and a bad one names itself and the
+        alternatives.
+
+        ``data`` is the dispatcher data to feed the update with, spelled as a mapping
+        because ``**kwargs`` here means rights. `demote` spells it the same way even though
+        nothing competes for its keyword space, so the two twins take the same arguments —
+        the asymmetry (one taking rights through ``**kwargs``, the other dispatcher data)
+        was a trap worth removing rather than documenting::
+
+            await admin.in_(group).promote(bob, can_pin_messages=True, data={"db": db})
 
         The rights are the *whole* mask, exactly like `promoteChatMember` itself (see
         :func:`aiogram.test.modeling.handle_promote`): a right this call does not name is
@@ -887,19 +932,24 @@ class UserActor:
         """
         target = self._resolve_member_subject(subject)
         self._guard_not_owner(target)
+        _validate_rights(rights)
         granted = mask(ChatAdministratorRights, SimpleNamespace(**rights), coerce=True)
 
         def _promote(member: MemberState) -> None:
             member.rights = ChatAdministratorRights(**granted)
 
         return await self._change_membership(
-            ChatMemberStatus.ADMINISTRATOR, {}, subject=target, mutate=_promote
+            ChatMemberStatus.ADMINISTRATOR,
+            dict(data or {}),
+            subject=target,
+            mutate=_promote,
         )
 
     async def demote(
         self,
         subject: UserSpec | UserState | int | None = None,
-        **data: Any,
+        *,
+        data: dict[str, Any] | None = None,
     ) -> Any:
         """
         Demote an administrator back to a plain member.
@@ -914,6 +964,13 @@ class UserActor:
 
         ``subject`` defaults to the bot itself, the same as `promote()`. Refuses to
         demote the chat's owner, exactly as `promoteChatMember` does.
+
+        ``data`` is the dispatcher data to feed the update with, as a mapping rather than
+        as ``**kwargs``. It used to be ``**data`` here and ``**rights`` on `promote`, so
+        the same keyword on the two twins meant two different things — the one asymmetry in
+        the trigger surface that could silently do the wrong thing. Both spell it ``data=``
+        now; every other trigger, whose keyword space nothing competes for, keeps its
+        ``**data``.
         """
         target = self._resolve_member_subject(subject)
         self._guard_not_owner(target)
@@ -923,7 +980,10 @@ class UserActor:
             member.custom_title = None
 
         return await self._change_membership(
-            ChatMemberStatus.MEMBER, data, subject=target, mutate=_demote
+            ChatMemberStatus.MEMBER,
+            dict(data or {}),
+            subject=target,
+            mutate=_demote,
         )
 
     async def enable_business_connection(self, **data: Any) -> Any:
@@ -1551,15 +1611,27 @@ class UserActor:
 
         The rule `promoteChatMember` states and :func:`aiogram.test.modeling._not_the_owner`
         enforces on the real call path: an owner's standing is not the bot's, or a fellow
-        administrator's, to take away. Kept as the same one-line check and the same
-        message rather than imported, since the two live on either side of the boundary
-        between the modeled API and its trigger-side sugar — this module owns triggers,
-        not `handle_promote` — but the wording matches exactly, so a test asserting on it
-        reads the same failure whichever path produced it.
+        administrator's, to take away.
+
+        **Raised as a `WorldLookupError`, not as an `ApiRejection`**, and that is the whole
+        distinction between the two paths. On the call path the bot itself asked for the
+        promotion, so the refusal is Telegram's answer and the bot's own ``except`` branch
+        is the thing under test — `handle_promote` raises `ApiRejection` and the caller sees
+        a real `TelegramBadRequest`. Here nothing was asked of the API: a *trigger* is the
+        test arranging the world, and arranging something Telegram would never allow is a
+        broken setup rather than a modeled outcome. Routing it through the rejection type
+        made it convertible, catchable and — worst — indistinguishable from the branch the
+        test meant to exercise. The wording stays identical to `handle_promote`'s, so the
+        two failures still read alike.
         """
         if self.chat.member(target.id).status == ChatMemberStatus.CREATOR:
-            msg = "can't remove chat owner"
-            raise ApiRejection(msg)
+            msg = (
+                "can't remove chat owner: this trigger arranges the world, and no "
+                "administrator can take the owner's standing away, so there is no state "
+                "for it to arrange. To test how the bot handles the API refusing its own "
+                "promoteChatMember call, have the bot make that call instead."
+            )
+            raise WorldLookupError(msg)
 
     async def _change_membership(
         self,
@@ -1609,10 +1681,15 @@ class UserActor:
             new_chat_member=new,
         )
         update_id = self._next_update_id()
-        if target.id == self.bot_user.id:
-            result = await self._feed(Update(update_id=update_id, my_chat_member=event), data)
-        else:
-            result = await self._feed(Update(update_id=update_id, chat_member=event), data)
-        if service_message and chat.type in _MEMBER_SERVICE_MESSAGE_CHAT_TYPES:
-            await self._service_message({"new_chat_members": [user]}, data)
+        # Both updates are one thing the test did, so they share one route scope: a bot
+        # that handles the membership transition and ignores the group's announcement of
+        # it must not make `assert_handled_by` fail on the update nobody wanted. See
+        # `BotTestEnvironment.trigger`.
+        with self.environment.trigger():
+            if target.id == self.bot_user.id:
+                result = await self._feed(Update(update_id=update_id, my_chat_member=event), data)
+            else:
+                result = await self._feed(Update(update_id=update_id, chat_member=event), data)
+            if service_message and chat.type in _MEMBER_SERVICE_MESSAGE_CHAT_TYPES:
+                await self._service_message({"new_chat_members": [user]}, data)
         return result

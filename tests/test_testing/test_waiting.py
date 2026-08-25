@@ -8,6 +8,7 @@ from aiogram.test import (
     ChatState,
     TopicState,
     WaitTimeoutError,
+    WorldLookupError,
 )
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
@@ -636,7 +637,7 @@ class TestWaitForMessageInManyChats:
 
         message = str(exc_info.value)
         assert "waiting for the night keyboard in all 3 watched chat(s)" in message
-        assert f"Still missing in {bob.id}, {carol.id}" in message
+        assert f"Still missing in chat {bob.id}, chat {carol.id}" in message
         assert "something else" in message
         # The chat that *did* get it is not dumped; that is the whole point.
         assert f"In chat {alice.id}" not in message
@@ -664,3 +665,221 @@ class TestWaitForMessageInManyChats:
 
 def _is_a_keyboard(message):
     return message.reply_markup is not None
+
+
+class TestTheWaitFamilySpeaksOneVocabulary:
+    """
+    ``watch=`` and ``chats=`` took different things, and neither took a declaration.
+
+    A test holds the ``ChatSpec`` its ``add_supergroup`` returned — that *is* the handle the
+    blueprint gives back — and passing it to ``watch=`` survived registration and then blew
+    up with an ``AttributeError`` from inside the failure message it was assembling, which
+    replaced the real diagnosis with a traceback about ``label``. One resolver now backs
+    both, so the family accepts declarations, live states, topics and bare ids alike.
+    """
+
+    @pytest.fixture
+    def quick(self, blueprint, dp):
+        environment = BotTestEnvironment(
+            blueprint=blueprint,
+            dispatcher=dp,
+            default_wait_timeout=0.02,
+        )
+        try:
+            yield environment
+        finally:
+            environment.dispose_sync()
+
+    async def test_watch_accepts_a_chat_declaration(self, quick, blueprint):
+        group = blueprint.chats[1]
+        await quick.bot.send_message(chat_id=group.id, text="the real reason")
+
+        with pytest.raises(WaitTimeoutError) as exc_info:
+            await quick.wait_for(lambda: False, "the phase", watch=group)
+
+        message = str(exc_info.value)
+        assert f"In chat {group.id}:" in message
+        assert "the real reason" in message
+
+    async def test_watch_accepts_a_bare_chat_id(self, quick, blueprint):
+        group = blueprint.chats[1]
+        await quick.bot.send_message(chat_id=group.id, text="the real reason")
+
+        with pytest.raises(WaitTimeoutError, match="the real reason"):
+            await quick.wait_for(lambda: False, "the phase", watch=group.id)
+
+    async def test_watch_accepts_a_topic_declaration(self, quick, blueprint, dp):
+        chat = quick.chat(blueprint.chats[1].id)
+        created = await quick.bot.create_forum_topic(chat_id=chat.id, name="Support")
+        topic = quick.topic(chat.id, created.message_thread_id)
+        await quick.bot.send_message(
+            chat_id=chat.id,
+            message_thread_id=topic.message_thread_id,
+            text="in the thread",
+        )
+
+        with pytest.raises(WaitTimeoutError) as exc_info:
+            await quick.wait_for(lambda: False, "the phase", watch=topic)
+
+        assert "in the thread" in str(exc_info.value)
+
+    async def test_watch_accepts_a_topic_declaration_object(self, blueprint, dp):
+        """
+        A ``TopicSpec`` is what ``add_topic`` hands back, and it carries the chat it belongs
+        to — so the resolver needs nothing else to turn it into the live topic.
+        """
+        topic_spec = blueprint.add_topic(blueprint.chats[1], "Support")
+        environment = BotTestEnvironment(
+            blueprint=blueprint,
+            dispatcher=dp,
+            default_wait_timeout=0.02,
+        )
+        try:
+            live = environment.topic(topic_spec.chat_id, topic_spec)
+            await environment.bot.send_message(
+                chat_id=topic_spec.chat_id,
+                message_thread_id=live.message_thread_id,
+                text="in the declared thread",
+            )
+
+            with pytest.raises(WaitTimeoutError) as exc_info:
+                await environment.wait_for(lambda: False, "the phase", watch=topic_spec)
+
+            message = str(exc_info.value)
+            assert "'Support'" in message
+            assert "in the declared thread" in message
+        finally:
+            environment.dispose_sync()
+
+    async def test_watch_accepts_a_mixed_iterable(self, quick, blueprint):
+        private, group = blueprint.chats[0], blueprint.chats[1]
+        await quick.bot.send_message(chat_id=private.id, text="in private")
+        await quick.bot.send_message(chat_id=group.id, text="in the group")
+
+        with pytest.raises(WaitTimeoutError) as exc_info:
+            await quick.wait_for(
+                lambda: False,
+                "the phase",
+                watch=[private, quick.chat(group.id)],
+            )
+
+        message = str(exc_info.value)
+        assert "in private" in message
+        assert "in the group" in message
+
+    async def test_wait_for_message_in_accepts_a_single_chat_state(self, quick, blueprint):
+        chat = quick.chat(blueprint.chats[0].id)
+        await quick.bot.send_message(chat_id=chat.id, text="hello")
+
+        found = await quick.wait_for_message_in(chat)
+
+        assert found[chat.id].text == "hello"
+
+    async def test_wait_for_message_in_accepts_a_single_declaration(self, quick, blueprint):
+        group = blueprint.chats[1]
+        await quick.bot.send_message(chat_id=group.id, text="hello")
+
+        found = await quick.wait_for_message_in(group)
+
+        assert found[group.id].text == "hello"
+
+    async def test_wait_for_message_in_accepts_a_single_bare_id(self, quick, blueprint):
+        group = blueprint.chats[1]
+        await quick.bot.send_message(chat_id=group.id, text="hello")
+
+        found = await quick.wait_for_message_in(group.id)
+
+        assert found[group.id].text == "hello"
+
+    async def test_wait_for_message_in_accepts_a_topic(self, quick, blueprint):
+        chat = quick.chat(blueprint.chats[1].id)
+        created = await quick.bot.create_forum_topic(chat_id=chat.id, name="Support")
+        topic = quick.topic(chat.id, created.message_thread_id)
+        await quick.bot.send_message(
+            chat_id=chat.id,
+            message_thread_id=topic.message_thread_id,
+            text="in the thread",
+        )
+
+        found = await quick.wait_for_message_in([topic], lambda m: m.text == "in the thread")
+
+        assert found[chat.id].text == "in the thread"
+
+    async def test_two_views_of_one_chat_are_refused_rather_than_collapsed(
+        self,
+        quick,
+        blueprint,
+    ):
+        """
+        The result is ``chat_id -> message``, so two views of one chat would silently drop
+        an entry and a test asserting on the count would fail on an answer never given.
+        """
+        chat = quick.chat(blueprint.chats[1].id)
+
+        with pytest.raises(WorldLookupError, match="cannot hold them both"):
+            await quick.wait_for_message_in([chat, chat.general_topic])
+
+    async def test_as_views_of_nothing_is_empty(self, quick):
+        assert quick.as_views(None) == ()
+
+
+class TestBroadcastTimeoutReportsARaisingPredicate:
+    """
+    Parity with the single-chat wait, which its own docstring already promised.
+
+    ``wait_for_message_in`` dropped the exceptions its predicate raised on the floor, so a
+    predicate that was simply buggy — ``m.text.startswith(...)`` meeting the
+    ``forum_topic_created`` service message — read as "the bot never sent it". That is the
+    wrong bug, and much harder to find across ten chats than across one.
+    """
+
+    @pytest.fixture
+    def quick(self, blueprint, dp):
+        environment = BotTestEnvironment(
+            blueprint=blueprint,
+            dispatcher=dp,
+            default_wait_timeout=0.02,
+        )
+        try:
+            yield environment
+        finally:
+            environment.dispose_sync()
+
+    async def test_what_the_predicate_raised_is_reported(self, quick, blueprint):
+        private, group = blueprint.chats[0], blueprint.chats[1]
+        await quick.bot.send_message(chat_id=private.id, text="text")
+        await quick.bot.send_photo(chat_id=group.id, photo="file-id")
+
+        with pytest.raises(WaitTimeoutError) as exc_info:
+            await quick.wait_for_message_in(
+                [private, group],
+                lambda m: m.text.startswith("Night"),
+                "the night keyboard",
+            )
+
+        message = str(exc_info.value)
+        assert "The predicate raised on 1 message(s)" in message
+        assert "AttributeError" in message
+        assert f"chat {group.id}" in message
+
+    async def test_a_predicate_that_raises_everywhere_still_counts_as_no_match(
+        self,
+        quick,
+        blueprint,
+    ):
+        """The rule the single-chat wait states: raising is "no match", not a failed wait."""
+        group = blueprint.chats[1]
+        await quick.bot.send_photo(chat_id=group.id, photo="file-id")
+
+        with pytest.raises(WaitTimeoutError) as exc_info:
+            await quick.wait_for_message_in([group], lambda m: m.text.startswith("Night"))
+
+        assert "Still missing in" in str(exc_info.value)
+
+    async def test_nothing_is_reported_when_the_predicate_never_raises(self, quick, blueprint):
+        group = blueprint.chats[1]
+
+        with pytest.raises(WaitTimeoutError) as exc_info:
+            await quick.wait_for_message_in([group], lambda m: m.text == "Night")
+
+        assert "The predicate raised" not in str(exc_info.value)

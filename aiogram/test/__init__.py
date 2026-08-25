@@ -23,9 +23,11 @@ from .blueprint import (
 )
 from .calls import CallLog, NoSuchCallError
 from .environment import BotTestEnvironment, RouteRecord, build_environment
-from .errors import ApiRejection, WaitTimeoutError
+from .errors import ApiRejection, DrainedTaskError, NoFileContentError, WaitTimeoutError
 from .overrides import (
+    ADDRESSING_FIELDS,
     BLOCKED_BY_USER,
+    BLOCKED_METHODS,
     DELIVERY_METHODS,
     MethodMatcher,
     Outcome,
@@ -52,8 +54,10 @@ from .world import (
 )
 
 __all__ = (
+    "ADDRESSING_FIELDS",
     "BASE_DATE",
     "BLOCKED_BY_USER",
+    "BLOCKED_METHODS",
     "DELIVERY_METHODS",
     "ApiRejection",
     "Blueprint",
@@ -66,11 +70,13 @@ __all__ = (
     "ChatState",
     "CommunitySpec",
     "CommunityState",
+    "DrainedTaskError",
     "InviteLinkState",
     "FakeTelegramSession",
     "MemberSpec",
     "MemberState",
     "MethodMatcher",
+    "NoFileContentError",
     "NoSuchCallError",
     "Outcome",
     "OverrideBuilder",

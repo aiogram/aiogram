@@ -12,6 +12,7 @@ from aiogram.test import (
     BASE_DATE,
     Blueprint,
     BotTestEnvironment,
+    DrainedTaskError,
     WaitTimeoutError,
     build_environment,
 )
@@ -598,11 +599,12 @@ class TestDrain:
 
         assert await env.drain() == 0
 
-    async def test_a_task_that_fails_while_being_cancelled_is_collected_quietly(self, env):
+    async def test_a_task_that_fails_while_being_cancelled_surfaces_its_error(self, env):
         """
-        Its exception is retrieved rather than left for the garbage collector to complain
-        about at some later, unrelated moment — which would be the very stderr noise this
-        exists to remove.
+        Its exception is retrieved — which is what stops the garbage collector complaining
+        about it later — and then **raised**, rather than dropped on the floor. A helper
+        whose job is silencing noise must not silence a real failure: a night timer that
+        died with a bug would otherwise look exactly like one that was cancelled on time.
         """
         started = asyncio.Event()
 
@@ -617,10 +619,110 @@ class TestDrain:
         task = asyncio.create_task(explode_on_cancel())
         await started.wait()
 
-        assert await env.drain() == 1
+        with pytest.raises(DrainedTaskError, match="ended with an exception") as failure:
+            await env.drain()
 
+        assert "ValueError: cleanup failed" in str(failure.value)
+        assert task.get_name() in str(failure.value)
+        # The real traceback is one link away rather than summarized into a string.
+        assert isinstance(failure.value.__cause__, ValueError)
         assert not task.cancelled()
-        assert isinstance(task.exception(), ValueError)
+
+    async def test_a_task_that_fails_of_its_own_accord_surfaces_its_error(self, env):
+        """The commoner half of the same rule: the task was already dead when drain ran."""
+
+        async def explode():
+            msg = "night timer blew up"
+            raise KeyError(msg)
+
+        task = asyncio.create_task(explode())
+        await asyncio.sleep(0)
+        assert task.done()
+
+        # Already finished, so it is not part of the pending set — nothing to drain, and
+        # nothing this helper ever promised to notice.
+        assert await env.drain() == 0
+        assert isinstance(task.exception(), KeyError)
+
+    async def test_a_stuck_task_is_reported_together_with_a_failed_one(self, env):
+        """Neither half of the news is dropped when both happen at once."""
+        started = asyncio.Event()
+
+        async def slow_to_die():
+            try:
+                await asyncio.sleep(3600)
+            finally:
+                await asyncio.sleep(0.5)
+
+        async def explode_on_cancel():
+            started.set()
+            try:
+                await asyncio.sleep(3600)
+            except asyncio.CancelledError:
+                msg = "cleanup failed"
+                raise ValueError(msg) from None
+
+        stuck = asyncio.create_task(slow_to_die())
+        failing = asyncio.create_task(explode_on_cancel())
+        await started.wait()
+
+        try:
+            with pytest.raises(WaitTimeoutError) as failure:
+                await env.drain(timeout=0.05)
+            assert "still running" in str(failure.value)
+            assert "ValueError: cleanup failed" in str(failure.value)
+        finally:
+            await asyncio.wait([stuck, failing], timeout=2.0)
+
+    async def test_tasks_alive_at_the_first_feed_are_spared(self, env, alice):
+        """
+        The gap the creation-time snapshot alone left open. ``bot_env`` is a **synchronous**
+        fixture, so an environment is built with no loop running and that snapshot is empty
+        — and a session-scoped async fixture's worker was then killed by the first
+        ``drain()`` of the first test that called one, breaking every later test in the
+        session. The protection is extended again at the environment's first asynchronous
+        entry point, which is the earliest moment a loop is guaranteed to exist.
+        """
+        started = asyncio.Event()
+
+        async def session_worker():
+            started.set()
+            await asyncio.sleep(3600)
+
+        outsider = asyncio.create_task(session_worker())
+        await started.wait()
+
+        # The first thing this environment does asynchronously: the snapshot is taken here.
+        await alice.send("hi")
+
+        mine = asyncio.create_task(asyncio.sleep(3600))
+        await asyncio.sleep(0)
+
+        try:
+            assert await env.drain() == 1
+            assert mine.cancelled()
+            assert not outsider.done()
+        finally:
+            outsider.cancel()
+
+    async def test_a_call_also_extends_the_protection(self, env, alice):
+        """``handle_call`` is the other async door in — a bot may act before any update."""
+        started = asyncio.Event()
+
+        async def session_worker():
+            started.set()
+            await asyncio.sleep(3600)
+
+        outsider = asyncio.create_task(session_worker())
+        await started.wait()
+
+        await env.bot.send_message(chat_id=alice.user.id, text="hi")
+
+        try:
+            assert await env.drain() == 0
+            assert not outsider.done()
+        finally:
+            outsider.cancel()
 
     async def test_a_task_that_already_finished_is_not_drained(self, env):
         task = asyncio.create_task(asyncio.sleep(0))

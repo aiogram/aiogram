@@ -61,6 +61,25 @@ class WaitTimeoutError(TimeoutError):
     """
 
 
+class DrainedTaskError(AssertionError):
+    """
+    Raised when a task :meth:`aiogram.test.BotTestEnvironment.drain` cancelled had already
+    failed of its own accord.
+
+    ``drain()`` exists to silence the ``Task was destroyed but it is pending!`` noise a
+    fire-and-forget background task leaves behind, and silencing that noise means
+    *retrieving* each task's result. Retrieving and then discarding it would make the
+    cleanup helper the thing that hides a real bug: a night timer that died with a
+    ``KeyError`` would look exactly like one that was cancelled on time. So the failures
+    come back out here instead, with the first one chained as ``__cause__`` so its real
+    traceback is one line away.
+
+    An :class:`AssertionError` because that is what it is — the bot under test did
+    something wrong, and pytest renders it as a test failure rather than as an error in the
+    toolkit.
+    """
+
+
 def raise_api_error(
     session: BaseSession,
     bot: Bot,

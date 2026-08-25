@@ -2,7 +2,7 @@ import pytest
 
 from aiogram import F
 from aiogram.enums import ChatMemberStatus
-from aiogram.test import ApiRejection, Blueprint, BotTestEnvironment
+from aiogram.test import Blueprint, BotTestEnvironment, WorldLookupError
 from aiogram.types import ChatMemberAdministrator, ChatMemberMember
 
 
@@ -151,7 +151,10 @@ class TestOwnerGuard:
     async def test_the_owner_cannot_be_promoted(self, owned):
         env, team, owner, admin = owned
 
-        with pytest.raises(ApiRejection, match="can't remove chat owner"):
+        # A `WorldLookupError`, not an `ApiRejection`: a trigger arranges the world, and
+        # arranging something Telegram would never allow is the test's own setup bug — not
+        # a modeled refusal the bot under test could catch.
+        with pytest.raises(WorldLookupError, match="can't remove chat owner"):
             await admin.in_(team).promote(subject=owner.user, can_delete_messages=True)
 
         assert team.member(owner.user.id).status == ChatMemberStatus.CREATOR
@@ -159,7 +162,7 @@ class TestOwnerGuard:
     async def test_the_owner_cannot_be_demoted(self, owned):
         env, team, owner, admin = owned
 
-        with pytest.raises(ApiRejection, match="can't remove chat owner"):
+        with pytest.raises(WorldLookupError, match="can't remove chat owner"):
             await admin.in_(team).demote(subject=owner.user)
 
         assert team.member(owner.user.id).status == ChatMemberStatus.CREATOR
@@ -250,3 +253,90 @@ class TestNewChatMembersServiceMessage:
         await alice.in_(team).leave()
 
         assert len(team.messages) == messages_before
+
+
+class TestPromoteRightsAreValidated:
+    """
+    ``**rights`` is a wide-open keyword space, and a typo in it used to grant nothing.
+
+    :func:`aiogram.test.world.mask` reads the fields it knows off the namespace and ignores
+    the rest, so ``promote(can_pin_message=True)`` produced an administrator who could not
+    pin — and the test then failed on the bot's "you are missing a right" branch, which is
+    the correct behavior for the world it was actually handed and says nothing at all about
+    the typo.
+    """
+
+    async def test_a_misspelled_right_names_itself(self, env, team, alice):
+        with pytest.raises(TypeError) as failure:
+            await alice.in_(team).promote(can_pin_message=True)
+
+        message = str(failure.value)
+        assert "can_pin_message" in message
+        assert "can_pin_messages" in message
+        assert "known rights:" in message
+
+    async def test_several_typos_are_all_reported(self, env, team, alice):
+        with pytest.raises(TypeError, match="can_delete, can_pin"):
+            await alice.in_(team).promote(can_pin=True, can_delete=True)
+
+    async def test_a_real_right_is_still_granted(self, env, team, alice):
+        await alice.in_(team).promote(can_pin_messages=True)
+
+        rights = team.member(env.world.bot_user.id).rights
+        assert rights.can_pin_messages is True
+
+    async def test_the_typo_is_refused_before_the_world_changes(self, env, team, alice):
+        """A rejected call must not leave a half-applied promotion behind."""
+        before = team.member(env.world.bot_user.id).status
+
+        with pytest.raises(TypeError):
+            await alice.in_(team).promote(can_pin_message=True)
+
+        assert team.member(env.world.bot_user.id).status == before
+
+
+class TestMembershipTriggerDispatcherData:
+    """
+    ``promote`` claims ``**kwargs`` for rights, so both twins spell dispatcher data
+    ``data=``.
+
+    The asymmetry that made this worth resolving rather than documenting: the same keyword
+    meant "a right" on one method and "dispatcher data" on the other, and ``promote`` could
+    not pass dispatcher data at all.
+    """
+
+    async def test_promote_passes_dispatcher_data(self, env, dp, team, alice):
+        seen = {}
+
+        @dp.my_chat_member()
+        async def on_promoted(event, ledger):
+            seen["ledger"] = ledger
+
+        await alice.in_(team).promote(can_pin_messages=True, data={"ledger": "the-ledger"})
+
+        assert seen["ledger"] == "the-ledger"
+
+    async def test_demote_passes_dispatcher_data(self, env, dp, team, alice):
+        seen = {}
+
+        @dp.my_chat_member()
+        async def on_demoted(event, ledger):
+            seen["ledger"] = ledger
+
+        await alice.in_(team).promote(can_pin_messages=True, data={"ledger": "setup"})
+        await alice.in_(team).demote(data={"ledger": "the-ledger"})
+
+        assert seen["ledger"] == "the-ledger"
+
+    async def test_the_data_reaches_the_service_message_update_too(self, env, dp, blueprint):
+        """A trigger's two updates carry the same data, as they always did."""
+        seen = []
+
+        @dp.message(F.new_chat_members)
+        async def on_joined(message, ledger):
+            seen.append(ledger)
+
+        member = env.user(blueprint.users[0]).in_(blueprint.chats[1])
+        await member.join(ledger="the-ledger")
+
+        assert seen == ["the-ledger"]

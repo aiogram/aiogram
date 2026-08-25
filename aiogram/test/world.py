@@ -1169,6 +1169,16 @@ class ChatRegistry(dict[int, ChatState]):
     ``setdefault`` and ``|=`` in C, without going through ``__setitem__``, so overriding
     that alone left three doors into the world that skipped the wiring and produced a chat
     whose messages were silently never bound. They are routed here instead.
+
+    **Ownership is enforced per chat, not per assignment.** Registering a
+    :class:`ChatState` that already belongs to another world is refused, because the wiring
+    this does is a *rewrite*: ``chat.world = self.world`` on an object the donor world still
+    holds leaves the donor with a chat that answers "my world is the other one" and binds
+    its messages to the other bot. :meth:`World.__setattr__` used to be the only place that
+    said so, which caught ``w2.chats = w1.chats`` and missed the very recipe it recommended
+    instead — ``w2.chats = dict(w1.chats)`` unwrapped the registry, passed the check, and
+    corrupted the donor one ``__setitem__`` at a time. The rule belongs where the mutation
+    happens.
     """
 
     def __init__(self, world: World) -> None:
@@ -1176,6 +1186,20 @@ class ChatRegistry(dict[int, ChatState]):
         self.world = world
 
     def __setitem__(self, chat_id: int, chat: ChatState) -> None:
+        if chat.world is not None and chat.world is not self.world:
+            msg = (
+                f"Chat {chat.id} already belongs to another world, and registering it here "
+                f"would rewrite `chat.world` on the very object that world still holds — "
+                f"binding its messages to this world's bot. Worlds own their chats.\n"
+                f"If a chat of the same shape is what you meant, build one:\n"
+                f"  world.chats[{chat.id}] = blueprint.build().chats[{chat.id}]  # from the "
+                f"declaration\n"
+                f"If moving this very object is what you meant, say so by detaching it "
+                f"first:\n"
+                f"  chat.world = None\n"
+                f"  world.chats[{chat.id}] = chat"
+            )
+            raise WorldLookupError(msg)
         chat.world = self.world
         super().__setitem__(chat_id, chat)
 
@@ -1252,6 +1276,12 @@ class World:
         one world's chats to fix another's wiring is not a trade this can make silently, so
         it does not make it at all.
 
+        This check is now the *outer* one rather than the only one:
+        :meth:`ChatRegistry.__setitem__` refuses a foreign-owned chat whatever container it
+        arrived in, which is what closes the hole this message used to point straight at —
+        ``dict(other.chats)`` unwraps the registry and corrupts the donor one item at a
+        time. So the recommendation is gone from the message, because it was wrong.
+
         A plain mapping is still converted, which is the case that motivated all of this:
         ``world.chats = {chat.id: chat}`` is the obvious way to rebuild a world in a test,
         and a plain :class:`dict` there means unwired chats whose messages are silently
@@ -1266,10 +1296,11 @@ class World:
                     "chats, and registering them here would rewrite `chat.world` on the "
                     "very objects the donor world still holds — binding its messages to "
                     "this world's bot.\n"
-                    "If sharing the chat objects is what you meant, say so explicitly:\n"
-                    "  world.chats = dict(other.chats)      # same ChatState objects, "
-                    "moved to this world\n"
-                    "  world.chats = copy.deepcopy(dict(other.chats))  # independent copies"
+                    "Unwrapping it does not help — `world.chats = dict(other.chats)` is "
+                    "refused chat by chat for the same reason. Build the chats this world "
+                    "needs from their declaration (`blueprint.build()`), or detach each "
+                    "chat explicitly (`chat.world = None`) if moving the objects "
+                    "themselves is really what you meant."
                 )
                 raise WorldLookupError(msg)
             registry = ChatRegistry(self)

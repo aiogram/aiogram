@@ -516,25 +516,63 @@ class TestChatRegistration:
         assert chat.bound_bot is env.bot
         assert world_two.chats == {}
 
-    def test_a_plain_copy_of_another_worlds_chats_is_accepted(self, env):
-        """The explicit form the refusal points at: a plain mapping is wrapped as always."""
+    def test_unwrapping_the_registry_does_not_get_past_the_refusal(self, env):
+        """
+        ``dict(other.chats)`` used to be what the refusal *recommended*, and it corrupted
+        the donor exactly as assigning the registry would have: the plain mapping passed
+        the outer check and then went in one ``__setitem__`` at a time, rewriting
+        ``chat.world`` on the objects w1 still holds. Ownership is enforced per chat now,
+        so the hole is closed and the donor is left intact.
+        """
+        world_one = World(bot_user=UserState(id=1, is_bot=True))
+        world_two = World(bot_user=UserState(id=2, is_bot=True))
+        world_one.bind(env.bot)
+        chat = ChatState(id=1)
+        world_one.chats[1] = chat
+
+        with pytest.raises(WorldLookupError, match="Worlds own their chats"):
+            world_two.chats = dict(world_one.chats)
+
+        assert chat.world is world_one
+        assert world_one.chats[1] is chat
+        assert world_two.chats == {}
+
+    def test_an_unowned_chat_is_adopted_normally(self, env):
+        """The ordinary case the guard must not touch: a fresh chat has no world yet."""
+        world = World(bot_user=UserState(id=2, is_bot=True))
+        world.bind(env.bot)
+
+        world.chats = {1: ChatState(id=1)}
+
+        assert isinstance(world.chats, ChatRegistry)
+        assert world.chats[1].world is world
+        assert world.chats[1].bound_bot is env.bot
+
+    def test_a_chat_detached_from_its_world_can_be_moved(self, env):
+        """The escape hatch the refusal names, and the only honest way to move an object."""
         world_one = World(bot_user=UserState(id=1, is_bot=True))
         world_two = World(bot_user=UserState(id=2, is_bot=True))
         world_two.bind(env.bot)
         chat = ChatState(id=1)
         world_one.chats[1] = chat
 
-        world_two.chats = dict(world_one.chats)
+        del world_one.chats[1]
+        chat.world = None
+        world_two.chats[1] = chat
 
-        assert isinstance(world_two.chats, ChatRegistry)
-        assert world_two.chats[1] is chat
         assert chat.world is world_two
+        assert chat.bound_bot is env.bot
 
-        # And a chat added to w2 afterwards is correctly wired to w2 — this is exactly
-        # what used to break: it used to land in w1's registry and bind to w1's bot.
-        world_two.chats[3] = ChatState(id=3)
-        assert world_two.chats[3].world is world_two
-        assert world_two.chats[3].bound_bot is env.bot
+    def test_re_registering_a_chat_in_its_own_world_is_a_no_op(self, env):
+        """Ownership is about *another* world; a world re-seating its own chat is fine."""
+        world = World(bot_user=UserState(id=1, is_bot=True))
+        chat = ChatState(id=1)
+        world.chats[1] = chat
+
+        world.chats[1] = chat
+
+        assert world.chats[1] is chat
+        assert chat.world is world
 
     def test_a_deep_copy_of_a_world_keeps_its_chats_wired_to_the_copy(self, env):
         """

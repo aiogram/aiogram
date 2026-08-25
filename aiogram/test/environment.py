@@ -1,8 +1,10 @@
 from __future__ import annotations
 
 import asyncio
-from collections.abc import Callable, Iterable
-from dataclasses import dataclass, field
+import contextlib
+import contextvars
+from collections.abc import Callable, Iterable, Iterator
+from dataclasses import dataclass
 from http import HTTPStatus
 from typing import TYPE_CHECKING, Any, NoReturn, TypeAlias, cast
 
@@ -26,7 +28,7 @@ from .blueprint import (
 )
 from .calls import CallLog
 from .defaults import resolve_defaults
-from .errors import ApiRejection, WaitTimeoutError, raise_api_error
+from .errors import ApiRejection, DrainedTaskError, WaitTimeoutError, raise_api_error
 from .modeling import find_handler
 from .mounting import bindables, detached_copy
 from .overrides import (
@@ -44,6 +46,7 @@ from .world import (
     ChatState,
     CommunityState,
     TopicState,
+    UserState,
     WorldLookupError,
     describe_message,
     newest_match,
@@ -66,15 +69,57 @@ _CARRIED_MESSAGE_FIELDS: tuple[str, ...] = (
     "edited_business_message",
 )
 
+#: Observers the handler-naming middleware stays off.
+#:
+#: ``update`` because its only handler is the dispatcher's own ``_listen_update``, and
+#: naming that as "the handler" would be worse than saying nothing.
+#:
+#: ``error`` because an error handler is not where the update went — it is what ran *after*
+#: the update failed to go anywhere. Recording it overwrote the record's ``handler`` with
+#: the error handler's name and its ``router`` with the error handler's router, so the one
+#: diagnostic that exists to survive a bot swallowing its own exceptions reported the
+#: swallower instead of the code that raised.
+_UNINSTRUMENTED_OBSERVERS = frozenset({"update", "error"})
+
+#: The update being routed **in this task**, as :class:`_RouteMiddleware` opens it and
+#: :class:`_HandlerMiddleware` reads it.
+#:
+#: A context variable rather than a stack on the environment, because "the update being
+#: routed right now" is a property of the task, not of the environment: two updates fed
+#: concurrently — ``asyncio.gather(alice.send(...), bob.send(...))`` — each run in their own
+#: task, and a shared stack made the inner middleware read whichever record happened to be
+#: on top, so a handler's name landed on the *other* update's record. A task copies the
+#: context when it is created, so concurrent feeds are isolated by construction, while a
+#: nested feed (a handler feeding an update of its own) runs in the same task and therefore
+#: shadows correctly and is restored by token.
+#:
+#: Module-level rather than per environment, and that is not only convention: an
+#: environment is reachable from every message in its world (through the bot on its
+#: session), and ``copy.deepcopy(world)`` — which the toolkit's own blueprint work does —
+#: would then have to copy a :class:`~contextvars.ContextVar`, which cannot be copied at
+#: all. Sharing one variable is also simply correct here, since what it holds is the
+#: innermost record of whichever environment opened it.
+_ROUTE_IN_FLIGHT: contextvars.ContextVar[RouteRecord | None] = contextvars.ContextVar(
+    "aiogram_test_route_in_flight",
+    default=None,
+)
+
 #: A chat or a topic a wait may be told to dump when it gives up. Both render themselves
 #: with ``describe_messages()`` and name themselves with ``label``.
 MessageView: TypeAlias = "ChatState | TopicState"
 
-#: What :meth:`BotTestEnvironment.wait_for_message_in` accepts as "these chats".
-ChatSelector: TypeAlias = "ChatSpec | ChatState | int"
+#: Anything the waiting family accepts as "a chat or a topic to watch".
+#:
+#: One vocabulary for the whole family — :meth:`BotTestEnvironment.wait_for_message_in` and
+#: ``watch=`` on :meth:`BotTestEnvironment.wait_for` — resolved by one function,
+#: :meth:`BotTestEnvironment.as_views`. The two used to disagree: one took states and bare
+#: ids, the other took states only, and a *declaration* — the ``ChatSpec`` an
+#: ``add_supergroup`` hands back, which is what a test holds — worked in neither, failing
+#: in the second with an ``AttributeError`` from inside the failure message it was building.
+ViewSelector: TypeAlias = "ChatSpec | ChatState | TopicSpec | TopicState | int"
 
 
-@dataclass
+@dataclass(eq=False)
 class RouteRecord:
     """
     Where one fed update actually went — see :attr:`BotTestEnvironment.last_route`.
@@ -90,6 +135,13 @@ class RouteRecord:
     middleware an environment can install, so a bot with an error handler swallows handler
     exceptions before any test-visible boundary sees them — the update reports itself as
     handled and the assertion fails on the missing reply instead of the real traceback.
+
+    **Compared by identity** (``eq=False``). A record is a receipt for one particular
+    update, and two updates that went to the same handler with the same outcome produce
+    equal *contents* — a broadcast test feeds a dozen of them. Anything that has to tell
+    "this record" from "a record that looks like it" (``record is env.last_route``, a
+    record's place in :attr:`BotTestEnvironment.routes`) needs identity, and value equality
+    would silently answer the wrong question.
     """
 
     #: ``update_id`` of the update this describes.
@@ -168,7 +220,7 @@ class _RouteMiddleware:
             update_id=update.update_id if update is not None else 0,
             event_type=_event_type_of(update),
         )
-        self.environment._open_route(record)
+        token = self.environment._open_route(record)
         try:
             result = await handler(event, data)
         except BaseException as error:
@@ -178,7 +230,7 @@ class _RouteMiddleware:
             record.handled = result is not UNHANDLED
             return result
         finally:
-            self.environment._close_route(record)
+            self.environment._close_route(record, token)
 
 
 class _HandlerMiddleware:
@@ -225,17 +277,60 @@ class _HandlerMiddleware:
             raise
 
 
-def _as_views(watch: MessageView | Iterable[MessageView] | None) -> tuple[MessageView, ...]:
-    """``watch=`` takes one chat or many; a chat is not iterable, so this cannot guess wrong."""
-    if watch is None:
-        return ()
-    if isinstance(watch, (ChatState, TopicState)):
-        return (watch,)
-    return tuple(watch)
-
-
 def _describe_view(view: MessageView) -> str:
     return f"In {view.label}: {view.describe_messages()}"
+
+
+def _describe_raised(raised: dict[str, dict[int, Exception]]) -> list[str]:
+    """
+    What the predicate blew up on, per watched view, for a broadcast timeout message.
+
+    The multi-chat counterpart of what :func:`aiogram.test.world._wait_for_message` already
+    says for one chat. Same wording, so the two failures read alike.
+    """
+    lines = []
+    for label in sorted(raised):
+        details = "; ".join(
+            f"{type(error).__name__}({str(error)!r}) on message #{message_id}"
+            for message_id, error in sorted(raised[label].items())
+        )
+        lines.append(
+            f"The predicate raised on {len(raised[label])} message(s) in {label}, which "
+            f"counted as no match: {details}.",
+        )
+    return lines
+
+
+def _view_key(view: MessageView) -> int:
+    """The chat id a watched view reports its match under."""
+    if isinstance(view, TopicState):
+        if view.chat is None:  # pragma: no cover - a topic is always registered on a chat
+            return 0
+        return view.chat.id
+    return view.id
+
+
+def _require_distinct_views(views: tuple[MessageView, ...]) -> None:
+    """
+    Refuse a broadcast wait whose views would share a key.
+
+    The result is ``chat_id -> message``, so two views of the same chat — the General topic
+    and a thread of the same forum, or a chat named twice — would silently collapse into
+    one entry and a test asserting ``len(found) == 3`` would fail on an answer that was
+    never wrong. Saying so beats returning a shorter dict.
+    """
+    seen: dict[int, MessageView] = {}
+    for view in views:
+        key = _view_key(view)
+        previous = seen.get(key)
+        if previous is not None:
+            msg = (
+                f"{previous.label} and {view.label} would both be reported under chat id "
+                f"{key}, so the returned mapping cannot hold them both. Wait on them "
+                f"separately, or watch the chat once."
+            )
+            raise WorldLookupError(msg)
+        seen[key] = view
 
 
 def _running_tasks() -> frozenset[asyncio.Task[Any]]:
@@ -245,12 +340,24 @@ def _running_tasks() -> frozenset[asyncio.Task[Any]]:
     The snapshot :meth:`BotTestEnvironment.drain` subtracts, so a session-scoped fixture's
     worker is not mistaken for this test's litter. The ``bot_env`` fixture is synchronous
     and therefore builds environments with no loop running at all, which is not an error
-    here — it only means the snapshot is empty and ``drain`` is as blunt as it can be.
+    here — it only means *this* snapshot is empty and the one taken at the environment's
+    first asynchronous entry point is the one doing the work.
     """
     try:
         return frozenset(asyncio.all_tasks())
     except RuntimeError:
         return frozenset()
+
+
+def _describe_failures(failures: list[tuple[str, BaseException]]) -> str:
+    """How :meth:`BotTestEnvironment.drain` names the tasks that died of their own bugs."""
+    listing = "\n".join(f"  {name}: {type(error).__name__}: {error}" for name, error in failures)
+    return (
+        f"{len(failures)} drained task(s) ended with an exception rather than with the "
+        f"cancellation they were sent:\n{listing}\n"
+        f"The first one is chained as the cause of this error. `drain()` exists to silence "
+        f"the noise of tasks left pending, not to silence what they raised."
+    )
 
 
 def _event_type_of(update: Update | None) -> str | None:
@@ -314,12 +421,15 @@ class BotTestEnvironment:
         self.dispatcher.fsm.storage = self._storage
         self._disposed = False
 
-        self._route_stack: list[RouteRecord] = []
-        self._last_route: RouteRecord | None = None
+        # Which update is in flight lives in `_ROUTE_IN_FLIGHT`, a context variable; see
+        # there for why it is neither a stack nor per-environment.
+        self._trigger_routes: list[RouteRecord] = []
+        self._trigger_depth = 0
         self._route_middleware = _RouteMiddleware(self)
         self._handler_middleware = _HandlerMiddleware(self)
         self._instrument_routing()
-        self._tasks_at_creation = _running_tasks()
+        self._protected_tasks = set(_running_tasks())
+        self._protection_extended = False
 
     # -- lifecycle --------------------------------------------------------------------
 
@@ -365,74 +475,148 @@ class BotTestEnvironment:
         session-scoped over the project's real routers — so this follows the same rule the
         FSM storage and the workflow data follow: mutate it, remember what was mutated, and
         undo it in :meth:`_restore`. The update observer gets the outer middleware; every
-        *other* observer gets the inner one, because the update observer's only handler is
-        the dispatcher's own ``_listen_update`` and naming that as "the handler" would be
-        worse than saying nothing.
+        observer except those in :data:`_UNINSTRUMENTED_OBSERVERS` gets the inner one.
         """
         self.dispatcher.update.outer_middleware.register(self._route_middleware)
         for name, observer in self.dispatcher.observers.items():
-            if name != "update":
+            if name not in _UNINSTRUMENTED_OBSERVERS:
                 observer.middleware.register(self._handler_middleware)
 
     def _uninstrument_routing(self) -> None:
         self.dispatcher.update.outer_middleware.unregister(self._route_middleware)
         for name, observer in self.dispatcher.observers.items():
-            if name != "update":
+            if name not in _UNINSTRUMENTED_OBSERVERS:
                 observer.middleware.unregister(self._handler_middleware)
 
-    def _open_route(self, record: RouteRecord) -> None:
-        self._route_stack.append(record)
+    def _open_route(self, record: RouteRecord) -> contextvars.Token[RouteRecord | None]:
+        return _ROUTE_IN_FLIGHT.set(record)
 
-    def _close_route(self, record: RouteRecord) -> None:
-        self._route_stack.remove(record)
-        self._last_route = record
+    def _close_route(
+        self,
+        record: RouteRecord,
+        token: contextvars.Token[RouteRecord | None],
+    ) -> None:
+        _ROUTE_IN_FLIGHT.reset(token)
+        self._trigger_routes.append(record)
 
     def _current_route(self) -> RouteRecord | None:
-        """The innermost record still in flight — a handler may itself feed an update."""
-        return self._route_stack[-1] if self._route_stack else None
+        """The record still in flight *in this task* — a handler may itself feed an update."""
+        return _ROUTE_IN_FLIGHT.get()
+
+    # -- trigger scope ----------------------------------------------------------------
+
+    @contextlib.contextmanager
+    def trigger(self) -> Iterator[None]:
+        """
+        Group every update fed inside this block into one route scope.
+
+        The unit :attr:`last_route`, :attr:`routes` and :meth:`assert_handled_by` reason
+        about is **one thing the test did**, not one update — because one thing the test
+        does is routinely more than one update. ``member.join()`` is the case that forced
+        this: a real join delivers a ``chat_member`` transition *and* the group's own
+        ``new_chat_members`` service message, and a bot that handles the first and ignores
+        the second used to make ``env.assert_handled_by("on_user_joined")`` fail, because
+        "the last update" was the service message nothing claimed. The assertion was right
+        and the toolkit was wrong.
+
+        Used by the multi-update triggers in :mod:`aiogram.test.actors`, and available to a
+        test that writes a helper of its own::
+
+            with bot_env.trigger():
+                await alice.send("/deal")
+                await bob.send("/deal")
+            bot_env.assert_handled_by("on_deal")   # scans both
+
+        Nesting is counted, so an inner block does not close the outer one's scope. A bare
+        :meth:`feed` outside any block is its own scope, which is what makes the common
+        one-update case need no ceremony at all.
+        """
+        if self._trigger_depth == 0:
+            self._trigger_routes = []
+        self._trigger_depth += 1
+        try:
+            yield
+        finally:
+            self._trigger_depth -= 1
+
+    @property
+    def routes(self) -> list[RouteRecord]:
+        """
+        Every update of the most recent trigger, in the order the records were completed.
+
+        A short history rather than the whole session: the question a failing test asks is
+        "where did *that* go", and one action's worth of updates is the answer. See
+        :meth:`trigger` for what delimits it.
+        """
+        return list(self._trigger_routes)
 
     @property
     def last_route(self) -> RouteRecord | None:
         """
-        Where the most recently finished update went, or ``None`` if none has.
+        Where the most recent trigger went, or ``None`` if nothing has been routed.
 
         The answer to "the test timed out and I have no idea what ran"::
 
             await bot_user.send("/join")
             assert bot_env.last_route.handled, bot_env.last_route.describe()
 
-        Records are completed innermost first, so after a handler that fed an update of its
-        own this is still the outer update's record — the one ``feed`` was called with.
+        For a trigger that fed one update this is simply that update's record. For one that
+        fed several — see :meth:`trigger` — it is the **most recent handled** record, and
+        only when nothing was handled at all the most recent record of any kind. That
+        ordering is what makes the two cases both read correctly: ``member.join()`` reports
+        the ``chat_member`` update its handler claimed rather than the service message
+        nobody wanted, while a trigger nothing reacted to still says "NOT handled" instead
+        of hiding behind an earlier success.
 
-        It stays ``None`` after a fed update only when the update never reached the
-        recording middleware at all, which means an update-level outer middleware
-        registered on the dispatcher *before* this environment was created returned without
-        calling the next one. That is itself the answer to where the update went.
+        A nested feed follows from the same rule: records complete innermost first, so an
+        outer update that was handled is the newest handled one and stays the answer.
+
+        It is ``None`` after a fed update only when the update never reached the recording
+        middleware at all, which means an update-level outer middleware registered on the
+        dispatcher *before* this environment was created returned without calling the next
+        one. That is itself the answer to where the update went.
         """
-        return self._last_route
+        if not self._trigger_routes:
+            return None
+        for record in reversed(self._trigger_routes):
+            if record.handled:
+                return record
+        return self._trigger_routes[-1]
 
     def assert_handled_by(self, name: str) -> RouteRecord:
         """
-        Assert that the last update was handled by a handler whose name contains ``name``.
+        Assert that the last trigger was handled by a handler whose name contains ``name``.
 
         Matched against ``module.qualname`` as a substring, so ``"on_start"`` and
         ``"handlers.start.on_start"`` both work, and the record is returned so a test can
-        go on asserting on it. The failure message is the whole point: it says where the
-        update *did* go, including the exception if one was raised and swallowed.
+        go on asserting on it.
+
+        **Every** update of the trigger is scanned, not only the last one, which is the
+        other half of what :meth:`trigger` fixes: with ``await member.join()`` feeding a
+        membership update and a service message, either of them claiming the handler is the
+        bot doing the right thing, and the assertion must not depend on which one Telegram
+        happens to deliver second.
+
+        The failure message is the whole point: it says where the updates *did* go — all of
+        them — including any exception raised and swallowed on the way.
         """
-        record = self._last_route
-        if record is None:
+        if not self._trigger_routes:
             msg = (
-                f"Expected the last update to be handled by {name!r}, but no update has "
+                f"Expected the last trigger to be handled by {name!r}, but no update has "
                 f"been routed through this environment yet — or an update-level outer "
                 f"middleware registered before the environment was created returned "
                 f"without calling the next one, so nothing was recorded."
             )
             raise AssertionError(msg)
-        path = record.handler_path
-        if path is not None and name in path:
-            return record
-        msg = f"Expected the last update to be handled by {name!r}, but:\n{record.describe()}"
+        for record in reversed(self._trigger_routes):
+            path = record.handler_path
+            if path is not None and name in path:
+                return record
+        went = "\n".join(record.describe() for record in self._trigger_routes)
+        msg = (
+            f"Expected the last trigger to be handled by {name!r}, but its "
+            f"{len(self._trigger_routes)} update(s) went here:\n{went}"
+        )
         raise AssertionError(msg)
 
     async def __aenter__(self) -> BotTestEnvironment:
@@ -528,12 +712,12 @@ class BotTestEnvironment:
 
     def blocked(
         self,
-        chat_id: ChatSpec | ChatState | UserSpec | int,
+        chat_id: ChatSpec | ChatState | UserSpec | UserState | int,
         *,
         message: str = BLOCKED_BY_USER,
     ) -> OverrideHandle:
         """
-        Make every delivery into one chat fail the way a block makes it fail.
+        Make every call addressed at one chat fail the way a block makes it fail.
 
         The shape of the single most common "one addressee is unreachable" test, which
         otherwise has to be spelled out one method at a time. Scoped::
@@ -547,10 +731,18 @@ class BotTestEnvironment:
             ...
             block.cancel()
 
-        Every method that delivers content into a chat is covered, not only
-        ``sendMessage`` — the block a real user applies stops photos, copies and forwards
-        just the same, and a bot that falls back from one to another must be seen to fail
-        at all of them. See :data:`aiogram.test.overrides.DELIVERY_METHODS`.
+        Every method a block stops is covered, not only ``sendMessage``: the deliveries
+        (photos, copies, forwards — a bot that falls back from one to another must be seen
+        to fail at all of them), *and* the calls that act on what is already in that chat —
+        the ``editMessage*`` family, ``pinChatMessage``, ``setMessageReaction`` — because a
+        bot whose recovery path is "edit the previous message instead" would otherwise pass
+        a test its users never pass. Methods addressed by ``user_id`` rather than
+        ``chat_id`` — ``sendGift`` — are covered too. See
+        :data:`aiogram.test.overrides.BLOCKED_METHODS`, whose docstring also lists what is
+        deliberately **not** included and why.
+
+        The chat is matched through the world, so a bot that addresses it as ``'@alice'``
+        while the test names it by id is still blocked — see :meth:`resolve_addressing`.
 
         The call is still **recorded** before the block answers it, so a test can assert
         both that the bot tried and that it failed — see :meth:`handle_call`.
@@ -627,6 +819,7 @@ class BotTestEnvironment:
         # One pass over the bindables instead of one to ask whose they are and another to
         # claim them: `bound_elsewhere` and `mount` walk the same graph with the same
         # pruning, and an update is walked on every single trigger.
+        self._protect_running_tasks()
         nodes = list(bindables(update, prune_bound=True))
         if any(node.bot is not None and node.bot is not self.bot for node in nodes):
             update = detached_copy(update, bot=self.bot)
@@ -635,10 +828,14 @@ class BotTestEnvironment:
                 if node.bot is None:
                     node.as_(self.bot)
         self._register_carried_message(update)
-        # Cleared rather than left standing, so `last_route` is never a *previous* update's
-        # route mistaken for this one's — the case that happens exactly when an outer
-        # middleware the dispatcher already had swallows the update before the recorder.
-        self._last_route = None
+        # A feed that is neither inside an explicit `trigger()` block nor nested in a
+        # handler is a trigger of its own, so its records replace the previous trigger's
+        # rather than piling onto them. Clearing here rather than after the dispatcher
+        # returns is what keeps `last_route` from ever being a *previous* update's route
+        # mistaken for this one's — the case that happens exactly when an outer middleware
+        # the dispatcher already had swallows the update before the recorder.
+        if self._trigger_depth == 0 and self._current_route() is None:
+            self._trigger_routes = []
         return await self.dispatcher.feed_update(self.bot, update, **kwargs)
 
     def _register_carried_message(self, update: Update) -> None:
@@ -705,12 +902,82 @@ class BotTestEnvironment:
 
     # -- waiting ----------------------------------------------------------------------
 
+    def as_views(
+        self,
+        watch: ViewSelector | Iterable[ViewSelector] | None,
+    ) -> tuple[MessageView, ...]:
+        """
+        Resolve whatever a wait was told to watch into chats and topics.
+
+        The one vocabulary the whole waiting family speaks, so ``watch=`` on
+        :meth:`wait_for` and ``chats=`` on :meth:`wait_for_message_in` accept the same
+        things: a :class:`~aiogram.test.ChatSpec` or :class:`~aiogram.test.TopicSpec`
+        declaration, a live :class:`~aiogram.test.ChatState` or
+        :class:`~aiogram.test.TopicState`, a bare chat id — one of them, or any iterable of
+        them mixed freely.
+
+        Accepting a lone item alongside iterables cannot guess wrong, because none of the
+        four types is iterable. Accepting declarations is what closes the gap that made
+        ``watch=group_spec`` fail: a test holds the ``ChatSpec`` its ``add_supergroup``
+        returned, and passing it used to survive registration and then blow up with an
+        ``AttributeError`` from inside :func:`_describe_view` — while the failure message
+        for the *real* problem was being assembled.
+        """
+        if watch is None:
+            return ()
+        items: Iterable[ViewSelector]
+        if isinstance(watch, (ChatState, TopicState, ChatSpec, TopicSpec, int)):
+            items = (watch,)
+        else:
+            items = watch
+        return tuple(self._as_view(item) for item in items)
+
+    def _as_view(self, item: ViewSelector) -> MessageView:
+        if isinstance(item, (ChatState, TopicState)):
+            return item
+        if isinstance(item, TopicSpec):
+            return self.topic(item.chat_id, item)
+        return self.chat(item)
+
+    def assert_overrides_consumed(self) -> None:
+        """
+        Assert that every override declared on this environment answered at least one call.
+
+        The silent failure this names: ``env.on(SendMessage, chat_di=alice.id)`` survives
+        the typo check only when the field *does* exist but nothing ever matches it — a
+        chat id that is one digit off, a ``where`` predicate that is subtly wrong, a rule
+        declared after the call it meant to intercept. The rule sits in the registry doing
+        nothing, the bot behaves as if the override were never declared, and the test fails
+        somewhere else entirely, as "the bot sent the message it was supposed to fail to
+        send".
+
+        Opt-in rather than part of teardown, because a test that declares a rule for a path
+        it did *not* expect to be taken is a perfectly good test — proving the bot never
+        went there. Call this when the point of the test is that the override fired::
+
+            with env.blocked(alice):
+                await bot_user.send("/broadcast")
+            env.assert_overrides_consumed()
+
+        The same listing is appended to every :meth:`wait_for` and
+        :meth:`wait_for_message_in` timeout, where a never-matched override is the single
+        most common cause of the message that never arrived.
+        """
+        report = self.overrides.describe_unfired()
+        if report:
+            raise AssertionError(report)
+
+    def _wait_footer(self) -> list[str]:
+        """The lines every timeout message ends with, when there is anything to say."""
+        report = self.overrides.describe_unfired()
+        return [report] if report else []
+
     async def wait_for(
         self,
         predicate: Callable[[], object],
         description: str | None = None,
         *,
-        watch: MessageView | Iterable[MessageView] | None = None,
+        watch: ViewSelector | Iterable[ViewSelector] | None = None,
         timeout: float | None = None,
         interval: float = 0.01,
     ) -> Any:
@@ -750,15 +1017,15 @@ class BotTestEnvironment:
 
             await bot_env.wait_for(lambda: game.phase is Phase.NIGHT, "night", watch=group)
 
-        A single chat or topic, or any iterable of them, and each is appended to the failure
-        message the way :meth:`aiogram.test.world.ChatState.wait_for_message` already
-        renders one.
+        A single chat or topic, or any iterable of them, given as declarations, live states
+        or bare ids — see :meth:`as_views` — and each is appended to the failure message the
+        way :meth:`aiogram.test.world.ChatState.wait_for_message` already renders one.
 
         :raises aiogram.test.errors.WaitTimeoutError: if the condition never became true.
         """
         if timeout is None:
             timeout = self.world.default_wait_timeout
-        watched = _as_views(watch)
+        watched = self.as_views(watch)
 
         def describe_timeout() -> str:
             if description is not None:
@@ -770,7 +1037,9 @@ class BotTestEnvironment:
                     f"`description='...'` to say what was expected — it is the only thing "
                     f"this message can show about a lambda."
                 )
-            return "\n".join([head, *(_describe_view(view) for view in watched)])
+            return "\n".join(
+                [head, *(_describe_view(view) for view in watched), *self._wait_footer()],
+            )
 
         return await poll_until(
             predicate,
@@ -781,7 +1050,7 @@ class BotTestEnvironment:
 
     async def wait_for_message_in(
         self,
-        chats: Iterable[ChatSelector],
+        chats: ViewSelector | Iterable[ViewSelector],
         predicate: Callable[[Message], object] | None = None,
         description: str | None = None,
         *,
@@ -806,10 +1075,18 @@ class BotTestEnvironment:
                 players, lambda m: m.reply_markup is not None, "the night keyboard"
             )
 
-        ``chats`` accepts declarations, chat states and bare ids, mixed. A predicate that
-        raises on a message counts as "no match" for that message, again as the single-chat
-        wait has it: a chat holds messages of every shape and a wait has no business dying
-        on one it was not asking about.
+        ``chats`` speaks the same vocabulary as ``watch=`` — declarations, live chat and
+        topic states, bare ids, one of them or an iterable, mixed freely; see
+        :meth:`as_views`. A topic is watched as the filtered view it is, so a broadcast into
+        one thread of a forum is expressible here too.
+
+        A predicate that raises on a message counts as "no match" for that message, again as
+        the single-chat wait has it: a chat holds messages of every shape and a wait has no
+        business dying on one it was not asking about. And as there, **what it raised is
+        reported when the wait gives up**: this used to drop those exceptions on the floor,
+        so a predicate that was simply buggy — ``m.text.startswith(...)`` meeting the
+        ``forum_topic_created`` service message — read as "the bot never sent it", which is
+        the wrong bug entirely and the harder one to find in a broadcast across ten chats.
 
         The failure names **which** chats are still missing one and dumps only those,
         which is the difference between "somebody did not get it" and a readable diagnosis.
@@ -818,21 +1095,33 @@ class BotTestEnvironment:
         """
         if timeout is None:
             timeout = self.world.default_wait_timeout
-        states = [chat if isinstance(chat, ChatState) else self.chat(chat) for chat in chats]
+        views = self.as_views(chats)
+        _require_distinct_views(views)
+        # view label -> message id -> what the predicate raised on it, in the most recent
+        # pass. Keyed by label rather than by id because two topics of one forum are two
+        # views with the same chat id.
+        raised: dict[str, dict[int, Exception]] = {}
+
+        def match_in(view: MessageView) -> Message | None:
+            problems: dict[int, Exception] = {}
+            found = newest_match(view.messages, predicate, raised=problems)
+            if problems:
+                raised[view.label] = problems
+            return found
 
         def collect() -> dict[int, Message] | None:
+            raised.clear()
             found: dict[int, Message] = {}
-            for state in states:
-                match = newest_match(state.messages, predicate)
+            for view in views:
+                match = match_in(view)
                 if match is None:
                     return None
-                found[state.id] = match
+                found[_view_key(view)] = match
             return found
 
         def describe_timeout() -> str:
-            missing = [
-                state for state in states if newest_match(state.messages, predicate) is None
-            ]
+            raised.clear()
+            missing = [view for view in views if match_in(view) is None]
             what = description or (
                 "any message"
                 if predicate is None
@@ -840,10 +1129,17 @@ class BotTestEnvironment:
             )
             head = (
                 f"Timed out after {timeout}s waiting for {what} in all "
-                f"{len(states)} watched chat(s). Still missing in "
-                f"{', '.join(str(state.id) for state in missing)}:"
+                f"{len(views)} watched chat(s). Still missing in "
+                f"{', '.join(view.label for view in missing)}:"
             )
-            return "\n".join([head, *(_describe_view(state) for state in missing)])
+            return "\n".join(
+                [
+                    head,
+                    *(_describe_view(view) for view in missing),
+                    *_describe_raised(raised),
+                    *self._wait_footer(),
+                ],
+            )
 
         return cast(
             "dict[int, Message]",
@@ -869,10 +1165,24 @@ class BotTestEnvironment:
             await bot_env.drain()
 
         Tasks that were already running when the environment was built are left alone: a
-        session-scoped fixture's background worker is not this test's litter. If the
-        environment was built outside a running loop — which the ``bot_env`` fixture does,
-        being synchronous — there was nothing to snapshot, and every task alive at the
-        moment of the call except the caller's own is treated as this test's.
+        session-scoped fixture's background worker is not this test's litter.
+
+        **The protected set is snapshotted twice**, and the second time is the one that
+        matters in practice. The ``bot_env`` fixture is synchronous, so an environment is
+        normally built with no event loop running at all and the creation-time snapshot is
+        empty — which used to mean a session-scoped async fixture's worker was killed by
+        the first ``drain()`` of the first test that called one, and every later test in the
+        session failed on a fixture that no longer worked. So the snapshot is extended again
+        at this environment's **first asynchronous entry point** — the first :meth:`feed` or
+        :meth:`handle_call`, the earliest moment a loop is guaranteed to exist and still
+        before the bot under test can have spawned anything. Everything alive at that
+        instant is spared.
+
+        The bluntness that remains is worth stating plainly: a task the *bot* creates from
+        a fixture, before the first update is fed, is spared too, and a task created by
+        another test's fixture between the first feed and the drain is not. This is a
+        heuristic over "who created this task", which asyncio does not record. A test that
+        needs exactness cancels its own tasks and does not call this.
 
         **It is not called by** :meth:`dispose` **or** :meth:`dispose_sync`. Two reasons,
         and the second is the real one: ``dispose_sync`` is what the pytest fixture uses and
@@ -881,27 +1191,42 @@ class BotTestEnvironment:
         invisible side effect of a fixture going out of scope, turns "my bot's scheduler
         stopped" into a mystery. A test that wants its tasks gone says so.
 
+        **A failure a drained task raised is re-raised, never swallowed.** Retrieving the
+        exception is what stops asyncio complaining about it later; *discarding* it would
+        make this helper the thing that hides a real bug, and a bot whose night timer dies
+        with a ``KeyError`` would look exactly like a bot whose night timer was simply
+        cancelled. So anything other than :class:`asyncio.CancelledError` is collected and
+        raised as :class:`~aiogram.test.errors.DrainedTaskError`, naming every task that
+        failed, with the first failure chained as ``__cause__`` so the real traceback is
+        right there.
+
         :raises aiogram.test.errors.WaitTimeoutError: if a task refuses to finish within
             ``timeout`` after being cancelled — a task that swallows
             :class:`asyncio.CancelledError` is a real bug in the bot, and silently leaving
             it running would be the same stderr noise this exists to remove.
+        :raises aiogram.test.errors.DrainedTaskError: if a drained task ended with an
+            exception of its own.
         """
         current = asyncio.current_task()
         pending = {
             task
             for task in asyncio.all_tasks()
-            if task is not current and task not in self._tasks_at_creation and not task.done()
+            if task is not current and task not in self._protected_tasks and not task.done()
         }
         if not pending:
             return 0
         for task in pending:
             task.cancel()
         _, still_running = await asyncio.wait(pending, timeout=timeout)
+        failures: list[tuple[str, BaseException]] = []
         for task in pending - still_running:
             # Retrieve whatever the task ended with, or asyncio complains about the
             # never-retrieved exception at collection time — the very noise being removed.
-            if not task.cancelled():
-                task.exception()
+            if task.cancelled():
+                continue
+            error = task.exception()
+            if error is not None:
+                failures.append((task.get_name(), error))
         if still_running:
             names = ", ".join(sorted(task.get_name() for task in still_running))
             msg = (
@@ -910,10 +1235,61 @@ class BotTestEnvironment:
                 f"A task that outlives its cancellation is swallowing CancelledError — "
                 f"look for a bare `except Exception` or a `finally` that awaits."
             )
+            if failures:
+                # Reported here rather than raised separately: the stuck task is the more
+                # structural failure, and losing the other half would be exactly the
+                # swallowing this method refuses to do.
+                msg += f"\n{_describe_failures(failures)}"
             raise WaitTimeoutError(msg)
+        if failures:
+            raise DrainedTaskError(_describe_failures(failures)) from failures[0][1]
         return len(pending)
 
     # -- call handling ----------------------------------------------------------------
+
+    def _protect_running_tasks(self) -> None:
+        """
+        Spare, from now on, everything that was already running at the first async entry.
+
+        Called from :meth:`feed` and :meth:`handle_call` — the two doors through which this
+        environment first does anything asynchronous. Runs its body once; after that it is
+        a boolean check on a hot path. See :meth:`drain` for why the creation-time snapshot
+        is not enough on its own.
+        """
+        if self._protection_extended:
+            return
+        self._protection_extended = True
+        current = asyncio.current_task()
+        self._protected_tasks |= {task for task in _running_tasks() if task is not current}
+
+    def resolve_addressing(self, value: Any) -> Any:
+        """
+        Canonicalize whatever a chat-addressing field holds, so the spellings compare equal.
+
+        ``chat_id`` accepts a numeric id or an ``@username``, and the bot under test picks
+        whichever it happens to hold — often the username, because that is what its config
+        file has. An override or a :meth:`blocked` addressed at the numeric id then compared
+        ``'@alice' != 1`` and silently never fired, so the block a test declared was simply
+        absent and the bot "succeeded" at a send a real blocked user never receives.
+
+        Chats are looked up first, then users: a private chat with a user carries that
+        user's username, but a blueprint that has not opened it yet still knows the user, and
+        the private chat's id *is* the user id — so both answer the same number.
+
+        A name nothing in this world answers to comes back unchanged, which makes it compare
+        unequal to every id and therefore match nothing. That is the honest answer: this
+        world cannot tell whether the rule meant that chat.
+        """
+        if not isinstance(value, str):
+            return value
+        wanted = value.removeprefix("@")
+        for chat in self.world.chats.values():
+            if chat.username is not None and chat.username == wanted:
+                return chat.id
+        for user in self.world.users.values():
+            if user.username is not None and user.username == wanted:
+                return user.id
+        return value
 
     def synthesis_context(self) -> SynthesisContext:
         return SynthesisContext(
@@ -968,11 +1344,12 @@ class BotTestEnvironment:
         deliberately does **not**: a gap in the test's own setup must fail the test rather
         than arrive as an error the bot under test can catch.
         """
+        self._protect_running_tasks()
         resolved = resolve_defaults(method, bot)
         self.calls.record(resolved)
         resolved = detached_copy(resolved)
 
-        outcome = self.overrides.take(resolved)
+        outcome = self.overrides.take(resolved, self.resolve_addressing)
         if outcome is not None:
             # The destination is known here, so the copy is minted already bound and the
             # session's `mount` prunes at its root instead of walking it again.

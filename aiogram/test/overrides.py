@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
-from typing import TYPE_CHECKING, Any
+from dataclasses import dataclass, field
+from typing import TYPE_CHECKING, Any, TypeAlias
 
 from typing_extensions import Self
 
@@ -15,6 +15,11 @@ if TYPE_CHECKING:
     from collections.abc import Callable
 
     from aiogram.client.bot import Bot
+
+#: Turns whatever a chat-addressing field holds into a canonical value, so ``'@alice'`` and
+#: the numeric id of Alice's private chat compare equal. Implemented by the environment,
+#: which is the thing that owns a world to look the name up in.
+ChatIdResolver: TypeAlias = "Callable[[Any], Any]"
 
 #: What Telegram answers when the addressee has blocked the bot. Declared here so
 #: :meth:`aiogram.test.BotTestEnvironment.blocked` and a test asserting on the string a
@@ -43,6 +48,78 @@ DELIVERY_METHODS: tuple[type[TelegramMethod[Any]], ...] = tuple(
         key=lambda item: item.__name__,
     ),
 )
+
+#: The methods a block stops that no prefix can derive, listed one by one on purpose.
+#:
+#: A block is not only "the bot cannot send here". Telegram refuses **every** call that
+#: acts on the content of the private chat with the user who blocked the bot, and a bot
+#: that reacts to a failed send by editing its previous message, unpinning it or clearing
+#: its reaction must be seen to fail at those too — otherwise the test proves a recovery
+#: path that production never reaches.
+#:
+#: Each entry is here because it operates on a message *in that chat*:
+#:
+#: * the ``editMessage*`` family, ``stopMessageLiveLocation`` and ``stopPoll`` — editing is
+#:   an operation on a chat the bot must still be able to reach;
+#: * ``setMessageReaction`` — same;
+#: * ``pinChatMessage``, ``unpinChatMessage``, ``unpinAllChatMessages`` — same.
+#:
+#: **Deliberately excluded**, so the exclusions are as reviewable as the inclusions:
+#:
+#: * ``deleteMessage`` / ``deleteMessages``. The Bot API states their limits in terms of
+#:   message age and administrator rights, not of reachability, and a block is documented
+#:   as stopping *delivery*: a bot dropping its own leftovers is not delivering anything.
+#:   Guessing 403 here would make a cleanup path fail in tests that succeeds in production,
+#:   which is the more expensive mistake of the two.
+#: * the ``editEphemeralMessage*`` / ``deleteEphemeralMessage`` family, for the same reason
+#:   the delete methods are out: nothing in the documentation ties them to a block, and
+#:   this list only claims what it can ground.
+#:
+#: Either way a test that knows better says so in one line::
+#:
+#:     env.on(DeleteMessage, chat_id=alice.id).raises(TelegramForbiddenError)
+_BLOCKED_EXTRA_METHOD_NAMES: tuple[str, ...] = (
+    "EditMessageCaption",
+    "EditMessageChecklist",
+    "EditMessageLiveLocation",
+    "EditMessageMedia",
+    "EditMessageReplyMarkup",
+    "EditMessageText",
+    "PinChatMessage",
+    "SetMessageReaction",
+    "StopMessageLiveLocation",
+    "StopPoll",
+    "UnpinAllChatMessages",
+    "UnpinChatMessage",
+)
+
+#: Every method :func:`block_chat` refuses: the deliveries plus the explicit additions.
+#:
+#: A name this aiogram does not define is skipped rather than raising, so the list survives
+#: being read against an older Bot API than the one it was written for.
+BLOCKED_METHODS: tuple[type[TelegramMethod[Any]], ...] = tuple(
+    sorted(
+        {
+            *DELIVERY_METHODS,
+            *(
+                member
+                for member in (
+                    getattr(methods, name, None) for name in _BLOCKED_EXTRA_METHOD_NAMES
+                )
+                if isinstance(member, type) and issubclass(member, TelegramMethod)
+            ),
+        },
+        key=lambda item: item.__name__,
+    ),
+)
+
+#: Fields that name a chat and therefore accept ``@username`` as well as a numeric id.
+#:
+#: Equality alone cannot compare the two spellings — ``'@alice' != 1``, while the world
+#: resolves both to the same chat — so a matcher given a resolver normalizes these fields
+#: on **both** sides before comparing. Every other field is compared exactly, because
+#: equality is what ``env.on(Method, field=value)`` promises.
+ADDRESSING_FIELDS: frozenset[str] = frozenset({"chat_id", "from_chat_id", "sender_chat_id"})
 
 #: Distinguishes "the method has no such field" from "the field is None".
 _MISSING = object()
@@ -126,11 +203,36 @@ class MethodMatcher:
     fields: tuple[tuple[str, Any], ...] = ()
     predicates: tuple[Callable[[TelegramMethod[Any]], object], ...] = ()
 
-    def matches(self, method: TelegramMethod[Any]) -> bool:
+    def matches(
+        self,
+        method: TelegramMethod[Any],
+        resolve: ChatIdResolver | None = None,
+    ) -> bool:
+        """
+        Whether this answers ``method``, normalizing chat addressing when it can.
+
+        ``resolve`` is the environment's world lookup — see
+        :meth:`aiogram.test.BotTestEnvironment.resolve_addressing`. Without it every field
+        is compared exactly, which is what a matcher built outside an environment can
+        honestly do. With it, the fields in :data:`ADDRESSING_FIELDS` are compared through
+        the world first, so a rule declared for ``chat_id=alice.id`` still answers the call
+        the bot made as ``chat_id='@alice'`` — the two name one chat, and a block that only
+        catches one spelling is a silent hole rather than a stricter rule.
+
+        Exact equality is tried first and short-circuits, so an unresolvable value (an
+        ``@username`` no chat in this world answers to) costs nothing and simply does not
+        match — which is the honest answer: this world cannot tell whether it is the chat
+        the rule meant.
+        """
         if not isinstance(method, self.method_type):
             return False
         for name, expected in self.fields:
-            if getattr(method, name, _MISSING) != expected:
+            actual = getattr(method, name, _MISSING)
+            if actual == expected:
+                continue
+            if resolve is None or actual is _MISSING or name not in ADDRESSING_FIELDS:
+                return False
+            if resolve(actual) != resolve(expected):
                 return False
         return all(predicate(method) for predicate in self.predicates)
 
@@ -154,6 +256,11 @@ class OverrideRule:
 
     matcher: MethodMatcher
     outcome: Outcome
+    #: How many calls this rule has answered. A rule still standing at ``0`` is the silent
+    #: failure :meth:`aiogram.test.BotTestEnvironment.assert_overrides_consumed` exists to
+    #: name: it was declared, it never matched anything, and the test failed somewhere else
+    #: entirely — as "the bot sent the message it was supposed to fail to send".
+    fired: int = field(default=0, compare=False)
 
 
 class OverrideRegistry:
@@ -188,18 +295,44 @@ class OverrideRegistry:
         """The rules still standing, in the order ``take`` tries them."""
         return list(self._rules)
 
-    def take(self, method: TelegramMethod[Any]) -> Outcome | None:
+    def take(
+        self,
+        method: TelegramMethod[Any],
+        resolve: ChatIdResolver | None = None,
+    ) -> Outcome | None:
         for rule in list(self._rules):
             if rule.outcome.exhausted:
                 self.remove(rule)
                 continue
-            if not rule.matcher.matches(method):
+            if not rule.matcher.matches(method, resolve):
                 continue
+            rule.fired += 1
             rule.outcome.consume()
             if rule.outcome.exhausted:
                 self.remove(rule)
             return rule.outcome
         return None
+
+    def unfired(self) -> list[OverrideRule]:
+        """
+        The rules still registered that have never answered a call.
+
+        A rule leaves the registry only by being cancelled or by spending its ``times``
+        budget, and spending the budget requires having fired — so what is still here at
+        ``fired == 0`` really is a declaration nothing ever matched.
+        """
+        return [rule for rule in self._rules if rule.fired == 0]
+
+    def describe_unfired(self) -> str:
+        """A block naming the never-matched rules, or ``''`` when they all fired."""
+        unfired = self.unfired()
+        if not unfired:
+            return ""
+        listing = "\n".join(f"  {rule.matcher.describe()}" for rule in unfired)
+        return (
+            f"{len(unfired)} declared override(s) never matched a call, which is the usual "
+            f"reason a bot behaved as if they were not there:\n{listing}"
+        )
 
     def clear(self) -> None:
         self._rules.clear()
@@ -330,19 +463,33 @@ def block_chat(
     message: str = BLOCKED_BY_USER,
 ) -> OverrideHandle:
     """
-    Make every delivery into ``chat_id`` fail the way a block makes it fail.
+    Make every call addressed at ``chat_id`` fail the way a block makes it fail.
 
-    One rule per method in :data:`DELIVERY_METHODS`, all under one handle, so the whole
-    block is lifted by a single :meth:`OverrideHandle.cancel`. The rules carry no ``times``
-    budget: a blocked user stays blocked for as long as the block is in force, and a budget
-    would silently un-block them on call *n+1*.
+    One rule per method in :data:`BLOCKED_METHODS` per **addressing field** it has, all
+    under one handle, so the whole block is lifted by a single
+    :meth:`OverrideHandle.cancel`.
+
+    Two rules rather than one predicate is what expresses "``chat_id`` **or** ``user_id``
+    names the blocked party". ``sendGift`` is the method that forces the question: it takes
+    either, and a bot that thanks a user with a gift addresses them by ``user_id`` with no
+    ``chat_id`` in sight — a block keyed on ``chat_id`` alone let that call sail through and
+    the test proved a gift a real blocked user never receives. Splitting it into two rules
+    keeps :meth:`MethodMatcher.describe` readable and costs nothing at match time, because
+    :meth:`OverrideRegistry.take` walks past a rule whose field is absent without consuming
+    it.
+
+    The rules carry no ``times`` budget: a blocked user stays blocked for as long as the
+    block is in force, and a budget would silently un-block them on call *n+1*.
     """
     handle = OverrideHandle(registry)
-    for method_type in DELIVERY_METHODS:
-        handle.register(
-            MethodMatcher(method_type=method_type, fields=(("chat_id", chat_id),)),
-            Outcome(error=TelegramForbiddenError, message=message),
-        )
+    for method_type in BLOCKED_METHODS:
+        for name in ("chat_id", "user_id"):
+            if name not in method_type.model_fields:
+                continue
+            handle.register(
+                MethodMatcher(method_type=method_type, fields=((name, chat_id),)),
+                Outcome(error=TelegramForbiddenError, message=message),
+            )
     return handle
 
 
