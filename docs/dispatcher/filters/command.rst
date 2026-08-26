@@ -10,6 +10,7 @@ Usage
 3. Match command by multiple variants: :code:`Command("item", re.compile(r"item_(\\d+)"))`
 4. Handle commands in public chats intended for other bots: :code:`Command("command", ignore_mention=True)`
 5. Use :class:`aiogram.types.bot_command.BotCommand` object as command reference :code:`Command(BotCommand(command="command", description="My awesome command")`
+6. Any :class:`aiogram.types.bot_command.BotCommand` passed to the filter is kept in :code:`Command.bot_commands`, and can be collected across a router tree via :meth:`aiogram.dispatcher.router.Router.resolve_bot_commands` for bootstrapping :code:`bot.set_my_commands()`
 
 .. warning::
 
@@ -28,6 +29,17 @@ When filter is passed the :class:`aiogram.filters.command.CommandObject` will be
     :member-order: bysource
     :undoc-members: False
 
+:class:`aiogram.filters.command.BotCommandMeta` can be used instead of a plain
+:class:`~aiogram.types.bot_command.BotCommand` to additionally carry a scope and a language
+code, for grouping commands collected via :meth:`aiogram.dispatcher.router.Router.resolve_bot_commands`
+by scope/locale before calling :code:`bot.set_my_commands()`. It is not meant to be passed
+directly to :code:`set_my_commands()`.
+
+.. autoclass:: aiogram.filters.command.BotCommandMeta
+    :members:
+    :member-order: bysource
+    :undoc-members: False
+
 Allowed handlers
 ================
 
@@ -35,3 +47,10 @@ Allowed update types for this filter:
 
 - `message`
 - `edited_message`
+- `channel_post`
+- `edited_channel_post`
+- `business_message`
+- `edited_business_message`
+
+Any observer that dispatches :class:`aiogram.types.message.Message` events works — the filter
+itself doesn't check which observer it's attached to.
