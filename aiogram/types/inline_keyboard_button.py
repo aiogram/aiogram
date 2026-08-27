@@ -7,6 +7,7 @@ from .base import MutableTelegramObject
 if TYPE_CHECKING:
     from .callback_game import CallbackGame
     from .copy_text_button import CopyTextButton
+    from .disabled_button import DisabledButton
     from .login_url import LoginUrl
     from .switch_inline_query_chosen_chat import SwitchInlineQueryChosenChat
     from .web_app_info import WebAppInfo
@@ -32,7 +33,7 @@ class InlineKeyboardButton(MutableTelegramObject):
     web_app: WebAppInfo | None = None
     """*Optional*. Description of the `Web App <https://core.telegram.org/bots/webapps>`_ that will be launched when the user presses the button. The Web App will be able to send an arbitrary message on behalf of the user using the method :class:`aiogram.methods.answer_web_app_query.AnswerWebAppQuery`. Available only in private chats between a user and the bot. Not supported for messages sent on behalf of a business account"""
     login_url: LoginUrl | None = None
-    """*Optional*. An HTTPS URL used to automatically authorize the user. Can be used as a replacement for the `Telegram Login Widget <https://core.telegram.org/widgets/login>`_"""
+    """*Optional*. An HTTPS URL used to automatically authorize the user. Can be used as a replacement for the `Telegram Login Widget <https://core.telegram.org/widgets/login>`_. Not supported for ephemeral messages"""
     switch_inline_query: str | None = None
     """*Optional*. If set, pressing the button will prompt the user to select one of their chats, open that chat and insert the bot's username and the specified inline query in the input field. May be empty, in which case just the bot's username will be inserted. Not supported for messages sent in channel direct messages chats and on behalf of a business account"""
     switch_inline_query_current_chat: str | None = None
@@ -45,6 +46,8 @@ class InlineKeyboardButton(MutableTelegramObject):
     """*Optional*. Description of the game that will be launched when the user presses the button"""
     pay: bool | None = None
     """*Optional*. Specify :code:`True`, to send a `Pay button <https://core.telegram.org/bots/api#payments>`_. Substrings '⭐' and 'XTR' in the buttons's text will be replaced with a Telegram Star icon"""
+    disabled: DisabledButton | None = None
+    """*Optional*. If set, then the button is disabled and does nothing"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!
@@ -66,6 +69,7 @@ class InlineKeyboardButton(MutableTelegramObject):
             copy_text: CopyTextButton | None = None,
             callback_game: CallbackGame | None = None,
             pay: bool | None = None,
+            disabled: DisabledButton | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!
@@ -86,5 +90,6 @@ class InlineKeyboardButton(MutableTelegramObject):
                 copy_text=copy_text,
                 callback_game=callback_game,
                 pay=pay,
+                disabled=disabled,
                 **__pydantic_kwargs,
             )

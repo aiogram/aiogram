@@ -32,6 +32,7 @@ from aiogram.types import (
     ChosenInlineResult,
     InlineQuery,
     ManagedBotUpdated,
+    MessageGenerationStopped,
     Message,
     MessageReactionCountUpdated,
     MessageReactionUpdated,
@@ -695,6 +696,18 @@ class TestDispatcher:
                 ),
                 False,
                 True,
+            ),
+            pytest.param(
+                "stopped_message_generation",
+                Update(
+                    update_id=42,
+                    stopped_message_generation=MessageGenerationStopped(
+                        chat=Chat(id=42, type="private"),
+                        draft_id=1,
+                    ),
+                ),
+                True,
+                False,
             ),
         ],
     )

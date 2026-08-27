@@ -1,0 +1,10 @@
+#################################
+RichBlockExpandableBlockQuotation
+#################################
+
+
+.. automodule:: aiogram.types.rich_block_expandable_block_quotation
+    :members:
+    :member-order: bysource
+    :undoc-members: True
+    :exclude-members: model_config,model_fields

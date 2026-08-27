@@ -45,11 +45,11 @@ class SendPaidMedia(TelegramMethod[Message]):
     """Mode for parsing entities in the media caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details"""
     caption_entities: list[MessageEntity] | None = None
     """A JSON-serialized list of special entities that appear in the caption, which can be specified instead of *parse_mode*"""
-    show_caption_above_media: bool | None = None
+    show_caption_above_media: bool | Default | None = Default("show_caption_above_media")
     """Pass :code:`True` if the caption must be shown above the message media"""
     disable_notification: bool | None = None
     """Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound"""
-    protect_content: bool | None = None
+    protect_content: bool | Default | None = Default("protect_content")
     """Protects the contents of the sent message from forwarding and saving"""
     allow_paid_broadcast: bool | None = None
     """Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance"""
@@ -77,9 +77,9 @@ class SendPaidMedia(TelegramMethod[Message]):
             caption: str | None = None,
             parse_mode: str | Default | None = Default("parse_mode"),
             caption_entities: list[MessageEntity] | None = None,
-            show_caption_above_media: bool | None = None,
+            show_caption_above_media: bool | Default | None = Default("show_caption_above_media"),
             disable_notification: bool | None = None,
-            protect_content: bool | None = None,
+            protect_content: bool | Default | None = Default("protect_content"),
             allow_paid_broadcast: bool | None = None,
             suggested_post_parameters: SuggestedPostParameters | None = None,
             reply_parameters: ReplyParameters | None = None,

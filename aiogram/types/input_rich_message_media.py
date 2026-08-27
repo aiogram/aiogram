@@ -16,7 +16,7 @@ class InputRichMessageMedia(TelegramObject):
     """
 
     id: str
-    """Unique identifier of the media used in a :code:`tg://photo?id=`, :code:`tg://video?id=`, or :code:`tg://audio?id=` link. 1-64 characters, only :code:`A-Z`, :code:`a-z`, :code:`0-9`, :code:`_` and :code:`-` are allowed"""
+    """Unique identifier of the media used in a :code:`tg://photo?id=`, :code:`tg://video?id=`, :code:`tg://document?id=`, or :code:`tg://audio?id=` link. 1-64 characters, only :code:`A-Z`, :code:`a-z`, :code:`0-9`, :code:`_` and :code:`-` are allowed"""
     media: InputRichMessageMediaUnion
     """The media to be sent. Everything except the media itself and its properties is ignored"""
 

@@ -61,9 +61,9 @@
       },
       {
         "type": "LoginUrl",
-        "description": "An HTTPS URL used to automatically authorize the user. Can be used as a replacement for the Telegram Login Widget.",
-        "html_description": "<td><em>Optional</em>. An HTTPS URL used to automatically authorize the user. Can be used as a replacement for the <a href=\"/widgets/login\">Telegram Login Widget</a>.</td>",
-        "rst_description": "*Optional*. An HTTPS URL used to automatically authorize the user. Can be used as a replacement for the `Telegram Login Widget <https://core.telegram.org/widgets/login>`_.\n",
+        "description": "An HTTPS URL used to automatically authorize the user. Can be used as a replacement for the Telegram Login Widget. Not supported for ephemeral messages.",
+        "html_description": "<td><em>Optional</em>. An HTTPS URL used to automatically authorize the user. Can be used as a replacement for the <a href=\"/widgets/login\">Telegram Login Widget</a>. Not supported for ephemeral messages.</td>",
+        "rst_description": "*Optional*. An HTTPS URL used to automatically authorize the user. Can be used as a replacement for the `Telegram Login Widget <https://core.telegram.org/widgets/login>`_. Not supported for ephemeral messages.\n",
         "name": "login_url",
         "required": false
       },
@@ -113,6 +113,14 @@
         "html_description": "<td><em>Optional</em>. Specify <em>True</em>, to send a <a href=\"#payments\">Pay button</a>. Substrings &#8220;<img class=\"emoji\" src=\"//telegram.org/img/emoji/40/E2AD90.png\" width=\"20\" height=\"20\" alt=\"&#11088;\"/>&#8221; and &#8220;XTR&#8221; in the buttons's text will be replaced with a Telegram Star icon.<br/>\n<br/>\n<strong>NOTE:</strong> This type of button <strong>must</strong> always be the first button in the first row and can only be used in invoice messages.</td>",
         "rst_description": "*Optional*. Specify :code:`True`, to send a `Pay button <https://core.telegram.org/bots/api#payments>`_. Substrings '⭐' and 'XTR' in the buttons's text will be replaced with a Telegram Star icon.\n\n\n\n**NOTE:** This type of button **must** always be the first button in the first row and can only be used in invoice messages.\n",
         "name": "pay",
+        "required": false
+      },
+      {
+        "type": "DisabledButton",
+        "description": "If set, then the button is disabled and does nothing",
+        "html_description": "<td><em>Optional</em>. If set, then the button is disabled and does nothing</td>",
+        "rst_description": "*Optional*. If set, then the button is disabled and does nothing\n",
+        "name": "disabled",
         "required": false
       }
     ],
