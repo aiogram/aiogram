@@ -1,4 +1,5 @@
 from .base import Filter
+from .callback_data import CallbackData, CallbackDataException, CallbackQueryFilter
 from .chat_member_updated import (
     ADMINISTRATOR,
     CREATOR,
@@ -14,7 +15,9 @@ from .chat_member_updated import (
     RESTRICTED,
     ChatMemberUpdatedFilter,
 )
-from .command import Command, CommandObject, CommandStart
+from .command.base import Command, CommandObject, CommandStart
+from .command.data.base import DeeplinkData, DeeplinkDataException
+from .command.deeplink import DeeplinkCommand
 from .exception import ExceptionMessageFilter, ExceptionTypeFilter
 from .logic import and_f, invert_f, or_f
 from .magic_data import MagicData
@@ -40,6 +43,12 @@ __all__ = (
     "Command",
     "CommandObject",
     "CommandStart",
+    "DeeplinkData",
+    "DeeplinkDataException",
+    "DeeplinkCommand",
+    "CallbackData",
+    "CallbackQueryFilter",
+    "CallbackDataException",
     "ExceptionMessageFilter",
     "ExceptionTypeFilter",
     "Filter",
