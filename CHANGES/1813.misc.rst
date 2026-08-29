@@ -1,0 +1,1 @@
+Added a ``Justfile`` with project automation recipes mirroring the existing ``Makefile`` workflow.
