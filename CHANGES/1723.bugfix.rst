@@ -1,0 +1,9 @@
+Fixed the type annotations of client session middlewares.
+
+:class:`aiogram.client.session.middlewares.base.BaseRequestMiddleware`,
+:class:`aiogram.client.session.middlewares.base.RequestMiddlewareType` and
+:class:`aiogram.client.session.middlewares.base.NextRequestMiddlewareType`
+declared ``Response[TelegramType]`` as the middleware return type, while the
+actual request chain already works with the decoded Bot API result
+(the ``result`` field). The built-in :class:`~aiogram.client.session.middlewares.request_logging.RequestLogging`
+middleware and the documentation examples were updated accordingly.
