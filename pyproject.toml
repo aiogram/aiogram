@@ -66,6 +66,9 @@ mongo = [
     "motor>=3.3.2,<3.8",
     "pymongo>4.5,<4.18",
 ]
+sqlite = [
+    "aiosqlite>=0.21.0",
+]
 proxy = [
     "aiohttp-socks>=0.10.1,<1.12.0",
 ]
