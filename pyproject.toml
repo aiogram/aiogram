@@ -43,7 +43,7 @@ classifiers = [
 dependencies = [
     "magic-filter>=1.0.12,<1.1",
     "aiohttp>=3.9.0,<3.15",
-    "pydantic>=2.4.1,<2.14",
+    "pydantic>=2.7.0,<2.14",
     "aiofiles>=23.2.1,<26.0",
     "certifi>=2023.7.22",
     "typing-extensions>=4.7.0,<=5.0",
@@ -63,8 +63,8 @@ redis = [
     "redis[hiredis]>=6.2.0,<8",
 ]
 mongo = [
-    "motor>=3.3.2,<3.8",
-    "pymongo>4.5,<4.18",
+    "motor>=3.6.0,<3.8",
+    "pymongo>=4.9,<4.18",
 ]
 proxy = [
     "aiohttp-socks>=0.10.1,<1.12.0",

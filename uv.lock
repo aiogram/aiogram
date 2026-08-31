@@ -116,11 +116,11 @@ requires-dist = [
     { name = "furo", marker = "extra == 'docs'", specifier = "~=2024.8.6" },
     { name = "magic-filter", specifier = ">=1.0.12,<1.1" },
     { name = "markdown-include", marker = "extra == 'docs'", specifier = "~=0.8.1" },
-    { name = "motor", marker = "extra == 'mongo'", specifier = ">=3.3.2,<3.8" },
-    { name = "pydantic", specifier = ">=2.4.1,<2.14" },
+    { name = "motor", marker = "extra == 'mongo'", specifier = ">=3.6.0,<3.8" },
+    { name = "pydantic", specifier = ">=2.7.0,<2.14" },
     { name = "pygments", marker = "extra == 'docs'", specifier = ">=2.18,<2.21" },
     { name = "pymdown-extensions", marker = "extra == 'docs'", specifier = ">=10.3,<12.0" },
-    { name = "pymongo", marker = "extra == 'mongo'", specifier = ">4.5,<4.18" },
+    { name = "pymongo", marker = "extra == 'mongo'", specifier = ">=4.9,<4.18" },
     { name = "redis", extras = ["hiredis"], marker = "extra == 'redis'", specifier = ">=6.2.0,<8" },
     { name = "sphinx", marker = "extra == 'docs'", specifier = "~=8.0.2" },
     { name = "sphinx-autobuild", marker = "extra == 'docs'", specifier = "~=2024.9.3" },
@@ -921,7 +921,7 @@ name = "exceptiongroup"
 version = "1.3.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "typing-extensions", marker = "python_full_version < '3.12'" },
+    { name = "typing-extensions" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/50/79/66800aadf48771f6b62f7eb014e352e5d06856655206165d775e675a02c9/exceptiongroup-1.3.1.tar.gz", hash = "sha256:8b412432c6055b0b7d14c310000ae93352ed6754f70fa8f7c34141f91c4e3219", size = 30371, upload-time = "2025-11-21T23:01:54.787Z" }
 wheels = [
@@ -1585,7 +1585,7 @@ version = "2.0.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "ast-serialize" },
-    { name = "librt", marker = "platform_python_implementation != 'PyPy'" },
+    { name = "librt" },
     { name = "mypy-extensions" },
     { name = "pathspec" },
     { name = "tomli", marker = "python_full_version < '3.11'" },

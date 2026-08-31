@@ -1,0 +1,4 @@
+Corrected the declared minimum versions of runtime dependencies, which were too low to actually work:
+``pydantic`` is now ``>=2.7.0`` (older releases fail to build the discriminated-union models and
+raise ``KeyError`` on ``import aiogram``), and the ``mongo`` extra now requires ``motor>=3.6.0`` with
+``pymongo>=4.9`` (``AsyncMongoClient``, used by ``PyMongoStorage``, appeared only in PyMongo 4.9).
