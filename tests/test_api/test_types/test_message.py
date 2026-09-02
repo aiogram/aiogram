@@ -1,4 +1,5 @@
 import datetime
+import inspect
 from typing import Any
 
 import pytest
@@ -7,7 +8,12 @@ from aiogram.enums import ParseMode
 from aiogram.methods import (
     AnswerGuestQuery,
     CopyMessage,
+    DeleteEphemeralMessage,
     DeleteMessage,
+    EditEphemeralMessageCaption,
+    EditEphemeralMessageMedia,
+    EditEphemeralMessageReplyMarkup,
+    EditEphemeralMessageText,
     EditMessageCaption,
     EditMessageLiveLocation,
     EditMessageMedia,
@@ -22,12 +28,14 @@ from aiogram.methods import (
     SendDocument,
     SendGame,
     SendInvoice,
+    SendLivePhoto,
     SendLocation,
     SendMediaGroup,
     SendMessage,
     SendPaidMedia,
     SendPhoto,
     SendPoll,
+    SendRichMessage,
     SendSticker,
     SendVenue,
     SendVideo,
@@ -54,11 +62,16 @@ from aiogram.types import (
     ChecklistTask,
     ChecklistTasksAdded,
     ChecklistTasksDone,
+    Community,
+    CommunityChatAdded,
+    CommunityChatJoined,
+    CommunityChatRemoved,
     Contact,
     Dice,
     DirectMessagePriceChanged,
     Document,
     EncryptedCredentials,
+    EphemeralMessageParameters,
     ForumTopicClosed,
     ForumTopicCreated,
     ForumTopicEdited,
@@ -76,7 +89,11 @@ from aiogram.types import (
     InlineKeyboardMarkup,
     InlineQueryResultPhoto,
     InputMediaPhoto,
+    InputPaidMediaPhoto,
+    InputPollOption,
+    InputRichMessage,
     Invoice,
+    LabeledPrice,
     LinkPreviewOptions,
     LivePhoto,
     Location,
@@ -95,6 +112,8 @@ from aiogram.types import (
     ProximityAlertTriggered,
     ReactionTypeCustomEmoji,
     RefundedPayment,
+    RichBlockParagraph,
+    RichMessage,
     SharedUser,
     Sticker,
     Story,
@@ -905,9 +924,55 @@ TEST_MESSAGE_LIVE_PHOTO = Message(
         width=640,
         height=480,
         duration=3,
+        photo=[PhotoSize(file_id="file id", file_unique_id="file unique id", width=1, height=1)],
     ),
     chat=Chat(id=42, type="private"),
     from_user=User(id=42, is_bot=False, first_name="Test"),
+)
+TEST_MESSAGE_RICH_MESSAGE = Message(
+    message_id=42,
+    date=datetime.datetime.now(),
+    chat=Chat(id=42, type="private"),
+    from_user=User(id=42, is_bot=False, first_name="Test"),
+    rich_message=RichMessage(
+        blocks=[RichBlockParagraph(text="Test")],
+    ),
+)
+TEST_MESSAGE_COMMUNITY_CHAT_ADDED = Message(
+    message_id=42,
+    date=datetime.datetime.now(),
+    chat=Chat(id=42, type="private"),
+    from_user=User(id=42, is_bot=False, first_name="Test"),
+    community_chat_added=CommunityChatAdded(
+        community=Community(id=42, name="Test community"),
+    ),
+)
+TEST_MESSAGE_COMMUNITY_CHAT_REMOVED = Message(
+    message_id=42,
+    date=datetime.datetime.now(),
+    chat=Chat(id=42, type="private"),
+    from_user=User(id=42, is_bot=False, first_name="Test"),
+    community_chat_removed=CommunityChatRemoved(),
+)
+TEST_MESSAGE_COMMUNITY_CHAT_JOINED = Message(
+    message_id=42,
+    date=datetime.datetime.now(),
+    chat=Chat(id=42, type="private"),
+    from_user=User(id=42, is_bot=False, first_name="Test"),
+    community_chat_joined=CommunityChatJoined(
+        community=Community(id=42, name="Test community"),
+    ),
+)
+TEST_MESSAGE_EPHEMERAL = Message(
+    # The API sends `message_id=0` for ephemeral messages; they are addressed
+    # by `ephemeral_message_id` instead.
+    message_id=0,
+    date=datetime.datetime.now(),
+    text="test",
+    chat=Chat(id=42, type="private"),
+    from_user=User(id=42, is_bot=True, first_name="Bot"),
+    receiver_user=User(id=43, is_bot=False, first_name="Test"),
+    ephemeral_message_id=7,
 )
 
 MESSAGES_AND_CONTENT_TYPES = [
@@ -992,6 +1057,10 @@ MESSAGES_AND_CONTENT_TYPES = [
     [TEST_MESSAGE_POLL_OPTION_ADDED, ContentType.POLL_OPTION_ADDED],
     [TEST_MESSAGE_POLL_OPTION_DELETED, ContentType.POLL_OPTION_DELETED],
     [TEST_MESSAGE_LIVE_PHOTO, ContentType.LIVE_PHOTO],
+    [TEST_MESSAGE_RICH_MESSAGE, ContentType.RICH_MESSAGE],
+    [TEST_MESSAGE_COMMUNITY_CHAT_ADDED, ContentType.COMMUNITY_CHAT_ADDED],
+    [TEST_MESSAGE_COMMUNITY_CHAT_REMOVED, ContentType.COMMUNITY_CHAT_REMOVED],
+    [TEST_MESSAGE_COMMUNITY_CHAT_JOINED, ContentType.COMMUNITY_CHAT_JOINED],
     [TEST_MESSAGE_UNKNOWN, ContentType.UNKNOWN],
 ]
 
@@ -1071,8 +1140,55 @@ MESSAGES_AND_COPY_METHODS = [
     [TEST_MESSAGE_MANAGED_BOT_CREATED, None],
     [TEST_MESSAGE_POLL_OPTION_ADDED, None],
     [TEST_MESSAGE_POLL_OPTION_DELETED, None],
-    [TEST_MESSAGE_LIVE_PHOTO, None],
+    [TEST_MESSAGE_LIVE_PHOTO, SendLivePhoto],
+    [TEST_MESSAGE_RICH_MESSAGE, None],
+    [TEST_MESSAGE_COMMUNITY_CHAT_ADDED, None],
+    [TEST_MESSAGE_COMMUNITY_CHAT_REMOVED, None],
+    [TEST_MESSAGE_COMMUNITY_CHAT_JOINED, None],
     [TEST_MESSAGE_UNKNOWN, None],
+]
+
+
+# `reply_*` shortcuts whose target method declares no `ephemeral_message_parameters`
+# parameter, so the fill must not be applied to them.
+REPLY_ALIASES_WITHOUT_EPHEMERAL_PARAMETERS = [
+    ["reply_dice", {}, SendDice],
+    ["reply_game", {"game_short_name": "test"}, SendGame],
+    [
+        "reply_invoice",
+        {
+            "title": "test",
+            "description": "test",
+            "payload": "test",
+            "currency": "XTR",
+            "prices": [LabeledPrice(label="test", amount=1)],
+        },
+        SendInvoice,
+    ],
+    [
+        "reply_media_group",
+        {"media": [InputMediaPhoto(media="photo.jpg")]},
+        SendMediaGroup,
+    ],
+    ["reply_poll", {"question": "test", "options": [InputPollOption(text="test")]}, SendPoll],
+    [
+        "reply_paid_media",
+        {"star_count": 1, "media": [InputPaidMediaPhoto(media="photo.jpg")]},
+        SendPaidMedia,
+    ],
+]
+
+
+EPHEMERAL_ALIASES = [
+    ["edit_ephemeral_text", {"text": "test"}, EditEphemeralMessageText],
+    ["edit_ephemeral_caption", {"caption": "test"}, EditEphemeralMessageCaption],
+    [
+        "edit_ephemeral_media",
+        {"media": InputMediaPhoto(media="photo.jpg")},
+        EditEphemeralMessageMedia,
+    ],
+    ["edit_ephemeral_reply_markup", {}, EditEphemeralMessageReplyMarkup],
+    ["delete_ephemeral", {}, DeleteEphemeralMessage],
 ]
 
 
@@ -1113,6 +1229,19 @@ class TestMessage:
     def test_content_type(self, message: Message, content_type: str):
         assert message.content_type == content_type
 
+    def test_live_photo_takes_precedence_over_photo(self):
+        # Telegram sends a regular `photo` alongside `live_photo`
+        message = TEST_MESSAGE_LIVE_PHOTO.model_copy(
+            update={
+                "photo": [
+                    PhotoSize(
+                        file_id="file id", file_unique_id="file unique id", width=1, height=1
+                    )
+                ]
+            }
+        )
+        assert message.content_type == ContentType.LIVE_PHOTO
+
     def test_chat_owner_left_no_successor(self):
         assert (
             TEST_MESSAGE_CHAT_OWNER_LEFT_NO_SUCCESSOR.content_type == ContentType.CHAT_OWNER_LEFT
@@ -1125,6 +1254,159 @@ class TestMessage:
         reply_parameters = message.as_reply_parameters()
         assert reply_parameters.message_id == message.message_id
         assert reply_parameters.chat_id == message.chat.id
+
+    def test_as_reply_parameters_ephemeral(self):
+        # An ephemeral message is replied to by `ephemeral_message_id`;
+        # `chat_id` is not supported for ephemeral messages.
+        message = TEST_MESSAGE_EPHEMERAL
+        reply_parameters = message.as_reply_parameters()
+        assert reply_parameters.ephemeral_message_id == message.ephemeral_message_id
+        assert reply_parameters.message_id is None
+        assert reply_parameters.chat_id is None
+
+    def test_as_ephemeral_message_parameters(self):
+        message = TEST_MESSAGE_EPHEMERAL
+        parameters = message.as_ephemeral_message_parameters()
+        assert parameters.receiver_user_id == message.from_user.id
+        assert parameters.callback_query_id is None
+        assert parameters.replace_callback_query_message is None
+
+    def test_as_ephemeral_message_parameters_regular_message(self):
+        message = Message(
+            message_id=42, chat=Chat(id=42, type="private"), date=datetime.datetime.now()
+        )
+        assert message.as_ephemeral_message_parameters() is None
+
+    def test_as_ephemeral_message_parameters_without_sender(self):
+        message = Message(
+            message_id=0,
+            chat=Chat(id=42, type="private"),
+            date=datetime.datetime.now(),
+            ephemeral_message_id=7,
+        )
+        assert message.as_ephemeral_message_parameters() is None
+
+    def test_as_ephemeral_message_parameters_callback_query_fields(self):
+        # Neither field can be derived from a message: they live on the callback query,
+        # which a message holds no reference to, so they are passed in.
+        parameters = TEST_MESSAGE_EPHEMERAL.as_ephemeral_message_parameters(
+            callback_query_id="q1",
+            replace_callback_query_message=True,
+        )
+        assert parameters.callback_query_id == "q1"
+        assert parameters.replace_callback_query_message is True
+
+    def test_reply_does_not_expose_deprecated_receiver_user_id(self):
+        # `receiver_user_id` was consumed by the fill before Bot API 10.3, so it was
+        # never part of the shortcut signature; `ephemeral_message_parameters` took over
+        # that role and `receiver_user_id` must not surface as a new parameter.
+        assert "receiver_user_id" not in inspect.signature(Message.reply).parameters
+        assert "receiver_user_id" not in inspect.signature(Message.reply_photo).parameters
+        # `callback_query_id` was already accepted before 10.3 and stays.
+        assert "callback_query_id" in inspect.signature(Message.reply).parameters
+
+    def test_reply_to_ephemeral_message_is_ephemeral(self):
+        # A reply to an ephemeral message must itself be an ephemeral message,
+        # so `ephemeral_message_parameters` is filled from the replied-to message.
+        message = TEST_MESSAGE_EPHEMERAL
+        method = message.reply("pong")
+        assert method.ephemeral_message_parameters.receiver_user_id == message.from_user.id
+        assert method.reply_parameters.ephemeral_message_id == message.ephemeral_message_id
+
+    def test_reply_to_regular_message_is_not_ephemeral(self):
+        message = Message(
+            message_id=42, chat=Chat(id=42, type="private"), date=datetime.datetime.now()
+        )
+        method = message.reply("pong")
+        assert method.ephemeral_message_parameters is None
+        assert method.reply_parameters.message_id == message.message_id
+
+    def test_reply_does_not_accept_ephemeral_message_parameters(self):
+        # `ephemeral_message_parameters` is filled from the message itself, so it is
+        # intentionally not accepted here. Sending an ephemeral message in reply to a
+        # regular one is done via `answer()` with explicit parameters. `**kwargs` means
+        # mypy cannot catch this, so pin the behaviour instead.
+        message = Message(
+            message_id=42, chat=Chat(id=42, type="private"), date=datetime.datetime.now()
+        )
+        with pytest.raises(TypeError, match="multiple values for keyword argument"):
+            message.reply(
+                "pong",
+                ephemeral_message_parameters=EphemeralMessageParameters(receiver_user_id=777),
+            )
+
+        method = message.answer(
+            "pong",
+            ephemeral_message_parameters=EphemeralMessageParameters(receiver_user_id=777),
+            reply_parameters=message.as_reply_parameters(),
+        )
+        assert method.ephemeral_message_parameters.receiver_user_id == 777
+        assert method.reply_parameters.message_id == message.message_id
+
+    @pytest.mark.parametrize(
+        "alias_name,kwargs,method_class", REPLY_ALIASES_WITHOUT_EPHEMERAL_PARAMETERS
+    )
+    def test_reply_alias_does_not_fill_unsupported_ephemeral_parameters(
+        self, alias_name, kwargs, method_class
+    ):
+        # `TelegramMethod` tolerates extra fields, so a fill for a parameter the method
+        # does not declare would be carried into the request instead of failing.
+        method = getattr(TEST_MESSAGE_EPHEMERAL, alias_name)(**kwargs)
+        assert isinstance(method, method_class)
+        assert "ephemeral_message_parameters" not in method_class.model_fields
+        assert "ephemeral_message_parameters" not in (method.model_extra or {})
+        assert "ephemeral_message_parameters" not in method.model_dump(exclude_none=True)
+
+    @pytest.mark.parametrize(
+        "alias_name,kwargs,method_class", REPLY_ALIASES_WITHOUT_EPHEMERAL_PARAMETERS
+    )
+    def test_reply_alias_exclusion_list_is_not_stale(self, alias_name, kwargs, method_class):
+        # If a future Bot API version adds `ephemeral_message_parameters` to one of these
+        # methods, the exclusion in `.butcher/types/Message/aliases.yml` must be dropped
+        # so the shortcut starts filling it again.
+        assert "ephemeral_message_parameters" not in method_class.model_fields, (
+            f"{method_class.__name__} now declares `ephemeral_message_parameters`; remove "
+            f"`{alias_name}` from the `fill-reply-non-ephemeral` group in "
+            f".butcher/types/Message/aliases.yml and regenerate."
+        )
+
+    @pytest.mark.parametrize("alias_name,kwargs,method_class", EPHEMERAL_ALIASES)
+    def test_ephemeral_aliases(
+        self,
+        alias_name: str,
+        kwargs: dict[str, Any],
+        method_class: type[
+            EditEphemeralMessageText
+            | EditEphemeralMessageCaption
+            | EditEphemeralMessageMedia
+            | EditEphemeralMessageReplyMarkup
+            | DeleteEphemeralMessage
+        ],
+    ):
+        message = TEST_MESSAGE_EPHEMERAL
+
+        alias = getattr(message, alias_name)
+        assert callable(alias)
+
+        api_method = alias(**kwargs)
+        assert isinstance(api_method, method_class)
+
+        assert api_method.chat_id == message.chat.id
+        assert api_method.receiver_user_id == message.receiver_user.id
+        assert api_method.ephemeral_message_id == message.ephemeral_message_id
+
+        for key, value in kwargs.items():
+            assert getattr(api_method, key) == value
+
+    @pytest.mark.parametrize("alias_name,kwargs,method_class", EPHEMERAL_ALIASES)
+    def test_ephemeral_aliases_on_regular_message(
+        self, alias_name: str, kwargs: dict[str, Any], method_class: type[TelegramMethod[bool]]
+    ):
+        message = Message(
+            message_id=42, chat=Chat(id=42, type="private"), date=datetime.datetime.now()
+        )
+        with pytest.raises(AssertionError, match="receiver_user"):
+            getattr(message, alias_name)(**kwargs)
 
     @pytest.mark.parametrize(
         "alias_for_method,kwargs,method_class",
@@ -1169,6 +1451,7 @@ class TestMessage:
             ["video_note", {"video_note": "video_note"}, SendVideoNote],
             ["voice", {"voice": "voice"}, SendVoice],
             ["paid_media", {"media": [], "star_count": 42}, SendPaidMedia],
+            ["rich", {"rich_message": InputRichMessage(html="<p>Test</p>")}, SendRichMessage],
         ],
     )
     @pytest.mark.parametrize("alias_type", ["reply", "answer"])
@@ -1196,6 +1479,7 @@ class TestMessage:
             | SendVideoNote
             | SendVoice
             | SendPaidMedia
+            | SendRichMessage
         ],
     ):
         message = Message(

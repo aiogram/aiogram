@@ -1,5 +1,6 @@
 from .add_sticker_to_set import AddStickerToSet
 from .answer_callback_query import AnswerCallbackQuery
+from .answer_chat_join_request_query import AnswerChatJoinRequestQuery
 from .answer_guest_query import AnswerGuestQuery
 from .answer_inline_query import AnswerInlineQuery
 from .answer_pre_checkout_query import AnswerPreCheckoutQuery
@@ -27,6 +28,7 @@ from .delete_all_message_reactions import DeleteAllMessageReactions
 from .delete_business_messages import DeleteBusinessMessages
 from .delete_chat_photo import DeleteChatPhoto
 from .delete_chat_sticker_set import DeleteChatStickerSet
+from .delete_ephemeral_message import DeleteEphemeralMessage
 from .delete_forum_topic import DeleteForumTopic
 from .delete_message import DeleteMessage
 from .delete_message_reaction import DeleteMessageReaction
@@ -38,6 +40,10 @@ from .delete_story import DeleteStory
 from .delete_webhook import DeleteWebhook
 from .edit_chat_invite_link import EditChatInviteLink
 from .edit_chat_subscription_invite_link import EditChatSubscriptionInviteLink
+from .edit_ephemeral_message_caption import EditEphemeralMessageCaption
+from .edit_ephemeral_message_media import EditEphemeralMessageMedia
+from .edit_ephemeral_message_reply_markup import EditEphemeralMessageReplyMarkup
+from .edit_ephemeral_message_text import EditEphemeralMessageText
 from .edit_forum_topic import EditForumTopic
 from .edit_general_forum_topic import EditGeneralForumTopic
 from .edit_message_caption import EditMessageCaption
@@ -108,6 +114,7 @@ from .save_prepared_keyboard_button import SavePreparedKeyboardButton
 from .send_animation import SendAnimation
 from .send_audio import SendAudio
 from .send_chat_action import SendChatAction
+from .send_chat_join_request_web_app import SendChatJoinRequestWebApp
 from .send_checklist import SendChecklist
 from .send_contact import SendContact
 from .send_dice import SendDice
@@ -123,6 +130,8 @@ from .send_message_draft import SendMessageDraft
 from .send_paid_media import SendPaidMedia
 from .send_photo import SendPhoto
 from .send_poll import SendPoll
+from .send_rich_message import SendRichMessage
+from .send_rich_message_draft import SendRichMessageDraft
 from .send_sticker import SendSticker
 from .send_venue import SendVenue
 from .send_video import SendVideo
@@ -179,6 +188,7 @@ from .verify_user import VerifyUser
 __all__ = (
     "AddStickerToSet",
     "AnswerCallbackQuery",
+    "AnswerChatJoinRequestQuery",
     "AnswerGuestQuery",
     "AnswerInlineQuery",
     "AnswerPreCheckoutQuery",
@@ -205,6 +215,7 @@ __all__ = (
     "DeleteBusinessMessages",
     "DeleteChatPhoto",
     "DeleteChatStickerSet",
+    "DeleteEphemeralMessage",
     "DeleteForumTopic",
     "DeleteMessage",
     "DeleteMessageReaction",
@@ -216,6 +227,10 @@ __all__ = (
     "DeleteWebhook",
     "EditChatInviteLink",
     "EditChatSubscriptionInviteLink",
+    "EditEphemeralMessageCaption",
+    "EditEphemeralMessageMedia",
+    "EditEphemeralMessageReplyMarkup",
+    "EditEphemeralMessageText",
     "EditForumTopic",
     "EditGeneralForumTopic",
     "EditMessageCaption",
@@ -288,6 +303,7 @@ __all__ = (
     "SendAnimation",
     "SendAudio",
     "SendChatAction",
+    "SendChatJoinRequestWebApp",
     "SendChecklist",
     "SendContact",
     "SendDice",
@@ -303,6 +319,8 @@ __all__ = (
     "SendPaidMedia",
     "SendPhoto",
     "SendPoll",
+    "SendRichMessage",
+    "SendRichMessageDraft",
     "SendSticker",
     "SendVenue",
     "SendVideo",

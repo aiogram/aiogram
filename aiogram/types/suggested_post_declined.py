@@ -16,7 +16,7 @@ class SuggestedPostDeclined(TelegramObject):
     """
 
     suggested_post_message: Message | None = None
-    """*Optional*. Message containing the suggested post. Note that the :class:`aiogram.types.message.Message` object in this field will not contain the *reply_to_message* field even if it itself is a reply."""
+    """*Optional*. Message containing the suggested post. Note that the :class:`aiogram.types.message.Message` object in this field will not contain the *reply_to_message* field even if it itself is a reply"""
     comment: str | None = None
     """*Optional*. Comment with which the post was declined"""
 

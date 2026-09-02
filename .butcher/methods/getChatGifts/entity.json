@@ -94,9 +94,9 @@
       {
         "type": "Integer",
         "required": false,
-        "description": "The maximum number of gifts to be returned; 1-100. Defaults to 100",
-        "html_description": "<td>The maximum number of gifts to be returned; 1-100. Defaults to 100</td>",
-        "rst_description": "The maximum number of gifts to be returned; 1-100. Defaults to 100\n",
+        "description": "The maximum number of gifts to be returned; 1-100. Defaults to 100.",
+        "html_description": "<td>The maximum number of gifts to be returned; 1-100. Defaults to 100.</td>",
+        "rst_description": "The maximum number of gifts to be returned; 1-100. Defaults to 100.\n",
         "name": "limit"
       }
     ],

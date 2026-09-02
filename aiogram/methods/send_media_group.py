@@ -11,7 +11,7 @@ from .base import TelegramMethod
 
 class SendMediaGroup(TelegramMethod[list[Message]]):
     """
-    Use this method to send a group of photos, live photos, videos, documents or audios as an album. Documents and audio files can be only grouped in an album with messages of the same type. On success, an array of :class:`aiogram.types.message.Message` objects that were sent is returned.
+    Use this method to send a group of photos, live photos, videos, documents or audios as an album. Documents and audio files can be only grouped in an album with messages of the same type. On success, an Array of :class:`aiogram.types.message.Message` objects that were sent is returned.
 
     Source: https://core.telegram.org/bots/api#sendmediagroup
     """
@@ -22,7 +22,7 @@ class SendMediaGroup(TelegramMethod[list[Message]]):
     chat_id: ChatIdUnion
     """Unique identifier for the target chat or username of the target bot, supergroup or channel in the format :code:`@username`"""
     media: list[MediaUnion]
-    """A JSON-serialized array describing messages to be sent, must include 2-10 items"""
+    """A JSON-serialized Array describing messages to be sent, must include 2-10 items"""
     business_connection_id: str | None = None
     """Unique identifier of the business connection on behalf of which the message will be sent"""
     message_thread_id: int | None = None
@@ -30,11 +30,11 @@ class SendMediaGroup(TelegramMethod[list[Message]]):
     direct_messages_topic_id: int | None = None
     """Identifier of the direct messages topic to which the messages will be sent; required if the messages are sent to a direct messages chat"""
     disable_notification: bool | None = None
-    """Sends messages `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound."""
+    """Sends messages `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound"""
     protect_content: bool | Default | None = Default("protect_content")
     """Protects the contents of the sent messages from forwarding and saving"""
     allow_paid_broadcast: bool | None = None
-    """Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance."""
+    """Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance"""
     message_effect_id: str | None = None
     """Unique identifier of the message effect to be added to the message; for private chats only"""
     reply_parameters: ReplyParameters | None = None

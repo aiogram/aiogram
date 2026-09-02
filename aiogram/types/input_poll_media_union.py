@@ -1,4 +1,6 @@
-from typing import TypeAlias
+from typing import Annotated, TypeAlias
+
+from pydantic import Field
 
 from .input_media_animation import InputMediaAnimation
 from .input_media_audio import InputMediaAudio
@@ -9,7 +11,7 @@ from .input_media_photo import InputMediaPhoto
 from .input_media_venue import InputMediaVenue
 from .input_media_video import InputMediaVideo
 
-InputPollMediaUnion: TypeAlias = (
+InputPollMediaUnion: TypeAlias = Annotated[
     InputMediaAnimation
     | InputMediaAudio
     | InputMediaDocument
@@ -17,5 +19,6 @@ InputPollMediaUnion: TypeAlias = (
     | InputMediaLocation
     | InputMediaPhoto
     | InputMediaVenue
-    | InputMediaVideo
-)
+    | InputMediaVideo,
+    Field(discriminator="type"),
+]

@@ -13,8 +13,24 @@ reply:
   fill: &fill-reply
     <<: *fill-answer
     reply_parameters: self.as_reply_parameters()
+    # A reply to an ephemeral message must itself be an ephemeral message.
+    ephemeral_message_parameters: self.as_ephemeral_message_parameters()
   ignore: &ignore-reply
     - reply_to_message_id
+    # Superseded by the filled `ephemeral_message_parameters`. It was consumed by the
+    # fill before Bot API 10.3, so it was never part of the shortcut signature.
+    - receiver_user_id
+
+answer_rich:
+  method: sendRichMessage
+  code: *assert-chat
+  fill: *fill-answer
+
+reply_rich:
+  method: sendRichMessage
+  code: *assert-chat
+  fill: *fill-reply
+  ignore: *ignore-reply
 
 answer_animation:
   method: sendAnimation
@@ -68,7 +84,11 @@ answer_game:
 reply_game:
   method: sendGame
   code: *assert-chat
-  fill: *fill-reply
+  # sendGame, sendInvoice, sendMediaGroup, sendPoll, sendDice and sendPaidMedia have
+  # no `ephemeral_message_parameters` parameter, so it must not be filled for them.
+  fill: &fill-reply-non-ephemeral
+    <<: *fill-answer
+    reply_parameters: self.as_reply_parameters()
   ignore: *ignore-reply
 
 answer_invoice:
@@ -79,7 +99,7 @@ answer_invoice:
 reply_invoice:
   method: sendInvoice
   code: *assert-chat
-  fill: *fill-reply
+  fill: *fill-reply-non-ephemeral
   ignore: *ignore-reply
 
 answer_location:
@@ -101,7 +121,7 @@ answer_media_group:
 reply_media_group:
   method: sendMediaGroup
   code: *assert-chat
-  fill: *fill-reply
+  fill: *fill-reply-non-ephemeral
   ignore: *ignore-reply
 
 answer_photo:
@@ -123,7 +143,7 @@ answer_poll:
 reply_poll:
   method: sendPoll
   code: *assert-chat
-  fill: *fill-reply
+  fill: *fill-reply-non-ephemeral
   ignore: *ignore-reply
 
 answer_dice:
@@ -134,7 +154,7 @@ answer_dice:
 reply_dice:
   method: sendDice
   code: *assert-chat
-  fill: *fill-reply
+  fill: *fill-reply-non-ephemeral
   ignore: *ignore-reply
 
 answer_sticker:
@@ -200,7 +220,7 @@ answer_paid_media:
 reply_paid_media:
   method: sendPaidMedia
   code: *assert-chat
-  fill: *fill-reply
+  fill: *fill-reply-non-ephemeral
   ignore: *ignore-reply
 
 copy_to:
@@ -261,6 +281,37 @@ delete:
   method: deleteMessage
   code: *assert-chat
   fill: *message-target
+
+edit_ephemeral_text:
+  method: editEphemeralMessageText
+  code: &assert-ephemeral |
+    assert self.chat is not None, "This method can be used only if chat is present in the message."
+    assert self.receiver_user is not None, "This method can be used only if `receiver_user` is present in the message."
+    assert self.ephemeral_message_id is not None, "This method can be used only if `ephemeral_message_id` is present in the message."
+  fill: &ephemeral-target
+    chat_id: self.chat.id
+    receiver_user_id: self.receiver_user.id
+    ephemeral_message_id: self.ephemeral_message_id
+
+edit_ephemeral_caption:
+  method: editEphemeralMessageCaption
+  code: *assert-ephemeral
+  fill: *ephemeral-target
+
+edit_ephemeral_media:
+  method: editEphemeralMessageMedia
+  code: *assert-ephemeral
+  fill: *ephemeral-target
+
+edit_ephemeral_reply_markup:
+  method: editEphemeralMessageReplyMarkup
+  code: *assert-ephemeral
+  fill: *ephemeral-target
+
+delete_ephemeral:
+  method: deleteEphemeralMessage
+  code: *assert-ephemeral
+  fill: *ephemeral-target
 
 pin:
   method: pinChatMessage

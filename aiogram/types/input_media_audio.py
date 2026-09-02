@@ -21,7 +21,7 @@ class InputMediaAudio(InputMedia, InputPollMedia):
     """
 
     type: Literal[InputMediaType.AUDIO] = InputMediaType.AUDIO
-    """Type of the result, must be *audio*"""
+    """Type of the media, must be *audio*"""
     media: InputFileUnion
     """File to send. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass 'attach://<file_attach_name>' to upload a new one using multipart/form-data under <file_attach_name> name. :ref:`More information on Sending Files » <sending-files>`"""
     thumbnail: InputFile | None = None
@@ -29,7 +29,7 @@ class InputMediaAudio(InputMedia, InputPollMedia):
     caption: str | None = None
     """*Optional*. Caption of the audio to be sent, 0-1024 characters after entities parsing"""
     parse_mode: str | Default | None = Default("parse_mode")
-    """*Optional*. Mode for parsing entities in the audio caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details."""
+    """*Optional*. Mode for parsing entities in the audio caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details"""
     caption_entities: list[MessageEntity] | None = None
     """*Optional*. List of special entities that appear in the caption, which can be specified instead of *parse_mode*"""
     duration: int | None = None

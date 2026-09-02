@@ -13,9 +13,9 @@
     "annotations": [
       {
         "type": "String",
-        "description": "Type of the result, must be venue",
-        "html_description": "<td>Type of the result, must be <em>venue</em></td>",
-        "rst_description": "Type of the result, must be *venue*\n",
+        "description": "Type of the media, must be venue",
+        "html_description": "<td>Type of the media, must be <em>venue</em></td>",
+        "rst_description": "Type of the media, must be *venue*\n",
         "name": "type",
         "required": true
       },

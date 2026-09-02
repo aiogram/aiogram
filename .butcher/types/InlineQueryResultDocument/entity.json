@@ -37,6 +37,22 @@
       },
       {
         "type": "String",
+        "description": "A valid URL for the file",
+        "html_description": "<td>A valid URL for the file</td>",
+        "rst_description": "A valid URL for the file\n",
+        "name": "document_url",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "MIME type of the content of the file, either 'application/pdf' or 'application/zip'",
+        "html_description": "<td>MIME type of the content of the file, either &#8220;application/pdf&#8221; or &#8220;application/zip&#8221;</td>",
+        "rst_description": "MIME type of the content of the file, either 'application/pdf' or 'application/zip'\n",
+        "name": "mime_type",
+        "required": true
+      },
+      {
+        "type": "String",
         "description": "Caption of the document to be sent, 0-1024 characters after entities parsing",
         "html_description": "<td><em>Optional</em>. Caption of the document to be sent, 0-1024 characters after entities parsing</td>",
         "rst_description": "*Optional*. Caption of the document to be sent, 0-1024 characters after entities parsing\n",
@@ -58,22 +74,6 @@
         "rst_description": "*Optional*. List of special entities that appear in the caption, which can be specified instead of *parse_mode*\n",
         "name": "caption_entities",
         "required": false
-      },
-      {
-        "type": "String",
-        "description": "A valid URL for the file",
-        "html_description": "<td>A valid URL for the file</td>",
-        "rst_description": "A valid URL for the file\n",
-        "name": "document_url",
-        "required": true
-      },
-      {
-        "type": "String",
-        "description": "MIME type of the content of the file, either 'application/pdf' or 'application/zip'",
-        "html_description": "<td>MIME type of the content of the file, either &#8220;application/pdf&#8221; or &#8220;application/zip&#8221;</td>",
-        "rst_description": "MIME type of the content of the file, either 'application/pdf' or 'application/zip'\n",
-        "name": "mime_type",
-        "required": true
       },
       {
         "type": "String",

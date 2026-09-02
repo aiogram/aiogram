@@ -7,6 +7,7 @@ from pydantic import Field
 from ..client.default import Default
 from ..types import (
     ChatIdUnion,
+    EphemeralMessageParameters,
     LinkPreviewOptions,
     Message,
     MessageEntity,
@@ -38,25 +39,37 @@ class SendMessage(TelegramMethod[Message]):
     direct_messages_topic_id: int | None = None
     """Identifier of the direct messages topic to which the message will be sent; required if the message is sent to a direct messages chat"""
     parse_mode: str | Default | None = Default("parse_mode")
-    """Mode for parsing entities in the message text. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details."""
+    """Mode for parsing entities in the message text. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details"""
     entities: list[MessageEntity] | None = None
     """A JSON-serialized list of special entities that appear in message text, which can be specified instead of *parse_mode*"""
     link_preview_options: LinkPreviewOptions | Default | None = Default("link_preview")
     """Link preview generation options for the message"""
     disable_notification: bool | None = None
-    """Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound."""
+    """Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound"""
     protect_content: bool | Default | None = Default("protect_content")
     """Protects the contents of the sent message from forwarding and saving"""
     allow_paid_broadcast: bool | None = None
-    """Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance."""
+    """Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance"""
     message_effect_id: str | None = None
     """Unique identifier of the message effect to be added to the message; for private chats only"""
     suggested_post_parameters: SuggestedPostParameters | None = None
-    """A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only. If the message is sent as a reply to another suggested post, then that suggested post is automatically declined."""
+    """A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only. If the message is sent as a reply to another suggested post, then that suggested post is automatically declined"""
     reply_parameters: ReplyParameters | None = None
     """Description of the message to reply to"""
     reply_markup: ReplyMarkupUnion | None = None
     """Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user"""
+    ephemeral_message_parameters: EphemeralMessageParameters | None = None
+    """A JSON-serialized object containing the parameters of the ephemeral message to send"""
+    receiver_user_id: int | None = Field(None, json_schema_extra={"deprecated": True})
+    """For outgoing ephemeral messages, unique identifier of the user who will receive the message; for group and supergroup chats only. It is not guaranteed that the user will receive the message, especially if they are offline. See `ephemeral message sending <https://core.telegram.org/bots/api#ephemeral-messages-and-commands>`_ for more details
+
+.. deprecated:: API:10.3
+   https://core.telegram.org/bots/api-changelog#august-24-2026"""
+    callback_query_id: str | None = Field(None, json_schema_extra={"deprecated": True})
+    """For outgoing ephemeral messages, identifier of the callback query which triggerred the message if any
+
+.. deprecated:: API:10.3
+   https://core.telegram.org/bots/api-changelog#august-24-2026"""
     allow_sending_without_reply: bool | None = Field(None, json_schema_extra={"deprecated": True})
     """Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
 
@@ -97,6 +110,9 @@ class SendMessage(TelegramMethod[Message]):
             suggested_post_parameters: SuggestedPostParameters | None = None,
             reply_parameters: ReplyParameters | None = None,
             reply_markup: ReplyMarkupUnion | None = None,
+            ephemeral_message_parameters: EphemeralMessageParameters | None = None,
+            receiver_user_id: int | None = None,
+            callback_query_id: str | None = None,
             allow_sending_without_reply: bool | None = None,
             disable_web_page_preview: bool | Default | None = Default("link_preview_is_disabled"),
             reply_to_message_id: int | None = None,
@@ -122,6 +138,9 @@ class SendMessage(TelegramMethod[Message]):
                 suggested_post_parameters=suggested_post_parameters,
                 reply_parameters=reply_parameters,
                 reply_markup=reply_markup,
+                ephemeral_message_parameters=ephemeral_message_parameters,
+                receiver_user_id=receiver_user_id,
+                callback_query_id=callback_query_id,
                 allow_sending_without_reply=allow_sending_without_reply,
                 disable_web_page_preview=disable_web_page_preview,
                 reply_to_message_id=reply_to_message_id,

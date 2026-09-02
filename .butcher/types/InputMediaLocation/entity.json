@@ -13,9 +13,9 @@
     "annotations": [
       {
         "type": "String",
-        "description": "Type of the result, must be location",
-        "html_description": "<td>Type of the result, must be <em>location</em></td>",
-        "rst_description": "Type of the result, must be *location*\n",
+        "description": "Type of the media, must be location",
+        "html_description": "<td>Type of the media, must be <em>location</em></td>",
+        "rst_description": "Type of the media, must be *location*\n",
         "name": "type",
         "required": true
       },

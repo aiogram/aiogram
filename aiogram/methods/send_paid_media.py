@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
 
+from ..client.default import Default
 from ..types import (
     ChatIdUnion,
     InputPaidMediaUnion,
@@ -25,11 +26,11 @@ class SendPaidMedia(TelegramMethod[Message]):
     __api_method__ = "sendPaidMedia"
 
     chat_id: ChatIdUnion
-    """Unique identifier for the target chat or username of the target bot, supergroup or channel in the format :code:`@username`. If the chat is a channel, all Telegram Star proceeds from this media will be credited to the chat's balance. Otherwise, they will be credited to the bot's balance."""
+    """Unique identifier for the target chat or username of the target bot, supergroup or channel in the format :code:`@username`. If the chat is a channel, all Telegram Star proceeds from this media will be credited to the chat's balance. Otherwise, they will be credited to the bot's balance"""
     star_count: int
     """The number of Telegram Stars that must be paid to buy access to the media; 1-25000"""
     media: list[InputPaidMediaUnion]
-    """A JSON-serialized array describing the media to be sent; up to 10 items"""
+    """A JSON-serialized Array describing the media to be sent; up to 10 items"""
     business_connection_id: str | None = None
     """Unique identifier of the business connection on behalf of which the message will be sent"""
     message_thread_id: int | None = None
@@ -37,23 +38,23 @@ class SendPaidMedia(TelegramMethod[Message]):
     direct_messages_topic_id: int | None = None
     """Identifier of the direct messages topic to which the message will be sent; required if the message is sent to a direct messages chat"""
     payload: str | None = None
-    """Bot-defined paid media payload, 0-128 bytes. This will not be displayed to the user, use it for your internal processes."""
+    """Bot-defined paid media payload, 0-128 bytes. This will not be displayed to the user, use it for your internal processes"""
     caption: str | None = None
     """Media caption, 0-1024 characters after entities parsing"""
-    parse_mode: str | None = None
-    """Mode for parsing entities in the media caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details."""
+    parse_mode: str | Default | None = Default("parse_mode")
+    """Mode for parsing entities in the media caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details"""
     caption_entities: list[MessageEntity] | None = None
     """A JSON-serialized list of special entities that appear in the caption, which can be specified instead of *parse_mode*"""
-    show_caption_above_media: bool | None = None
-    """Pass :code:`True`, if the caption must be shown above the message media"""
+    show_caption_above_media: bool | Default | None = Default("show_caption_above_media")
+    """Pass :code:`True` if the caption must be shown above the message media"""
     disable_notification: bool | None = None
-    """Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound."""
-    protect_content: bool | None = None
+    """Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound"""
+    protect_content: bool | Default | None = Default("protect_content")
     """Protects the contents of the sent message from forwarding and saving"""
     allow_paid_broadcast: bool | None = None
-    """Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance."""
+    """Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance"""
     suggested_post_parameters: SuggestedPostParameters | None = None
-    """A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only. If the message is sent as a reply to another suggested post, then that suggested post is automatically declined."""
+    """A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only. If the message is sent as a reply to another suggested post, then that suggested post is automatically declined"""
     reply_parameters: ReplyParameters | None = None
     """Description of the message to reply to"""
     reply_markup: ReplyMarkupUnion | None = None
@@ -74,11 +75,11 @@ class SendPaidMedia(TelegramMethod[Message]):
             direct_messages_topic_id: int | None = None,
             payload: str | None = None,
             caption: str | None = None,
-            parse_mode: str | None = None,
+            parse_mode: str | Default | None = Default("parse_mode"),
             caption_entities: list[MessageEntity] | None = None,
-            show_caption_above_media: bool | None = None,
+            show_caption_above_media: bool | Default | None = Default("show_caption_above_media"),
             disable_notification: bool | None = None,
-            protect_content: bool | None = None,
+            protect_content: bool | Default | None = Default("protect_content"),
             allow_paid_broadcast: bool | None = None,
             suggested_post_parameters: SuggestedPostParameters | None = None,
             reply_parameters: ReplyParameters | None = None,

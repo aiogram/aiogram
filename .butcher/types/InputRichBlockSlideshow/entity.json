@@ -1,0 +1,41 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Rich messages",
+    "anchor": "rich-messages"
+  },
+  "object": {
+    "anchor": "inputrichblockslideshow",
+    "name": "InputRichBlockSlideshow",
+    "description": "A slideshow, corresponding to the custom HTML tag <tg-slideshow>.",
+    "html_description": "<p>A slideshow, corresponding to the custom HTML tag <code>&lt;tg-slideshow&gt;</code>.</p>",
+    "rst_description": "A slideshow, corresponding to the custom HTML tag :code:`<tg-slideshow>`.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Type of the block, always 'slideshow'",
+        "html_description": "<td>Type of the block, always &#8220;slideshow&#8221;</td>",
+        "rst_description": "Type of the block, always 'slideshow'\n",
+        "name": "type",
+        "required": true
+      },
+      {
+        "type": "Array of InputRichBlock",
+        "description": "Elements of the slideshow",
+        "html_description": "<td>Elements of the slideshow</td>",
+        "rst_description": "Elements of the slideshow\n",
+        "name": "blocks",
+        "required": true
+      },
+      {
+        "type": "RichBlockCaption",
+        "description": "Caption of the block",
+        "html_description": "<td><em>Optional</em>. Caption of the block</td>",
+        "rst_description": "*Optional*. Caption of the block\n",
+        "name": "caption",
+        "required": false
+      }
+    ],
+    "category": "types"
+  }
+}

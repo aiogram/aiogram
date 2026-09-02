@@ -12,14 +12,6 @@
     "rst_description": "Use this method to add a message to the list of pinned messages in a chat. In private chats and channel direct messages chats, all non-service messages can be pinned. Conversely, the bot must be an administrator with the 'can_pin_messages' right or the 'can_edit_messages' right to pin messages in groups and channels respectively. Returns :code:`True` on success.",
     "annotations": [
       {
-        "type": "String",
-        "required": false,
-        "description": "Unique identifier of the business connection on behalf of which the message will be pinned",
-        "html_description": "<td>Unique identifier of the business connection on behalf of which the message will be pinned</td>",
-        "rst_description": "Unique identifier of the business connection on behalf of which the message will be pinned\n",
-        "name": "business_connection_id"
-      },
-      {
         "type": "Integer or String",
         "required": true,
         "description": "Unique identifier for the target chat or username of the target channel in the format @username",
@@ -34,6 +26,14 @@
         "html_description": "<td>Identifier of a message to pin</td>",
         "rst_description": "Identifier of a message to pin\n",
         "name": "message_id"
+      },
+      {
+        "type": "String",
+        "required": false,
+        "description": "Unique identifier of the business connection on behalf of which the message will be pinned",
+        "html_description": "<td>Unique identifier of the business connection on behalf of which the message will be pinned</td>",
+        "rst_description": "Unique identifier of the business connection on behalf of which the message will be pinned\n",
+        "name": "business_connection_id"
       },
       {
         "type": "Boolean",

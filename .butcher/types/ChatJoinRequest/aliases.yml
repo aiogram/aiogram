@@ -145,3 +145,15 @@ answer_voice:
 answer_voice_pm:
   method: sendVoice
   fill: *fill-answer-user
+
+answer_query:
+  method: answerChatJoinRequestQuery
+  code: &assert-query_id |
+    assert self.query_id is not None, "This method can be used only if query_id is present in the chat join request."
+  fill: &fill-query-id
+    chat_join_request_query_id: self.query_id
+
+send_webapp:
+  method: sendChatJoinRequestWebApp
+  code: *assert-query_id
+  fill: *fill-query-id

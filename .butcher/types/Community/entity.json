@@ -1,0 +1,33 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "community",
+    "name": "Community",
+    "description": "Represents a community (a group of chats).",
+    "html_description": "<p>Represents a community (a group of chats).</p>",
+    "rst_description": "Represents a community (a group of chats).",
+    "annotations": [
+      {
+        "type": "Integer",
+        "description": "Unique identifier for this community. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this identifier.",
+        "html_description": "<td>Unique identifier for this community. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this identifier.</td>",
+        "rst_description": "Unique identifier for this community. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this identifier.\n",
+        "name": "id",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "Name of the community",
+        "html_description": "<td>Name of the community</td>",
+        "rst_description": "Name of the community\n",
+        "name": "name",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

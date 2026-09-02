@@ -23,7 +23,7 @@ class ReplaceStickerInSet(TelegramMethod[bool]):
     old_sticker: str
     """File identifier of the replaced sticker"""
     sticker: InputSticker
-    """A JSON-serialized object with information about the added sticker. If exactly the same sticker had already been added to the set, then the set remains unchanged."""
+    """A JSON-serialized object with information about the added sticker. If exactly the same sticker had already been added to the set, then the set remains unchanged"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!

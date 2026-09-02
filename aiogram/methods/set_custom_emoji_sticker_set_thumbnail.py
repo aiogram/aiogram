@@ -18,7 +18,7 @@ class SetCustomEmojiStickerSetThumbnail(TelegramMethod[bool]):
     name: str
     """Sticker set name"""
     custom_emoji_id: str | None = None
-    """Custom emoji identifier of a sticker from the sticker set; pass an empty string to drop the thumbnail and use the first sticker as the thumbnail."""
+    """Custom emoji identifier of a sticker from the sticker set; pass an empty string to drop the thumbnail and use the first sticker as the thumbnail"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!

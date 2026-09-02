@@ -14,6 +14,17 @@ reply:
   ignore: &ignore-reply
     - reply_to_message_id
 
+answer_rich:
+  method: sendRichMessage
+  code: *assert-chat
+  fill: *fill-answer
+
+reply_rich:
+  method: sendRichMessage
+  code: *assert-chat
+  fill: *fill-reply
+  ignore: *ignore-reply
+
 answer_animation:
   method: sendAnimation
   code: *assert-chat

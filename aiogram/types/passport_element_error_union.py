@@ -1,6 +1,8 @@
 from __future__ import annotations
 
-from typing import TypeAlias
+from typing import Annotated, TypeAlias
+
+from pydantic import Field
 
 from .passport_element_error_data_field import PassportElementErrorDataField
 from .passport_element_error_file import PassportElementErrorFile
@@ -14,7 +16,7 @@ from .passport_element_error_translation_files import (
 )
 from .passport_element_error_unspecified import PassportElementErrorUnspecified
 
-PassportElementErrorUnion: TypeAlias = (
+PassportElementErrorUnion: TypeAlias = Annotated[
     PassportElementErrorDataField
     | PassportElementErrorFrontSide
     | PassportElementErrorReverseSide
@@ -23,5 +25,6 @@ PassportElementErrorUnion: TypeAlias = (
     | PassportElementErrorFiles
     | PassportElementErrorTranslationFile
     | PassportElementErrorTranslationFiles
-    | PassportElementErrorUnspecified
-)
+    | PassportElementErrorUnspecified,
+    Field(discriminator="source"),
+]

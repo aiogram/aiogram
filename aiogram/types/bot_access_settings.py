@@ -16,7 +16,7 @@ class BotAccessSettings(TelegramObject):
     """
 
     is_access_restricted: bool
-    """:code:`True`, if only selected users can access the bot. The bot's owner can always access it."""
+    """:code:`True`, if only selected users can access the bot. The bot's owner can always access it"""
     added_users: list[User] | None = None
     """*Optional*. The list of other users who have access to the bot if the access is restricted"""
 

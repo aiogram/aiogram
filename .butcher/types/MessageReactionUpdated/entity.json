@@ -28,22 +28,6 @@
         "required": true
       },
       {
-        "type": "User",
-        "description": "The user that changed the reaction, if the user isn't anonymous",
-        "html_description": "<td><em>Optional</em>. The user that changed the reaction, if the user isn't anonymous</td>",
-        "rst_description": "*Optional*. The user that changed the reaction, if the user isn't anonymous\n",
-        "name": "user",
-        "required": false
-      },
-      {
-        "type": "Chat",
-        "description": "The chat on behalf of which the reaction was changed, if the user is anonymous",
-        "html_description": "<td><em>Optional</em>. The chat on behalf of which the reaction was changed, if the user is anonymous</td>",
-        "rst_description": "*Optional*. The chat on behalf of which the reaction was changed, if the user is anonymous\n",
-        "name": "actor_chat",
-        "required": false
-      },
-      {
         "type": "Integer",
         "description": "Date of the change in Unix time",
         "html_description": "<td>Date of the change in Unix time</td>",
@@ -66,6 +50,22 @@
         "rst_description": "New list of reaction types that have been set by the user\n",
         "name": "new_reaction",
         "required": true
+      },
+      {
+        "type": "User",
+        "description": "The user that changed the reaction, if the user isn't anonymous",
+        "html_description": "<td><em>Optional</em>. The user that changed the reaction, if the user isn't anonymous</td>",
+        "rst_description": "*Optional*. The user that changed the reaction, if the user isn't anonymous\n",
+        "name": "user",
+        "required": false
+      },
+      {
+        "type": "Chat",
+        "description": "The chat on behalf of which the reaction was changed, if the user is anonymous",
+        "html_description": "<td><em>Optional</em>. The chat on behalf of which the reaction was changed, if the user is anonymous</td>",
+        "rst_description": "*Optional*. The chat on behalf of which the reaction was changed, if the user is anonymous\n",
+        "name": "actor_chat",
+        "required": false
       }
     ],
     "category": "types"

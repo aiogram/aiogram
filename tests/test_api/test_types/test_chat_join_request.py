@@ -4,10 +4,12 @@ from typing import Any
 import pytest
 
 from aiogram.methods import (
+    AnswerChatJoinRequestQuery,
     ApproveChatJoinRequest,
     DeclineChatJoinRequest,
     SendAnimation,
     SendAudio,
+    SendChatJoinRequestWebApp,
     SendContact,
     SendDice,
     SendDocument,
@@ -55,6 +57,36 @@ class TestChatJoinRequest:
         assert isinstance(api_method, DeclineChatJoinRequest)
         assert api_method.chat_id == chat_join_request.chat.id
         assert api_method.user_id == chat_join_request.from_user.id
+
+    def test_answer_query_alias(self):
+        chat_join_request = ChatJoinRequest(
+            chat=Chat(id=-42, type="supergroup"),
+            from_user=User(id=42, is_bot=False, first_name="Test"),
+            user_chat_id=42,
+            date=datetime.datetime.now(),
+            query_id="test_query_id",
+        )
+
+        api_method = chat_join_request.answer_query(result="approve")
+
+        assert isinstance(api_method, AnswerChatJoinRequestQuery)
+        assert api_method.chat_join_request_query_id == chat_join_request.query_id
+        assert api_method.result == "approve"
+
+    def test_send_webapp_alias(self):
+        chat_join_request = ChatJoinRequest(
+            chat=Chat(id=-42, type="supergroup"),
+            from_user=User(id=42, is_bot=False, first_name="Test"),
+            user_chat_id=42,
+            date=datetime.datetime.now(),
+            query_id="test_query_id",
+        )
+
+        api_method = chat_join_request.send_webapp(web_app_url="https://example.com/app")
+
+        assert isinstance(api_method, SendChatJoinRequestWebApp)
+        assert api_method.chat_join_request_query_id == chat_join_request.query_id
+        assert api_method.web_app_url == "https://example.com/app"
 
     @pytest.mark.parametrize(
         "alias_for_method,kwargs,method_class",

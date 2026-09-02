@@ -18,7 +18,7 @@ class ManagedBotCreated(TelegramObject):
     """
 
     bot_user: User = Field(..., alias="bot")
-    """Information about the bot. The bot's token can be fetched using the method :class:`aiogram.methods.get_managed_bot_token.GetManagedBotToken`."""
+    """Information about the bot. The bot's token can be fetched using the method :class:`aiogram.methods.get_managed_bot_token.GetManagedBotToken`"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!

@@ -13,9 +13,9 @@
     "annotations": [
       {
         "type": "String",
-        "description": "Type of the result, must be video",
-        "html_description": "<td>Type of the result, must be <em>video</em></td>",
-        "rst_description": "Type of the result, must be *video*\n",
+        "description": "Type of the media, must be video",
+        "html_description": "<td>Type of the media, must be <em>video</em></td>",
+        "rst_description": "Type of the media, must be *video*\n",
         "name": "type",
         "required": true
       },
@@ -77,9 +77,9 @@
       },
       {
         "type": "Boolean",
-        "description": "Pass True, if the caption must be shown above the message media",
-        "html_description": "<td><em>Optional</em>. Pass <em>True</em>, if the caption must be shown above the message media</td>",
-        "rst_description": "*Optional*. Pass :code:`True`, if the caption must be shown above the message media\n",
+        "description": "Pass True if the caption must be shown above the message media",
+        "html_description": "<td><em>Optional</em>. Pass <em>True</em> if the caption must be shown above the message media</td>",
+        "rst_description": "*Optional*. Pass :code:`True` if the caption must be shown above the message media\n",
         "name": "show_caption_above_media",
         "required": false
       },

@@ -1,0 +1,41 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Rich messages",
+    "anchor": "rich-messages"
+  },
+  "object": {
+    "anchor": "richblocksectionheading",
+    "name": "RichBlockSectionHeading",
+    "description": "A section heading, corresponding to the HTML tags <h1>, <h2>, <h3>, <h4>, <h5>, or <h6>.",
+    "html_description": "<p>A section heading, corresponding to the HTML tags <code>&lt;h1&gt;</code>, <code>&lt;h2&gt;</code>, <code>&lt;h3&gt;</code>, <code>&lt;h4&gt;</code>, <code>&lt;h5&gt;</code>, or <code>&lt;h6&gt;</code>.</p>",
+    "rst_description": "A section heading, corresponding to the HTML tags :code:`<h1>`, :code:`<h2>`, :code:`<h3>`, :code:`<h4>`, :code:`<h5>`, or :code:`<h6>`.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Type of the block, always 'heading'",
+        "html_description": "<td>Type of the block, always &#8220;heading&#8221;</td>",
+        "rst_description": "Type of the block, always 'heading'\n",
+        "name": "type",
+        "required": true
+      },
+      {
+        "type": "RichText",
+        "description": "Text of the block",
+        "html_description": "<td>Text of the block</td>",
+        "rst_description": "Text of the block\n",
+        "name": "text",
+        "required": true
+      },
+      {
+        "type": "Integer",
+        "description": "Relative size of the text font; 1-6, 1 is the largest, 6 is the smallest",
+        "html_description": "<td>Relative size of the text font; 1-6, 1 is the largest, 6 is the smallest</td>",
+        "rst_description": "Relative size of the text font; 1-6, 1 is the largest, 6 is the smallest\n",
+        "name": "size",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

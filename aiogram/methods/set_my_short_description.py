@@ -16,9 +16,9 @@ class SetMyShortDescription(TelegramMethod[bool]):
     __api_method__ = "setMyShortDescription"
 
     short_description: str | None = None
-    """New short description for the bot; 0-120 characters. Pass an empty string to remove the dedicated short description for the given language."""
+    """New short description for the bot; 0-120 characters. Pass an empty string to remove the dedicated short description for the given language"""
     language_code: str | None = None
-    """A two-letter ISO 639-1 language code. If empty, the short description will be applied to all users for whose language there is no dedicated short description."""
+    """A two-letter ISO 639-1 language code. If empty, the short description will be applied to all users for whose language there is no dedicated short description"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!

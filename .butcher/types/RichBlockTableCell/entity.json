@@ -1,0 +1,65 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Rich messages",
+    "anchor": "rich-messages"
+  },
+  "object": {
+    "anchor": "richblocktablecell",
+    "name": "RichBlockTableCell",
+    "description": "Cell in a table.",
+    "html_description": "<p>Cell in a table.</p>",
+    "rst_description": "Cell in a table.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Horizontal cell content alignment. Currently, must be one of 'left', 'center', or 'right'.",
+        "html_description": "<td>Horizontal cell content alignment. Currently, must be one of &#8220;left&#8221;, &#8220;center&#8221;, or &#8220;right&#8221;.</td>",
+        "rst_description": "Horizontal cell content alignment. Currently, must be one of 'left', 'center', or 'right'.\n",
+        "name": "align",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "Vertical cell content alignment. Currently, must be one of 'top', 'middle', or 'bottom'.",
+        "html_description": "<td>Vertical cell content alignment. Currently, must be one of &#8220;top&#8221;, &#8220;middle&#8221;, or &#8220;bottom&#8221;.</td>",
+        "rst_description": "Vertical cell content alignment. Currently, must be one of 'top', 'middle', or 'bottom'.\n",
+        "name": "valign",
+        "required": true
+      },
+      {
+        "type": "RichText",
+        "description": "Text in the cell. If omitted, then the cell is invisible.",
+        "html_description": "<td><em>Optional</em>. Text in the cell. If omitted, then the cell is invisible.</td>",
+        "rst_description": "*Optional*. Text in the cell. If omitted, then the cell is invisible.\n",
+        "name": "text",
+        "required": false
+      },
+      {
+        "type": "True",
+        "description": "True, if the cell is a header cell",
+        "html_description": "<td><em>Optional</em>. <em>True</em>, if the cell is a header cell</td>",
+        "rst_description": "*Optional*. :code:`True`, if the cell is a header cell\n",
+        "name": "is_header",
+        "required": false
+      },
+      {
+        "type": "Integer",
+        "description": "The number of columns the cell spans if it is bigger than 1",
+        "html_description": "<td><em>Optional</em>. The number of columns the cell spans if it is bigger than 1</td>",
+        "rst_description": "*Optional*. The number of columns the cell spans if it is bigger than 1\n",
+        "name": "colspan",
+        "required": false
+      },
+      {
+        "type": "Integer",
+        "description": "The number of rows the cell spans if it is bigger than 1",
+        "html_description": "<td><em>Optional</em>. The number of rows the cell spans if it is bigger than 1</td>",
+        "rst_description": "*Optional*. The number of rows the cell spans if it is bigger than 1\n",
+        "name": "rowspan",
+        "required": false
+      }
+    ],
+    "category": "types"
+  }
+}

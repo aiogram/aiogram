@@ -30,7 +30,7 @@ class ForwardMessage(TelegramMethod[Message]):
     video_start_timestamp: DateTimeUnion | None = None
     """New start timestamp for the forwarded video in the message"""
     disable_notification: bool | None = None
-    """Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound."""
+    """Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound"""
     protect_content: bool | Default | None = Default("protect_content")
     """Protects the contents of the forwarded message from forwarding and saving"""
     message_effect_id: str | None = None

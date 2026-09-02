@@ -1,0 +1,41 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Rich messages",
+    "anchor": "rich-messages"
+  },
+  "object": {
+    "anchor": "richblockpullquotation",
+    "name": "RichBlockPullQuotation",
+    "description": "A quotation with centered text, loosely corresponding to the HTML tag <aside>.",
+    "html_description": "<p>A quotation with centered text, loosely corresponding to the HTML tag <code>&lt;aside&gt;</code>.</p>",
+    "rst_description": "A quotation with centered text, loosely corresponding to the HTML tag :code:`<aside>`.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Type of the block, always 'pullquote'",
+        "html_description": "<td>Type of the block, always &#8220;pullquote&#8221;</td>",
+        "rst_description": "Type of the block, always 'pullquote'\n",
+        "name": "type",
+        "required": true
+      },
+      {
+        "type": "RichText",
+        "description": "Text of the block",
+        "html_description": "<td>Text of the block</td>",
+        "rst_description": "Text of the block\n",
+        "name": "text",
+        "required": true
+      },
+      {
+        "type": "RichText",
+        "description": "Credit of the block",
+        "html_description": "<td><em>Optional</em>. Credit of the block</td>",
+        "rst_description": "*Optional*. Credit of the block\n",
+        "name": "credit",
+        "required": false
+      }
+    ],
+    "category": "types"
+  }
+}

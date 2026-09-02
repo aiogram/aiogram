@@ -20,6 +20,14 @@
         "required": true
       },
       {
+        "type": "Array of InputChecklistTask",
+        "description": "List of 1-30 tasks in the checklist",
+        "html_description": "<td>List of 1-30 tasks in the checklist</td>",
+        "rst_description": "List of 1-30 tasks in the checklist\n",
+        "name": "tasks",
+        "required": true
+      },
+      {
         "type": "String",
         "description": "Mode for parsing entities in the title. See formatting options for more details.",
         "html_description": "<td><em>Optional</em>. Mode for parsing entities in the title. See <a href=\"#formatting-options\">formatting options</a> for more details.</td>",
@@ -34,14 +42,6 @@
         "rst_description": "*Optional*. List of special entities that appear in the title, which can be specified instead of parse_mode. Currently, only *bold*, *italic*, *underline*, *strikethrough*, *spoiler*, *custom_emoji*, and *date_time* entities are allowed.\n",
         "name": "title_entities",
         "required": false
-      },
-      {
-        "type": "Array of InputChecklistTask",
-        "description": "List of 1-30 tasks in the checklist",
-        "html_description": "<td>List of 1-30 tasks in the checklist</td>",
-        "rst_description": "List of 1-30 tasks in the checklist\n",
-        "name": "tasks",
-        "required": true
       },
       {
         "type": "Boolean",

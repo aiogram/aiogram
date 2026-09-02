@@ -13,9 +13,9 @@
     "annotations": [
       {
         "type": "Integer",
-        "description": "Signed 32-bit identifier of the request that will be received back in the UsersShared object. Must be unique within the message",
-        "html_description": "<td>Signed 32-bit identifier of the request that will be received back in the <a href=\"#usersshared\">UsersShared</a> object. Must be unique within the message</td>",
-        "rst_description": "Signed 32-bit identifier of the request that will be received back in the :class:`aiogram.types.users_shared.UsersShared` object. Must be unique within the message\n",
+        "description": "Signed 32-bit identifier of the request that will be received back in the UsersShared object. Must be unique within the message.",
+        "html_description": "<td>Signed 32-bit identifier of the request that will be received back in the <a href=\"#usersshared\">UsersShared</a> object. Must be unique within the message.</td>",
+        "rst_description": "Signed 32-bit identifier of the request that will be received back in the :class:`aiogram.types.users_shared.UsersShared` object. Must be unique within the message.\n",
         "name": "request_id",
         "required": true
       },

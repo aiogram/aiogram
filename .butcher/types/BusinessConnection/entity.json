@@ -44,20 +44,20 @@
         "required": true
       },
       {
-        "type": "BusinessBotRights",
-        "description": "Rights of the business bot",
-        "html_description": "<td><em>Optional</em>. Rights of the business bot</td>",
-        "rst_description": "*Optional*. Rights of the business bot\n",
-        "name": "rights",
-        "required": false
-      },
-      {
         "type": "Boolean",
         "description": "True, if the connection is active",
         "html_description": "<td><em>True</em>, if the connection is active</td>",
         "rst_description": ":code:`True`, if the connection is active\n",
         "name": "is_enabled",
         "required": true
+      },
+      {
+        "type": "BusinessBotRights",
+        "description": "Rights of the business bot",
+        "html_description": "<td><em>Optional</em>. Rights of the business bot</td>",
+        "rst_description": "*Optional*. Rights of the business bot\n",
+        "name": "rights",
+        "required": false
       },
       {
         "type": "Boolean",

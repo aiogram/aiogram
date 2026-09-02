@@ -1,0 +1,41 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "ephemeralmessageparameters",
+    "name": "EphemeralMessageParameters",
+    "description": "",
+    "html_description": "",
+    "rst_description": "",
+    "annotations": [
+      {
+        "type": "Integer",
+        "description": "Identifier of the user who will receive the message. It is not guaranteed that the user will receive the message, especially if they are offline. See here for more details.",
+        "html_description": "<td>Identifier of the user who will receive the message. It is not guaranteed that the user will receive the message, especially if they are offline. See <a href=\"#ephemeral-messages-and-commands\">here</a> for more details.</td>",
+        "rst_description": "Identifier of the user who will receive the message. It is not guaranteed that the user will receive the message, especially if they are offline. See `here <https://core.telegram.org/bots/api#ephemeral-messages-and-commands>`_ for more details.\n",
+        "name": "receiver_user_id",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "Identifier of the callback query which triggered the message, if any",
+        "html_description": "<td><em>Optional</em>. Identifier of the callback query which triggered the message, if any</td>",
+        "rst_description": "*Optional*. Identifier of the callback query which triggered the message, if any\n",
+        "name": "callback_query_id",
+        "required": false
+      },
+      {
+        "type": "Boolean",
+        "description": "Pass True if the ephemeral message must be shown in place of the original message. Must be False for callback queries from ephemeral messages, which must be edited using regular editEphemeralMessage… methods.",
+        "html_description": "<td><em>Optional</em>. Pass <em>True</em> if the ephemeral message must be shown in place of the original message. Must be <em>False</em> for callback queries from ephemeral messages, which must be edited using regular <em>editEphemeralMessage&#8230;</em> methods.</td>",
+        "rst_description": "*Optional*. Pass :code:`True` if the ephemeral message must be shown in place of the original message. Must be :code:`False` for callback queries from ephemeral messages, which must be edited using regular *editEphemeralMessage…* methods.\n",
+        "name": "replace_callback_query_message",
+        "required": false
+      }
+    ],
+    "category": "types"
+  }
+}

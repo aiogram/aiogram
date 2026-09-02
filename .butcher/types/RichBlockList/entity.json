@@ -1,0 +1,33 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Rich messages",
+    "anchor": "rich-messages"
+  },
+  "object": {
+    "anchor": "richblocklist",
+    "name": "RichBlockList",
+    "description": "A list of blocks, corresponding to the HTML tag <ul> or <ol> with multiple nested tags <li>.",
+    "html_description": "<p>A list of blocks, corresponding to the HTML tag <code>&lt;ul&gt;</code> or <code>&lt;ol&gt;</code> with multiple nested tags <code>&lt;li&gt;</code>.</p>",
+    "rst_description": "A list of blocks, corresponding to the HTML tag :code:`<ul>` or :code:`<ol>` with multiple nested tags :code:`<li>`.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Type of the block, always 'list'",
+        "html_description": "<td>Type of the block, always &#8220;list&#8221;</td>",
+        "rst_description": "Type of the block, always 'list'\n",
+        "name": "type",
+        "required": true
+      },
+      {
+        "type": "Array of RichBlockListItem",
+        "description": "Items of the list",
+        "html_description": "<td>Items of the list</td>",
+        "rst_description": "Items of the list\n",
+        "name": "items",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

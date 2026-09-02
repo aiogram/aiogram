@@ -22,17 +22,17 @@
       {
         "type": "Boolean",
         "required": true,
-        "description": "Pass True, if only selected users can access the bot. The bot's owner can always access it.",
-        "html_description": "<td>Pass <em>True</em>, if only selected users can access the bot. The bot's owner can always access it.</td>",
-        "rst_description": "Pass :code:`True`, if only selected users can access the bot. The bot's owner can always access it.\n",
+        "description": "Pass True if only selected users can access the bot. The bot's owner can always access it.",
+        "html_description": "<td>Pass <em>True</em> if only selected users can access the bot. The bot's owner can always access it.</td>",
+        "rst_description": "Pass :code:`True` if only selected users can access the bot. The bot's owner can always access it.\n",
         "name": "is_access_restricted"
       },
       {
         "type": "Array of Integer",
         "required": false,
-        "description": "A JSON-serialized list of up to 10 identifiers of users who will have access to the bot in addition to its owner. Ignored if is_access_restricted is false.",
-        "html_description": "<td>A JSON-serialized list of up to 10 identifiers of users who will have access to the bot in addition to its owner. Ignored if <em>is_access_restricted</em> is false.</td>",
-        "rst_description": "A JSON-serialized list of up to 10 identifiers of users who will have access to the bot in addition to its owner. Ignored if *is_access_restricted* is false.\n",
+        "description": "A JSON-serialized list of up to 10 identifiers of users who will have access to the bot in addition to its owner. Ignored if is_access_restricted is False.",
+        "html_description": "<td>A JSON-serialized list of up to 10 identifiers of users who will have access to the bot in addition to its owner. Ignored if <em>is_access_restricted</em> is <em>False</em>.</td>",
+        "rst_description": "A JSON-serialized list of up to 10 identifiers of users who will have access to the bot in addition to its owner. Ignored if *is_access_restricted* is :code:`False`.\n",
         "name": "added_user_ids"
       }
     ],

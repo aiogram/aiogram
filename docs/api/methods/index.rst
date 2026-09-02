@@ -35,6 +35,7 @@ Available methods
     :maxdepth: 1
 
     answer_callback_query
+    answer_chat_join_request_query
     answer_guest_query
     answer_web_app_query
     approve_chat_join_request
@@ -112,6 +113,7 @@ Available methods
     send_animation
     send_audio
     send_chat_action
+    send_chat_join_request_web_app
     send_checklist
     send_contact
     send_dice
@@ -173,9 +175,14 @@ Updating messages
     approve_suggested_post
     decline_suggested_post
     delete_all_message_reactions
+    delete_ephemeral_message
     delete_message
     delete_message_reaction
     delete_messages
+    edit_ephemeral_message_caption
+    edit_ephemeral_message_media
+    edit_ephemeral_message_reply_markup
+    edit_ephemeral_message_text
     edit_message_caption
     edit_message_checklist
     edit_message_live_location
@@ -184,6 +191,15 @@ Updating messages
     edit_message_text
     stop_message_live_location
     stop_poll
+
+Rich messages
+=============
+
+.. toctree::
+    :maxdepth: 1
+
+    send_rich_message
+    send_rich_message_draft
 
 Games
 =====

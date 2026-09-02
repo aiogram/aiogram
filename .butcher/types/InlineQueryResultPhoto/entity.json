@@ -29,9 +29,9 @@
       },
       {
         "type": "String",
-        "description": "A valid URL of the photo. Photo must be in JPEG format. Photo size must not exceed 5MB",
-        "html_description": "<td>A valid URL of the photo. Photo must be in <strong>JPEG</strong> format. Photo size must not exceed 5MB</td>",
-        "rst_description": "A valid URL of the photo. Photo must be in **JPEG** format. Photo size must not exceed 5MB\n",
+        "description": "A valid URL of the photo. Photo must be in JPEG format. Photo size must not exceed 5MB.",
+        "html_description": "<td>A valid URL of the photo. Photo must be in <strong>JPEG</strong> format. Photo size must not exceed 5MB.</td>",
+        "rst_description": "A valid URL of the photo. Photo must be in **JPEG** format. Photo size must not exceed 5MB.\n",
         "name": "photo_url",
         "required": true
       },
@@ -101,9 +101,9 @@
       },
       {
         "type": "Boolean",
-        "description": "Pass True, if the caption must be shown above the message media",
-        "html_description": "<td><em>Optional</em>. Pass <em>True</em>, if the caption must be shown above the message media</td>",
-        "rst_description": "*Optional*. Pass :code:`True`, if the caption must be shown above the message media\n",
+        "description": "Pass True if the caption must be shown above the message media",
+        "html_description": "<td><em>Optional</em>. Pass <em>True</em> if the caption must be shown above the message media</td>",
+        "rst_description": "*Optional*. Pass :code:`True` if the caption must be shown above the message media\n",
         "name": "show_caption_above_media",
         "required": false
       },

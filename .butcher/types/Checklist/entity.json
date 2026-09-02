@@ -20,20 +20,20 @@
         "required": true
       },
       {
-        "type": "Array of MessageEntity",
-        "description": "Special entities that appear in the checklist title",
-        "html_description": "<td><em>Optional</em>. Special entities that appear in the checklist title</td>",
-        "rst_description": "*Optional*. Special entities that appear in the checklist title\n",
-        "name": "title_entities",
-        "required": false
-      },
-      {
         "type": "Array of ChecklistTask",
         "description": "List of tasks in the checklist",
         "html_description": "<td>List of tasks in the checklist</td>",
         "rst_description": "List of tasks in the checklist\n",
         "name": "tasks",
         "required": true
+      },
+      {
+        "type": "Array of MessageEntity",
+        "description": "Special entities that appear in the checklist title",
+        "html_description": "<td><em>Optional</em>. Special entities that appear in the checklist title</td>",
+        "rst_description": "*Optional*. Special entities that appear in the checklist title\n",
+        "name": "title_entities",
+        "required": false
       },
       {
         "type": "True",

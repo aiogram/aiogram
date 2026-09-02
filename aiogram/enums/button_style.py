@@ -8,8 +8,10 @@ class ButtonStyle(str, Enum):
     Sources:
       * https://core.telegram.org/bots/api#inlinekeyboardbutton
       * https://core.telegram.org/bots/api#keyboardbutton
+      * https://core.telegram.org/bots/api#richmessagebutton
     """
 
     DANGER = "danger"
     SUCCESS = "success"
     PRIMARY = "primary"
+    LINK = "link"

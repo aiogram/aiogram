@@ -13,10 +13,26 @@
     "annotations": [
       {
         "type": "Integer",
-        "description": "Unique message identifier inside this chat. In specific instances (e.g., message containing a video sent to a big chat), the server might automatically schedule a message instead of sending it immediately. In such cases, this field will be 0 and the relevant message will be unusable until it is actually sent",
-        "html_description": "<td>Unique message identifier inside this chat. In specific instances (e.g., message containing a video sent to a big chat), the server might automatically schedule a message instead of sending it immediately. In such cases, this field will be 0 and the relevant message will be unusable until it is actually sent</td>",
-        "rst_description": "Unique message identifier inside this chat. In specific instances (e.g., message containing a video sent to a big chat), the server might automatically schedule a message instead of sending it immediately. In such cases, this field will be 0 and the relevant message will be unusable until it is actually sent\n",
+        "description": "Unique message identifier inside this chat; 0 for ephemeral messages. In specific instances (e.g., a message containing a video sent to a big chat), the server might automatically schedule a message instead of sending it immediately. In such cases, this field will be 0 and the relevant message will be unusable until it is actually sent.",
+        "html_description": "<td>Unique message identifier inside this chat; 0 for ephemeral messages. In specific instances (e.g., a message containing a video sent to a big chat), the server might automatically schedule a message instead of sending it immediately. In such cases, this field will be 0 and the relevant message will be unusable until it is actually sent.</td>",
+        "rst_description": "Unique message identifier inside this chat; 0 for ephemeral messages. In specific instances (e.g., a message containing a video sent to a big chat), the server might automatically schedule a message instead of sending it immediately. In such cases, this field will be 0 and the relevant message will be unusable until it is actually sent.\n",
         "name": "message_id",
+        "required": true
+      },
+      {
+        "type": "Integer",
+        "description": "Date the message was sent in Unix time. It is always a positive number, representing a valid date.",
+        "html_description": "<td>Date the message was sent in Unix time. It is always a positive number, representing a valid date.</td>",
+        "rst_description": "Date the message was sent in Unix time. It is always a positive number, representing a valid date.\n",
+        "name": "date",
+        "required": true
+      },
+      {
+        "type": "Chat",
+        "description": "Chat the message belongs to",
+        "html_description": "<td>Chat the message belongs to</td>",
+        "rst_description": "Chat the message belongs to\n",
+        "name": "chat",
         "required": true
       },
       {
@@ -37,9 +53,9 @@
       },
       {
         "type": "User",
-        "description": "Sender of the message; may be empty for messages sent to channels. For backward compatibility, if the message was sent on behalf of a chat, the field contains a fake sender user in non-channel chats",
-        "html_description": "<td><em>Optional</em>. Sender of the message; may be empty for messages sent to channels. For backward compatibility, if the message was sent on behalf of a chat, the field contains a fake sender user in non-channel chats</td>",
-        "rst_description": "*Optional*. Sender of the message; may be empty for messages sent to channels. For backward compatibility, if the message was sent on behalf of a chat, the field contains a fake sender user in non-channel chats\n",
+        "description": "Sender of the message; may be empty for messages sent to channels. For backward compatibility, if the message was sent on behalf of a chat, the field contains a fake sender user in non-channel chats.",
+        "html_description": "<td><em>Optional</em>. Sender of the message; may be empty for messages sent to channels. For backward compatibility, if the message was sent on behalf of a chat, the field contains a fake sender user in non-channel chats.</td>",
+        "rst_description": "*Optional*. Sender of the message; may be empty for messages sent to channels. For backward compatibility, if the message was sent on behalf of a chat, the field contains a fake sender user in non-channel chats.\n",
         "name": "from",
         "required": false
       },
@@ -76,14 +92,6 @@
         "required": false
       },
       {
-        "type": "Integer",
-        "description": "Date the message was sent in Unix time. It is always a positive number, representing a valid date.",
-        "html_description": "<td>Date the message was sent in Unix time. It is always a positive number, representing a valid date.</td>",
-        "rst_description": "Date the message was sent in Unix time. It is always a positive number, representing a valid date.\n",
-        "name": "date",
-        "required": true
-      },
-      {
         "type": "String",
         "description": "The unique identifier for the guest query. Use this identifier with the method answerGuestQuery to send a response message. If non-empty, the message belongs to the chat where the guest bot was summoned, which may not coincide with other existing bot chats sharing the same identifier.",
         "html_description": "<td><em>Optional</em>. The unique identifier for the guest query. Use this identifier with the method <a href=\"#answerguestquery\">answerGuestQuery</a> to send a response message. If non-empty, the message belongs to the chat where the guest bot was summoned, which may not coincide with other existing bot chats sharing the same identifier.</td>",
@@ -98,14 +106,6 @@
         "rst_description": "*Optional*. Unique identifier of the business connection from which the message was received. If non-empty, the message belongs to a chat of the corresponding business account that is independent from any potential bot chat which might share the same identifier.\n",
         "name": "business_connection_id",
         "required": false
-      },
-      {
-        "type": "Chat",
-        "description": "Chat the message belongs to",
-        "html_description": "<td>Chat the message belongs to</td>",
-        "rst_description": "Chat the message belongs to\n",
-        "name": "chat",
-        "required": true
       },
       {
         "type": "MessageOrigin",
@@ -133,9 +133,9 @@
       },
       {
         "type": "Message",
-        "description": "For replies in the same chat and message thread, the original message. Note that the Message object in this field will not contain further reply_to_message fields even if it itself is a reply.",
-        "html_description": "<td><em>Optional</em>. For replies in the same chat and message thread, the original message. Note that the <a href=\"#message\">Message</a> object in this field will not contain further <em>reply_to_message</em> fields even if it itself is a reply.</td>",
-        "rst_description": "*Optional*. For replies in the same chat and message thread, the original message. Note that the :class:`aiogram.types.message.Message` object in this field will not contain further *reply_to_message* fields even if it itself is a reply.\n",
+        "description": "For replies in the same chat and message thread, the original message. Note that the Message object in this field will not contain further reply_to_message fields even if it itself is a reply. If the message is a reply to an ephemeral message, then this field may be omitted.",
+        "html_description": "<td><em>Optional</em>. For replies in the same chat and message thread, the original message. Note that the <a href=\"#message\">Message</a> object in this field will not contain further <em>reply_to_message</em> fields even if it itself is a reply. If the message is a reply to an ephemeral message, then this field may be omitted.</td>",
+        "rst_description": "*Optional*. For replies in the same chat and message thread, the original message. Note that the :class:`aiogram.types.message.Message` object in this field will not contain further *reply_to_message* fields even if it itself is a reply. If the message is a reply to an ephemeral message, then this field may be omitted.\n",
         "name": "reply_to_message",
         "required": false
       },
@@ -301,9 +301,9 @@
       },
       {
         "type": "Animation",
-        "description": "Message is an animation, information about the animation. For backward compatibility, when this field is set, the document field will also be set",
-        "html_description": "<td><em>Optional</em>. Message is an animation, information about the animation. For backward compatibility, when this field is set, the <em>document</em> field will also be set</td>",
-        "rst_description": "*Optional*. Message is an animation, information about the animation. For backward compatibility, when this field is set, the *document* field will also be set\n",
+        "description": "Message is an animation, information about the animation. For backward compatibility, when this field is set, the document field will also be set.",
+        "html_description": "<td><em>Optional</em>. Message is an animation, information about the animation. For backward compatibility, when this field is set, the <em>document</em> field will also be set.</td>",
+        "rst_description": "*Optional*. Message is an animation, information about the animation. For backward compatibility, when this field is set, the *document* field will also be set.\n",
         "name": "animation",
         "required": false
       },
@@ -325,9 +325,9 @@
       },
       {
         "type": "LivePhoto",
-        "description": "Message is a live photo, information about the live photo. For backward compatibility, when this field is set, the photo field will also be set",
-        "html_description": "<td><em>Optional</em>. Message is a live photo, information about the live photo. For backward compatibility, when this field is set, the <em>photo</em> field will also be set</td>",
-        "rst_description": "*Optional*. Message is a live photo, information about the live photo. For backward compatibility, when this field is set, the *photo* field will also be set\n",
+        "description": "Message is a live photo, information about the live photo. For backward compatibility, when this field is set, the photo field will also be set.",
+        "html_description": "<td><em>Optional</em>. Message is a live photo, information about the live photo. For backward compatibility, when this field is set, the <em>photo</em> field will also be set.</td>",
+        "rst_description": "*Optional*. Message is a live photo, information about the live photo. For backward compatibility, when this field is set, the *photo* field will also be set.\n",
         "name": "live_photo",
         "required": false
       },
@@ -461,9 +461,9 @@
       },
       {
         "type": "Venue",
-        "description": "Message is a venue, information about the venue. For backward compatibility, when this field is set, the location field will also be set",
-        "html_description": "<td><em>Optional</em>. Message is a venue, information about the venue. For backward compatibility, when this field is set, the <em>location</em> field will also be set</td>",
-        "rst_description": "*Optional*. Message is a venue, information about the venue. For backward compatibility, when this field is set, the *location* field will also be set\n",
+        "description": "Message is a venue, information about the venue. For backward compatibility, when this field is set, the location field will also be set.",
+        "html_description": "<td><em>Optional</em>. Message is a venue, information about the venue. For backward compatibility, when this field is set, the <em>location</em> field will also be set.</td>",
+        "rst_description": "*Optional*. Message is a venue, information about the venue. For backward compatibility, when this field is set, the *location* field will also be set.\n",
         "name": "venue",
         "required": false
       },
@@ -677,9 +677,9 @@
       },
       {
         "type": "ProximityAlertTriggered",
-        "description": "Service message. A user in the chat triggered another user's proximity alert while sharing Live Location.",
-        "html_description": "<td><em>Optional</em>. Service message. A user in the chat triggered another user's proximity alert while sharing Live Location.</td>",
-        "rst_description": "*Optional*. Service message. A user in the chat triggered another user's proximity alert while sharing Live Location.\n",
+        "description": "Service message: a user in the chat triggered another user's proximity alert while sharing Live Location",
+        "html_description": "<td><em>Optional</em>. Service message: a user in the chat triggered another user's proximity alert while sharing Live Location</td>",
+        "rst_description": "*Optional*. Service message: a user in the chat triggered another user's proximity alert while sharing Live Location\n",
         "name": "proximity_alert_triggered",
         "required": false
       },
@@ -921,6 +921,54 @@
         "html_description": "<td><em>Optional</em>. <a href=\"/bots/features#inline-keyboards\">Inline keyboard</a> attached to the message. <code>login_url</code> buttons are represented as ordinary <code>url</code> buttons.</td>",
         "rst_description": "*Optional*. `Inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_ attached to the message. :code:`login_url` buttons are represented as ordinary :code:`url` buttons.\n",
         "name": "reply_markup",
+        "required": false
+      },
+      {
+        "type": "RichMessage",
+        "description": "Message is a rich formatted message",
+        "html_description": "<td><em>Optional</em>. Message is a rich formatted message</td>",
+        "rst_description": "*Optional*. Message is a rich formatted message\n",
+        "name": "rich_message",
+        "required": false
+      },
+      {
+        "type": "User",
+        "description": "For ephemeral messages, the user who received the message",
+        "html_description": "<td><em>Optional</em>. For ephemeral messages, the user who received the message</td>",
+        "rst_description": "*Optional*. For ephemeral messages, the user who received the message\n",
+        "name": "receiver_user",
+        "required": false
+      },
+      {
+        "type": "Integer",
+        "description": "For ephemeral messages, identifier of the ephemeral message inside this chat. The identifier may be reused for another ephemeral message after the message is deleted or expires.",
+        "html_description": "<td><em>Optional</em>. For ephemeral messages, identifier of the ephemeral message inside this chat. The identifier may be reused for another ephemeral message after the message is deleted or expires.</td>",
+        "rst_description": "*Optional*. For ephemeral messages, identifier of the ephemeral message inside this chat. The identifier may be reused for another ephemeral message after the message is deleted or expires.\n",
+        "name": "ephemeral_message_id",
+        "required": false
+      },
+      {
+        "type": "CommunityChatAdded",
+        "description": "Service message: chat or bot added to a Community",
+        "html_description": "<td><em>Optional</em>. Service message: chat or bot added to a <a href=\"#community\">Community</a></td>",
+        "rst_description": "*Optional*. Service message: chat or bot added to a :class:`aiogram.types.community.Community`\n",
+        "name": "community_chat_added",
+        "required": false
+      },
+      {
+        "type": "CommunityChatRemoved",
+        "description": "Service message: chat or bot removed from a Community",
+        "html_description": "<td><em>Optional</em>. Service message: chat or bot removed from a <a href=\"#community\">Community</a></td>",
+        "rst_description": "*Optional*. Service message: chat or bot removed from a :class:`aiogram.types.community.Community`\n",
+        "name": "community_chat_removed",
+        "required": false
+      },
+      {
+        "type": "CommunityChatJoined",
+        "description": "Service message: chat was joined by a user from a Community",
+        "html_description": "<td><em>Optional</em>. Service message: chat was joined by a user from a <a href=\"#community\">Community</a></td>",
+        "rst_description": "*Optional*. Service message: chat was joined by a user from a :class:`aiogram.types.community.Community`\n",
+        "name": "community_chat_joined",
         "required": false
       },
       {

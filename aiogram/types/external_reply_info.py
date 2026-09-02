@@ -41,9 +41,9 @@ class ExternalReplyInfo(TelegramObject):
     origin: MessageOriginUnion
     """Origin of the message replied to by the given message"""
     chat: Chat | None = None
-    """*Optional*. Chat the original message belongs to. Available only if the chat is a supergroup or a channel."""
+    """*Optional*. Chat the original message belongs to. Available only if the chat is a supergroup or a channel"""
     message_id: int | None = None
-    """*Optional*. Unique message identifier inside the original chat. Available only if the original chat is a supergroup or a channel."""
+    """*Optional*. Unique message identifier inside the original chat. Available only if the original chat is a supergroup or a channel"""
     link_preview_options: LinkPreviewOptions | None = None
     """*Optional*. Options used for link preview generation for the original message, if it is a text message"""
     animation: Animation | None = None

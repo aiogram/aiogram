@@ -1,0 +1,41 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Rich messages",
+    "anchor": "rich-messages"
+  },
+  "object": {
+    "anchor": "richtextmention",
+    "name": "RichTextMention",
+    "description": "A mention by a username.",
+    "html_description": "<p>A mention by a username.</p>",
+    "rst_description": "A mention by a username.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Type of the rich text, always 'mention'",
+        "html_description": "<td>Type of the rich text, always &#8220;mention&#8221;</td>",
+        "rst_description": "Type of the rich text, always 'mention'\n",
+        "name": "type",
+        "required": true
+      },
+      {
+        "type": "RichText",
+        "description": "The text",
+        "html_description": "<td>The text</td>",
+        "rst_description": "The text\n",
+        "name": "text",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "The username",
+        "html_description": "<td>The username</td>",
+        "rst_description": "The username\n",
+        "name": "username",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

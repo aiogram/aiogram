@@ -17,7 +17,7 @@ class GetChatMenuButton(TelegramMethod[ResultMenuButtonUnion]):
     __api_method__ = "getChatMenuButton"
 
     chat_id: int | None = None
-    """Unique identifier for the target private chat. If not specified, default bot's menu button will be returned"""
+    """Unique identifier for the target private chat. If not specified, the bot's default menu button will be returned"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!

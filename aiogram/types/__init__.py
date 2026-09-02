@@ -75,6 +75,7 @@ from .checklist_task import ChecklistTask
 from .checklist_tasks_added import ChecklistTasksAdded
 from .checklist_tasks_done import ChecklistTasksDone
 from .chosen_inline_result import ChosenInlineResult
+from .community_chat_joined import CommunityChatJoined
 from .contact import Contact
 from .copy_text_button import CopyTextButton
 from .custom import DateTime
@@ -82,10 +83,12 @@ from .date_time_union import DateTimeUnion
 from .dice import Dice
 from .direct_message_price_changed import DirectMessagePriceChanged
 from .direct_messages_topic import DirectMessagesTopic
+from .disabled_button import DisabledButton
 from .document import Document
 from .downloadable import Downloadable
 from .encrypted_credentials import EncryptedCredentials
 from .encrypted_passport_element import EncryptedPassportElement
+from .ephemeral_message_parameters import EphemeralMessageParameters
 from .error_event import ErrorEvent
 from .external_reply_info import ExternalReplyInfo
 from .file import File
@@ -160,6 +163,9 @@ from .input_profile_photo import InputProfilePhoto
 from .input_profile_photo_animated import InputProfilePhotoAnimated
 from .input_profile_photo_static import InputProfilePhotoStatic
 from .input_profile_photo_union import InputProfilePhotoUnion
+from .input_rich_block_buttons import InputRichBlockButtons
+from .input_rich_block_document import InputRichBlockDocument
+from .input_rich_block_expandable_block_quotation import InputRichBlockExpandableBlockQuotation
 from .input_sticker import InputSticker
 from .input_story_content import InputStoryContent
 from .input_story_content_photo import InputStoryContentPhoto
@@ -190,6 +196,7 @@ from .menu_button_web_app import MenuButtonWebApp
 from .message import ContentType, Message
 from .message_auto_delete_timer_changed import MessageAutoDeleteTimerChanged
 from .message_entity import MessageEntity
+from .message_generation_stopped import MessageGenerationStopped
 from .message_id import MessageId
 from .message_origin import MessageOrigin
 from .message_origin_channel import MessageOriginChannel
@@ -254,6 +261,11 @@ from .revenue_withdrawal_state_failed import RevenueWithdrawalStateFailed
 from .revenue_withdrawal_state_pending import RevenueWithdrawalStatePending
 from .revenue_withdrawal_state_succeeded import RevenueWithdrawalStateSucceeded
 from .revenue_withdrawal_state_union import RevenueWithdrawalStateUnion
+from .rich_block_buttons import RichBlockButtons
+from .rich_block_document import RichBlockDocument
+from .rich_block_expandable_block_quotation import RichBlockExpandableBlockQuotation
+from .rich_message_button import RichMessageButton
+from .rich_text_button import RichTextButton
 from .sent_web_app_message import SentWebAppMessage
 from .shared_user import SharedUser
 from .shipping_address import ShippingAddress
@@ -352,6 +364,7 @@ __all__ = (
     "BotDescription",
     "BotName",
     "BotShortDescription",
+    "BotSubscriptionUpdated",
     "BufferedInputFile",
     "BusinessBotRights",
     "BusinessConnection",
@@ -398,6 +411,10 @@ __all__ = (
     "ChecklistTasksAdded",
     "ChecklistTasksDone",
     "ChosenInlineResult",
+    "Community",
+    "CommunityChatAdded",
+    "CommunityChatJoined",
+    "CommunityChatRemoved",
     "Contact",
     "ContentType",
     "CopyTextButton",
@@ -406,10 +423,12 @@ __all__ = (
     "Dice",
     "DirectMessagePriceChanged",
     "DirectMessagesTopic",
+    "DisabledButton",
     "Document",
     "Downloadable",
     "EncryptedCredentials",
     "EncryptedPassportElement",
+    "EphemeralMessageParameters",
     "ErrorEvent",
     "ExternalReplyInfo",
     "FSInputFile",
@@ -470,6 +489,7 @@ __all__ = (
     "InputMediaAnimation",
     "InputMediaAudio",
     "InputMediaDocument",
+    "InputMediaLink",
     "InputMediaLivePhoto",
     "InputMediaLocation",
     "InputMediaPhoto",
@@ -477,6 +497,7 @@ __all__ = (
     "InputMediaUnion",
     "InputMediaVenue",
     "InputMediaVideo",
+    "InputMediaVoiceNote",
     "InputMessageContent",
     "InputMessageContentUnion",
     "InputPaidMedia",
@@ -494,6 +515,37 @@ __all__ = (
     "InputProfilePhotoAnimated",
     "InputProfilePhotoStatic",
     "InputProfilePhotoUnion",
+    "InputRichBlock",
+    "InputRichBlockAnchor",
+    "InputRichBlockAnimation",
+    "InputRichBlockAudio",
+    "InputRichBlockBlockQuotation",
+    "InputRichBlockButtons",
+    "InputRichBlockCollage",
+    "InputRichBlockDetails",
+    "InputRichBlockDivider",
+    "InputRichBlockDocument",
+    "InputRichBlockExpandableBlockQuotation",
+    "InputRichBlockFooter",
+    "InputRichBlockList",
+    "InputRichBlockListItem",
+    "InputRichBlockMap",
+    "InputRichBlockMathematicalExpression",
+    "InputRichBlockParagraph",
+    "InputRichBlockPhoto",
+    "InputRichBlockPreformatted",
+    "InputRichBlockPullQuotation",
+    "InputRichBlockSectionHeading",
+    "InputRichBlockSlideshow",
+    "InputRichBlockTable",
+    "InputRichBlockThinking",
+    "InputRichBlockUnion",
+    "InputRichBlockVideo",
+    "InputRichBlockVoiceNote",
+    "InputRichMessage",
+    "InputRichMessageContent",
+    "InputRichMessageMedia",
+    "InputRichMessageMediaUnion",
     "InputSticker",
     "InputStoryContent",
     "InputStoryContentPhoto",
@@ -509,6 +561,7 @@ __all__ = (
     "KeyboardButtonRequestUser",
     "KeyboardButtonRequestUsers",
     "LabeledPrice",
+    "Link",
     "LinkPreviewOptions",
     "LivePhoto",
     "Location",
@@ -528,6 +581,7 @@ __all__ = (
     "Message",
     "MessageAutoDeleteTimerChanged",
     "MessageEntity",
+    "MessageGenerationStopped",
     "MessageId",
     "MessageOrigin",
     "MessageOriginChannel",
@@ -595,6 +649,65 @@ __all__ = (
     "RevenueWithdrawalStatePending",
     "RevenueWithdrawalStateSucceeded",
     "RevenueWithdrawalStateUnion",
+    "RichBlock",
+    "RichBlockAnchor",
+    "RichBlockAnimation",
+    "RichBlockAudio",
+    "RichBlockBlockQuotation",
+    "RichBlockButtons",
+    "RichBlockCaption",
+    "RichBlockCollage",
+    "RichBlockDetails",
+    "RichBlockDivider",
+    "RichBlockDocument",
+    "RichBlockExpandableBlockQuotation",
+    "RichBlockFooter",
+    "RichBlockList",
+    "RichBlockListItem",
+    "RichBlockMap",
+    "RichBlockMathematicalExpression",
+    "RichBlockParagraph",
+    "RichBlockPhoto",
+    "RichBlockPreformatted",
+    "RichBlockPullQuotation",
+    "RichBlockSectionHeading",
+    "RichBlockSlideshow",
+    "RichBlockTable",
+    "RichBlockTableCell",
+    "RichBlockThinking",
+    "RichBlockUnion",
+    "RichBlockVideo",
+    "RichBlockVoiceNote",
+    "RichMessage",
+    "RichMessageButton",
+    "RichText",
+    "RichTextAnchor",
+    "RichTextAnchorLink",
+    "RichTextBankCardNumber",
+    "RichTextBold",
+    "RichTextBotCommand",
+    "RichTextButton",
+    "RichTextCashtag",
+    "RichTextCode",
+    "RichTextCustomEmoji",
+    "RichTextDateTime",
+    "RichTextEmailAddress",
+    "RichTextHashtag",
+    "RichTextItalic",
+    "RichTextMarked",
+    "RichTextMathematicalExpression",
+    "RichTextMention",
+    "RichTextPhoneNumber",
+    "RichTextReference",
+    "RichTextReferenceLink",
+    "RichTextSpoiler",
+    "RichTextStrikethrough",
+    "RichTextSubscript",
+    "RichTextSuperscript",
+    "RichTextTextMention",
+    "RichTextUnderline",
+    "RichTextUnion",
+    "RichTextUrl",
     "SentGuestMessage",
     "SentWebAppMessage",
     "SharedUser",
@@ -671,18 +784,53 @@ __all__ = (
 
 from ..client.default import Default as _Default
 from .bot_access_settings import BotAccessSettings
+from .bot_subscription_updated import BotSubscriptionUpdated
 from .chat_owner_changed import ChatOwnerChanged
 from .chat_owner_left import ChatOwnerLeft
+from .community import Community
+from .community_chat_added import CommunityChatAdded
+from .community_chat_removed import CommunityChatRemoved
+from .input_media_link import InputMediaLink
 from .input_media_live_photo import InputMediaLivePhoto
 from .input_media_location import InputMediaLocation
 from .input_media_sticker import InputMediaSticker
 from .input_media_venue import InputMediaVenue
+from .input_media_voice_note import InputMediaVoiceNote
 from .input_paid_media_live_photo import InputPaidMediaLivePhoto
 from .input_poll_media import InputPollMedia
 from .input_poll_media_union import InputPollMediaUnion
 from .input_poll_option_media import InputPollOptionMedia
 from .input_poll_option_media_union import InputPollOptionMediaUnion
+from .input_rich_block import InputRichBlock
+from .input_rich_block_anchor import InputRichBlockAnchor
+from .input_rich_block_animation import InputRichBlockAnimation
+from .input_rich_block_audio import InputRichBlockAudio
+from .input_rich_block_block_quotation import InputRichBlockBlockQuotation
+from .input_rich_block_collage import InputRichBlockCollage
+from .input_rich_block_details import InputRichBlockDetails
+from .input_rich_block_divider import InputRichBlockDivider
+from .input_rich_block_footer import InputRichBlockFooter
+from .input_rich_block_list import InputRichBlockList
+from .input_rich_block_list_item import InputRichBlockListItem
+from .input_rich_block_map import InputRichBlockMap
+from .input_rich_block_mathematical_expression import InputRichBlockMathematicalExpression
+from .input_rich_block_paragraph import InputRichBlockParagraph
+from .input_rich_block_photo import InputRichBlockPhoto
+from .input_rich_block_preformatted import InputRichBlockPreformatted
+from .input_rich_block_pull_quotation import InputRichBlockPullQuotation
+from .input_rich_block_section_heading import InputRichBlockSectionHeading
+from .input_rich_block_slideshow import InputRichBlockSlideshow
+from .input_rich_block_table import InputRichBlockTable
+from .input_rich_block_thinking import InputRichBlockThinking
+from .input_rich_block_union import InputRichBlockUnion
+from .input_rich_block_video import InputRichBlockVideo
+from .input_rich_block_voice_note import InputRichBlockVoiceNote
+from .input_rich_message import InputRichMessage
+from .input_rich_message_content import InputRichMessageContent
+from .input_rich_message_media import InputRichMessageMedia
+from .input_rich_message_media_union import InputRichMessageMediaUnion
 from .keyboard_button_request_managed_bot import KeyboardButtonRequestManagedBot
+from .link import Link
 from .live_photo import LivePhoto
 from .managed_bot_created import ManagedBotCreated
 from .managed_bot_updated import ManagedBotUpdated
@@ -691,25 +839,79 @@ from .poll_media import PollMedia
 from .poll_option_added import PollOptionAdded
 from .poll_option_deleted import PollOptionDeleted
 from .prepared_keyboard_button import PreparedKeyboardButton
+from .rich_block import RichBlock
+from .rich_block_anchor import RichBlockAnchor
+from .rich_block_animation import RichBlockAnimation
+from .rich_block_audio import RichBlockAudio
+from .rich_block_block_quotation import RichBlockBlockQuotation
+from .rich_block_caption import RichBlockCaption
+from .rich_block_collage import RichBlockCollage
+from .rich_block_details import RichBlockDetails
+from .rich_block_divider import RichBlockDivider
+from .rich_block_footer import RichBlockFooter
+from .rich_block_list import RichBlockList
+from .rich_block_list_item import RichBlockListItem
+from .rich_block_map import RichBlockMap
+from .rich_block_mathematical_expression import RichBlockMathematicalExpression
+from .rich_block_paragraph import RichBlockParagraph
+from .rich_block_photo import RichBlockPhoto
+from .rich_block_preformatted import RichBlockPreformatted
+from .rich_block_pull_quotation import RichBlockPullQuotation
+from .rich_block_section_heading import RichBlockSectionHeading
+from .rich_block_slideshow import RichBlockSlideshow
+from .rich_block_table import RichBlockTable
+from .rich_block_table_cell import RichBlockTableCell
+from .rich_block_thinking import RichBlockThinking
+from .rich_block_union import RichBlockUnion
+from .rich_block_video import RichBlockVideo
+from .rich_block_voice_note import RichBlockVoiceNote
+from .rich_message import RichMessage
+from .rich_text import RichText
+from .rich_text_anchor import RichTextAnchor
+from .rich_text_anchor_link import RichTextAnchorLink
+from .rich_text_bank_card_number import RichTextBankCardNumber
+from .rich_text_bold import RichTextBold
+from .rich_text_bot_command import RichTextBotCommand
+from .rich_text_cashtag import RichTextCashtag
+from .rich_text_code import RichTextCode
+from .rich_text_custom_emoji import RichTextCustomEmoji
+from .rich_text_date_time import RichTextDateTime
+from .rich_text_email_address import RichTextEmailAddress
+from .rich_text_hashtag import RichTextHashtag
+from .rich_text_italic import RichTextItalic
+from .rich_text_marked import RichTextMarked
+from .rich_text_mathematical_expression import RichTextMathematicalExpression
+from .rich_text_mention import RichTextMention
+from .rich_text_phone_number import RichTextPhoneNumber
+from .rich_text_reference import RichTextReference
+from .rich_text_reference_link import RichTextReferenceLink
+from .rich_text_spoiler import RichTextSpoiler
+from .rich_text_strikethrough import RichTextStrikethrough
+from .rich_text_subscript import RichTextSubscript
+from .rich_text_superscript import RichTextSuperscript
+from .rich_text_text_mention import RichTextTextMention
+from .rich_text_underline import RichTextUnderline
+from .rich_text_union import RichTextUnion
+from .rich_text_url import RichTextUrl
 from .sent_guest_message import SentGuestMessage
 from .user_profile_audios import UserProfileAudios
 from .video_quality import VideoQuality
 
 # Load typing forward refs for every TelegramObject
+_types_namespace = {
+    "List": list,
+    "Optional": Optional,
+    "Union": Union,
+    "Literal": Literal,
+    "Default": _Default,
+    **{name: globals()[name] for name in __all__},
+}
+
 for _entity_name in __all__:
     _entity = globals()[_entity_name]
-    if not hasattr(_entity, "model_rebuild"):
-        continue
-    _entity.model_rebuild(
-        _types_namespace={
-            "List": list,
-            "Optional": Optional,
-            "Union": Union,
-            "Literal": Literal,
-            "Default": _Default,
-            **{k: v for k, v in globals().items() if k in __all__},
-        }
-    )
+    if hasattr(_entity, "model_rebuild"):
+        _entity.model_rebuild(_types_namespace=_types_namespace)
 
 del _entity
 del _entity_name
+del _types_namespace

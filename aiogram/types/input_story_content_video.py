@@ -21,7 +21,7 @@ class InputStoryContentVideo(InputStoryContent):
     duration: float | None = None
     """*Optional*. Precise duration of the video in seconds; 0-60"""
     cover_frame_timestamp: float | None = None
-    """*Optional*. Timestamp in seconds of the frame that will be used as the static cover for the story. Defaults to 0.0."""
+    """*Optional*. Timestamp in seconds of the frame that will be used as the static cover for the story. Defaults to 0.0"""
     is_animation: bool | None = None
     """*Optional*. Pass :code:`True` if the video has no sound"""
 

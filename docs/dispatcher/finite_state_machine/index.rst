@@ -102,7 +102,7 @@ To do this, you can use the ``get_context`` method of the FSM middleware through
     @example_router.message(Command("example"))
     async def command_example(message: Message, dispatcher: Dispatcher, bot: Bot):
         user_id = ...  # Get the user ID in the way that you need
-        state = await dispatcher.fsm.get_context(
+        state = dispatcher.fsm.get_context(
             bot=bot,
             chat_id=user_id,
             user_id=user_id,

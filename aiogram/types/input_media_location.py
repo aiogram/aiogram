@@ -13,7 +13,7 @@ class InputMediaLocation(InputPollMedia, InputPollOptionMedia):
     """
 
     type: Literal[InputMediaType.LOCATION] = InputMediaType.LOCATION
-    """Type of the result, must be *location*"""
+    """Type of the media, must be *location*"""
     latitude: float
     """Latitude of the location"""
     longitude: float

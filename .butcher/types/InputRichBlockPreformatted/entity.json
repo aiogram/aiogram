@@ -1,0 +1,41 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Rich messages",
+    "anchor": "rich-messages"
+  },
+  "object": {
+    "anchor": "inputrichblockpreformatted",
+    "name": "InputRichBlockPreformatted",
+    "description": "A preformatted text block, corresponding to the nested HTML tags <pre> and <code>.",
+    "html_description": "<p>A preformatted text block, corresponding to the nested HTML tags <code>&lt;pre&gt;</code> and <code>&lt;code&gt;</code>.</p>",
+    "rst_description": "A preformatted text block, corresponding to the nested HTML tags :code:`<pre>` and :code:`<code>`.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Type of the block, always 'pre'",
+        "html_description": "<td>Type of the block, always &#8220;pre&#8221;</td>",
+        "rst_description": "Type of the block, always 'pre'\n",
+        "name": "type",
+        "required": true
+      },
+      {
+        "type": "RichText",
+        "description": "Text of the block",
+        "html_description": "<td>Text of the block</td>",
+        "rst_description": "Text of the block\n",
+        "name": "text",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "The programming language of the text",
+        "html_description": "<td><em>Optional</em>. The programming language of the text</td>",
+        "rst_description": "*Optional*. The programming language of the text\n",
+        "name": "language",
+        "required": false
+      }
+    ],
+    "category": "types"
+  }
+}

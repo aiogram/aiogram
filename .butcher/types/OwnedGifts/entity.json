@@ -29,9 +29,9 @@
       },
       {
         "type": "String",
-        "description": "Offset for the next request. If empty, then there are no more results",
-        "html_description": "<td><em>Optional</em>. Offset for the next request. If empty, then there are no more results</td>",
-        "rst_description": "*Optional*. Offset for the next request. If empty, then there are no more results\n",
+        "description": "Offset for the next request. If empty, then there are no more results.",
+        "html_description": "<td><em>Optional</em>. Offset for the next request. If empty, then there are no more results.</td>",
+        "rst_description": "*Optional*. Offset for the next request. If empty, then there are no more results.\n",
         "name": "next_offset",
         "required": false
       }

@@ -1,0 +1,41 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Rich messages",
+    "anchor": "rich-messages"
+  },
+  "object": {
+    "anchor": "richtextanchorlink",
+    "name": "RichTextAnchorLink",
+    "description": "A link to an anchor.",
+    "html_description": "<p>A link to an anchor.</p>",
+    "rst_description": "A link to an anchor.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Type of the rich text, always 'anchor_link'",
+        "html_description": "<td>Type of the rich text, always &#8220;anchor_link&#8221;</td>",
+        "rst_description": "Type of the rich text, always 'anchor_link'\n",
+        "name": "type",
+        "required": true
+      },
+      {
+        "type": "RichText",
+        "description": "The link text",
+        "html_description": "<td>The link text</td>",
+        "rst_description": "The link text\n",
+        "name": "text",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "The name of the anchor. If the name is empty, then the link brings back to the top of the message.",
+        "html_description": "<td>The name of the anchor. If the name is empty, then the link brings back to the top of the message.</td>",
+        "rst_description": "The name of the anchor. If the name is empty, then the link brings back to the top of the message.\n",
+        "name": "anchor_name",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

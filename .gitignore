@@ -22,3 +22,6 @@ reports
 
 dev/
 .venv/
+
+# graphify — generated knowledge graph output (caches, embeddings, rendered graph)
+graphify-out/

@@ -1,6 +1,8 @@
 from __future__ import annotations
 
-from typing import TypeAlias
+from typing import Annotated, TypeAlias
+
+from pydantic import Field
 
 from .transaction_partner_affiliate_program import TransactionPartnerAffiliateProgram
 from .transaction_partner_chat import TransactionPartnerChat
@@ -10,12 +12,13 @@ from .transaction_partner_telegram_ads import TransactionPartnerTelegramAds
 from .transaction_partner_telegram_api import TransactionPartnerTelegramApi
 from .transaction_partner_user import TransactionPartnerUser
 
-TransactionPartnerUnion: TypeAlias = (
+TransactionPartnerUnion: TypeAlias = Annotated[
     TransactionPartnerUser
     | TransactionPartnerChat
     | TransactionPartnerAffiliateProgram
     | TransactionPartnerFragment
     | TransactionPartnerTelegramAds
     | TransactionPartnerTelegramApi
-    | TransactionPartnerOther
-)
+    | TransactionPartnerOther,
+    Field(discriminator="type"),
+]

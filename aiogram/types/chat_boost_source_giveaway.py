@@ -19,7 +19,7 @@ class ChatBoostSourceGiveaway(ChatBoostSource):
     source: Literal[ChatBoostSourceType.GIVEAWAY] = ChatBoostSourceType.GIVEAWAY
     """Source of the boost, always 'giveaway'"""
     giveaway_message_id: int
-    """Identifier of a message in the chat with the giveaway; the message could have been deleted already. May be 0 if the message isn't sent yet."""
+    """Identifier of a message in the chat with the giveaway; the message could have been deleted already. May be 0 if the message isn't sent yet"""
     user: User | None = None
     """*Optional*. User that won the prize in the giveaway if any; for Telegram Premium giveaways only"""
     prize_star_count: int | None = None

@@ -12,6 +12,14 @@
     "rst_description": "Describes a service message about the approval of a suggested post.",
     "annotations": [
       {
+        "type": "Integer",
+        "description": "Date when the post will be published",
+        "html_description": "<td>Date when the post will be published</td>",
+        "rst_description": "Date when the post will be published\n",
+        "name": "send_date",
+        "required": true
+      },
+      {
         "type": "Message",
         "description": "Message containing the suggested post. Note that the Message object in this field will not contain the reply_to_message field even if it itself is a reply.",
         "html_description": "<td><em>Optional</em>. Message containing the suggested post. Note that the <a href=\"#message\">Message</a> object in this field will not contain the <em>reply_to_message</em> field even if it itself is a reply.</td>",
@@ -26,14 +34,6 @@
         "rst_description": "*Optional*. Amount paid for the post\n",
         "name": "price",
         "required": false
-      },
-      {
-        "type": "Integer",
-        "description": "Date when the post will be published",
-        "html_description": "<td>Date when the post will be published</td>",
-        "rst_description": "Date when the post will be published\n",
-        "name": "send_date",
-        "required": true
       }
     ],
     "category": "types"

@@ -29,9 +29,9 @@
       },
       {
         "type": "String",
-        "description": "Unique name of the gift. This name can be used in https://t.me/nft/... links and story areas",
-        "html_description": "<td>Unique name of the gift. This name can be used in <code>https://t.me/nft/...</code> links and story areas</td>",
-        "rst_description": "Unique name of the gift. This name can be used in :code:`https://t.me/nft/...` links and story areas\n",
+        "description": "Unique name of the gift. This name can be used in https://t.me/nft/... links and story areas.",
+        "html_description": "<td>Unique name of the gift. This name can be used in <code>https://t.me/nft/...</code> links and story areas.</td>",
+        "rst_description": "Unique name of the gift. This name can be used in :code:`https://t.me/nft/...` links and story areas.\n",
         "name": "name",
         "required": true
       },

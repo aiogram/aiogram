@@ -1,0 +1,33 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Rich messages",
+    "anchor": "rich-messages"
+  },
+  "object": {
+    "anchor": "richblockanchor",
+    "name": "RichBlockAnchor",
+    "description": "A block with an anchor, corresponding to the HTML tag <a> with the attribute name.",
+    "html_description": "<p>A block with an anchor, corresponding to the HTML tag <code>&lt;a&gt;</code> with the attribute <code>name</code>.</p>",
+    "rst_description": "A block with an anchor, corresponding to the HTML tag :code:`<a>` with the attribute :code:`name`.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Type of the block, always 'anchor'",
+        "html_description": "<td>Type of the block, always &#8220;anchor&#8221;</td>",
+        "rst_description": "Type of the block, always 'anchor'\n",
+        "name": "type",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "The name of the anchor",
+        "html_description": "<td>The name of the anchor</td>",
+        "rst_description": "The name of the anchor\n",
+        "name": "name",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

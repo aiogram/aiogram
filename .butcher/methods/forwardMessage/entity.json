@@ -20,6 +20,22 @@
         "name": "chat_id"
       },
       {
+        "type": "Integer or String",
+        "required": true,
+        "description": "Unique identifier for the chat where the original message was sent (or username of the target bot, supergroup or channel in the format @username)",
+        "html_description": "<td>Unique identifier for the chat where the original message was sent (or username of the target bot, supergroup or channel in the format <code>@username</code>)</td>",
+        "rst_description": "Unique identifier for the chat where the original message was sent (or username of the target bot, supergroup or channel in the format :code:`@username`)\n",
+        "name": "from_chat_id"
+      },
+      {
+        "type": "Integer",
+        "required": true,
+        "description": "Message identifier in the chat specified in from_chat_id",
+        "html_description": "<td>Message identifier in the chat specified in <em>from_chat_id</em></td>",
+        "rst_description": "Message identifier in the chat specified in *from_chat_id*\n",
+        "name": "message_id"
+      },
+      {
         "type": "Integer",
         "required": false,
         "description": "Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only",
@@ -34,14 +50,6 @@
         "html_description": "<td>Identifier of the direct messages topic to which the message will be forwarded; required if the message is forwarded to a direct messages chat</td>",
         "rst_description": "Identifier of the direct messages topic to which the message will be forwarded; required if the message is forwarded to a direct messages chat\n",
         "name": "direct_messages_topic_id"
-      },
-      {
-        "type": "Integer or String",
-        "required": true,
-        "description": "Unique identifier for the chat where the original message was sent (or username of the target bot, supergroup or channel in the format @username)",
-        "html_description": "<td>Unique identifier for the chat where the original message was sent (or username of the target bot, supergroup or channel in the format <code>@username</code>)</td>",
-        "rst_description": "Unique identifier for the chat where the original message was sent (or username of the target bot, supergroup or channel in the format :code:`@username`)\n",
-        "name": "from_chat_id"
       },
       {
         "type": "Integer",
@@ -82,14 +90,6 @@
         "html_description": "<td>A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only</td>",
         "rst_description": "A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only\n",
         "name": "suggested_post_parameters"
-      },
-      {
-        "type": "Integer",
-        "required": true,
-        "description": "Message identifier in the chat specified in from_chat_id",
-        "html_description": "<td>Message identifier in the chat specified in <em>from_chat_id</em></td>",
-        "rst_description": "Message identifier in the chat specified in *from_chat_id*\n",
-        "name": "message_id"
       }
     ],
     "category": "methods"

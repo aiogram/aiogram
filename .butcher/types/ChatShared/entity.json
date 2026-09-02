@@ -29,17 +29,17 @@
       },
       {
         "type": "String",
-        "description": "Title of the chat, if the title was requested by the bot.",
-        "html_description": "<td><em>Optional</em>. Title of the chat, if the title was requested by the bot.</td>",
-        "rst_description": "*Optional*. Title of the chat, if the title was requested by the bot.\n",
+        "description": "Title of the chat, if the title was requested by the bot",
+        "html_description": "<td><em>Optional</em>. Title of the chat, if the title was requested by the bot</td>",
+        "rst_description": "*Optional*. Title of the chat, if the title was requested by the bot\n",
         "name": "title",
         "required": false
       },
       {
         "type": "String",
-        "description": "Username of the chat, if the username was requested by the bot and available.",
-        "html_description": "<td><em>Optional</em>. Username of the chat, if the username was requested by the bot and available.</td>",
-        "rst_description": "*Optional*. Username of the chat, if the username was requested by the bot and available.\n",
+        "description": "Username of the chat, if the username was requested by the bot and available",
+        "html_description": "<td><em>Optional</em>. Username of the chat, if the username was requested by the bot and available</td>",
+        "rst_description": "*Optional*. Username of the chat, if the username was requested by the bot and available\n",
         "name": "username",
         "required": false
       },

@@ -1,0 +1,25 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "link",
+    "name": "Link",
+    "description": "Represents an HTTP link.",
+    "html_description": "<p>Represents an HTTP link.</p>",
+    "rst_description": "Represents an HTTP link.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "URL of the link",
+        "html_description": "<td>URL of the link</td>",
+        "rst_description": "URL of the link\n",
+        "name": "url",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

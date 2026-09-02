@@ -17,7 +17,7 @@ class GetMyCommands(TelegramMethod[list[BotCommand]]):
     __api_method__ = "getMyCommands"
 
     scope: BotCommandScopeUnion | None = None
-    """A JSON-serialized object, describing scope of users. Defaults to :class:`aiogram.types.bot_command_scope_default.BotCommandScopeDefault`."""
+    """A JSON-serialized object, describing scope of users. Defaults to :class:`aiogram.types.bot_command_scope_default.BotCommandScopeDefault`"""
     language_code: str | None = None
     """A two-letter ISO 639-1 language code or an empty string"""
 

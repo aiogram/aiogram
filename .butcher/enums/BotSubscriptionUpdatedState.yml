@@ -1,0 +1,11 @@
+name: BotSubscriptionUpdatedState
+description: |
+  This object contains information about changes to a user payment subscription toward the current bot.
+
+  Source: https://core.telegram.org/bots/api#botsubscriptionupdated
+parse:
+  format: rst
+  entity: BotSubscriptionUpdated
+  category: types
+  attribute: state
+  regexp: "'([a-z_]+)'"

@@ -21,9 +21,9 @@ class Sticker(TelegramObject):
     file_id: str
     """Identifier for this file, which can be used to download or reuse the file"""
     file_unique_id: str
-    """Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file."""
+    """Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file"""
     type: str
-    """Type of the sticker, currently one of 'regular', 'mask', 'custom_emoji'. The type of the sticker is independent from its format, which is determined by the fields *is_animated* and *is_video*."""
+    """Type of the sticker, currently one of 'regular', 'mask', 'custom_emoji'. The type of the sticker is independent from its format, which is determined by the fields *is_animated* and *is_video*"""
     width: int
     """Sticker width"""
     height: int

@@ -1,0 +1,41 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Rich messages",
+    "anchor": "rich-messages"
+  },
+  "object": {
+    "anchor": "richblockcollage",
+    "name": "RichBlockCollage",
+    "description": "A collage, corresponding to the custom HTML tag <tg-collage>.",
+    "html_description": "<p>A collage, corresponding to the custom HTML tag <code>&lt;tg-collage&gt;</code>.</p>",
+    "rst_description": "A collage, corresponding to the custom HTML tag :code:`<tg-collage>`.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Type of the block, always 'collage'",
+        "html_description": "<td>Type of the block, always &#8220;collage&#8221;</td>",
+        "rst_description": "Type of the block, always 'collage'\n",
+        "name": "type",
+        "required": true
+      },
+      {
+        "type": "Array of RichBlock",
+        "description": "Elements of the collage",
+        "html_description": "<td>Elements of the collage</td>",
+        "rst_description": "Elements of the collage\n",
+        "name": "blocks",
+        "required": true
+      },
+      {
+        "type": "RichBlockCaption",
+        "description": "Caption of the block",
+        "html_description": "<td><em>Optional</em>. Caption of the block</td>",
+        "rst_description": "*Optional*. Caption of the block\n",
+        "name": "caption",
+        "required": false
+      }
+    ],
+    "category": "types"
+  }
+}

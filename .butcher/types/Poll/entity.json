@@ -28,14 +28,6 @@
         "required": true
       },
       {
-        "type": "Array of MessageEntity",
-        "description": "Special entities that appear in the question. Currently, only custom emoji entities are allowed in poll questions",
-        "html_description": "<td><em>Optional</em>. Special entities that appear in the <em>question</em>. Currently, only custom emoji entities are allowed in poll questions</td>",
-        "rst_description": "*Optional*. Special entities that appear in the *question*. Currently, only custom emoji entities are allowed in poll questions\n",
-        "name": "question_entities",
-        "required": false
-      },
-      {
         "type": "Array of PollOption",
         "description": "List of poll options",
         "html_description": "<td>List of poll options</td>",
@@ -100,10 +92,18 @@
         "required": true
       },
       {
+        "type": "Array of MessageEntity",
+        "description": "Special entities that appear in the question. Currently, only custom emoji entities are allowed in poll questions",
+        "html_description": "<td><em>Optional</em>. Special entities that appear in the <em>question</em>. Currently, only custom emoji entities are allowed in poll questions</td>",
+        "rst_description": "*Optional*. Special entities that appear in the *question*. Currently, only custom emoji entities are allowed in poll questions\n",
+        "name": "question_entities",
+        "required": false
+      },
+      {
         "type": "Array of String",
-        "description": "A list of two-letter ISO 3166-1 alpha-2 country codes indicating the countries from which users can vote in the poll. If omitted, then users from any country can participate in the poll.",
-        "html_description": "<td><em>Optional</em>. A list of two-letter <a href=\"https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2\">ISO 3166-1 alpha-2</a> country codes indicating the countries from which users can vote in the poll. If omitted, then users from any country can participate in the poll.</td>",
-        "rst_description": "*Optional*. A list of two-letter `ISO 3166-1 alpha-2 <https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2>`_ country codes indicating the countries from which users can vote in the poll. If omitted, then users from any country can participate in the poll.\n",
+        "description": "A list of two-letter ISO 3166-1 alpha-2 country codes indicating the countries from which users can vote in the poll. The country code 'FT' is used for users with anonymous numbers. If omitted, then users from any country can participate in the poll.",
+        "html_description": "<td><em>Optional</em>. A list of two-letter <a href=\"https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2\">ISO 3166-1 alpha-2</a> country codes indicating the countries from which users can vote in the poll. The country code &#8220;FT&#8221; is used for users with anonymous numbers. If omitted, then users from any country can participate in the poll.</td>",
+        "rst_description": "*Optional*. A list of two-letter `ISO 3166-1 alpha-2 <https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2>`_ country codes indicating the countries from which users can vote in the poll. The country code 'FT' is used for users with anonymous numbers. If omitted, then users from any country can participate in the poll.\n",
         "name": "country_codes",
         "required": false
       },
