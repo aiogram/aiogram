@@ -85,6 +85,7 @@ a singular string, a plural string, and a value.
 
 .. code-block:: python
     :emphasize-lines: 6, 10
+
     from aiogram import html
     from aiogram.utils.i18n import gettext as _
 
@@ -94,9 +95,81 @@ a singular string, a plural string, and a value.
         except ValueError:
             n = 1
         await message.answer(
-            _("You ordered {n} piece.", "You ordered {n} pieces.",n).format(n)
-            )
+            _("You ordered {n} piece.", "You ordered {n} pieces.", n).format(n=n)
         )
+
+**Working with message context**
+
+Sometimes the same source string has to be translated differently depending on where it is used.
+For example the English word :code:`Open` is a verb on a button (*"open this"*) but an adjective in
+an order status (*"the order is open"*) - and in most languages these are two different words,
+while for gettext they are the same :code:`msgid`.
+
+gettext solves that with a *message context* (:code:`msgctxt`) - an additional short string
+that is stored next to the message id and makes the translation unit unique.
+
+In aiogram the context is passed via the :code:`pgettext` helper (or via the
+:code:`context` argument of :class:`aiogram.utils.i18n.I18n` methods):
+
+.. code-block:: python
+    :emphasize-lines: 3, 6
+
+    from aiogram.utils.i18n import gettext as _, pgettext
+
+    InlineKeyboardButton(text=pgettext("button", "Open"), callback_data="open")
+
+    await message.answer(
+        _("Status: {status}").format(status=pgettext("order status", "Open"))
+    )
+
+The context is **not** shown to the user, it only tells translators which of the meanings
+they are translating.
+
+As with the regular :code:`gettext`, when the language is not known at the moment of the call
+(for example in keyword- or magic- filters) the lazy variant should be used:
+
+.. code-block:: python
+    :emphasize-lines: 4
+
+    from aiogram import F
+    from aiogram.utils.i18n import lazy_pgettext
+
+    @router.message(F.text == lazy_pgettext("button", "Cancel"))
+    ...
+
+Plural forms can be combined with the context too - use :code:`npgettext`
+(an alias of :code:`pgettext`) and pass singular, plural and the number after the context:
+
+.. code-block:: python
+    :emphasize-lines: 5
+
+    from aiogram.utils.i18n import npgettext
+
+    async def my_handler(message: Message, n: int) -> None:
+        await message.answer(
+            npgettext("cart", "{n} item", "{n} items", n).format(n=n)
+        )
+
+.. warning::
+
+    Always spell plural calls as :code:`npgettext` / :code:`lazy_npgettext`, even though at runtime
+    they are the same functions as :code:`pgettext` / :code:`lazy_pgettext`. The Babel extractor
+    decides how many arguments to read by the name used at the call site, so a plural call written as
+    :code:`pgettext("cart", "{n} item", "{n} items", n)` is extracted without its plural form and
+    translators never see it.
+
+Contextualized messages are stored in the :code:`.po` file with the :code:`msgctxt` line,
+so the very same :code:`msgid` can be translated more than once:
+
+.. code-block:: po
+
+    msgctxt "button"
+    msgid "Open"
+    msgstr "Відкрити"
+
+    msgctxt "order status"
+    msgid "Open"
+    msgstr "Відкрито"
 
 Configuring engine
 ==================
@@ -164,10 +237,19 @@ Extracting with Pybabel all strings options:
 
 - :code:`-k _:1,1t -k _:1,2` - for both singular and plural
 - :code:`-k __` - for lazy strings
+- :code:`-k lazy_pgettext:1c,2 -k lazy_npgettext:1c,2,3` - for lazy strings with context
 
 .. code-block:: bash
 
-    pybabel extract -k _:1,1t -k _:1,2 -k __ --input-dirs=. -o locales/messages.pot
+    pybabel extract -k _:1,1t -k _:1,2 -k __ -k lazy_pgettext:1c,2 -k lazy_npgettext:1c,2,3 --input-dirs=. -o locales/messages.pot
+
+.. note::
+
+    :code:`pgettext` and :code:`npgettext` are already a part of the Babel default keywords,
+    so they are extracted (together with their :code:`msgctxt`) without any additional
+    :code:`-k` options. Only the lazy variants have to be declared explicitly
+    (under the names you import them with, if you alias them like :code:`__`):
+    :code:`1c` marks the first argument as the message context.
 
 .. note::
 

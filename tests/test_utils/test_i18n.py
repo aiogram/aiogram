@@ -12,7 +12,12 @@ from aiogram.utils.i18n import (
     FSMI18nMiddleware,
     I18n,
     SimpleI18nMiddleware,
+    lazy_npgettext,
+    lazy_pgettext,
+    npgettext,
+    pgettext,
 )
+from aiogram.utils.i18n import context as i18n_context
 from aiogram.utils.i18n.context import get_i18n, gettext, lazy_gettext
 from tests.conftest import DATA_DIR
 from tests.mocked_bot import MockedBot
@@ -116,6 +121,102 @@ class TestI18nCore:
             assert str(i18n.lazy_gettext(**case)) == result
             assert gettext(**case) == result
             assert str(lazy_gettext(**case)) == result
+
+    @pytest.mark.parametrize(
+        "locale,case,result",
+        [
+            ["uk", {"singular": "Open", "context": "button"}, "Відкрити"],
+            ["uk", {"singular": "Open", "context": "status"}, "Відкрито"],
+            ["uk", {"singular": "Open"}, "Open"],
+            ["uk", {"singular": "Open", "context": "unknown"}, "Open"],
+            ["it", {"singular": "Open", "context": "button"}, "Open"],
+            [
+                "it",
+                {"singular": "Open", "plural": "Opens", "context": "button", "n": 2},
+                "Opens",
+            ],
+            ["en", {"singular": "Open", "context": "button", "locale": "uk"}, "Відкрити"],
+            [
+                "uk",
+                {
+                    "singular": "{n} item",
+                    "plural": "{n} items",
+                    "context": "cart",
+                    "n": 1,
+                },
+                "{n} товар",
+            ],
+            [
+                "uk",
+                {
+                    "singular": "{n} item",
+                    "plural": "{n} items",
+                    "context": "cart",
+                    "n": 2,
+                },
+                "{n} товари",
+            ],
+            [
+                "uk",
+                {
+                    "singular": "{n} item",
+                    "plural": "{n} items",
+                    "context": "cart",
+                    "n": 5,
+                },
+                "{n} товарів",
+            ],
+            [
+                "en",
+                {
+                    "singular": "{n} item",
+                    "plural": "{n} items",
+                    "context": "cart",
+                    "n": 1,
+                },
+                "{n} item",
+            ],
+            [
+                "en",
+                {
+                    "singular": "{n} item",
+                    "plural": "{n} items",
+                    "context": "cart",
+                    "n": 2,
+                },
+                "{n} items",
+            ],
+        ],
+    )
+    def test_gettext_with_context(
+        self, i18n: I18n, locale: str, case: dict[str, Any], result: str
+    ):
+        i18n.current_locale = locale
+        with i18n.context():
+            assert i18n.gettext(**case) == result
+            assert str(i18n.lazy_gettext(**case)) == result
+
+    def test_pgettext_helpers(self, i18n: I18n):
+        assert pgettext is i18n_context.pgettext
+        assert npgettext is i18n_context.npgettext
+        assert lazy_pgettext is i18n_context.lazy_pgettext
+        assert lazy_npgettext is i18n_context.lazy_npgettext
+        assert npgettext is pgettext
+        assert lazy_npgettext is lazy_pgettext
+
+        with pytest.raises(LookupError):
+            pgettext("button", "Open")
+
+        with i18n.context():
+            i18n.current_locale = "uk"
+            assert pgettext("button", "Open") == "Відкрити"
+            assert npgettext("cart", "{n} item", "{n} items", 2) == "{n} товари"
+            assert str(lazy_pgettext("button", "Open")) == "Відкрити"
+
+            i18n.current_locale = "en"
+            lazy_open = lazy_pgettext("button", "Open")
+            with i18n.use_locale("uk"):
+                assert str(lazy_open) == "Відкрити"
 
 
 async def next_call(event, data):
