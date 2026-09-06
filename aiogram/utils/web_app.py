@@ -137,7 +137,7 @@ def check_webapp_signature(token: str, init_data: str) -> bool:
         msg=data_check_string.encode(),
         digestmod=hashlib.sha256,
     ).hexdigest()
-    return hmac.compare_digest(calculated_hash, hash_)
+    return hmac.compare_digest(calculated_hash.encode(), hash_.encode())
 
 
 def parse_webapp_init_data(
