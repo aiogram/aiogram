@@ -1,0 +1,1 @@
+Added :class:`aiogram.client.butagram.ButagramAPIServer` endpoint preset and :class:`aiogram.client.butagram.ButagramBot` convenience client for connecting to Butagram Bot API.
