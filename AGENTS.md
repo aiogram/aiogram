@@ -12,7 +12,7 @@ This file defines how coding agents should contribute to `aiogram` on `dev-3.x`.
 ## Setup
 
 ```bash
-uv sync --all-extras --group dev --group test
+uv sync --locked --all-extras --group dev --group test
 uv run pre-commit install
 ```
 
@@ -34,14 +34,20 @@ Prefer Serena's symbol tools over `Read`/`Grep` for source code exploration. Onl
 
 Code style/lint in this repository is enforced via Ruff (`ruff check` + `ruff format`).
 
-Quick loop (recommended for most PR iterations):
+Quick loop (recommended for most PR iterations). `make lint` runs ruff, both mypy passes and the pre-commit hooks exactly as CI does:
 
 ```bash
-uv run ruff check --show-fixes --preview aiogram examples
-uv run ruff format --check --diff aiogram tests scripts examples
-uv run mypy aiogram
+make lint
 uv run pytest tests
 ```
+
+When touching `.github/**`, also run:
+
+```bash
+make lint-workflows
+```
+
+Without a GitHub token zizmor runs in offline mode and skips its online audits (known-vulnerable-actions and friends), which CI does run. To reproduce CI exactly, prefix `make lint-workflows` with `GH_TOKEN=$(gh auth token)`.
 
 Full loop (run before final review request):
 
@@ -109,7 +115,7 @@ These patterns repeatedly appeared in maintainer feedback and should be treated 
 For docs changes:
 
 ```bash
-uv run --extra docs sphinx-autobuild --watch aiogram/ --watch CHANGES.rst --watch README.rst docs/ docs/_build/
+uv run --locked --extra docs sphinx-autobuild --watch aiogram/ --watch CHANGES.rst --watch README.rst docs/ docs/_build/
 ```
 
 `sphinx-autobuild` is long-running by design.
@@ -117,7 +123,7 @@ uv run --extra docs sphinx-autobuild --watch aiogram/ --watch CHANGES.rst --watc
 Or quick build:
 
 ```bash
-uv run --extra docs bash -c 'cd docs && make html'
+uv run --locked --extra docs bash -c 'cd docs && make html'
 ```
 
 ## PR quality checklist
