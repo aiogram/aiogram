@@ -1,0 +1,8 @@
+rules:
+  unpinned-uses:
+    config:
+      policies:
+        "*": ref-pin   # accepts any tag or branch; the workflow-lint grep step is what rejects refs that are not version tags or commit SHAs (SHA pins would mean reviewing every Dependabot bump by hand, see plan, decisions table)
+  dangerous-triggers:
+    ignore:
+      - pull_request_changelog_comment.yml   # workflow_run that never checks out PR code and validates its input, see the comment in the file

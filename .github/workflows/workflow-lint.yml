@@ -1,0 +1,49 @@
+name: Workflow lint
+
+on:
+  push:
+    branches:
+      - dev-3.x
+    paths:
+      - ".github/**"
+      - ".pre-commit-config.yaml"
+  pull_request:
+    branches:
+      - dev-3.x
+    paths:
+      - ".github/**"
+      - ".pre-commit-config.yaml"
+
+permissions: {}
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint:
+    name: zizmor + actionlint
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: Reject action refs that are not version tags or SHAs
+        # same script `make lint-workflows` runs locally; the rationale lives in its header
+        run: bash scripts/check-action-refs.sh
+
+      - uses: zizmorcore/zizmor-action@v0.6.3
+        with:
+          config: .github/zizmor.yml  # explicit: auto-discovery needs a real .git directory and silently fails in git worktrees
+          persona: regular
+          annotations: true          # defaults to false; without it, advanced-security: false alone emits no annotations
+          advanced-security: false   # plain annotations, no SARIF upload
+
+      - uses: astral-sh/setup-uv@v10.0.1
+
+      - name: actionlint
+        run: uvx --from actionlint-py actionlint -color

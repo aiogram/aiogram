@@ -1,0 +1,16 @@
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    cooldown:
+      default-days: 7  # a compromised tag is usually yanked within days
+    labels:
+      - "dependencies"
+      - "github_actions"
+      - "skip news"   # CI-only bumps never need a changelog fragment
+    groups:
+      github-actions:
+        patterns:
+          - "*"
