@@ -4,7 +4,7 @@ from . import enums, methods, types
 from .__meta__ import __api_version__, __version__
 from .client import session
 from .client.bot import Bot
-from .client.butagram import ButagramAPIServer
+from .client.butagram import ButagramAPIServer, ButagramBot
 from .dispatcher.dispatcher import Dispatcher
 from .dispatcher.middlewares.base import BaseMiddleware
 from .dispatcher.router import Router
@@ -19,6 +19,7 @@ __all__ = (
     "BaseMiddleware",
     "Bot",
     "ButagramAPIServer",
+    "ButagramBot",
     "Dispatcher",
     "F",
     "Router",

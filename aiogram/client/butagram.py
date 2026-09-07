@@ -1,6 +1,10 @@
 from dataclasses import dataclass, field
 from typing import Any
 
+from aiogram.client.bot import Bot
+from aiogram.client.default import DefaultBotProperties
+from aiogram.client.session.aiohttp import AiohttpSession
+from aiogram.client.session.base import BaseSession
 from aiogram.client.telegram import (
     BareFilesPathWrapper,
     FilesPathWrapper,
@@ -45,3 +49,21 @@ TEST = ButagramAPIServer(
     base="https://api.butagram.com/bot{token}/test/{method}",
     file="https://api.butagram.com/file/bot{token}/test/{path}",
 )
+
+
+class ButagramBot(Bot):
+    """
+    Native Bot class for Butagram SuperApp (by NeonXprime).
+    Connects to https://api.butagram.com automatically without any session boilerplate.
+    """
+
+    def __init__(
+        self,
+        token: str,
+        session: BaseSession | None = None,
+        default: DefaultBotProperties | None = None,
+        **kwargs: Any,
+    ) -> None:
+        if session is None:
+            session = AiohttpSession(api=PRODUCTION)
+        super().__init__(token=token, session=session, default=default, **kwargs)
