@@ -1,42 +1,48 @@
-# Posts/updates the changelog check comment on the PR.
-#
-# Runs in a separate workflow_run-triggered workflow because the check itself
-# runs on the unprivileged `pull_request` event (fork PRs get a read-only
-# token there and cannot comment), while this workflow has write access but
-# never checks out or executes PR code.
-name: "Comment changelog check result"
+# Runs privileged on workflow_run, after the unprivileged check.
+# Never checks out PR code.
+# Treats the artifact as untrusted: state allowlist, PR number from the API.
+name: Comment changelog check result
+
 on:
   workflow_run:
     workflows:
       - "Check that changes are described"
     types:
-      - "completed"
+      - completed
 
-permissions:
-  actions: read
-  contents: read
-  pull-requests: write
+permissions: {}
+
+# serialise commenter runs for the same PR branch; two overlapping runs could
+# both miss the existing comment and post twice. No cancel: the last run must land.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.workflow_run.head_repository.full_name }}-${{ github.event.workflow_run.head_branch }}
 
 jobs:
   comment:
+    name: Post changelog comment
     runs-on: ubuntu-latest
-    if: "github.event.workflow_run.event == 'pull_request'"
+    timeout-minutes: 5
+    # only conclusions that can carry an artifact: `cancelled` (superseded push
+    # or timeout), `action_required` (approval-gated run) and `skipped` never uploaded one
+    if: github.event.workflow_run.event == 'pull_request' && contains(fromJSON('["success", "failure"]'), github.event.workflow_run.conclusion)
+    permissions:
+      actions: read        # download the artifact of the check run
+      contents: read       # list PRs associated with the commit
+      pull-requests: write # post / edit the comment
     steps:
       - name: Download check result
-        uses: actions/download-artifact@v4
+        id: download
+        # a missing artifact (runner lost before the upload) must not fail this workflow; downstream steps are gated on the outcome
+        continue-on-error: true
+        uses: actions/download-artifact@v8
         with:
           name: changelog-check
           run-id: ${{ github.event.workflow_run.id }}
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ github.token }}
 
       - name: Read check result
+        if: steps.download.outcome == 'success'
         id: result
-        # The artifact was produced under the unprivileged `pull_request`
-        # workflow, so treat its content as untrusted: accept only the known
-        # state values and never interpolate the raw content anywhere else.
-        # `inconclusive` means the check job aborted before towncrier ran
-        # (e.g. checkout failure); it is accepted here but matches no comment
-        # step below, so no comment is posted or updated for it.
         run: |
           state="$(head -c 32 changelog-state.txt | tr -d '[:space:]')"
           case "${state}" in
@@ -49,8 +55,9 @@ jobs:
           echo "state=${state}" >> "${GITHUB_OUTPUT}"
 
       - name: Resolve pull request
+        if: steps.result.outputs.state
         id: pr
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             const headSha = context.payload.workflow_run.head_sha;
@@ -67,8 +74,8 @@ jobs:
             core.setOutput("number", pr.number);
 
       - name: Find bot comment
-        if: "steps.pr.outputs.number"
-        uses: peter-evans/find-comment@v3
+        if: steps.pr.outputs.number
+        uses: peter-evans/find-comment@v4
         id: fc
         with:
           issue-number: ${{ steps.pr.outputs.number }}
@@ -76,8 +83,8 @@ jobs:
           body-includes: Changelog
 
       - name: Ask for changelog
-        if: "steps.pr.outputs.number && steps.result.outputs.state == 'failure'"
-        uses: peter-evans/create-or-update-comment@v4
+        if: steps.pr.outputs.number && steps.result.outputs.state == 'failure'
+        uses: peter-evans/create-or-update-comment@v5
         with:
           edit-mode: replace
           comment-id: ${{ steps.fc.outputs.comment-id }}
@@ -96,8 +103,8 @@ jobs:
             Possible categories are: `feature`, `bugfix`, `doc`, `removal` and `misc`.
 
       - name: Changelog found
-        if: "steps.pr.outputs.number && steps.result.outputs.state == 'success'"
-        uses: peter-evans/create-or-update-comment@v4
+        if: steps.pr.outputs.number && steps.result.outputs.state == 'success'
+        uses: peter-evans/create-or-update-comment@v5
         with:
           edit-mode: replace
           comment-id: ${{ steps.fc.outputs.comment-id }}
@@ -108,8 +115,8 @@ jobs:
             Thank you for adding a description of the changes
 
       - name: Comment when docs is not needed
-        if: "steps.pr.outputs.number && steps.result.outputs.state == 'skip-news'"
-        uses: peter-evans/create-or-update-comment@v4
+        if: steps.pr.outputs.number && steps.result.outputs.state == 'skip-news'
+        uses: peter-evans/create-or-update-comment@v5
         with:
           edit-mode: replace
           comment-id: ${{ steps.fc.outputs.comment-id }}

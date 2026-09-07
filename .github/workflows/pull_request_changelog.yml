@@ -1,72 +1,111 @@
-name: "Check that changes are described"
+name: Check that changes are described
+
 on:
   pull_request:
     types:
-      - "opened"
-      - "reopened"
-      - "synchronize"
-      - "labeled"
-      - "unlabeled"
+      - opened
+      - reopened
+      - synchronize
+      - labeled
+      - unlabeled
 
 permissions:
   contents: read
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   changes-required:
+    name: Changelog fragment
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     if: "!contains(github.event.pull_request.labels.*.name, 'skip news')"
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
-          fetch-depth: '0'
+          # the default merge ref does not exist for a PR with merge conflicts, so the checkout
+          # would fail; the head commit always exists, and under `pull_request` the token is
+          # read-only, so checking out contributed code here is safe
+          ref: ${{ github.event.pull_request.head.sha }}
+          # full history: towncrier diffs against the merge-base with the base branch
+          fetch-depth: 0
+          # the later `git fetch` works without a token because the repository is public
+          persist-credentials: false
 
-      - name: Set up Python 3.12
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
+      - uses: astral-sh/setup-uv@v10.0.1
 
-      - name: Install towncrier
-        run: pip install -U towncrier
+      - name: Fetch base branch
+        # kept separate from the towncrier step so a fetch failure skips towncrier
+        # and maps to `inconclusive` instead of reading as a missing changelog
+        env:
+          BASE_BRANCH: ${{ github.base_ref }}
+        run: git fetch --no-tags origin "+refs/heads/${BASE_BRANCH}:refs/remotes/origin/${BASE_BRANCH}"
 
       - name: Check changelog
         id: towncrier
         env:
           BASE_BRANCH: ${{ github.base_ref }}
-        run: |
-          git fetch --no-tags origin +refs/heads/${BASE_BRANCH}:refs/remotes/origin/${BASE_BRANCH}
-          towncrier check --compare-with origin/${BASE_BRANCH}
+        run: uvx --from 'towncrier~=24.8.0' towncrier check --compare-with "origin/${BASE_BRANCH}"
 
       - name: Save check result
-        if: "always()"
+        if: always()
         env:
           CHECK_OUTCOME: ${{ steps.towncrier.outcome }}
-        # The outcome can also be `skipped`/`cancelled` (e.g. when checkout
-        # fails); report those as `inconclusive` so the comment workflow
-        # neither asks for a changelog nor confirms one.
+        # outcome can also be `skipped` / `cancelled`; report those as `inconclusive`
+        # so the commenter neither asks for a changelog nor confirms one
         run: |
           case "${CHECK_OUTCOME}" in
-            success|failure) state="${CHECK_OUTCOME}" ;;
-            *) state="inconclusive" ;;
+            success)
+              state="success"
+              echo "### :heavy_check_mark: Changelog found" >> "$GITHUB_STEP_SUMMARY"
+              ;;
+            failure)
+              state="failure"
+              {
+                echo "### :x: Changelog is required"
+                echo
+                echo "Add a file to the \`CHANGES\` directory named \`<issue or PR number>.<category>.rst\`,"
+                echo "for example \`1234.bugfix.rst\`. Categories: \`feature\`, \`bugfix\`, \`doc\`, \`removal\`, \`misc\`."
+                echo
+                echo "Add the \`skip news\` label if this PR does not need a changelog entry."
+              } >> "$GITHUB_STEP_SUMMARY"
+              ;;
+            *)
+              state="inconclusive"
+              {
+                echo "### :grey_question: Changelog check did not run"
+                echo
+                echo "The check job failed before towncrier could run (see the job log); push again once the cause is fixed."
+              } >> "$GITHUB_STEP_SUMMARY"
+              ;;
           esac
           echo "${state}" > "${RUNNER_TEMP}/changelog-state.txt"
 
       - name: Upload check result
-        if: "always()"
-        uses: actions/upload-artifact@v4
+        if: always()
+        uses: actions/upload-artifact@v7
         with:
           name: changelog-check
           path: ${{ runner.temp }}/changelog-state.txt
+          # artifacts are immutable per run; without this, "Re-run failed jobs" fails on the upload
+          overwrite: true
 
   skip-news:
+    name: Changelog not needed
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     if: "contains(github.event.pull_request.labels.*.name, 'skip news')"
     steps:
       - name: Save check result
-        run: echo "skip-news" > "${RUNNER_TEMP}/changelog-state.txt"
+        run: |
+          echo "skip-news" > "${RUNNER_TEMP}/changelog-state.txt"
+          echo "### :corn: Changelog is not needed (\`skip news\` label present)" >> "$GITHUB_STEP_SUMMARY"
 
       - name: Upload check result
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: changelog-check
           path: ${{ runner.temp }}/changelog-state.txt
+          overwrite: true
