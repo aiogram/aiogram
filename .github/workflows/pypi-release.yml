@@ -43,7 +43,7 @@ jobs:
       - name: Check metadata
         # unpinned, twine's own linter could start rejecting valid metadata on an upstream
         # change and block a release; bump this constraint deliberately
-        run: uvx --from 'twine~=7.0' twine check --strict dist/*
+        run: uvx --from 'twine==7.0.0' twine check --strict dist/*
 
       - name: Smoke-test wheel and sdist
         env:

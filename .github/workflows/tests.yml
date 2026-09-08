@@ -171,7 +171,7 @@ jobs:
       - name: Check metadata
         # pinned: an unpinned linter on the release path can block a release on an upstream
         # change. The same pin lives in pypi-release.yml.
-        run: uvx --from 'twine~=7.0' twine check --strict dist/*
+        run: uvx --from 'twine==7.0.0' twine check --strict dist/*
 
       - name: Smoke-test wheel and sdist
         run: |

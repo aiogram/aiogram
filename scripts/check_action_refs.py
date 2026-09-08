@@ -44,10 +44,12 @@ def iter_uses(node: object):
 
 
 def is_pinned(uses: str) -> bool:
-    if "@" not in uses or uses.startswith(("./", "docker://")):
+    if uses.startswith(("./", "docker://")):
         return True  # local action or container image: nothing to pin
     if any(pattern.match(uses) for pattern in EXCEPTIONS):
         return True
+    if "@" not in uses:
+        return False  # a remote action without a ref is never pinned
     return bool(PINNED.match(uses.rsplit("@", 1)[1]))
 
 
