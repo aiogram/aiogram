@@ -20,17 +20,29 @@ rtk git diff dev-3.x...HEAD --stat && rtk git diff dev-3.x...HEAD
   `misc` (Bot API bumps use `misc`). Enforced by `towncrier check` in
   `.github/workflows/pull_request_changelog.yml`. Text must describe user-visible
   behavior, not process. `CHANGES.rst` itself must not be edited in a regular PR.
-- **Lint/format/type.** CI runs `uv run ruff check --output-format=github aiogram examples`,
-  `uv run mypy --native-parser --num-workers 8 aiogram` and
-  `uv run ruff format --check --diff aiogram tests scripts examples`. Locally, same
-  targets under rtk:
+- **Lint/format/type.** CI's `Lint` job (ubuntu, Python 3.10) runs `make lint`:
+  `ruff format --check --diff aiogram tests scripts examples`;
+  `ruff check --show-fixes --preview aiogram examples`;
+  `mypy --native-parser --num-workers 8 aiogram`, run twice — once plain, once with
+  `--platform win32` (`aiogram/types/custom.py` has a win32 branch mypy prunes as
+  unreachable on Linux); then `pre-commit run --all-files` (CI skips the ruff hooks
+  there since ruff already ran above). Locally, the same target under rtk:
   ```bash
-  rtk ruff check --preview aiogram examples
-  rtk mypy aiogram
+  rtk proxy make lint
+  ```
+  or the granular forms:
+  ```bash
+  rtk ruff check --show-fixes --preview aiogram examples
   rtk ruff format --check --diff aiogram tests scripts examples
+  rtk mypy aiogram
   ```
   Note `ruff check` covers `aiogram examples` but `ruff format --check` also covers
-  `tests scripts` — a badly formatted test file fails CI.
+  `tests scripts` — a badly formatted test file fails CI. `rtk mypy` only runs the
+  plain pass; the win32 pass needs `rtk proxy make lint` or
+  `rtk proxy uv run mypy --native-parser --num-workers 8 --platform win32 aiogram`.
+- **Workflow files.** `.github/**` changes are checked by a separate `Workflow lint`
+  CI job (zizmor + actionlint + `scripts/check_action_refs.py`). Local equivalent:
+  `rtk proxy make lint-workflows`.
 - **Tests** with coverage; codecov gates `dev-3.x`. Target is 100%.
 
 ## 2. Repo contracts (maintainer rejects these)
@@ -51,12 +63,15 @@ rtk git diff dev-3.x...HEAD --stat && rtk git diff dev-3.x...HEAD
 - **Unrelated refactors / reformatting** mixed into the diff.
 - **`docs/locale/**`** touched by hand (managed by `sphinx-intl`).
 
-## 3. Compatibility matrix (CI is 15 jobs + PyPy)
+## 3. Compatibility matrix (one `Tests` job, 17 legs)
 
-- Python **3.10 – 3.14**, plus PyPy 3.11; OS: ubuntu, macos, windows.
+- Python **3.10 – 3.14** on ubuntu/macos/windows, plus PyPy 3.11 on ubuntu and macos
+  (excluded on windows) — all in a single `Tests` job. Coverage is uploaded from the
+  15 CPython legs only; codecov's `after_n_builds: 15` waits for exactly those.
 - mypy targets `python_version = 3.10` → no 3.11+ only syntax or stdlib.
-- Redis is not available on Windows runners; Mongo runs only on Ubuntu. A test whose
-  assertion exists only under `--redis`/`--mongo` is effectively untested on Windows.
+- Redis/MongoDB tests run only on Linux legs; on macOS/Windows the `--redis`/`--mongo`
+  fixtures skip. A test whose assertion exists only under `--redis`/`--mongo` is
+  effectively untested on macOS and Windows.
 - `pytest filterwarnings = ["error", …]` — any newly emitted warning fails.
 - Optional extras (`redis`, `mongo`, `i18n`, `proxy`, `fast`, `signature`, `cli`) must
   stay optional: no unconditional import of an extra's package from `aiogram/`.

@@ -5,7 +5,7 @@ tools: Read, Grep, Glob, Bash, Edit, Write
 ---
 
 You write tests that look like the 289 test files already in `tests/` (~18.7k LOC).
-Coverage target is **100%** (codecov gates `dev-3.x`, `after_n_builds: 6`).
+Coverage target is **100%** (codecov gates `dev-3.x`, `after_n_builds: 15`).
 Never introduce a new test dependency — that is explicit maintainer feedback.
 
 ## Runner facts that bite
@@ -17,8 +17,9 @@ Never introduce a new test dependency — that is explicit maintainer feedback.
 - `filterwarnings = ["error", …]` → any new warning (Deprecation, Resource, Pydantic)
   fails the suite. If your change emits one, fix the source, don't widen the filter.
 - `testpaths = ["tests"]`. Run a single file with `rtk test uv run pytest tests/... -q`.
-- CI runs the matrix on 3.10–3.14 × {ubuntu, macos, windows} plus PyPy 3.11.
-  Redis is unavailable on Windows, Mongo runs **only** on Ubuntu.
+- CI runs the matrix on 3.10–3.14 × {ubuntu, macos, windows} plus PyPy 3.11 on
+  ubuntu and macos. Redis/MongoDB tests run only on Linux legs; on macOS/Windows
+  they skip.
 
 ## The MockedBot pattern
 
@@ -42,8 +43,8 @@ and `isolation` (`request.getfixturevalue(request.param)`). `CHAT_ID = -42`,
 
 Storage fixtures **skip** without `--redis` / `--mongo`. Therefore: never let a
 storage-only test be the sole coverage of shared logic — it will not run on
-Windows, and locally it is skipped by default. Mirror the assertion against
-`memory_storage`.
+macOS or Windows legs, and locally it is skipped by default. Mirror the
+assertion against `memory_storage`.
 
 ```bash
 rtk test uv run pytest tests --redis redis://localhost:6379/0 --mongo mongodb://mongo:mongo@localhost:27017
@@ -79,9 +80,9 @@ rtk test uv run pytest tests -q --cov=aiogram --cov-report=term-missing
 
 `aiogram/__meta__.py` and `aiogram/dispatcher/middlewares/data.py` are omitted;
 `if TYPE_CHECKING:`, `@overload`, `@abstractmethod`, `if sys.version_info`,
-`except ImportError:` and `pragma: no cover` are excluded lines. Note the
-Makefile/CI pass `--cov-config .coveragerc`, but **that file does not exist** —
-the real config is `[tool.coverage.*]` in `pyproject.toml`.
+`except ImportError:` and `pragma: no cover` are excluded lines. Coverage config
+lives in `[tool.coverage.*]` in `pyproject.toml` — neither the Makefile nor CI
+pass a `--cov-config` flag.
 
 Formatting applies to tests too (`ruff format --check --diff aiogram tests scripts examples`
 runs in CI), while `tests/**` has relaxed lint rules (`PLR2004`, `E501`, `DTZ005`, `UP`, …).

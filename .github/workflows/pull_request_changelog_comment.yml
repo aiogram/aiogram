@@ -1,0 +1,137 @@
+# Runs privileged on workflow_run, after the unprivileged check.
+# Never checks out PR code.
+# Treats the artifact as untrusted: state allowlist, PR number from the API.
+name: Comment changelog check result
+
+on:
+  workflow_run:
+    workflows:
+      - "Check that changes are described"
+    types:
+      - completed
+
+permissions: {}
+
+# serialise commenter runs for the same PR branch; two overlapping runs could
+# both miss the existing comment and post twice. No cancel: the last run must land.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.workflow_run.head_repository.full_name }}-${{ github.event.workflow_run.head_branch }}
+
+jobs:
+  comment:
+    name: Post changelog comment
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    # only conclusions that can carry an artifact: `cancelled` (superseded push
+    # or timeout), `action_required` (approval-gated run) and `skipped` never uploaded one
+    if: github.event.workflow_run.event == 'pull_request' && contains(fromJSON('["success", "failure"]'), github.event.workflow_run.conclusion)
+    permissions:
+      actions: read        # download the artifact of the check run
+      contents: read       # list PRs associated with the commit
+      pull-requests: write # post / edit the comment
+    steps:
+      - name: Download check result
+        id: download
+        # a missing artifact (runner lost before the upload) must not fail this workflow; downstream steps are gated on the outcome
+        continue-on-error: true
+        uses: actions/download-artifact@v8
+        with:
+          name: changelog-check
+          run-id: ${{ github.event.workflow_run.id }}
+          github-token: ${{ github.token }}
+
+      - name: Read check result
+        if: steps.download.outcome == 'success'
+        id: result
+        run: |
+          state="$(head -c 32 changelog-state.txt | tr -d '[:space:]')"
+          case "${state}" in
+            success|failure|skip-news|inconclusive) ;;
+            *)
+              echo "Unexpected changelog check state" >&2
+              exit 1
+              ;;
+          esac
+          echo "state=${state}" >> "${GITHUB_OUTPUT}"
+
+      - name: Resolve pull request
+        if: steps.result.outputs.state
+        id: pr
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const run = context.payload.workflow_run;
+            const headSha = run.head_sha;
+            const headBranch = run.head_branch;
+            const headRepo = run.head_repository?.full_name;  // null if the fork was deleted
+            const { data: prs } = await github.rest.repos.listPullRequestsAssociatedWithCommit({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              commit_sha: headSha,
+            });
+            // the commit can be shared by several PRs (branches pointing at the same commit,
+            // closed PRs): only the open PR from this run's head repository and branch counts
+            const pr = prs.find((item) =>
+              item.state === "open" &&
+              item.head.sha === headSha &&
+              item.head.ref === headBranch &&
+              item.head.repo?.full_name === headRepo
+            );
+            if (!pr) {
+              core.info(`No pull request found for head ${headSha}, skipping comment`);
+              return;
+            }
+            core.setOutput("number", pr.number);
+
+      - name: Find bot comment
+        if: steps.pr.outputs.number
+        uses: peter-evans/find-comment@v4
+        id: fc
+        with:
+          issue-number: ${{ steps.pr.outputs.number }}
+          comment-author: 'github-actions[bot]'
+          body-includes: Changelog
+
+      - name: Ask for changelog
+        if: steps.pr.outputs.number && steps.result.outputs.state == 'failure'
+        uses: peter-evans/create-or-update-comment@v5
+        with:
+          edit-mode: replace
+          comment-id: ${{ steps.fc.outputs.comment-id }}
+          issue-number: ${{ steps.pr.outputs.number }}
+          body: |
+            # :x: Changelog is required!
+
+            You need to add a brief description of the changes to the `CHANGES` directory.
+
+            Changes file should be named like `<issue or PR number>.<category>.rst`,
+            example `1234.bugfix.rst` where `1234` is the PR or issue number and `bugfix` is the category.
+
+            The content of the file should be a brief description of the changes in
+            the PR in the format of a description of what has been done.
+
+            Possible categories are: `feature`, `bugfix`, `doc`, `removal` and `misc`.
+
+      - name: Changelog found
+        if: steps.pr.outputs.number && steps.result.outputs.state == 'success'
+        uses: peter-evans/create-or-update-comment@v5
+        with:
+          edit-mode: replace
+          comment-id: ${{ steps.fc.outputs.comment-id }}
+          issue-number: ${{ steps.pr.outputs.number }}
+          body: |
+            # :heavy_check_mark: Changelog found.
+
+            Thank you for adding a description of the changes
+
+      - name: Comment when docs is not needed
+        if: steps.pr.outputs.number && steps.result.outputs.state == 'skip-news'
+        uses: peter-evans/create-or-update-comment@v5
+        with:
+          edit-mode: replace
+          comment-id: ${{ steps.fc.outputs.comment-id }}
+          issue-number: ${{ steps.pr.outputs.number }}
+          body: |
+            # :corn: Changelog is not needed.
+
+            This PR does not require a changelog because `skip news` label is present.

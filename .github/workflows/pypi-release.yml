@@ -1,61 +1,86 @@
-name: "Deploy"
+name: Deploy
 
 on:
   push:
     tags:
-      - 'v3.*'
+      - "v3.*"
+
+permissions: {}
+
+concurrency:
+  # never cancel a release in flight
+  group: release-${{ github.ref }}
 
 jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    outputs:
+      version: ${{ steps.package-version.outputs.value }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
 
-      - name: Set up Python 3.14
-        uses: actions/setup-python@v6
+      - uses: astral-sh/setup-uv@v10.0.1
         with:
           python-version: "3.14"
+          # release artifacts must not come from a shared cache
+          enable-cache: false
 
-      - name: Install uv
-        uses: astral-sh/setup-uv@v7
-
-      - name: Resolve version
+      - name: Resolve version from tag
         id: package-version
-        run: echo "value=$(echo ${{ github.ref }} | sed -e 's/refs\/tags\/v//')" >> $GITHUB_OUTPUT
+        env:
+          REF_NAME: ${{ github.ref_name }}
+        run: echo "value=${REF_NAME#v}" >> "$GITHUB_OUTPUT"
 
-      - name: Build distribution
+      - name: Build sdist and wheel
         run: uv build
 
-      - name: Try install wheel
+      - name: Check metadata
+        # unpinned, twine's own linter could start rejecting valid metadata on an upstream
+        # change and block a release; bump this constraint deliberately
+        run: uvx --from 'twine==7.0.0' twine check --strict dist/*
+
+      - name: Smoke-test wheel and sdist
+        env:
+          VERSION: ${{ steps.package-version.outputs.value }}
         run: |
-          pip install -U virtualenv
-          mkdir -p try_install
-          cd try_install
-          virtualenv venv
-          venv/bin/pip install ../dist/aiogram-*.whl
-          venv/bin/python -c "import aiogram; print(aiogram.__version__)"
-      - name: Publish artifacts
-        uses: actions/upload-artifact@v6
+          for dist in dist/*.whl dist/*.tar.gz; do
+            # a venv inside the checkout would be swept into the next sdist (hatchling packs
+            # it and its absolute symlinks break the build), so it lives under RUNNER_TEMP instead
+            venv="${RUNNER_TEMP}/smoke"
+            uv venv --clear "$venv"
+            uv pip install --python "$venv/bin/python" "$dist"
+            # -P keeps the checkout's own aiogram/ off sys.path, so this imports what was just installed
+            installed="$("$venv/bin/python" -P -c "import aiogram; print(aiogram.__version__)")"
+            echo "${dist}: installed aiogram ${installed}"
+            [[ "${installed}" == "${VERSION}" ]]
+          done
+
+      - uses: actions/upload-artifact@v7
         with:
           name: dist
           path: dist/*
+          if-no-files-found: error
 
   publish:
     name: Publish
     needs: build
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     environment:
       name: pypi
-      url: https://pypi.org/project/aiogram/${{ steps.package-version.outputs.value }}/
+      url: https://pypi.org/project/aiogram/${{ needs.build.outputs.version }}/
     permissions:
-      id-token: write
+      id-token: write # trusted publishing (OIDC) to PyPI; no API token stored in the repo
     steps:
-      - name: Download artifacts
-        uses: actions/download-artifact@v7
+      - uses: actions/download-artifact@v8
         with:
           name: dist
           path: dist
 
-      - name: Publish a Python distribution to PyPI
-        uses: pypa/gh-action-pypi-publish@release/v1
+      - uses: pypa/gh-action-pypi-publish@release/v1
