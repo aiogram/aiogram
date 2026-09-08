@@ -25,10 +25,6 @@ jobs:
     steps:
       - uses: actions/checkout@v7
         with:
-          # the default merge ref does not exist for a PR with merge conflicts, so the checkout
-          # would fail; the head commit always exists, and under `pull_request` the token is
-          # read-only, so checking out contributed code here is safe
-          ref: ${{ github.event.pull_request.head.sha }}
           # full history: towncrier diffs against the merge-base with the base branch
           fetch-depth: 0
           # the later `git fetch` works without a token because the repository is public

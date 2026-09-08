@@ -41,7 +41,7 @@ rtk git diff dev-3.x...HEAD --stat && rtk git diff dev-3.x...HEAD
   plain pass; the win32 pass needs `rtk proxy make lint` or
   `rtk proxy uv run mypy --native-parser --num-workers 8 --platform win32 aiogram`.
 - **Workflow files.** `.github/**` changes are checked by a separate `Workflow lint`
-  CI job (zizmor + actionlint + `scripts/check-action-refs.sh`). Local equivalent:
+  CI job (zizmor + actionlint + `scripts/check_action_refs.py`). Local equivalent:
   `rtk proxy make lint-workflows`.
 - **Tests** with coverage; codecov gates `dev-3.x`. Target is 100%.
 

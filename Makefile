@@ -47,7 +47,7 @@ lint:
 
 .PHONY: lint-workflows
 lint-workflows:
-	bash scripts/check-action-refs.sh
+	uv run scripts/check_action_refs.py
 	uvx zizmor --config .github/zizmor.yml .
 	uvx --from actionlint-py actionlint
 
