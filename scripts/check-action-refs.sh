@@ -10,7 +10,7 @@ cd "$(dirname "$0")/.."
 
 # `pypa/gh-action-pypi-publish@release/v1` is the one documented exception (the ref PyPA
 # recommends). Composite actions under `.github/actions/**` are covered too, hence the recursion.
-if grep -rnE --include='*.yml' --include='*.yaml' '^[[:space:]]*(-[[:space:]]+)?uses:[[:space:]]*[^[:space:]]+@' .github \
+if grep -rnE --include='*.yml' --include='*.yaml' '^[[:space:]]*(-[[:space:]]+)?uses[[:space:]]*:[[:space:]]*[^[:space:]]+@' .github \
      | grep -vE '@(v?[0-9]+(\.[0-9]+)*|[0-9a-f]{40})([[:space:]]|$)' \
      | grep -vE 'pypa/gh-action-pypi-publish@release/v[0-9]+([[:space:]]|$)'; then
   echo "::error::action refs above are not pinned to a version tag or commit SHA"
