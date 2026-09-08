@@ -205,7 +205,7 @@ jobs:
         run: uv sync --locked --extra docs --extra redis --extra mongo --no-group dev
 
       - name: Build HTML
-        # TODO: add -W once the existing Sphinx warnings are fixed (tracked in a follow-up issue)
+        # TODO: add -W once the existing Sphinx warnings are fixed (#1909)
         # sphinx.ext.viewcode renders a highlighted copy of every module and is ~80% of the build;
         # the CI check does not need it (Read the Docs keeps it). The extension list is derived
         # from conf.py so it cannot drift.
