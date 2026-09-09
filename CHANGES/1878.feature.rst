@@ -1,1 +1,1 @@
-Add message shortcuts for streaming text and rich message drafts.
+Add Message shortcuts for answering and replying to text and rich message drafts.
