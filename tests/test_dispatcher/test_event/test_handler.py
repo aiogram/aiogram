@@ -39,12 +39,27 @@ class SyncCallable:
         return locals()
 
 
+class AsyncCallable:
+    async def __call__(self, foo, bar, baz):
+        return locals()
+
+
 class TestCallableObject:
-    @pytest.mark.parametrize("callback", [callback2, TestFilter()])
+    @pytest.mark.parametrize("callback", [callback2, TestFilter(), AsyncCallable()])
     def test_init_awaitable(self, callback):
         obj = CallableObject(callback)
         assert obj.awaitable
         assert obj.callback == callback
+
+    @pytest.mark.asyncio
+    async def test_call_async_callable_object(self):
+        obj = CallableObject(AsyncCallable())
+        assert await obj.call(foo=1, bar=2, baz=3) == {
+            "self": obj.callback,
+            "foo": 1,
+            "bar": 2,
+            "baz": 3,
+        }
 
     @pytest.mark.parametrize("callback", [callback1, SyncCallable()])
     def test_init_not_awaitable(self, callback):
