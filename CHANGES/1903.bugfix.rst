@@ -1,0 +1,1 @@
+Fixed :code:`TypeError` raised from :code:`check_webapp_signature` when the WebApp init data ``hash`` field contains non-ASCII characters, so such input is now treated as an invalid signature instead of crashing the caller.
