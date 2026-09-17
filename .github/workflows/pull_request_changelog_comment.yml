@@ -62,21 +62,21 @@ jobs:
           script: |
             const run = context.payload.workflow_run;
             const headSha = run.head_sha;
-            const headBranch = run.head_branch;
-            const headRepo = run.head_repository?.full_name;  // null if the fork was deleted
-            const { data: prs } = await github.rest.repos.listPullRequestsAssociatedWithCommit({
+            const headRepo = run.head_repository;  // null if the fork was deleted
+            if (!headRepo) {
+              core.info(`Head repository of ${headSha} no longer exists, skipping comment`);
+              return;
+            }
+            // listPullRequestsAssociatedWithCommit returns nothing for fork commits when asked
+            // on the base repository; listing open PRs by `owner:branch` works for forks too
+            const { data: prs } = await github.rest.pulls.list({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              commit_sha: headSha,
+              state: "open",
+              head: `${headRepo.owner.login}:${run.head_branch}`,
             });
-            // the commit can be shared by several PRs (branches pointing at the same commit,
-            // closed PRs): only the open PR from this run's head repository and branch counts
-            const pr = prs.find((item) =>
-              item.state === "open" &&
-              item.head.sha === headSha &&
-              item.head.ref === headBranch &&
-              item.head.repo?.full_name === headRepo
-            );
+            // only the PR whose current head is this run's commit (a superseded run stays silent)
+            const pr = prs.find((item) => item.head.sha === headSha);
             if (!pr) {
               core.info(`No pull request found for head ${headSha}, skipping comment`);
               return;

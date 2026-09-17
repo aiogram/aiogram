@@ -39,7 +39,6 @@ jobs:
         with:
           # lowest supported interpreter: mypy must pass against the oldest target
           python-version: "3.10"
-          enable-cache: true
 
       - name: Install project
         # `dev` is a default group (ruff, mypy, pre-commit); `test` is not needed for lint;
@@ -84,7 +83,6 @@ jobs:
       - uses: astral-sh/setup-uv@v10.0.1
         with:
           python-version: ${{ matrix.python-version }}
-          enable-cache: true
 
       # Redis and MongoDB only on Linux: the servers are black boxes behind a socket,
       # the OS-specific code under test is aiogram itself, which macOS / Windows still run.
@@ -153,7 +151,6 @@ jobs:
 
   build:
     name: Build package
-    needs: lint
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -198,7 +195,6 @@ jobs:
         with:
           # Sphinx 8.0.x predates Python 3.13 / 3.14; 3.12 is the newest it was released against
           python-version: "3.12"
-          enable-cache: true
 
       - name: Install project with docs extras
         # mirrors .readthedocs.yml: docs + the extras autodoc needs to import
