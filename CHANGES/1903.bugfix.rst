@@ -1,0 +1,7 @@
+Fixed :func:`aiogram.utils.web_app.check_webapp_signature` raising :code:`TypeError`
+instead of returning :code:`False` when the client-supplied ``hash`` parameter contains
+non-ASCII characters (e.g. after percent-decoding). :code:`hmac.compare_digest` rejects
+non-ASCII :code:`str` operands, so the comparison is now done on the UTF-8 encoded bytes
+instead. This was a robustness issue on the error path, not an authentication bypass: no
+invalid hash was ever accepted, but a forged request could turn into an unhandled 500
+instead of a clean rejection.

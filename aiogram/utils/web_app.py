@@ -137,7 +137,11 @@ def check_webapp_signature(token: str, init_data: str) -> bool:
         msg=data_check_string.encode(),
         digestmod=hashlib.sha256,
     ).hexdigest()
-    return hmac.compare_digest(calculated_hash, hash_)
+    # hmac.compare_digest() rejects non-ASCII str operands; hash_ is
+    # client-supplied and may contain non-ASCII characters (e.g. after
+    # percent-decoding), so compare as bytes instead to avoid a crash on
+    # what should just be an invalid signature.
+    return hmac.compare_digest(calculated_hash.encode(), hash_.encode())
 
 
 def parse_webapp_init_data(

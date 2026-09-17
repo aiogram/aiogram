@@ -48,6 +48,9 @@ class TestWebApp:
             ],
             ["42:TEST", "", False],
             ["42:TEST", "test&foo=bar=baz", False],
+            # Non-ASCII hash (e.g. percent-decoded %C3%A9) used to raise
+            # TypeError from hmac.compare_digest instead of returning False.
+            ["42:TEST", "id=1&hash=%C3%A9%C3%A9", False],
         ],
     )
     def test_check_webapp_signature(self, token, case, result):
