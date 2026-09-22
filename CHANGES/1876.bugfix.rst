@@ -1,0 +1,6 @@
+Sped up :code:`import aiogram` roughly 4x (1.9s -> 0.45s on CPython 3.13) by building model schemas
+lazily instead of on import.
+Every Telegram object and method model was rebuilt eagerly at import time, which discarded the
+:code:`defer_build` setting they are declared with. Forward references are now exposed through the
+globals of the type modules, so pydantic resolves them when a model is first used.
+On :code:`pydantic<2.6`, which cannot resolve nested models that way, the previous eager rebuild is kept.
