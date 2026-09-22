@@ -8,31 +8,36 @@ on:
       - "labeled"
       - "unlabeled"
 
+permissions:
+  contents: read
+  pull-requests: write
+
 jobs:
   changes-required:
     runs-on: ubuntu-latest
     if: "!contains(github.event.pull_request.labels.*.name, 'skip news')"
     steps:
-      - name: Checkout code
+      # Only the base repository is checked out. `actions/checkout` refuses to check out
+      # pull request code from a `pull_request_target` workflow, because running a fork's
+      # code with this workflow's token is how "pwn request" vulnerabilities happen.
+      # The list of changed files is taken from the API instead, so no fork code is needed.
+      - name: Checkout base repository
         uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.pull_request.head.sha }}
-          fetch-depth: '0'
 
       - name: Set up Python 3.12
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
 
-      - name: Install towncrier
-        run: pip install -U towncrier
-
       - name: Check changelog
         env:
-          BASE_BRANCH: ${{ github.base_ref }}
+          GH_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
         run: |
-          git fetch --no-tags origin +refs/heads/${BASE_BRANCH}:refs/remotes/origin/${BASE_BRANCH}
-          towncrier check --compare-with origin/${BASE_BRANCH}
+          gh api --paginate "repos/${REPOSITORY}/pulls/${PR_NUMBER}/files" \
+            --jq ".[].filename" > changed_files.txt
+          python .github/scripts/check_changelog.py changed_files.txt
 
       - name: Find bot comment
         if: "always()"
