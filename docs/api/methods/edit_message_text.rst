@@ -49,3 +49,4 @@ As shortcut from received object
 --------------------------------
 
 - :meth:`aiogram.types.message.Message.edit_text`
+- :meth:`aiogram.types.sent_guest_message.SentGuestMessage.edit_text`
