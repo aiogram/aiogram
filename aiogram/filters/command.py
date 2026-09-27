@@ -8,6 +8,7 @@ from typing import TYPE_CHECKING, Any, cast
 
 from aiogram.filters.base import Filter
 from aiogram.types import BotCommand, Message
+from aiogram.types.bot_command_scope import BotCommandScope
 from aiogram.utils.deep_linking import decode_payload
 
 if TYPE_CHECKING:
@@ -22,14 +23,35 @@ class CommandException(Exception):
     pass
 
 
+class BotCommandMeta(BotCommand):
+    """
+    A :class:`BotCommand` variant that additionally carries aiogram-side metadata
+    for bootstrapping :code:`bot.set_my_commands()` — a scope and a language code.
+
+    Not meant to be passed directly to :code:`set_my_commands()`: :code:`scope` and
+    :code:`language_code` are not fields of the Bot API :class:`BotCommand`. Build a plain
+    :class:`BotCommand` from :code:`command`/:code:`description` before calling the API.
+    """
+
+    scope: BotCommandScope | None = None
+    """Scope this command should be registered for"""
+    language_code: str | None = None
+    """Language code this command's description is localized for"""
+
+
 class Command(Filter):
     """
     This filter can be helpful for handling commands from the text messages.
 
     Works only with :class:`aiogram.types.message.Message` events which have the :code:`text`.
+
+    Any :class:`aiogram.types.bot_command.BotCommand` (or :class:`BotCommandMeta`) passed
+    to the filter is kept as-is in :code:`bot_commands`, so it can be collected later
+    (e.g. via :code:`Router.resolve_bot_commands()`) without losing its metadata.
     """
 
     __slots__ = (
+        "bot_commands",
         "commands",
         "ignore_case",
         "ignore_mention",
@@ -70,8 +92,10 @@ class Command(Filter):
             raise ValueError(msg)
 
         items = []
+        bot_commands = []
         for command in (*values, *commands):
             if isinstance(command, BotCommand):
+                bot_commands.append(command)
                 command = command.command
             if not isinstance(command, (str, re.Pattern)):
                 msg = (
@@ -87,6 +111,7 @@ class Command(Filter):
             msg = "At least one command should be specified"
             raise ValueError(msg)
 
+        self.bot_commands = tuple(bot_commands)
         self.commands = tuple(items)
         self.prefix = prefix
         self.ignore_case = ignore_case

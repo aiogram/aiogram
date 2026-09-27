@@ -19,7 +19,7 @@ Usage:
 
 
 .. autoclass:: aiogram.dispatcher.router.Router
-    :members: __init__, include_router, include_routers, resolve_used_update_types
+    :members: __init__, include_router, include_routers, resolve_used_update_types, resolve_bot_commands
     :show-inheritance:
 
 
