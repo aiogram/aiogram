@@ -48,6 +48,14 @@ class TestWebApp:
             ],
             ["42:TEST", "", False],
             ["42:TEST", "test&foo=bar=baz", False],
+            # Non-ASCII hash must return False instead of raising TypeError
+            # from hmac.compare_digest (issue #1903)
+            [
+                "42:TEST",
+                "user=%7B%22id%22%3A42%2C%22first_name%22%3A%22Test%22%7D"
+                "&query_id=test&hash=%C3%A9%C3%A9%C3%A9",
+                False,
+            ],
         ],
     )
     def test_check_webapp_signature(self, token, case, result):
