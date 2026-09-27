@@ -919,7 +919,10 @@ class Message(MaybeInaccessibleMessage):
         if not self.ephemeral_message_id or not self.from_user:
             return None
         return EphemeralMessageParameters(
-            receiver_user_id=self.from_user.id,
+            # For a bot-sent ephemeral message `from_user` is the bot itself,
+            # the human is `receiver_user`; for an incoming ephemeral command
+            # `receiver_user` is absent and `from_user` is the human.
+            receiver_user_id=(self.receiver_user or self.from_user).id,
             callback_query_id=callback_query_id,
             replace_callback_query_message=replace_callback_query_message,
         )

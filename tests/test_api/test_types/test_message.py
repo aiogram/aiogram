@@ -1267,9 +1267,22 @@ class TestMessage:
     def test_as_ephemeral_message_parameters(self):
         message = TEST_MESSAGE_EPHEMERAL
         parameters = message.as_ephemeral_message_parameters()
-        assert parameters.receiver_user_id == message.from_user.id
+        # from_user is the bot itself here; the human is receiver_user.
+        assert parameters.receiver_user_id == message.receiver_user.id
         assert parameters.callback_query_id is None
         assert parameters.replace_callback_query_message is None
+
+    def test_as_ephemeral_message_parameters_incoming_command(self):
+        # Shape 1: incoming ephemeral command (user -> bot), receiver_user absent.
+        message = Message(
+            message_id=0,
+            chat=Chat(id=42, type="private"),
+            date=datetime.datetime.now(),
+            from_user=User(id=43, is_bot=False, first_name="Test"),
+            ephemeral_message_id=7,
+        )
+        parameters = message.as_ephemeral_message_parameters()
+        assert parameters.receiver_user_id == 43
 
     def test_as_ephemeral_message_parameters_regular_message(self):
         message = Message(
@@ -1310,7 +1323,7 @@ class TestMessage:
         # so `ephemeral_message_parameters` is filled from the replied-to message.
         message = TEST_MESSAGE_EPHEMERAL
         method = message.reply("pong")
-        assert method.ephemeral_message_parameters.receiver_user_id == message.from_user.id
+        assert method.ephemeral_message_parameters.receiver_user_id == message.receiver_user.id
         assert method.reply_parameters.ephemeral_message_id == message.ephemeral_message_id
 
     def test_reply_to_regular_message_is_not_ephemeral(self):
