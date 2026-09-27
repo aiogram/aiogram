@@ -18,6 +18,11 @@ jobs:
         with:
           ref: ${{ github.event.pull_request.head.sha }}
           fetch-depth: '0'
+          # This workflow only reads the PR's files (towncrier check) and never
+          # executes PR code, so opting in to the fork checkout is safe here.
+          # Required since actions/checkout v4.4.0 refuses fork checkouts from
+          # pull_request_target workflows by default.
+          allow-unsafe-pr-checkout: true
 
       - name: Set up Python 3.12
         uses: actions/setup-python@v5
