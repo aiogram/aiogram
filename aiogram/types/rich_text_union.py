@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, TypeAlias
+from pydantic import Field
+from typing import TYPE_CHECKING, TypeAlias, Annotated
 
 from typing_extensions import TypeAliasType
 
@@ -9,7 +10,6 @@ from .rich_text_anchor_link import RichTextAnchorLink
 from .rich_text_bank_card_number import RichTextBankCardNumber
 from .rich_text_bold import RichTextBold
 from .rich_text_bot_command import RichTextBotCommand
-from .rich_text_button import RichTextButton
 from .rich_text_cashtag import RichTextCashtag
 from .rich_text_code import RichTextCode
 from .rich_text_custom_emoji import RichTextCustomEmoji
@@ -31,66 +31,39 @@ from .rich_text_text_mention import RichTextTextMention
 from .rich_text_underline import RichTextUnderline
 from .rich_text_url import RichTextUrl
 
+RichTextElements: TypeAlias = Annotated[
+    RichTextBold
+    | RichTextItalic
+    | RichTextUnderline
+    | RichTextStrikethrough
+    | RichTextSpoiler
+    | RichTextDateTime
+    | RichTextTextMention
+    | RichTextSubscript
+    | RichTextSuperscript
+    | RichTextMarked
+    | RichTextCode
+    | RichTextCustomEmoji
+    | RichTextMathematicalExpression
+    | RichTextUrl
+    | RichTextEmailAddress
+    | RichTextPhoneNumber
+    | RichTextBankCardNumber
+    | RichTextMention
+    | RichTextHashtag
+    | RichTextCashtag
+    | RichTextBotCommand
+    | RichTextAnchor
+    | RichTextAnchorLink
+    | RichTextReference
+    | RichTextReferenceLink,
+    Field(discriminator="type"),
+]
+
 if TYPE_CHECKING:
-    RichTextUnion: TypeAlias = (
-        str
-        | list["RichTextUnion"]
-        | RichTextBold
-        | RichTextItalic
-        | RichTextUnderline
-        | RichTextStrikethrough
-        | RichTextSpoiler
-        | RichTextDateTime
-        | RichTextTextMention
-        | RichTextSubscript
-        | RichTextSuperscript
-        | RichTextMarked
-        | RichTextCode
-        | RichTextCustomEmoji
-        | RichTextMathematicalExpression
-        | RichTextUrl
-        | RichTextEmailAddress
-        | RichTextPhoneNumber
-        | RichTextBankCardNumber
-        | RichTextMention
-        | RichTextHashtag
-        | RichTextCashtag
-        | RichTextBotCommand
-        | RichTextButton
-        | RichTextAnchor
-        | RichTextAnchorLink
-        | RichTextReference
-        | RichTextReferenceLink
-    )
+    RichTextUnion: TypeAlias = str | list["RichTextUnion"] | RichTextElements
 else:
     RichTextUnion = TypeAliasType(
         "RichTextUnion",
-        str
-        | list["RichTextUnion"]
-        | RichTextBold
-        | RichTextItalic
-        | RichTextUnderline
-        | RichTextStrikethrough
-        | RichTextSpoiler
-        | RichTextDateTime
-        | RichTextTextMention
-        | RichTextSubscript
-        | RichTextSuperscript
-        | RichTextMarked
-        | RichTextCode
-        | RichTextCustomEmoji
-        | RichTextMathematicalExpression
-        | RichTextUrl
-        | RichTextEmailAddress
-        | RichTextPhoneNumber
-        | RichTextBankCardNumber
-        | RichTextMention
-        | RichTextHashtag
-        | RichTextCashtag
-        | RichTextBotCommand
-        | RichTextButton
-        | RichTextAnchor
-        | RichTextAnchorLink
-        | RichTextReference
-        | RichTextReferenceLink,
+        str | list["RichTextUnion"] | RichTextElements,
     )

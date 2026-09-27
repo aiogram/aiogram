@@ -1,0 +1,1 @@
+Fixed exponential validation hang in :class:`RichTextUnion` on deeply nested rich messages by applying ``Field(discriminator="type")``.
