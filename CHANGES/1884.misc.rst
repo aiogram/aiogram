@@ -1,0 +1,1 @@
+Fixed the changelog-presence CI check failing for pull requests from forks: the ``towncrier`` check now runs on the unprivileged ``pull_request`` event, and the PR comment is posted by a separate privileged workflow that never checks out contributed code.
