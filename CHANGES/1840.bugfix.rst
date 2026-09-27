@@ -1,0 +1,5 @@
+Fixed :class:`aiogram.types.message_origin_hidden_user.MessageOriginHiddenUser`
+failing to deserialize when Telegram omits the documented-as-required
+``sender_user_name`` field (e.g. legacy forwarded messages reconstructed as
+``hidden_user`` origins). The field is now optional, so a single such update
+no longer raises ``ClientDecodeError`` and stalls long polling.
