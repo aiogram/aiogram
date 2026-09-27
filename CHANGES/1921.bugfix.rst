@@ -1,0 +1,3 @@
+Fixed :func:`aiogram.utils.web_app.check_webapp_signature` raising ``TypeError``
+instead of returning ``False`` when the ``hash`` field of WebApp init data
+contains non-ASCII characters.
