@@ -1,0 +1,7 @@
+Fixed :class:`aiogram.types.message.Message` ``reply_*`` shortcuts sending
+``callback_query_id`` via the deprecated top-level field while the filled
+``ephemeral_message_parameters`` object carried ``null``. Both
+``callback_query_id`` and ``replace_callback_query_message`` (which previously
+had no route through ``reply_*`` at all) are now routed into the filled
+``ephemeral_message_parameters`` object, and the deprecated scalar is no
+longer sent.

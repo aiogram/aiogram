@@ -944,6 +944,7 @@ class Message(MaybeInaccessibleMessage):
         suggested_post_parameters: SuggestedPostParameters | None = None,
         reply_markup: ReplyMarkupUnion | None = None,
         callback_query_id: str | None = None,
+        replace_callback_query_message: bool | None = None,
         allow_sending_without_reply: bool | None = None,
         **kwargs: Any,
     ) -> SendAnimation:
@@ -979,6 +980,7 @@ class Message(MaybeInaccessibleMessage):
         :param suggested_post_parameters: A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only. If the message is sent as a reply to another suggested post, then that suggested post is automatically declined
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
         :param callback_query_id: For outgoing ephemeral messages, identifier of the callback query which triggerred the message if any
+        :param replace_callback_query_message: For outgoing ephemeral messages, pass :code:`True` if the ephemeral message must be shown in place of the original message
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
         :return: instance of method :class:`aiogram.methods.send_animation.SendAnimation`
         """
@@ -996,7 +998,10 @@ class Message(MaybeInaccessibleMessage):
             message_thread_id=self.message_thread_id if self.is_topic_message else None,
             business_connection_id=self.business_connection_id,
             reply_parameters=self.as_reply_parameters(),
-            ephemeral_message_parameters=self.as_ephemeral_message_parameters(),
+            ephemeral_message_parameters=self.as_ephemeral_message_parameters(
+                callback_query_id=callback_query_id,
+                replace_callback_query_message=replace_callback_query_message,
+            ),
             animation=animation,
             direct_messages_topic_id=direct_messages_topic_id,
             duration=duration,
@@ -1014,7 +1019,6 @@ class Message(MaybeInaccessibleMessage):
             message_effect_id=message_effect_id,
             suggested_post_parameters=suggested_post_parameters,
             reply_markup=reply_markup,
-            callback_query_id=callback_query_id,
             allow_sending_without_reply=allow_sending_without_reply,
             **kwargs,
         ).as_(self._bot)
@@ -1140,6 +1144,7 @@ class Message(MaybeInaccessibleMessage):
         suggested_post_parameters: SuggestedPostParameters | None = None,
         reply_markup: ReplyMarkupUnion | None = None,
         callback_query_id: str | None = None,
+        replace_callback_query_message: bool | None = None,
         allow_sending_without_reply: bool | None = None,
         **kwargs: Any,
     ) -> SendAudio:
@@ -1174,6 +1179,7 @@ class Message(MaybeInaccessibleMessage):
         :param suggested_post_parameters: A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only. If the message is sent as a reply to another suggested post, then that suggested post is automatically declined
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
         :param callback_query_id: For outgoing ephemeral messages, identifier of the callback query which triggerred the message if any
+        :param replace_callback_query_message: For outgoing ephemeral messages, pass :code:`True` if the ephemeral message must be shown in place of the original message
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
         :return: instance of method :class:`aiogram.methods.send_audio.SendAudio`
         """
@@ -1191,7 +1197,10 @@ class Message(MaybeInaccessibleMessage):
             message_thread_id=self.message_thread_id if self.is_topic_message else None,
             business_connection_id=self.business_connection_id,
             reply_parameters=self.as_reply_parameters(),
-            ephemeral_message_parameters=self.as_ephemeral_message_parameters(),
+            ephemeral_message_parameters=self.as_ephemeral_message_parameters(
+                callback_query_id=callback_query_id,
+                replace_callback_query_message=replace_callback_query_message,
+            ),
             audio=audio,
             direct_messages_topic_id=direct_messages_topic_id,
             caption=caption,
@@ -1207,7 +1216,6 @@ class Message(MaybeInaccessibleMessage):
             message_effect_id=message_effect_id,
             suggested_post_parameters=suggested_post_parameters,
             reply_markup=reply_markup,
-            callback_query_id=callback_query_id,
             allow_sending_without_reply=allow_sending_without_reply,
             **kwargs,
         ).as_(self._bot)
@@ -1324,6 +1332,7 @@ class Message(MaybeInaccessibleMessage):
         suggested_post_parameters: SuggestedPostParameters | None = None,
         reply_markup: ReplyMarkupUnion | None = None,
         callback_query_id: str | None = None,
+        replace_callback_query_message: bool | None = None,
         allow_sending_without_reply: bool | None = None,
         **kwargs: Any,
     ) -> SendContact:
@@ -1353,6 +1362,7 @@ class Message(MaybeInaccessibleMessage):
         :param suggested_post_parameters: A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only. If the message is sent as a reply to another suggested post, then that suggested post is automatically declined
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
         :param callback_query_id: For outgoing ephemeral messages, identifier of the callback query which triggerred the message if any
+        :param replace_callback_query_message: For outgoing ephemeral messages, pass :code:`True` if the ephemeral message must be shown in place of the original message
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
         :return: instance of method :class:`aiogram.methods.send_contact.SendContact`
         """
@@ -1370,7 +1380,10 @@ class Message(MaybeInaccessibleMessage):
             message_thread_id=self.message_thread_id if self.is_topic_message else None,
             business_connection_id=self.business_connection_id,
             reply_parameters=self.as_reply_parameters(),
-            ephemeral_message_parameters=self.as_ephemeral_message_parameters(),
+            ephemeral_message_parameters=self.as_ephemeral_message_parameters(
+                callback_query_id=callback_query_id,
+                replace_callback_query_message=replace_callback_query_message,
+            ),
             phone_number=phone_number,
             first_name=first_name,
             direct_messages_topic_id=direct_messages_topic_id,
@@ -1382,7 +1395,6 @@ class Message(MaybeInaccessibleMessage):
             message_effect_id=message_effect_id,
             suggested_post_parameters=suggested_post_parameters,
             reply_markup=reply_markup,
-            callback_query_id=callback_query_id,
             allow_sending_without_reply=allow_sending_without_reply,
             **kwargs,
         ).as_(self._bot)
@@ -1488,6 +1500,7 @@ class Message(MaybeInaccessibleMessage):
         suggested_post_parameters: SuggestedPostParameters | None = None,
         reply_markup: ReplyMarkupUnion | None = None,
         callback_query_id: str | None = None,
+        replace_callback_query_message: bool | None = None,
         allow_sending_without_reply: bool | None = None,
         **kwargs: Any,
     ) -> SendDocument:
@@ -1519,6 +1532,7 @@ class Message(MaybeInaccessibleMessage):
         :param suggested_post_parameters: A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only. If the message is sent as a reply to another suggested post, then that suggested post is automatically declined
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
         :param callback_query_id: For outgoing ephemeral messages, identifier of the callback query which triggerred the message if any
+        :param replace_callback_query_message: For outgoing ephemeral messages, pass :code:`True` if the ephemeral message must be shown in place of the original message
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
         :return: instance of method :class:`aiogram.methods.send_document.SendDocument`
         """
@@ -1536,7 +1550,10 @@ class Message(MaybeInaccessibleMessage):
             message_thread_id=self.message_thread_id if self.is_topic_message else None,
             business_connection_id=self.business_connection_id,
             reply_parameters=self.as_reply_parameters(),
-            ephemeral_message_parameters=self.as_ephemeral_message_parameters(),
+            ephemeral_message_parameters=self.as_ephemeral_message_parameters(
+                callback_query_id=callback_query_id,
+                replace_callback_query_message=replace_callback_query_message,
+            ),
             document=document,
             direct_messages_topic_id=direct_messages_topic_id,
             thumbnail=thumbnail,
@@ -1550,7 +1567,6 @@ class Message(MaybeInaccessibleMessage):
             message_effect_id=message_effect_id,
             suggested_post_parameters=suggested_post_parameters,
             reply_markup=reply_markup,
-            callback_query_id=callback_query_id,
             allow_sending_without_reply=allow_sending_without_reply,
             **kwargs,
         ).as_(self._bot)
@@ -2030,6 +2046,7 @@ class Message(MaybeInaccessibleMessage):
         suggested_post_parameters: SuggestedPostParameters | None = None,
         reply_markup: ReplyMarkupUnion | None = None,
         callback_query_id: str | None = None,
+        replace_callback_query_message: bool | None = None,
         allow_sending_without_reply: bool | None = None,
         **kwargs: Any,
     ) -> SendLocation:
@@ -2061,6 +2078,7 @@ class Message(MaybeInaccessibleMessage):
         :param suggested_post_parameters: A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only. If the message is sent as a reply to another suggested post, then that suggested post is automatically declined
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
         :param callback_query_id: For outgoing ephemeral messages, identifier of the callback query which triggerred the message if any
+        :param replace_callback_query_message: For outgoing ephemeral messages, pass :code:`True` if the ephemeral message must be shown in place of the original message
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
         :return: instance of method :class:`aiogram.methods.send_location.SendLocation`
         """
@@ -2078,7 +2096,10 @@ class Message(MaybeInaccessibleMessage):
             message_thread_id=self.message_thread_id if self.is_topic_message else None,
             business_connection_id=self.business_connection_id,
             reply_parameters=self.as_reply_parameters(),
-            ephemeral_message_parameters=self.as_ephemeral_message_parameters(),
+            ephemeral_message_parameters=self.as_ephemeral_message_parameters(
+                callback_query_id=callback_query_id,
+                replace_callback_query_message=replace_callback_query_message,
+            ),
             latitude=latitude,
             longitude=longitude,
             direct_messages_topic_id=direct_messages_topic_id,
@@ -2092,7 +2113,6 @@ class Message(MaybeInaccessibleMessage):
             message_effect_id=message_effect_id,
             suggested_post_parameters=suggested_post_parameters,
             reply_markup=reply_markup,
-            callback_query_id=callback_query_id,
             allow_sending_without_reply=allow_sending_without_reply,
             **kwargs,
         ).as_(self._bot)
@@ -2320,6 +2340,7 @@ class Message(MaybeInaccessibleMessage):
         suggested_post_parameters: SuggestedPostParameters | None = None,
         reply_markup: ReplyMarkupUnion | None = None,
         callback_query_id: str | None = None,
+        replace_callback_query_message: bool | None = None,
         allow_sending_without_reply: bool | None = None,
         disable_web_page_preview: bool | Default | None = Default("link_preview_is_disabled"),
         **kwargs: Any,
@@ -2350,6 +2371,7 @@ class Message(MaybeInaccessibleMessage):
         :param suggested_post_parameters: A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only. If the message is sent as a reply to another suggested post, then that suggested post is automatically declined
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
         :param callback_query_id: For outgoing ephemeral messages, identifier of the callback query which triggerred the message if any
+        :param replace_callback_query_message: For outgoing ephemeral messages, pass :code:`True` if the ephemeral message must be shown in place of the original message
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
         :param disable_web_page_preview: Disables link previews for links in this message
         :return: instance of method :class:`aiogram.methods.send_message.SendMessage`
@@ -2368,7 +2390,10 @@ class Message(MaybeInaccessibleMessage):
             message_thread_id=self.message_thread_id if self.is_topic_message else None,
             business_connection_id=self.business_connection_id,
             reply_parameters=self.as_reply_parameters(),
-            ephemeral_message_parameters=self.as_ephemeral_message_parameters(),
+            ephemeral_message_parameters=self.as_ephemeral_message_parameters(
+                callback_query_id=callback_query_id,
+                replace_callback_query_message=replace_callback_query_message,
+            ),
             text=text,
             direct_messages_topic_id=direct_messages_topic_id,
             parse_mode=parse_mode,
@@ -2380,7 +2405,6 @@ class Message(MaybeInaccessibleMessage):
             message_effect_id=message_effect_id,
             suggested_post_parameters=suggested_post_parameters,
             reply_markup=reply_markup,
-            callback_query_id=callback_query_id,
             allow_sending_without_reply=allow_sending_without_reply,
             disable_web_page_preview=disable_web_page_preview,
             **kwargs,
@@ -2490,6 +2514,7 @@ class Message(MaybeInaccessibleMessage):
         suggested_post_parameters: SuggestedPostParameters | None = None,
         reply_markup: ReplyMarkupUnion | None = None,
         callback_query_id: str | None = None,
+        replace_callback_query_message: bool | None = None,
         allow_sending_without_reply: bool | None = None,
         **kwargs: Any,
     ) -> SendPhoto:
@@ -2521,6 +2546,7 @@ class Message(MaybeInaccessibleMessage):
         :param suggested_post_parameters: A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only. If the message is sent as a reply to another suggested post, then that suggested post is automatically declined
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
         :param callback_query_id: For outgoing ephemeral messages, identifier of the callback query which triggerred the message if any
+        :param replace_callback_query_message: For outgoing ephemeral messages, pass :code:`True` if the ephemeral message must be shown in place of the original message
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
         :return: instance of method :class:`aiogram.methods.send_photo.SendPhoto`
         """
@@ -2538,7 +2564,10 @@ class Message(MaybeInaccessibleMessage):
             message_thread_id=self.message_thread_id if self.is_topic_message else None,
             business_connection_id=self.business_connection_id,
             reply_parameters=self.as_reply_parameters(),
-            ephemeral_message_parameters=self.as_ephemeral_message_parameters(),
+            ephemeral_message_parameters=self.as_ephemeral_message_parameters(
+                callback_query_id=callback_query_id,
+                replace_callback_query_message=replace_callback_query_message,
+            ),
             photo=photo,
             direct_messages_topic_id=direct_messages_topic_id,
             caption=caption,
@@ -2552,7 +2581,6 @@ class Message(MaybeInaccessibleMessage):
             message_effect_id=message_effect_id,
             suggested_post_parameters=suggested_post_parameters,
             reply_markup=reply_markup,
-            callback_query_id=callback_query_id,
             allow_sending_without_reply=allow_sending_without_reply,
             **kwargs,
         ).as_(self._bot)
@@ -3058,6 +3086,7 @@ class Message(MaybeInaccessibleMessage):
         suggested_post_parameters: SuggestedPostParameters | None = None,
         reply_markup: ReplyMarkupUnion | None = None,
         callback_query_id: str | None = None,
+        replace_callback_query_message: bool | None = None,
         allow_sending_without_reply: bool | None = None,
         **kwargs: Any,
     ) -> SendSticker:
@@ -3085,6 +3114,7 @@ class Message(MaybeInaccessibleMessage):
         :param suggested_post_parameters: A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only. If the message is sent as a reply to another suggested post, then that suggested post is automatically declined
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
         :param callback_query_id: For outgoing ephemeral messages, identifier of the callback query which triggerred the message if any
+        :param replace_callback_query_message: For outgoing ephemeral messages, pass :code:`True` if the ephemeral message must be shown in place of the original message
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
         :return: instance of method :class:`aiogram.methods.send_sticker.SendSticker`
         """
@@ -3102,7 +3132,10 @@ class Message(MaybeInaccessibleMessage):
             message_thread_id=self.message_thread_id if self.is_topic_message else None,
             business_connection_id=self.business_connection_id,
             reply_parameters=self.as_reply_parameters(),
-            ephemeral_message_parameters=self.as_ephemeral_message_parameters(),
+            ephemeral_message_parameters=self.as_ephemeral_message_parameters(
+                callback_query_id=callback_query_id,
+                replace_callback_query_message=replace_callback_query_message,
+            ),
             sticker=sticker,
             direct_messages_topic_id=direct_messages_topic_id,
             emoji=emoji,
@@ -3112,7 +3145,6 @@ class Message(MaybeInaccessibleMessage):
             message_effect_id=message_effect_id,
             suggested_post_parameters=suggested_post_parameters,
             reply_markup=reply_markup,
-            callback_query_id=callback_query_id,
             allow_sending_without_reply=allow_sending_without_reply,
             **kwargs,
         ).as_(self._bot)
@@ -3214,6 +3246,7 @@ class Message(MaybeInaccessibleMessage):
         suggested_post_parameters: SuggestedPostParameters | None = None,
         reply_markup: ReplyMarkupUnion | None = None,
         callback_query_id: str | None = None,
+        replace_callback_query_message: bool | None = None,
         allow_sending_without_reply: bool | None = None,
         **kwargs: Any,
     ) -> SendVenue:
@@ -3247,6 +3280,7 @@ class Message(MaybeInaccessibleMessage):
         :param suggested_post_parameters: A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only. If the message is sent as a reply to another suggested post, then that suggested post is automatically declined
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
         :param callback_query_id: For outgoing ephemeral messages, identifier of the callback query which triggerred the message if any
+        :param replace_callback_query_message: For outgoing ephemeral messages, pass :code:`True` if the ephemeral message must be shown in place of the original message
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
         :return: instance of method :class:`aiogram.methods.send_venue.SendVenue`
         """
@@ -3264,7 +3298,10 @@ class Message(MaybeInaccessibleMessage):
             message_thread_id=self.message_thread_id if self.is_topic_message else None,
             business_connection_id=self.business_connection_id,
             reply_parameters=self.as_reply_parameters(),
-            ephemeral_message_parameters=self.as_ephemeral_message_parameters(),
+            ephemeral_message_parameters=self.as_ephemeral_message_parameters(
+                callback_query_id=callback_query_id,
+                replace_callback_query_message=replace_callback_query_message,
+            ),
             latitude=latitude,
             longitude=longitude,
             title=title,
@@ -3280,7 +3317,6 @@ class Message(MaybeInaccessibleMessage):
             message_effect_id=message_effect_id,
             suggested_post_parameters=suggested_post_parameters,
             reply_markup=reply_markup,
-            callback_query_id=callback_query_id,
             allow_sending_without_reply=allow_sending_without_reply,
             **kwargs,
         ).as_(self._bot)
@@ -3405,6 +3441,7 @@ class Message(MaybeInaccessibleMessage):
         suggested_post_parameters: SuggestedPostParameters | None = None,
         reply_markup: ReplyMarkupUnion | None = None,
         callback_query_id: str | None = None,
+        replace_callback_query_message: bool | None = None,
         allow_sending_without_reply: bool | None = None,
         **kwargs: Any,
     ) -> SendVideo:
@@ -3443,6 +3480,7 @@ class Message(MaybeInaccessibleMessage):
         :param suggested_post_parameters: A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only. If the message is sent as a reply to another suggested post, then that suggested post is automatically declined
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
         :param callback_query_id: For outgoing ephemeral messages, identifier of the callback query which triggerred the message if any
+        :param replace_callback_query_message: For outgoing ephemeral messages, pass :code:`True` if the ephemeral message must be shown in place of the original message
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
         :return: instance of method :class:`aiogram.methods.send_video.SendVideo`
         """
@@ -3460,7 +3498,10 @@ class Message(MaybeInaccessibleMessage):
             message_thread_id=self.message_thread_id if self.is_topic_message else None,
             business_connection_id=self.business_connection_id,
             reply_parameters=self.as_reply_parameters(),
-            ephemeral_message_parameters=self.as_ephemeral_message_parameters(),
+            ephemeral_message_parameters=self.as_ephemeral_message_parameters(
+                callback_query_id=callback_query_id,
+                replace_callback_query_message=replace_callback_query_message,
+            ),
             video=video,
             direct_messages_topic_id=direct_messages_topic_id,
             duration=duration,
@@ -3481,7 +3522,6 @@ class Message(MaybeInaccessibleMessage):
             message_effect_id=message_effect_id,
             suggested_post_parameters=suggested_post_parameters,
             reply_markup=reply_markup,
-            callback_query_id=callback_query_id,
             allow_sending_without_reply=allow_sending_without_reply,
             **kwargs,
         ).as_(self._bot)
@@ -3612,6 +3652,7 @@ class Message(MaybeInaccessibleMessage):
         suggested_post_parameters: SuggestedPostParameters | None = None,
         reply_markup: ReplyMarkupUnion | None = None,
         callback_query_id: str | None = None,
+        replace_callback_query_message: bool | None = None,
         allow_sending_without_reply: bool | None = None,
         **kwargs: Any,
     ) -> SendVideoNote:
@@ -3641,6 +3682,7 @@ class Message(MaybeInaccessibleMessage):
         :param suggested_post_parameters: A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only. If the message is sent as a reply to another suggested post, then that suggested post is automatically declined
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
         :param callback_query_id: For outgoing ephemeral messages, identifier of the callback query which triggerred the message if any
+        :param replace_callback_query_message: For outgoing ephemeral messages, pass :code:`True` if the ephemeral message must be shown in place of the original message
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
         :return: instance of method :class:`aiogram.methods.send_video_note.SendVideoNote`
         """
@@ -3658,7 +3700,10 @@ class Message(MaybeInaccessibleMessage):
             message_thread_id=self.message_thread_id if self.is_topic_message else None,
             business_connection_id=self.business_connection_id,
             reply_parameters=self.as_reply_parameters(),
-            ephemeral_message_parameters=self.as_ephemeral_message_parameters(),
+            ephemeral_message_parameters=self.as_ephemeral_message_parameters(
+                callback_query_id=callback_query_id,
+                replace_callback_query_message=replace_callback_query_message,
+            ),
             video_note=video_note,
             direct_messages_topic_id=direct_messages_topic_id,
             duration=duration,
@@ -3670,7 +3715,6 @@ class Message(MaybeInaccessibleMessage):
             message_effect_id=message_effect_id,
             suggested_post_parameters=suggested_post_parameters,
             reply_markup=reply_markup,
-            callback_query_id=callback_query_id,
             allow_sending_without_reply=allow_sending_without_reply,
             **kwargs,
         ).as_(self._bot)
@@ -3775,6 +3819,7 @@ class Message(MaybeInaccessibleMessage):
         suggested_post_parameters: SuggestedPostParameters | None = None,
         reply_markup: ReplyMarkupUnion | None = None,
         callback_query_id: str | None = None,
+        replace_callback_query_message: bool | None = None,
         allow_sending_without_reply: bool | None = None,
         **kwargs: Any,
     ) -> SendVoice:
@@ -3805,6 +3850,7 @@ class Message(MaybeInaccessibleMessage):
         :param suggested_post_parameters: A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only. If the message is sent as a reply to another suggested post, then that suggested post is automatically declined
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
         :param callback_query_id: For outgoing ephemeral messages, identifier of the callback query which triggerred the message if any
+        :param replace_callback_query_message: For outgoing ephemeral messages, pass :code:`True` if the ephemeral message must be shown in place of the original message
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
         :return: instance of method :class:`aiogram.methods.send_voice.SendVoice`
         """
@@ -3822,7 +3868,10 @@ class Message(MaybeInaccessibleMessage):
             message_thread_id=self.message_thread_id if self.is_topic_message else None,
             business_connection_id=self.business_connection_id,
             reply_parameters=self.as_reply_parameters(),
-            ephemeral_message_parameters=self.as_ephemeral_message_parameters(),
+            ephemeral_message_parameters=self.as_ephemeral_message_parameters(
+                callback_query_id=callback_query_id,
+                replace_callback_query_message=replace_callback_query_message,
+            ),
             voice=voice,
             direct_messages_topic_id=direct_messages_topic_id,
             caption=caption,
@@ -3835,7 +3884,6 @@ class Message(MaybeInaccessibleMessage):
             message_effect_id=message_effect_id,
             suggested_post_parameters=suggested_post_parameters,
             reply_markup=reply_markup,
-            callback_query_id=callback_query_id,
             allow_sending_without_reply=allow_sending_without_reply,
             **kwargs,
         ).as_(self._bot)
@@ -5303,6 +5351,8 @@ class Message(MaybeInaccessibleMessage):
         message_effect_id: str | None = None,
         suggested_post_parameters: SuggestedPostParameters | None = None,
         reply_markup: ReplyMarkupUnion | None = None,
+        callback_query_id: str | None = None,
+        replace_callback_query_message: bool | None = None,
         **kwargs: Any,
     ) -> SendRichMessage:
         """
@@ -5327,6 +5377,8 @@ class Message(MaybeInaccessibleMessage):
         :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
         :param suggested_post_parameters: A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only. If the message is sent as a reply to another suggested post, then that suggested post is automatically declined
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
+        :param callback_query_id: For outgoing ephemeral messages, identifier of the callback query which triggerred the message if any
+        :param replace_callback_query_message: For outgoing ephemeral messages, pass :code:`True` if the ephemeral message must be shown in place of the original message
         :return: instance of method :class:`aiogram.methods.send_rich_message.SendRichMessage`
         """
         # DO NOT EDIT MANUALLY!!!
@@ -5343,7 +5395,10 @@ class Message(MaybeInaccessibleMessage):
             message_thread_id=self.message_thread_id if self.is_topic_message else None,
             business_connection_id=self.business_connection_id,
             reply_parameters=self.as_reply_parameters(),
-            ephemeral_message_parameters=self.as_ephemeral_message_parameters(),
+            ephemeral_message_parameters=self.as_ephemeral_message_parameters(
+                callback_query_id=callback_query_id,
+                replace_callback_query_message=replace_callback_query_message,
+            ),
             rich_message=rich_message,
             direct_messages_topic_id=direct_messages_topic_id,
             disable_notification=disable_notification,

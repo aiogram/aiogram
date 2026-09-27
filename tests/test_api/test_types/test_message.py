@@ -1305,6 +1305,26 @@ class TestMessage:
         # `callback_query_id` was already accepted before 10.3 and stays.
         assert "callback_query_id" in inspect.signature(Message.reply).parameters
 
+    def test_reply_routes_callback_query_fields_into_ephemeral_message_parameters(self):
+        # `callback_query_id` must not be sent via the deprecated top-level field;
+        # it and `replace_callback_query_message` are routed into the filled
+        # `ephemeral_message_parameters` object instead.
+        message = TEST_MESSAGE_EPHEMERAL
+        method = message.reply(
+            "pong", callback_query_id="q1", replace_callback_query_message=True
+        )
+        assert method.callback_query_id is None
+        parameters = method.ephemeral_message_parameters
+        assert parameters.receiver_user_id == message.from_user.id
+        assert parameters.callback_query_id == "q1"
+        assert parameters.replace_callback_query_message is True
+        # `replace_callback_query_message` had no route through `reply_*` at all;
+        # both fields are now accepted by every `reply_*` shortcut that fills
+        # `ephemeral_message_parameters`, including `reply_rich`.
+        for shortcut in (Message.reply, Message.reply_photo, Message.reply_rich):
+            assert "replace_callback_query_message" in inspect.signature(shortcut).parameters
+            assert "callback_query_id" in inspect.signature(shortcut).parameters
+
     def test_reply_to_ephemeral_message_is_ephemeral(self):
         # A reply to an ephemeral message must itself be an ephemeral message,
         # so `ephemeral_message_parameters` is filled from the replied-to message.
