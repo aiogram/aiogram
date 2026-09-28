@@ -162,6 +162,41 @@ class TestNode:
             MessageEntity(type="hashtag", offset=28, length=5),
         ]
 
+    @pytest.mark.parametrize(
+        "node,result,entities",
+        [
+            [
+                Bold(Italic("match"), " tail"),
+                "<b><i>match</i> tail</b>",
+                [
+                    MessageEntity(type="bold", offset=0, length=10),
+                    MessageEntity(type="italic", offset=0, length=5),
+                ],
+            ],
+            [
+                ExpandableBlockQuote(Bold("match"), " tail"),
+                "<blockquote expandable><b>match</b> tail</blockquote>",
+                [
+                    MessageEntity(type="expandable_blockquote", offset=0, length=10),
+                    MessageEntity(type="bold", offset=0, length=5),
+                ],
+            ],
+            [
+                ExpandableBlockQuote(Bold("match")),
+                "<blockquote expandable><b>match</b></blockquote>",
+                [
+                    MessageEntity(type="expandable_blockquote", offset=0, length=5),
+                    MessageEntity(type="bold", offset=0, length=5),
+                ],
+            ],
+        ],
+    )
+    def test_render_nested_entities_with_same_offset(self, node: Text, result: str, entities: list[MessageEntity]):
+        text, rendered_entities = node.render()
+
+        assert html_decoration.unparse(text, rendered_entities) == result
+        assert rendered_entities == entities
+
     def test_as_kwargs_default(self):
         node = Text("Hello, ", Bold("World"), "!")
         result = node.as_kwargs()

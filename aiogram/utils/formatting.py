@@ -83,7 +83,7 @@ class Text(Iterable[NodeType]):
                     entities.extend(node_entities)
 
         if _collect_entities and self.type:
-            entities.append(self._render_entity(offset=_offset, length=offset - _offset))
+            entities.insert(0, self._render_entity(offset=_offset, length=offset - _offset))
 
         if _collect_entities and _sort:
             entities.sort(key=lambda entity: entity.offset)
