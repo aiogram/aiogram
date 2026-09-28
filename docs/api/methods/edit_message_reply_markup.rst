@@ -49,4 +49,5 @@ As shortcut from received object
 --------------------------------
 
 - :meth:`aiogram.types.message.Message.edit_reply_markup`
+- :meth:`aiogram.types.sent_guest_message.SentGuestMessage.edit_reply_markup`
 - :meth:`aiogram.types.message.Message.delete_reply_markup`

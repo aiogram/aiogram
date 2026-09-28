@@ -1,0 +1,1 @@
+Add :class:`SentGuestMessage <aiogram.types.sent_guest_message.SentGuestMessage>` shortcuts to edit the sent inline guest message directly: ``edit_text``, ``edit_caption``, ``edit_media`` and ``edit_reply_markup``.

@@ -1,0 +1,16 @@
+edit_text:
+  method: editMessageText
+  fill: &guest-message-target
+    inline_message_id: self.inline_message_id
+
+edit_caption:
+  method: editMessageCaption
+  fill: *guest-message-target
+
+edit_media:
+  method: editMessageMedia
+  fill: *guest-message-target
+
+edit_reply_markup:
+  method: editMessageReplyMarkup
+  fill: *guest-message-target
