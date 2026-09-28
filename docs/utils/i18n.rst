@@ -85,6 +85,7 @@ a singular string, a plural string, and a value.
 
 .. code-block:: python
     :emphasize-lines: 6, 10
+
     from aiogram import html
     from aiogram.utils.i18n import gettext as _
 

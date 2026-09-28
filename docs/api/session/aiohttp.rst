@@ -23,7 +23,7 @@ Usage example
 Proxy requests in AiohttpSession
 ================================
 
-In order to use AiohttpSession with proxy connector you have to install `aiohttp-socks <https://pypi.org/project/aiohttp-socks>`_
+In order to use AiohttpSession with proxy connector you have to install `aiohttp-socks <https://pypi.org/project/aiohttp-socks>`__
 
 Binding session to bot:
 
@@ -76,7 +76,7 @@ or simply include your basic auth credential in URL
 Proxy chains
 ------------
 
-Since `aiohttp-socks <https://pypi.org/project/aiohttp-socks/>`_ supports proxy chains, you're able to use them in aiogram
+Since `aiohttp-socks <https://pypi.org/project/aiohttp-socks/>`__ supports proxy chains, you're able to use them in aiogram
 
 Example of chain proxies:
 
