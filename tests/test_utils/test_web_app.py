@@ -53,6 +53,19 @@ class TestWebApp:
     def test_check_webapp_signature(self, token, case, result):
         assert check_webapp_signature(token, case) is result
 
+    def test_check_webapp_signature_non_ascii_hash_returns_false(self):
+        # Regression test for https://github.com/aiogram/aiogram/issues/1903
+        # `hmac.compare_digest` raises `TypeError` when given a `str` containing
+        # non-ASCII characters, which previously propagated out of
+        # `check_webapp_signature` instead of being treated as an invalid signature.
+        case = (
+            "auth_date=1650385342"
+            "&user=%7B%22id%22%3A42%2C%22first_name%22%3A%22Test%22%7D"
+            "&query_id=test"
+            "&hash=не_валидный_хэш"
+        )
+        assert check_webapp_signature("42:TEST", case) is False
+
     def test_parse_web_app_init_data(self):
         parsed = parse_webapp_init_data(
             "auth_date=1650385342"
