@@ -32,10 +32,12 @@ from aiogram.methods import (
     SendLocation,
     SendMediaGroup,
     SendMessage,
+    SendMessageDraft,
     SendPaidMedia,
     SendPhoto,
     SendPoll,
     SendRichMessage,
+    SendRichMessageDraft,
     SendSticker,
     SendVenue,
     SendVideo,
@@ -1503,6 +1505,44 @@ class TestMessage:
 
         if hasattr(api_method, "reply_to_message_id"):
             assert api_method.reply_to_message_id is None
+
+        for key, value in kwargs.items():
+            assert getattr(api_method, key) == value
+
+    @pytest.mark.parametrize(
+        "alias_for_method,kwargs,method_class",
+        [
+            ["draft", {"draft_id": 42}, SendMessageDraft],
+            [
+                "rich_draft",
+                {"draft_id": 42, "rich_message": InputRichMessage(html="<p>Test</p>")},
+                SendRichMessageDraft,
+            ],
+        ],
+    )
+    @pytest.mark.parametrize("alias_type", ["reply", "answer"])
+    def test_reply_answer_draft_aliases(
+        self,
+        alias_for_method: str,
+        alias_type: str,
+        kwargs: dict[str, Any],
+        method_class: type[SendMessageDraft | SendRichMessageDraft],
+    ):
+        message = Message(
+            message_id=42, chat=Chat(id=42, type="private"), date=datetime.datetime.now()
+        )
+        alias_name = f"{alias_type}_{alias_for_method}"
+
+        alias = getattr(message, alias_name)
+        assert callable(alias)
+
+        api_method = alias(**kwargs)
+        assert isinstance(api_method, method_class)
+
+        assert api_method.chat_id == message.chat.id
+        # The draft methods have no `reply_parameters` field, so the reply
+        # variants intentionally behave exactly like the answer variants.
+        assert "reply_parameters" not in method_class.model_fields
 
         for key, value in kwargs.items():
             assert getattr(api_method, key) == value
