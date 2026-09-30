@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
 
+from ..client.default import Default
 from ..types import MessageEntity
 from .base import TelegramMethod
 
@@ -24,7 +25,7 @@ class GiftPremiumSubscription(TelegramMethod[bool]):
     """Number of Telegram Stars to pay for the Telegram Premium subscription; must be 1000 for 3 months, 1500 for 6 months, and 2500 for 12 months"""
     text: str | None = None
     """Text that will be shown along with the service message about the subscription; 0-128 characters"""
-    text_parse_mode: str | None = None
+    text_parse_mode: str | Default | None = Default("parse_mode")
     """Mode for parsing entities in the text. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details. Entities other than 'bold', 'italic', 'underline', 'strikethrough', 'spoiler', 'custom_emoji', and 'date_time' are ignored"""
     text_entities: list[MessageEntity] | None = None
     """A JSON-serialized list of special entities that appear in the gift text. It can be specified instead of *text_parse_mode*. Entities other than 'bold', 'italic', 'underline', 'strikethrough', 'spoiler', 'custom_emoji', and 'date_time' are ignored"""
@@ -40,7 +41,7 @@ class GiftPremiumSubscription(TelegramMethod[bool]):
             month_count: int,
             star_count: int,
             text: str | None = None,
-            text_parse_mode: str | None = None,
+            text_parse_mode: str | Default | None = Default("parse_mode"),
             text_entities: list[MessageEntity] | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:

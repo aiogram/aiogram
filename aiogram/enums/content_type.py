@@ -85,4 +85,5 @@ class ContentType(str, Enum):
     RICH_MESSAGE = "rich_message"
     COMMUNITY_CHAT_ADDED = "community_chat_added"
     COMMUNITY_CHAT_REMOVED = "community_chat_removed"
+    COMMUNITY_CHAT_JOINED = "community_chat_joined"
     USER_SHARED = "user_shared"

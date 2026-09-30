@@ -24,6 +24,7 @@ class TestChatMemberTagPermissions:
             can_post_stories=True,
             can_edit_stories=True,
             can_delete_stories=True,
+            can_send_welcome_messages=True,
             can_manage_tags=True,
         )
         assert rights.can_manage_tags is True
@@ -43,6 +44,7 @@ class TestChatMemberTagPermissions:
             can_post_stories=True,
             can_edit_stories=True,
             can_delete_stories=True,
+            can_send_welcome_messages=True,
             can_manage_tags=True,
         )
         assert admin.can_manage_tags is True

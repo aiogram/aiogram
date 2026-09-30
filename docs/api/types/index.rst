@@ -80,13 +80,16 @@ Available types
     checklist_tasks_done
     community
     community_chat_added
+    community_chat_joined
     community_chat_removed
     contact
     copy_text_button
     dice
     direct_message_price_changed
     direct_messages_topic
+    disabled_button
     document
+    ephemeral_message_parameters
     external_reply_info
     file
     force_reply
@@ -158,6 +161,7 @@ Available types
     message
     message_auto_delete_timer_changed
     message_entity
+    message_generation_stopped
     message_id
     message_origin
     message_origin_channel
@@ -295,9 +299,12 @@ Rich messages
     input_rich_block_animation
     input_rich_block_audio
     input_rich_block_block_quotation
+    input_rich_block_buttons
     input_rich_block_collage
     input_rich_block_details
     input_rich_block_divider
+    input_rich_block_document
+    input_rich_block_expandable_block_quotation
     input_rich_block_footer
     input_rich_block_list
     input_rich_block_list_item
@@ -320,10 +327,13 @@ Rich messages
     rich_block_animation
     rich_block_audio
     rich_block_block_quotation
+    rich_block_buttons
     rich_block_caption
     rich_block_collage
     rich_block_details
     rich_block_divider
+    rich_block_document
+    rich_block_expandable_block_quotation
     rich_block_footer
     rich_block_list
     rich_block_list_item
@@ -341,12 +351,14 @@ Rich messages
     rich_block_video
     rich_block_voice_note
     rich_message
+    rich_message_button
     rich_text
     rich_text_anchor
     rich_text_anchor_link
     rich_text_bank_card_number
     rich_text_bold
     rich_text_bot_command
+    rich_text_button
     rich_text_cashtag
     rich_text_code
     rich_text_custom_emoji

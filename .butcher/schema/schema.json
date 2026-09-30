@@ -1,7 +1,7 @@
 {
   "api": {
-    "version": "10.2",
-    "release_date": "2026-07-14"
+    "version": "10.3",
+    "release_date": "2026-08-24"
   },
   "items": [
     {
@@ -229,6 +229,14 @@
               "html_description": "<td><em>Optional</em>. User payment subscription has changed</td>",
               "rst_description": "*Optional*. User payment subscription has changed\n",
               "name": "subscription",
+              "required": false
+            },
+            {
+              "type": "MessageGenerationStopped",
+              "description": "A user asked the bot to stop the generation of a message",
+              "html_description": "<td><em>Optional</em>. A user asked the bot to stop the generation of a message</td>",
+              "rst_description": "*Optional*. A user asked the bot to stop the generation of a message\n",
+              "name": "stopped_message_generation",
               "required": false
             }
           ],
@@ -1817,9 +1825,9 @@
             },
             {
               "type": "ProximityAlertTriggered",
-              "description": "Service message. A user in the chat triggered another user's proximity alert while sharing Live Location.",
-              "html_description": "<td><em>Optional</em>. Service message. A user in the chat triggered another user's proximity alert while sharing Live Location.</td>",
-              "rst_description": "*Optional*. Service message. A user in the chat triggered another user's proximity alert while sharing Live Location.\n",
+              "description": "Service message: a user in the chat triggered another user's proximity alert while sharing Live Location",
+              "html_description": "<td><em>Optional</em>. Service message: a user in the chat triggered another user's proximity alert while sharing Live Location</td>",
+              "rst_description": "*Optional*. Service message: a user in the chat triggered another user's proximity alert while sharing Live Location\n",
               "name": "proximity_alert_triggered",
               "required": false
             },
@@ -1857,17 +1865,25 @@
             },
             {
               "type": "CommunityChatAdded",
-              "description": "Service message: chat added to a Community",
-              "html_description": "<td><em>Optional</em>. Service message: chat added to a <a href=\"#community\">Community</a></td>",
-              "rst_description": "*Optional*. Service message: chat added to a :class:`aiogram.types.community.Community`\n",
+              "description": "Service message: chat or bot added to a Community",
+              "html_description": "<td><em>Optional</em>. Service message: chat or bot added to a <a href=\"#community\">Community</a></td>",
+              "rst_description": "*Optional*. Service message: chat or bot added to a :class:`aiogram.types.community.Community`\n",
               "name": "community_chat_added",
               "required": false
             },
             {
+              "type": "CommunityChatJoined",
+              "description": "Service message: chat was joined by a user from a Community",
+              "html_description": "<td><em>Optional</em>. Service message: chat was joined by a user from a <a href=\"#community\">Community</a></td>",
+              "rst_description": "*Optional*. Service message: chat was joined by a user from a :class:`aiogram.types.community.Community`\n",
+              "name": "community_chat_joined",
+              "required": false
+            },
+            {
               "type": "CommunityChatRemoved",
-              "description": "Service message: chat removed from a Community",
-              "html_description": "<td><em>Optional</em>. Service message: chat removed from a <a href=\"#community\">Community</a></td>",
-              "rst_description": "*Optional*. Service message: chat removed from a :class:`aiogram.types.community.Community`\n",
+              "description": "Service message: chat or bot removed from a Community",
+              "html_description": "<td><em>Optional</em>. Service message: chat or bot removed from a <a href=\"#community\">Community</a></td>",
+              "rst_description": "*Optional*. Service message: chat or bot removed from a :class:`aiogram.types.community.Community`\n",
               "name": "community_chat_removed",
               "required": false
             },
@@ -2570,6 +2586,40 @@
               "html_description": "<td><em>Optional</em>. Persistent identifier of the specific poll option to be replied to</td>",
               "rst_description": "*Optional*. Persistent identifier of the specific poll option to be replied to\n",
               "name": "poll_option_id",
+              "required": false
+            }
+          ],
+          "category": "types"
+        },
+        {
+          "anchor": "ephemeralmessageparameters",
+          "name": "EphemeralMessageParameters",
+          "description": "",
+          "html_description": "",
+          "rst_description": "",
+          "annotations": [
+            {
+              "type": "Integer",
+              "description": "Identifier of the user who will receive the message. It is not guaranteed that the user will receive the message, especially if they are offline. See here for more details.",
+              "html_description": "<td>Identifier of the user who will receive the message. It is not guaranteed that the user will receive the message, especially if they are offline. See <a href=\"#ephemeral-messages-and-commands\">here</a> for more details.</td>",
+              "rst_description": "Identifier of the user who will receive the message. It is not guaranteed that the user will receive the message, especially if they are offline. See `here <https://core.telegram.org/bots/api#ephemeral-messages-and-commands>`_ for more details.\n",
+              "name": "receiver_user_id",
+              "required": true
+            },
+            {
+              "type": "String",
+              "description": "Identifier of the callback query which triggered the message, if any",
+              "html_description": "<td><em>Optional</em>. Identifier of the callback query which triggered the message, if any</td>",
+              "rst_description": "*Optional*. Identifier of the callback query which triggered the message, if any\n",
+              "name": "callback_query_id",
+              "required": false
+            },
+            {
+              "type": "Boolean",
+              "description": "Pass True if the ephemeral message must be shown in place of the original message. Must be False for callback queries from ephemeral messages, which must be edited using regular editEphemeralMessage… methods.",
+              "html_description": "<td><em>Optional</em>. Pass <em>True</em> if the ephemeral message must be shown in place of the original message. Must be <em>False</em> for callback queries from ephemeral messages, which must be edited using regular <em>editEphemeralMessage&#8230;</em> methods.</td>",
+              "rst_description": "*Optional*. Pass :code:`True` if the ephemeral message must be shown in place of the original message. Must be :code:`False` for callback queries from ephemeral messages, which must be edited using regular *editEphemeralMessage…* methods.\n",
+              "name": "replace_callback_query_message",
               "required": false
             }
           ],
@@ -3283,9 +3333,9 @@
         {
           "anchor": "videonote",
           "name": "VideoNote",
-          "description": "This object represents a video message (available in Telegram apps as of v.4.0).",
-          "html_description": "<p>This object represents a <a href=\"https://telegram.org/blog/video-messages-and-telescope\">video message</a> (available in Telegram apps as of <a href=\"https://telegram.org/blog/video-messages-and-telescope\">v.4.0</a>).</p>",
-          "rst_description": "This object represents a `video message <https://telegram.org/blog/video-messages-and-telescope>`_ (available in Telegram apps as of `v.4.0 <https://telegram.org/blog/video-messages-and-telescope>`_).",
+          "description": "This object represents a video message.",
+          "html_description": "<p>This object represents a <a href=\"https://telegram.org/blog/video-messages-and-telescope\">video message</a>.</p>",
+          "rst_description": "This object represents a `video message <https://telegram.org/blog/video-messages-and-telescope>`_.",
           "annotations": [
             {
               "type": "String",
@@ -4578,6 +4628,40 @@
           "category": "types"
         },
         {
+          "anchor": "messagegenerationstopped",
+          "name": "MessageGenerationStopped",
+          "description": "This object describes an update about a user stopping message generation.",
+          "html_description": "<p>This object describes an update about a user stopping message generation.</p>",
+          "rst_description": "This object describes an update about a user stopping message generation.",
+          "annotations": [
+            {
+              "type": "Chat",
+              "description": "Chat in which the message is generated",
+              "html_description": "<td>Chat in which the message is generated</td>",
+              "rst_description": "Chat in which the message is generated\n",
+              "name": "chat",
+              "required": true
+            },
+            {
+              "type": "Integer",
+              "description": "Unique identifier of the message thread in which the message is generated",
+              "html_description": "<td><em>Optional</em>. Unique identifier of the message thread in which the message is generated</td>",
+              "rst_description": "*Optional*. Unique identifier of the message thread in which the message is generated\n",
+              "name": "message_thread_id",
+              "required": false
+            },
+            {
+              "type": "Integer",
+              "description": "Unique identifier of the message draft which was stopped",
+              "html_description": "<td>Unique identifier of the message draft which was stopped</td>",
+              "rst_description": "Unique identifier of the message draft which was stopped\n",
+              "name": "draft_id",
+              "required": true
+            }
+          ],
+          "category": "types"
+        },
+        {
           "anchor": "polloptionadded",
           "name": "PollOptionAdded",
           "description": "Describes a service message about an option added to a poll.",
@@ -5040,15 +5124,33 @@
         {
           "anchor": "communitychatadded",
           "name": "CommunityChatAdded",
-          "description": "Describes a service message about a chat being added to a community.",
-          "html_description": "<p>Describes a service message about a chat being added to a community.</p>",
-          "rst_description": "Describes a service message about a chat being added to a community.",
+          "description": "Describes a service message about a chat or a bot being added to a community.",
+          "html_description": "<p>Describes a service message about a chat or a bot being added to a community.</p>",
+          "rst_description": "Describes a service message about a chat or a bot being added to a community.",
           "annotations": [
             {
               "type": "Community",
-              "description": "The new community to which the chat belongs",
-              "html_description": "<td>The new community to which the chat belongs</td>",
-              "rst_description": "The new community to which the chat belongs\n",
+              "description": "The new community to which the chat or the bot belongs",
+              "html_description": "<td>The new community to which the chat or the bot belongs</td>",
+              "rst_description": "The new community to which the chat or the bot belongs\n",
+              "name": "community",
+              "required": true
+            }
+          ],
+          "category": "types"
+        },
+        {
+          "anchor": "communitychatjoined",
+          "name": "CommunityChatJoined",
+          "description": "Describes a service message about a chat being joined by a user from a community.",
+          "html_description": "<p>Describes a service message about a chat being joined by a user from a community.</p>",
+          "rst_description": "Describes a service message about a chat being joined by a user from a community.",
+          "annotations": [
+            {
+              "type": "Community",
+              "description": "The community from which the chat was joined",
+              "html_description": "<td>The community from which the chat was joined</td>",
+              "rst_description": "The community from which the chat was joined\n",
               "name": "community",
               "required": true
             }
@@ -5058,9 +5160,9 @@
         {
           "anchor": "communitychatremoved",
           "name": "CommunityChatRemoved",
-          "description": "Describes a service message about a chat being removed from a community. Currently holds no information.",
-          "html_description": "<p>Describes a service message about a chat being removed from a community. Currently holds no information.</p>",
-          "rst_description": "Describes a service message about a chat being removed from a community. Currently holds no information.",
+          "description": "Describes a service message about a chat or a bot being removed from a community. Currently holds no information.",
+          "html_description": "<p>Describes a service message about a chat or a bot being removed from a community. Currently holds no information.</p>",
+          "rst_description": "Describes a service message about a chat or a bot being removed from a community. Currently holds no information.",
           "annotations": [],
           "category": "types"
         },
@@ -6165,6 +6267,14 @@
               "rst_description": "*Optional*. Use this parameter if you want to show the keyboard to specific users only. Targets: 1) users that are @mentioned in the *text* of the :class:`aiogram.types.message.Message` object; 2) if the bot's message is a reply to a message in the same chat and forum topic, sender of the original message.\n\n\n\n*Example:* A user requests to change the bot's language, bot replies to the request with a keyboard to select the new language. Other users in the group don't see the keyboard.\n",
               "name": "selective",
               "required": false
+            },
+            {
+              "type": "Boolean",
+              "description": "Pass True if the reply interface must be shown to the user, as if they had manually selected the bot's message and tapped 'Reply'",
+              "html_description": "<td><em>Optional</em>. Pass <em>True</em> if the reply interface must be shown to the user, as if they had manually selected the bot's message and tapped 'Reply'</td>",
+              "rst_description": "*Optional*. Pass :code:`True` if the reply interface must be shown to the user, as if they had manually selected the bot's message and tapped 'Reply'\n",
+              "name": "force_reply",
+              "required": false
             }
           ],
           "category": "types"
@@ -6515,6 +6625,14 @@
               "rst_description": "Array of button rows, each represented by an Array of :class:`aiogram.types.inline_keyboard_button.InlineKeyboardButton` objects\n",
               "name": "inline_keyboard",
               "required": true
+            },
+            {
+              "type": "Boolean",
+              "description": "Pass True if the reply interface must be shown to the user, as if they had manually selected the bot's message and tapped 'Reply'. The value of the field can't be changed when the inline keyboard is edited.",
+              "html_description": "<td><em>Optional</em>. Pass <em>True</em> if the reply interface must be shown to the user, as if they had manually selected the bot's message and tapped 'Reply'. The value of the field can't be changed when the inline keyboard is edited.</td>",
+              "rst_description": "*Optional*. Pass :code:`True` if the reply interface must be shown to the user, as if they had manually selected the bot's message and tapped 'Reply'. The value of the field can't be changed when the inline keyboard is edited.\n",
+              "name": "force_reply",
+              "required": false
             }
           ],
           "category": "types"
@@ -6576,9 +6694,9 @@
             },
             {
               "type": "LoginUrl",
-              "description": "An HTTPS URL used to automatically authorize the user. Can be used as a replacement for the Telegram Login Widget.",
-              "html_description": "<td><em>Optional</em>. An HTTPS URL used to automatically authorize the user. Can be used as a replacement for the <a href=\"/widgets/login\">Telegram Login Widget</a>.</td>",
-              "rst_description": "*Optional*. An HTTPS URL used to automatically authorize the user. Can be used as a replacement for the `Telegram Login Widget <https://core.telegram.org/widgets/login>`_.\n",
+              "description": "An HTTPS URL used to automatically authorize the user. Can be used as a replacement for the Telegram Login Widget. Not supported for ephemeral messages.",
+              "html_description": "<td><em>Optional</em>. An HTTPS URL used to automatically authorize the user. Can be used as a replacement for the <a href=\"/widgets/login\">Telegram Login Widget</a>. Not supported for ephemeral messages.</td>",
+              "rst_description": "*Optional*. An HTTPS URL used to automatically authorize the user. Can be used as a replacement for the `Telegram Login Widget <https://core.telegram.org/widgets/login>`_. Not supported for ephemeral messages.\n",
               "name": "login_url",
               "required": false
             },
@@ -6629,6 +6747,14 @@
               "rst_description": "*Optional*. Specify :code:`True`, to send a `Pay button <https://core.telegram.org/bots/api#payments>`_. Substrings '⭐' and 'XTR' in the buttons's text will be replaced with a Telegram Star icon.\n\n\n\n**NOTE:** This type of button **must** always be the first button in the first row and can only be used in invoice messages.\n",
               "name": "pay",
               "required": false
+            },
+            {
+              "type": "DisabledButton",
+              "description": "If set, then the button is disabled and does nothing",
+              "html_description": "<td><em>Optional</em>. If set, then the button is disabled and does nothing</td>",
+              "rst_description": "*Optional*. If set, then the button is disabled and does nothing\n",
+              "name": "disabled",
+              "required": false
             }
           ],
           "category": "types"
@@ -6636,9 +6762,9 @@
         {
           "anchor": "loginurl",
           "name": "LoginUrl",
-          "description": "This object represents a parameter of the inline keyboard button used to automatically authorize a user. Serves as a great replacement for the Telegram Login Widget when the user is coming from Telegram. All the user needs to do is tap/click a button and confirm that they want to log in:\nTelegram apps support these buttons as of version 5.7.\nSample bot: @discussbot",
-          "html_description": "<p>This object represents a parameter of the inline keyboard button used to automatically authorize a user. Serves as a great replacement for the <a href=\"/widgets/login\">Telegram Login Widget</a> when the user is coming from Telegram. All the user needs to do is tap/click a button and confirm that they want to log in:</p><p>Telegram apps support these buttons as of <a href=\"https://telegram.org/blog/privacy-discussions-web-bots#meet-seamless-web-bots\">version 5.7</a>.</p><blockquote>\n<p>Sample bot: <a href=\"https://t.me/discussbot\">@discussbot</a></p>\n</blockquote>",
-          "rst_description": "This object represents a parameter of the inline keyboard button used to automatically authorize a user. Serves as a great replacement for the `Telegram Login Widget <https://core.telegram.org/widgets/login>`_ when the user is coming from Telegram. All the user needs to do is tap/click a button and confirm that they want to log in:\nTelegram apps support these buttons as of `version 5.7 <https://telegram.org/blog/privacy-discussions-web-bots#meet-seamless-web-bots>`_.\n\n Sample bot: `@discussbot <https://t.me/discussbot>`_",
+          "description": "This object represents a parameter of the inline keyboard button used to automatically authorize a user. It serves as a great replacement for the Telegram Login Widget when the user is coming from Telegram. All the user needs to do is tap/click a button and confirm that they want to log in:\nSample bot: @DiscussBot",
+          "html_description": "<p>This object represents a parameter of the inline keyboard button used to automatically authorize a user. It serves as a great replacement for the <a href=\"/widgets/login\">Telegram Login Widget</a> when the user is coming from Telegram. All the user needs to do is tap/click a button and confirm that they want to log in:</p><blockquote>\n<p>Sample bot: <a href=\"https://t.me/discussbot\">@DiscussBot</a></p>\n</blockquote>",
+          "rst_description": "This object represents a parameter of the inline keyboard button used to automatically authorize a user. It serves as a great replacement for the `Telegram Login Widget <https://core.telegram.org/widgets/login>`_ when the user is coming from Telegram. All the user needs to do is tap/click a button and confirm that they want to log in:\n\n Sample bot: `@DiscussBot <https://t.me/discussbot>`_",
           "annotations": [
             {
               "type": "String",
@@ -6658,9 +6784,9 @@
             },
             {
               "type": "String",
-              "description": "Username of a bot, which will be used for user authorization. See Setting up a bot for more details. If not specified, the current bot's username will be assumed. The url's domain must be the same as the domain linked with the bot. See Linking your domain to the bot for more details.",
-              "html_description": "<td><em>Optional</em>. Username of a bot, which will be used for user authorization. See <a href=\"/widgets/login#setting-up-a-bot\">Setting up a bot</a> for more details. If not specified, the current bot's username will be assumed. The <em>url</em>'s domain must be the same as the domain linked with the bot. See <a href=\"/widgets/login#linking-your-domain-to-the-bot\">Linking your domain to the bot</a> for more details.</td>",
-              "rst_description": "*Optional*. Username of a bot, which will be used for user authorization. See `Setting up a bot <https://core.telegram.org/widgets/login#setting-up-a-bot>`_ for more details. If not specified, the current bot's username will be assumed. The *url*'s domain must be the same as the domain linked with the bot. See `Linking your domain to the bot <https://core.telegram.org/widgets/login#linking-your-domain-to-the-bot>`_ for more details.\n",
+              "description": "Username of a bot, which will be used for user authorization; not supported in RichMessageButton. See Setting up a bot for more details. If not specified, the current bot's username will be assumed. The url's domain must be the same as the domain linked with the bot. See Linking your domain to the bot for more details.",
+              "html_description": "<td><em>Optional</em>. Username of a bot, which will be used for user authorization; not supported in <a href=\"#richmessagebutton\">RichMessageButton</a>. See <a href=\"/widgets/login#setting-up-a-bot\">Setting up a bot</a> for more details. If not specified, the current bot's username will be assumed. The <em>url</em>'s domain must be the same as the domain linked with the bot. See <a href=\"/widgets/login#linking-your-domain-to-the-bot\">Linking your domain to the bot</a> for more details.</td>",
+              "rst_description": "*Optional*. Username of a bot, which will be used for user authorization; not supported in :class:`aiogram.types.rich_message_button.RichMessageButton`. See `Setting up a bot <https://core.telegram.org/widgets/login#setting-up-a-bot>`_ for more details. If not specified, the current bot's username will be assumed. The *url*'s domain must be the same as the domain linked with the bot. See `Linking your domain to the bot <https://core.telegram.org/widgets/login#linking-your-domain-to-the-bot>`_ for more details.\n",
               "name": "bot_username",
               "required": false
             },
@@ -6744,6 +6870,15 @@
           "category": "types"
         },
         {
+          "anchor": "disabledbutton",
+          "name": "DisabledButton",
+          "description": "This object represents a disabled button which does nothing. Currently holds no information.",
+          "html_description": "<p>This object represents a disabled button which does nothing. Currently holds no information.</p>",
+          "rst_description": "This object represents a disabled button which does nothing. Currently holds no information.",
+          "annotations": [],
+          "category": "types"
+        },
+        {
           "anchor": "callbackquery",
           "name": "CallbackQuery",
           "description": "This object represents an incoming callback query from a callback button in an inline keyboard. If the button that originated the query was attached to a message sent by the bot, the field message will be present. If the button was attached to a message sent via the bot (in inline mode), the field inline_message_id will be present. Exactly one of the fields data or game_short_name will be present.\nNOTE: After the user presses a callback button, Telegram clients will display a progress bar until you call answerCallbackQuery. It is, therefore, necessary to react by calling answerCallbackQuery even if no notification to the user is needed (e.g., without specifying any of the optional parameters).",
@@ -6801,8 +6936,8 @@
             {
               "type": "String",
               "description": "Short name of a Game to be returned, serves as the unique identifier for the game",
-              "html_description": "<td><em>Optional</em>. Short name of a <a href=\"#games\">Game</a> to be returned, serves as the unique identifier for the game</td>",
-              "rst_description": "*Optional*. Short name of a `Game <https://core.telegram.org/bots/api#games>`_ to be returned, serves as the unique identifier for the game\n",
+              "html_description": "<td><em>Optional</em>. Short name of a <a href=\"#game\">Game</a> to be returned, serves as the unique identifier for the game</td>",
+              "rst_description": "*Optional*. Short name of a :class:`aiogram.types.game.Game` to be returned, serves as the unique identifier for the game\n",
               "name": "game_short_name",
               "required": false
             }
@@ -6818,9 +6953,9 @@
           "annotations": [
             {
               "type": "True",
-              "description": "Shows reply interface to the user, as if they manually selected the bot's message and tapped 'Reply'",
-              "html_description": "<td>Shows reply interface to the user, as if they manually selected the bot's message and tapped 'Reply'</td>",
-              "rst_description": "Shows reply interface to the user, as if they manually selected the bot's message and tapped 'Reply'\n",
+              "description": "Shows reply interface to the user, as if they had manually selected the bot's message and tapped 'Reply'",
+              "html_description": "<td>Shows reply interface to the user, as if they had manually selected the bot's message and tapped 'Reply'</td>",
+              "rst_description": "Shows reply interface to the user, as if they had manually selected the bot's message and tapped 'Reply'\n",
               "name": "force_reply",
               "required": true
             },
@@ -7146,11 +7281,19 @@
             },
             {
               "type": "Boolean",
-              "description": "True, if the administrator can edit the tags of regular members; for groups and supergroups only. If omitted, defaults to the value of can_pin_messages.",
-              "html_description": "<td><em>Optional</em>. <em>True</em>, if the administrator can edit the tags of regular members; for groups and supergroups only. If omitted, defaults to the value of can_pin_messages.</td>",
-              "rst_description": "*Optional*. :code:`True`, if the administrator can edit the tags of regular members; for groups and supergroups only. If omitted, defaults to the value of can_pin_messages.\n",
+              "description": "True, if the administrator can edit the tags of regular members; for groups and supergroups only",
+              "html_description": "<td><em>Optional</em>. <em>True</em>, if the administrator can edit the tags of regular members; for groups and supergroups only</td>",
+              "rst_description": "*Optional*. :code:`True`, if the administrator can edit the tags of regular members; for groups and supergroups only\n",
               "name": "can_manage_tags",
               "required": false
+            },
+            {
+              "type": "Boolean",
+              "description": "True, if the administrator can manage chat welcome messages or directly send them in the case of bots",
+              "html_description": "<td><em>True</em>, if the administrator can manage chat welcome messages or directly send them in the case of bots</td>",
+              "rst_description": ":code:`True`, if the administrator can manage chat welcome messages or directly send them in the case of bots\n",
+              "name": "can_send_welcome_messages",
+              "required": true
             }
           ],
           "category": "types"
@@ -7441,11 +7584,19 @@
             },
             {
               "type": "Boolean",
-              "description": "True, if the administrator can edit the tags of regular members; for groups and supergroups only. If omitted, defaults to the value of can_pin_messages.",
-              "html_description": "<td><em>Optional</em>. <em>True</em>, if the administrator can edit the tags of regular members; for groups and supergroups only. If omitted, defaults to the value of can_pin_messages.</td>",
-              "rst_description": "*Optional*. :code:`True`, if the administrator can edit the tags of regular members; for groups and supergroups only. If omitted, defaults to the value of can_pin_messages.\n",
+              "description": "True, if the administrator can edit the tags of regular members; for groups and supergroups only",
+              "html_description": "<td><em>Optional</em>. <em>True</em>, if the administrator can edit the tags of regular members; for groups and supergroups only</td>",
+              "rst_description": "*Optional*. :code:`True`, if the administrator can edit the tags of regular members; for groups and supergroups only\n",
               "name": "can_manage_tags",
               "required": false
+            },
+            {
+              "type": "Boolean",
+              "description": "True, if the administrator can manage chat welcome messages or directly send them in the case of bots",
+              "html_description": "<td><em>True</em>, if the administrator can manage chat welcome messages or directly send them in the case of bots</td>",
+              "rst_description": ":code:`True`, if the administrator can manage chat welcome messages or directly send them in the case of bots\n",
+              "name": "can_send_welcome_messages",
+              "required": true
             },
             {
               "type": "String",
@@ -9326,6 +9477,30 @@
               "rst_description": "Origin of the gift. Currently, either 'upgrade' for gifts upgraded from regular gifts, 'transfer' for gifts transferred from other users or channels, 'resale' for gifts bought from other users, 'gifted_upgrade' for upgrades purchased after the gift was sent, or 'offer' for gifts bought or sold through gift purchase offers.\n",
               "name": "origin",
               "required": true
+            },
+            {
+              "type": "String",
+              "description": "Text of the message that was added to the gift",
+              "html_description": "<td><em>Optional</em>. Text of the message that was added to the gift</td>",
+              "rst_description": "*Optional*. Text of the message that was added to the gift\n",
+              "name": "text",
+              "required": false
+            },
+            {
+              "type": "Array of MessageEntity",
+              "description": "Special entities that appear in the text",
+              "html_description": "<td><em>Optional</em>. Special entities that appear in the text</td>",
+              "rst_description": "*Optional*. Special entities that appear in the text\n",
+              "name": "entities",
+              "required": false
+            },
+            {
+              "type": "True",
+              "description": "True, if the sender and gift text are shown only to the gift receiver; otherwise, everyone will be able to see them",
+              "html_description": "<td><em>Optional</em>. <em>True</em>, if the sender and gift text are shown only to the gift receiver; otherwise, everyone will be able to see them</td>",
+              "rst_description": "*Optional*. :code:`True`, if the sender and gift text are shown only to the gift receiver; otherwise, everyone will be able to see them\n",
+              "name": "is_private",
+              "required": false
             },
             {
               "type": "String",
@@ -11803,20 +11978,12 @@
               "name": "direct_messages_topic_id"
             },
             {
-              "type": "Integer",
+              "type": "EphemeralMessageParameters",
               "required": false,
-              "description": "For outgoing ephemeral messages, unique identifier of the user who will receive the message; for group and supergroup chats only. It is not guaranteed that the user will receive the message, especially if they are offline. See ephemeral message sending for more details.",
-              "html_description": "<td>For outgoing ephemeral messages, unique identifier of the user who will receive the message; for group and supergroup chats only. It is not guaranteed that the user will receive the message, especially if they are offline. See <a href=\"#ephemeral-messages-and-commands\">ephemeral message sending</a> for more details.</td>",
-              "rst_description": "For outgoing ephemeral messages, unique identifier of the user who will receive the message; for group and supergroup chats only. It is not guaranteed that the user will receive the message, especially if they are offline. See `ephemeral message sending <https://core.telegram.org/bots/api#ephemeral-messages-and-commands>`_ for more details.\n",
-              "name": "receiver_user_id"
-            },
-            {
-              "type": "String",
-              "required": false,
-              "description": "For outgoing ephemeral messages, identifier of the callback query which triggerred the message if any",
-              "html_description": "<td>For outgoing ephemeral messages, identifier of the callback query which triggerred the message if any</td>",
-              "rst_description": "For outgoing ephemeral messages, identifier of the callback query which triggerred the message if any\n",
-              "name": "callback_query_id"
+              "description": "A JSON-serialized object containing the parameters of the ephemeral message to send",
+              "html_description": "<td>A JSON-serialized object containing the parameters of the ephemeral message to send</td>",
+              "rst_description": "A JSON-serialized object containing the parameters of the ephemeral message to send\n",
+              "name": "ephemeral_message_parameters"
             },
             {
               "type": "String",
@@ -12068,9 +12235,9 @@
         {
           "anchor": "copymessage",
           "name": "copyMessage",
-          "description": "Use this method to copy messages of any kind. Service messages, paid media messages, giveaway messages, giveaway winners messages, and invoice messages can't be copied. A quiz poll can be copied only if the value of the field correct_option_id is known to the bot. The method is analogous to the method forwardMessage, but the copied message doesn't have a link to the original message. Returns the MessageId of the sent message on success.",
-          "html_description": "<p>Use this method to copy messages of any kind. Service messages, paid media messages, giveaway messages, giveaway winners messages, and invoice messages can't be copied. A quiz <a href=\"#poll\">poll</a> can be copied only if the value of the field <em>correct_option_id</em> is known to the bot. The method is analogous to the method <a href=\"#forwardmessage\">forwardMessage</a>, but the copied message doesn't have a link to the original message. Returns the <a href=\"#messageid\">MessageId</a> of the sent message on success.</p>",
-          "rst_description": "Use this method to copy messages of any kind. Service messages, paid media messages, giveaway messages, giveaway winners messages, and invoice messages can't be copied. A quiz :class:`aiogram.methods.poll.Poll` can be copied only if the value of the field *correct_option_id* is known to the bot. The method is analogous to the method :class:`aiogram.methods.forward_message.ForwardMessage`, but the copied message doesn't have a link to the original message. Returns the :class:`aiogram.types.message_id.MessageId` of the sent message on success.",
+          "description": "Use this method to copy messages of any kind. Service messages, paid media messages, giveaway messages, giveaway winners messages, and invoice messages can't be copied. A quiz poll can be copied only if the value of the field correct_option_ids is known to the bot. The method is analogous to the method forwardMessage, but the copied message doesn't have a link to the original message. Returns the MessageId of the sent message on success.",
+          "html_description": "<p>Use this method to copy messages of any kind. Service messages, paid media messages, giveaway messages, giveaway winners messages, and invoice messages can't be copied. A quiz <a href=\"#poll\">poll</a> can be copied only if the value of the field <em>correct_option_ids</em> is known to the bot. The method is analogous to the method <a href=\"#forwardmessage\">forwardMessage</a>, but the copied message doesn't have a link to the original message. Returns the <a href=\"#messageid\">MessageId</a> of the sent message on success.</p>",
+          "rst_description": "Use this method to copy messages of any kind. Service messages, paid media messages, giveaway messages, giveaway winners messages, and invoice messages can't be copied. A quiz :class:`aiogram.methods.poll.Poll` can be copied only if the value of the field *correct_option_ids* is known to the bot. The method is analogous to the method :class:`aiogram.methods.forward_message.ForwardMessage`, but the copied message doesn't have a link to the original message. Returns the :class:`aiogram.types.message_id.MessageId` of the sent message on success.",
           "annotations": [
             {
               "type": "Integer or String",
@@ -12214,9 +12381,9 @@
         {
           "anchor": "copymessages",
           "name": "copyMessages",
-          "description": "Use this method to copy messages of any kind. If some of the specified messages can't be found or copied, they are skipped. Service messages, paid media messages, giveaway messages, giveaway winners messages, and invoice messages can't be copied. A quiz poll can be copied only if the value of the field correct_option_id is known to the bot. The method is analogous to the method forwardMessages, but the copied messages don't have a link to the original message. Album grouping is kept for copied messages. On success, an Array of MessageId of the sent messages is returned.",
-          "html_description": "<p>Use this method to copy messages of any kind. If some of the specified messages can't be found or copied, they are skipped. Service messages, paid media messages, giveaway messages, giveaway winners messages, and invoice messages can't be copied. A quiz <a href=\"#poll\">poll</a> can be copied only if the value of the field <em>correct_option_id</em> is known to the bot. The method is analogous to the method <a href=\"#forwardmessages\">forwardMessages</a>, but the copied messages don't have a link to the original message. Album grouping is kept for copied messages. On success, an Array of <a href=\"#messageid\">MessageId</a> of the sent messages is returned.</p>",
-          "rst_description": "Use this method to copy messages of any kind. If some of the specified messages can't be found or copied, they are skipped. Service messages, paid media messages, giveaway messages, giveaway winners messages, and invoice messages can't be copied. A quiz :class:`aiogram.methods.poll.Poll` can be copied only if the value of the field *correct_option_id* is known to the bot. The method is analogous to the method :class:`aiogram.methods.forward_messages.ForwardMessages`, but the copied messages don't have a link to the original message. Album grouping is kept for copied messages. On success, an Array of :class:`aiogram.types.message_id.MessageId` of the sent messages is returned.",
+          "description": "Use this method to copy messages of any kind. If some of the specified messages can't be found or copied, they are skipped. Service messages, paid media messages, giveaway messages, giveaway winners messages, and invoice messages can't be copied. A quiz poll can be copied only if the value of the field correct_option_ids is known to the bot. The method is analogous to the method forwardMessages, but the copied messages don't have a link to the original message. Album grouping is kept for copied messages. On success, an Array of MessageId of the sent messages is returned.",
+          "html_description": "<p>Use this method to copy messages of any kind. If some of the specified messages can't be found or copied, they are skipped. Service messages, paid media messages, giveaway messages, giveaway winners messages, and invoice messages can't be copied. A quiz <a href=\"#poll\">poll</a> can be copied only if the value of the field <em>correct_option_ids</em> is known to the bot. The method is analogous to the method <a href=\"#forwardmessages\">forwardMessages</a>, but the copied messages don't have a link to the original message. Album grouping is kept for copied messages. On success, an Array of <a href=\"#messageid\">MessageId</a> of the sent messages is returned.</p>",
+          "rst_description": "Use this method to copy messages of any kind. If some of the specified messages can't be found or copied, they are skipped. Service messages, paid media messages, giveaway messages, giveaway winners messages, and invoice messages can't be copied. A quiz :class:`aiogram.methods.poll.Poll` can be copied only if the value of the field *correct_option_ids* is known to the bot. The method is analogous to the method :class:`aiogram.methods.forward_messages.ForwardMessages`, but the copied messages don't have a link to the original message. Album grouping is kept for copied messages. On success, an Array of :class:`aiogram.types.message_id.MessageId` of the sent messages is returned.",
           "annotations": [
             {
               "type": "Integer or String",
@@ -12325,20 +12492,12 @@
               "name": "direct_messages_topic_id"
             },
             {
-              "type": "Integer",
+              "type": "EphemeralMessageParameters",
               "required": false,
-              "description": "For outgoing ephemeral messages, unique identifier of the user who will receive the message; for group and supergroup chats only. It is not guaranteed that the user will receive the message, especially if they are offline. See ephemeral message sending for more details.",
-              "html_description": "<td>For outgoing ephemeral messages, unique identifier of the user who will receive the message; for group and supergroup chats only. It is not guaranteed that the user will receive the message, especially if they are offline. See <a href=\"#ephemeral-messages-and-commands\">ephemeral message sending</a> for more details.</td>",
-              "rst_description": "For outgoing ephemeral messages, unique identifier of the user who will receive the message; for group and supergroup chats only. It is not guaranteed that the user will receive the message, especially if they are offline. See `ephemeral message sending <https://core.telegram.org/bots/api#ephemeral-messages-and-commands>`_ for more details.\n",
-              "name": "receiver_user_id"
-            },
-            {
-              "type": "String",
-              "required": false,
-              "description": "For outgoing ephemeral messages, identifier of the callback query which triggerred the message if any",
-              "html_description": "<td>For outgoing ephemeral messages, identifier of the callback query which triggerred the message if any</td>",
-              "rst_description": "For outgoing ephemeral messages, identifier of the callback query which triggerred the message if any\n",
-              "name": "callback_query_id"
+              "description": "A JSON-serialized object containing the parameters of the ephemeral message to send",
+              "html_description": "<td>A JSON-serialized object containing the parameters of the ephemeral message to send</td>",
+              "rst_description": "A JSON-serialized object containing the parameters of the ephemeral message to send\n",
+              "name": "ephemeral_message_parameters"
             },
             {
               "type": "InputFile or String",
@@ -12487,20 +12646,12 @@
               "name": "direct_messages_topic_id"
             },
             {
-              "type": "Integer",
+              "type": "EphemeralMessageParameters",
               "required": false,
-              "description": "For outgoing ephemeral messages, unique identifier of the user who will receive the message; for group and supergroup chats only. It is not guaranteed that the user will receive the message, especially if they are offline. See ephemeral message sending for more details.",
-              "html_description": "<td>For outgoing ephemeral messages, unique identifier of the user who will receive the message; for group and supergroup chats only. It is not guaranteed that the user will receive the message, especially if they are offline. See <a href=\"#ephemeral-messages-and-commands\">ephemeral message sending</a> for more details.</td>",
-              "rst_description": "For outgoing ephemeral messages, unique identifier of the user who will receive the message; for group and supergroup chats only. It is not guaranteed that the user will receive the message, especially if they are offline. See `ephemeral message sending <https://core.telegram.org/bots/api#ephemeral-messages-and-commands>`_ for more details.\n",
-              "name": "receiver_user_id"
-            },
-            {
-              "type": "String",
-              "required": false,
-              "description": "For outgoing ephemeral messages, identifier of the callback query which triggerred the message if any",
-              "html_description": "<td>For outgoing ephemeral messages, identifier of the callback query which triggerred the message if any</td>",
-              "rst_description": "For outgoing ephemeral messages, identifier of the callback query which triggerred the message if any\n",
-              "name": "callback_query_id"
+              "description": "A JSON-serialized object containing the parameters of the ephemeral message to send",
+              "html_description": "<td>A JSON-serialized object containing the parameters of the ephemeral message to send</td>",
+              "rst_description": "A JSON-serialized object containing the parameters of the ephemeral message to send\n",
+              "name": "ephemeral_message_parameters"
             },
             {
               "type": "InputFile or String",
@@ -12657,20 +12808,12 @@
               "name": "direct_messages_topic_id"
             },
             {
-              "type": "Integer",
+              "type": "EphemeralMessageParameters",
               "required": false,
-              "description": "For outgoing ephemeral messages, unique identifier of the user who will receive the message; for group and supergroup chats only. It is not guaranteed that the user will receive the message, especially if they are offline. See ephemeral message sending for more details.",
-              "html_description": "<td>For outgoing ephemeral messages, unique identifier of the user who will receive the message; for group and supergroup chats only. It is not guaranteed that the user will receive the message, especially if they are offline. See <a href=\"#ephemeral-messages-and-commands\">ephemeral message sending</a> for more details.</td>",
-              "rst_description": "For outgoing ephemeral messages, unique identifier of the user who will receive the message; for group and supergroup chats only. It is not guaranteed that the user will receive the message, especially if they are offline. See `ephemeral message sending <https://core.telegram.org/bots/api#ephemeral-messages-and-commands>`_ for more details.\n",
-              "name": "receiver_user_id"
-            },
-            {
-              "type": "String",
-              "required": false,
-              "description": "For outgoing ephemeral messages, identifier of the callback query which triggerred the message if any",
-              "html_description": "<td>For outgoing ephemeral messages, identifier of the callback query which triggerred the message if any</td>",
-              "rst_description": "For outgoing ephemeral messages, identifier of the callback query which triggerred the message if any\n",
-              "name": "callback_query_id"
+              "description": "A JSON-serialized object containing the parameters of the ephemeral message to send",
+              "html_description": "<td>A JSON-serialized object containing the parameters of the ephemeral message to send</td>",
+              "rst_description": "A JSON-serialized object containing the parameters of the ephemeral message to send\n",
+              "name": "ephemeral_message_parameters"
             },
             {
               "type": "InputFile or String",
@@ -12835,20 +12978,12 @@
               "name": "direct_messages_topic_id"
             },
             {
-              "type": "Integer",
+              "type": "EphemeralMessageParameters",
               "required": false,
-              "description": "For outgoing ephemeral messages, unique identifier of the user who will receive the message; for group and supergroup chats only. It is not guaranteed that the user will receive the message, especially if they are offline. See ephemeral message sending for more details.",
-              "html_description": "<td>For outgoing ephemeral messages, unique identifier of the user who will receive the message; for group and supergroup chats only. It is not guaranteed that the user will receive the message, especially if they are offline. See <a href=\"#ephemeral-messages-and-commands\">ephemeral message sending</a> for more details.</td>",
-              "rst_description": "For outgoing ephemeral messages, unique identifier of the user who will receive the message; for group and supergroup chats only. It is not guaranteed that the user will receive the message, especially if they are offline. See `ephemeral message sending <https://core.telegram.org/bots/api#ephemeral-messages-and-commands>`_ for more details.\n",
-              "name": "receiver_user_id"
-            },
-            {
-              "type": "String",
-              "required": false,
-              "description": "For outgoing ephemeral messages, identifier of the callback query which triggerred the message if any",
-              "html_description": "<td>For outgoing ephemeral messages, identifier of the callback query which triggerred the message if any</td>",
-              "rst_description": "For outgoing ephemeral messages, identifier of the callback query which triggerred the message if any\n",
-              "name": "callback_query_id"
+              "description": "A JSON-serialized object containing the parameters of the ephemeral message to send",
+              "html_description": "<td>A JSON-serialized object containing the parameters of the ephemeral message to send</td>",
+              "rst_description": "A JSON-serialized object containing the parameters of the ephemeral message to send\n",
+              "name": "ephemeral_message_parameters"
             },
             {
               "type": "InputFile or String",
@@ -12997,20 +13132,12 @@
               "name": "direct_messages_topic_id"
             },
             {
-              "type": "Integer",
+              "type": "EphemeralMessageParameters",
               "required": false,
-              "description": "For outgoing ephemeral messages, unique identifier of the user who will receive the message; for group and supergroup chats only. It is not guaranteed that the user will receive the message, especially if they are offline. See ephemeral message sending for more details.",
-              "html_description": "<td>For outgoing ephemeral messages, unique identifier of the user who will receive the message; for group and supergroup chats only. It is not guaranteed that the user will receive the message, especially if they are offline. See <a href=\"#ephemeral-messages-and-commands\">ephemeral message sending</a> for more details.</td>",
-              "rst_description": "For outgoing ephemeral messages, unique identifier of the user who will receive the message; for group and supergroup chats only. It is not guaranteed that the user will receive the message, especially if they are offline. See `ephemeral message sending <https://core.telegram.org/bots/api#ephemeral-messages-and-commands>`_ for more details.\n",
-              "name": "receiver_user_id"
-            },
-            {
-              "type": "String",
-              "required": false,
-              "description": "For outgoing ephemeral messages, identifier of the callback query which triggerred the message if any",
-              "html_description": "<td>For outgoing ephemeral messages, identifier of the callback query which triggerred the message if any</td>",
-              "rst_description": "For outgoing ephemeral messages, identifier of the callback query which triggerred the message if any\n",
-              "name": "callback_query_id"
+              "description": "A JSON-serialized object containing the parameters of the ephemeral message to send",
+              "html_description": "<td>A JSON-serialized object containing the parameters of the ephemeral message to send</td>",
+              "rst_description": "A JSON-serialized object containing the parameters of the ephemeral message to send\n",
+              "name": "ephemeral_message_parameters"
             },
             {
               "type": "InputFile or String",
@@ -13215,20 +13342,12 @@
               "name": "direct_messages_topic_id"
             },
             {
-              "type": "Integer",
+              "type": "EphemeralMessageParameters",
               "required": false,
-              "description": "For outgoing ephemeral messages, unique identifier of the user who will receive the message; for group and supergroup chats only. It is not guaranteed that the user will receive the message, especially if they are offline. See ephemeral message sending for more details.",
-              "html_description": "<td>For outgoing ephemeral messages, unique identifier of the user who will receive the message; for group and supergroup chats only. It is not guaranteed that the user will receive the message, especially if they are offline. See <a href=\"#ephemeral-messages-and-commands\">ephemeral message sending</a> for more details.</td>",
-              "rst_description": "For outgoing ephemeral messages, unique identifier of the user who will receive the message; for group and supergroup chats only. It is not guaranteed that the user will receive the message, especially if they are offline. See `ephemeral message sending <https://core.telegram.org/bots/api#ephemeral-messages-and-commands>`_ for more details.\n",
-              "name": "receiver_user_id"
-            },
-            {
-              "type": "String",
-              "required": false,
-              "description": "For outgoing ephemeral messages, identifier of the callback query which triggerred the message if any",
-              "html_description": "<td>For outgoing ephemeral messages, identifier of the callback query which triggerred the message if any</td>",
-              "rst_description": "For outgoing ephemeral messages, identifier of the callback query which triggerred the message if any\n",
-              "name": "callback_query_id"
+              "description": "A JSON-serialized object containing the parameters of the ephemeral message to send",
+              "html_description": "<td>A JSON-serialized object containing the parameters of the ephemeral message to send</td>",
+              "rst_description": "A JSON-serialized object containing the parameters of the ephemeral message to send\n",
+              "name": "ephemeral_message_parameters"
             },
             {
               "type": "InputFile or String",
@@ -13409,20 +13528,12 @@
               "name": "direct_messages_topic_id"
             },
             {
-              "type": "Integer",
+              "type": "EphemeralMessageParameters",
               "required": false,
-              "description": "For outgoing ephemeral messages, unique identifier of the user who will receive the message; for group and supergroup chats only. It is not guaranteed that the user will receive the message, especially if they are offline. See ephemeral message sending for more details.",
-              "html_description": "<td>For outgoing ephemeral messages, unique identifier of the user who will receive the message; for group and supergroup chats only. It is not guaranteed that the user will receive the message, especially if they are offline. See <a href=\"#ephemeral-messages-and-commands\">ephemeral message sending</a> for more details.</td>",
-              "rst_description": "For outgoing ephemeral messages, unique identifier of the user who will receive the message; for group and supergroup chats only. It is not guaranteed that the user will receive the message, especially if they are offline. See `ephemeral message sending <https://core.telegram.org/bots/api#ephemeral-messages-and-commands>`_ for more details.\n",
-              "name": "receiver_user_id"
-            },
-            {
-              "type": "String",
-              "required": false,
-              "description": "For outgoing ephemeral messages, identifier of the callback query which triggerred the message if any",
-              "html_description": "<td>For outgoing ephemeral messages, identifier of the callback query which triggerred the message if any</td>",
-              "rst_description": "For outgoing ephemeral messages, identifier of the callback query which triggerred the message if any\n",
-              "name": "callback_query_id"
+              "description": "A JSON-serialized object containing the parameters of the ephemeral message to send",
+              "html_description": "<td>A JSON-serialized object containing the parameters of the ephemeral message to send</td>",
+              "rst_description": "A JSON-serialized object containing the parameters of the ephemeral message to send\n",
+              "name": "ephemeral_message_parameters"
             },
             {
               "type": "InputFile or String",
@@ -13526,9 +13637,9 @@
         {
           "anchor": "sendvideonote",
           "name": "sendVideoNote",
-          "description": "As of v.4.0, Telegram clients support rounded square MPEG4 videos of up to 1 minute long. Use this method to send video messages. On success, the sent Message is returned.",
-          "html_description": "<p>As of <a href=\"https://telegram.org/blog/video-messages-and-telescope\">v.4.0</a>, Telegram clients support rounded square MPEG4 videos of up to 1 minute long. Use this method to send video messages. On success, the sent <a href=\"#message\">Message</a> is returned.</p>",
-          "rst_description": "As of `v.4.0 <https://telegram.org/blog/video-messages-and-telescope>`_, Telegram clients support rounded square MPEG4 videos of up to 1 minute long. Use this method to send video messages. On success, the sent :class:`aiogram.types.message.Message` is returned.",
+          "description": "Use this method to send a rounded square MPEG4 video of up to 1 minute long. On success, the sent Message is returned.",
+          "html_description": "<p>Use this method to send a rounded square MPEG4 video of up to 1 minute long. On success, the sent <a href=\"#message\">Message</a> is returned.</p>",
+          "rst_description": "Use this method to send a rounded square MPEG4 video of up to 1 minute long. On success, the sent :class:`aiogram.types.message.Message` is returned.",
           "annotations": [
             {
               "type": "String",
@@ -13563,20 +13674,12 @@
               "name": "direct_messages_topic_id"
             },
             {
-              "type": "Integer",
+              "type": "EphemeralMessageParameters",
               "required": false,
-              "description": "For outgoing ephemeral messages, unique identifier of the user who will receive the message; for group and supergroup chats only. It is not guaranteed that the user will receive the message, especially if they are offline. See ephemeral message sending for more details.",
-              "html_description": "<td>For outgoing ephemeral messages, unique identifier of the user who will receive the message; for group and supergroup chats only. It is not guaranteed that the user will receive the message, especially if they are offline. See <a href=\"#ephemeral-messages-and-commands\">ephemeral message sending</a> for more details.</td>",
-              "rst_description": "For outgoing ephemeral messages, unique identifier of the user who will receive the message; for group and supergroup chats only. It is not guaranteed that the user will receive the message, especially if they are offline. See `ephemeral message sending <https://core.telegram.org/bots/api#ephemeral-messages-and-commands>`_ for more details.\n",
-              "name": "receiver_user_id"
-            },
-            {
-              "type": "String",
-              "required": false,
-              "description": "For outgoing ephemeral messages, identifier of the callback query which triggerred the message if any",
-              "html_description": "<td>For outgoing ephemeral messages, identifier of the callback query which triggerred the message if any</td>",
-              "rst_description": "For outgoing ephemeral messages, identifier of the callback query which triggerred the message if any\n",
-              "name": "callback_query_id"
+              "description": "A JSON-serialized object containing the parameters of the ephemeral message to send",
+              "html_description": "<td>A JSON-serialized object containing the parameters of the ephemeral message to send</td>",
+              "rst_description": "A JSON-serialized object containing the parameters of the ephemeral message to send\n",
+              "name": "ephemeral_message_parameters"
             },
             {
               "type": "InputFile or String",
@@ -13945,20 +14048,12 @@
               "name": "direct_messages_topic_id"
             },
             {
-              "type": "Integer",
+              "type": "EphemeralMessageParameters",
               "required": false,
-              "description": "For outgoing ephemeral messages, unique identifier of the user who will receive the message; for group and supergroup chats only. It is not guaranteed that the user will receive the message, especially if they are offline. See ephemeral message sending for more details.",
-              "html_description": "<td>For outgoing ephemeral messages, unique identifier of the user who will receive the message; for group and supergroup chats only. It is not guaranteed that the user will receive the message, especially if they are offline. See <a href=\"#ephemeral-messages-and-commands\">ephemeral message sending</a> for more details.</td>",
-              "rst_description": "For outgoing ephemeral messages, unique identifier of the user who will receive the message; for group and supergroup chats only. It is not guaranteed that the user will receive the message, especially if they are offline. See `ephemeral message sending <https://core.telegram.org/bots/api#ephemeral-messages-and-commands>`_ for more details.\n",
-              "name": "receiver_user_id"
-            },
-            {
-              "type": "String",
-              "required": false,
-              "description": "For outgoing ephemeral messages, identifier of the callback query which triggerred the message if any",
-              "html_description": "<td>For outgoing ephemeral messages, identifier of the callback query which triggerred the message if any</td>",
-              "rst_description": "For outgoing ephemeral messages, identifier of the callback query which triggerred the message if any\n",
-              "name": "callback_query_id"
+              "description": "A JSON-serialized object containing the parameters of the ephemeral message to send",
+              "html_description": "<td>A JSON-serialized object containing the parameters of the ephemeral message to send</td>",
+              "rst_description": "A JSON-serialized object containing the parameters of the ephemeral message to send\n",
+              "name": "ephemeral_message_parameters"
             },
             {
               "type": "Float",
@@ -14107,20 +14202,12 @@
               "name": "direct_messages_topic_id"
             },
             {
-              "type": "Integer",
+              "type": "EphemeralMessageParameters",
               "required": false,
-              "description": "For outgoing ephemeral messages, unique identifier of the user who will receive the message; for group and supergroup chats only. It is not guaranteed that the user will receive the message, especially if they are offline. See ephemeral message sending for more details.",
-              "html_description": "<td>For outgoing ephemeral messages, unique identifier of the user who will receive the message; for group and supergroup chats only. It is not guaranteed that the user will receive the message, especially if they are offline. See <a href=\"#ephemeral-messages-and-commands\">ephemeral message sending</a> for more details.</td>",
-              "rst_description": "For outgoing ephemeral messages, unique identifier of the user who will receive the message; for group and supergroup chats only. It is not guaranteed that the user will receive the message, especially if they are offline. See `ephemeral message sending <https://core.telegram.org/bots/api#ephemeral-messages-and-commands>`_ for more details.\n",
-              "name": "receiver_user_id"
-            },
-            {
-              "type": "String",
-              "required": false,
-              "description": "For outgoing ephemeral messages, identifier of the callback query which triggerred the message if any",
-              "html_description": "<td>For outgoing ephemeral messages, identifier of the callback query which triggerred the message if any</td>",
-              "rst_description": "For outgoing ephemeral messages, identifier of the callback query which triggerred the message if any\n",
-              "name": "callback_query_id"
+              "description": "A JSON-serialized object containing the parameters of the ephemeral message to send",
+              "html_description": "<td>A JSON-serialized object containing the parameters of the ephemeral message to send</td>",
+              "rst_description": "A JSON-serialized object containing the parameters of the ephemeral message to send\n",
+              "name": "ephemeral_message_parameters"
             },
             {
               "type": "Float",
@@ -14285,20 +14372,12 @@
               "name": "direct_messages_topic_id"
             },
             {
-              "type": "Integer",
+              "type": "EphemeralMessageParameters",
               "required": false,
-              "description": "For outgoing ephemeral messages, unique identifier of the user who will receive the message; for group and supergroup chats only. It is not guaranteed that the user will receive the message, especially if they are offline. See ephemeral message sending for more details.",
-              "html_description": "<td>For outgoing ephemeral messages, unique identifier of the user who will receive the message; for group and supergroup chats only. It is not guaranteed that the user will receive the message, especially if they are offline. See <a href=\"#ephemeral-messages-and-commands\">ephemeral message sending</a> for more details.</td>",
-              "rst_description": "For outgoing ephemeral messages, unique identifier of the user who will receive the message; for group and supergroup chats only. It is not guaranteed that the user will receive the message, especially if they are offline. See `ephemeral message sending <https://core.telegram.org/bots/api#ephemeral-messages-and-commands>`_ for more details.\n",
-              "name": "receiver_user_id"
-            },
-            {
-              "type": "String",
-              "required": false,
-              "description": "For outgoing ephemeral messages, identifier of the callback query which triggerred the message if any",
-              "html_description": "<td>For outgoing ephemeral messages, identifier of the callback query which triggerred the message if any</td>",
-              "rst_description": "For outgoing ephemeral messages, identifier of the callback query which triggerred the message if any\n",
-              "name": "callback_query_id"
+              "description": "A JSON-serialized object containing the parameters of the ephemeral message to send",
+              "html_description": "<td>A JSON-serialized object containing the parameters of the ephemeral message to send</td>",
+              "rst_description": "A JSON-serialized object containing the parameters of the ephemeral message to send\n",
+              "name": "ephemeral_message_parameters"
             },
             {
               "type": "String",
@@ -14879,9 +14958,9 @@
             {
               "type": "Integer",
               "required": true,
-              "description": "Unique identifier of the message draft; must be non-zero. Changes to drafts with the same identifier are animated.",
-              "html_description": "<td>Unique identifier of the message draft; must be non-zero. Changes to drafts with the same identifier are animated.</td>",
-              "rst_description": "Unique identifier of the message draft; must be non-zero. Changes to drafts with the same identifier are animated.\n",
+              "description": "Unique identifier of the message draft; must be non-zero. Changes to drafts with the same identifier are animated. Otherwise, the draft is replaced without animation.",
+              "html_description": "<td>Unique identifier of the message draft; must be non-zero. Changes to drafts with the same identifier are animated. Otherwise, the draft is replaced without animation.</td>",
+              "rst_description": "Unique identifier of the message draft; must be non-zero. Changes to drafts with the same identifier are animated. Otherwise, the draft is replaced without animation.\n",
               "name": "draft_id"
             },
             {
@@ -14907,6 +14986,22 @@
               "html_description": "<td>A JSON-serialized list of special entities that appear in message text, which can be specified instead of <em>parse_mode</em></td>",
               "rst_description": "A JSON-serialized list of special entities that appear in message text, which can be specified instead of *parse_mode*\n",
               "name": "entities"
+            },
+            {
+              "type": "Boolean",
+              "required": false,
+              "description": "Pass True to show the user a button to stop further drafts. The bot will receive an Update 'stopped_message_generation' if the user presses the button.",
+              "html_description": "<td>Pass <em>True</em> to show the user a button to stop further drafts. The bot will receive an <a href=\"#update\">Update</a> &#8220;stopped_message_generation&#8221; if the user presses the button.</td>",
+              "rst_description": "Pass :code:`True` to show the user a button to stop further drafts. The bot will receive an :class:`aiogram.types.update.Update` 'stopped_message_generation' if the user presses the button.\n",
+              "name": "can_stop"
+            },
+            {
+              "type": "Boolean",
+              "required": false,
+              "description": "Pass True to keep the draft in the chat when the button is pressed. The draft will still disappear after a short time or if the bot sends a message. To fully preserve the partial draft, the bot should send it as a new message.",
+              "html_description": "<td>Pass <em>True</em> to keep the draft in the chat when the button is pressed. The draft will still disappear after a short time or if the bot sends a message. To fully preserve the partial draft, the bot should send it as a new message.</td>",
+              "rst_description": "Pass :code:`True` to keep the draft in the chat when the button is pressed. The draft will still disappear after a short time or if the bot sends a message. To fully preserve the partial draft, the bot should send it as a new message.\n",
+              "name": "keep_on_stop"
             }
           ],
           "category": "methods"
@@ -15399,6 +15494,14 @@
               "html_description": "<td>Pass <em>True</em> if the administrator can edit the tags of regular members; for groups and supergroups only</td>",
               "rst_description": "Pass :code:`True` if the administrator can edit the tags of regular members; for groups and supergroups only\n",
               "name": "can_manage_tags"
+            },
+            {
+              "type": "Boolean",
+              "required": false,
+              "description": "Pass True if the administrator can manage chat welcome messages or directly send them in the case of bots",
+              "html_description": "<td>Pass <em>True</em> if the administrator can manage chat welcome messages or directly send them in the case of bots</td>",
+              "rst_description": "Pass :code:`True` if the administrator can manage chat welcome messages or directly send them in the case of bots\n",
+              "name": "can_send_welcome_messages"
             }
           ],
           "category": "methods"
@@ -16610,9 +16713,9 @@
             {
               "type": "Integer",
               "required": false,
-              "description": "The maximum amount of time in seconds that the result of the callback query may be cached client-side. Telegram apps will support caching starting in version 3.14. Defaults to 0.",
-              "html_description": "<td>The maximum amount of time in seconds that the result of the callback query may be cached client-side. Telegram apps will support caching starting in version 3.14. Defaults to 0.</td>",
-              "rst_description": "The maximum amount of time in seconds that the result of the callback query may be cached client-side. Telegram apps will support caching starting in version 3.14. Defaults to 0.\n",
+              "description": "The maximum amount of time in seconds that the result of the callback query may be cached client-side. Defaults to 0.",
+              "html_description": "<td>The maximum amount of time in seconds that the result of the callback query may be cached client-side. Defaults to 0.</td>",
+              "rst_description": "The maximum amount of time in seconds that the result of the callback query may be cached client-side. Defaults to 0.\n",
               "name": "cache_time"
             }
           ],
@@ -18425,9 +18528,9 @@
             {
               "type": "InputRichMessage",
               "required": false,
-              "description": "New rich content of the message; required if text isn't specified. Direct upload of new files isn't supported when an inline message is edited.",
-              "html_description": "<td>New rich content of the message; required if <em>text</em> isn't specified. Direct upload of new files isn't supported when an inline message is edited.</td>",
-              "rst_description": "New rich content of the message; required if *text* isn't specified. Direct upload of new files isn't supported when an inline message is edited.\n",
+              "description": "New rich content of the message; required if text isn't specified. Direct upload of new files and explicit upload of files by a URL isn't supported when an inline message is edited.",
+              "html_description": "<td>New rich content of the message; required if <em>text</em> isn't specified. Direct upload of new files and explicit upload of files by a URL isn't supported when an inline message is edited.</td>",
+              "rst_description": "New rich content of the message; required if *text* isn't specified. Direct upload of new files and explicit upload of files by a URL isn't supported when an inline message is edited.\n",
               "name": "rich_message"
             },
             {
@@ -18874,9 +18977,9 @@
         {
           "anchor": "editephemeralmessagetext",
           "name": "editEphemeralMessageText",
-          "description": "Use this method to edit an ephemeral text message. Note that it is not guaranteed that the user will receive the message edit event, especially if they are offline. On success, True is returned.",
-          "html_description": "<p>Use this method to edit an ephemeral text message. Note that it is not guaranteed that the user will receive the message edit event, especially if they are offline. On success, <em>True</em> is returned.</p>",
-          "rst_description": "Use this method to edit an ephemeral text message. Note that it is not guaranteed that the user will receive the message edit event, especially if they are offline. On success, :code:`True` is returned.",
+          "description": "Use this method to edit an ephemeral text or rich message. Note that it is not guaranteed that the user will receive the message edit event, especially if they are offline. On success, True is returned.",
+          "html_description": "<p>Use this method to edit an ephemeral text or rich message. Note that it is not guaranteed that the user will receive the message edit event, especially if they are offline. On success, <em>True</em> is returned.</p>",
+          "rst_description": "Use this method to edit an ephemeral text or rich message. Note that it is not guaranteed that the user will receive the message edit event, especially if they are offline. On success, :code:`True` is returned.",
           "annotations": [
             {
               "type": "Integer or String",
@@ -18904,10 +19007,10 @@
             },
             {
               "type": "String",
-              "required": true,
-              "description": "New text of the message, 1-4096 characters after entity parsing",
-              "html_description": "<td>New text of the message, 1-4096 characters after entity parsing</td>",
-              "rst_description": "New text of the message, 1-4096 characters after entity parsing\n",
+              "required": false,
+              "description": "New text of the message, 1-4096 characters after entity parsing; required if rich_message isn't specified",
+              "html_description": "<td>New text of the message, 1-4096 characters after entity parsing; required if <em>rich_message</em> isn't specified</td>",
+              "rst_description": "New text of the message, 1-4096 characters after entity parsing; required if *rich_message* isn't specified\n",
               "name": "text"
             },
             {
@@ -18925,6 +19028,14 @@
               "html_description": "<td>A JSON-serialized list of special entities that appear in message text, which can be specified instead of <em>parse_mode</em></td>",
               "rst_description": "A JSON-serialized list of special entities that appear in message text, which can be specified instead of *parse_mode*\n",
               "name": "entities"
+            },
+            {
+              "type": "InputRichMessage",
+              "required": false,
+              "description": "New rich content of the message; required if text isn't specified",
+              "html_description": "<td>New rich content of the message; required if <em>text</em> isn't specified</td>",
+              "rst_description": "New rich content of the message; required if *text* isn't specified\n",
+              "name": "rich_message"
             },
             {
               "type": "LinkPreviewOptions",
@@ -18979,9 +19090,9 @@
             {
               "type": "InputMedia",
               "required": true,
-              "description": "A JSON-serialized object for the new media content of the message. A new file can't be uploaded; use a previously uploaded file via its file_id or specify a URL.",
-              "html_description": "<td>A JSON-serialized object for the new media content of the message. A new file can't be uploaded; use a previously uploaded file via its file_id or specify a URL.</td>",
-              "rst_description": "A JSON-serialized object for the new media content of the message. A new file can't be uploaded; use a previously uploaded file via its file_id or specify a URL.\n",
+              "description": "A JSON-serialized object for the new media content of the message",
+              "html_description": "<td>A JSON-serialized object for the new media content of the message</td>",
+              "rst_description": "A JSON-serialized object for the new media content of the message\n",
               "name": "media"
             },
             {
@@ -19049,6 +19160,14 @@
               "html_description": "<td>A JSON-serialized list of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em></td>",
               "rst_description": "A JSON-serialized list of special entities that appear in the caption, which can be specified instead of *parse_mode*\n",
               "name": "caption_entities"
+            },
+            {
+              "type": "Boolean",
+              "required": false,
+              "description": "Pass True if the caption must be shown above the message media. Supported only for animation, photo and video messages.",
+              "html_description": "<td>Pass <em>True</em> if the caption must be shown above the message media. Supported only for animation, photo and video messages.</td>",
+              "rst_description": "Pass :code:`True` if the caption must be shown above the message media. Supported only for animation, photo and video messages.\n",
+              "name": "show_caption_above_media"
             },
             {
               "type": "InlineKeyboardMarkup",
@@ -19652,20 +19771,12 @@
               "name": "direct_messages_topic_id"
             },
             {
-              "type": "Integer",
+              "type": "EphemeralMessageParameters",
               "required": false,
-              "description": "For outgoing ephemeral messages, unique identifier of the user who will receive the message; for group and supergroup chats only. It is not guaranteed that the user will receive the message, especially if they are offline. See ephemeral message sending for more details.",
-              "html_description": "<td>For outgoing ephemeral messages, unique identifier of the user who will receive the message; for group and supergroup chats only. It is not guaranteed that the user will receive the message, especially if they are offline. See <a href=\"#ephemeral-messages-and-commands\">ephemeral message sending</a> for more details.</td>",
-              "rst_description": "For outgoing ephemeral messages, unique identifier of the user who will receive the message; for group and supergroup chats only. It is not guaranteed that the user will receive the message, especially if they are offline. See `ephemeral message sending <https://core.telegram.org/bots/api#ephemeral-messages-and-commands>`_ for more details.\n",
-              "name": "receiver_user_id"
-            },
-            {
-              "type": "String",
-              "required": false,
-              "description": "For outgoing ephemeral messages, identifier of the callback query which triggerred the message if any",
-              "html_description": "<td>For outgoing ephemeral messages, identifier of the callback query which triggerred the message if any</td>",
-              "rst_description": "For outgoing ephemeral messages, identifier of the callback query which triggerred the message if any\n",
-              "name": "callback_query_id"
+              "description": "A JSON-serialized object containing the parameters of the ephemeral message to send",
+              "html_description": "<td>A JSON-serialized object containing the parameters of the ephemeral message to send</td>",
+              "rst_description": "A JSON-serialized object containing the parameters of the ephemeral message to send\n",
+              "name": "ephemeral_message_parameters"
             },
             {
               "type": "InputFile or String",
@@ -20246,9 +20357,9 @@
             },
             {
               "type": "Array of InputRichMessageMedia",
-              "description": "List of media that are specified in the markdown or html fields using tg://photo?id=, tg://video?id=, and tg://audio?id= links",
-              "html_description": "<td><em>Optional</em>. List of media that are specified in the <em>markdown</em> or <em>html</em> fields using <code>tg://photo?id=</code>, <code>tg://video?id=</code>, and <code>tg://audio?id=</code> links</td>",
-              "rst_description": "*Optional*. List of media that are specified in the *markdown* or *html* fields using :code:`tg://photo?id=`, :code:`tg://video?id=`, and :code:`tg://audio?id=` links\n",
+              "description": "List of media that are specified in the markdown or html fields using tg://photo?id=, tg://video?id=, tg://document?id=, and tg://audio?id= links",
+              "html_description": "<td><em>Optional</em>. List of media that are specified in the <em>markdown</em> or <em>html</em> fields using <code>tg://photo?id=</code>, <code>tg://video?id=</code>, <code>tg://document?id=</code>, and <code>tg://audio?id=</code> links</td>",
+              "rst_description": "*Optional*. List of media that are specified in the *markdown* or *html* fields using :code:`tg://photo?id=`, :code:`tg://video?id=`, :code:`tg://document?id=`, and :code:`tg://audio?id=` links\n",
               "name": "media",
               "required": false
             },
@@ -20280,14 +20391,14 @@
           "annotations": [
             {
               "type": "String",
-              "description": "Unique identifier of the media used in a tg://photo?id=, tg://video?id=, or tg://audio?id= link. 1-64 characters, only A-Z, a-z, 0-9, _ and - are allowed.",
-              "html_description": "<td>Unique identifier of the media used in a <code>tg://photo?id=</code>, <code>tg://video?id=</code>, or <code>tg://audio?id=</code> link. 1-64 characters, only <code>A-Z</code>, <code>a-z</code>, <code>0-9</code>, <code>_</code> and <code>-</code> are allowed.</td>",
-              "rst_description": "Unique identifier of the media used in a :code:`tg://photo?id=`, :code:`tg://video?id=`, or :code:`tg://audio?id=` link. 1-64 characters, only :code:`A-Z`, :code:`a-z`, :code:`0-9`, :code:`_` and :code:`-` are allowed.\n",
+              "description": "Unique identifier of the media used in a tg://photo?id=, tg://video?id=, tg://document?id=, or tg://audio?id= link. 1-64 characters, only A-Z, a-z, 0-9, _ and - are allowed.",
+              "html_description": "<td>Unique identifier of the media used in a <code>tg://photo?id=</code>, <code>tg://video?id=</code>, <code>tg://document?id=</code>, or <code>tg://audio?id=</code> link. 1-64 characters, only <code>A-Z</code>, <code>a-z</code>, <code>0-9</code>, <code>_</code> and <code>-</code> are allowed.</td>",
+              "rst_description": "Unique identifier of the media used in a :code:`tg://photo?id=`, :code:`tg://video?id=`, :code:`tg://document?id=`, or :code:`tg://audio?id=` link. 1-64 characters, only :code:`A-Z`, :code:`a-z`, :code:`0-9`, :code:`_` and :code:`-` are allowed.\n",
               "name": "id",
               "required": true
             },
             {
-              "type": "InputMediaAnimation or InputMediaAudio or InputMediaPhoto or InputMediaVideo or InputMediaVoiceNote",
+              "type": "InputMediaAnimation or InputMediaAudio or InputMediaDocument or InputMediaPhoto or InputMediaVideo or InputMediaVoiceNote",
               "description": "The media to be sent. Everything except the media itself and its properties is ignored.",
               "html_description": "<td>The media to be sent. Everything except the media itself and its properties is ignored.</td>",
               "rst_description": "The media to be sent. Everything except the media itself and its properties is ignored.\n",
@@ -20335,6 +20446,14 @@
               "html_description": "<td>Identifier of the direct messages topic to which the message will be sent; required if the message is sent to a direct messages chat</td>",
               "rst_description": "Identifier of the direct messages topic to which the message will be sent; required if the message is sent to a direct messages chat\n",
               "name": "direct_messages_topic_id"
+            },
+            {
+              "type": "EphemeralMessageParameters",
+              "required": false,
+              "description": "A JSON-serialized object containing the parameters of the ephemeral message to send",
+              "html_description": "<td>A JSON-serialized object containing the parameters of the ephemeral message to send</td>",
+              "rst_description": "A JSON-serialized object containing the parameters of the ephemeral message to send\n",
+              "name": "ephemeral_message_parameters"
             },
             {
               "type": "InputRichMessage",
@@ -20429,28 +20548,142 @@
             {
               "type": "Integer",
               "required": true,
-              "description": "Unique identifier of the message draft; must be non-zero. Changes to drafts with the same identifier are animated.",
-              "html_description": "<td>Unique identifier of the message draft; must be non-zero. Changes to drafts with the same identifier are animated.</td>",
-              "rst_description": "Unique identifier of the message draft; must be non-zero. Changes to drafts with the same identifier are animated.\n",
+              "description": "Unique identifier of the message draft; must be non-zero. Changes to drafts with the same identifier are animated. Otherwise, the draft is replaced without animation.",
+              "html_description": "<td>Unique identifier of the message draft; must be non-zero. Changes to drafts with the same identifier are animated. Otherwise, the draft is replaced without animation.</td>",
+              "rst_description": "Unique identifier of the message draft; must be non-zero. Changes to drafts with the same identifier are animated. Otherwise, the draft is replaced without animation.\n",
               "name": "draft_id"
             },
             {
               "type": "InputRichMessage",
               "required": true,
-              "description": "The partial message to be streamed. Direct upload of new files isn't supported.",
-              "html_description": "<td>The partial message to be streamed. Direct upload of new files isn't supported.</td>",
-              "rst_description": "The partial message to be streamed. Direct upload of new files isn't supported.\n",
+              "description": "The partial message to be streamed. Direct upload of new files and explicit upload of files by a URL isn't supported.",
+              "html_description": "<td>The partial message to be streamed. Direct upload of new files and explicit upload of files by a URL isn't supported.</td>",
+              "rst_description": "The partial message to be streamed. Direct upload of new files and explicit upload of files by a URL isn't supported.\n",
               "name": "rich_message"
+            },
+            {
+              "type": "Boolean",
+              "required": false,
+              "description": "Pass True to show the user a button to stop further drafts. The bot will receive an Update 'stopped_message_generation' if the user presses the button.",
+              "html_description": "<td>Pass <em>True</em> to show the user a button to stop further drafts. The bot will receive an <a href=\"#update\">Update</a> &#8220;stopped_message_generation&#8221; if the user presses the button.</td>",
+              "rst_description": "Pass :code:`True` to show the user a button to stop further drafts. The bot will receive an :class:`aiogram.types.update.Update` 'stopped_message_generation' if the user presses the button.\n",
+              "name": "can_stop"
+            },
+            {
+              "type": "Boolean",
+              "required": false,
+              "description": "Pass True to keep the draft in the chat when the button is pressed. The draft will still disappear after a short time or if the bot sends a message. To fully preserve the partial draft, the bot should send it as a new message.",
+              "html_description": "<td>Pass <em>True</em> to keep the draft in the chat when the button is pressed. The draft will still disappear after a short time or if the bot sends a message. To fully preserve the partial draft, the bot should send it as a new message.</td>",
+              "rst_description": "Pass :code:`True` to keep the draft in the chat when the button is pressed. The draft will still disappear after a short time or if the bot sends a message. To fully preserve the partial draft, the bot should send it as a new message.\n",
+              "name": "keep_on_stop"
             }
           ],
           "category": "methods"
         },
         {
+          "anchor": "richmessagebutton",
+          "name": "RichMessageButton",
+          "description": "This object represents a button in a RichMessage. Exactly one of the fields other than text and style must be used to specify the type of the button.",
+          "html_description": "<p>This object represents a button in a <a href=\"#richmessage\">RichMessage</a>. Exactly one of the fields other than <em>text</em> and <em>style</em> must be used to specify the type of the button.</p>",
+          "rst_description": "This object represents a button in a :class:`aiogram.types.rich_message.RichMessage`. Exactly one of the fields other than *text* and *style* must be used to specify the type of the button.",
+          "annotations": [
+            {
+              "type": "RichText",
+              "description": "Text of the button. May contain only plain text, RichTextCustomEmoji and RichTextDateTime entities.",
+              "html_description": "<td>Text of the button. May contain only plain text, <a href=\"#richtextcustomemoji\">RichTextCustomEmoji</a> and <a href=\"#richtextdatetime\">RichTextDateTime</a> entities.</td>",
+              "rst_description": "Text of the button. May contain only plain text, :class:`aiogram.types.rich_text_custom_emoji.RichTextCustomEmoji` and :class:`aiogram.types.rich_text_date_time.RichTextDateTime` entities.\n",
+              "name": "text",
+              "required": true
+            },
+            {
+              "type": "String",
+              "description": "Style of the button. Must be one of 'danger' (red), 'success' (green), 'primary' (blue) or 'link' (the button is shown as a regular link without borders). If omitted, then an app-specific style is used. The style 'link' is allowed only for callback buttons.",
+              "html_description": "<td><em>Optional</em>. Style of the button. Must be one of &#8220;danger&#8221; (red), &#8220;success&#8221; (green), &#8220;primary&#8221; (blue) or &#8220;link&#8221; (the button is shown as a regular link without borders). If omitted, then an app-specific style is used. The style &#8220;link&#8221; is allowed only for callback buttons.</td>",
+              "rst_description": "*Optional*. Style of the button. Must be one of 'danger' (red), 'success' (green), 'primary' (blue) or 'link' (the button is shown as a regular link without borders). If omitted, then an app-specific style is used. The style 'link' is allowed only for callback buttons.\n",
+              "name": "style",
+              "required": false
+            },
+            {
+              "type": "String",
+              "description": "HTTP or tg:// URL to be opened when the button is pressed. Links tg://user?id=<user_id> can be used to mention a user by their identifier without using a username, if this is allowed by their privacy settings.",
+              "html_description": "<td><em>Optional</em>. HTTP or tg:// URL to be opened when the button is pressed. Links <code>tg://user?id=&lt;user_id&gt;</code> can be used to mention a user by their identifier without using a username, if this is allowed by their privacy settings.</td>",
+              "rst_description": "*Optional*. HTTP or tg:// URL to be opened when the button is pressed. Links :code:`tg://user?id=<user_id>` can be used to mention a user by their identifier without using a username, if this is allowed by their privacy settings.\n",
+              "name": "url",
+              "required": false
+            },
+            {
+              "type": "String",
+              "description": "Data to be sent in a callback query to the bot when the button is pressed, 1-64 bytes",
+              "html_description": "<td><em>Optional</em>. Data to be sent in a <a href=\"#callbackquery\">callback query</a> to the bot when the button is pressed, 1-64 bytes</td>",
+              "rst_description": "*Optional*. Data to be sent in a `callback query <https://core.telegram.org/bots/api#callbackquery>`_ to the bot when the button is pressed, 1-64 bytes\n",
+              "name": "callback_data",
+              "required": false
+            },
+            {
+              "type": "WebAppInfo",
+              "description": "Description of the Web App that will be launched when the user presses the button. The Web App will be able to send an arbitrary message on behalf of the user using the method answerWebAppQuery. Available only in private chats between a user and the bot. Not supported for messages sent on behalf of a business account.",
+              "html_description": "<td><em>Optional</em>. Description of the <a href=\"/bots/webapps\">Web App</a> that will be launched when the user presses the button. The Web App will be able to send an arbitrary message on behalf of the user using the method <a href=\"#answerwebappquery\">answerWebAppQuery</a>. Available only in private chats between a user and the bot. Not supported for messages sent on behalf of a business account.</td>",
+              "rst_description": "*Optional*. Description of the `Web App <https://core.telegram.org/bots/webapps>`_ that will be launched when the user presses the button. The Web App will be able to send an arbitrary message on behalf of the user using the method :class:`aiogram.methods.answer_web_app_query.AnswerWebAppQuery`. Available only in private chats between a user and the bot. Not supported for messages sent on behalf of a business account.\n",
+              "name": "web_app",
+              "required": false
+            },
+            {
+              "type": "LoginUrl",
+              "description": "An HTTPS URL used to automatically authorize the user. Can be used as a replacement for the Telegram Login Widget. Not supported for ephemeral messages.",
+              "html_description": "<td><em>Optional</em>. An HTTPS URL used to automatically authorize the user. Can be used as a replacement for the <a href=\"/widgets/login\">Telegram Login Widget</a>. Not supported for ephemeral messages.</td>",
+              "rst_description": "*Optional*. An HTTPS URL used to automatically authorize the user. Can be used as a replacement for the `Telegram Login Widget <https://core.telegram.org/widgets/login>`_. Not supported for ephemeral messages.\n",
+              "name": "login_url",
+              "required": false
+            },
+            {
+              "type": "String",
+              "description": "If set, pressing the button will prompt the user to select one of their chats, open that chat and insert the bot's username and the specified inline query in the input field. May be empty, in which case just the bot's username will be inserted. Not supported for messages sent in channel direct messages chats and on behalf of a business account.",
+              "html_description": "<td><em>Optional</em>. If set, pressing the button will prompt the user to select one of their chats, open that chat and insert the bot's username and the specified inline query in the input field. May be empty, in which case just the bot's username will be inserted. Not supported for messages sent in channel direct messages chats and on behalf of a business account.</td>",
+              "rst_description": "*Optional*. If set, pressing the button will prompt the user to select one of their chats, open that chat and insert the bot's username and the specified inline query in the input field. May be empty, in which case just the bot's username will be inserted. Not supported for messages sent in channel direct messages chats and on behalf of a business account.\n",
+              "name": "switch_inline_query",
+              "required": false
+            },
+            {
+              "type": "String",
+              "description": "If set, pressing the button will insert the bot's username and the specified inline query in the current chat's input field. May be empty, in which case only the bot's username will be inserted. Not supported in channels and for messages sent in channel direct messages chats and on behalf of a business account.",
+              "html_description": "<td><em>Optional</em>. If set, pressing the button will insert the bot's username and the specified inline query in the current chat's input field. May be empty, in which case only the bot's username will be inserted. Not supported in channels and for messages sent in channel direct messages chats and on behalf of a business account.</td>",
+              "rst_description": "*Optional*. If set, pressing the button will insert the bot's username and the specified inline query in the current chat's input field. May be empty, in which case only the bot's username will be inserted. Not supported in channels and for messages sent in channel direct messages chats and on behalf of a business account.\n",
+              "name": "switch_inline_query_current_chat",
+              "required": false
+            },
+            {
+              "type": "SwitchInlineQueryChosenChat",
+              "description": "If set, pressing the button will prompt the user to select one of their chats of the specified type, open that chat and insert the bot's username and the specified inline query in the input field. Not supported for messages sent in channel direct messages chats and on behalf of a business account.",
+              "html_description": "<td><em>Optional</em>. If set, pressing the button will prompt the user to select one of their chats of the specified type, open that chat and insert the bot's username and the specified inline query in the input field. Not supported for messages sent in channel direct messages chats and on behalf of a business account.</td>",
+              "rst_description": "*Optional*. If set, pressing the button will prompt the user to select one of their chats of the specified type, open that chat and insert the bot's username and the specified inline query in the input field. Not supported for messages sent in channel direct messages chats and on behalf of a business account.\n",
+              "name": "switch_inline_query_chosen_chat",
+              "required": false
+            },
+            {
+              "type": "CopyTextButton",
+              "description": "A button that copies the specified text to the clipboard",
+              "html_description": "<td><em>Optional</em>. A button that copies the specified text to the clipboard</td>",
+              "rst_description": "*Optional*. A button that copies the specified text to the clipboard\n",
+              "name": "copy_text",
+              "required": false
+            },
+            {
+              "type": "DisabledButton",
+              "description": "If set, then the button is disabled and does nothing",
+              "html_description": "<td><em>Optional</em>. If set, then the button is disabled and does nothing</td>",
+              "rst_description": "*Optional*. If set, then the button is disabled and does nothing\n",
+              "name": "disabled",
+              "required": false
+            }
+          ],
+          "category": "types"
+        },
+        {
           "anchor": "richtext",
           "name": "RichText",
-          "description": "This object represents a rich formatted text. Currently, it can be either a String for plain text, an Array of RichText, or any of the following types:\n - RichTextBold\n - RichTextItalic\n - RichTextUnderline\n - RichTextStrikethrough\n - RichTextSpoiler\n - RichTextDateTime\n - RichTextTextMention\n - RichTextSubscript\n - RichTextSuperscript\n - RichTextMarked\n - RichTextCode\n - RichTextCustomEmoji\n - RichTextMathematicalExpression\n - RichTextUrl\n - RichTextEmailAddress\n - RichTextPhoneNumber\n - RichTextBankCardNumber\n - RichTextMention\n - RichTextHashtag\n - RichTextCashtag\n - RichTextBotCommand\n - RichTextAnchor\n - RichTextAnchorLink\n - RichTextReference\n - RichTextReferenceLink",
-          "html_description": "<p>This object represents a rich formatted text. Currently, it can be either a String for plain text, an Array of <a href=\"#richtext\">RichText</a>, or any of the following types:</p><ul>\n<li><a href=\"#richtextbold\">RichTextBold</a></li>\n<li><a href=\"#richtextitalic\">RichTextItalic</a></li>\n<li><a href=\"#richtextunderline\">RichTextUnderline</a></li>\n<li><a href=\"#richtextstrikethrough\">RichTextStrikethrough</a></li>\n<li><a href=\"#richtextspoiler\">RichTextSpoiler</a></li>\n<li><a href=\"#richtextdatetime\">RichTextDateTime</a></li>\n<li><a href=\"#richtexttextmention\">RichTextTextMention</a></li>\n<li><a href=\"#richtextsubscript\">RichTextSubscript</a></li>\n<li><a href=\"#richtextsuperscript\">RichTextSuperscript</a></li>\n<li><a href=\"#richtextmarked\">RichTextMarked</a></li>\n<li><a href=\"#richtextcode\">RichTextCode</a></li>\n<li><a href=\"#richtextcustomemoji\">RichTextCustomEmoji</a></li>\n<li><a href=\"#richtextmathematicalexpression\">RichTextMathematicalExpression</a></li>\n<li><a href=\"#richtexturl\">RichTextUrl</a></li>\n<li><a href=\"#richtextemailaddress\">RichTextEmailAddress</a></li>\n<li><a href=\"#richtextphonenumber\">RichTextPhoneNumber</a></li>\n<li><a href=\"#richtextbankcardnumber\">RichTextBankCardNumber</a></li>\n<li><a href=\"#richtextmention\">RichTextMention</a></li>\n<li><a href=\"#richtexthashtag\">RichTextHashtag</a></li>\n<li><a href=\"#richtextcashtag\">RichTextCashtag</a></li>\n<li><a href=\"#richtextbotcommand\">RichTextBotCommand</a></li>\n<li><a href=\"#richtextanchor\">RichTextAnchor</a></li>\n<li><a href=\"#richtextanchorlink\">RichTextAnchorLink</a></li>\n<li><a href=\"#richtextreference\">RichTextReference</a></li>\n<li><a href=\"#richtextreferencelink\">RichTextReferenceLink</a></li>\n</ul>",
-          "rst_description": "This object represents a rich formatted text. Currently, it can be either a String for plain text, an Array of :class:`aiogram.types.rich_text.RichText`, or any of the following types:\n\n - :class:`aiogram.types.rich_text_bold.RichTextBold`\n - :class:`aiogram.types.rich_text_italic.RichTextItalic`\n - :class:`aiogram.types.rich_text_underline.RichTextUnderline`\n - :class:`aiogram.types.rich_text_strikethrough.RichTextStrikethrough`\n - :class:`aiogram.types.rich_text_spoiler.RichTextSpoiler`\n - :class:`aiogram.types.rich_text_date_time.RichTextDateTime`\n - :class:`aiogram.types.rich_text_text_mention.RichTextTextMention`\n - :class:`aiogram.types.rich_text_subscript.RichTextSubscript`\n - :class:`aiogram.types.rich_text_superscript.RichTextSuperscript`\n - :class:`aiogram.types.rich_text_marked.RichTextMarked`\n - :class:`aiogram.types.rich_text_code.RichTextCode`\n - :class:`aiogram.types.rich_text_custom_emoji.RichTextCustomEmoji`\n - :class:`aiogram.types.rich_text_mathematical_expression.RichTextMathematicalExpression`\n - :class:`aiogram.types.rich_text_url.RichTextUrl`\n - :class:`aiogram.types.rich_text_email_address.RichTextEmailAddress`\n - :class:`aiogram.types.rich_text_phone_number.RichTextPhoneNumber`\n - :class:`aiogram.types.rich_text_bank_card_number.RichTextBankCardNumber`\n - :class:`aiogram.types.rich_text_mention.RichTextMention`\n - :class:`aiogram.types.rich_text_hashtag.RichTextHashtag`\n - :class:`aiogram.types.rich_text_cashtag.RichTextCashtag`\n - :class:`aiogram.types.rich_text_bot_command.RichTextBotCommand`\n - :class:`aiogram.types.rich_text_anchor.RichTextAnchor`\n - :class:`aiogram.types.rich_text_anchor_link.RichTextAnchorLink`\n - :class:`aiogram.types.rich_text_reference.RichTextReference`\n - :class:`aiogram.types.rich_text_reference_link.RichTextReferenceLink`",
+          "description": "This object represents a rich formatted text. Currently, it can be either a String for plain text, an Array of RichText, or any of the following types:\n - RichTextBold\n - RichTextItalic\n - RichTextUnderline\n - RichTextStrikethrough\n - RichTextSpoiler\n - RichTextDateTime\n - RichTextTextMention\n - RichTextSubscript\n - RichTextSuperscript\n - RichTextMarked\n - RichTextCode\n - RichTextCustomEmoji\n - RichTextMathematicalExpression\n - RichTextUrl\n - RichTextEmailAddress\n - RichTextPhoneNumber\n - RichTextBankCardNumber\n - RichTextMention\n - RichTextHashtag\n - RichTextCashtag\n - RichTextBotCommand\n - RichTextButton\n - RichTextAnchor\n - RichTextAnchorLink\n - RichTextReference\n - RichTextReferenceLink",
+          "html_description": "<p>This object represents a rich formatted text. Currently, it can be either a String for plain text, an Array of <a href=\"#richtext\">RichText</a>, or any of the following types:</p><ul>\n<li><a href=\"#richtextbold\">RichTextBold</a></li>\n<li><a href=\"#richtextitalic\">RichTextItalic</a></li>\n<li><a href=\"#richtextunderline\">RichTextUnderline</a></li>\n<li><a href=\"#richtextstrikethrough\">RichTextStrikethrough</a></li>\n<li><a href=\"#richtextspoiler\">RichTextSpoiler</a></li>\n<li><a href=\"#richtextdatetime\">RichTextDateTime</a></li>\n<li><a href=\"#richtexttextmention\">RichTextTextMention</a></li>\n<li><a href=\"#richtextsubscript\">RichTextSubscript</a></li>\n<li><a href=\"#richtextsuperscript\">RichTextSuperscript</a></li>\n<li><a href=\"#richtextmarked\">RichTextMarked</a></li>\n<li><a href=\"#richtextcode\">RichTextCode</a></li>\n<li><a href=\"#richtextcustomemoji\">RichTextCustomEmoji</a></li>\n<li><a href=\"#richtextmathematicalexpression\">RichTextMathematicalExpression</a></li>\n<li><a href=\"#richtexturl\">RichTextUrl</a></li>\n<li><a href=\"#richtextemailaddress\">RichTextEmailAddress</a></li>\n<li><a href=\"#richtextphonenumber\">RichTextPhoneNumber</a></li>\n<li><a href=\"#richtextbankcardnumber\">RichTextBankCardNumber</a></li>\n<li><a href=\"#richtextmention\">RichTextMention</a></li>\n<li><a href=\"#richtexthashtag\">RichTextHashtag</a></li>\n<li><a href=\"#richtextcashtag\">RichTextCashtag</a></li>\n<li><a href=\"#richtextbotcommand\">RichTextBotCommand</a></li>\n<li><a href=\"#richtextbutton\">RichTextButton</a></li>\n<li><a href=\"#richtextanchor\">RichTextAnchor</a></li>\n<li><a href=\"#richtextanchorlink\">RichTextAnchorLink</a></li>\n<li><a href=\"#richtextreference\">RichTextReference</a></li>\n<li><a href=\"#richtextreferencelink\">RichTextReferenceLink</a></li>\n</ul>",
+          "rst_description": "This object represents a rich formatted text. Currently, it can be either a String for plain text, an Array of :class:`aiogram.types.rich_text.RichText`, or any of the following types:\n\n - :class:`aiogram.types.rich_text_bold.RichTextBold`\n - :class:`aiogram.types.rich_text_italic.RichTextItalic`\n - :class:`aiogram.types.rich_text_underline.RichTextUnderline`\n - :class:`aiogram.types.rich_text_strikethrough.RichTextStrikethrough`\n - :class:`aiogram.types.rich_text_spoiler.RichTextSpoiler`\n - :class:`aiogram.types.rich_text_date_time.RichTextDateTime`\n - :class:`aiogram.types.rich_text_text_mention.RichTextTextMention`\n - :class:`aiogram.types.rich_text_subscript.RichTextSubscript`\n - :class:`aiogram.types.rich_text_superscript.RichTextSuperscript`\n - :class:`aiogram.types.rich_text_marked.RichTextMarked`\n - :class:`aiogram.types.rich_text_code.RichTextCode`\n - :class:`aiogram.types.rich_text_custom_emoji.RichTextCustomEmoji`\n - :class:`aiogram.types.rich_text_mathematical_expression.RichTextMathematicalExpression`\n - :class:`aiogram.types.rich_text_url.RichTextUrl`\n - :class:`aiogram.types.rich_text_email_address.RichTextEmailAddress`\n - :class:`aiogram.types.rich_text_phone_number.RichTextPhoneNumber`\n - :class:`aiogram.types.rich_text_bank_card_number.RichTextBankCardNumber`\n - :class:`aiogram.types.rich_text_mention.RichTextMention`\n - :class:`aiogram.types.rich_text_hashtag.RichTextHashtag`\n - :class:`aiogram.types.rich_text_cashtag.RichTextCashtag`\n - :class:`aiogram.types.rich_text_bot_command.RichTextBotCommand`\n - :class:`aiogram.types.rich_text_button.RichTextButton`\n - :class:`aiogram.types.rich_text_anchor.RichTextAnchor`\n - :class:`aiogram.types.rich_text_anchor_link.RichTextAnchorLink`\n - :class:`aiogram.types.rich_text_reference.RichTextReference`\n - :class:`aiogram.types.rich_text_reference_link.RichTextReferenceLink`",
           "annotations": [],
           "category": "types"
         },
@@ -21097,6 +21330,32 @@
           "category": "types"
         },
         {
+          "anchor": "richtextbutton",
+          "name": "RichTextButton",
+          "description": "A button.",
+          "html_description": "<p>A button.</p>",
+          "rst_description": "A button.",
+          "annotations": [
+            {
+              "type": "String",
+              "description": "Type of the rich text, always 'button'",
+              "html_description": "<td>Type of the rich text, always &#8220;button&#8221;</td>",
+              "rst_description": "Type of the rich text, always 'button'\n",
+              "name": "type",
+              "required": true
+            },
+            {
+              "type": "RichMessageButton",
+              "description": "The button",
+              "html_description": "<td>The button</td>",
+              "rst_description": "The button\n",
+              "name": "button",
+              "required": true
+            }
+          ],
+          "category": "types"
+        },
+        {
           "anchor": "richtextanchor",
           "name": "RichTextAnchor",
           "description": "An anchor.",
@@ -21369,9 +21628,9 @@
         {
           "anchor": "richblock",
           "name": "RichBlock",
-          "description": "This object represents a block in a rich formatted message. Currently, it can be any of the following types:\n - RichBlockParagraph\n - RichBlockSectionHeading\n - RichBlockPreformatted\n - RichBlockFooter\n - RichBlockDivider\n - RichBlockMathematicalExpression\n - RichBlockAnchor\n - RichBlockList\n - RichBlockBlockQuotation\n - RichBlockPullQuotation\n - RichBlockCollage\n - RichBlockSlideshow\n - RichBlockTable\n - RichBlockDetails\n - RichBlockMap\n - RichBlockAnimation\n - RichBlockAudio\n - RichBlockPhoto\n - RichBlockVideo\n - RichBlockVoiceNote\n - RichBlockThinking",
-          "html_description": "<p>This object represents a block in a rich formatted message. Currently, it can be any of the following types:</p><ul>\n<li><a href=\"#richblockparagraph\">RichBlockParagraph</a></li>\n<li><a href=\"#richblocksectionheading\">RichBlockSectionHeading</a></li>\n<li><a href=\"#richblockpreformatted\">RichBlockPreformatted</a></li>\n<li><a href=\"#richblockfooter\">RichBlockFooter</a></li>\n<li><a href=\"#richblockdivider\">RichBlockDivider</a></li>\n<li><a href=\"#richblockmathematicalexpression\">RichBlockMathematicalExpression</a></li>\n<li><a href=\"#richblockanchor\">RichBlockAnchor</a></li>\n<li><a href=\"#richblocklist\">RichBlockList</a></li>\n<li><a href=\"#richblockblockquotation\">RichBlockBlockQuotation</a></li>\n<li><a href=\"#richblockpullquotation\">RichBlockPullQuotation</a></li>\n<li><a href=\"#richblockcollage\">RichBlockCollage</a></li>\n<li><a href=\"#richblockslideshow\">RichBlockSlideshow</a></li>\n<li><a href=\"#richblocktable\">RichBlockTable</a></li>\n<li><a href=\"#richblockdetails\">RichBlockDetails</a></li>\n<li><a href=\"#richblockmap\">RichBlockMap</a></li>\n<li><a href=\"#richblockanimation\">RichBlockAnimation</a></li>\n<li><a href=\"#richblockaudio\">RichBlockAudio</a></li>\n<li><a href=\"#richblockphoto\">RichBlockPhoto</a></li>\n<li><a href=\"#richblockvideo\">RichBlockVideo</a></li>\n<li><a href=\"#richblockvoicenote\">RichBlockVoiceNote</a></li>\n<li><a href=\"#richblockthinking\">RichBlockThinking</a></li>\n</ul>",
-          "rst_description": "This object represents a block in a rich formatted message. Currently, it can be any of the following types:\n\n - :class:`aiogram.types.rich_block_paragraph.RichBlockParagraph`\n - :class:`aiogram.types.rich_block_section_heading.RichBlockSectionHeading`\n - :class:`aiogram.types.rich_block_preformatted.RichBlockPreformatted`\n - :class:`aiogram.types.rich_block_footer.RichBlockFooter`\n - :class:`aiogram.types.rich_block_divider.RichBlockDivider`\n - :class:`aiogram.types.rich_block_mathematical_expression.RichBlockMathematicalExpression`\n - :class:`aiogram.types.rich_block_anchor.RichBlockAnchor`\n - :class:`aiogram.types.rich_block_list.RichBlockList`\n - :class:`aiogram.types.rich_block_block_quotation.RichBlockBlockQuotation`\n - :class:`aiogram.types.rich_block_pull_quotation.RichBlockPullQuotation`\n - :class:`aiogram.types.rich_block_collage.RichBlockCollage`\n - :class:`aiogram.types.rich_block_slideshow.RichBlockSlideshow`\n - :class:`aiogram.types.rich_block_table.RichBlockTable`\n - :class:`aiogram.types.rich_block_details.RichBlockDetails`\n - :class:`aiogram.types.rich_block_map.RichBlockMap`\n - :class:`aiogram.types.rich_block_animation.RichBlockAnimation`\n - :class:`aiogram.types.rich_block_audio.RichBlockAudio`\n - :class:`aiogram.types.rich_block_photo.RichBlockPhoto`\n - :class:`aiogram.types.rich_block_video.RichBlockVideo`\n - :class:`aiogram.types.rich_block_voice_note.RichBlockVoiceNote`\n - :class:`aiogram.types.rich_block_thinking.RichBlockThinking`",
+          "description": "This object represents a block in a rich formatted message. Currently, it can be any of the following types:\n - RichBlockParagraph\n - RichBlockSectionHeading\n - RichBlockPreformatted\n - RichBlockFooter\n - RichBlockDivider\n - RichBlockMathematicalExpression\n - RichBlockAnchor\n - RichBlockList\n - RichBlockBlockQuotation\n - RichBlockExpandableBlockQuotation\n - RichBlockPullQuotation\n - RichBlockCollage\n - RichBlockSlideshow\n - RichBlockTable\n - RichBlockDetails\n - RichBlockMap\n - RichBlockButtons\n - RichBlockAnimation\n - RichBlockAudio\n - RichBlockDocument\n - RichBlockPhoto\n - RichBlockVideo\n - RichBlockVoiceNote\n - RichBlockThinking",
+          "html_description": "<p>This object represents a block in a rich formatted message. Currently, it can be any of the following types:</p><ul>\n<li><a href=\"#richblockparagraph\">RichBlockParagraph</a></li>\n<li><a href=\"#richblocksectionheading\">RichBlockSectionHeading</a></li>\n<li><a href=\"#richblockpreformatted\">RichBlockPreformatted</a></li>\n<li><a href=\"#richblockfooter\">RichBlockFooter</a></li>\n<li><a href=\"#richblockdivider\">RichBlockDivider</a></li>\n<li><a href=\"#richblockmathematicalexpression\">RichBlockMathematicalExpression</a></li>\n<li><a href=\"#richblockanchor\">RichBlockAnchor</a></li>\n<li><a href=\"#richblocklist\">RichBlockList</a></li>\n<li><a href=\"#richblockblockquotation\">RichBlockBlockQuotation</a></li>\n<li><a href=\"#richblockexpandableblockquotation\">RichBlockExpandableBlockQuotation</a></li>\n<li><a href=\"#richblockpullquotation\">RichBlockPullQuotation</a></li>\n<li><a href=\"#richblockcollage\">RichBlockCollage</a></li>\n<li><a href=\"#richblockslideshow\">RichBlockSlideshow</a></li>\n<li><a href=\"#richblocktable\">RichBlockTable</a></li>\n<li><a href=\"#richblockdetails\">RichBlockDetails</a></li>\n<li><a href=\"#richblockmap\">RichBlockMap</a></li>\n<li><a href=\"#richblockbuttons\">RichBlockButtons</a></li>\n<li><a href=\"#richblockanimation\">RichBlockAnimation</a></li>\n<li><a href=\"#richblockaudio\">RichBlockAudio</a></li>\n<li><a href=\"#richblockdocument\">RichBlockDocument</a></li>\n<li><a href=\"#richblockphoto\">RichBlockPhoto</a></li>\n<li><a href=\"#richblockvideo\">RichBlockVideo</a></li>\n<li><a href=\"#richblockvoicenote\">RichBlockVoiceNote</a></li>\n<li><a href=\"#richblockthinking\">RichBlockThinking</a></li>\n</ul>",
+          "rst_description": "This object represents a block in a rich formatted message. Currently, it can be any of the following types:\n\n - :class:`aiogram.types.rich_block_paragraph.RichBlockParagraph`\n - :class:`aiogram.types.rich_block_section_heading.RichBlockSectionHeading`\n - :class:`aiogram.types.rich_block_preformatted.RichBlockPreformatted`\n - :class:`aiogram.types.rich_block_footer.RichBlockFooter`\n - :class:`aiogram.types.rich_block_divider.RichBlockDivider`\n - :class:`aiogram.types.rich_block_mathematical_expression.RichBlockMathematicalExpression`\n - :class:`aiogram.types.rich_block_anchor.RichBlockAnchor`\n - :class:`aiogram.types.rich_block_list.RichBlockList`\n - :class:`aiogram.types.rich_block_block_quotation.RichBlockBlockQuotation`\n - :class:`aiogram.types.rich_block_expandable_block_quotation.RichBlockExpandableBlockQuotation`\n - :class:`aiogram.types.rich_block_pull_quotation.RichBlockPullQuotation`\n - :class:`aiogram.types.rich_block_collage.RichBlockCollage`\n - :class:`aiogram.types.rich_block_slideshow.RichBlockSlideshow`\n - :class:`aiogram.types.rich_block_table.RichBlockTable`\n - :class:`aiogram.types.rich_block_details.RichBlockDetails`\n - :class:`aiogram.types.rich_block_map.RichBlockMap`\n - :class:`aiogram.types.rich_block_buttons.RichBlockButtons`\n - :class:`aiogram.types.rich_block_animation.RichBlockAnimation`\n - :class:`aiogram.types.rich_block_audio.RichBlockAudio`\n - :class:`aiogram.types.rich_block_document.RichBlockDocument`\n - :class:`aiogram.types.rich_block_photo.RichBlockPhoto`\n - :class:`aiogram.types.rich_block_video.RichBlockVideo`\n - :class:`aiogram.types.rich_block_voice_note.RichBlockVoiceNote`\n - :class:`aiogram.types.rich_block_thinking.RichBlockThinking`",
           "annotations": [],
           "category": "types"
         },
@@ -21626,6 +21885,40 @@
           "category": "types"
         },
         {
+          "anchor": "richblockexpandableblockquotation",
+          "name": "RichBlockExpandableBlockQuotation",
+          "description": "A block quotation, corresponding to the HTML tag <blockquote> with custom attribute \"collapsed\".",
+          "html_description": "<p>A block quotation, corresponding to the HTML tag <code>&lt;blockquote&gt;</code> with custom attribute <code>\"collapsed\"</code>.</p>",
+          "rst_description": "A block quotation, corresponding to the HTML tag :code:`<blockquote>` with custom attribute :code:`\"collapsed\"`.",
+          "annotations": [
+            {
+              "type": "String",
+              "description": "Type of the block, always 'expandable_blockquote'",
+              "html_description": "<td>Type of the block, always &#8220;expandable_blockquote&#8221;</td>",
+              "rst_description": "Type of the block, always 'expandable_blockquote'\n",
+              "name": "type",
+              "required": true
+            },
+            {
+              "type": "RichText",
+              "description": "Content of the block",
+              "html_description": "<td>Content of the block</td>",
+              "rst_description": "Content of the block\n",
+              "name": "text",
+              "required": true
+            },
+            {
+              "type": "RichText",
+              "description": "Credit of the block",
+              "html_description": "<td><em>Optional</em>. Credit of the block</td>",
+              "rst_description": "*Optional*. Credit of the block\n",
+              "name": "credit",
+              "required": false
+            }
+          ],
+          "category": "types"
+        },
+        {
           "anchor": "richblockpullquotation",
           "name": "RichBlockPullQuotation",
           "description": "A quotation with centered text, loosely corresponding to the HTML tag <aside>.",
@@ -21767,6 +22060,14 @@
               "required": false
             },
             {
+              "type": "True",
+              "description": "True, if table cells have smaller indents",
+              "html_description": "<td><em>Optional</em>. <em>True</em>, if table cells have smaller indents</td>",
+              "rst_description": "*Optional*. :code:`True`, if table cells have smaller indents\n",
+              "name": "is_compact",
+              "required": false
+            },
+            {
               "type": "RichText",
               "description": "Caption of the table",
               "html_description": "<td><em>Optional</em>. Caption of the table</td>",
@@ -21844,9 +22145,9 @@
             },
             {
               "type": "Integer",
-              "description": "Map zoom level; 13-20",
-              "html_description": "<td>Map zoom level; 13-20</td>",
-              "rst_description": "Map zoom level; 13-20\n",
+              "description": "Map zoom level",
+              "html_description": "<td>Map zoom level</td>",
+              "rst_description": "Map zoom level\n",
               "name": "zoom",
               "required": true
             },
@@ -21872,6 +22173,40 @@
               "html_description": "<td><em>Optional</em>. Caption of the block</td>",
               "rst_description": "*Optional*. Caption of the block\n",
               "name": "caption",
+              "required": false
+            }
+          ],
+          "category": "types"
+        },
+        {
+          "anchor": "richblockbuttons",
+          "name": "RichBlockButtons",
+          "description": "A block containing a list of buttons that are shown in one row, corresponding to the custom HTML tag <tg-button-row>.",
+          "html_description": "<p>A block containing a list of buttons that are shown in one row, corresponding to the custom HTML tag <code>&lt;tg-button-row&gt;</code>.</p>",
+          "rst_description": "A block containing a list of buttons that are shown in one row, corresponding to the custom HTML tag :code:`<tg-button-row>`.",
+          "annotations": [
+            {
+              "type": "String",
+              "description": "Type of the block, always 'buttons'",
+              "html_description": "<td>Type of the block, always &#8220;buttons&#8221;</td>",
+              "rst_description": "Type of the block, always 'buttons'\n",
+              "name": "type",
+              "required": true
+            },
+            {
+              "type": "Array of RichMessageButton",
+              "description": "The buttons",
+              "html_description": "<td>The buttons</td>",
+              "rst_description": "The buttons\n",
+              "name": "buttons",
+              "required": true
+            },
+            {
+              "type": "String",
+              "description": "Horizontal alignment of the buttons. Currently, must be one of 'left', 'center', or 'right'.",
+              "html_description": "<td><em>Optional</em>. Horizontal alignment of the buttons. Currently, must be one of &#8220;left&#8221;, &#8220;center&#8221;, or &#8220;right&#8221;.</td>",
+              "rst_description": "*Optional*. Horizontal alignment of the buttons. Currently, must be one of 'left', 'center', or 'right'.\n",
+              "name": "align",
               "required": false
             }
           ],
@@ -21940,6 +22275,40 @@
               "html_description": "<td>The audio</td>",
               "rst_description": "The audio\n",
               "name": "audio",
+              "required": true
+            },
+            {
+              "type": "RichBlockCaption",
+              "description": "Caption of the block",
+              "html_description": "<td><em>Optional</em>. Caption of the block</td>",
+              "rst_description": "*Optional*. Caption of the block\n",
+              "name": "caption",
+              "required": false
+            }
+          ],
+          "category": "types"
+        },
+        {
+          "anchor": "richblockdocument",
+          "name": "RichBlockDocument",
+          "description": "A block with a general file, corresponding to the custom HTML tag <tg-document>.",
+          "html_description": "<p>A block with a general file, corresponding to the custom HTML tag <code>&lt;tg-document&gt;</code>.</p>",
+          "rst_description": "A block with a general file, corresponding to the custom HTML tag :code:`<tg-document>`.",
+          "annotations": [
+            {
+              "type": "String",
+              "description": "Type of the block, always 'document'",
+              "html_description": "<td>Type of the block, always &#8220;document&#8221;</td>",
+              "rst_description": "Type of the block, always 'document'\n",
+              "name": "type",
+              "required": true
+            },
+            {
+              "type": "Document",
+              "description": "The document",
+              "html_description": "<td>The document</td>",
+              "rst_description": "The document\n",
+              "name": "document",
               "required": true
             },
             {
@@ -22150,9 +22519,9 @@
         {
           "anchor": "inputrichblock",
           "name": "InputRichBlock",
-          "description": "This object represents a block in a rich formatted message to be sent. Currently, it can be any of the following types:\n - InputRichBlockParagraph\n - InputRichBlockSectionHeading\n - InputRichBlockPreformatted\n - InputRichBlockFooter\n - InputRichBlockDivider\n - InputRichBlockMathematicalExpression\n - InputRichBlockAnchor\n - InputRichBlockList\n - InputRichBlockBlockQuotation\n - InputRichBlockPullQuotation\n - InputRichBlockCollage\n - InputRichBlockSlideshow\n - InputRichBlockTable\n - InputRichBlockDetails\n - InputRichBlockMap\n - InputRichBlockAnimation\n - InputRichBlockAudio\n - InputRichBlockPhoto\n - InputRichBlockVideo\n - InputRichBlockVoiceNote\n - InputRichBlockThinking",
-          "html_description": "<p>This object represents a block in a rich formatted message to be sent. Currently, it can be any of the following types:</p><ul>\n<li><a href=\"#inputrichblockparagraph\">InputRichBlockParagraph</a></li>\n<li><a href=\"#inputrichblocksectionheading\">InputRichBlockSectionHeading</a></li>\n<li><a href=\"#inputrichblockpreformatted\">InputRichBlockPreformatted</a></li>\n<li><a href=\"#inputrichblockfooter\">InputRichBlockFooter</a></li>\n<li><a href=\"#inputrichblockdivider\">InputRichBlockDivider</a></li>\n<li><a href=\"#inputrichblockmathematicalexpression\">InputRichBlockMathematicalExpression</a></li>\n<li><a href=\"#inputrichblockanchor\">InputRichBlockAnchor</a></li>\n<li><a href=\"#inputrichblocklist\">InputRichBlockList</a></li>\n<li><a href=\"#inputrichblockblockquotation\">InputRichBlockBlockQuotation</a></li>\n<li><a href=\"#inputrichblockpullquotation\">InputRichBlockPullQuotation</a></li>\n<li><a href=\"#inputrichblockcollage\">InputRichBlockCollage</a></li>\n<li><a href=\"#inputrichblockslideshow\">InputRichBlockSlideshow</a></li>\n<li><a href=\"#inputrichblocktable\">InputRichBlockTable</a></li>\n<li><a href=\"#inputrichblockdetails\">InputRichBlockDetails</a></li>\n<li><a href=\"#inputrichblockmap\">InputRichBlockMap</a></li>\n<li><a href=\"#inputrichblockanimation\">InputRichBlockAnimation</a></li>\n<li><a href=\"#inputrichblockaudio\">InputRichBlockAudio</a></li>\n<li><a href=\"#inputrichblockphoto\">InputRichBlockPhoto</a></li>\n<li><a href=\"#inputrichblockvideo\">InputRichBlockVideo</a></li>\n<li><a href=\"#inputrichblockvoicenote\">InputRichBlockVoiceNote</a></li>\n<li><a href=\"#inputrichblockthinking\">InputRichBlockThinking</a></li>\n</ul>",
-          "rst_description": "This object represents a block in a rich formatted message to be sent. Currently, it can be any of the following types:\n\n - :class:`aiogram.types.input_rich_block_paragraph.InputRichBlockParagraph`\n - :class:`aiogram.types.input_rich_block_section_heading.InputRichBlockSectionHeading`\n - :class:`aiogram.types.input_rich_block_preformatted.InputRichBlockPreformatted`\n - :class:`aiogram.types.input_rich_block_footer.InputRichBlockFooter`\n - :class:`aiogram.types.input_rich_block_divider.InputRichBlockDivider`\n - :class:`aiogram.types.input_rich_block_mathematical_expression.InputRichBlockMathematicalExpression`\n - :class:`aiogram.types.input_rich_block_anchor.InputRichBlockAnchor`\n - :class:`aiogram.types.input_rich_block_list.InputRichBlockList`\n - :class:`aiogram.types.input_rich_block_block_quotation.InputRichBlockBlockQuotation`\n - :class:`aiogram.types.input_rich_block_pull_quotation.InputRichBlockPullQuotation`\n - :class:`aiogram.types.input_rich_block_collage.InputRichBlockCollage`\n - :class:`aiogram.types.input_rich_block_slideshow.InputRichBlockSlideshow`\n - :class:`aiogram.types.input_rich_block_table.InputRichBlockTable`\n - :class:`aiogram.types.input_rich_block_details.InputRichBlockDetails`\n - :class:`aiogram.types.input_rich_block_map.InputRichBlockMap`\n - :class:`aiogram.types.input_rich_block_animation.InputRichBlockAnimation`\n - :class:`aiogram.types.input_rich_block_audio.InputRichBlockAudio`\n - :class:`aiogram.types.input_rich_block_photo.InputRichBlockPhoto`\n - :class:`aiogram.types.input_rich_block_video.InputRichBlockVideo`\n - :class:`aiogram.types.input_rich_block_voice_note.InputRichBlockVoiceNote`\n - :class:`aiogram.types.input_rich_block_thinking.InputRichBlockThinking`",
+          "description": "This object represents a block in a rich formatted message to be sent. Currently, it can be any of the following types:\n - InputRichBlockParagraph\n - InputRichBlockSectionHeading\n - InputRichBlockPreformatted\n - InputRichBlockFooter\n - InputRichBlockDivider\n - InputRichBlockMathematicalExpression\n - InputRichBlockAnchor\n - InputRichBlockList\n - InputRichBlockBlockQuotation\n - InputRichBlockExpandableBlockQuotation\n - InputRichBlockPullQuotation\n - InputRichBlockCollage\n - InputRichBlockSlideshow\n - InputRichBlockTable\n - InputRichBlockDetails\n - InputRichBlockMap\n - InputRichBlockButtons\n - InputRichBlockAnimation\n - InputRichBlockAudio\n - InputRichBlockDocument\n - InputRichBlockPhoto\n - InputRichBlockVideo\n - InputRichBlockVoiceNote\n - InputRichBlockThinking",
+          "html_description": "<p>This object represents a block in a rich formatted message to be sent. Currently, it can be any of the following types:</p><ul>\n<li><a href=\"#inputrichblockparagraph\">InputRichBlockParagraph</a></li>\n<li><a href=\"#inputrichblocksectionheading\">InputRichBlockSectionHeading</a></li>\n<li><a href=\"#inputrichblockpreformatted\">InputRichBlockPreformatted</a></li>\n<li><a href=\"#inputrichblockfooter\">InputRichBlockFooter</a></li>\n<li><a href=\"#inputrichblockdivider\">InputRichBlockDivider</a></li>\n<li><a href=\"#inputrichblockmathematicalexpression\">InputRichBlockMathematicalExpression</a></li>\n<li><a href=\"#inputrichblockanchor\">InputRichBlockAnchor</a></li>\n<li><a href=\"#inputrichblocklist\">InputRichBlockList</a></li>\n<li><a href=\"#inputrichblockblockquotation\">InputRichBlockBlockQuotation</a></li>\n<li><a href=\"#inputrichblockexpandableblockquotation\">InputRichBlockExpandableBlockQuotation</a></li>\n<li><a href=\"#inputrichblockpullquotation\">InputRichBlockPullQuotation</a></li>\n<li><a href=\"#inputrichblockcollage\">InputRichBlockCollage</a></li>\n<li><a href=\"#inputrichblockslideshow\">InputRichBlockSlideshow</a></li>\n<li><a href=\"#inputrichblocktable\">InputRichBlockTable</a></li>\n<li><a href=\"#inputrichblockdetails\">InputRichBlockDetails</a></li>\n<li><a href=\"#inputrichblockmap\">InputRichBlockMap</a></li>\n<li><a href=\"#inputrichblockbuttons\">InputRichBlockButtons</a></li>\n<li><a href=\"#inputrichblockanimation\">InputRichBlockAnimation</a></li>\n<li><a href=\"#inputrichblockaudio\">InputRichBlockAudio</a></li>\n<li><a href=\"#inputrichblockdocument\">InputRichBlockDocument</a></li>\n<li><a href=\"#inputrichblockphoto\">InputRichBlockPhoto</a></li>\n<li><a href=\"#inputrichblockvideo\">InputRichBlockVideo</a></li>\n<li><a href=\"#inputrichblockvoicenote\">InputRichBlockVoiceNote</a></li>\n<li><a href=\"#inputrichblockthinking\">InputRichBlockThinking</a></li>\n</ul>",
+          "rst_description": "This object represents a block in a rich formatted message to be sent. Currently, it can be any of the following types:\n\n - :class:`aiogram.types.input_rich_block_paragraph.InputRichBlockParagraph`\n - :class:`aiogram.types.input_rich_block_section_heading.InputRichBlockSectionHeading`\n - :class:`aiogram.types.input_rich_block_preformatted.InputRichBlockPreformatted`\n - :class:`aiogram.types.input_rich_block_footer.InputRichBlockFooter`\n - :class:`aiogram.types.input_rich_block_divider.InputRichBlockDivider`\n - :class:`aiogram.types.input_rich_block_mathematical_expression.InputRichBlockMathematicalExpression`\n - :class:`aiogram.types.input_rich_block_anchor.InputRichBlockAnchor`\n - :class:`aiogram.types.input_rich_block_list.InputRichBlockList`\n - :class:`aiogram.types.input_rich_block_block_quotation.InputRichBlockBlockQuotation`\n - :class:`aiogram.types.input_rich_block_expandable_block_quotation.InputRichBlockExpandableBlockQuotation`\n - :class:`aiogram.types.input_rich_block_pull_quotation.InputRichBlockPullQuotation`\n - :class:`aiogram.types.input_rich_block_collage.InputRichBlockCollage`\n - :class:`aiogram.types.input_rich_block_slideshow.InputRichBlockSlideshow`\n - :class:`aiogram.types.input_rich_block_table.InputRichBlockTable`\n - :class:`aiogram.types.input_rich_block_details.InputRichBlockDetails`\n - :class:`aiogram.types.input_rich_block_map.InputRichBlockMap`\n - :class:`aiogram.types.input_rich_block_buttons.InputRichBlockButtons`\n - :class:`aiogram.types.input_rich_block_animation.InputRichBlockAnimation`\n - :class:`aiogram.types.input_rich_block_audio.InputRichBlockAudio`\n - :class:`aiogram.types.input_rich_block_document.InputRichBlockDocument`\n - :class:`aiogram.types.input_rich_block_photo.InputRichBlockPhoto`\n - :class:`aiogram.types.input_rich_block_video.InputRichBlockVideo`\n - :class:`aiogram.types.input_rich_block_voice_note.InputRichBlockVoiceNote`\n - :class:`aiogram.types.input_rich_block_thinking.InputRichBlockThinking`",
           "annotations": [],
           "category": "types"
         },
@@ -22407,6 +22776,40 @@
           "category": "types"
         },
         {
+          "anchor": "inputrichblockexpandableblockquotation",
+          "name": "InputRichBlockExpandableBlockQuotation",
+          "description": "A block quotation, corresponding to the HTML tag <blockquote> with custom attribute \"collapsed\".",
+          "html_description": "<p>A block quotation, corresponding to the HTML tag <code>&lt;blockquote&gt;</code> with custom attribute <code>\"collapsed\"</code>.</p>",
+          "rst_description": "A block quotation, corresponding to the HTML tag :code:`<blockquote>` with custom attribute :code:`\"collapsed\"`.",
+          "annotations": [
+            {
+              "type": "String",
+              "description": "Type of the block, always 'expandable_blockquote'",
+              "html_description": "<td>Type of the block, always &#8220;expandable_blockquote&#8221;</td>",
+              "rst_description": "Type of the block, always 'expandable_blockquote'\n",
+              "name": "type",
+              "required": true
+            },
+            {
+              "type": "RichText",
+              "description": "Content of the block",
+              "html_description": "<td>Content of the block</td>",
+              "rst_description": "Content of the block\n",
+              "name": "text",
+              "required": true
+            },
+            {
+              "type": "RichText",
+              "description": "Credit of the block",
+              "html_description": "<td><em>Optional</em>. Credit of the block</td>",
+              "rst_description": "*Optional*. Credit of the block\n",
+              "name": "credit",
+              "required": false
+            }
+          ],
+          "category": "types"
+        },
+        {
           "anchor": "inputrichblockpullquotation",
           "name": "InputRichBlockPullQuotation",
           "description": "A quotation with centered text, loosely corresponding to the HTML tag <aside>.",
@@ -22548,6 +22951,14 @@
               "required": false
             },
             {
+              "type": "True",
+              "description": "Pass True if table cells must have smaller indents",
+              "html_description": "<td><em>Optional</em>. Pass <em>True</em> if table cells must have smaller indents</td>",
+              "rst_description": "*Optional*. Pass :code:`True` if table cells must have smaller indents\n",
+              "name": "is_compact",
+              "required": false
+            },
+            {
               "type": "RichText",
               "description": "Caption of the table",
               "html_description": "<td><em>Optional</em>. Caption of the table</td>",
@@ -22626,26 +23037,26 @@
             {
               "type": "Integer",
               "description": "Map zoom level; 0-24",
-              "html_description": "<td>Map zoom level; 0-24</td>",
-              "rst_description": "Map zoom level; 0-24\n",
+              "html_description": "<td><em>Optional</em>. Map zoom level; 0-24</td>",
+              "rst_description": "*Optional*. Map zoom level; 0-24\n",
               "name": "zoom",
-              "required": true
+              "required": false
             },
             {
               "type": "Integer",
               "description": "Map width; 0-10000",
-              "html_description": "<td>Map width; 0-10000</td>",
-              "rst_description": "Map width; 0-10000\n",
+              "html_description": "<td><em>Optional</em>. Map width; 0-10000</td>",
+              "rst_description": "*Optional*. Map width; 0-10000\n",
               "name": "width",
-              "required": true
+              "required": false
             },
             {
               "type": "Integer",
               "description": "Map height; 0-10000",
-              "html_description": "<td>Map height; 0-10000</td>",
-              "rst_description": "Map height; 0-10000\n",
+              "html_description": "<td><em>Optional</em>. Map height; 0-10000</td>",
+              "rst_description": "*Optional*. Map height; 0-10000\n",
               "name": "height",
-              "required": true
+              "required": false
             },
             {
               "type": "RichBlockCaption",
@@ -22653,6 +23064,40 @@
               "html_description": "<td><em>Optional</em>. Caption of the block</td>",
               "rst_description": "*Optional*. Caption of the block\n",
               "name": "caption",
+              "required": false
+            }
+          ],
+          "category": "types"
+        },
+        {
+          "anchor": "inputrichblockbuttons",
+          "name": "InputRichBlockButtons",
+          "description": "A block containing a list of buttons that are shown in one row, corresponding to the custom HTML tag <tg-button-row>.",
+          "html_description": "<p>A block containing a list of buttons that are shown in one row, corresponding to the custom HTML tag <code>&lt;tg-button-row&gt;</code>.</p>",
+          "rst_description": "A block containing a list of buttons that are shown in one row, corresponding to the custom HTML tag :code:`<tg-button-row>`.",
+          "annotations": [
+            {
+              "type": "String",
+              "description": "Type of the block, always 'buttons'",
+              "html_description": "<td>Type of the block, always &#8220;buttons&#8221;</td>",
+              "rst_description": "Type of the block, always 'buttons'\n",
+              "name": "type",
+              "required": true
+            },
+            {
+              "type": "Array of RichMessageButton",
+              "description": "List of 1-8 buttons to send",
+              "html_description": "<td>List of 1-8 buttons to send</td>",
+              "rst_description": "List of 1-8 buttons to send\n",
+              "name": "buttons",
+              "required": true
+            },
+            {
+              "type": "String",
+              "description": "Horizontal alignment of the buttons. Currently, must be one of 'left', 'center', or 'right'.",
+              "html_description": "<td><em>Optional</em>. Horizontal alignment of the buttons. Currently, must be one of &#8220;left&#8221;, &#8220;center&#8221;, or &#8220;right&#8221;.</td>",
+              "rst_description": "*Optional*. Horizontal alignment of the buttons. Currently, must be one of 'left', 'center', or 'right'.\n",
+              "name": "align",
               "required": false
             }
           ],
@@ -22713,6 +23158,40 @@
               "html_description": "<td>The audio. Caption is ignored.</td>",
               "rst_description": "The audio. Caption is ignored.\n",
               "name": "audio",
+              "required": true
+            },
+            {
+              "type": "RichBlockCaption",
+              "description": "Caption of the block",
+              "html_description": "<td><em>Optional</em>. Caption of the block</td>",
+              "rst_description": "*Optional*. Caption of the block\n",
+              "name": "caption",
+              "required": false
+            }
+          ],
+          "category": "types"
+        },
+        {
+          "anchor": "inputrichblockdocument",
+          "name": "InputRichBlockDocument",
+          "description": "A block with a general file, corresponding to the custom HTML tag <tg-document>.",
+          "html_description": "<p>A block with a general file, corresponding to the custom HTML tag <code>&lt;tg-document&gt;</code>.</p>",
+          "rst_description": "A block with a general file, corresponding to the custom HTML tag :code:`<tg-document>`.",
+          "annotations": [
+            {
+              "type": "String",
+              "description": "Type of the block, always 'document'",
+              "html_description": "<td>Type of the block, always &#8220;document&#8221;</td>",
+              "rst_description": "Type of the block, always 'document'\n",
+              "name": "type",
+              "required": true
+            },
+            {
+              "type": "InputMediaDocument",
+              "description": "The document. Caption is ignored.",
+              "html_description": "<td>The document. Caption is ignored.</td>",
+              "rst_description": "The document. Caption is ignored.\n",
+              "name": "document",
               "required": true
             },
             {
@@ -24294,8 +24773,8 @@
           "anchor": "inlinequeryresultgame",
           "name": "InlineQueryResultGame",
           "description": "Represents a Game.",
-          "html_description": "<p>Represents a <a href=\"#games\">Game</a>.</p>",
-          "rst_description": "Represents a `Game <https://core.telegram.org/bots/api#games>`_.",
+          "html_description": "<p>Represents a <a href=\"#game\">Game</a>.</p>",
+          "rst_description": "Represents a :class:`aiogram.types.game.Game`.",
           "annotations": [
             {
               "type": "String",
@@ -25064,9 +25543,9 @@
           "annotations": [
             {
               "type": "InputRichMessage",
-              "description": "The message to be sent",
-              "html_description": "<td>The message to be sent</td>",
-              "rst_description": "The message to be sent\n",
+              "description": "The message to be sent. Only previously uploaded files may be used in the message.",
+              "html_description": "<td>The message to be sent. Only previously uploaded files may be used in the message.</td>",
+              "rst_description": "The message to be sent. Only previously uploaded files may be used in the message.\n",
               "name": "rich_message",
               "required": true
             }

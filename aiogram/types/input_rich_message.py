@@ -28,7 +28,7 @@ class InputRichMessage(TelegramObject):
     blocks: list[InputRichBlockUnion] | None = None
     """*Optional*. Content of the rich message to send described as a list of blocks"""
     media: list[InputRichMessageMedia] | None = None
-    """*Optional*. List of media that are specified in the *markdown* or *html* fields using :code:`tg://photo?id=`, :code:`tg://video?id=`, and :code:`tg://audio?id=` links"""
+    """*Optional*. List of media that are specified in the *markdown* or *html* fields using :code:`tg://photo?id=`, :code:`tg://video?id=`, :code:`tg://document?id=`, and :code:`tg://audio?id=` links"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!

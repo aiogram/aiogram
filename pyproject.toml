@@ -86,8 +86,8 @@ docs = [
     "furo~=2024.8.6",
     "Sphinx-Substitution-Extensions~=2024.8.6",
     "towncrier~=24.8.0",
-    "pygments~=2.18.0",
-    "pymdown-extensions~=10.3",
+    "pygments>=2.18,<2.21",
+    "pymdown-extensions>=10.3,<12.0",
     "markdown-include~=0.8.1",
     "sphinxcontrib-towncrier~=0.4.0a0",
 ]
@@ -211,7 +211,10 @@ filterwarnings = [
     # Remove when uvloop fixes the issue
     # https://github.com/MagicStack/uvloop/issues/703
     # https://github.com/MagicStack/uvloop/pull/705
-    "ignore:.*asyncio.iscoroutinefunction.*:DeprecationWarning"
+    "ignore:.*asyncio.iscoroutinefunction.*:DeprecationWarning",
+    # aiogram's public proxy API accepts aiohttp.BasicAuth, so tests must keep
+    # constructing it. Remove together with BasicAuth support in aiohttp 4.0.
+    "ignore:BasicAuth is deprecated:DeprecationWarning"
 ]
 
 [tool.coverage.run]

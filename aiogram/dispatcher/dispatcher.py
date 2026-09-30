@@ -165,6 +165,7 @@ class Dispatcher(Router):
                 self.update.trigger,
                 update,
                 {
+                    "dispatcher": self,
                     **self.workflow_data,
                     **kwargs,
                     "bot": bot,

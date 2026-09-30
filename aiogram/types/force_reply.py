@@ -20,7 +20,7 @@ class ForceReply(MutableTelegramObject):
     """
 
     force_reply: Literal[True] = True
-    """Shows reply interface to the user, as if they manually selected the bot's message and tapped 'Reply'"""
+    """Shows reply interface to the user, as if they had manually selected the bot's message and tapped 'Reply'"""
     input_field_placeholder: str | None = None
     """*Optional*. The placeholder to be shown in the input field when the reply is active; 1-64 characters"""
     selective: bool | None = None

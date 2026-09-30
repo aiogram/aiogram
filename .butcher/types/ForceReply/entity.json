@@ -13,9 +13,9 @@
     "annotations": [
       {
         "type": "True",
-        "description": "Shows reply interface to the user, as if they manually selected the bot's message and tapped 'Reply'",
-        "html_description": "<td>Shows reply interface to the user, as if they manually selected the bot's message and tapped 'Reply'</td>",
-        "rst_description": "Shows reply interface to the user, as if they manually selected the bot's message and tapped 'Reply'\n",
+        "description": "Shows reply interface to the user, as if they had manually selected the bot's message and tapped 'Reply'",
+        "html_description": "<td>Shows reply interface to the user, as if they had manually selected the bot's message and tapped 'Reply'</td>",
+        "rst_description": "Shows reply interface to the user, as if they had manually selected the bot's message and tapped 'Reply'\n",
         "name": "force_reply",
         "required": true
       },

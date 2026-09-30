@@ -1,0 +1,105 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Rich messages",
+    "anchor": "rich-messages"
+  },
+  "object": {
+    "anchor": "richmessagebutton",
+    "name": "RichMessageButton",
+    "description": "This object represents a button in a RichMessage. Exactly one of the fields other than text and style must be used to specify the type of the button.",
+    "html_description": "<p>This object represents a button in a <a href=\"#richmessage\">RichMessage</a>. Exactly one of the fields other than <em>text</em> and <em>style</em> must be used to specify the type of the button.</p>",
+    "rst_description": "This object represents a button in a :class:`aiogram.types.rich_message.RichMessage`. Exactly one of the fields other than *text* and *style* must be used to specify the type of the button.",
+    "annotations": [
+      {
+        "type": "RichText",
+        "description": "Text of the button. May contain only plain text, RichTextCustomEmoji and RichTextDateTime entities.",
+        "html_description": "<td>Text of the button. May contain only plain text, <a href=\"#richtextcustomemoji\">RichTextCustomEmoji</a> and <a href=\"#richtextdatetime\">RichTextDateTime</a> entities.</td>",
+        "rst_description": "Text of the button. May contain only plain text, :class:`aiogram.types.rich_text_custom_emoji.RichTextCustomEmoji` and :class:`aiogram.types.rich_text_date_time.RichTextDateTime` entities.\n",
+        "name": "text",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "Style of the button. Must be one of 'danger' (red), 'success' (green), 'primary' (blue) or 'link' (the button is shown as a regular link without borders). If omitted, then an app-specific style is used. The style 'link' is allowed only for callback buttons.",
+        "html_description": "<td><em>Optional</em>. Style of the button. Must be one of &#8220;danger&#8221; (red), &#8220;success&#8221; (green), &#8220;primary&#8221; (blue) or &#8220;link&#8221; (the button is shown as a regular link without borders). If omitted, then an app-specific style is used. The style &#8220;link&#8221; is allowed only for callback buttons.</td>",
+        "rst_description": "*Optional*. Style of the button. Must be one of 'danger' (red), 'success' (green), 'primary' (blue) or 'link' (the button is shown as a regular link without borders). If omitted, then an app-specific style is used. The style 'link' is allowed only for callback buttons.\n",
+        "name": "style",
+        "required": false
+      },
+      {
+        "type": "String",
+        "description": "HTTP or tg:// URL to be opened when the button is pressed. Links tg://user?id=<user_id> can be used to mention a user by their identifier without using a username, if this is allowed by their privacy settings.",
+        "html_description": "<td><em>Optional</em>. HTTP or tg:// URL to be opened when the button is pressed. Links <code>tg://user?id=&lt;user_id&gt;</code> can be used to mention a user by their identifier without using a username, if this is allowed by their privacy settings.</td>",
+        "rst_description": "*Optional*. HTTP or tg:// URL to be opened when the button is pressed. Links :code:`tg://user?id=<user_id>` can be used to mention a user by their identifier without using a username, if this is allowed by their privacy settings.\n",
+        "name": "url",
+        "required": false
+      },
+      {
+        "type": "String",
+        "description": "Data to be sent in a callback query to the bot when the button is pressed, 1-64 bytes",
+        "html_description": "<td><em>Optional</em>. Data to be sent in a <a href=\"#callbackquery\">callback query</a> to the bot when the button is pressed, 1-64 bytes</td>",
+        "rst_description": "*Optional*. Data to be sent in a `callback query <https://core.telegram.org/bots/api#callbackquery>`_ to the bot when the button is pressed, 1-64 bytes\n",
+        "name": "callback_data",
+        "required": false
+      },
+      {
+        "type": "WebAppInfo",
+        "description": "Description of the Web App that will be launched when the user presses the button. The Web App will be able to send an arbitrary message on behalf of the user using the method answerWebAppQuery. Available only in private chats between a user and the bot. Not supported for messages sent on behalf of a business account.",
+        "html_description": "<td><em>Optional</em>. Description of the <a href=\"/bots/webapps\">Web App</a> that will be launched when the user presses the button. The Web App will be able to send an arbitrary message on behalf of the user using the method <a href=\"#answerwebappquery\">answerWebAppQuery</a>. Available only in private chats between a user and the bot. Not supported for messages sent on behalf of a business account.</td>",
+        "rst_description": "*Optional*. Description of the `Web App <https://core.telegram.org/bots/webapps>`_ that will be launched when the user presses the button. The Web App will be able to send an arbitrary message on behalf of the user using the method :class:`aiogram.methods.answer_web_app_query.AnswerWebAppQuery`. Available only in private chats between a user and the bot. Not supported for messages sent on behalf of a business account.\n",
+        "name": "web_app",
+        "required": false
+      },
+      {
+        "type": "LoginUrl",
+        "description": "An HTTPS URL used to automatically authorize the user. Can be used as a replacement for the Telegram Login Widget. Not supported for ephemeral messages.",
+        "html_description": "<td><em>Optional</em>. An HTTPS URL used to automatically authorize the user. Can be used as a replacement for the <a href=\"/widgets/login\">Telegram Login Widget</a>. Not supported for ephemeral messages.</td>",
+        "rst_description": "*Optional*. An HTTPS URL used to automatically authorize the user. Can be used as a replacement for the `Telegram Login Widget <https://core.telegram.org/widgets/login>`_. Not supported for ephemeral messages.\n",
+        "name": "login_url",
+        "required": false
+      },
+      {
+        "type": "String",
+        "description": "If set, pressing the button will prompt the user to select one of their chats, open that chat and insert the bot's username and the specified inline query in the input field. May be empty, in which case just the bot's username will be inserted. Not supported for messages sent in channel direct messages chats and on behalf of a business account.",
+        "html_description": "<td><em>Optional</em>. If set, pressing the button will prompt the user to select one of their chats, open that chat and insert the bot's username and the specified inline query in the input field. May be empty, in which case just the bot's username will be inserted. Not supported for messages sent in channel direct messages chats and on behalf of a business account.</td>",
+        "rst_description": "*Optional*. If set, pressing the button will prompt the user to select one of their chats, open that chat and insert the bot's username and the specified inline query in the input field. May be empty, in which case just the bot's username will be inserted. Not supported for messages sent in channel direct messages chats and on behalf of a business account.\n",
+        "name": "switch_inline_query",
+        "required": false
+      },
+      {
+        "type": "String",
+        "description": "If set, pressing the button will insert the bot's username and the specified inline query in the current chat's input field. May be empty, in which case only the bot's username will be inserted. Not supported in channels and for messages sent in channel direct messages chats and on behalf of a business account.",
+        "html_description": "<td><em>Optional</em>. If set, pressing the button will insert the bot's username and the specified inline query in the current chat's input field. May be empty, in which case only the bot's username will be inserted. Not supported in channels and for messages sent in channel direct messages chats and on behalf of a business account.</td>",
+        "rst_description": "*Optional*. If set, pressing the button will insert the bot's username and the specified inline query in the current chat's input field. May be empty, in which case only the bot's username will be inserted. Not supported in channels and for messages sent in channel direct messages chats and on behalf of a business account.\n",
+        "name": "switch_inline_query_current_chat",
+        "required": false
+      },
+      {
+        "type": "SwitchInlineQueryChosenChat",
+        "description": "If set, pressing the button will prompt the user to select one of their chats of the specified type, open that chat and insert the bot's username and the specified inline query in the input field. Not supported for messages sent in channel direct messages chats and on behalf of a business account.",
+        "html_description": "<td><em>Optional</em>. If set, pressing the button will prompt the user to select one of their chats of the specified type, open that chat and insert the bot's username and the specified inline query in the input field. Not supported for messages sent in channel direct messages chats and on behalf of a business account.</td>",
+        "rst_description": "*Optional*. If set, pressing the button will prompt the user to select one of their chats of the specified type, open that chat and insert the bot's username and the specified inline query in the input field. Not supported for messages sent in channel direct messages chats and on behalf of a business account.\n",
+        "name": "switch_inline_query_chosen_chat",
+        "required": false
+      },
+      {
+        "type": "CopyTextButton",
+        "description": "A button that copies the specified text to the clipboard",
+        "html_description": "<td><em>Optional</em>. A button that copies the specified text to the clipboard</td>",
+        "rst_description": "*Optional*. A button that copies the specified text to the clipboard\n",
+        "name": "copy_text",
+        "required": false
+      },
+      {
+        "type": "DisabledButton",
+        "description": "If set, then the button is disabled and does nothing",
+        "html_description": "<td><em>Optional</em>. If set, then the button is disabled and does nothing</td>",
+        "rst_description": "*Optional*. If set, then the button is disabled and does nothing\n",
+        "name": "disabled",
+        "required": false
+      }
+    ],
+    "category": "types"
+  }
+}

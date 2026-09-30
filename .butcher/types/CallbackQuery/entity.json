@@ -62,8 +62,8 @@
       {
         "type": "String",
         "description": "Short name of a Game to be returned, serves as the unique identifier for the game",
-        "html_description": "<td><em>Optional</em>. Short name of a <a href=\"#games\">Game</a> to be returned, serves as the unique identifier for the game</td>",
-        "rst_description": "*Optional*. Short name of a `Game <https://core.telegram.org/bots/api#games>`_ to be returned, serves as the unique identifier for the game\n",
+        "html_description": "<td><em>Optional</em>. Short name of a <a href=\"#game\">Game</a> to be returned, serves as the unique identifier for the game</td>",
+        "rst_description": "*Optional*. Short name of a :class:`aiogram.types.game.Game` to be returned, serves as the unique identifier for the game\n",
         "name": "game_short_name",
         "required": false
       }

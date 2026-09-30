@@ -13,9 +13,9 @@
     "annotations": [
       {
         "type": "InputRichMessage",
-        "description": "The message to be sent",
-        "html_description": "<td>The message to be sent</td>",
-        "rst_description": "The message to be sent\n",
+        "description": "The message to be sent. Only previously uploaded files may be used in the message.",
+        "html_description": "<td>The message to be sent. Only previously uploaded files may be used in the message.</td>",
+        "rst_description": "The message to be sent. Only previously uploaded files may be used in the message.\n",
         "name": "rich_message",
         "required": true
       }

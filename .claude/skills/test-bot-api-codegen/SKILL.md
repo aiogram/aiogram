@@ -15,14 +15,14 @@ Coverage goal for this repo is **100%**.
 ## 1. Scope the change
 
 ```bash
-git diff --stat HEAD -- aiogram/
-git status --short -- aiogram/            # new files = new types/methods/enums
+rtk git diff --stat HEAD -- aiogram/
+rtk git status --short -- aiogram/            # new files = new types/methods/enums
 ```
 
 Then get ground truth — the uncovered lines *are* the to-do list:
 
 ```bash
-uv run pytest tests -q --cov=aiogram --cov-report=term-missing
+rtk test uv run pytest tests -q --cov=aiogram --cov-report=term-missing
 ```
 
 Note the failures too: this repo has guard tests that fail on purpose when new
@@ -85,10 +85,10 @@ Most types have no test file at all. Only add one when the type carries behavior
 ## 4. Verify
 
 ```bash
-uv run ruff format aiogram tests scripts examples
-uv run ruff check --show-fixes --preview aiogram examples
-uv run mypy aiogram
-uv run pytest tests -q --cov=aiogram --cov-report=term-missing
+rtk ruff format aiogram tests scripts examples
+rtk ruff check --show-fixes --preview aiogram examples
+rtk mypy aiogram
+rtk test uv run pytest tests -q --cov=aiogram --cov-report=term-missing
 ```
 
 `TOTAL ... 100%` with zero missing lines, and no failures. Pre-existing ruff

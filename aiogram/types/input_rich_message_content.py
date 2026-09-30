@@ -16,7 +16,7 @@ class InputRichMessageContent(InputMessageContent):
     """
 
     rich_message: InputRichMessage
-    """The message to be sent"""
+    """The message to be sent. Only previously uploaded files may be used in the message"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!

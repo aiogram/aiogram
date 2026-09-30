@@ -4,9 +4,6 @@ from typing import TYPE_CHECKING, Any
 
 from .base import TelegramObject
 
-if TYPE_CHECKING:
-    pass
-
 
 class ChatAdministratorRights(TelegramObject):
     """
@@ -37,6 +34,8 @@ class ChatAdministratorRights(TelegramObject):
     """:code:`True`, if the administrator can edit stories posted by other users, post stories to the chat page, pin chat stories, and access the chat's story archive"""
     can_delete_stories: bool
     """:code:`True`, if the administrator can delete stories posted by other users"""
+    can_send_welcome_messages: bool
+    """:code:`True`, if the administrator can manage chat welcome messages or directly send them in the case of bots"""
     can_post_messages: bool | None = None
     """*Optional*. :code:`True`, if the administrator can post messages in the channel, approve suggested posts, or access channel statistics; for channels only"""
     can_edit_messages: bool | None = None
@@ -48,7 +47,7 @@ class ChatAdministratorRights(TelegramObject):
     can_manage_direct_messages: bool | None = None
     """*Optional*. :code:`True`, if the administrator can manage direct messages of the channel and decline suggested posts; for channels only"""
     can_manage_tags: bool | None = None
-    """*Optional*. :code:`True`, if the administrator can edit the tags of regular members; for groups and supergroups only. If omitted, defaults to the value of can_pin_messages"""
+    """*Optional*. :code:`True`, if the administrator can edit the tags of regular members; for groups and supergroups only"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!
@@ -68,6 +67,7 @@ class ChatAdministratorRights(TelegramObject):
             can_post_stories: bool,
             can_edit_stories: bool,
             can_delete_stories: bool,
+            can_send_welcome_messages: bool,
             can_post_messages: bool | None = None,
             can_edit_messages: bool | None = None,
             can_pin_messages: bool | None = None,
@@ -92,6 +92,7 @@ class ChatAdministratorRights(TelegramObject):
                 can_post_stories=can_post_stories,
                 can_edit_stories=can_edit_stories,
                 can_delete_stories=can_delete_stories,
+                can_send_welcome_messages=can_send_welcome_messages,
                 can_post_messages=can_post_messages,
                 can_edit_messages=can_edit_messages,
                 can_pin_messages=can_pin_messages,

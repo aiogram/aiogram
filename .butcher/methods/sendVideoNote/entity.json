@@ -7,9 +7,9 @@
   "object": {
     "anchor": "sendvideonote",
     "name": "sendVideoNote",
-    "description": "As of v.4.0, Telegram clients support rounded square MPEG4 videos of up to 1 minute long. Use this method to send video messages. On success, the sent Message is returned.",
-    "html_description": "<p>As of <a href=\"https://telegram.org/blog/video-messages-and-telescope\">v.4.0</a>, Telegram clients support rounded square MPEG4 videos of up to 1 minute long. Use this method to send video messages. On success, the sent <a href=\"#message\">Message</a> is returned.</p>",
-    "rst_description": "As of `v.4.0 <https://telegram.org/blog/video-messages-and-telescope>`_, Telegram clients support rounded square MPEG4 videos of up to 1 minute long. Use this method to send video messages. On success, the sent :class:`aiogram.types.message.Message` is returned.",
+    "description": "Use this method to send a rounded square MPEG4 video of up to 1 minute long. On success, the sent Message is returned.",
+    "html_description": "<p>Use this method to send a rounded square MPEG4 video of up to 1 minute long. On success, the sent <a href=\"#message\">Message</a> is returned.</p>",
+    "rst_description": "Use this method to send a rounded square MPEG4 video of up to 1 minute long. On success, the sent :class:`aiogram.types.message.Message` is returned.",
     "annotations": [
       {
         "type": "Integer or String",
@@ -132,12 +132,24 @@
         "name": "reply_markup"
       },
       {
+        "type": "EphemeralMessageParameters",
+        "required": false,
+        "description": "A JSON-serialized object containing the parameters of the ephemeral message to send",
+        "html_description": "<td>A JSON-serialized object containing the parameters of the ephemeral message to send</td>",
+        "rst_description": "A JSON-serialized object containing the parameters of the ephemeral message to send\n",
+        "name": "ephemeral_message_parameters"
+      },
+      {
         "type": "Integer",
         "required": false,
         "description": "For outgoing ephemeral messages, unique identifier of the user who will receive the message; for group and supergroup chats only. It is not guaranteed that the user will receive the message, especially if they are offline. See ephemeral message sending for more details.",
         "html_description": "<td>For outgoing ephemeral messages, unique identifier of the user who will receive the message; for group and supergroup chats only. It is not guaranteed that the user will receive the message, especially if they are offline. See <a href=\"#ephemeral-messages-and-commands\">ephemeral message sending</a> for more details.</td>",
         "rst_description": "For outgoing ephemeral messages, unique identifier of the user who will receive the message; for group and supergroup chats only. It is not guaranteed that the user will receive the message, especially if they are offline. See `ephemeral message sending <https://core.telegram.org/bots/api#ephemeral-messages-and-commands>`_ for more details.\n",
-        "name": "receiver_user_id"
+        "name": "receiver_user_id",
+        "deprecated": {
+          "version": "10.3",
+          "release_date": "2026-08-24"
+        }
       },
       {
         "type": "String",
@@ -145,7 +157,11 @@
         "description": "For outgoing ephemeral messages, identifier of the callback query which triggerred the message if any",
         "html_description": "<td>For outgoing ephemeral messages, identifier of the callback query which triggerred the message if any</td>",
         "rst_description": "For outgoing ephemeral messages, identifier of the callback query which triggerred the message if any\n",
-        "name": "callback_query_id"
+        "name": "callback_query_id",
+        "deprecated": {
+          "version": "10.3",
+          "release_date": "2026-08-24"
+        }
       },
       {
         "type": "Boolean",

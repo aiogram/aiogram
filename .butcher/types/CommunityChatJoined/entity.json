@@ -1,0 +1,25 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "communitychatjoined",
+    "name": "CommunityChatJoined",
+    "description": "Describes a service message about a chat being joined by a user from a community.",
+    "html_description": "<p>Describes a service message about a chat being joined by a user from a community.</p>",
+    "rst_description": "Describes a service message about a chat being joined by a user from a community.",
+    "annotations": [
+      {
+        "type": "Community",
+        "description": "The community from which the chat was joined",
+        "html_description": "<td>The community from which the chat was joined</td>",
+        "rst_description": "The community from which the chat was joined\n",
+        "name": "community",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

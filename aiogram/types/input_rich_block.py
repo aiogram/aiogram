@@ -14,14 +14,17 @@ class InputRichBlock(TelegramObject):
      - :class:`aiogram.types.input_rich_block_anchor.InputRichBlockAnchor`
      - :class:`aiogram.types.input_rich_block_list.InputRichBlockList`
      - :class:`aiogram.types.input_rich_block_block_quotation.InputRichBlockBlockQuotation`
+     - :class:`aiogram.types.input_rich_block_expandable_block_quotation.InputRichBlockExpandableBlockQuotation`
      - :class:`aiogram.types.input_rich_block_pull_quotation.InputRichBlockPullQuotation`
      - :class:`aiogram.types.input_rich_block_collage.InputRichBlockCollage`
      - :class:`aiogram.types.input_rich_block_slideshow.InputRichBlockSlideshow`
      - :class:`aiogram.types.input_rich_block_table.InputRichBlockTable`
      - :class:`aiogram.types.input_rich_block_details.InputRichBlockDetails`
      - :class:`aiogram.types.input_rich_block_map.InputRichBlockMap`
+     - :class:`aiogram.types.input_rich_block_buttons.InputRichBlockButtons`
      - :class:`aiogram.types.input_rich_block_animation.InputRichBlockAnimation`
      - :class:`aiogram.types.input_rich_block_audio.InputRichBlockAudio`
+     - :class:`aiogram.types.input_rich_block_document.InputRichBlockDocument`
      - :class:`aiogram.types.input_rich_block_photo.InputRichBlockPhoto`
      - :class:`aiogram.types.input_rich_block_video.InputRichBlockVideo`
      - :class:`aiogram.types.input_rich_block_voice_note.InputRichBlockVoiceNote`

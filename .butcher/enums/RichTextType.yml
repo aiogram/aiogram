@@ -28,6 +28,7 @@ multi_parse:
     - RichTextHashtag
     - RichTextCashtag
     - RichTextBotCommand
+    - RichTextButton
     - RichTextAnchor
     - RichTextAnchorLink
     - RichTextReference

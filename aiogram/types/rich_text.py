@@ -26,6 +26,7 @@ class RichText(TelegramObject):
      - :class:`aiogram.types.rich_text_hashtag.RichTextHashtag`
      - :class:`aiogram.types.rich_text_cashtag.RichTextCashtag`
      - :class:`aiogram.types.rich_text_bot_command.RichTextBotCommand`
+     - :class:`aiogram.types.rich_text_button.RichTextButton`
      - :class:`aiogram.types.rich_text_anchor.RichTextAnchor`
      - :class:`aiogram.types.rich_text_anchor_link.RichTextAnchorLink`
      - :class:`aiogram.types.rich_text_reference.RichTextReference`

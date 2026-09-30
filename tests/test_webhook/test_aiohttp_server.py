@@ -10,9 +10,11 @@ from aiohttp import MultipartReader, web
 from aiohttp.test_utils import TestClient
 from aiohttp.web_app import Application
 
-from aiogram import Dispatcher, F
+from aiogram import Bot, Dispatcher, F
+from aiogram.filters import Filter
+from aiogram.fsm.storage.base import StorageKey
 from aiogram.methods import GetMe, Request
-from aiogram.types import BufferedInputFile, Message, User
+from aiogram.types import BufferedInputFile, InlineQuery, Message, User
 from aiogram.webhook.aiohttp_server import (
     SimpleRequestHandler,
     TokenBasedRequestHandler,
@@ -205,6 +207,48 @@ class TestSimpleRequestHandler:
         client: TestClient = await aiohttp_client(app)
         resp = await self.make_reqest(client=client)
         assert resp.status == 401
+
+    @pytest.mark.parametrize("handle_in_background", [True, False])
+    async def test_filter_requiring_dispatcher(
+        self, bot: MockedBot, aiohttp_client, handle_in_background: bool
+    ):
+        """Regression: webhook-fed updates must expose `dispatcher` to filters/handlers
+        the same way polling does (FSM-state filter shape from the original report)."""
+        app = Application()
+        dp = Dispatcher()
+        handled = Event()
+
+        class StateFilter(Filter):
+            async def __call__(self, query: InlineQuery, bot: Bot, dispatcher: Dispatcher) -> bool:
+                key = StorageKey(bot_id=bot.id, chat_id=42, user_id=42)
+                return await dispatcher.storage.get_state(key) == "playing"
+
+        @dp.inline_query(StateFilter())
+        async def handle_inline_query(query: InlineQuery):
+            handled.set()
+
+        await dp.storage.set_state(StorageKey(bot_id=bot.id, chat_id=42, user_id=42), "playing")
+
+        handler = SimpleRequestHandler(
+            dispatcher=dp, bot=bot, handle_in_background=handle_in_background
+        )
+        handler.register(app, path="/webhook")
+        client: TestClient = await aiohttp_client(app)
+
+        resp = await client.post(
+            "/webhook",
+            json={
+                "update_id": 1,
+                "inline_query": {
+                    "id": "query",
+                    "from": {"id": 42, "first_name": "Test", "is_bot": False},
+                    "query": "42:: ",
+                    "offset": "",
+                },
+            },
+        )
+        assert resp.status == 200
+        await asyncio.wait_for(handled.wait(), timeout=3)
 
 
 class TestTokenBasedRequestHandler:

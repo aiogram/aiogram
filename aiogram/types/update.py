@@ -18,6 +18,7 @@ if TYPE_CHECKING:
     from .inline_query import InlineQuery
     from .managed_bot_updated import ManagedBotUpdated
     from .message import Message
+    from .message_generation_stopped import MessageGenerationStopped
     from .message_reaction_count_updated import MessageReactionCountUpdated
     from .message_reaction_updated import MessageReactionUpdated
     from .paid_media_purchased import PaidMediaPurchased
@@ -90,6 +91,8 @@ class Update(TelegramObject):
     """*Optional*. A new bot was created to be managed by the bot, or token or owner of a managed bot was changed"""
     subscription: BotSubscriptionUpdated | None = None
     """*Optional*. User payment subscription has changed"""
+    stopped_message_generation: MessageGenerationStopped | None = None
+    """*Optional*. A user asked the bot to stop the generation of a message"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!
@@ -125,6 +128,7 @@ class Update(TelegramObject):
             removed_chat_boost: ChatBoostRemoved | None = None,
             managed_bot: ManagedBotUpdated | None = None,
             subscription: BotSubscriptionUpdated | None = None,
+            stopped_message_generation: MessageGenerationStopped | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!
@@ -159,6 +163,7 @@ class Update(TelegramObject):
                 removed_chat_boost=removed_chat_boost,
                 managed_bot=managed_bot,
                 subscription=subscription,
+                stopped_message_generation=stopped_message_generation,
                 **__pydantic_kwargs,
             )
 
@@ -226,6 +231,8 @@ class Update(TelegramObject):
             return "managed_bot"
         if self.subscription:
             return "subscription"
+        if self.stopped_message_generation:
+            return "stopped_message_generation"
 
         raise UpdateTypeLookupError("Update does not contain any known event type.")
 

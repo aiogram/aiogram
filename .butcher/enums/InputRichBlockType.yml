@@ -12,9 +12,12 @@ multi_parse:
     - InputRichBlockAnimation
     - InputRichBlockAudio
     - InputRichBlockBlockQuotation
+    - InputRichBlockButtons
     - InputRichBlockCollage
     - InputRichBlockDetails
     - InputRichBlockDivider
+    - InputRichBlockDocument
+    - InputRichBlockExpandableBlockQuotation
     - InputRichBlockFooter
     - InputRichBlockList
     - InputRichBlockListItem

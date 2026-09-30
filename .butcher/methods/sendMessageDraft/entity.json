@@ -22,9 +22,9 @@
       {
         "type": "Integer",
         "required": true,
-        "description": "Unique identifier of the message draft; must be non-zero. Changes to drafts with the same identifier are animated.",
-        "html_description": "<td>Unique identifier of the message draft; must be non-zero. Changes to drafts with the same identifier are animated.</td>",
-        "rst_description": "Unique identifier of the message draft; must be non-zero. Changes to drafts with the same identifier are animated.\n",
+        "description": "Unique identifier of the message draft; must be non-zero. Changes to drafts with the same identifier are animated. Otherwise, the draft is replaced without animation.",
+        "html_description": "<td>Unique identifier of the message draft; must be non-zero. Changes to drafts with the same identifier are animated. Otherwise, the draft is replaced without animation.</td>",
+        "rst_description": "Unique identifier of the message draft; must be non-zero. Changes to drafts with the same identifier are animated. Otherwise, the draft is replaced without animation.\n",
         "name": "draft_id"
       },
       {
@@ -58,6 +58,22 @@
         "html_description": "<td>A JSON-serialized list of special entities that appear in message text, which can be specified instead of <em>parse_mode</em></td>",
         "rst_description": "A JSON-serialized list of special entities that appear in message text, which can be specified instead of *parse_mode*\n",
         "name": "entities"
+      },
+      {
+        "type": "Boolean",
+        "required": false,
+        "description": "Pass True to show the user a button to stop further drafts. The bot will receive an Update 'stopped_message_generation' if the user presses the button.",
+        "html_description": "<td>Pass <em>True</em> to show the user a button to stop further drafts. The bot will receive an <a href=\"#update\">Update</a> &#8220;stopped_message_generation&#8221; if the user presses the button.</td>",
+        "rst_description": "Pass :code:`True` to show the user a button to stop further drafts. The bot will receive an :class:`aiogram.types.update.Update` 'stopped_message_generation' if the user presses the button.\n",
+        "name": "can_stop"
+      },
+      {
+        "type": "Boolean",
+        "required": false,
+        "description": "Pass True to keep the draft in the chat when the button is pressed. The draft will still disappear after a short time or if the bot sends a message. To fully preserve the partial draft, the bot should send it as a new message.",
+        "html_description": "<td>Pass <em>True</em> to keep the draft in the chat when the button is pressed. The draft will still disappear after a short time or if the bot sends a message. To fully preserve the partial draft, the bot should send it as a new message.</td>",
+        "rst_description": "Pass :code:`True` to keep the draft in the chat when the button is pressed. The draft will still disappear after a short time or if the bot sends a message. To fully preserve the partial draft, the bot should send it as a new message.\n",
+        "name": "keep_on_stop"
       }
     ],
     "category": "methods"

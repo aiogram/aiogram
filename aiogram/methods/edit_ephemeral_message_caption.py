@@ -1,5 +1,6 @@
 from typing import TYPE_CHECKING, Any
 
+from ..client.default import Default
 from ..types import ChatIdUnion, InlineKeyboardMarkup, MessageEntity
 from .base import TelegramMethod
 
@@ -22,12 +23,14 @@ class EditEphemeralMessageCaption(TelegramMethod[bool]):
     """Identifier of the ephemeral message to edit"""
     caption: str | None = None
     """New caption of the message, 0-1024 characters after entities parsing"""
-    parse_mode: str | None = None
+    parse_mode: str | Default | None = Default("parse_mode")
     """Mode for parsing entities in the message caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details"""
     caption_entities: list[MessageEntity] | None = None
     """A JSON-serialized list of special entities that appear in the caption, which can be specified instead of *parse_mode*"""
     reply_markup: InlineKeyboardMarkup | None = None
     """A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_"""
+    show_caption_above_media: bool | Default | None = Default("show_caption_above_media")
+    """Pass :code:`True` if the caption must be shown above the message media. Supported only for animation, photo and video messages"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!
@@ -40,9 +43,10 @@ class EditEphemeralMessageCaption(TelegramMethod[bool]):
             receiver_user_id: int,
             ephemeral_message_id: int,
             caption: str | None = None,
-            parse_mode: str | None = None,
+            parse_mode: str | Default | None = Default("parse_mode"),
             caption_entities: list[MessageEntity] | None = None,
             reply_markup: InlineKeyboardMarkup | None = None,
+            show_caption_above_media: bool | Default | None = Default("show_caption_above_media"),
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!
@@ -57,5 +61,6 @@ class EditEphemeralMessageCaption(TelegramMethod[bool]):
                 parse_mode=parse_mode,
                 caption_entities=caption_entities,
                 reply_markup=reply_markup,
+                show_caption_above_media=show_caption_above_media,
                 **__pydantic_kwargs,
             )

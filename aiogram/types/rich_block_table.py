@@ -29,6 +29,8 @@ class RichBlockTable(RichBlock):
     """*Optional*. :code:`True`, if the table is striped"""
     caption: RichTextUnion | None = None
     """*Optional*. Caption of the table"""
+    is_compact: bool | None = None
+    """*Optional*. :code:`True`, if table cells have smaller indents"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!
@@ -42,6 +44,7 @@ class RichBlockTable(RichBlock):
             is_bordered: bool | None = None,
             is_striped: bool | None = None,
             caption: RichTextUnion | None = None,
+            is_compact: bool | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!
@@ -54,5 +57,6 @@ class RichBlockTable(RichBlock):
                 is_bordered=is_bordered,
                 is_striped=is_striped,
                 caption=caption,
+                is_compact=is_compact,
                 **__pydantic_kwargs,
             )

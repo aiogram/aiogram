@@ -6,9 +6,12 @@ from .rich_block_anchor import RichBlockAnchor
 from .rich_block_animation import RichBlockAnimation
 from .rich_block_audio import RichBlockAudio
 from .rich_block_block_quotation import RichBlockBlockQuotation
+from .rich_block_buttons import RichBlockButtons
 from .rich_block_collage import RichBlockCollage
 from .rich_block_details import RichBlockDetails
 from .rich_block_divider import RichBlockDivider
+from .rich_block_document import RichBlockDocument
+from .rich_block_expandable_block_quotation import RichBlockExpandableBlockQuotation
 from .rich_block_footer import RichBlockFooter
 from .rich_block_list import RichBlockList
 from .rich_block_map import RichBlockMap
@@ -34,14 +37,17 @@ RichBlockUnion: TypeAlias = Annotated[
     | RichBlockAnchor
     | RichBlockList
     | RichBlockBlockQuotation
+    | RichBlockExpandableBlockQuotation
     | RichBlockPullQuotation
     | RichBlockCollage
     | RichBlockSlideshow
     | RichBlockTable
     | RichBlockDetails
     | RichBlockMap
+    | RichBlockButtons
     | RichBlockAnimation
     | RichBlockAudio
+    | RichBlockDocument
     | RichBlockPhoto
     | RichBlockVideo
     | RichBlockVoiceNote

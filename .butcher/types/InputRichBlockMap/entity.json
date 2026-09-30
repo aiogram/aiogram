@@ -30,26 +30,26 @@
       {
         "type": "Integer",
         "description": "Map zoom level; 0-24",
-        "html_description": "<td>Map zoom level; 0-24</td>",
-        "rst_description": "Map zoom level; 0-24\n",
+        "html_description": "<td><em>Optional</em>. Map zoom level; 0-24</td>",
+        "rst_description": "*Optional*. Map zoom level; 0-24\n",
         "name": "zoom",
-        "required": true
+        "required": false
       },
       {
         "type": "Integer",
         "description": "Map width; 0-10000",
-        "html_description": "<td>Map width; 0-10000</td>",
-        "rst_description": "Map width; 0-10000\n",
+        "html_description": "<td><em>Optional</em>. Map width; 0-10000</td>",
+        "rst_description": "*Optional*. Map width; 0-10000\n",
         "name": "width",
-        "required": true
+        "required": false
       },
       {
         "type": "Integer",
         "description": "Map height; 0-10000",
-        "html_description": "<td>Map height; 0-10000</td>",
-        "rst_description": "Map height; 0-10000\n",
+        "html_description": "<td><em>Optional</em>. Map height; 0-10000</td>",
+        "rst_description": "*Optional*. Map height; 0-10000\n",
         "name": "height",
-        "required": true
+        "required": false
       },
       {
         "type": "RichBlockCaption",

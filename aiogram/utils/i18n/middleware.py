@@ -134,9 +134,16 @@ class SimpleI18nMiddleware(I18nMiddleware):
         except UnknownLocaleError:
             return self.i18n.default_locale
 
-        if locale.language not in self.i18n.available_locales:
-            return self.i18n.default_locale
-        return locale.language
+        # Telegram sends codes like "pt-br" (lowercased), while translation
+        # directories are usually named with the full territory form ("pt_BR").
+        # Prefer the most specific available locale, then the bare language.
+        candidates = [str(locale)]
+        if locale.territory:
+            candidates.append(locale.language)
+        for candidate in candidates:
+            if candidate in self.i18n.available_locales:
+                return candidate
+        return self.i18n.default_locale
 
 
 class ConstI18nMiddleware(I18nMiddleware):

@@ -7,9 +7,9 @@
   "object": {
     "anchor": "editephemeralmessagetext",
     "name": "editEphemeralMessageText",
-    "description": "Use this method to edit an ephemeral text message. Note that it is not guaranteed that the user will receive the message edit event, especially if they are offline. On success, True is returned.",
-    "html_description": "<p>Use this method to edit an ephemeral text message. Note that it is not guaranteed that the user will receive the message edit event, especially if they are offline. On success, <em>True</em> is returned.</p>",
-    "rst_description": "Use this method to edit an ephemeral text message. Note that it is not guaranteed that the user will receive the message edit event, especially if they are offline. On success, :code:`True` is returned.",
+    "description": "Use this method to edit an ephemeral text or rich message. Note that it is not guaranteed that the user will receive the message edit event, especially if they are offline. On success, True is returned.",
+    "html_description": "<p>Use this method to edit an ephemeral text or rich message. Note that it is not guaranteed that the user will receive the message edit event, especially if they are offline. On success, <em>True</em> is returned.</p>",
+    "rst_description": "Use this method to edit an ephemeral text or rich message. Note that it is not guaranteed that the user will receive the message edit event, especially if they are offline. On success, :code:`True` is returned.",
     "annotations": [
       {
         "type": "Integer or String",
@@ -37,10 +37,10 @@
       },
       {
         "type": "String",
-        "required": true,
-        "description": "New text of the message, 1-4096 characters after entity parsing",
-        "html_description": "<td>New text of the message, 1-4096 characters after entity parsing</td>",
-        "rst_description": "New text of the message, 1-4096 characters after entity parsing\n",
+        "required": false,
+        "description": "New text of the message, 1-4096 characters after entity parsing; required if rich_message isn't specified",
+        "html_description": "<td>New text of the message, 1-4096 characters after entity parsing; required if <em>rich_message</em> isn't specified</td>",
+        "rst_description": "New text of the message, 1-4096 characters after entity parsing; required if *rich_message* isn't specified\n",
         "name": "text"
       },
       {
@@ -74,6 +74,14 @@
         "html_description": "<td>A JSON-serialized object for an <a href=\"/bots/features#inline-keyboards\">inline keyboard</a></td>",
         "rst_description": "A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_\n",
         "name": "reply_markup"
+      },
+      {
+        "type": "InputRichMessage",
+        "required": false,
+        "description": "New rich content of the message; required if text isn't specified",
+        "html_description": "<td>New rich content of the message; required if <em>text</em> isn't specified</td>",
+        "rst_description": "New rich content of the message; required if *text* isn't specified\n",
+        "name": "rich_message"
       }
     ],
     "category": "methods"

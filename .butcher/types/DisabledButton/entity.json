@@ -1,0 +1,16 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "disabledbutton",
+    "name": "DisabledButton",
+    "description": "This object represents a disabled button which does nothing. Currently holds no information.",
+    "html_description": "<p>This object represents a disabled button which does nothing. Currently holds no information.</p>",
+    "rst_description": "This object represents a disabled button which does nothing. Currently holds no information.",
+    "annotations": [],
+    "category": "types"
+  }
+}

@@ -32,6 +32,7 @@ from aiogram.types import (
     ChosenInlineResult,
     InlineQuery,
     ManagedBotUpdated,
+    MessageGenerationStopped,
     Message,
     MessageReactionCountUpdated,
     MessageReactionUpdated,
@@ -162,6 +163,57 @@ class TestDispatcher:
             },
         )
         assert result == "test"
+
+    async def test_feed_update_injects_dispatcher(self, dispatcher: Dispatcher, bot: MockedBot):
+        seen = {}
+
+        async def dispatcher_filter(message: Message, dispatcher: Dispatcher) -> bool:
+            seen["filter"] = dispatcher
+            return True
+
+        @dispatcher.message(dispatcher_filter)
+        async def my_handler(message: Message, dispatcher: Dispatcher):
+            seen["handler"] = dispatcher
+            return message.text
+
+        result = await dispatcher.feed_update(bot=bot, update=UPDATE)
+        assert result == "test"
+        assert seen["filter"] is dispatcher
+        assert seen["handler"] is dispatcher
+
+    async def test_feed_update_dispatcher_kwarg_override(
+        self, dispatcher: Dispatcher, bot: MockedBot
+    ):
+        sentinel = object()
+
+        @dispatcher.message()
+        async def my_handler(message: Message, dispatcher):
+            return dispatcher
+
+        result = await dispatcher.feed_update(bot=bot, update=UPDATE, dispatcher=sentinel)
+        assert result is sentinel
+
+    async def test_feed_update_dispatcher_workflow_data_override(self, bot: MockedBot):
+        sentinel = object()
+        dp = Dispatcher(dispatcher=sentinel)
+
+        @dp.message()
+        async def my_handler(message: Message, dispatcher):
+            return dispatcher
+
+        result = await dp.feed_update(bot=bot, update=UPDATE)
+        assert result is sentinel
+
+    async def test_feed_update_polling_parity(self, dispatcher: Dispatcher, bot: MockedBot):
+        @dispatcher.message()
+        async def my_handler(message: Message, dispatcher):
+            return dispatcher
+
+        # same kwargs as _run_polling passes (dispatcher.py workflow_data)
+        result = await dispatcher.feed_update(
+            bot=bot, update=UPDATE, dispatcher=dispatcher, bots=[bot]
+        )
+        assert result is dispatcher
 
     async def test_listen_updates(self, bot: MockedBot):
         dispatcher = Dispatcher()
@@ -644,6 +696,18 @@ class TestDispatcher:
                 ),
                 False,
                 True,
+            ),
+            pytest.param(
+                "stopped_message_generation",
+                Update(
+                    update_id=42,
+                    stopped_message_generation=MessageGenerationStopped(
+                        chat=Chat(id=42, type="private"),
+                        draft_id=1,
+                    ),
+                ),
+                True,
+                False,
             ),
         ],
     )

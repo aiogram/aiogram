@@ -29,9 +29,9 @@
       },
       {
         "type": "Integer",
-        "description": "Map zoom level; 13-20",
-        "html_description": "<td>Map zoom level; 13-20</td>",
-        "rst_description": "Map zoom level; 13-20\n",
+        "description": "Map zoom level",
+        "html_description": "<td>Map zoom level</td>",
+        "rst_description": "Map zoom level\n",
         "name": "zoom",
         "required": true
       },

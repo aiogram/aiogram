@@ -21,7 +21,7 @@ class EditEphemeralMessageMedia(TelegramMethod[bool]):
     ephemeral_message_id: int
     """Identifier of the ephemeral message to edit"""
     media: InputMediaUnion
-    """A JSON-serialized object for the new media content of the message. A new file can't be uploaded; use a previously uploaded file via its file_id or specify a URL"""
+    """A JSON-serialized object for the new media content of the message"""
     reply_markup: InlineKeyboardMarkup | None = None
     """A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_"""
 

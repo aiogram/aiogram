@@ -5,8 +5,9 @@ description: |
   Sources:
     * https://core.telegram.org/bots/api#inlinekeyboardbutton
     * https://core.telegram.org/bots/api#keyboardbutton
+    * https://core.telegram.org/bots/api#richmessagebutton
 
 parse:
-  entity: InlineKeyboardButton
+  entity: RichMessageButton
   attribute: style
   regexp: "'([a-z]+)'"

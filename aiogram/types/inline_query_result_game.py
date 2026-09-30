@@ -11,7 +11,7 @@ if TYPE_CHECKING:
 
 class InlineQueryResultGame(InlineQueryResult):
     """
-    Represents a `Game <https://core.telegram.org/bots/api#games>`_.
+    Represents a :class:`aiogram.types.game.Game`.
 
     Source: https://core.telegram.org/bots/api#inlinequeryresultgame
     """

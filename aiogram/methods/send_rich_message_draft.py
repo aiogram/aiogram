@@ -17,11 +17,15 @@ class SendRichMessageDraft(TelegramMethod[bool]):
     chat_id: int
     """Unique identifier for the target private chat"""
     draft_id: int
-    """Unique identifier of the message draft; must be non-zero. Changes to drafts with the same identifier are animated"""
+    """Unique identifier of the message draft; must be non-zero. Changes to drafts with the same identifier are animated. Otherwise, the draft is replaced without animation"""
     rich_message: InputRichMessage
-    """The partial message to be streamed. Direct upload of new files isn't supported"""
+    """The partial message to be streamed. Direct upload of new files and explicit upload of files by a URL isn't supported"""
     message_thread_id: int | None = None
     """Unique identifier for the target message thread"""
+    can_stop: bool | None = None
+    """Pass :code:`True` to show the user a button to stop further drafts. The bot will receive an :class:`aiogram.types.update.Update` 'stopped_message_generation' if the user presses the button"""
+    keep_on_stop: bool | None = None
+    """Pass :code:`True` to keep the draft in the chat when the button is pressed. The draft will still disappear after a short time or if the bot sends a message. To fully preserve the partial draft, the bot should send it as a new message"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!
@@ -34,6 +38,8 @@ class SendRichMessageDraft(TelegramMethod[bool]):
             draft_id: int,
             rich_message: InputRichMessage,
             message_thread_id: int | None = None,
+            can_stop: bool | None = None,
+            keep_on_stop: bool | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!
@@ -45,5 +51,7 @@ class SendRichMessageDraft(TelegramMethod[bool]):
                 draft_id=draft_id,
                 rich_message=rich_message,
                 message_thread_id=message_thread_id,
+                can_stop=can_stop,
+                keep_on_stop=keep_on_stop,
                 **__pydantic_kwargs,
             )

@@ -34,3 +34,4 @@ class UpdateType(str, Enum):
     REMOVED_CHAT_BOOST = "removed_chat_boost"
     MANAGED_BOT = "managed_bot"
     SUBSCRIPTION = "subscription"
+    STOPPED_MESSAGE_GENERATION = "stopped_message_generation"

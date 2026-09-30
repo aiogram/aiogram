@@ -125,6 +125,14 @@
       },
       {
         "type": "Boolean",
+        "description": "True, if the administrator can manage chat welcome messages or directly send them in the case of bots",
+        "html_description": "<td><em>True</em>, if the administrator can manage chat welcome messages or directly send them in the case of bots</td>",
+        "rst_description": ":code:`True`, if the administrator can manage chat welcome messages or directly send them in the case of bots\n",
+        "name": "can_send_welcome_messages",
+        "required": true
+      },
+      {
+        "type": "Boolean",
         "description": "True, if the administrator can post messages in the channel, approve suggested posts, or access channel statistics; for channels only",
         "html_description": "<td><em>Optional</em>. <em>True</em>, if the administrator can post messages in the channel, approve suggested posts, or access channel statistics; for channels only</td>",
         "rst_description": "*Optional*. :code:`True`, if the administrator can post messages in the channel, approve suggested posts, or access channel statistics; for channels only\n",
@@ -165,9 +173,9 @@
       },
       {
         "type": "Boolean",
-        "description": "True, if the administrator can edit the tags of regular members; for groups and supergroups only. If omitted, defaults to the value of can_pin_messages.",
-        "html_description": "<td><em>Optional</em>. <em>True</em>, if the administrator can edit the tags of regular members; for groups and supergroups only. If omitted, defaults to the value of can_pin_messages.</td>",
-        "rst_description": "*Optional*. :code:`True`, if the administrator can edit the tags of regular members; for groups and supergroups only. If omitted, defaults to the value of can_pin_messages.\n",
+        "description": "True, if the administrator can edit the tags of regular members; for groups and supergroups only",
+        "html_description": "<td><em>Optional</em>. <em>True</em>, if the administrator can edit the tags of regular members; for groups and supergroups only</td>",
+        "rst_description": "*Optional*. :code:`True`, if the administrator can edit the tags of regular members; for groups and supergroups only\n",
         "name": "can_manage_tags",
         "required": false
       },

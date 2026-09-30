@@ -13,7 +13,7 @@ description: Fix missing imports in butcher-generated aiogram code (F821 "Undefi
 1. List the offenders:
 
    ```bash
-   uv run ruff check --preview --output-format=concise aiogram examples
+   rtk ruff check --preview --output-format=concise aiogram examples
    ```
 
    Only `F821 Undefined name` findings are in scope. Anything else is a real bug — report it, don't patch it.
@@ -34,9 +34,9 @@ description: Fix missing imports in butcher-generated aiogram code (F821 "Undefi
 3. Verify:
 
    ```bash
-   uv run ruff format aiogram
-   uv run ruff check --preview aiogram examples
-   uv run mypy aiogram
+   rtk ruff format aiogram
+   rtk ruff check --preview aiogram examples
+   rtk mypy aiogram
    ```
 
 ## Follow-up
