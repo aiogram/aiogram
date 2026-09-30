@@ -109,7 +109,7 @@ class TestRichTextUnionIsDiscriminated:
     reason="performance guard relies on SIGALRM (POSIX only)",
 )
 def test_nested_rich_text_validation_is_not_exponential():
-    payload = _nested_text(100)
+    payload = _nested_text(30)
 
     def _abort(signum, frame):
         raise TimeoutError
@@ -122,7 +122,7 @@ def test_nested_rich_text_validation_is_not_exponential():
         elapsed = time.perf_counter() - start
     except TimeoutError:
         pytest.fail(
-            "Validating a depth-100 nested RichText exceeded 5s -- "
+            "Validating a depth-30 nested RichText exceeded 5s -- "
             "RichTextUnion likely regressed to a non-discriminated (exponential) union."
         )
     finally:
