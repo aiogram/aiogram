@@ -2,6 +2,11 @@
 Installation
 ############
 
+Requirements
+------------
+
+aiogram requires Python 3.10 or higher.
+
 From PyPI
 ---------
 
@@ -10,7 +15,7 @@ From PyPI
     pip install -U aiogram
 
 From Arch Linux Repository
---------------------------
+---------------------------
 
 .. warning:: Package in this repository may be outdated. Use PyPI package for the latest version.
 
@@ -19,7 +24,7 @@ From Arch Linux Repository
     pacman -S python-aiogram
 
 Development build
-=================
+==================
 
 From GitHub
 -----------
