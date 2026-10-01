@@ -151,17 +151,10 @@ jobs:
 
   lowest-deps:
     name: Tests (lowest direct deps)
-    # Every other job installs from uv.lock, i.e. the newest versions allowed by the upper
-    # bounds, so nothing exercises the lower bounds in pyproject.toml. This job resolves every
-    # direct dependency (core, extras, test group) to its declared minimum and runs the suite
-    # against that set; transitive dependencies still resolve to the newest compatible version.
-    # A single point on purpose: Linux + the lowest supported interpreter only. Old releases
-    # ship no wheels for newer interpreters (pydantic-core 2.18.1 has none for CPython 3.14),
-    # so a wider matrix would compile Rust from source and measure wheel availability, not aiogram.
-    # It also type-checks at the floor. The pydantic floor (2.7.0) is set by mypy, not by runtime:
-    # older pydantic imports and runs aiogram fine, but mypy rejects `TypeAdapter(Annotated[...])`
-    # below it. The Lint job runs against the newest pydantic, so without this step nothing would
-    # notice that floor going stale.
+    # Other jobs use uv.lock, so the lower bounds in pyproject.toml are never tested.
+    # This job resolves direct deps to their minimum (transitive stay newest).
+    # Linux + lowest Python only: no wheels for new CPython (pydantic-core 2.18.1).
+    # Runs mypy too: the pydantic floor (2.7.0) comes from mypy, not runtime.
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -173,7 +166,7 @@ jobs:
         with:
           python-version: "3.10"
 
-      # same services as the Tests job: the redis / mongo extras have lower bounds to guard too
+      # same services as Tests: the redis/mongo extras have floors too
       - name: Start Redis
         run: |
           docker compose -f tests/docker-compose.yml up -d redis
@@ -201,24 +194,17 @@ jobs:
           mongod --fork --dbpath /tmp/mongo-data --logpath /tmp/mongod.log --bind_ip 127.0.0.1 || { cat /tmp/mongod.log; exit 1; }
 
       - name: Install project with the lowest direct dependencies
-        # deliberately NOT `--locked`: it forbids re-resolution, which is the point here. uv rewrites
-        # uv.lock inside this throwaway checkout; nothing commits it. Same selection as the Tests
-        # job (no heavy `docs` extra), plus the `dev` group for mypy (pinned exactly, so it adds
-        # no version drift of its own).
+        # Deliberately not `--locked`: it would forbid the re-resolution needed here.
+        # uv.lock is rewritten in this throwaway checkout only.
         run: uv sync --resolution lowest-direct --all-extras --no-extra docs --group dev --group test
 
       - name: Type-check
-        # mypy only, not `make lint`: ruff at its floor would flag formatting differences against the
-        # pinned newer ruff, which is noise unrelated to dependency floors. mypy is pinned exactly,
-        # so a failure here can only come from a dependency floor (chiefly pydantic) being too low.
-        # Same invocation as the plain (non-win32) pass of `make lint`. `--no-sync` here and in the
-        # next step is belt-and-braces: the workflow-level UV_NO_SYNC already keeps `uv run` from
-        # syncing, but with neither, `uv run` re-resolves using the default `highest` strategy
-        # instead of inheriting the one above, silently restoring the newest versions.
+        # mypy only, not ruff: ruff at its floor reports unrelated formatting noise.
+        # `--no-sync` here and below: belt and braces, UV_NO_SYNC already covers it.
         run: uv run --no-sync mypy --native-parser --num-workers 8 aiogram
 
       - name: Run tests
-        # no coverage: the Tests job reports it, and codecov.yaml counts the uploads it waits for
+        # no coverage: the Tests job uploads it
         run: uv run --no-sync pytest --redis redis://localhost:6379/0 --mongo mongodb://localhost:27017
 
   build:
