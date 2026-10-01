@@ -153,8 +153,8 @@ jobs:
     name: Tests (lowest direct deps)
     # Other jobs use uv.lock, so pyproject.toml lower bounds go untested.
     # This job resolves direct deps to their minimum (transitive stay newest).
-    # Linux + oldest Python only: no pydantic-core 2.18.1 wheel on new CPython.
-    # Runs mypy too: the pydantic floor (2.7.0) comes from mypy, not runtime.
+    # Linux + oldest Python only: old releases lack wheels for new CPython.
+    # Runs mypy too: the pydantic floor is set by mypy, not by runtime.
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
