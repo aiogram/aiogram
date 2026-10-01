@@ -1,5 +1,6 @@
 import inspect
 import sys
+import warnings
 
 import pytest
 from pydantic import BaseModel
@@ -64,7 +65,12 @@ def _default_fields():
 
 def _default_params():
     for path, model in [("aiogram.Bot", Bot), *_telegram_models()]:
-        for method_name, method in inspect.getmembers(model, inspect.isfunction):
+        # ``getmembers`` reads every attribute, including pydantic's deprecated
+        # ``__fields__``; the suite turns warnings into errors, so mute them here.
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore", DeprecationWarning)
+            members = inspect.getmembers(model, inspect.isfunction)
+        for method_name, method in members:
             if method_name.startswith("_"):
                 continue
             if (model.__name__, method_name) in EXCLUDED_METHODS:
