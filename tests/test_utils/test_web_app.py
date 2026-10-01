@@ -86,3 +86,36 @@ class TestWebApp:
                 "&query_id=test"
                 "&hash=test",
             )
+
+
+class TestCheckWebappSignatureInvalidHash:
+    @pytest.mark.parametrize(
+        "hash_value",
+        [
+            pytest.param("é" * 64, id="latin-1-accent"),
+            pytest.param("日本語", id="cjk"),
+            pytest.param("🙂" * 32, id="emoji"),
+            pytest.param("0" * 63 + "é", id="ascii-prefix-then-non-ascii"),
+        ],
+    )
+    def test_non_ascii_hash_returns_false(self, hash_value):
+        """A non-ASCII hash is invalid input and must be rejected, not raise.
+
+        hmac.compare_digest refuses non-ASCII str operands. Since `hash` comes
+        straight from the client-supplied init data (percent-decoded by
+        parse_qsl), a caller relying on the `-> bool` contract would otherwise
+        surface an unhandled TypeError on hostile input.
+        """
+        init_data = f"id=1&auth_date=1565810688&hash={hash_value}"
+        assert check_webapp_signature("42:TEST", init_data) is False
+
+    def test_percent_encoded_non_ascii_hash_returns_false(self):
+        # %C3%A9 decodes to "é" - the attacker does not need to send raw bytes
+        assert (
+            check_webapp_signature("42:TEST", "id=1&hash=%C3%A9%C3%A9")
+            is False
+        )
+
+    def test_empty_hash_returns_false(self):
+        assert check_webapp_signature("42:TEST", "id=1&hash=") is False
+
