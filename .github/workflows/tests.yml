@@ -149,6 +149,63 @@ jobs:
           name: py-${{ matrix.python-version }}-${{ matrix.os }}
           fail_ci_if_error: true
 
+  lowest-deps:
+    name: Tests (lowest direct deps)
+    # Every other job installs from uv.lock, i.e. the newest versions allowed by the upper
+    # bounds, so nothing exercises the lower bounds in pyproject.toml. This job resolves every
+    # direct dependency (core, extras, test group) to its declared minimum and runs the suite
+    # against that set; transitive dependencies still resolve to the newest compatible version.
+    # A single point on purpose: Linux + the lowest supported interpreter only. Old releases
+    # ship no wheels for newer interpreters (pydantic-core 2.18.1 has none for CPython 3.14),
+    # so a wider matrix would compile Rust from source and measure wheel availability, not aiogram.
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - uses: astral-sh/setup-uv@v10.0.1
+        with:
+          python-version: "3.10"
+
+      # same services as the Tests job: the redis / mongo extras have lower bounds to guard too
+      - name: Start Redis
+        run: |
+          docker compose -f tests/docker-compose.yml up -d redis
+          for _ in $(seq 1 15); do
+            docker compose -f tests/docker-compose.yml exec -T redis redis-cli ping >/dev/null 2>&1 && exit 0
+            sleep 1
+          done
+          echo "Redis did not become ready" >&2
+          docker compose -f tests/docker-compose.yml logs redis
+          exit 1
+
+      - name: Start MongoDB
+        run: |
+          curl -fsSL https://www.mongodb.org/static/pgp/server-8.0.asc \
+            | sudo gpg --dearmor -o /usr/share/keyrings/mongodb-server-8.0.gpg
+          # `noble` on purpose, see the Tests job
+          echo "deb [signed-by=/usr/share/keyrings/mongodb-server-8.0.gpg] https://repo.mongodb.org/apt/ubuntu noble/mongodb-org/8.0 multiverse" \
+            | sudo tee /etc/apt/sources.list.d/mongodb-org-8.0.list >/dev/null
+          sudo apt-get update -qq \
+            -o Dir::Etc::sourcelist=sources.list.d/mongodb-org-8.0.list \
+            -o Dir::Etc::sourceparts=- \
+            -o APT::Get::List-Cleanup=0
+          sudo apt-get install -y -qq --no-install-recommends mongodb-org-server
+          mkdir -p /tmp/mongo-data
+          mongod --fork --dbpath /tmp/mongo-data --logpath /tmp/mongod.log --bind_ip 127.0.0.1 || { cat /tmp/mongod.log; exit 1; }
+
+      - name: Install project with the lowest direct dependencies
+        # deliberately NOT `--locked`: it forbids re-resolution, which is the point here. uv rewrites
+        # uv.lock inside this throwaway checkout; nothing commits it. Same selection as the Tests
+        # job (no `dev` group, no heavy `docs` extra); the dev tools are not what is being guarded.
+        run: uv sync --resolution lowest-direct --all-extras --no-extra docs --no-group dev --group test
+
+      - name: Run tests
+        # no coverage: the Tests job reports it, and codecov.yaml counts the uploads it waits for
+        run: uv run pytest --redis redis://localhost:6379/0 --mongo mongodb://localhost:27017
+
   build:
     name: Build package
     runs-on: ubuntu-latest
