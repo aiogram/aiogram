@@ -158,6 +158,10 @@ jobs:
     # A single point on purpose: Linux + the lowest supported interpreter only. Old releases
     # ship no wheels for newer interpreters (pydantic-core 2.18.1 has none for CPython 3.14),
     # so a wider matrix would compile Rust from source and measure wheel availability, not aiogram.
+    # It also type-checks at the floor. The pydantic floor (2.7.0) is set by mypy, not by runtime:
+    # older pydantic imports and runs aiogram fine, but mypy rejects `TypeAdapter(Annotated[...])`
+    # below it. The Lint job runs against the newest pydantic, so without this step nothing would
+    # notice that floor going stale.
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -199,12 +203,23 @@ jobs:
       - name: Install project with the lowest direct dependencies
         # deliberately NOT `--locked`: it forbids re-resolution, which is the point here. uv rewrites
         # uv.lock inside this throwaway checkout; nothing commits it. Same selection as the Tests
-        # job (no `dev` group, no heavy `docs` extra); the dev tools are not what is being guarded.
-        run: uv sync --resolution lowest-direct --all-extras --no-extra docs --no-group dev --group test
+        # job (no heavy `docs` extra), plus the `dev` group for mypy (pinned exactly, so it adds
+        # no version drift of its own).
+        run: uv sync --resolution lowest-direct --all-extras --no-extra docs --group dev --group test
+
+      - name: Type-check
+        # mypy only, not `make lint`: ruff at its floor would flag formatting differences against the
+        # pinned newer ruff, which is noise unrelated to dependency floors. mypy is pinned exactly,
+        # so a failure here can only come from a dependency floor (chiefly pydantic) being too low.
+        # Same invocation as the plain (non-win32) pass of `make lint`. `--no-sync` here and in the
+        # next step is belt-and-braces: the workflow-level UV_NO_SYNC already keeps `uv run` from
+        # syncing, but with neither, `uv run` re-resolves using the default `highest` strategy
+        # instead of inheriting the one above, silently restoring the newest versions.
+        run: uv run --no-sync mypy --native-parser --num-workers 8 aiogram
 
       - name: Run tests
         # no coverage: the Tests job reports it, and codecov.yaml counts the uploads it waits for
-        run: uv run pytest --redis redis://localhost:6379/0 --mongo mongodb://localhost:27017
+        run: uv run --no-sync pytest --redis redis://localhost:6379/0 --mongo mongodb://localhost:27017
 
   build:
     name: Build package
