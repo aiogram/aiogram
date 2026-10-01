@@ -151,10 +151,10 @@ jobs:
 
   lowest-deps:
     name: Tests (lowest direct deps)
-    # Other jobs use uv.lock, so pyproject.toml lower bounds go untested.
-    # This job resolves direct deps to their minimum (transitive stay newest).
-    # Linux + oldest Python only: old releases lack wheels for new CPython.
-    # Runs mypy too: the pydantic floor is set by mypy, not by runtime.
+    # Other jobs use uv.lock, so pyproject lower bounds go untested.
+    # Resolves direct deps to their minimum (transitive stay newest).
+    # Linux + oldest Python only: old releases lack new CPython wheels.
+    # Runs mypy too: the pydantic floor comes from mypy, not runtime.
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -194,13 +194,13 @@ jobs:
           mongod --fork --dbpath /tmp/mongo-data --logpath /tmp/mongod.log --bind_ip 127.0.0.1 || { cat /tmp/mongod.log; exit 1; }
 
       - name: Install project with the lowest direct dependencies
-        # Deliberately not `--locked`: it forbids the re-resolution needed.
+        # Not `--locked`: it forbids the re-resolution needed.
         # uv.lock is rewritten in this throwaway checkout only.
         run: uv sync --resolution lowest-direct --all-extras --no-extra docs --group dev --group test
 
       - name: Type-check
-        # mypy only, not ruff: ruff at its floor reports unrelated style noise.
-        # `--no-sync` here and below: redundant with UV_NO_SYNC, but harmless.
+        # mypy only: ruff at its floor reports unrelated style noise.
+        # `--no-sync` here and below: redundant with UV_NO_SYNC.
         run: uv run --no-sync mypy --native-parser --num-workers 8 aiogram
 
       - name: Run tests

@@ -65,8 +65,8 @@ def _default_fields():
 
 def _default_params():
     for path, model in [("aiogram.Bot", Bot), *_telegram_models()]:
-        # ``getmembers`` reads every attribute, including pydantic's deprecated
-        # ``__fields__``; the suite turns warnings into errors, so mute them here.
+        # ``getmembers`` reads pydantic's deprecated ``__fields__``, and
+        # warnings are errors in this suite, so mute them here.
         with warnings.catch_warnings():
             warnings.simplefilter("ignore", DeprecationWarning)
             members = inspect.getmembers(model, inspect.isfunction)
