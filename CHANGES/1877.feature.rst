@@ -1,0 +1,1 @@
+Added ``answer_draft``, ``reply_draft``, ``answer_rich_draft``, and ``reply_rich_draft`` aliases to ``Message`` for Bot API 8.3 draft features.

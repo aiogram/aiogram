@@ -36,6 +36,8 @@ from aiogram.methods import (
     SendPhoto,
     SendPoll,
     SendRichMessage,
+    SendMessageDraft,
+    SendRichMessageDraft,
     SendSticker,
     SendVenue,
     SendVideo,
@@ -1787,3 +1789,37 @@ class TestMessage:
                     thumbnail_url="https://example.com/thumb.jpg",
                 )
             )
+
+    @pytest.mark.parametrize(
+        "alias_name, kwargs, method_class",
+        [
+            ["answer_draft", {"draft_id": 1, "text": "test"}, SendMessageDraft],
+            ["reply_draft", {"draft_id": 1, "text": "test"}, SendMessageDraft],
+            [
+                "answer_rich_draft",
+                {"draft_id": 1, "rich_message": InputRichMessage(html="<p>Test</p>")},
+                SendRichMessageDraft,
+            ],
+            [
+                "reply_rich_draft",
+                {"draft_id": 1, "rich_message": InputRichMessage(html="<p>Test</p>")},
+                SendRichMessageDraft,
+            ],
+        ],
+    )
+    def test_draft_aliases(
+        self,
+        alias_name: str,
+        kwargs: dict[str, Any],
+        method_class: type[SendMessageDraft | SendRichMessageDraft],
+    ):
+        message = Message(
+            message_id=42, chat=Chat(id=42, type="private"), date=datetime.datetime.now()
+        )
+        alias = getattr(message, alias_name)
+        assert callable(alias)
+
+        api_method = alias(**kwargs)
+        assert isinstance(api_method, method_class)
+        assert api_method.chat_id == message.chat.id
+        assert api_method.draft_id == kwargs["draft_id"]
