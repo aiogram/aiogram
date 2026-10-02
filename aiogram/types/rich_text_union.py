@@ -1,7 +1,8 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, TypeAlias
+from typing import TYPE_CHECKING, Annotated, TypeAlias
 
+from pydantic import Field
 from typing_extensions import TypeAliasType
 
 from .rich_text_anchor import RichTextAnchor
@@ -63,11 +64,8 @@ if TYPE_CHECKING:
         | RichTextReferenceLink
     )
 else:
-    RichTextUnion = TypeAliasType(
-        "RichTextUnion",
-        str
-        | list["RichTextUnion"]
-        | RichTextBold
+    RichTextModelUnion = Annotated[
+        RichTextBold
         | RichTextItalic
         | RichTextUnderline
         | RichTextStrikethrough
@@ -93,4 +91,10 @@ else:
         | RichTextAnchorLink
         | RichTextReference
         | RichTextReferenceLink,
+        Field(discriminator="type"),
+    ]
+
+    RichTextUnion = TypeAliasType(
+        "RichTextUnion",
+        str | list["RichTextUnion"] | RichTextModelUnion,
     )

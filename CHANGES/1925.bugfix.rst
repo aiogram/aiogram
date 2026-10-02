@@ -1,0 +1,1 @@
+Fixed indefinite CPU hang / event loop freeze during Update validation on payloads with deeply nested ``rich_message`` blocks.

@@ -1823,3 +1823,26 @@ class TestMessage:
         assert isinstance(api_method, method_class)
         assert api_method.chat_id == message.chat.id
         assert api_method.draft_id == kwargs["draft_id"]
+
+    def test_rich_message_nested_validation_no_hang(self):
+        from aiogram.types import Update
+
+        nested = "text"
+        for _ in range(50):
+            nested = {"type": "bold", "text": nested}
+
+        data = {
+            "update_id": 1,
+            "message": {
+                "message_id": 1,
+                "date": 123456,
+                "chat": {"id": 1, "type": "private"},
+                "text": "foo",
+                "rich_message": {"blocks": [{"type": "paragraph", "text": nested}]},
+            },
+        }
+
+        # This should complete very quickly and not hang
+        update = Update.model_validate(data)
+        assert update.message is not None
+        assert update.message.rich_message is not None
