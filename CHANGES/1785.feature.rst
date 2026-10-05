@@ -1,0 +1,1 @@
+Add interface for tracing performance and integrate hooks, which allows native integration with OTel.

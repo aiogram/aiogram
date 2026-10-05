@@ -34,5 +34,6 @@ So, you can use both of them with *aiogram*.
     middlewares
     errors
     flags
+    tracer
     webhook
     class_based_handlers/index
