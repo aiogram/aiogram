@@ -103,7 +103,7 @@ class RedisStorage(BaseStorage):
         value = await self.redis.get(redis_key)
         if isinstance(value, bytes):
             return value.decode("utf-8")
-        return cast(str | None, value)
+        return value
 
     async def set_data(
         self,

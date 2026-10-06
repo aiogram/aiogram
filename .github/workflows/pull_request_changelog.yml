@@ -30,7 +30,7 @@ jobs:
           # the later `git fetch` works without a token because the repository is public
           persist-credentials: false
 
-      - uses: astral-sh/setup-uv@v10.0.1
+      - uses: astral-sh/setup-uv@v10.2.0
 
       - name: Fetch base branch
         # kept separate from the towncrier step so a fetch failure skips towncrier
@@ -43,7 +43,7 @@ jobs:
         id: towncrier
         env:
           BASE_BRANCH: ${{ github.base_ref }}
-        run: uvx --from 'towncrier~=24.8.0' towncrier check --compare-with "origin/${BASE_BRANCH}"
+        run: uvx --from 'towncrier~=26.9.0' towncrier check --compare-with "origin/${BASE_BRANCH}"
 
       - name: Save check result
         if: always()

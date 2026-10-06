@@ -42,7 +42,7 @@ classifiers = [
 dependencies = [
     "magic-filter>=1.0.12,<1.1",
     "aiohttp>=3.9.0,<3.15",
-    "pydantic>=2.4.1,<2.14",
+    "pydantic>=2.5.0,<2.14",
     "aiofiles>=23.2.1,<26.0",
     "certifi>=2023.7.22",
     "typing-extensions>=4.7.0,<=5.0",
@@ -59,14 +59,15 @@ fast = [
     "aiodns>=3.0.0",
 ]
 redis = [
-    "redis[hiredis]>=6.2.0,<8",
+    "redis[hiredis]>=6.2.0,<9",
 ]
 mongo = [
-    "motor>=3.3.2,<3.8",
-    "pymongo>4.5,<4.18",
+    # PyMongoStorage needs pymongo.AsyncMongoClient (4.9+); motor < 3.6 breaks on pymongo 4.9
+    "motor>=3.6.0,<3.8",
+    "pymongo>=4.9,<4.19",
 ]
 proxy = [
-    "aiohttp-socks>=0.10.1,<1.12.0",
+    "aiohttp-socks>=0.10.1,<0.13",
 ]
 i18n = [
     "Babel>=2.13.0,<3",
@@ -78,38 +79,39 @@ signature = [
     "cryptography>=46.0.0",
 ]
 docs = [
-    "Sphinx~=8.0.2",
-    "sphinx-intl~=2.2.0",
-    "sphinx-autobuild~=2024.9.3",
+    # Sphinx 9.1 needs Python 3.12; the range keeps the extra installable on 3.11 (Sphinx 9.0.x)
+    "Sphinx>=8.2,<10",
+    "sphinx-intl~=2.4.0",
+    "sphinx-autobuild~=2025.8.25",
     "sphinx-copybutton~=0.5.2",
-    "furo~=2024.8.6",
-    "Sphinx-Substitution-Extensions~=2024.8.6",
-    "towncrier~=24.8.0",
-    "pygments>=2.18,<2.21",
-    "pymdown-extensions>=10.3,<12.0",
+    "furo~=2025.12.19",
+    "Sphinx-Substitution-Extensions~=2026.8.13.1",
+    "towncrier~=26.9.0",
+    "pygments>=2.18,<2.22",
+    "pymdown-extensions>=10.3,<13",
     "markdown-include~=0.8.1",
-    "sphinxcontrib-towncrier~=0.4.0a0",
+    "sphinxcontrib-towncrier~=0.5.0a0",
 ]
 
 [dependency-groups]
 dev = [
-    "ruff~=0.15",
-    "mypy==2.0.0; platform_python_implementation != 'PyPy'",
+    "ruff~=0.16",
+    "mypy==2.4.0; platform_python_implementation != 'PyPy'",
     "toml~=0.10.2",
-    "pre-commit~=4.3",
-    "packaging~=26.0",
+    "pre-commit~=4.6",
+    "packaging~=26.3",
     "motor-types==1.0.0b4",
 ]
 test = [
-    "pytest==9.0.3",
+    "pytest==9.1.1",
     "pytest-html>=4.2,<4.3",
-    "pytest-mock==3.15.1",
+    "pytest-mock==3.16.0",
     "pytest-mypy==1.0.1; platform_python_implementation != 'PyPy'",
     "pytest-cov>=7.1,<7.2",
-    "pytest-aiohttp==1.1.0",
+    "pytest-aiohttp==1.1.1",
     "aresponses==3.0.0",
     "pytz>=2026,<2027",
-    "pycryptodomex==3.23.0",
+    "pycryptodomex==3.24.0",
 ]
 
 [project.urls]
@@ -180,7 +182,10 @@ known-first-party = [
 
 [tool.ruff.lint.per-file-ignores]
 "aiogram/client/bot.py" = ["E501"]
-"aiogram/types/*" = ["E501"]
+"aiogram/types/*" = [
+    "E501",
+    "F811", # generated modules import a type both at runtime and under TYPE_CHECKING
+]
 "aiogram/methods/*" = ["E501"]
 "aiogram/enums/*" = [
     "E501",
