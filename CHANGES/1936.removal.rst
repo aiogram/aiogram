@@ -1,0 +1,1 @@
+Dropped support for Python 3.10; the minimum supported version is now Python 3.11.
