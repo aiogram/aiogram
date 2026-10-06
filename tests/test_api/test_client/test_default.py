@@ -1,8 +1,9 @@
 import inspect
 import sys
+import warnings
 
 import pytest
-from pydantic import BaseModel
+from pydantic import BaseModel, PydanticDeprecatedSince20
 
 from aiogram import Bot
 from aiogram import methods as methods_module
@@ -64,7 +65,12 @@ def _default_fields():
 
 def _default_params():
     for path, model in [("aiogram.Bot", Bot), *_telegram_models()]:
-        for method_name, method in inspect.getmembers(model, inspect.isfunction):
+        with warnings.catch_warnings():
+            # pydantic < 2.10 exposes the deprecated ``__fields__`` & co. as real class
+            # attributes, so merely listing the members emits a deprecation warning
+            warnings.simplefilter("ignore", PydanticDeprecatedSince20)
+            members = inspect.getmembers(model, inspect.isfunction)
+        for method_name, method in members:
             if method_name.startswith("_"):
                 continue
             if (model.__name__, method_name) in EXCLUDED_METHODS:
