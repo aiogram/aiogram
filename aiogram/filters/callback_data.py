@@ -5,12 +5,11 @@ import typing
 from decimal import Decimal
 from enum import Enum
 from fractions import Fraction
-from typing import TYPE_CHECKING, Any, ClassVar, Literal, TypeVar
+from typing import TYPE_CHECKING, Any, ClassVar, Literal, Self, TypeVar
 from uuid import UUID
 
 from pydantic import BaseModel
 from pydantic_core import PydanticUndefined
-from typing_extensions import Self
 
 from aiogram.filters.base import Filter
 from aiogram.types import CallbackQuery

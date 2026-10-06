@@ -3,9 +3,7 @@ from __future__ import annotations
 import textwrap
 from collections.abc import Generator, Iterable, Iterator
 from datetime import datetime
-from typing import Any, ClassVar
-
-from typing_extensions import Self
+from typing import Any, ClassVar, Self
 
 from aiogram.enums import MessageEntityType
 from aiogram.types import MessageEntity, User

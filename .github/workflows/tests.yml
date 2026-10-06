@@ -38,7 +38,7 @@ jobs:
       - uses: astral-sh/setup-uv@v10.0.1
         with:
           # lowest supported interpreter: mypy must pass against the oldest target
-          python-version: "3.10"
+          python-version: "3.11"
 
       - name: Install project
         # `dev` is a default group (ruff, mypy, pre-commit); `test` is not needed for lint;
@@ -63,7 +63,6 @@ jobs:
           - macos-latest
           - windows-latest
         python-version:
-          - "3.10"
           - "3.11"
           - "3.12"
           - "3.13"
@@ -138,7 +137,7 @@ jobs:
 
       - name: Upload coverage
         # upload when pytest actually ran, even if it failed: coverage.xml is still written and
-        # codecov.yaml waits for all 15 uploads before commenting. A leg whose setup failed
+        # codecov.yaml waits for all 12 uploads before commenting. A leg whose setup failed
         # never reached pytest, has no report, and must not add a second error.
         if: ${{ !cancelled() && env.IS_PYPY == 'false' && steps.tests.outcome != 'skipped' }}
         uses: codecov/codecov-action@v7

@@ -3,7 +3,6 @@ from __future__ import annotations
 import asyncio
 import contextvars
 import signal
-import sys
 import warnings
 from asyncio import CancelledError, Event, Future, Lock
 from collections.abc import AsyncGenerator, Awaitable
@@ -677,9 +676,5 @@ class Dispatcher(Router):
                 return asyncio.run(coro)
 
             else:
-                if sys.version_info >= (3, 11):
-                    with asyncio.Runner(loop_factory=uvloop.new_event_loop) as runner:
-                        return runner.run(coro)
-                else:  # pragma: no cover
-                    uvloop.install()
-                    return asyncio.run(coro)
+                with asyncio.Runner(loop_factory=uvloop.new_event_loop) as runner:
+                    return runner.run(coro)

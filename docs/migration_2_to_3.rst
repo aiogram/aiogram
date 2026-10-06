@@ -63,7 +63,7 @@ Dependencies
   `pydantic v1 -> v2 migration guide <https://docs.pydantic.dev/latest/migration/>`_.
 
 - Recent aiogram releases pin an **upper** Python bound as well (e.g.
-  :code:`>=3.10,<3.15` — check the current project metadata). With Poetry, a caret
+  :code:`>=3.11,<3.15` — check the current project metadata). With Poetry, a caret
   constraint like :code:`python = "^3.11"` (which means :code:`<4.0`) then fails to
   lock; use an explicitly bounded range such as :code:`>=3.11,<3.15`.
 
