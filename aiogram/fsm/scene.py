@@ -5,9 +5,7 @@ from collections import defaultdict
 from collections.abc import Mapping
 from dataclasses import dataclass, replace
 from enum import Enum, auto
-from typing import TYPE_CHECKING, Any, ClassVar, overload
-
-from typing_extensions import Self
+from typing import TYPE_CHECKING, Any, ClassVar, Self, overload
 
 from aiogram import loggers
 from aiogram.dispatcher.dispatcher import Dispatcher

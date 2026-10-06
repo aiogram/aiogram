@@ -6,7 +6,7 @@ build-backend = "hatchling.build"
 name = "aiogram"
 description = 'Modern and fully asynchronous framework for Telegram Bot API'
 readme = "README.rst"
-requires-python = ">=3.10,<3.15"
+requires-python = ">=3.11,<3.15"
 license = "MIT"
 authors = [
     { name = "Alex Root Junior", email = "jroot.junior@gmail.com" },
@@ -30,7 +30,6 @@ classifiers = [
     "Typing :: Typed",
     "Intended Audience :: Developers",
     "Intended Audience :: System Administrators",
-    "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
@@ -183,7 +182,10 @@ known-first-party = [
 "aiogram/client/bot.py" = ["E501"]
 "aiogram/types/*" = ["E501"]
 "aiogram/methods/*" = ["E501"]
-"aiogram/enums/*" = ["E501"]
+"aiogram/enums/*" = [
+    "E501",
+    "UP042", # generated `str, Enum` classes; `StrEnum` changes str()/format() output
+]
 "tests/**" = [
     "PLR0124",
     "PLR2004",
@@ -238,7 +240,7 @@ exclude_lines = [
 
 [tool.mypy]
 plugins = "pydantic.mypy"
-python_version = "3.10"
+python_version = "3.11"
 show_error_codes = true
 show_error_context = true
 pretty = true
