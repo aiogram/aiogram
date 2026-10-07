@@ -32,6 +32,28 @@ reply_rich:
   fill: *fill-reply
   ignore: *ignore-reply
 
+answer_draft:
+  method: sendMessageDraft
+  code: *assert-chat
+  fill: &fill-draft
+    chat_id: self.chat.id
+    message_thread_id: self.message_thread_id if self.is_topic_message else None
+
+reply_draft:
+  method: sendMessageDraft
+  code: *assert-chat
+  fill: *fill-draft
+
+answer_rich_draft:
+  method: sendRichMessageDraft
+  code: *assert-chat
+  fill: *fill-draft
+
+reply_rich_draft:
+  method: sendRichMessageDraft
+  code: *assert-chat
+  fill: *fill-draft
+
 answer_animation:
   method: sendAnimation
   code: *assert-chat

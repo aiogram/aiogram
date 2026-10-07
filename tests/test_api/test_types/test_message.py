@@ -32,10 +32,12 @@ from aiogram.methods import (
     SendLocation,
     SendMediaGroup,
     SendMessage,
+    SendMessageDraft,
     SendPaidMedia,
     SendPhoto,
     SendPoll,
     SendRichMessage,
+    SendRichMessageDraft,
     SendSticker,
     SendVenue,
     SendVideo,
@@ -1179,6 +1181,30 @@ REPLY_ALIASES_WITHOUT_EPHEMERAL_PARAMETERS = [
 ]
 
 
+DRAFT_ALIASES = [
+    [
+        "answer_draft",
+        {"draft_id": 1, "text": "partial", "entities": [], "can_stop": True},
+        SendMessageDraft,
+    ],
+    [
+        "reply_draft",
+        {"draft_id": 1, "text": "partial", "keep_on_stop": True},
+        SendMessageDraft,
+    ],
+    [
+        "answer_rich_draft",
+        {"draft_id": 2, "rich_message": InputRichMessage(html="<p>partial</p>")},
+        SendRichMessageDraft,
+    ],
+    [
+        "reply_rich_draft",
+        {"draft_id": 2, "rich_message": InputRichMessage(html="<p>partial</p>")},
+        SendRichMessageDraft,
+    ],
+]
+
+
 EPHEMERAL_ALIASES = [
     ["edit_ephemeral_text", {"text": "test"}, EditEphemeralMessageText],
     ["edit_ephemeral_caption", {"caption": "test"}, EditEphemeralMessageCaption],
@@ -1369,6 +1395,57 @@ class TestMessage:
             f"`{alias_name}` from the `fill-reply-non-ephemeral` group in "
             f".butcher/types/Message/aliases.yml and regenerate."
         )
+
+    @pytest.mark.parametrize("alias_name,kwargs,method_class", DRAFT_ALIASES)
+    def test_draft_shortcuts_build_method(
+        self,
+        alias_name: str,
+        kwargs: dict[str, Any],
+        method_class: type[SendMessageDraft | SendRichMessageDraft],
+    ):
+        message = Message(
+            message_id=42,
+            chat=Chat(id=42, type="private"),
+            date=datetime.datetime.now(),
+            message_thread_id=7,
+            is_topic_message=True,
+        )
+        method = getattr(message, alias_name)(**kwargs, custom_option="value")
+        assert isinstance(method, method_class)
+        assert method.chat_id == 42
+        assert method.message_thread_id == 7
+        assert method.custom_option == "value"
+
+    @pytest.mark.parametrize("alias_name,kwargs,method_class", DRAFT_ALIASES)
+    def test_draft_shortcuts_non_topic_message_thread_is_none(
+        self,
+        alias_name: str,
+        kwargs: dict[str, Any],
+        method_class: type[SendMessageDraft | SendRichMessageDraft],
+    ):
+        message = Message(
+            message_id=42, chat=Chat(id=42, type="private"), date=datetime.datetime.now()
+        )
+        method = getattr(message, alias_name)(**kwargs)
+        assert isinstance(method, method_class)
+        assert method.message_thread_id is None
+
+    def test_draft_shortcuts_do_not_fill_unsupported_fields(self):
+        # `Message.answer` fills `business_connection_id`; draft methods do not declare it.
+        # Passing it through would silently leak into the request body, so the shortcuts
+        # must leave it (and any reply/ephemeral parameters) unfilled.
+        message = Message(
+            message_id=42, chat=Chat(id=42, type="private"), date=datetime.datetime.now()
+        )
+        method = message.answer_draft(draft_id=1, text="partial")
+        assert "business_connection_id" not in method.model_dump(exclude_none=True)
+        assert "reply_parameters" not in method.model_dump(exclude_none=True)
+        assert "ephemeral_message_parameters" not in method.model_dump(exclude_none=True)
+
+    def test_draft_shortcuts_require_chat(self):
+        message = Message.model_construct(message_id=42, chat=None)
+        with pytest.raises(AssertionError, match="chat is present"):
+            message.answer_draft(draft_id=1, text="partial")
 
     @pytest.mark.parametrize("alias_name,kwargs,method_class", EPHEMERAL_ALIASES)
     def test_ephemeral_aliases(
