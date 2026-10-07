@@ -1,0 +1,1 @@
+Added rendering of :class:`aiogram.types.RichMessage` to HTML and Markdown, so :attr:`aiogram.types.Message.html_text` and :attr:`aiogram.types.Message.md_text` now return a formatted representation for rich messages instead of an empty string.
