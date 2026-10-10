@@ -4,7 +4,7 @@ import gettext
 from contextlib import contextmanager
 from contextvars import ContextVar
 from pathlib import Path
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 from aiogram.utils.i18n.lazy_proxy import LazyProxy
 from aiogram.utils.mixins import ContextInstanceMixin
@@ -100,15 +100,19 @@ class I18n(ContextInstanceMixin["I18n"]):
         plural: str | None = None,
         n: int = 1,
         locale: str | None = None,
+        context: str | None = None,
     ) -> str:
         """
-        Get text
+        Get translated text
 
-        :param singular:
-        :param plural:
-        :param n:
-        :param locale:
-        :return:
+        :param singular: message id (source string) to translate
+        :param plural: plural form of the message id,
+            when passed the plural-aware lookup is used
+        :param n: number that is used to choose the correct plural form
+        :param locale: locale to translate to, current locale is used when omitted
+        :param context: message context (gettext :code:`msgctxt`)
+            used to disambiguate identical source strings
+        :return: translated text
         """
         if locale is None:
             locale = self.current_locale
@@ -120,9 +124,14 @@ class I18n(ContextInstanceMixin["I18n"]):
 
         translator = self.locales[locale]
 
+        if context is None:
+            if plural is None:
+                return translator.gettext(singular)
+            return translator.ngettext(singular, plural, n)
+
         if plural is None:
-            return translator.gettext(singular)
-        return translator.ngettext(singular, plural, n)
+            return translator.pgettext(context, singular)
+        return translator.npgettext(context, singular, plural, n)
 
     def lazy_gettext(
         self,
@@ -130,12 +139,11 @@ class I18n(ContextInstanceMixin["I18n"]):
         plural: str | None = None,
         n: int = 1,
         locale: str | None = None,
+        context: str | None = None,
     ) -> LazyProxy:
-        return LazyProxy(
-            self.gettext,
-            singular=singular,
-            plural=plural,
-            n=n,
-            locale=locale,
-            enable_cache=False,
-        )
+        kwargs: dict[str, Any] = {"singular": singular, "plural": plural, "n": n, "locale": locale}
+        if context is not None:
+            # Forwarded only when set, so subclasses overriding ``gettext``
+            # with the pre-context signature keep working
+            kwargs["context"] = context
+        return LazyProxy(self.gettext, enable_cache=False, **kwargs)
