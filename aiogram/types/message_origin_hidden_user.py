@@ -16,8 +16,8 @@ class MessageOriginHiddenUser(MessageOrigin):
     """Type of the message origin, always 'hidden_user'"""
     date: DateTime
     """Date the message was sent originally in Unix time"""
-    sender_user_name: str
-    """Name of the user that sent the message originally"""
+    sender_user_name: str | None = None
+    """*Optional*. Name of the user that sent the message originally, if available"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!
@@ -28,7 +28,7 @@ class MessageOriginHiddenUser(MessageOrigin):
             *,
             type: Literal[MessageOriginType.HIDDEN_USER] = MessageOriginType.HIDDEN_USER,
             date: DateTime,
-            sender_user_name: str,
+            sender_user_name: str | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!
