@@ -1,7 +1,8 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, TypeAlias
+from typing import TYPE_CHECKING, Annotated, TypeAlias
 
+from pydantic import Field
 from typing_extensions import TypeAliasType
 
 from .rich_text_anchor import RichTextAnchor
@@ -30,6 +31,42 @@ from .rich_text_superscript import RichTextSuperscript
 from .rich_text_text_mention import RichTextTextMention
 from .rich_text_underline import RichTextUnderline
 from .rich_text_url import RichTextUrl
+
+# The model members are tagged by their ``type`` field so nested payloads
+# validate in linear time. Kept separate from the untagged union below because
+# pydantic discriminated unions only accept model variants, while this union
+# also covers plain ``str`` and ``list`` values.
+# (see https://github.com/aiogram/aiogram/issues/1925)
+_RichTextModelUnion = Annotated[
+    RichTextBold
+    | RichTextItalic
+    | RichTextUnderline
+    | RichTextStrikethrough
+    | RichTextSpoiler
+    | RichTextDateTime
+    | RichTextTextMention
+    | RichTextSubscript
+    | RichTextSuperscript
+    | RichTextMarked
+    | RichTextCode
+    | RichTextCustomEmoji
+    | RichTextMathematicalExpression
+    | RichTextUrl
+    | RichTextEmailAddress
+    | RichTextPhoneNumber
+    | RichTextBankCardNumber
+    | RichTextMention
+    | RichTextHashtag
+    | RichTextCashtag
+    | RichTextBotCommand
+    | RichTextButton
+    | RichTextAnchor
+    | RichTextAnchorLink
+    | RichTextReference
+    | RichTextReferenceLink,
+    Field(discriminator="type"),
+]
+
 
 if TYPE_CHECKING:
     RichTextUnion: TypeAlias = (
@@ -65,32 +102,9 @@ if TYPE_CHECKING:
 else:
     RichTextUnion = TypeAliasType(
         "RichTextUnion",
-        str
-        | list["RichTextUnion"]
-        | RichTextBold
-        | RichTextItalic
-        | RichTextUnderline
-        | RichTextStrikethrough
-        | RichTextSpoiler
-        | RichTextDateTime
-        | RichTextTextMention
-        | RichTextSubscript
-        | RichTextSuperscript
-        | RichTextMarked
-        | RichTextCode
-        | RichTextCustomEmoji
-        | RichTextMathematicalExpression
-        | RichTextUrl
-        | RichTextEmailAddress
-        | RichTextPhoneNumber
-        | RichTextBankCardNumber
-        | RichTextMention
-        | RichTextHashtag
-        | RichTextCashtag
-        | RichTextBotCommand
-        | RichTextButton
-        | RichTextAnchor
-        | RichTextAnchorLink
-        | RichTextReference
-        | RichTextReferenceLink,
+        # NB: the model members live in the tagged ``_RichTextModelUnion`` so
+        # that nested payloads route by ``type`` in O(1) instead of
+        # re-attempting every member at every nesting level
+        # (see https://github.com/aiogram/aiogram/issues/1925).
+        str | list["RichTextUnion"] | _RichTextModelUnion,
     )

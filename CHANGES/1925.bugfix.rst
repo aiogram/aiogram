@@ -1,0 +1,4 @@
+Fixed indefinite hang (100% CPU, frozen event loop) during ``Update`` validation
+on payloads with deeply nested ``rich_message`` text. The members of
+``RichTextUnion`` are now routed by their ``type`` discriminator instead of
+being re-tried one by one at every nesting level.
