@@ -21,7 +21,7 @@ def check_signature(token: str, hash: str, **kwargs: Any) -> bool:
         check_string.encode("utf-8"),
         digestmod=hashlib.sha256,
     ).hexdigest()
-    return hmac_string == hash
+    return hmac.compare_digest(hmac_string, hash)
 
 
 def check_integrity(token: str, data: dict[str, Any]) -> bool:
