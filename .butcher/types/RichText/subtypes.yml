@@ -1,3 +1,4 @@
 extra_items:
   - String
   - Array of RichText
+discriminator: "type"

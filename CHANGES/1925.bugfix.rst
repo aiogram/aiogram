@@ -1,0 +1,2 @@
+Fixed an exponential slowdown (a CPU hang that froze the event loop) when validating updates with nested rich text, such as bold inside italic inside spoiler.
+``RichTextUnion`` is now a discriminated union keyed on ``type``, with plain strings and arrays tagged by their Python type.
