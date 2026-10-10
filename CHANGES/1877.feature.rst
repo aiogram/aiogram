@@ -1,0 +1,7 @@
+Added :meth:`aiogram.types.message.Message.answer_draft`,
+:meth:`aiogram.types.message.Message.reply_draft`,
+:meth:`aiogram.types.message.Message.answer_rich_draft` and
+:meth:`aiogram.types.message.Message.reply_rich_draft` convenience methods,
+mirroring the existing ``answer_*``/``reply_*`` shortcuts, so streaming
+message drafts (``sendMessageDraft``/``sendRichMessageDraft``) no longer
+require filling ``chat_id`` manually.
