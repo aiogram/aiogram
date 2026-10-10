@@ -1,0 +1,5 @@
+Fixed :meth:`aiogram.types.message.Message.as_ephemeral_message_parameters`
+addressing replies to the bot itself: for a bot-sent ephemeral message
+``from_user`` is the bot and the human is ``receiver_user``. The helper now
+prefers ``receiver_user`` when present, consistent with the generated
+``edit_ephemeral_*`` shortcuts.
