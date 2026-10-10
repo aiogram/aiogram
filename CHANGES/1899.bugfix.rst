@@ -1,0 +1,4 @@
+Fixed :class:`aiogram.dispatcher.middlewares.user_context.UserContextMiddleware`
+not resolving a user for the ``stopped_message_generation`` update, so handlers
+received neither ``event_from_user`` nor FSM ``state``. The user is now derived
+from the private chat (``chat.id`` is the user id for message drafts).
