@@ -14,12 +14,20 @@ reply:
     <<: *fill-answer
     reply_parameters: self.as_reply_parameters()
     # A reply to an ephemeral message must itself be an ephemeral message.
-    ephemeral_message_parameters: self.as_ephemeral_message_parameters()
+    # `callback_query_id` and `replace_callback_query_message` are shortcut
+    # parameters routed into the object instead of the deprecated top-level fields.
+    ephemeral_message_parameters: self.as_ephemeral_message_parameters(
+        callback_query_id=callback_query_id,
+        replace_callback_query_message=replace_callback_query_message,
+    )
   ignore: &ignore-reply
     - reply_to_message_id
     # Superseded by the filled `ephemeral_message_parameters`. It was consumed by the
     # fill before Bot API 10.3, so it was never part of the shortcut signature.
     - receiver_user_id
+    # Routed into the filled `ephemeral_message_parameters` instead of the
+    # deprecated top-level field.
+    - callback_query_id
 
 answer_rich:
   method: sendRichMessage
