@@ -199,6 +199,17 @@ class TestSimpleI18nMiddleware:
             ("uk-UA", "en"),
             ("it-IT", "en"),
             ("unknown", "en"),
+            ("zh-hans", "zh_Hans"),
+            ("zh-hant", "zh"),
+            ("sr-latn", "sr"),
+            ("uz-cyrl", "en"),
+            ("zh-hans-cn", "zh_CN"),
+            ("zh-cn", "zh_CN"),
+            ("zh-tw", "zh"),
+            ("zh-sg", "zh_Hans"),
+            ("en_US", "en"),
+            ("pt_BR", "en"),
+            pytest.param("", "en", id="empty"),
         ],
     )
     async def test_territory_locale_resolution(self, tmp_path, language_code, expected_locale):
@@ -214,6 +225,22 @@ class TestSimpleI18nMiddleware:
         _write_minimal_mo(
             tmp_path / "en" / "LC_MESSAGES" / "messages.mo",
             {"test": "test"},
+        )
+        _write_minimal_mo(
+            tmp_path / "zh" / "LC_MESSAGES" / "messages.mo",
+            {"test": "test-zh"},
+        )
+        _write_minimal_mo(
+            tmp_path / "zh_Hans" / "LC_MESSAGES" / "messages.mo",
+            {"test": "test-zh-hans"},
+        )
+        _write_minimal_mo(
+            tmp_path / "zh_CN" / "LC_MESSAGES" / "messages.mo",
+            {"test": "test-zh-cn"},
+        )
+        _write_minimal_mo(
+            tmp_path / "sr" / "LC_MESSAGES" / "messages.mo",
+            {"test": "test-sr"},
         )
         i18n.reload()
 
@@ -236,6 +263,8 @@ class TestSimpleI18nMiddleware:
         [
             ("pt-br", "teste"),
             ("pt", "teste-pt"),
+            ("zh-hans", "test-zh"),
+            ("zh-cn", "test-zh-cn"),
         ],
     )
     async def test_territory_locale_gettext(self, tmp_path, language_code, expected_text):
@@ -248,6 +277,14 @@ class TestSimpleI18nMiddleware:
         _write_minimal_mo(
             tmp_path / "pt" / "LC_MESSAGES" / "messages.mo",
             {"test": "teste-pt"},
+        )
+        _write_minimal_mo(
+            tmp_path / "zh" / "LC_MESSAGES" / "messages.mo",
+            {"test": "test-zh"},
+        )
+        _write_minimal_mo(
+            tmp_path / "zh_CN" / "LC_MESSAGES" / "messages.mo",
+            {"test": "test-zh-cn"},
         )
         i18n.reload()
 
