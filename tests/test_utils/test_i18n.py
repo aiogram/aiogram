@@ -196,8 +196,13 @@ class TestSimpleI18nMiddleware:
             ("pt-br", "pt_BR"),
             ("pt-BR", "pt_BR"),
             ("pt", "pt"),
+            ("zh-hans", "zh_Hans"),
+            ("zh-hant", "zh"),
+            ("zh-hans-cn", "zh"),
+            ("sr-latn", "sr"),
             ("uk-UA", "en"),
             ("it-IT", "en"),
+            ("en_US", "en"),
             ("unknown", "en"),
         ],
     )
@@ -214,6 +219,18 @@ class TestSimpleI18nMiddleware:
         _write_minimal_mo(
             tmp_path / "en" / "LC_MESSAGES" / "messages.mo",
             {"test": "test"},
+        )
+        _write_minimal_mo(
+            tmp_path / "zh" / "LC_MESSAGES" / "messages.mo",
+            {"test": "test-zh"},
+        )
+        _write_minimal_mo(
+            tmp_path / "zh_Hans" / "LC_MESSAGES" / "messages.mo",
+            {"test": "test-zh-hans"},
+        )
+        _write_minimal_mo(
+            tmp_path / "sr" / "LC_MESSAGES" / "messages.mo",
+            {"test": "test-sr"},
         )
         i18n.reload()
 

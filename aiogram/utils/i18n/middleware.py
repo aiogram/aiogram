@@ -131,14 +131,20 @@ class SimpleI18nMiddleware(I18nMiddleware):
             return self.i18n.default_locale
         try:
             locale = Locale.parse(event_from_user.language_code, sep="-")
-        except UnknownLocaleError:
+        except (UnknownLocaleError, ValueError):
+            # Locale.parse raises a plain ValueError (not UnknownLocaleError)
+            # for malformed codes like "en_US" or "", e.g. coming from
+            # self-hosted Bot API servers or test harnesses.
             return self.i18n.default_locale
 
-        # Telegram sends codes like "pt-br" (lowercased), while translation
-        # directories are usually named with the full territory form ("pt_BR").
+        # Telegram sends codes like "pt-br" (lowercased) or "zh-hans"
+        # (script-qualified, without territory), while translation directories
+        # are usually named with the full form ("pt_BR", "zh_Hans").
         # Prefer the most specific available locale, then the bare language.
         candidates = [str(locale)]
-        if locale.territory:
+        if locale.script and locale.territory:
+            candidates.append(f"{locale.language}_{locale.territory}")
+        if locale.language not in candidates:
             candidates.append(locale.language)
         for candidate in candidates:
             if candidate in self.i18n.available_locales:

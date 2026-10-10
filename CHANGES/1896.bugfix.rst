@@ -1,0 +1,5 @@
+Fixed :class:`aiogram.utils.i18n.middleware.SimpleI18nMiddleware` resolving
+script-only language codes (e.g. ``zh-hans``, ``sr-latn``) to the default locale
+instead of falling back to the bare language (e.g. ``zh``, ``sr``).
+Also, malformed ``language_code`` values (e.g. ``en_US``) now fall back to the
+default locale instead of propagating a ``ValueError`` out of the middleware.
