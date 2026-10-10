@@ -300,7 +300,7 @@ and many others documentation and examples changes:
 2.0.1 (2021-12-31)
 ==================
 
-- Implemented CallbackData factory (`example <https://github.com/aiogram/aiogram/blob/master/examples/callback_data_factory.py>`_)
+- Implemented CallbackData factory (`example <https://github.com/aiogram/aiogram/blob/master/examples/callback_data_factory.py>`__)
 - Implemented methods for answering to inline query from context and reply with animation to the messages. `#85 <https://github.com/aiogram/aiogram/issues/85>`_
 - Fixed installation from tar.gz `#84 <https://github.com/aiogram/aiogram/issues/84>`_
 - More exceptions (:code:`ChatIdIsEmpty` and :code:`NotEnoughRightsToRestrict`)
@@ -447,7 +447,7 @@ Full changelog
 - Implemented :code:`types.InputFile` for more easy sending local files
 - **Danger!** Fixed typo in word pooling. Now whatever all methods with that word marked as deprecated and original methods is renamed to polling. Check it in you'r code before updating!
 - Fixed helper for chat actions (:code:`types.ChatActions`)
-- Added `example <https://github.com/aiogram/aiogram/blob/master/examples/media_group.py>`_ for media group.
+- Added `example <https://github.com/aiogram/aiogram/blob/master/examples/media_group.py>`__ for media group.
 
 
 1.0 (2017-11-19)

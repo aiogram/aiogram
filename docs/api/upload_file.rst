@@ -43,6 +43,7 @@ Then you can use it:
 
 
 .. autoclass:: aiogram.types.input_file.FSInputFile
+    :no-index:
     :members: __init__
 
 
@@ -66,6 +67,7 @@ And then you can use it:
     text_file = BufferedInputFile(b"Hello, world!", filename="file.txt")
 
 .. autoclass:: aiogram.types.input_file.BufferedInputFile
+    :no-index:
     :members: __init__
 
 Upload from url
@@ -91,4 +93,5 @@ And then you can use it:
     )
 
 .. autoclass:: aiogram.types.input_file.URLInputFile
+    :no-index:
     :members:
