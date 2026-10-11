@@ -1,0 +1,1 @@
+Fixed Sphinx documentation build warnings (changelog template rendering, duplicate link targets, re-enabled ``sphinxcontrib.towncrier`` extension and docstring fixes) so the docs build passes with ``-W``
