@@ -5,12 +5,14 @@ from typing import TYPE_CHECKING, TypedDict
 from typing_extensions import NotRequired
 
 if TYPE_CHECKING:
+    from collections.abc import Sequence
+
     from aiogram import Bot, Dispatcher, Router
     from aiogram.dispatcher.event.handler import HandlerObject
     from aiogram.dispatcher.middlewares.user_context import EventContext
     from aiogram.fsm.context import FSMContext
     from aiogram.fsm.storage.base import BaseStorage
-    from aiogram.types import Chat, Update, User
+    from aiogram.types import Chat, Message, Update, User
     from aiogram.utils.i18n import I18n, I18nMiddleware
 
 
@@ -70,6 +72,15 @@ class FSMData(TypedDict, total=False):
     """Raw state of the FSM."""
 
 
+class MediaGroupData(TypedDict, total=False):
+    """
+    Media group related data.
+    """
+
+    album: NotRequired[Sequence[Message]]
+    """List of messages in the media group."""
+
+
 class I18nData(TypedDict, total=False):
     """
     I18n related data.
@@ -87,6 +98,7 @@ class MiddlewareData(
     DispatcherData,
     UserContextData,
     FSMData,
+    MediaGroupData,
     # I18nData, # Disabled by default, add it if you need it to your own Data class.
     total=False,
 ):
