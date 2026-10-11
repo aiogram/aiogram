@@ -30,7 +30,7 @@ jobs:
           # the later `git fetch` works without a token because the repository is public
           persist-credentials: false
 
-      - uses: astral-sh/setup-uv@v10.0.1
+      - uses: astral-sh/setup-uv@v10.1.0
 
       - name: Fetch base branch
         # kept separate from the towncrier step so a fetch failure skips towncrier

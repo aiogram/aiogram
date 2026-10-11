@@ -34,13 +34,13 @@ jobs:
         with:
           persist-credentials: false
 
-      - uses: astral-sh/setup-uv@v10.0.1
+      - uses: astral-sh/setup-uv@v10.1.0
 
       - name: Reject action refs that are not version tags or SHAs
         # YAML-aware guard shared with `make lint-workflows`; see the script docstring
         run: uv run scripts/check_action_refs.py
 
-      - uses: zizmorcore/zizmor-action@v0.6.3
+      - uses: zizmorcore/zizmor-action@v0.6.4
         with:
           config: .github/zizmor.yml  # explicit: auto-discovery needs a real .git directory and silently fails in git worktrees
           persona: regular
