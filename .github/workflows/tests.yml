@@ -149,6 +149,64 @@ jobs:
           name: py-${{ matrix.python-version }}-${{ matrix.os }}
           fail_ci_if_error: true
 
+  lowest-deps:
+    name: Tests (lowest direct deps)
+    # Other jobs use uv.lock, so pyproject lower bounds go untested.
+    # Resolves direct deps to their minimum (transitive stay newest).
+    # Linux + oldest Python only: old releases lack new CPython wheels.
+    # Runs mypy too: the pydantic floor comes from mypy, not runtime.
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - uses: astral-sh/setup-uv@v10.0.1
+        with:
+          python-version: "3.10"
+
+      # same services as Tests: the redis/mongo extras have floors too
+      - name: Start Redis
+        run: |
+          docker compose -f tests/docker-compose.yml up -d redis
+          for _ in $(seq 1 15); do
+            docker compose -f tests/docker-compose.yml exec -T redis redis-cli ping >/dev/null 2>&1 && exit 0
+            sleep 1
+          done
+          echo "Redis did not become ready" >&2
+          docker compose -f tests/docker-compose.yml logs redis
+          exit 1
+
+      - name: Start MongoDB
+        run: |
+          curl -fsSL https://www.mongodb.org/static/pgp/server-8.0.asc \
+            | sudo gpg --dearmor -o /usr/share/keyrings/mongodb-server-8.0.gpg
+          # `noble` on purpose, see the Tests job
+          echo "deb [signed-by=/usr/share/keyrings/mongodb-server-8.0.gpg] https://repo.mongodb.org/apt/ubuntu noble/mongodb-org/8.0 multiverse" \
+            | sudo tee /etc/apt/sources.list.d/mongodb-org-8.0.list >/dev/null
+          sudo apt-get update -qq \
+            -o Dir::Etc::sourcelist=sources.list.d/mongodb-org-8.0.list \
+            -o Dir::Etc::sourceparts=- \
+            -o APT::Get::List-Cleanup=0
+          sudo apt-get install -y -qq --no-install-recommends mongodb-org-server
+          mkdir -p /tmp/mongo-data
+          mongod --fork --dbpath /tmp/mongo-data --logpath /tmp/mongod.log --bind_ip 127.0.0.1 || { cat /tmp/mongod.log; exit 1; }
+
+      - name: Install project with the lowest direct dependencies
+        # Not `--locked`: it forbids the re-resolution needed.
+        # uv.lock is rewritten in this throwaway checkout only.
+        run: uv sync --resolution lowest-direct --all-extras --no-extra docs --group dev --group test
+
+      - name: Type-check
+        # mypy only: ruff at its floor reports unrelated style noise.
+        # `--no-sync` here and below: redundant with UV_NO_SYNC.
+        run: uv run --no-sync mypy --native-parser --num-workers 8 aiogram
+
+      - name: Run tests
+        # no coverage: the Tests job uploads it
+        run: uv run --no-sync pytest --redis redis://localhost:6379/0 --mongo mongodb://localhost:27017
+
   build:
     name: Build package
     runs-on: ubuntu-latest
