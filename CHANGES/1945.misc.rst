@@ -1,0 +1,1 @@
+Updated dependencies: allowed :code:`pymongo` up to 4.18 in the :code:`mongo` extra and refreshed locked versions of :code:`anyio`, :code:`multidict`, :code:`urllib3` and :code:`virtualenv`.
