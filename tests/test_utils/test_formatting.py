@@ -189,9 +189,20 @@ class TestNode:
                     MessageEntity(type="bold", offset=0, length=5),
                 ],
             ],
+            [
+                Text(Bold(Italic("a")), Underline("b")),
+                "<b><i>a</i></b><u>b</u>",
+                [
+                    MessageEntity(type="bold", offset=0, length=1),
+                    MessageEntity(type="italic", offset=0, length=1),
+                    MessageEntity(type="underline", offset=1, length=1),
+                ],
+            ],
         ],
     )
-    def test_render_nested_entities_with_same_offset(self, node: Text, result: str, entities: list[MessageEntity]):
+    def test_render_nested_entities_with_same_offset(
+        self, node: Text, result: str, entities: list[MessageEntity]
+    ):
         text, rendered_entities = node.render()
 
         assert html_decoration.unparse(text, rendered_entities) == result
