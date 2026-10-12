@@ -1,0 +1,1 @@
+Added :meth:`aiogram.types.message.Message.answer_draft`, :meth:`aiogram.types.message.Message.reply_draft`, :meth:`aiogram.types.message.Message.answer_rich_draft` and :meth:`aiogram.types.message.Message.reply_rich_draft` shortcuts for the :code:`sendMessageDraft` and :code:`sendRichMessageDraft` methods.
