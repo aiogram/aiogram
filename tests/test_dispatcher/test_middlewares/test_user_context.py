@@ -14,6 +14,7 @@ from aiogram.types import (
     ChatBoostSourceGiveaway,
     ChatBoostSourcePremium,
     ChatBoostUpdated,
+    MessageGenerationStopped,
     Update,
     User,
 )
@@ -86,3 +87,46 @@ class TestUserContextMiddleware:
         event_context = data["event_context"]
         assert isinstance(event_context, EventContext)
         assert event_context.user == expected_user
+
+    async def test_stopped_message_generation_resolves_user(self):
+        middleware = UserContextMiddleware()
+
+        chat = Chat(
+            id=42,
+            type="private",
+            first_name="Test",
+            last_name="User",
+            username="testuser",
+        )
+        update = Update(
+            update_id=1,
+            stopped_message_generation=MessageGenerationStopped(chat=chat, draft_id=7),
+        )
+        data = {}
+        await middleware(next_handler, update, data)
+
+        event_context = data["event_context"]
+        assert isinstance(event_context, EventContext)
+        assert event_context.chat is chat
+        assert event_context.user == User(
+            id=42,
+            is_bot=False,
+            first_name="Test",
+            last_name="User",
+            username="testuser",
+        )
+        assert event_context.user_id == 42
+        assert data["event_from_user"] == event_context.user
+
+    async def test_stopped_message_generation_resolves_user_without_chat_names(self):
+        middleware = UserContextMiddleware()
+
+        chat = Chat(id=42, type="private")
+        update = Update(
+            update_id=1,
+            stopped_message_generation=MessageGenerationStopped(chat=chat, draft_id=7),
+        )
+        data = {}
+        await middleware(next_handler, update, data)
+
+        assert data["event_from_user"] == User(id=42, is_bot=False, first_name="")
