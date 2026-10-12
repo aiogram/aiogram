@@ -1,0 +1,3 @@
+Added typed argument parsing for commands and deeplinks via ``Command[T]``,
+``DeeplinkData``, ``DeeplinkCommand`` and built-in codecs ``PositionalCodec``,
+``NamedCodec``, ``Base64Codec``.
