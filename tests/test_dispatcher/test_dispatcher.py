@@ -15,8 +15,10 @@ from aiogram import Bot
 from aiogram.dispatcher.dispatcher import Dispatcher
 from aiogram.dispatcher.event.bases import UNHANDLED, SkipHandler
 from aiogram.dispatcher.router import Router
+from aiogram.filters.command import Command
 from aiogram.methods import GetMe, GetUpdates, SendMessage, TelegramMethod
 from aiogram.types import (
+    BotCommand,
     BotSubscriptionUpdated,
     BusinessConnection,
     BusinessMessagesDeleted,
@@ -1332,3 +1334,55 @@ class TestDispatcher:
         useful_updates5 = router2.resolve_used_update_types()
 
         assert sorted(useful_updates5) == sorted(["poll", "edited_message"])
+
+    def test_specify_bot_commands(self):
+        def simple_handler() -> None: ...
+
+        dispatcher = Dispatcher()
+        dispatcher_command = BotCommand(command="dispatcher", description="dispatcher")
+        dispatcher.message.register(simple_handler, Command(dispatcher_command))
+
+        router1 = Router()
+        router1_command = BotCommand(command="router1", description="router1")
+        router1.channel_post.register(simple_handler, Command(router1_command))
+
+        router2 = Router()
+        router2.message.register(simple_handler, Command("router2"))
+
+        router21 = Router()
+        shared_command = BotCommand(command="shared", description="shared")
+        router21.message.register(simple_handler, Command(shared_command))
+        router21.channel_post.register(simple_handler, Command(shared_command))
+
+        router3 = Router()
+        router3.message.register(simple_handler, Command(router1_command))
+
+        router4 = Router()
+        router4.message.register(simple_handler)
+
+        assert set(dispatcher.resolve_bot_commands()) == {dispatcher_command}
+        dispatcher.include_router(router1)
+
+        assert set(dispatcher.resolve_bot_commands()) == {dispatcher_command, router1_command}
+        assert set(dispatcher.resolve_bot_commands(skip_events={"channel_post"})) == {
+            dispatcher_command
+        }
+
+        dispatcher.include_router(router2)
+        assert set(dispatcher.resolve_bot_commands()) == {dispatcher_command, router1_command}
+
+        router2.include_router(router21)
+        assert set(dispatcher.resolve_bot_commands()) == {
+            dispatcher_command,
+            router1_command,
+            shared_command,
+        }
+        assert set(router2.resolve_bot_commands()) == {shared_command}
+        assert Counter(router2.resolve_bot_commands())[shared_command] == 2
+
+        dispatcher.include_router(router3)
+        useful_commands3 = dispatcher.resolve_bot_commands()
+        assert Counter(useful_commands3).get(router1_command) == 2
+
+        dispatcher.include_router(router4)
+        assert set(dispatcher.resolve_bot_commands()) == set(useful_commands3)
