@@ -32,10 +32,12 @@ from aiogram.methods import (
     SendLocation,
     SendMediaGroup,
     SendMessage,
+    SendMessageDraft,
     SendPaidMedia,
     SendPhoto,
     SendPoll,
     SendRichMessage,
+    SendRichMessageDraft,
     SendSticker,
     SendVenue,
     SendVideo,
@@ -1787,3 +1789,115 @@ class TestMessage:
                     thumbnail_url="https://example.com/thumb.jpg",
                 )
             )
+
+    def test_answer_draft(self):
+        message = Message(
+            message_id=42,
+            chat=Chat(id=42, type="private"),
+            date=datetime.datetime.now(),
+        )
+        method = message.answer_draft(draft_id=1, text="Thinking...")
+        assert isinstance(method, SendMessageDraft)
+        assert method.chat_id == message.chat.id
+        assert method.draft_id == 1
+        assert method.text == "Thinking..."
+
+    def test_reply_draft(self):
+        message = Message(
+            message_id=42,
+            chat=Chat(id=42, type="private"),
+            date=datetime.datetime.now(),
+        )
+        method = message.reply_draft(draft_id=2, text="Working on it...")
+        assert isinstance(method, SendMessageDraft)
+        assert method.chat_id == message.chat.id
+        assert method.draft_id == 2
+        assert method.text == "Working on it..."
+
+    def test_answer_draft_with_options(self):
+        message = Message(
+            message_id=42,
+            chat=Chat(id=42, type="private"),
+            date=datetime.datetime.now(),
+        )
+        method = message.answer_draft(
+            draft_id=3,
+            text="Generating...",
+            can_stop=True,
+            keep_on_stop=True,
+        )
+        assert isinstance(method, SendMessageDraft)
+        assert method.can_stop is True
+        assert method.keep_on_stop is True
+
+    def test_answer_rich_draft(self):
+        message = Message(
+            message_id=42,
+            chat=Chat(id=42, type="private"),
+            date=datetime.datetime.now(),
+        )
+        rich_message = InputRichMessage(
+            blocks=[],
+        )
+        method = message.answer_rich_draft(draft_id=4, rich_message=rich_message)
+        assert isinstance(method, SendRichMessageDraft)
+        assert method.chat_id == message.chat.id
+        assert method.draft_id == 4
+        assert method.rich_message is rich_message
+
+    def test_reply_rich_draft(self):
+        message = Message(
+            message_id=42,
+            chat=Chat(id=42, type="private"),
+            date=datetime.datetime.now(),
+        )
+        rich_message = InputRichMessage(
+            blocks=[],
+        )
+        method = message.reply_rich_draft(draft_id=5, rich_message=rich_message)
+        assert isinstance(method, SendRichMessageDraft)
+        assert method.chat_id == message.chat.id
+        assert method.draft_id == 5
+        assert method.rich_message is rich_message
+
+    def test_answer_rich_draft_with_options(self):
+        message = Message(
+            message_id=42,
+            chat=Chat(id=42, type="private"),
+            date=datetime.datetime.now(),
+        )
+        rich_message = InputRichMessage(
+            blocks=[],
+        )
+        method = message.answer_rich_draft(
+            draft_id=6,
+            rich_message=rich_message,
+            can_stop=True,
+            keep_on_stop=True,
+        )
+        assert isinstance(method, SendRichMessageDraft)
+        assert method.can_stop is True
+        assert method.keep_on_stop is True
+
+    def test_answer_draft_no_chat(self):
+        message = Message(
+            message_id=42,
+            chat=Chat(id=42, type="private"),
+            date=datetime.datetime.now(),
+        )
+        message.chat = None
+        with pytest.raises(AssertionError):
+            message.answer_draft(draft_id=7, text="test")
+
+    def test_answer_rich_draft_no_chat(self):
+        message = Message(
+            message_id=42,
+            chat=Chat(id=42, type="private"),
+            date=datetime.datetime.now(),
+        )
+        message.chat = None
+        rich_message = InputRichMessage(
+            blocks=[],
+        )
+        with pytest.raises(AssertionError):
+            message.answer_rich_draft(draft_id=8, rich_message=rich_message)
