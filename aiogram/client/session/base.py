@@ -96,8 +96,34 @@ class BaseSession(abc.ABC):
             response_type = Response[method.__returning__]  # type: ignore
             response = response_type.model_validate(json_data, context={"bot": bot})
         except ValidationError as e:
-            msg = "Failed to deserialize object"
-            raise ClientDecodeError(msg, e, json_data) from e
+            # If the response contains a list of updates (e.g., getUpdates), try to
+            # partially recover by filtering out invalid items, otherwise re-raise.
+            # This handles cases where Telegram sends an object with missing optional
+            # fields (e.g., MessageOriginHiddenUser without sender_user_name).
+            if isinstance(json_data, dict) and "result" in json_data and isinstance(json_data["result"], list):
+                valid_results = []
+                for item in json_data["result"]:
+                    try:
+                        # Re-validate each item individually
+                        response_type.model_validate({"ok": True, "result": [item]}, context={"bot": bot})
+                        valid_results.append(item)
+                    except ValidationError:
+                        # Skip invalid items (log if needed)
+                        import logging
+                        logging.getLogger(__name__).warning(
+                            "Skipped invalid update due to deserialization error: %s",
+                            item,
+                        )
+                if valid_results:
+                    # Rebuild the response with valid items only
+                    new_json_data = {**json_data, "result": valid_results}
+                    response = response_type.model_validate(new_json_data, context={"bot": bot})
+                else:
+                    msg = "Failed to deserialize object and no valid items"
+                    raise ClientDecodeError(msg, e, json_data) from e
+            else:
+                msg = "Failed to deserialize object"
+                raise ClientDecodeError(msg, e, json_data) from e
 
         if HTTPStatus.OK <= status_code <= HTTPStatus.IM_USED and response.ok:
             return response
