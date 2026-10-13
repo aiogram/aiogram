@@ -194,6 +194,14 @@ class TestEndDates:
 
         assert team.member(alice.id).until_date is None
 
+    async def test_joining_again_keeps_a_subscriptions_expiry(self, env, team, alice):
+        team.member(alice.id).until_date = LATER
+        await env.user(alice).in_(team).join(service_message=False)
+
+        member = await read(env, team, alice)
+        assert member.status == ChatMemberStatus.MEMBER
+        assert member.until_date == LATER
+
 
 class TestDemotingOnlyAdministrators:
     async def test_the_demote_trigger_refuses_a_restricted_member(self, env, team, alice):

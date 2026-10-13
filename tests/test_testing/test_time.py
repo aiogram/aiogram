@@ -127,6 +127,19 @@ class TestTheClock:
         assert seen == [("first", ten), ("second", ten), ("late", ten * 2)]
         assert env.now == BASE_DATE + datetime.timedelta(seconds=30)
 
+    async def test_a_naive_moment_is_read_as_local_time(self, env):
+        seen = []
+
+        async def action():
+            seen.append(env.now)
+
+        moment = BASE_DATE + datetime.timedelta(seconds=10)
+        env.schedule(moment.astimezone().replace(tzinfo=None), action)
+
+        await env.advance_time(30)
+
+        assert seen == [moment]
+
     async def test_an_event_scheduled_during_an_advance_fires_within_it(self, env):
         seen = []
 

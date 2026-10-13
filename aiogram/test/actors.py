@@ -731,9 +731,10 @@ class UserActor:
         ``message_id`` 0 and an ``ephemeral_message_id``, stays out
         of the shared history, and is read back with
         ``self.chat.ephemeral_commands(user)``. Telegram has them in
-        groups and supergroups only.
+        groups and supergroups only. An ``ephemeral_message_id`` in
+        ``fields`` sends one the same way.
         """
-        if ephemeral:
+        if ephemeral or (fields or {}).get("ephemeral_message_id") is not None:
             return await self._send_ephemeral(text, fields, reply_to, data)
         message = self._build_message(text=text, fields=self._with_reply_to(fields, reply_to))
         self.chat.add_message(message)
@@ -766,11 +767,9 @@ class UserActor:
             raise WorldLookupError(msg)
         # Check the reply first, so a refused one uses up no id.
         requested = self._with_reply_to(fields, reply_to) or {}
-        overrides = {
-            "message_id": 0,
-            "ephemeral_message_id": chat.allocate_ephemeral_message_id(),
-            **requested,
-        }
+        overrides = {"message_id": 0, **requested}
+        if overrides.get("ephemeral_message_id") is None:
+            overrides["ephemeral_message_id"] = chat.allocate_ephemeral_message_id()
         message = self._build_message(text=text, fields=overrides)
         chat.add_ephemeral_command(message)
         return await self._feed(

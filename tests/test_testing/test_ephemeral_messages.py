@@ -466,6 +466,7 @@ class TestEphemeralCommands:
         )
 
         assert [m.text for m in team.ephemeral_commands(alice)] == ["/raw"]
+        assert all(m.message_id != 0 for m in team.messages)
 
     async def test_outside_a_group_is_a_setup_error(self, env, private, alice):
         with pytest.raises(WorldLookupError, match="groups and supergroups only"):

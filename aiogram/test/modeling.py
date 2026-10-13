@@ -281,6 +281,7 @@ from .world import (
     TopicState,
     UserState,
     WorldLookupError,
+    aware,
     create_topic,
     mask,
     no_administrator_rights,
@@ -667,13 +668,6 @@ def _carry_request_values(method: TelegramMethod[Any], payload: Any) -> Any:
     return payload.model_copy(update=carried) if carried else payload
 
 
-def _aware(moment: datetime.datetime) -> datetime.datetime:
-    """``moment`` made aware; a naive one is read as local time."""
-    if moment.tzinfo is None:
-        return datetime.datetime.fromtimestamp(moment.timestamp(), tz=datetime.timezone.utc)
-    return moment
-
-
 def _age(env: BotTestEnvironment, message: Message) -> datetime.timedelta:
     """
     How long ago ``message`` was sent, by the world's clock.
@@ -681,7 +675,7 @@ def _age(env: BotTestEnvironment, message: Message) -> datetime.timedelta:
     A test can hand a message a naive ``date``; it is read as local
     time rather than failing to compare with the aware clock.
     """
-    return env.world.now - _aware(message.date)
+    return env.world.now - aware(message.date)
 
 
 def resolve_date(value: Any, now: datetime.datetime) -> datetime.datetime | None:
@@ -693,7 +687,7 @@ def resolve_date(value: Any, now: datetime.datetime) -> datetime.datetime | None
     serializer reads it.
     """
     if isinstance(value, datetime.datetime):
-        return _aware(value)
+        return aware(value)
     if isinstance(value, datetime.timedelta):
         return now + value
     if isinstance(value, int):
@@ -979,15 +973,27 @@ def handle_edit_media(env: BotTestEnvironment, method: EditMessageMedia) -> Mess
 # Bot API declares.
 
 
-@models(EditEphemeralMessageText)
-def handle_edit_ephemeral_text(env: BotTestEnvironment, method: EditEphemeralMessageText) -> bool:
+_EphemeralEdit = (
+    EditEphemeralMessageText
+    | EditEphemeralMessageCaption
+    | EditEphemeralMessageMedia
+    | EditEphemeralMessageReplyMarkup
+)
+
+
+def _edit_ephemeral(env: BotTestEnvironment, method: _EphemeralEdit, **changes: Any) -> bool:
     chat = resolve_chat(env, method.chat_id)
     chat.update_ephemeral_message(
         method.receiver_user_id,
         method.ephemeral_message_id,
-        **_text_changes(env, method),
+        **changes,
     )
     return True
+
+
+@models(EditEphemeralMessageText)
+def handle_edit_ephemeral_text(env: BotTestEnvironment, method: EditEphemeralMessageText) -> bool:
+    return _edit_ephemeral(env, method, **_text_changes(env, method))
 
 
 @models(EditEphemeralMessageCaption)
@@ -995,13 +1001,7 @@ def handle_edit_ephemeral_caption(
     env: BotTestEnvironment,
     method: EditEphemeralMessageCaption,
 ) -> bool:
-    chat = resolve_chat(env, method.chat_id)
-    chat.update_ephemeral_message(
-        method.receiver_user_id,
-        method.ephemeral_message_id,
-        **_caption_changes(method),
-    )
-    return True
+    return _edit_ephemeral(env, method, **_caption_changes(method))
 
 
 @models(EditEphemeralMessageMedia)
@@ -1009,13 +1009,7 @@ def handle_edit_ephemeral_media(
     env: BotTestEnvironment,
     method: EditEphemeralMessageMedia,
 ) -> bool:
-    chat = resolve_chat(env, method.chat_id)
-    chat.update_ephemeral_message(
-        method.receiver_user_id,
-        method.ephemeral_message_id,
-        **_media_changes(env, method),
-    )
-    return True
+    return _edit_ephemeral(env, method, **_media_changes(env, method))
 
 
 @models(EditEphemeralMessageReplyMarkup)
@@ -1023,13 +1017,7 @@ def handle_edit_ephemeral_reply_markup(
     env: BotTestEnvironment,
     method: EditEphemeralMessageReplyMarkup,
 ) -> bool:
-    chat = resolve_chat(env, method.chat_id)
-    chat.update_ephemeral_message(
-        method.receiver_user_id,
-        method.ephemeral_message_id,
-        reply_markup=method.reply_markup,
-    )
-    return True
+    return _edit_ephemeral(env, method, reply_markup=method.reply_markup)
 
 
 @models(DeleteEphemeralMessage)
@@ -1088,7 +1076,7 @@ def handle_edit_live_location(
         # Omitting live_period leaves the existing one running, it does not end it.
         live_period = current
     elif live_period != LIVE_FOREVER:
-        ends = _aware(stored.date) + datetime.timedelta(seconds=live_period)
+        ends = aware(stored.date) + datetime.timedelta(seconds=live_period)
         if (current != LIVE_FOREVER and live_period > current + _DAY) or (
             ends > now + datetime.timedelta(days=90)
         ):

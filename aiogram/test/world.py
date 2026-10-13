@@ -420,12 +420,18 @@ class MemberState:
         A restriction keeps the user's presence, so a user restricted
         while absent stays absent. An end date belongs to a restriction
         or a ban only: on any other status the Bot API reads
-        ``until_date`` as a subscription's expiry, so it is cleared.
+        ``until_date`` as a subscription's expiry, so it is cleared on
+        a move into such a status. Staying in one, such as a member
+        joining again, keeps the subscription's expiry.
         """
         was_present = self.is_present
+        previous = self.status
         self.status = status
         self.is_member = was_present if status == ChatMemberStatus.RESTRICTED else True
-        if status not in {ChatMemberStatus.RESTRICTED, ChatMemberStatus.KICKED}:
+        if status != previous and status not in {
+            ChatMemberStatus.RESTRICTED,
+            ChatMemberStatus.KICKED,
+        }:
             self.until_date = None
 
     def join_or_leave(self, status: str) -> None:
@@ -1655,6 +1661,13 @@ class World:
         for chat in self.chats.values():
             for member in chat.members.values():
                 member.settle(moment)
+
+
+def aware(moment: datetime.datetime) -> datetime.datetime:
+    """``moment`` made aware; a naive one is read as local time."""
+    if moment.tzinfo is None:
+        return datetime.datetime.fromtimestamp(moment.timestamp(), tz=datetime.timezone.utc)
+    return moment
 
 
 def _user_id(user: UserState | UserSpec | int) -> int:

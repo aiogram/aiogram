@@ -50,6 +50,7 @@ from .world import (
     TopicState,
     UserState,
     WorldLookupError,
+    aware,
     describe_message,
     newest_match,
     resolve_topic,
@@ -635,9 +636,14 @@ class BotTestEnvironment:
         return self.world.now
 
     def schedule(self, moment: datetime.datetime, action: DueAction) -> None:
-        """Run ``action`` once the clock reaches ``moment``."""
+        """
+        Run ``action`` once the clock reaches ``moment``.
+
+        A naive ``moment`` is read as local time, as everywhere else the
+        world reads a date, so it compares with the aware clock.
+        """
         self._due_order += 1
-        heapq.heappush(self._due, (moment, self._due_order, action))
+        heapq.heappush(self._due, (aware(moment), self._due_order, action))
 
     async def advance_time(self, delta: float | datetime.timedelta) -> None:
         """
