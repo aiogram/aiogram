@@ -77,16 +77,18 @@ and "how old is this message" would have two answers.
 
 `await env.advance_time(seconds | timedelta) -> None`:
 
-1. Refuses a negative amount, and a call while another advance is running (a re-entrant
-   handler or a concurrent task), with a setup error. The clock stays unchanged.
+1. Refuses a negative amount (`ValueError`), and a call while another advance is running,
+   whether from a re-entrant handler or a concurrent task (`RuntimeError`). The clock stays
+   unchanged.
 2. Loops while the queue holds an event due at or before the target. It pops the earliest
    (ties broken by scheduling order), moves `now` to that event's moment, and dispatches
    it. Events scheduled during dispatch join the queue, so one that falls before the target
    fires within the same call.
 3. Sets `now` to the target.
 
-All dispatches of one call share one route scope (`env.trigger()`), like a multi-update
-trigger. If a handler raises, the exception propagates, the clock stays at that event's
+Events enter the queue through `env.schedule(moment, action)`, which the poll handler
+uses and a test may use too. All dispatches of one call share one route scope
+(`env.trigger()`), like a multi-update trigger. If a handler raises, the exception propagates, the clock stays at that event's
 moment, and later events stay queued. Today only scheduled poll closing enqueues events.
 
 ### D3. Expiry is settled when a membership is read
@@ -94,9 +96,9 @@ moment, and later events stay queued. Today only scheduled poll closing enqueues
 `ChatState.member()` settles an expired restriction or ban before returning it, using its
 world's `now`. Through the status helper from `report-restricted-membership-truthfully`,
 a present restricted user becomes `MEMBER` and an absent one or a banned user `LEFT`, with
-`until_date` cleared. Every reader goes through that accessor, so `getChatMember`, the
-member count, the administrator list, actors and tests' own `chat.member(...)` all see the
-same answer.
+`until_date` cleared. Every reader goes through that accessor, so `getChatMember`, actors and
+tests' own `chat.member(...)` all see the same answer. The member count reads
+`chat.present_members()`, which settles each member through the same accessor.
 
 Live locations, message age, and query and command windows are compared against `now` at
 use. Nothing is rewritten in the background, so D2's queue holds only events that have to
@@ -133,8 +135,9 @@ message, and then a `poll` update is dispatched. A poll already stopped is skipp
 
 ### D7. Answer windows
 
-- `pending_queries` keeps the clock time at issue alongside the kind. `answer_query`
-  enforces the 10-second window for pre-checkout queries only.
+- `World.query_issued` keeps the clock time at issue next to `pending_queries`.
+  `answer_query` enforces the windows in `ANSWER_WINDOWS`, which holds the 10-second
+  pre-checkout limit only.
 - The 15-second ephemeral reply window compares the incoming command's `date` with `now`
   in the reply validation that `model-ephemeral-messages` adds.
 

@@ -522,9 +522,15 @@ class TestMembership:
     async def test_ban_accepts_a_timestamp(self, env, team, blueprint):
         alice_id = blueprint.users[0].id
 
-        await env.bot.ban_chat_member(chat_id=team.id, user_id=alice_id, until_date=0)
+        until = BASE_DATE + datetime.timedelta(days=1)
 
-        assert team.member(alice_id).until_date.year == 1970
+        await env.bot.ban_chat_member(
+            chat_id=team.id,
+            user_id=alice_id,
+            until_date=int(until.timestamp()),
+        )
+
+        assert team.member(alice_id).until_date == until
 
     async def test_unban(self, env, team, blueprint):
         alice_id = blueprint.users[0].id

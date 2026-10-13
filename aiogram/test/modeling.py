@@ -261,6 +261,7 @@ from aiogram.types import (
     Sticker,
     StickerSet,
     UniqueGift,
+    Update,
     User,
 )
 
@@ -573,6 +574,10 @@ def build_message(
     return chat.add_message(message)
 
 
+#: How long the Bot API lets an ephemeral message be replied to.
+_EPHEMERAL_REPLY_WINDOW = datetime.timedelta(seconds=15)
+
+
 def _ephemeral_receiver(
     env: BotTestEnvironment,
     method: TelegramMethod[Any],
@@ -598,8 +603,13 @@ def _ephemeral_receiver(
         msg = "ephemeral messages can be sent only to group and supergroup chats"
         raise ApiRejection(msg)
     receiver = env.world.user(parameters.receiver_user_id)
-    if replied_id is not None and chat.find_ephemeral_command(replied_id) is None:
-        raise ApiRejection("message to be replied not found")
+    if replied_id is not None:
+        command = chat.find_ephemeral_command(replied_id)
+        if command is None:
+            raise ApiRejection("message to be replied not found")
+        if env.world.now - command.date > _EPHEMERAL_REPLY_WINDOW:
+            msg = "an ephemeral message can be replied to within 15 seconds only"
+            raise ApiRejection(msg)
     origin = env.world.callback_origins.get(parameters.callback_query_id or "")
     if (
         parameters.replace_callback_query_message
@@ -657,15 +667,59 @@ def _carry_request_values(method: TelegramMethod[Any], payload: Any) -> Any:
     return payload.model_copy(update=carried) if carried else payload
 
 
-def _as_datetime(value: Any) -> datetime.datetime | None:
-    """Bot API ``until_date`` accepts a datetime, a timedelta or a unix timestamp."""
+def resolve_date(value: Any, now: datetime.datetime) -> datetime.datetime | None:
+    """
+    The moment a Bot API date parameter names, as an aware datetime.
+
+    aiogram accepts a datetime, a duration from now, or a Unix time. A
+    naive datetime is read as local time, the way aiogram's own
+    serializer reads it.
+    """
     if isinstance(value, datetime.datetime):
+        if value.tzinfo is None:
+            return datetime.datetime.fromtimestamp(value.timestamp(), tz=datetime.timezone.utc)
         return value
     if isinstance(value, datetime.timedelta):
-        return BASE_DATE + value
+        return now + value
     if isinstance(value, int):
         return datetime.datetime.fromtimestamp(value, tz=datetime.timezone.utc)
     return None
+
+
+#: A restriction or ban ending sooner or later than this is "forever".
+_UNTIL_RANGE = (datetime.timedelta(seconds=30), datetime.timedelta(days=366))
+
+
+def normalize_until(value: Any, now: datetime.datetime) -> datetime.datetime | None:
+    """
+    A restriction or ban's end date, or ``None`` for forever.
+
+    The Bot API reads an ``until_date`` less than 30 seconds or more
+    than 366 days from now as forever.
+    """
+    moment = resolve_date(value, now)
+    if moment is None:
+        return None
+    shortest, longest = _UNTIL_RANGE
+    if not shortest <= moment - now <= longest:
+        return None
+    return moment
+
+
+#: How long the Bot API lets a business message the bot did not send,
+#: and that has no inline keyboard, be edited.
+_BUSINESS_EDIT_WINDOW = datetime.timedelta(hours=48)
+
+
+def _check_business_edit_window(env: BotTestEnvironment, chat: ChatState, message_id: int) -> None:
+    message = chat.require_message(message_id)
+    if (
+        message.business_connection_id is not None
+        and message.sender_business_bot is None
+        and message.reply_markup is None
+        and env.world.now - message.date > _BUSINESS_EDIT_WINDOW
+    ):
+        raise ApiRejection("message can't be edited")
 
 
 def _edit_target(env: BotTestEnvironment, method: TelegramMethod[Any]) -> tuple[ChatState, int]:
@@ -838,12 +892,14 @@ def _caption_changes(
 @models(EditMessageText)
 def handle_edit_text(env: BotTestEnvironment, method: EditMessageText) -> Message:
     chat, message_id = _edit_target(env, method)
+    _check_business_edit_window(env, chat, message_id)
     return chat.update_message(message_id, **_text_changes(env, method))
 
 
 @models(EditMessageCaption)
 def handle_edit_caption(env: BotTestEnvironment, method: EditMessageCaption) -> Message:
     chat, message_id = _edit_target(env, method)
+    _check_business_edit_window(env, chat, message_id)
     return chat.update_message(message_id, **_caption_changes(method))
 
 
@@ -853,6 +909,7 @@ def handle_edit_reply_markup(
     method: EditMessageReplyMarkup,
 ) -> Message:
     chat, message_id = _edit_target(env, method)
+    _check_business_edit_window(env, chat, message_id)
     return chat.update_message(message_id, reply_markup=method.reply_markup)
 
 
@@ -891,6 +948,7 @@ def _media_changes(
 @models(EditMessageMedia)
 def handle_edit_media(env: BotTestEnvironment, method: EditMessageMedia) -> Message:
     chat, message_id = _edit_target(env, method)
+    _check_business_edit_window(env, chat, message_id)
     return chat.update_message(message_id, **_media_changes(env, method))
 
 
@@ -971,6 +1029,11 @@ def _location(method: TelegramMethod[Any], live_period: int | None) -> Location:
     )
 
 
+#: The live period of a location that can be updated forever.
+LIVE_FOREVER = 0x7FFFFFFF
+_DAY = 86400
+
+
 @models(EditMessageLiveLocation)
 def handle_edit_live_location(
     env: BotTestEnvironment,
@@ -978,10 +1041,28 @@ def handle_edit_live_location(
 ) -> Message:
     chat, message_id = _edit_target(env, method)
     stored = chat.require_message(message_id)
+    current = stored.location.live_period if stored.location is not None else None
+    now = env.world.now
+    if current is None or (
+        current != LIVE_FOREVER and now >= stored.date + datetime.timedelta(seconds=current)
+    ):
+        # Never live, stopped, or past its period: the Bot API allows
+        # edits "until its live_period expires" or it is stopped.
+        raise ApiRejection("message can't be edited")
     live_period = method.live_period
-    if live_period is None and stored.location is not None:
+    if live_period is None:
         # Omitting live_period leaves the existing one running, it does not end it.
-        live_period = stored.location.live_period
+        live_period = current
+    elif live_period != LIVE_FOREVER:
+        ends = stored.date + datetime.timedelta(seconds=live_period)
+        if (current != LIVE_FOREVER and live_period > current + _DAY) or (
+            ends > now + datetime.timedelta(days=90)
+        ):
+            msg = (
+                "live_period must not exceed the current one by more than a day, "
+                "and must end within 90 days"
+            )
+            raise ApiRejection(msg)
     return chat.update_message(
         message_id,
         location=_location(method, live_period),
@@ -997,8 +1078,8 @@ def handle_stop_live_location(
     """
     Return the stored message with its live period cleared.
 
-    Telegram's real effect — the location stopping being live — has no other observable
-    consequence in a fake with no clock, so clearing ``live_period`` is the whole model.
+    A location with no live period is no longer live, so a later
+    ``editMessageLiveLocation`` is refused, as it is in Telegram.
     """
     chat, message_id = _edit_target(env, method)
     stored = chat.require_message(message_id)
@@ -1021,20 +1102,49 @@ def handle_edit_checklist(
     )
 
 
+#: The Bot API's age limits on deletion: a message older than this
+#: cannot be deleted, and a dice in a private chat younger than the
+#: second cannot.
+_DELETABLE_FOR = datetime.timedelta(hours=48)
+_PRIVATE_DICE_KEPT_FOR = datetime.timedelta(hours=24)
+
+
+def _deletable(env: BotTestEnvironment, chat: ChatState, message: Message) -> bool:
+    age = env.world.now - message.date
+    if age >= _DELETABLE_FOR:
+        return False
+    return not (
+        message.dice is not None
+        and chat.type == ChatType.PRIVATE
+        and age <= _PRIVATE_DICE_KEPT_FOR
+    )
+
+
 @models(DeleteMessage)
 def handle_delete(env: BotTestEnvironment, method: DeleteMessage) -> bool:
     chat = resolve_chat(env, method.chat_id)
-    if chat.find_message(method.message_id) is None:
+    message = chat.find_message(method.message_id)
+    if message is None:
         raise ApiRejection("message to delete not found")
+    if not _deletable(env, chat, message):
+        raise ApiRejection("message can't be deleted")
     chat.delete_message(method.message_id)
     return True
 
 
 @models(DeleteMessages)
 def handle_delete_many(env: BotTestEnvironment, method: DeleteMessages) -> bool:
+    """
+    Delete the messages that exist and may be deleted, skipping others.
+
+    The Bot API skips messages it cannot find, and points to
+    ``deleteMessage`` for the limits; skipping the protected ones too
+    is the toolkit's reading of that.
+    """
     chat = resolve_chat(env, method.chat_id)
     for message_id in method.message_ids:
-        if chat.find_message(message_id) is not None:
+        message = chat.find_message(message_id)
+        if message is not None and _deletable(env, chat, message):
             chat.delete_message(message_id)
     return True
 
@@ -1141,7 +1251,7 @@ def handle_ban(env: BotTestEnvironment, method: BanChatMember) -> bool:
     # The Bot API applies `until_date` for supergroups and channels
     # only, so a ban in a basic group has no end.
     if chat.type != ChatType.GROUP:
-        member.until_date = _as_datetime(method.until_date)
+        member.until_date = normalize_until(method.until_date, env.world.now)
     return True
 
 
@@ -1306,7 +1416,7 @@ def handle_restrict(env: BotTestEnvironment, method: RestrictChatMember) -> bool
     member.set_status(ChatMemberStatus.RESTRICTED)
     member.permissions = granted
     member.rights = None
-    member.until_date = _as_datetime(method.until_date)
+    member.until_date = normalize_until(method.until_date, env.world.now)
     return True
 
 
@@ -1753,7 +1863,7 @@ def handle_create_invite_link(
         invite_link=_next_invite_link(env),
         creator_id=env.world.bot_user.id,
         name=method.name,
-        expire_date=_as_datetime(method.expire_date),
+        expire_date=resolve_date(method.expire_date, env.world.now),
         member_limit=method.member_limit,
         creates_join_request=bool(method.creates_join_request),
     )
@@ -1791,7 +1901,7 @@ def handle_edit_invite_link(
     """Mutates and returns the *stored* link, so a created link can be correlated."""
     link = resolve_chat(env, method.chat_id).invite_link(method.invite_link)
     link.name = method.name
-    link.expire_date = _as_datetime(method.expire_date)
+    link.expire_date = resolve_date(method.expire_date, env.world.now)
     link.member_limit = method.member_limit
     link.creates_join_request = bool(method.creates_join_request)
     return _invite_link_result(env, link)
@@ -1900,7 +2010,7 @@ def handle_delete_chat_photo(env: BotTestEnvironment, method: DeleteChatPhoto) -
 @models(GetChatMemberCount)
 def handle_get_chat_member_count(env: BotTestEnvironment, method: GetChatMemberCount) -> int:
     chat = resolve_chat(env, method.chat_id)
-    return sum(1 for member in chat.members.values() if member.is_present)
+    return len(chat.present_members())
 
 
 @models(GetChatAdministrators)
@@ -2109,9 +2219,40 @@ def handle_get_chat_menu_button(env: BotTestEnvironment, method: GetChatMenuButt
 # -- polls -----------------------------------------------------------------------------
 
 
+#: How far ahead a poll may be scheduled to close, in seconds.
+_POLL_SCHEDULE_RANGE = (5, 2628000)
+
+
+def _poll_close(env: BotTestEnvironment, method: SendPoll) -> datetime.datetime | None:
+    """When a poll closes by itself, validated as the Bot API states."""
+    if method.open_period is not None and method.close_date is not None:
+        msg = "open_period and close_date can't be used together"
+        raise ApiRejection(msg)
+    now = env.world.now
+    moment: datetime.datetime | None
+    if method.open_period is not None:
+        moment = now + datetime.timedelta(seconds=method.open_period)
+    else:
+        moment = resolve_date(method.close_date, now)
+    if moment is None:
+        return None
+    shortest, longest = _POLL_SCHEDULE_RANGE
+    if not shortest <= (moment - now).total_seconds() <= longest:
+        msg = f"a poll must close {shortest} to {longest} seconds from now"
+        raise ApiRejection(msg)
+    return moment
+
+
+def _close_poll(chat: ChatState, message_id: int, poll: PollState) -> Poll:
+    poll.is_closed = True
+    chat.update_message(message_id, poll=poll.as_poll())
+    return poll.as_poll()
+
+
 @models(SendPoll)
 def handle_send_poll(env: BotTestEnvironment, method: SendPoll) -> Message:
     chat = resolve_chat(env, method.chat_id)
+    close_at = _poll_close(env, method)
     poll = PollState(
         id=env.world.next_query_id(),
         question=method.question,
@@ -2124,9 +2265,22 @@ def handle_send_poll(env: BotTestEnvironment, method: SendPoll) -> Message:
         correct_option_id=method.correct_option_id,
         explanation=method.explanation,
         is_closed=bool(method.is_closed),
+        open_period=method.open_period,
+        close_date=close_at,
     )
     env.world.polls[poll.id] = poll
     message = build_message(env, method, chat)
+    if close_at is not None and not poll.is_closed:
+        message_id = message.message_id
+
+        async def close() -> None:
+            # A poll stopped before its moment does not close twice.
+            if poll.is_closed or chat.find_message(message_id) is None:
+                return
+            closed = _close_poll(chat, message_id, poll)
+            await env.feed(Update(update_id=env.world.next_update_id(), poll=closed))
+
+        env.schedule(close_at, close)
     return chat.update_message(message.message_id, poll=poll.as_poll())
 
 
@@ -2141,9 +2295,7 @@ def handle_stop_poll(env: BotTestEnvironment, method: StopPoll) -> Poll:
     if poll.is_closed:
         msg = "poll has already been closed"
         raise ApiRejection(msg)
-    poll.is_closed = True
-    chat.update_message(message_id, poll=poll.as_poll())
-    return poll.as_poll()
+    return _close_poll(chat, message_id, poll)
 
 
 # -- reactions -------------------------------------------------------------------------

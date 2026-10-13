@@ -3,7 +3,9 @@ from __future__ import annotations
 import asyncio
 import contextlib
 import contextvars
-from collections.abc import Callable, Iterable, Iterator
+import datetime
+import heapq
+from collections.abc import Awaitable, Callable, Iterable, Iterator
 from dataclasses import dataclass, field
 from http import HTTPStatus
 from typing import TYPE_CHECKING, Any, NoReturn, TypeAlias, cast
@@ -248,6 +250,10 @@ class _TriggerFrame:
     closed: bool = False
 
 
+#: Something passing time causes, run by `advance_time`.
+DueAction: TypeAlias = Callable[[], Awaitable[None]]
+
+
 class _RouteMiddleware:
     """
     Outer update middleware that opens a :class:`RouteRecord` and closes it.
@@ -476,6 +482,10 @@ class BotTestEnvironment:
         self._original_workflow_data = dict(self.dispatcher.workflow_data)
         self.dispatcher.fsm.storage = self._storage
         self._disposed = False
+        #: Events that passing time causes, as (moment, order, action).
+        self._due: list[tuple[datetime.datetime, int, DueAction]] = []
+        self._due_order = 0
+        self._advancing = False
 
         # Which update is in flight lives in `_ROUTE_IN_FLIGHT` and which trigger is open
         # in `_TRIGGER_SCOPES`, both context variables; see `_TriggerFrame` for why the
@@ -615,6 +625,53 @@ class BotTestEnvironment:
         keeps the ordinary one-feed-then-assert case needing no ceremony.
         """
         return self._open_scope() or self._last_trigger
+
+    @property
+    def now(self) -> datetime.datetime:
+        """The world's clock; it stands still until advanced."""
+        return self.world.now
+
+    def schedule(self, moment: datetime.datetime, action: DueAction) -> None:
+        """Run ``action`` once the clock reaches ``moment``."""
+        self._due_order += 1
+        heapq.heappush(self._due, (moment, self._due_order, action))
+
+    async def advance_time(self, delta: float | datetime.timedelta) -> None:
+        """
+        Move the world's clock forward by seconds or a duration.
+
+        What the passing time causes happens before this returns, in
+        the order of its moments, each at its own moment: a poll whose
+        schedule ends closes and its update is dispatched. Updates fed
+        here share one route scope. If a handler raises, the clock stays
+        at that moment and the events after it stay due.
+
+        Time never goes backwards, and one advance cannot start while
+        another runs: both raise and leave the clock as it was.
+        """
+        step = (
+            delta if isinstance(delta, datetime.timedelta) else datetime.timedelta(seconds=delta)
+        )
+        if step < datetime.timedelta(0):
+            msg = f"The clock cannot go backwards (advance_time({delta!r}))"
+            raise ValueError(msg)
+        if self._advancing:
+            msg = (
+                "advance_time() is already running; a handler or a concurrent task "
+                "cannot move the clock in the middle of an advance"
+            )
+            raise RuntimeError(msg)
+        self._advancing = True
+        try:
+            target = self.world.now + step
+            with self.trigger():
+                while self._due and self._due[0][0] <= target:
+                    moment, _order, action = heapq.heappop(self._due)
+                    self.world.now = max(self.world.now, moment)
+                    await action()
+            self.world.now = target
+        finally:
+            self._advancing = False
 
     @contextlib.contextmanager
     def trigger(self) -> Iterator[None]:

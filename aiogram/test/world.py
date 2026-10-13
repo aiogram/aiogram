@@ -191,6 +191,13 @@ class QueryKind(str, Enum):
     PRE_CHECKOUT = "pre-checkout query"
 
 
+#: How long the Bot API gives a query kind to be answered, where it
+#: documents a limit. Other kinds do not expire.
+ANSWER_WINDOWS: dict[str, datetime.timedelta] = {
+    QueryKind.PRE_CHECKOUT: datetime.timedelta(seconds=10),
+}
+
+
 class WorldLookupError(LookupError):
     """
     Raised when a test asks the world for something its blueprint never declared.
@@ -389,6 +396,22 @@ class MemberState:
         if self.status == ChatMemberStatus.RESTRICTED:
             return self.is_member
         return self.status not in {ChatMemberStatus.LEFT, ChatMemberStatus.KICKED}
+
+    def settle(self, now: datetime.datetime) -> None:
+        """
+        End a restriction or ban whose end date the clock has reached.
+
+        A present restricted user becomes a member; an absent one, or a
+        banned user, has left. No update is sent: the Bot API documents
+        none for a restriction running out.
+        """
+        if self.until_date is None or now < self.until_date:
+            return
+        if self.status == ChatMemberStatus.RESTRICTED:
+            self.set_status(ChatMemberStatus.MEMBER if self.is_member else ChatMemberStatus.LEFT)
+            self.permissions = None
+        elif self.status == ChatMemberStatus.KICKED:
+            self.set_status(ChatMemberStatus.LEFT)
 
     def set_status(self, status: str) -> None:
         """
@@ -751,6 +774,9 @@ class PollState:
     explanation: str | None = None
     is_closed: bool = False
     votes: dict[int, list[int]] = field(default_factory=dict)
+    #: When the poll closes by itself, if it was sent with a schedule.
+    open_period: int | None = None
+    close_date: datetime.datetime | None = None
 
     def vote_count(self, option_id: int) -> int:
         return sum(1 for chosen in self.votes.values() if option_id in chosen)
@@ -775,6 +801,8 @@ class PollState:
             if self.correct_option_id is None
             else [self.correct_option_id],
             explanation=self.explanation,
+            open_period=self.open_period,
+            close_date=self.close_date,
         )
 
 
@@ -1196,7 +1224,17 @@ class ChatState:
         if member is None:
             member = MemberState(user_id=user_id, status=ChatMemberStatus.LEFT)
             self.members[user_id] = member
+        if self.world is not None:
+            member.settle(self.world.now)
         return member
+
+    def present_members(self) -> list[MemberState]:
+        """The members in the chat now, ended restrictions settled."""
+        return [
+            member
+            for member in (self.member(user_id) for user_id in list(self.members))
+            if member.is_present
+        ]
 
 
 #: Key of a stored command list: the scope's own fields plus the language code.
@@ -1358,6 +1396,12 @@ class World:
     sticker_sets: dict[str, StickerSetState] = field(default_factory=dict)
     last_update_id: int = 0
     last_query_id: int = 0
+    #: The world's clock. It stands still unless a test moves it with
+    #: :meth:`aiogram.test.BotTestEnvironment.advance_time`.
+    now: datetime.datetime = BASE_DATE
+    #: When each pending query was issued, for the windows the Bot API
+    #: gives some of them to be answered in.
+    query_issued: dict[str, datetime.datetime] = field(default_factory=dict)
     #: The bot this world belongs to; see :meth:`bind`.
     bound_bot: Bot | None = field(default=None, compare=False, repr=False)
     #: How long the waiting helpers wait when the call does not say. Set by
@@ -1559,6 +1603,7 @@ class World:
         query_id = str(self.last_query_id)
         if kind is not None:
             self.pending_queries[query_id] = kind
+            self.query_issued[query_id] = self.now
         return query_id
 
     def answer_query(self, kind: str, query_id: str) -> None:
@@ -1568,7 +1613,9 @@ class World:
         Popping rather than marking answered makes "already answered" and "never issued"
         the same code path, which is also how Telegram reports them.
         """
-        if self.pending_queries.pop(query_id, None) != kind:
+        issued = self.query_issued.pop(query_id, self.now)
+        expired = kind in ANSWER_WINDOWS and self.now - issued > ANSWER_WINDOWS[kind]
+        if self.pending_queries.pop(query_id, None) != kind or expired:
             msg = (
                 "query is too old and response timeout expired or query ID is invalid "
                 f"({kind} {query_id!r} is not outstanding)"
@@ -1576,7 +1623,8 @@ class World:
             raise ApiRejection(msg)
 
     def next_date(self) -> datetime.datetime:
-        return BASE_DATE + datetime.timedelta(seconds=self.last_update_id)
+        """The date of something happening now: the clock's time."""
+        return self.now
 
 
 def _user_id(user: UserState | UserSpec | int) -> int:

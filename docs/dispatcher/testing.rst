@@ -594,7 +594,8 @@ handler never breaks just because a call was not configured.
 .. note::
 
     The fake models the *shape* of Telegram, not its policy. Rate limits, permission
-    matrices, media processing and message-age limits on editing are not simulated.
+    matrices and media processing are not simulated. The time limits the Bot API
+    documents are, against the world's own clock; see `Time`_.
 
     In particular, media *content* is synthesized: sending a photo stores a
     :class:`aiogram.types.photo_size.PhotoSize` with a plausible file id, and no bytes are
@@ -708,6 +709,80 @@ ephemeral, and must name a message a user sent in that chat; otherwise the call 
     no longer states it, so the toolkit follows the deprecated ``receiver_user_id``
     parameter, which did: "for group and supergroup chats only". Whether the receiver is a
     member of the chat is not checked, because the Bot API does not make it a condition.
+    An ephemeral command must be answered within 15 seconds; see `Time`_.
+
+Time
+====
+
+The world has its own clock. It stands still: every message, event and transaction is
+dated with the clock's current time, however many updates a test feeds, until the test
+moves it:
+
+.. code-block:: python
+
+    await bot_env.advance_time(60)                    # seconds
+    await bot_env.advance_time(timedelta(hours=48))   # or a duration
+    bot_env.now                                       # the clock's current time
+
+The clock never goes backwards, and one advance cannot start while another runs: a handler
+or a concurrent task that tries raises. What the passing time causes happens before
+:code:`advance_time` returns, in the order it falls due, each thing at its own moment, so a
+handler reacting to a poll closing sees the poll's closing time as "now". Updates
+dispatched by one advance share one route scope.
+
+The clock drives every time limit the Bot API documents for something the toolkit models:
+
+* **Restrictions and bans expire.** An ``until_date`` given as a duration counts from the
+  clock. Less than 30 seconds or more than 366 days means forever, as the Bot API states.
+  Once the clock reaches the end, every read sees the restriction gone: a restricted member
+  is a plain member again, and a banned user, or a restricted user who was not in the
+  chat, has left. Telegram sends no update when a restriction runs out, and neither does
+  the toolkit.
+* **Polls close on schedule.** A poll sent with ``open_period`` or ``close_date``, which must
+  lie 5 to 2,628,000 seconds ahead, closes when the clock gets there. Its message shows it
+  closed, voting is refused, and the bot receives a ``poll`` update. That last part is the
+  toolkit's reading of "bots receive updates about polls sent by the bot".
+* **Live locations expire.** :code:`editMessageLiveLocation` fails once ``live_period`` has
+  passed since the message was sent, after :code:`stopMessageLiveLocation`, or on a
+  location that was never live. ``0x7FFFFFFF`` means forever. A new period may exceed the
+  current one by a day at most, and must end within 90 days.
+* **Old messages cannot be deleted.** :code:`deleteMessage` fails for a message 48 hours old
+  or older, and for a dice in a private chat until more than 24 hours have passed.
+  :code:`deleteMessages` skips such messages, which is the toolkit's reading of "see
+  deleteMessage for limitations".
+* **Old business messages cannot be edited.** A business message the bot did not send,
+  with no inline keyboard, cannot be edited by text, caption, media or markup once more
+  than 48 hours have passed.
+* **Answer windows.** A pre-checkout query must be answered within 10 seconds, and an
+  ephemeral command replied to within 15. Other queries have no documented limit and do
+  not expire.
+
+.. code-block:: python
+
+    async def test_a_slow_checkout_handler_misses_the_window(bot_env, alice):
+        queries = []
+        bot_env.dispatcher.pre_checkout_query.register(queries.append)
+        await bot_env.user(alice).pre_checkout_query()
+
+        await bot_env.advance_time(11)
+
+        with pytest.raises(TelegramBadRequest):
+            await bot_env.bot.answer_pre_checkout_query(
+                pre_checkout_query_id=queries[0].id,
+                ok=True,
+            )
+
+.. note::
+
+    The Bot API does not document the wording of these errors. The toolkit uses the wording
+    Telegram is widely observed to return where there is one ("message can't be deleted",
+    "message can't be edited", "query is too old ..."), and its own otherwise, so assert the
+    exception type rather than its text.
+
+The clock dates the world; it does not freeze the host. A bot that reads ``datetime.now()``
+or ``time.time()`` itself sees the real time, which a library such as
+`time-machine <https://pypi.org/project/time-machine/>`_ can control. A bot that sleeps on
+the event loop needs a loop clock instead; see `Bots with background tasks`_.
 
 Sticker sets
 ============
@@ -1445,10 +1520,12 @@ its real cause.
 
 A real engine's own ``sleep()`` calls make a test that waits on them real-time slow —
 ``wait_for`` removes the boilerplate of polling, not the wall-clock time a fifteen-second
-game phase actually takes. This proof of concept deliberately ships no fake clock of its
-own, but a fake clock is not something the toolkit needs to own: nothing in the fake world
-touches the network or the wall clock itself, so a library that virtualizes the event
-loop's own clock composes underneath it without conflict.
+game phase actually takes. The world's clock (see `Time`_) does not help here: it dates
+what happens in the world and drives the Bot API's time limits, but the bot's own
+``asyncio.sleep()`` runs on the event loop's clock. That clock is not something the toolkit
+needs to own: nothing in the fake world touches the network or the wall clock itself, so a
+library that virtualizes the event loop's own clock composes underneath it without
+conflict. Neither clock moves the other.
 
 `looptime <https://pypi.org/project/looptime/>`_ is one such library — a pytest plugin
 that makes ``asyncio.sleep`` and ``loop.call_at`` resolve the instant their deadline is

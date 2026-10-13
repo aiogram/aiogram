@@ -214,6 +214,15 @@ record-only, and ``send(..., ephemeral=True)`` delivers an ephemeral command who
 ``message.reply()`` answer is ephemeral too, with replies to ephemeral messages validated as
 the Bot API describes.
 
+The world has a clock a test controls with ``await env.advance_time(...)``, and it stands still
+otherwise: dates no longer advance a second per update. The time limits the Bot API documents
+are measured against it — mutes and bans expire (with Telegram's "less than 30 seconds or more
+than 366 days is forever" rule, and a ``timedelta`` ``until_date`` counted from the clock),
+polls with ``open_period`` or ``close_date`` close on schedule and send a ``poll`` update, live
+locations stop being editable, messages older than 48 hours cannot be deleted, a private-chat
+dice cannot be deleted for 24 hours, old business messages cannot be edited, a pre-checkout
+query must be answered within 10 seconds and an ephemeral command within 15.
+
 .. warning::
 
     This is a **proof of concept**. The module name, the fixtures, the blueprint and actor
