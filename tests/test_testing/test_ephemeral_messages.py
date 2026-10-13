@@ -236,6 +236,16 @@ class TestEphemeralClicks:
 
         assert seen == ["/start abc"]
 
+    async def test_another_member_cannot_follow_its_deep_link(self, env, team, alice, bob):
+        username = env.world.bot_user.username
+        link = InlineKeyboardButton(text="Go", url=f"https://t.me/{username}?start=abc")
+        sent = await send_to(
+            env, team, alice, reply_markup=InlineKeyboardMarkup(inline_keyboard=[[link]])
+        )
+
+        with pytest.raises(WorldLookupError, match="is not addressed to user"):
+            await env.user(bob).in_(team).follow_deep_link(message=sent)
+
     async def test_a_command_is_not_a_button_target(self, env, team, alice):
         actor = env.user(alice).in_(team)
         await actor.send("/x", ephemeral=True)
@@ -417,6 +427,21 @@ class TestEphemeralCommands:
 
         assert [m.text for m in team.ephemeral_commands(alice)] == ["/fed"]
         assert team.allocate_ephemeral_message_id() == 8
+
+    async def test_a_hand_fed_command_colliding_with_another_is_refused(self, env, team, alice):
+        await env.user(alice).in_(team).send("/own", ephemeral=True)
+        (own,) = team.ephemeral_commands(alice)
+        message = Message(
+            message_id=0,
+            ephemeral_message_id=own.ephemeral_message_id,
+            date=BASE_DATE,
+            chat=team.as_chat(),
+            from_user=env.world.user(alice.id).as_user(),
+            text="/fed",
+        )
+
+        with pytest.raises(WorldLookupError, match="different ephemeral message"):
+            await env.feed(Update(update_id=99, message=message))
 
     async def test_a_fields_override_is_registered_too(self, env, team, alice):
         await (

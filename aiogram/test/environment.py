@@ -540,6 +540,9 @@ class BotTestEnvironment:
         self._uninstrument_routing()
         self._untrack_spawned_tasks()
         self._spawned_tasks.clear()
+        # Due actions close over this environment, which nothing
+        # advances any more.
+        self._due.clear()
 
     # -- routing diagnostics ----------------------------------------------------------
 
@@ -676,9 +679,9 @@ class BotTestEnvironment:
             with scope:
                 while self._due and self._due[0][0] <= target:
                     moment, _order, action = heapq.heappop(self._due)
-                    self.world.now = max(self.world.now, moment)
+                    self.world.move_clock(max(self.world.now, moment))
                     await action()
-            self.world.now = target
+            self.world.move_clock(target)
         finally:
             self._advancing = False
 
@@ -1101,8 +1104,18 @@ class BotTestEnvironment:
                 # Every ephemeral message has message_id 0, so it
                 # is kept apart from the shared history, by its
                 # ephemeral id.
-                if chat.find_ephemeral_command(message.ephemeral_message_id) is None:
+                known = chat.find_ephemeral_command(message.ephemeral_message_id)
+                if known is None:
                     chat.add_ephemeral_command(message)
+                elif known != message:
+                    msg = (
+                        f"Chat {chat.id} already holds a different ephemeral message under "
+                        f"ephemeral id {message.ephemeral_message_id}, so the incoming one "
+                        f"cannot be registered:\n"
+                        f"  already there: {describe_message(known)}\n"
+                        f"  incoming:      {describe_message(message)}"
+                    )
+                    raise WorldLookupError(msg)
                 return
             existing = chat.find_message(message.message_id)
             if existing is None:

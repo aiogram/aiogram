@@ -1603,7 +1603,8 @@ class World:
         query_id = str(self.last_query_id)
         if kind is not None:
             self.pending_queries[query_id] = kind
-            self.query_issued[query_id] = self.now
+            if kind in ANSWER_WINDOWS:
+                self.query_issued[query_id] = self.now
         return query_id
 
     def answer_query(self, kind: str, query_id: str) -> None:
@@ -1625,6 +1626,19 @@ class World:
     def next_date(self) -> datetime.datetime:
         """The date of something happening now: the clock's time."""
         return self.now
+
+    def move_clock(self, moment: datetime.datetime) -> None:
+        """
+        Set the clock to ``moment`` and end what that ends.
+
+        Every restriction and ban whose end the clock reaches is settled
+        here, so ``chat.members`` and a ``MemberState`` a test already
+        holds read the same as :meth:`ChatState.member`.
+        """
+        self.now = moment
+        for chat in self.chats.values():
+            for member in chat.members.values():
+                member.settle(moment)
 
 
 def _user_id(user: UserState | UserSpec | int) -> int:

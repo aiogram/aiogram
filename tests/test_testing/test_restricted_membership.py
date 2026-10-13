@@ -3,6 +3,7 @@ import datetime
 import pytest
 
 from aiogram.enums import ChatMemberStatus
+from aiogram.exceptions import TelegramBadRequest
 from aiogram.test import Blueprint, BotTestEnvironment
 from aiogram.test.world import UNTIL_FOREVER
 from aiogram.types import ChatPermissions
@@ -132,6 +133,15 @@ class TestLiftingARestriction:
 
         assert (await read(env, team, alice)).status == ChatMemberStatus.MEMBER
 
+    async def test_demoting_a_restricted_user_keeps_the_restriction(self, env, team, bob):
+        await restrict(env, team, bob)
+
+        await env.bot.promote_chat_member(chat_id=team.id, user_id=bob.id)
+
+        member = await read(env, team, bob)
+        assert member.status == ChatMemberStatus.RESTRICTED
+        assert member.is_member is False
+
 
 class TestEndDates:
     async def test_a_permanent_ban_reads_as_the_epoch(self, env, team, alice):
@@ -184,6 +194,24 @@ class TestUnbanning:
         await env.bot.unban_chat_member(chat_id=team.id, user_id=alice.id, only_if_banned=True)
 
         assert (await read(env, team, alice)).status == ChatMemberStatus.MEMBER
+
+    async def test_the_owner_cannot_be_unbanned_out(self, env, world_blueprint):
+        owner = world_blueprint.add_user("Owner")
+        world_blueprint.add_supergroup("Owned", members={owner: ChatMemberStatus.CREATOR})
+        owned_env = BotTestEnvironment(blueprint=world_blueprint)
+        try:
+            owned = owned_env.chat(world_blueprint.chats[-1])
+
+            with pytest.raises(TelegramBadRequest, match="chat owner"):
+                await owned_env.bot.unban_chat_member(chat_id=owned.id, user_id=owner.id)
+            assert await owned_env.bot.unban_chat_member(
+                chat_id=owned.id,
+                user_id=owner.id,
+                only_if_banned=True,
+            )
+            assert owned.member(owner.id).status == ChatMemberStatus.CREATOR
+        finally:
+            await owned_env.dispose()
 
     async def test_only_if_banned_still_unbans(self, env, team, alice):
         await env.bot.ban_chat_member(chat_id=team.id, user_id=alice.id)

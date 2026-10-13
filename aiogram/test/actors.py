@@ -843,7 +843,11 @@ class UserActor:
             msg = "The button carries no callback_data and cannot be clicked"
             raise WorldLookupError(msg)
         if message is not None:
-            self._require_visible(message, callback_data)
+            self._require_visible(
+                message,
+                f"press callback_data={callback_data!r}",
+                self._receiver_hint(callback_data),
+            )
         source = message if message is not None else self._find_button_message(callback_data)
         world = self.environment.world
         query = CallbackQuery(
@@ -901,6 +905,8 @@ class UserActor:
         else:
             url = target
 
+        if message is not None:
+            self._require_visible(message, "follow its deep-link buttons")
         scope: Iterable[Message] = [message] if message is not None else self._visible_messages()
         deep_link: _DeepLink | None
         if url is None:
@@ -1535,7 +1541,8 @@ class UserActor:
         yield from reversed(self.chat.ephemeral_messages(self.user.id))
         yield from reversed(self.chat.messages)
 
-    def _require_visible(self, message: Message, callback_data: str) -> None:
+    def _require_visible(self, message: Message, action: str, hint: str = "") -> None:
+        """Refuse acting on someone else's ephemeral message."""
         receiver = message.receiver_user
         if message.ephemeral_message_id is None or (
             receiver is not None and receiver.id == self.user.id
@@ -1543,8 +1550,7 @@ class UserActor:
             return
         msg = (
             f"Ephemeral message {message.ephemeral_message_id} is not addressed to user "
-            f"{self.user.id}, so they cannot press callback_data={callback_data!r} on it"
-            f"{self._receiver_hint(callback_data)}"
+            f"{self.user.id}, so they cannot {action} on it{hint}"
         )
         raise WorldLookupError(msg)
 

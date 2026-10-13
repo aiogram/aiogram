@@ -239,6 +239,20 @@ class TestRestrictionsExpire:
         assert member.until_date is None
         assert team.member(alice.id).permissions is None
 
+    async def test_the_member_map_reads_the_lifted_mute(self, env, team, alice):
+        await env.bot.restrict_chat_member(
+            chat_id=team.id,
+            user_id=alice.id,
+            permissions=MUTED,
+            until_date=HOUR,
+        )
+        held = team.member(alice.id)
+
+        await env.advance_time(HOUR)
+
+        assert team.members[alice.id].status == ChatMemberStatus.MEMBER
+        assert held.status == ChatMemberStatus.MEMBER
+
     async def test_a_mute_on_an_absent_user_ends_as_left(self, env, team, world_blueprint):
         stranger = world_blueprint.users[0]
         await env.user(stranger).in_(team).leave()

@@ -1238,6 +1238,8 @@ def _not_the_owner(chat: ChatState, user_id: int) -> MemberState:
     mutes a list of users would quietly kick the owner out here and fail only in production.
     Banning first also used to be a way *around* the promote guard: the ex-owner came back as
     ``KICKED``, which the guard no longer recognised, and could then be promoted at will.
+    ``unbanChatMember`` follows it too, since by default it removes a
+    present member.
     """
     member = chat.member(user_id)
     if member.status == ChatMemberStatus.CREATOR:
@@ -1272,6 +1274,9 @@ def handle_unban(env: BotTestEnvironment, method: UnbanChatMember) -> bool:
     member = chat.member(method.user_id)
     if method.only_if_banned and member.status != ChatMemberStatus.KICKED:
         return True
+    # Removing a present member is the default, and the owner cannot
+    # be removed, the same as for a ban.
+    _not_the_owner(chat, method.user_id)
     member.set_status(ChatMemberStatus.LEFT)
     return True
 
@@ -1311,7 +1316,10 @@ def handle_promote(env: BotTestEnvironment, method: PromoteChatMember) -> bool:
     member = _not_the_owner(chat, method.user_id)
     granted = mask(ChatAdministratorRights, method, coerce=True)
     if not any(granted.values()):
-        member.set_status(ChatMemberStatus.MEMBER)
+        # Demotion takes away an administrator's standing only: it
+        # neither lifts a restriction or a ban nor brings anyone in.
+        if member.status == ChatMemberStatus.ADMINISTRATOR:
+            member.set_status(ChatMemberStatus.MEMBER)
         member.rights = None
         member.custom_title = None
         return True
