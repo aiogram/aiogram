@@ -529,6 +529,14 @@ class TestMessageAgeLimits:
 
         assert await env.bot.delete_message(chat_id=private.id, message_id=sent.message_id)
 
+    async def test_a_naive_date_is_measured_against_the_clock(self, env, team, alice):
+        naive = (BASE_DATE - datetime.timedelta(hours=72)).astimezone().replace(tzinfo=None)
+        await env.user(alice).in_(team).send("old", fields={"date": naive})
+        sent = team.messages[-1]
+
+        with pytest.raises(TelegramBadRequest, match="can't be deleted"):
+            await env.bot.delete_message(chat_id=team.id, message_id=sent.message_id)
+
     async def test_a_dice_in_a_group_can_be_deleted_at_once(self, env, team):
         sent = await env.bot.send_dice(chat_id=team.id)
 

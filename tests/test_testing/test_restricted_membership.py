@@ -106,6 +106,17 @@ class TestPresenceOfRestrictedUsers:
         assert joined.new_chat_member.is_member is True
         assert joined.new_chat_member.can_send_messages is True
 
+    async def test_an_approved_join_request_keeps_the_restriction(self, env, team, bob):
+        await restrict(env, team, bob, ChatPermissions(can_send_messages=True))
+        await env.user(bob).in_(team).request_join()
+
+        await env.bot.approve_chat_join_request(chat_id=team.id, user_id=bob.id)
+
+        member = await read(env, team, bob)
+        assert member.status == ChatMemberStatus.RESTRICTED
+        assert member.is_member is True
+        assert member.can_send_messages is True
+
 
 class TestLiftingARestriction:
     async def test_lifting_a_present_member(self, env, team, alice):

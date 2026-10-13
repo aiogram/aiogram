@@ -1,5 +1,9 @@
+from collections.abc import Iterator
+from typing import Annotated, Any, get_args, get_origin
+
 import pytest
 from pydantic import BaseModel
+from typing_extensions import TypeAliasType
 
 from aiogram.test import WorldLookupError
 from aiogram.test.rich import (
@@ -7,7 +11,6 @@ from aiogram.test.rich import (
     _zero_value,
     counterpart,
     materialize_rich_message,
-    models_in,
 )
 from aiogram.test.synthesis import SynthesisContext, list_item, synthesize
 from aiogram.types import (
@@ -37,6 +40,22 @@ from aiogram.types import (
     RichTextBold,
     RichTextButton,
 )
+
+
+def models_in(annotation: Any) -> Iterator[type[BaseModel]]:
+    """Every model class an annotation can hold, through containers."""
+    if isinstance(annotation, TypeAliasType):
+        yield from models_in(annotation.__value__)
+        return
+    if isinstance(annotation, type):
+        if issubclass(annotation, BaseModel):
+            yield annotation
+        return
+    if get_origin(annotation) is Annotated:
+        yield from models_in(get_args(annotation)[0])
+        return
+    for argument in get_args(annotation):
+        yield from models_in(argument)
 
 
 def button_block(callback_data="go", url=None):

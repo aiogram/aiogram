@@ -428,6 +428,22 @@ class MemberState:
         if status not in {ChatMemberStatus.RESTRICTED, ChatMemberStatus.KICKED}:
             self.until_date = None
 
+    def join_or_leave(self, status: str) -> None:
+        """
+        Join (``MEMBER``) or leave (``LEFT``), or move to ``status``.
+
+        A restriction outlives leaving and rejoining, however the user
+        gets in, so for a restricted user only presence moves. Any other
+        move is :meth:`set_status`.
+        """
+        if self.status == ChatMemberStatus.RESTRICTED and status in {
+            ChatMemberStatus.MEMBER,
+            ChatMemberStatus.LEFT,
+        }:
+            self.is_member = status == ChatMemberStatus.MEMBER
+            return
+        self.set_status(status)
+
     def as_chat_member(self, user: User, chat_type: str) -> ChatMemberUnion:
         """
         The Bot API's view of this membership in a chat of ``chat_type``.

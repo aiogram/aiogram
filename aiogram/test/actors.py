@@ -1868,14 +1868,10 @@ class UserActor:
         # everything else it carries — a custom title, a tag, granted rights — survives a
         # join or a leave, and rebuilding the "new" side from a subset would drop it.
         old = member.as_chat_member(user, chat.type)
-        presence: dict[str, bool] = {ChatMemberStatus.MEMBER: True, ChatMemberStatus.LEFT: False}
-        if member.status == ChatMemberStatus.RESTRICTED and mutate is None and status in presence:
-            # A restriction outlives leaving and rejoining;
-            # only presence moves.
-            member.is_member = presence[status]
+        if mutate is None:
+            member.join_or_leave(status)
         else:
             member.set_status(status)
-        if mutate is not None:
             mutate(member)
         new = member.as_chat_member(user, chat.type)
         event = ChatMemberUpdated(

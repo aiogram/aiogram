@@ -609,7 +609,7 @@ def _ephemeral_receiver(
         command = chat.find_ephemeral_command(replied_id)
         if command is None:
             raise ApiRejection("message to be replied not found")
-        if env.world.now - command.date > _EPHEMERAL_REPLY_WINDOW:
+        if _age(env, command) > _EPHEMERAL_REPLY_WINDOW:
             msg = "an ephemeral message can be replied to within 15 seconds only"
             raise ApiRejection(msg)
     if (
@@ -667,6 +667,23 @@ def _carry_request_values(method: TelegramMethod[Any], payload: Any) -> Any:
     return payload.model_copy(update=carried) if carried else payload
 
 
+def _aware(moment: datetime.datetime) -> datetime.datetime:
+    """``moment`` made aware; a naive one is read as local time."""
+    if moment.tzinfo is None:
+        return datetime.datetime.fromtimestamp(moment.timestamp(), tz=datetime.timezone.utc)
+    return moment
+
+
+def _age(env: BotTestEnvironment, message: Message) -> datetime.timedelta:
+    """
+    How long ago ``message`` was sent, by the world's clock.
+
+    A test can hand a message a naive ``date``; it is read as local
+    time rather than failing to compare with the aware clock.
+    """
+    return env.world.now - _aware(message.date)
+
+
 def resolve_date(value: Any, now: datetime.datetime) -> datetime.datetime | None:
     """
     The moment a Bot API date parameter names, as an aware datetime.
@@ -676,9 +693,7 @@ def resolve_date(value: Any, now: datetime.datetime) -> datetime.datetime | None
     serializer reads it.
     """
     if isinstance(value, datetime.datetime):
-        if value.tzinfo is None:
-            return datetime.datetime.fromtimestamp(value.timestamp(), tz=datetime.timezone.utc)
-        return value
+        return _aware(value)
     if isinstance(value, datetime.timedelta):
         return now + value
     if isinstance(value, int):
@@ -717,7 +732,7 @@ def _check_business_edit_window(env: BotTestEnvironment, chat: ChatState, messag
         message.business_connection_id is not None
         and message.sender_business_bot is None
         and message.reply_markup is None
-        and env.world.now - message.date > _BUSINESS_EDIT_WINDOW
+        and _age(env, message) > _BUSINESS_EDIT_WINDOW
     ):
         raise ApiRejection("message can't be edited")
 
@@ -1052,10 +1067,7 @@ def _require_live(env: BotTestEnvironment, stored: Message) -> Location:
     if (
         location is None
         or current is None
-        or (
-            current != LIVE_FOREVER
-            and env.world.now >= stored.date + datetime.timedelta(seconds=current)
-        )
+        or (current != LIVE_FOREVER and _age(env, stored) >= datetime.timedelta(seconds=current))
     ):
         raise ApiRejection("message can't be edited")
     return location
@@ -1076,7 +1088,7 @@ def handle_edit_live_location(
         # Omitting live_period leaves the existing one running, it does not end it.
         live_period = current
     elif live_period != LIVE_FOREVER:
-        ends = stored.date + datetime.timedelta(seconds=live_period)
+        ends = _aware(stored.date) + datetime.timedelta(seconds=live_period)
         if (current != LIVE_FOREVER and live_period > current + _DAY) or (
             ends > now + datetime.timedelta(days=90)
         ):
@@ -1138,7 +1150,7 @@ _PRIVATE_DICE_KEPT_FOR = datetime.timedelta(hours=24)
 
 
 def _deletable(env: BotTestEnvironment, chat: ChatState, message: Message) -> bool:
-    age = env.world.now - message.date
+    age = _age(env, message)
     if age >= _DELETABLE_FOR:
         return False
     return not (
@@ -2408,7 +2420,8 @@ def handle_approve_join_request(
     method: ApproveChatJoinRequest,
 ) -> bool:
     chat = _pending_request(env, method)
-    chat.member(method.user_id).set_status(ChatMemberStatus.MEMBER)
+    # An approved user joins as any other does: a restriction stays.
+    chat.member(method.user_id).join_or_leave(ChatMemberStatus.MEMBER)
     return True
 
 

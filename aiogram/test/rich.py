@@ -10,12 +10,9 @@ block type a future Bot API version adds converts with no change here.
 
 from __future__ import annotations
 
-from collections.abc import Iterator
-from types import UnionType
-from typing import Annotated, Any, Union, cast, get_args, get_origin
+from typing import Any, cast, get_origin
 
 from pydantic import BaseModel
-from typing_extensions import TypeAliasType
 
 import aiogram.types as api_types
 from aiogram.types import InputMedia, InputRichMessage, RichMessage
@@ -39,23 +36,6 @@ def counterpart(model: type[BaseModel]) -> type[BaseModel] | None:
     if isinstance(target, type) and issubclass(target, BaseModel):
         return target
     return None
-
-
-def models_in(annotation: Any) -> Iterator[type[BaseModel]]:
-    """Every model class an annotation can hold, through containers."""
-    if isinstance(annotation, TypeAliasType):
-        yield from models_in(annotation.__value__)
-        return
-    if isinstance(annotation, type):
-        if issubclass(annotation, BaseModel):
-            yield annotation
-        return
-    origin = get_origin(annotation)
-    if origin is Annotated:
-        yield from models_in(get_args(annotation)[0])
-        return
-    for argument in get_args(annotation):
-        yield from models_in(argument)
 
 
 def materialize_rich_message(
