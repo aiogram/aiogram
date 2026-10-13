@@ -7,75 +7,111 @@ builds on.
 - Sends go through one modeled handler and `build_message`, which stores every message in
   `ChatState.messages`, the shared history. That history is kept sorted by id, and the
   wait helpers, ordering guarantees and failure listings all read it.
+- `BotTestEnvironment.feed` registers every incoming message carried by an update through
+  `_register_carried_message`, keyed by `message_id`. It refuses a second, different
+  message under an id already held. Two ephemeral commands, both with id 0, would collide
+  there.
 - `RECORD_ONLY` in `modeling.py` lists `editEphemeralMessage*` and
-  `deleteEphemeralMessage`. A guard test asserts it does not overlap with the registry.
+  `deleteEphemeralMessage`, with a comment saying Telegram does not persist them. A guard
+  test asserts the list does not overlap with the registry.
 - Ephemeral messages are addressed by chat, receiver and ephemeral id, which is how every
-  `editEphemeralMessage*` and `deleteEphemeralMessage` call names its target. The
-  generated `Message.edit_ephemeral_*` and `delete_ephemeral` shortcuts read `chat`,
-  `receiver_user` and `ephemeral_message_id` off the message.
-- `UserActor._iter_buttons` is the single place button lookups go through. After
-  `model-rich-message-content` it walks rich content as well.
+  `editEphemeralMessage*` and `deleteEphemeralMessage` call names its target. The aiogram
+  shortcuts `Message.edit_ephemeral_*` and `delete_ephemeral` read `chat`, `receiver_user`
+  and `ephemeral_message_id` off the message.
+- For an incoming ephemeral message, aiogram's `Message.as_reply_parameters()` returns
+  `ephemeral_message_id` with no `message_id`, and `as_ephemeral_message_parameters()`
+  addresses the reply to `from_user`. So `message.reply()` builds a valid ephemeral reply
+  without the toolkit's help, while `message.answer()` sends an ordinary shared message.
+- `click(target, message=...)` uses the given message without checking that it is visible
+  to the actor.
+- Pending queries map an id to its kind. Nothing records which message a callback query
+  came from.
 
 ## Goals / Non-Goals
 
 **Goals:**
 
 - Ephemeral state never leaks into anything that reads the shared history.
+- Rules are enforced only where the Bot API states them, and the source of each is named.
 
 **Non-Goals:**
 
 - The 15-second window for replying to an ephemeral message. It needs a controllable
   clock, which `add-controllable-world-time` introduces, and that change specifies the
   window.
-- How `replace_callback_query_message` looks. The ephemeral message is stored and the
-  original message is left untouched; how a client renders the replacement is not world
-  state.
-- Waiting helpers for ephemeral messages. Tests read the store back directly.
-- Expiry of ephemeral messages, and reuse of their ids. Neither is documented.
+- How `replace_callback_query_message` looks. A replacing ephemeral message is stored like
+  any other, and the original message is left untouched; how a client renders the
+  replacement is not world state.
+- Waiting helpers for ephemeral messages. Tests read the stores back directly.
+- When ephemeral messages expire, which is undocumented. Ids are never reused, which is a
+  valid subset of "may be reused after the message is deleted or expires".
+- A user editing or replying to an ephemeral message. Actor `edit` and `reply` refuse an
+  ephemeral target with a setup error, rather than guessing at behavior the Bot API does
+  not describe.
+- Membership of the receiver. The Bot API does not state it as a condition, and the
+  existing requirement "Permissions are stored but not enforced" keeps membership out of
+  send validation. The only check is that the receiver is a user this world declares.
 
 ## Decisions
 
-### D1. Ephemeral messages live in a per-chat store, not in `messages`
+### D1. Two per-chat stores, one per direction
 
-`ChatState` gains a store keyed by `(receiver_id, ephemeral_message_id)`, and reads it
-through `chat.ephemeral_messages(user)`, in send order. Ids come from a per-chat counter
-that is separate from `last_message_id`. Telegram allows ids to be reused after expiry, so
-never reusing one is a valid subset of its behavior. A stored message goes through the
-same binding as `add_message`, so shortcuts work on it.
+`ChatState` gains two stores, kept out of `messages`. The separation means `edit_ephemeral`
+can never land on a user's own command, and reply validation can never accept the bot's
+own message as the "incoming" one.
 
-Incoming ephemeral commands go into the same store under their sender's id, with no
-`receiver_user`. The Bot API defines `receiver_user` only as the user who received an
-ephemeral message, and the receiver of a user's command is the bot. Reply validation
-(D3) finds the command there.
+| Store | Holds | Keyed by | Read with |
+|---|---|---|---|
+| outgoing | what the bot sent | `(receiver_id, ephemeral_message_id)` | `chat.ephemeral_messages(user)` |
+| incoming | what users sent | `(sender_id, ephemeral_message_id)` | `chat.ephemeral_commands(user)` |
 
-*Alternative considered:* storing ephemeral messages in `messages` with a flag. Every
-reader of the shared history (waits, `messages[-1]`, failure listings, ordering by id with
-`message_id=0`) would need to filter, and forgetting to filter is exactly the bug.
+- Clicks, the receiver-naming hint, and the edit and delete family see the outgoing store
+  only.
+- Reply validation (D3) sees the incoming store only.
+- Both stores draw ids from one per-chat counter, separate from `last_message_id`, so an
+  id never names two messages in the same chat.
+- A stored message goes through the same binding as `add_message`, so shortcuts work on
+  it.
+- An incoming message carries no `receiver_user`. `BotCommand.is_ephemeral` describes the
+  message as "seen only by the sender of the message and the bot", and the Bot API defines
+  `receiver_user` only for "the user who received the message".
 
-### D2. The ephemeral path is chosen by the request, not by the method
+*Alternative considered:* one store with a direction flag. Every reader would need to
+filter, which is the same failure mode as flagging messages in `messages`.
+
+### D2. Registration routes by `ephemeral_message_id`
+
+`_register_carried_message` sends any carried message that has an `ephemeral_message_id`
+to the incoming store and skips the shared-history id check for it. That holds whether the
+message came from `send(ephemeral=True)`, a `fields=` override, or a hand-built update fed
+directly. The actor does not store the command itself, so registration is the one place it
+happens, as it already is for ordinary messages.
+
+### D3. The outgoing path is chosen by the request, not by the method
 
 Any send whose request carries `ephemeral_message_parameters` takes the ephemeral path in
 `build_message`. That is decided by attribute, not by a list of send methods, so the 14
 methods that declare the field, and any future one, behave the same. The path:
 
-- checks that the chat is a group or supergroup;
-- checks that the receiver is a member;
-- builds the message with `message_id=0`, a fresh `ephemeral_message_id` and
-  `receiver_user`;
-- stores it per D1 and returns it.
+1. Refuses a chat that is not a group or supergroup. The source is the deprecated
+   `receiver_user_id` text, "for group and supergroup chats only", which the current
+   `EphemeralMessageParameters` text does not repeat. This is the toolkit's reading, and
+   Risks says so.
+2. Resolves the receiver through the world. An undeclared user is a `WorldLookupError`
+   (setup gap), as everywhere else.
+3. If `reply_parameters.ephemeral_message_id` is set, requires that it names an entry in
+   the incoming store, as `ReplyParameters` describes it: "the incoming ephemeral
+   message". The ephemeral parameters are present by construction on this path.
+4. If `callback_query_id` names a callback query whose message was ephemeral, refuses
+   `replace_callback_query_message=True`, which the schema forbids. It does not consume
+   the pending query: `answerCallbackQuery` is still owed.
+5. Builds the message with `message_id=0`, a fresh `ephemeral_message_id`, `receiver_user`,
+   the request's `message_thread_id`, and no `reply_to_message` (the field "may be
+   omitted"). It stores the message in the outgoing store and returns it.
 
-Rejections use `ApiRejection`, so the bot sees `TelegramBadRequest` as in production.
-
-### D3. Replies to ephemeral messages are validated where Telegram documents a rule
-
-When `reply_parameters.ephemeral_message_id` is set:
-
-- the request must carry `ephemeral_message_parameters` ("a reply to an ephemeral message
-  must itself be an ephemeral message");
-- the id must name an incoming ephemeral message in that chat.
-
-The receiver is not required to equal the command's sender. The Bot API does not state
-that rule, and the `reply_*` shortcuts set it that way anyway.
+A send without ephemeral parameters whose `reply_parameters.ephemeral_message_id` is set
+is refused before the regular path ("a reply to an ephemeral message must itself be an
+ephemeral message"). Rejections use `ApiRejection`, so the bot sees `TelegramBadRequest`.
 
 ### D4. The ephemeral edit and delete family is modeled and leaves `RECORD_ONLY`
 
@@ -83,38 +119,56 @@ that rule, and the `reply_*` shortcuts set it that way anyway.
 stored message through the same `derive_message` the regular edits use.
 `editEphemeralMessageText` converts `rich_message` with the conversion from
 `model-rich-message-content`. `deleteEphemeralMessage` removes the message. A target
-missing for that chat and receiver fails with Telegram's regular wording, "message to edit
-not found" or "message to delete not found". Each method returns `True`, as its schema
-declares. The five methods move from `RECORD_ONLY` to the registry in the same change,
-which the guard test requires. `sendMessageDraft` and `sendRichMessageDraft` stay
-record-only.
+missing for that chat and receiver, including a matching id under another receiver, fails
+with "message to edit not found" or "message to delete not found". Each method returns
+`True`, as its schema declares. The five methods move from `RECORD_ONLY` to the registry,
+and the list's comment is rewritten to cover the drafts only.
 
-### D5. A click on someone else's ephemeral button names the receiver
+The regular `editMessage*` and `deleteMessage` look up `message_id=0` in the shared
+history, find nothing, and fail as they already do. That is the specified behavior, with no
+special case.
 
-The actor's button search covers the shared history and the ephemeral messages addressed
-to it. When that misses, the misdirected-click hint also looks at ephemeral messages
-addressed to other users in the same chat, and names the receiver. This follows the
-toolkit's existing rule that a setup mistake must not read like a typo.
+### D5. Click resolution for ephemeral messages
+
+The actor's button search covers the outgoing messages addressed to it, newest first,
+before the shared history. An ephemeral message is the more specific target, and the two
+cannot be ordered by id (`message_id=0`). An explicit `message=` must be visible to the
+actor: a shared message, or an ephemeral one addressed to it. Anything else fails like a
+miss.
+
+On a miss, the misdirected-click hint also searches outgoing messages addressed to other
+users in the same chat and names the receiver. This extends the existing requirement "A
+misdirected click names where the button actually is", which covers other chats today,
+without changing its text.
+
+The callback query records which message it came from, so D3's
+`replace_callback_query_message` check can tell an ephemeral origin.
 
 ### D6. `send(ephemeral=True)` is an explicit flag
 
 The actor marks a command as ephemeral explicitly. It does not infer that from the bot's
 registered commands (`BotCommand.is_ephemeral`). The registered list is per scope and per
-language, and a test that wants an ephemeral message should say so. An ephemeral send is
-refused, with `WorldLookupError` (a setup error), outside a group or supergroup, and when
-combined with a business binding.
+language, and a test that wants an ephemeral message should say so.
+
+The trigger refuses with `WorldLookupError` (a setup error) outside a group or supergroup,
+and when combined with a business binding. In a topic-bound actor the command carries the
+topic's thread. The command is read back with `chat.ephemeral_commands(user)`, and the
+`send` docstring, which points at `chat.messages[-1]`, says so.
 
 ## Risks / Trade-offs
 
-- [Error wording for "ephemeral outside a group" and "receiver is not a member" is not
-  documented by Telegram] → The toolkit's own `Bad Request: ...` wording is used, in one
-  place each. Tests should assert the exception type, not the text.
+- [The group-only rule comes from deprecated parameter text] → If Telegram allows
+  ephemeral messages elsewhere, the toolkit refuses a valid call. The rule sits in one
+  place, its source is cited in the code and the docs, and tests should assert the
+  exception type.
+- [Error wording for the group-only refusal, a late or invalid ephemeral reply, and the
+  replace rule is not documented] → The toolkit's own `Bad Request: ...` wording is used,
+  in one place each.
 - [Telegram does not document whether an incoming ephemeral command carries
   `receiver_user`] → It is left unset (D1). If Telegram turns out to set it, adding it is
   backward compatible for tests.
 - [A test that read an ephemeral send from `chat.messages` stops finding it] → The old
-  behavior was wrong, and the toolkit has not been released. The changelog fragment states
-  it.
+  behavior was wrong, and the toolkit is in alpha. The changelog fragment states it.
 
 ## Migration Plan
 

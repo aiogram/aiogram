@@ -2,11 +2,11 @@
 
 ### Requirement: The world has a clock the test controls
 
-World time SHALL stand still unless the test advances it. Advancing SHALL accept a number
-of seconds or a duration and SHALL refuse a negative one. Every date the world produces
-(messages, events, transactions) SHALL be the clock's current time. Advancing SHALL
-dispatch the updates that the passing time causes before it returns, in the order their
-moments occur. The host machine's clock SHALL never be consulted.
+World time SHALL stand still unless the test advances it, by seconds or a duration, never
+backwards. A date the world assigns to something happening now SHALL be the clock's time;
+dates carried from earlier things, such as a forward origin, keep theirs. Advancing SHALL
+dispatch the updates that time causes before returning, ordered by moment and then by
+scheduling order. World dates SHALL never come from the host clock.
 
 #### Scenario: Time does not move on its own
 
@@ -23,19 +23,36 @@ moments occur. The host machine's clock SHALL never be consulted.
 - **WHEN** a test advances the clock by a negative amount
 - **THEN** the call fails, and the clock is unchanged
 
+#### Scenario: Advancing cannot overlap itself
+
+- **WHEN** a handler running inside an advance, or a concurrent task, advances the clock
+- **THEN** that call fails as a setup error, and the running advance is unaffected
+
+#### Scenario: Events due during an advance fire within it
+
+- **WHEN** a handler reacting to an event during an advance schedules another event that
+  falls before the advance's target
+- **THEN** that event also fires before the advance returns, at its own moment
+
 ### Requirement: Restrictions and bans expire
 
-An `until_date` given as a duration SHALL be measured from the clock. An `until_date` less
-than 30 seconds or more than 366 days ahead SHALL mean forever, and forever SHALL be
-reported as `0`. Once the clock passes a stored `until_date`, membership reads SHALL show
-the restriction lifted: a restricted member reads as a member, and a banned user reads as
-having left.
+An `until_date` given as a duration SHALL be measured from the clock. One less than 30
+seconds or more than 366 days ahead SHALL mean forever. Once the clock reaches a stored
+`until_date`, every membership read SHALL see the restriction ended: a present restricted
+user reads as a member, an absent one and a banned user as having left, carrying no end
+date.
 
 #### Scenario: A mute lifts on time
 
 - **WHEN** a handler restricts a member for one hour, and the test advances the clock by
   one hour
-- **THEN** reading that member reports an ordinary member
+- **THEN** reading that member reports an ordinary member with no `until_date`
+
+#### Scenario: A mute on an absent user ends as left
+
+- **WHEN** a handler restricts a user who is not in the chat for one hour, and the test
+  advances the clock by one hour
+- **THEN** reading that user reports that they have left
 
 #### Scenario: A ban lifts on time
 
@@ -46,8 +63,8 @@ having left.
 
 - **WHEN** a handler restricts a member until 10 seconds from now, or until 400 days from
   now
-- **THEN** the member reads as restricted with `until_date` `0`, and advancing the clock by
-  any amount does not lift it
+- **THEN** the member reads as restricted with `until_date` at the Unix epoch, and advancing
+  the clock by any amount does not lift it
 
 #### Scenario: A duration counts from now
 
@@ -57,33 +74,43 @@ having left.
 
 ### Requirement: Polls close on schedule
 
-A poll sent with an open period or a close date SHALL close when the clock reaches that
-moment. The bot SHALL receive a `poll` update carrying the closed poll, and voting in it
-SHALL be refused as it is in a stopped poll. A close date or open period less than 5
-seconds or more than 2628000 seconds ahead SHALL fail as a Telegram error.
+A poll sent with an open period or a close date, never both, SHALL close when the clock
+reaches that moment: the stored poll and its message SHALL show it closed, the bot SHALL
+receive a `poll` update with it, and voting SHALL be refused. A moment less than 5 or more
+than 2628000 seconds ahead SHALL fail as a Telegram error. A poll stopped earlier SHALL not
+close again.
 
 #### Scenario: A poll closes when its period ends
 
 - **WHEN** a handler sends a poll with a 60-second open period, and the test advances the
   clock by 60 seconds
-- **THEN** a `poll` update is dispatched whose poll is closed, and the stored poll is closed
+- **THEN** a `poll` update is dispatched whose poll is closed, and the stored poll and the
+  message carrying it are closed
 
 #### Scenario: A poll stays open before its time
 
 - **WHEN** the test advances the clock by less than the open period
 - **THEN** no `poll` update is dispatched, and users can still vote
 
-#### Scenario: An out-of-range close date is rejected
+#### Scenario: A stopped poll does not close twice
 
-- **WHEN** a handler sends a poll whose close date is 2 seconds ahead
+- **WHEN** a handler stops a scheduled poll and the test then advances past its close
+  moment
+- **THEN** no `poll` update is dispatched for it
+
+#### Scenario: An invalid schedule is rejected
+
+- **WHEN** a handler sends a poll whose close date is 2 seconds ahead, or that passes both
+  an open period and a close date
 - **THEN** the call raises `TelegramBadRequest`, and no poll is stored
 
 ### Requirement: Live locations expire
 
 Editing a live location SHALL fail once its live period has elapsed since the message was
-sent, unless the period is forever (`0x7FFFFFFF`). A new live period SHALL be refused when
-it exceeds the current period by more than a day, or when it would end more than 90 days
-after the clock's current time.
+sent, after `stopMessageLiveLocation`, or when the location was never live, unless the
+period is forever (`0x7FFFFFFF`). A new live period other than forever SHALL be refused
+when it exceeds the current one by more than a day, or ends more than 90 days after the
+clock's time.
 
 #### Scenario: Editing within the period works
 
@@ -96,24 +123,30 @@ after the clock's current time.
   location
 - **THEN** the call raises `TelegramBadRequest`, and the stored location is unchanged
 
+#### Scenario: Editing a stopped location fails
+
+- **WHEN** a handler stops a live location and then edits it
+- **THEN** the call raises `TelegramBadRequest`
+
 #### Scenario: A forever location never expires
 
 - **WHEN** a handler sends a live location with the forever period and the test advances
   the clock by a year
 - **THEN** editing it still works
 
-#### Scenario: Extending by more than a day is refused
+#### Scenario: Extending by more than a day is refused, forever is not
 
-- **WHEN** a handler edits a one-hour live location with a period two days longer
-- **THEN** the call raises `TelegramBadRequest`
+- **WHEN** a handler edits a one-hour live location with a period two days longer, and then
+  with the forever period
+- **THEN** the first call raises `TelegramBadRequest` and the second succeeds
 
 ### Requirement: Old messages cannot be deleted or edited
 
-Deleting a message sent 48 hours or more before the clock's current time SHALL fail as a
-Telegram error, and a dice in a private chat SHALL be deletable only once more than 24
-hours have passed. Batch deletion SHALL skip such messages. Editing a
-business message the bot did not send and that carries no inline keyboard SHALL fail once
-more than 48 hours have passed.
+Deleting a message sent 48 hours or more before the clock's time SHALL fail as a Telegram
+error, and a dice in a private chat SHALL be deletable only once more than 24 hours have
+passed. Batch deletion SHALL skip such messages, which is the toolkit's reading. Editing
+the text, caption, media or markup of a business message not sent by the bot and carrying
+no inline keyboard SHALL fail once more than 48 hours have passed.
 
 #### Scenario: A fresh message can be deleted
 
@@ -140,23 +173,8 @@ more than 48 hours have passed.
 
 - **WHEN** a handler edits a business message sent by the account owner, carrying no inline
   keyboard, 49 hours after it was sent
-- **THEN** the call raises `TelegramBadRequest`
-
-### Requirement: A pre-checkout query must be answered within 10 seconds
-
-Answering a pre-checkout query once more than 10 seconds have passed since it was issued
-SHALL fail as an expired query, the same way answering an unknown query does.
-
-#### Scenario: A prompt answer succeeds
-
-- **WHEN** a handler answers a pre-checkout query without the clock moving
-- **THEN** the answer is accepted
-
-#### Scenario: A late answer fails
-
-- **WHEN** the test advances the clock by 11 seconds before the bot answers a pending
-  pre-checkout query
-- **THEN** the answer raises `TelegramBadRequest`, reporting the query as too old
+- **THEN** the call raises `TelegramBadRequest`, while a business message the bot sent stays
+  editable
 
 ### Requirement: An ephemeral command must be answered within 15 seconds
 
@@ -173,3 +191,72 @@ seconds have passed since that message was sent.
 - **WHEN** the test advances the clock by 16 seconds and the bot then replies to the
   command
 - **THEN** the call raises `TelegramBadRequest`, and nothing is stored
+
+## MODIFIED Requirements
+
+### Requirement: Outstanding queries are tracked and answers validated
+
+Every trigger that produces a query — callback query, inline query, shipping query,
+pre-checkout query — SHALL register that query's identifier as outstanding. The
+corresponding answer methods SHALL be applied to that registry: answering an outstanding
+query SHALL succeed and clear it, and answering an unknown or already-answered identifier
+SHALL raise `TelegramBadRequest`, as Telegram does when a query has expired or was already
+answered. A pre-checkout query SHALL count as expired once more than 10 seconds have passed
+on the world clock since it was issued, as the Bot API documents; the other kinds have no
+documented limit and do not expire.
+
+#### Scenario: Answering an outstanding callback query succeeds
+
+- **WHEN** a handler answers the callback query it is currently processing
+- **THEN** the call succeeds and the query is no longer outstanding
+
+#### Scenario: Answering twice fails
+
+- **WHEN** a handler answers the same callback query a second time
+- **THEN** the second call raises `TelegramBadRequest`
+
+#### Scenario: Answering a fabricated identifier fails
+
+- **WHEN** a handler answers a callback query identifier the environment never issued
+- **THEN** the call raises `TelegramBadRequest`
+
+#### Scenario: The rule covers every query kind
+
+- **WHEN** an inline query, a shipping query or a pre-checkout query is answered with an
+  identifier that is not outstanding
+- **THEN** the call raises `TelegramBadRequest`
+
+#### Scenario: A late pre-checkout answer fails
+
+- **WHEN** the test advances the clock by 11 seconds before the bot answers a pending
+  pre-checkout query
+- **THEN** the answer raises `TelegramBadRequest`, reporting the query as too old
+
+#### Scenario: Other queries do not expire
+
+- **WHEN** the test advances the clock by an hour before the bot answers a pending callback
+  query
+- **THEN** the answer succeeds
+
+### Requirement: Polls are world state
+
+A poll sent by the bot SHALL be stored on the message that carries it, holding its
+question, options, type, anonymity, multiple-answer flag, quiz answer and explanation,
+the votes cast, whether it is closed, and when it is scheduled to close. A blueprint SHALL
+be able to declare an existing poll.
+
+#### Scenario: A sent poll is stored on its message
+
+- **WHEN** a handler calls `sendPoll`
+- **THEN** a message carrying that poll is appended to the chat, and the returned message
+  is the stored one
+
+#### Scenario: A declared poll is answerable
+
+- **WHEN** a blueprint declares a poll in a chat and a user actor votes in it
+- **THEN** the vote is recorded without the poll having been sent through the API first
+
+#### Scenario: A scheduled close is reported
+
+- **WHEN** a handler sends a poll with an open period
+- **THEN** the stored poll reports the moment it will close

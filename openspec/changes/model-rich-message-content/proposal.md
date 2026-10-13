@@ -10,17 +10,17 @@ also clears the stored text.
 
 ## What Changes
 
-- **Rich content is carried, not synthesized.** A sent or edited rich message stores the
-  blocks its request stated. They are converted from the `InputRichBlock*` shapes to the
-  `RichBlock*` shapes Telegram returns. Media inside blocks is synthesized, as it already is
-  for `sendPhoto` and its siblings. A required field the input does not carry, such as a
-  list item's `label` or a map's dimensions, is synthesized. `html` and `markdown` input is
-  not parsed into blocks; that limitation is documented.
-- **`editMessageText(rich_message=...)` replaces the stored rich content** instead of
-  clearing the message's text.
-- **`click()` finds callback buttons inside rich content** at any nesting depth, as well as
-  in `reply_markup`. The misdirected-click hint and deep-link button following cover them
-  too.
+- **Rich content is carried, not synthesized.** A sent, copied or forwarded rich message
+  stores the blocks and settings its request stated. They are converted from the
+  `InputRichBlock*` shapes to the `RichBlock*` shapes Telegram returns. Media inside blocks
+  is synthesized as it is for `sendPhoto` and its siblings. A required field the input
+  leaves unset gets a valid zero value. `html` and `markdown` input is not parsed into
+  blocks; that limitation is documented.
+- **`editMessageText` replaces either kind of content.** Rich content replaces text and
+  text replaces rich content. The keyboard rule is unchanged.
+- **`click()` and `follow_deep_link()` reach buttons inside rich content** at any nesting
+  depth, as well as in `reply_markup`, and accept a rich button object. The
+  misdirected-click hint covers them too.
 
 No API breaks. Observable behavior changes in one place: a rich message now carries its
 blocks instead of an empty list.
@@ -33,14 +33,15 @@ None.
 
 ### Modified Capabilities
 
-- `bot-testing-environment`: gains two requirements, "A rich message carries the content
-  its request stated" and "Buttons inside rich content are clickable". No existing
-  requirement text changes.
+- `bot-testing-environment`: gains three requirements. They are "A rich message carries the
+  content its request stated", "Editing text replaces either kind of content" and "Buttons
+  inside rich content are clickable". No existing requirement text changes.
 
 ## Impact
 
 - **Code**: `aiogram/test/modeling.py` (rich conversion, the send and edit-text handlers)
-  and `aiogram/test/actors.py` (button search). No generated code changes.
+  and `aiogram/test/actors.py` (button search, and the `click` and `follow_deep_link`
+  signatures). No generated code changes.
 - **Tests**: `tests/test_testing/` covers the conversion, a guard on the `Input` naming
   convention, rich edits, and clicks inside rich content.
 - **Docs**: a rich content section in `docs/dispatcher/testing.rst`, including the
