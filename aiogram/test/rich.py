@@ -20,7 +20,7 @@ from typing_extensions import TypeAliasType
 import aiogram.types as api_types
 from aiogram.types import InputMedia, InputRichMessage, RichMessage
 
-from .synthesis import SynthesisContext, nonempty, synthesize
+from .synthesis import SynthesisContext, list_item, nonempty, synthesize
 
 _INPUT_PREFIX = "Input"
 
@@ -86,7 +86,9 @@ def _convert_model(value: BaseModel, context: SynthesisContext) -> BaseModel:
             else:
                 values[name] = _convert_value(raw, info.annotation, name, context)
             continue
-        carried = _media_attribute(value, name)
+        # Only a field the input block lacks is read off its media: one
+        # it has, such as `caption`, has its own type on the block.
+        carried = _media_attribute(value, name) if source_info is None else None
         if carried is not None:
             values[name] = carried
         elif info.is_required():
@@ -101,8 +103,9 @@ def _convert_value(
     context: SynthesisContext,
 ) -> Any:
     if isinstance(raw, list):
-        item = _list_item(annotation)
-        return [_convert_value(entry, item, name, context) for entry in raw]
+        item = list_item(annotation)
+        entry_type = annotation if item is None else item
+        return [_convert_value(entry, entry_type, name, context) for entry in raw]
     if isinstance(raw, InputMedia):
         return nonempty(annotation, context, name=name)
     if isinstance(raw, BaseModel) and counterpart(type(raw)) is not None:
@@ -132,13 +135,3 @@ def _zero_value(annotation: Any, name: str, context: SynthesisContext) -> Any:
     if get_origin(annotation) is list:
         return []
     return synthesize(annotation, context, name=name)
-
-
-def _list_item(annotation: Any) -> Any:
-    if get_origin(annotation) in {UnionType, Union}:
-        for member in get_args(annotation):
-            if get_origin(member) is list:
-                return get_args(member)[0]
-    if get_origin(annotation) is list:
-        return get_args(annotation)[0]
-    return annotation

@@ -1384,9 +1384,9 @@ class World:
     profile: BotProfileState = field(default_factory=BotProfileState)
     #: Query ids issued by a trigger and not yet answered, by query kind.
     pending_queries: dict[str, str] = field(default_factory=dict)
-    #: The message each callback query came from, by query id: how
-    #: one may be answered depends on whether that was ephemeral.
-    callback_origins: dict[str, Message] = field(default_factory=dict)
+    #: Callback queries that came from an ephemeral message: those
+    #: cannot be answered by an ephemeral message replacing it.
+    ephemeral_callbacks: set[str] = field(default_factory=set)
     polls: dict[str, PollState] = field(default_factory=dict)
     #: Downloadable content by ``file_id``. Declared on a blueprint, or registered when a
     #: handler uploads a file whose input carries its bytes.

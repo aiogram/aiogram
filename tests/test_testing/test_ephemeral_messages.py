@@ -223,6 +223,19 @@ class TestEphemeralClicks:
 
         assert seen == ["ok"]
 
+    async def test_the_receiver_follows_a_deep_link_on_it(self, env, team, alice):
+        seen = []
+        env.dispatcher.message.register(lambda message: seen.append(message.text))
+        username = env.world.bot_user.username
+        link = InlineKeyboardButton(text="Go", url=f"https://t.me/{username}?start=abc")
+        await send_to(
+            env, team, alice, reply_markup=InlineKeyboardMarkup(inline_keyboard=[[link]])
+        )
+
+        await env.user(alice).in_(team).follow_deep_link()
+
+        assert seen == ["/start abc"]
+
     async def test_a_command_is_not_a_button_target(self, env, team, alice):
         actor = env.user(alice).in_(team)
         await actor.send("/x", ephemeral=True)
@@ -488,6 +501,18 @@ class TestRepliesToEphemeralCommands:
             )
 
         assert team.ephemeral_messages(alice) == []
+
+    async def test_an_ephemeral_reply_to_a_shared_message_keeps_it(self, env, team, alice):
+        public = await env.bot.send_message(chat_id=team.id, text="public")
+
+        reply = await send_to(
+            env,
+            team,
+            alice,
+            reply_parameters=ReplyParameters(message_id=public.message_id),
+        )
+
+        assert reply.reply_to_message.message_id == public.message_id
 
     async def test_the_bots_own_ephemeral_message_is_not_incoming(self, env, team, alice):
         own = await send_to(env, team, alice)

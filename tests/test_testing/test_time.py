@@ -90,6 +90,17 @@ class TestTheClock:
         assert after - before == HOUR
         assert later - after == datetime.timedelta(seconds=30)
 
+    async def test_an_advance_that_feeds_nothing_keeps_the_last_route(self, env, alice):
+        async def on_text(message):
+            pass
+
+        env.dispatcher.message.register(on_text)
+        await env.user(alice).send("hello")
+
+        await env.advance_time(HOUR)
+
+        env.assert_handled_by("on_text")
+
     async def test_time_cannot_go_backwards(self, env):
         with pytest.raises(ValueError, match="backwards"):
             await env.advance_time(-1)

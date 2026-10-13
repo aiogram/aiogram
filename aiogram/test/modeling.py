@@ -39,8 +39,7 @@ from __future__ import annotations
 import datetime
 import re
 from collections.abc import Callable
-from types import UnionType
-from typing import TYPE_CHECKING, Any, Union, get_args, get_origin
+from typing import TYPE_CHECKING, Any, get_args
 
 from pydantic import BaseModel
 
@@ -270,7 +269,6 @@ from .mounting import detached_copy
 from .rich import materialize_rich_message
 from .synthesis import annotation_accepts, nonempty, synthesize
 from .world import (
-    BASE_DATE,
     DEFAULT_TOPIC_ICON_COLOR,
     ChatState,
     InviteLinkState,
@@ -502,11 +500,6 @@ def _chat_label(chat: ChatState) -> str:
     return ""
 
 
-def _nonempty(annotation: Any, env: BotTestEnvironment, name: str) -> Any:
-    """Synthesize a value, making a list annotation carry one element."""
-    return nonempty(annotation, env.synthesis_context(), name=name)
-
-
 def build_message(
     env: BotTestEnvironment,
     method: TelegramMethod[Any],
@@ -559,16 +552,17 @@ def build_message(
     elif media_field is not None:
         values[media_field] = _carry_request_values(
             method,
-            _nonempty(Message.model_fields[media_field].annotation, env, media_field),
+            nonempty(
+                Message.model_fields[media_field].annotation,
+                env.synthesis_context(),
+                name=media_field,
+            ),
         )
         _register_uploaded_content(env, method, media_field, values[media_field])
 
     if receiver is not None:
         values["ephemeral_message_id"] = chat.allocate_ephemeral_message_id()
         values["receiver_user"] = receiver.as_user()
-        # A reply to an ephemeral message "may" omit what it
-        # replied to.
-        values.pop("reply_to_message", None)
         return chat.add_ephemeral_message(Message(**values))
     message = Message(**values)
     return chat.add_message(message)
@@ -610,11 +604,9 @@ def _ephemeral_receiver(
         if env.world.now - command.date > _EPHEMERAL_REPLY_WINDOW:
             msg = "an ephemeral message can be replied to within 15 seconds only"
             raise ApiRejection(msg)
-    origin = env.world.callback_origins.get(parameters.callback_query_id or "")
     if (
         parameters.replace_callback_query_message
-        and origin is not None
-        and origin.ephemeral_message_id is not None
+        and parameters.callback_query_id in env.world.ephemeral_callbacks
     ):
         msg = (
             "an ephemeral message can't replace an ephemeral message; "
@@ -937,7 +929,13 @@ def _media_changes(
     # A message carries one kind of content: drop whatever it held before.
     changes: dict[str, Any] = dict.fromkeys(EDITABLE_MEDIA_FIELDS)
     changes["text"] = None
-    changes[field] = _nonempty(Message.model_fields[field].annotation, env, field)
+    changes["entities"] = None
+    changes["rich_message"] = None
+    changes[field] = nonempty(
+        Message.model_fields[field].annotation,
+        env.synthesis_context(),
+        name=field,
+    )
     changes["caption"] = method.media.caption
     changes["caption_entities"] = method.media.caption_entities
     if method.reply_markup is not None:
@@ -1097,7 +1095,11 @@ def handle_edit_checklist(
     chat, message_id = _edit_target(env, method)
     return chat.update_message(
         message_id,
-        checklist=_nonempty(Message.model_fields["checklist"].annotation, env, "checklist"),
+        checklist=nonempty(
+            Message.model_fields["checklist"].annotation,
+            env.synthesis_context(),
+            name="checklist",
+        ),
         reply_markup=method.reply_markup,
     )
 
@@ -1249,9 +1251,11 @@ def handle_ban(env: BotTestEnvironment, method: BanChatMember) -> bool:
     member = _not_the_owner(chat, method.user_id)
     member.set_status(ChatMemberStatus.KICKED)
     # The Bot API applies `until_date` for supergroups and channels
-    # only, so a ban in a basic group has no end.
-    if chat.type != ChatType.GROUP:
-        member.until_date = normalize_until(method.until_date, env.world.now)
+    # only, so a ban in a basic group has no end, whatever end an
+    # earlier restriction had.
+    member.until_date = (
+        None if chat.type == ChatType.GROUP else normalize_until(method.until_date, env.world.now)
+    )
     return True
 
 

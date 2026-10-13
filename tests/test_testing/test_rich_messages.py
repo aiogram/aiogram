@@ -3,13 +3,13 @@ from pydantic import BaseModel
 
 from aiogram.test import WorldLookupError
 from aiogram.test.rich import (
-    _list_item,
+    _convert_value,
     _zero_value,
     counterpart,
     materialize_rich_message,
     models_in,
 )
-from aiogram.test.synthesis import SynthesisContext, synthesize
+from aiogram.test.synthesis import SynthesisContext, list_item, synthesize
 from aiogram.types import (
     InlineKeyboardButton,
     InlineKeyboardMarkup,
@@ -145,6 +145,16 @@ class TestRichContentIsCarried:
         assert photo.photo
         assert photo.has_spoiler is True
 
+    async def test_a_media_caption_does_not_become_the_blocks_caption(self, env, private):
+        message = await self.send(
+            env,
+            private,
+            blocks=[InputRichBlockPhoto(photo=InputMediaPhoto(media="id", caption="hi"))],
+        )
+
+        (photo,) = message.rich_message.blocks
+        assert photo.caption is None
+
     async def test_unset_required_fields_get_zero_values(self, env, private):
         message = await self.send(
             env,
@@ -230,6 +240,21 @@ class TestEditingReplacesContent:
         )
 
         assert edited.text == "plain"
+        assert edited.rich_message is None
+
+    async def test_media_replaces_rich_content(self, env, private):
+        sent = await env.bot.send_rich_message(
+            chat_id=private.id,
+            rich_message=InputRichMessage(blocks=[InputRichBlockParagraph(text="rich")]),
+        )
+
+        edited = await env.bot.edit_message_media(
+            chat_id=private.id,
+            message_id=sent.message_id,
+            media=InputMediaPhoto(media="photo-id"),
+        )
+
+        assert edited.photo
         assert edited.rich_message is None
 
     async def test_a_text_edit_without_markup_removes_the_keyboard(self, env, private):
@@ -378,6 +403,9 @@ class TestConversionFallbacks:
         assert isinstance(location, Location)
 
     def test_list_items_are_found_through_optional_and_plain_annotations(self):
-        assert _list_item(list[int] | None) is int
-        assert _list_item(list[str]) is str
-        assert _list_item(int) is int
+        assert list_item(list[int] | None) is int
+        assert list_item(list[str]) is str
+        assert list_item(int) is None
+
+    def test_a_list_with_no_list_annotation_keeps_its_entries(self):
+        assert _convert_value(["a", "b"], str, "x", SynthesisContext()) == ["a", "b"]

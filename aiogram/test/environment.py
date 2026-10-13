@@ -643,8 +643,10 @@ class BotTestEnvironment:
         What the passing time causes happens before this returns, in
         the order of its moments, each at its own moment: a poll whose
         schedule ends closes and its update is dispatched. Updates fed
-        here share one route scope. If a handler raises, the clock stays
-        at that moment and the events after it stay due.
+        here share one route scope; an advance that feeds nothing
+        leaves the previous trigger's routes in place. If a handler
+        raises, the clock stays at that moment and the events after it
+        stay due.
 
         Time never goes backwards, and one advance cannot start while
         another runs: both raise and leave the clock as it was.
@@ -664,7 +666,14 @@ class BotTestEnvironment:
         self._advancing = True
         try:
             target = self.world.now + step
-            with self.trigger():
+            # A scope opens only when something falls due, so an
+            # advance that dispatches nothing keeps the last routes.
+            scope = (
+                self.trigger()
+                if self._due and self._due[0][0] <= target
+                else contextlib.nullcontext()
+            )
+            with scope:
                 while self._due and self._due[0][0] <= target:
                     moment, _order, action = heapq.heappop(self._due)
                     self.world.now = max(self.world.now, moment)

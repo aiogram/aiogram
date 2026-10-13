@@ -25,7 +25,8 @@ builds on.
 - `click(target, message=...)` uses the given message without checking that it is visible
   to the actor.
 - Pending queries map an id to its kind. Nothing records which message a callback query
-  came from.
+  came from. The world now records which callback queries came from an ephemeral message
+  (`ephemeral_callbacks`), which is all D3's replace rule reads.
 
 ## Goals / Non-Goals
 
@@ -106,9 +107,11 @@ methods that declare the field, and any future one, behave the same. The path:
 4. If `callback_query_id` names a callback query whose message was ephemeral, refuses
    `replace_callback_query_message=True`, which the schema forbids. It does not consume
    the pending query: `answerCallbackQuery` is still owed.
-5. Builds the message with `message_id=0`, a fresh `ephemeral_message_id`, `receiver_user`,
-   the request's `message_thread_id`, and no `reply_to_message` (the field "may be
-   omitted"). It stores the message in the outgoing store and returns it.
+5. Builds the message with `message_id=0`, a fresh `ephemeral_message_id`, `receiver_user`
+   and the request's `message_thread_id`. A reply that names an ephemeral command carries
+   no `reply_to_message`, which the Bot API says "may be omitted" for replies to ephemeral
+   messages. A reply to a shared message keeps it, as any reply does. The message is
+   stored in the outgoing store and returned.
 
 A send without ephemeral parameters whose `reply_parameters.ephemeral_message_id` is set
 is refused before the regular path ("a reply to an ephemeral message must itself be an

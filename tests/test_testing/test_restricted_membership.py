@@ -158,6 +158,15 @@ class TestEndDates:
 
         assert (await read(env, club, alice)).until_date == UNTIL_FOREVER
 
+    async def test_a_basic_group_ban_drops_an_earlier_restrictions_end(self, env, club, alice):
+        await restrict(env, club, alice, until_date=datetime.timedelta(hours=1))
+        await env.bot.ban_chat_member(chat_id=club.id, user_id=alice.id)
+        await env.advance_time(datetime.timedelta(hours=2))
+
+        member = await read(env, club, alice)
+        assert member.status == ChatMemberStatus.KICKED
+        assert member.until_date == UNTIL_FOREVER
+
     async def test_a_promotion_clears_the_end_date(self, env, team, alice):
         await restrict(env, team, alice, until_date=LATER)
         await env.bot.promote_chat_member(chat_id=team.id, user_id=alice.id, can_pin_messages=True)

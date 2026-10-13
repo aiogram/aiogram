@@ -853,7 +853,8 @@ class UserActor:
             message=source,
             data=callback_data,
         )
-        world.callback_origins[query.id] = source
+        if source.ephemeral_message_id is not None:
+            world.ephemeral_callbacks.add(query.id)
         return await self._feed(
             Update(update_id=self._next_update_id(), callback_query=query),
             data,
@@ -900,9 +901,7 @@ class UserActor:
         else:
             url = target
 
-        scope: Iterable[Message] = (
-            [message] if message is not None else reversed(self.chat.messages)
-        )
+        scope: Iterable[Message] = [message] if message is not None else self._visible_messages()
         deep_link: _DeepLink | None
         if url is None:
             url, deep_link = self._find_deep_link_url(scope, message, bot_username)

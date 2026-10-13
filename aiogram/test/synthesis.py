@@ -50,18 +50,30 @@ def annotation_accepts(annotation: Any, target: type) -> bool:
     return False
 
 
-def nonempty(annotation: Any, context: SynthesisContext, *, name: str) -> Any:
-    """Synthesize a value, giving a list annotation one element."""
-    members = annotation
+def without_none(annotation: Any) -> Any:
+    """``X`` out of ``X | None``; any other annotation as it is."""
     if get_origin(annotation) in {UnionType, Union}:
-        members = next(
+        return next(
             (arg for arg in get_args(annotation) if arg is not type(None)),
             annotation,
         )
+    return annotation
+
+
+def list_item(annotation: Any) -> Any | None:
+    """The item type of a list annotation, optional or not."""
+    members = without_none(annotation)
     if get_origin(members) is list:
-        (item_type,) = get_args(members)
-        return [synthesize(item_type, context, name=name)]
-    return synthesize(members, context, name=name)
+        return get_args(members)[0]
+    return None
+
+
+def nonempty(annotation: Any, context: SynthesisContext, *, name: str) -> Any:
+    """Synthesize a value, giving a list annotation one element."""
+    item = list_item(annotation)
+    if item is not None:
+        return [synthesize(item, context, name=name)]
+    return synthesize(without_none(annotation), context, name=name)
 
 
 def synthesize(
