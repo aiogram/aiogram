@@ -1,8 +1,13 @@
+from __future__ import annotations
+
 from typing import TYPE_CHECKING, Any
+
+from pydantic import Field
 
 from ..client.default import Default
 from ..types import (
     ChatIdUnion,
+    EphemeralMessageParameters,
     InputFileUnion,
     Message,
     MessageEntity,
@@ -41,13 +46,13 @@ class SendLivePhoto(TelegramMethod[Message]):
     """Mode for parsing entities in the video caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details"""
     caption_entities: list[MessageEntity] | None = None
     """A JSON-serialized list of special entities that appear in the caption, which can be specified instead of *parse_mode*"""
-    show_caption_above_media: bool | None = None
+    show_caption_above_media: bool | Default | None = Default("show_caption_above_media")
     """Pass :code:`True` if the caption must be shown above the message media"""
     has_spoiler: bool | None = None
     """Pass :code:`True` if the video needs to be covered with a spoiler animation"""
     disable_notification: bool | None = None
     """Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound"""
-    protect_content: bool | None = None
+    protect_content: bool | Default | None = Default("protect_content")
     """Protects the contents of the sent message from forwarding and saving"""
     allow_paid_broadcast: bool | None = None
     """Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance"""
@@ -59,10 +64,18 @@ class SendLivePhoto(TelegramMethod[Message]):
     """Description of the message to reply to"""
     reply_markup: ReplyMarkupUnion | None = None
     """Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user"""
-    receiver_user_id: int | None = None
-    """For outgoing ephemeral messages, unique identifier of the user who will receive the message; for group and supergroup chats only. It is not guaranteed that the user will receive the message, especially if they are offline. See `ephemeral message sending <https://core.telegram.org/bots/api#ephemeral-messages-and-commands>`_ for more details"""
-    callback_query_id: str | None = None
-    """For outgoing ephemeral messages, identifier of the callback query which triggerred the message if any"""
+    ephemeral_message_parameters: EphemeralMessageParameters | None = None
+    """A JSON-serialized object containing the parameters of the ephemeral message to send"""
+    receiver_user_id: int | None = Field(None, json_schema_extra={"deprecated": True})
+    """For outgoing ephemeral messages, unique identifier of the user who will receive the message; for group and supergroup chats only. It is not guaranteed that the user will receive the message, especially if they are offline. See `ephemeral message sending <https://core.telegram.org/bots/api#ephemeral-messages-and-commands>`_ for more details
+
+.. deprecated:: API:10.3
+   https://core.telegram.org/bots/api-changelog#august-24-2026"""
+    callback_query_id: str | None = Field(None, json_schema_extra={"deprecated": True})
+    """For outgoing ephemeral messages, identifier of the callback query which triggerred the message if any
+
+.. deprecated:: API:10.3
+   https://core.telegram.org/bots/api-changelog#august-24-2026"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!
@@ -80,15 +93,16 @@ class SendLivePhoto(TelegramMethod[Message]):
             caption: str | None = None,
             parse_mode: str | Default | None = Default("parse_mode"),
             caption_entities: list[MessageEntity] | None = None,
-            show_caption_above_media: bool | None = None,
+            show_caption_above_media: bool | Default | None = Default("show_caption_above_media"),
             has_spoiler: bool | None = None,
             disable_notification: bool | None = None,
-            protect_content: bool | None = None,
+            protect_content: bool | Default | None = Default("protect_content"),
             allow_paid_broadcast: bool | None = None,
             message_effect_id: str | None = None,
             suggested_post_parameters: SuggestedPostParameters | None = None,
             reply_parameters: ReplyParameters | None = None,
             reply_markup: ReplyMarkupUnion | None = None,
+            ephemeral_message_parameters: EphemeralMessageParameters | None = None,
             receiver_user_id: int | None = None,
             callback_query_id: str | None = None,
             **__pydantic_kwargs: Any,
@@ -116,6 +130,7 @@ class SendLivePhoto(TelegramMethod[Message]):
                 suggested_post_parameters=suggested_post_parameters,
                 reply_parameters=reply_parameters,
                 reply_markup=reply_markup,
+                ephemeral_message_parameters=ephemeral_message_parameters,
                 receiver_user_id=receiver_user_id,
                 callback_query_id=callback_query_id,
                 **__pydantic_kwargs,

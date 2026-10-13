@@ -1,5 +1,0 @@
-Fixed :code:`Message.content_type` returning :code:`photo` for Live Photo messages.
-Telegram sends a regular :code:`photo` alongside :code:`live_photo`, so
-:code:`live_photo` is now checked first and :code:`ContentType.LIVE_PHOTO` is returned.
-:code:`Message.send_copy` also copies such messages via
-:class:`aiogram.methods.send_live_photo.SendLivePhoto` instead of sending a static photo.

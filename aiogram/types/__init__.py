@@ -75,6 +75,7 @@ from .checklist_task import ChecklistTask
 from .checklist_tasks_added import ChecklistTasksAdded
 from .checklist_tasks_done import ChecklistTasksDone
 from .chosen_inline_result import ChosenInlineResult
+from .community_chat_joined import CommunityChatJoined
 from .contact import Contact
 from .copy_text_button import CopyTextButton
 from .custom import DateTime
@@ -82,10 +83,12 @@ from .date_time_union import DateTimeUnion
 from .dice import Dice
 from .direct_message_price_changed import DirectMessagePriceChanged
 from .direct_messages_topic import DirectMessagesTopic
+from .disabled_button import DisabledButton
 from .document import Document
 from .downloadable import Downloadable
 from .encrypted_credentials import EncryptedCredentials
 from .encrypted_passport_element import EncryptedPassportElement
+from .ephemeral_message_parameters import EphemeralMessageParameters
 from .error_event import ErrorEvent
 from .external_reply_info import ExternalReplyInfo
 from .file import File
@@ -160,6 +163,9 @@ from .input_profile_photo import InputProfilePhoto
 from .input_profile_photo_animated import InputProfilePhotoAnimated
 from .input_profile_photo_static import InputProfilePhotoStatic
 from .input_profile_photo_union import InputProfilePhotoUnion
+from .input_rich_block_buttons import InputRichBlockButtons
+from .input_rich_block_document import InputRichBlockDocument
+from .input_rich_block_expandable_block_quotation import InputRichBlockExpandableBlockQuotation
 from .input_sticker import InputSticker
 from .input_story_content import InputStoryContent
 from .input_story_content_photo import InputStoryContentPhoto
@@ -190,6 +196,7 @@ from .menu_button_web_app import MenuButtonWebApp
 from .message import ContentType, Message
 from .message_auto_delete_timer_changed import MessageAutoDeleteTimerChanged
 from .message_entity import MessageEntity
+from .message_generation_stopped import MessageGenerationStopped
 from .message_id import MessageId
 from .message_origin import MessageOrigin
 from .message_origin_channel import MessageOriginChannel
@@ -254,6 +261,11 @@ from .revenue_withdrawal_state_failed import RevenueWithdrawalStateFailed
 from .revenue_withdrawal_state_pending import RevenueWithdrawalStatePending
 from .revenue_withdrawal_state_succeeded import RevenueWithdrawalStateSucceeded
 from .revenue_withdrawal_state_union import RevenueWithdrawalStateUnion
+from .rich_block_buttons import RichBlockButtons
+from .rich_block_document import RichBlockDocument
+from .rich_block_expandable_block_quotation import RichBlockExpandableBlockQuotation
+from .rich_message_button import RichMessageButton
+from .rich_text_button import RichTextButton
 from .sent_web_app_message import SentWebAppMessage
 from .shared_user import SharedUser
 from .shipping_address import ShippingAddress
@@ -401,6 +413,7 @@ __all__ = (
     "ChosenInlineResult",
     "Community",
     "CommunityChatAdded",
+    "CommunityChatJoined",
     "CommunityChatRemoved",
     "Contact",
     "ContentType",
@@ -410,10 +423,12 @@ __all__ = (
     "Dice",
     "DirectMessagePriceChanged",
     "DirectMessagesTopic",
+    "DisabledButton",
     "Document",
     "Downloadable",
     "EncryptedCredentials",
     "EncryptedPassportElement",
+    "EphemeralMessageParameters",
     "ErrorEvent",
     "ExternalReplyInfo",
     "FSInputFile",
@@ -505,9 +520,12 @@ __all__ = (
     "InputRichBlockAnimation",
     "InputRichBlockAudio",
     "InputRichBlockBlockQuotation",
+    "InputRichBlockButtons",
     "InputRichBlockCollage",
     "InputRichBlockDetails",
     "InputRichBlockDivider",
+    "InputRichBlockDocument",
+    "InputRichBlockExpandableBlockQuotation",
     "InputRichBlockFooter",
     "InputRichBlockList",
     "InputRichBlockListItem",
@@ -563,6 +581,7 @@ __all__ = (
     "Message",
     "MessageAutoDeleteTimerChanged",
     "MessageEntity",
+    "MessageGenerationStopped",
     "MessageId",
     "MessageOrigin",
     "MessageOriginChannel",
@@ -635,10 +654,13 @@ __all__ = (
     "RichBlockAnimation",
     "RichBlockAudio",
     "RichBlockBlockQuotation",
+    "RichBlockButtons",
     "RichBlockCaption",
     "RichBlockCollage",
     "RichBlockDetails",
     "RichBlockDivider",
+    "RichBlockDocument",
+    "RichBlockExpandableBlockQuotation",
     "RichBlockFooter",
     "RichBlockList",
     "RichBlockListItem",
@@ -657,12 +679,14 @@ __all__ = (
     "RichBlockVideo",
     "RichBlockVoiceNote",
     "RichMessage",
+    "RichMessageButton",
     "RichText",
     "RichTextAnchor",
     "RichTextAnchorLink",
     "RichTextBankCardNumber",
     "RichTextBold",
     "RichTextBotCommand",
+    "RichTextButton",
     "RichTextCashtag",
     "RichTextCode",
     "RichTextCustomEmoji",

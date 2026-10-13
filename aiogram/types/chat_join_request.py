@@ -35,6 +35,7 @@ if TYPE_CHECKING:
     from .chat import Chat
     from .chat_invite_link import ChatInviteLink
     from .date_time_union import DateTimeUnion
+    from .ephemeral_message_parameters import EphemeralMessageParameters
     from .inline_keyboard_markup import InlineKeyboardMarkup
     from .input_file import InputFile
     from .input_file_union import InputFileUnion
@@ -175,6 +176,7 @@ class ChatJoinRequest(TelegramObject):
         suggested_post_parameters: SuggestedPostParameters | None = None,
         reply_parameters: ReplyParameters | None = None,
         reply_markup: ReplyMarkupUnion | None = None,
+        ephemeral_message_parameters: EphemeralMessageParameters | None = None,
         receiver_user_id: int | None = None,
         callback_query_id: str | None = None,
         allow_sending_without_reply: bool | None = None,
@@ -206,6 +208,7 @@ class ChatJoinRequest(TelegramObject):
         :param suggested_post_parameters: A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only. If the message is sent as a reply to another suggested post, then that suggested post is automatically declined
         :param reply_parameters: Description of the message to reply to
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
+        :param ephemeral_message_parameters: A JSON-serialized object containing the parameters of the ephemeral message to send
         :param receiver_user_id: For outgoing ephemeral messages, unique identifier of the user who will receive the message; for group and supergroup chats only. It is not guaranteed that the user will receive the message, especially if they are offline. See `ephemeral message sending <https://core.telegram.org/bots/api#ephemeral-messages-and-commands>`_ for more details
         :param callback_query_id: For outgoing ephemeral messages, identifier of the callback query which triggerred the message if any
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
@@ -234,6 +237,7 @@ class ChatJoinRequest(TelegramObject):
             suggested_post_parameters=suggested_post_parameters,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
+            ephemeral_message_parameters=ephemeral_message_parameters,
             receiver_user_id=receiver_user_id,
             callback_query_id=callback_query_id,
             allow_sending_without_reply=allow_sending_without_reply,
@@ -258,6 +262,7 @@ class ChatJoinRequest(TelegramObject):
         suggested_post_parameters: SuggestedPostParameters | None = None,
         reply_parameters: ReplyParameters | None = None,
         reply_markup: ReplyMarkupUnion | None = None,
+        ephemeral_message_parameters: EphemeralMessageParameters | None = None,
         receiver_user_id: int | None = None,
         callback_query_id: str | None = None,
         allow_sending_without_reply: bool | None = None,
@@ -289,6 +294,7 @@ class ChatJoinRequest(TelegramObject):
         :param suggested_post_parameters: A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only. If the message is sent as a reply to another suggested post, then that suggested post is automatically declined
         :param reply_parameters: Description of the message to reply to
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
+        :param ephemeral_message_parameters: A JSON-serialized object containing the parameters of the ephemeral message to send
         :param receiver_user_id: For outgoing ephemeral messages, unique identifier of the user who will receive the message; for group and supergroup chats only. It is not guaranteed that the user will receive the message, especially if they are offline. See `ephemeral message sending <https://core.telegram.org/bots/api#ephemeral-messages-and-commands>`_ for more details
         :param callback_query_id: For outgoing ephemeral messages, identifier of the callback query which triggerred the message if any
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
@@ -317,6 +323,7 @@ class ChatJoinRequest(TelegramObject):
             suggested_post_parameters=suggested_post_parameters,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
+            ephemeral_message_parameters=ephemeral_message_parameters,
             receiver_user_id=receiver_user_id,
             callback_query_id=callback_query_id,
             allow_sending_without_reply=allow_sending_without_reply,
@@ -347,6 +354,7 @@ class ChatJoinRequest(TelegramObject):
         suggested_post_parameters: SuggestedPostParameters | None = None,
         reply_parameters: ReplyParameters | None = None,
         reply_markup: ReplyMarkupUnion | None = None,
+        ephemeral_message_parameters: EphemeralMessageParameters | None = None,
         receiver_user_id: int | None = None,
         callback_query_id: str | None = None,
         allow_sending_without_reply: bool | None = None,
@@ -383,6 +391,7 @@ class ChatJoinRequest(TelegramObject):
         :param suggested_post_parameters: A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only. If the message is sent as a reply to another suggested post, then that suggested post is automatically declined
         :param reply_parameters: Description of the message to reply to
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
+        :param ephemeral_message_parameters: A JSON-serialized object containing the parameters of the ephemeral message to send
         :param receiver_user_id: For outgoing ephemeral messages, unique identifier of the user who will receive the message; for group and supergroup chats only. It is not guaranteed that the user will receive the message, especially if they are offline. See `ephemeral message sending <https://core.telegram.org/bots/api#ephemeral-messages-and-commands>`_ for more details
         :param callback_query_id: For outgoing ephemeral messages, identifier of the callback query which triggerred the message if any
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
@@ -416,6 +425,7 @@ class ChatJoinRequest(TelegramObject):
             suggested_post_parameters=suggested_post_parameters,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
+            ephemeral_message_parameters=ephemeral_message_parameters,
             receiver_user_id=receiver_user_id,
             callback_query_id=callback_query_id,
             allow_sending_without_reply=allow_sending_without_reply,
@@ -445,6 +455,7 @@ class ChatJoinRequest(TelegramObject):
         suggested_post_parameters: SuggestedPostParameters | None = None,
         reply_parameters: ReplyParameters | None = None,
         reply_markup: ReplyMarkupUnion | None = None,
+        ephemeral_message_parameters: EphemeralMessageParameters | None = None,
         receiver_user_id: int | None = None,
         callback_query_id: str | None = None,
         allow_sending_without_reply: bool | None = None,
@@ -481,6 +492,7 @@ class ChatJoinRequest(TelegramObject):
         :param suggested_post_parameters: A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only. If the message is sent as a reply to another suggested post, then that suggested post is automatically declined
         :param reply_parameters: Description of the message to reply to
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
+        :param ephemeral_message_parameters: A JSON-serialized object containing the parameters of the ephemeral message to send
         :param receiver_user_id: For outgoing ephemeral messages, unique identifier of the user who will receive the message; for group and supergroup chats only. It is not guaranteed that the user will receive the message, especially if they are offline. See `ephemeral message sending <https://core.telegram.org/bots/api#ephemeral-messages-and-commands>`_ for more details
         :param callback_query_id: For outgoing ephemeral messages, identifier of the callback query which triggerred the message if any
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
@@ -514,6 +526,7 @@ class ChatJoinRequest(TelegramObject):
             suggested_post_parameters=suggested_post_parameters,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
+            ephemeral_message_parameters=ephemeral_message_parameters,
             receiver_user_id=receiver_user_id,
             callback_query_id=callback_query_id,
             allow_sending_without_reply=allow_sending_without_reply,
@@ -541,6 +554,7 @@ class ChatJoinRequest(TelegramObject):
         suggested_post_parameters: SuggestedPostParameters | None = None,
         reply_parameters: ReplyParameters | None = None,
         reply_markup: ReplyMarkupUnion | None = None,
+        ephemeral_message_parameters: EphemeralMessageParameters | None = None,
         receiver_user_id: int | None = None,
         callback_query_id: str | None = None,
         allow_sending_without_reply: bool | None = None,
@@ -576,6 +590,7 @@ class ChatJoinRequest(TelegramObject):
         :param suggested_post_parameters: A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only. If the message is sent as a reply to another suggested post, then that suggested post is automatically declined
         :param reply_parameters: Description of the message to reply to
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
+        :param ephemeral_message_parameters: A JSON-serialized object containing the parameters of the ephemeral message to send
         :param receiver_user_id: For outgoing ephemeral messages, unique identifier of the user who will receive the message; for group and supergroup chats only. It is not guaranteed that the user will receive the message, especially if they are offline. See `ephemeral message sending <https://core.telegram.org/bots/api#ephemeral-messages-and-commands>`_ for more details
         :param callback_query_id: For outgoing ephemeral messages, identifier of the callback query which triggerred the message if any
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
@@ -607,6 +622,7 @@ class ChatJoinRequest(TelegramObject):
             suggested_post_parameters=suggested_post_parameters,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
+            ephemeral_message_parameters=ephemeral_message_parameters,
             receiver_user_id=receiver_user_id,
             callback_query_id=callback_query_id,
             allow_sending_without_reply=allow_sending_without_reply,
@@ -634,6 +650,7 @@ class ChatJoinRequest(TelegramObject):
         suggested_post_parameters: SuggestedPostParameters | None = None,
         reply_parameters: ReplyParameters | None = None,
         reply_markup: ReplyMarkupUnion | None = None,
+        ephemeral_message_parameters: EphemeralMessageParameters | None = None,
         receiver_user_id: int | None = None,
         callback_query_id: str | None = None,
         allow_sending_without_reply: bool | None = None,
@@ -669,6 +686,7 @@ class ChatJoinRequest(TelegramObject):
         :param suggested_post_parameters: A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only. If the message is sent as a reply to another suggested post, then that suggested post is automatically declined
         :param reply_parameters: Description of the message to reply to
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
+        :param ephemeral_message_parameters: A JSON-serialized object containing the parameters of the ephemeral message to send
         :param receiver_user_id: For outgoing ephemeral messages, unique identifier of the user who will receive the message; for group and supergroup chats only. It is not guaranteed that the user will receive the message, especially if they are offline. See `ephemeral message sending <https://core.telegram.org/bots/api#ephemeral-messages-and-commands>`_ for more details
         :param callback_query_id: For outgoing ephemeral messages, identifier of the callback query which triggerred the message if any
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
@@ -700,6 +718,7 @@ class ChatJoinRequest(TelegramObject):
             suggested_post_parameters=suggested_post_parameters,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
+            ephemeral_message_parameters=ephemeral_message_parameters,
             receiver_user_id=receiver_user_id,
             callback_query_id=callback_query_id,
             allow_sending_without_reply=allow_sending_without_reply,
@@ -723,6 +742,7 @@ class ChatJoinRequest(TelegramObject):
         suggested_post_parameters: SuggestedPostParameters | None = None,
         reply_parameters: ReplyParameters | None = None,
         reply_markup: ReplyMarkupUnion | None = None,
+        ephemeral_message_parameters: EphemeralMessageParameters | None = None,
         receiver_user_id: int | None = None,
         callback_query_id: str | None = None,
         allow_sending_without_reply: bool | None = None,
@@ -753,6 +773,7 @@ class ChatJoinRequest(TelegramObject):
         :param suggested_post_parameters: A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only. If the message is sent as a reply to another suggested post, then that suggested post is automatically declined
         :param reply_parameters: Description of the message to reply to
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
+        :param ephemeral_message_parameters: A JSON-serialized object containing the parameters of the ephemeral message to send
         :param receiver_user_id: For outgoing ephemeral messages, unique identifier of the user who will receive the message; for group and supergroup chats only. It is not guaranteed that the user will receive the message, especially if they are offline. See `ephemeral message sending <https://core.telegram.org/bots/api#ephemeral-messages-and-commands>`_ for more details
         :param callback_query_id: For outgoing ephemeral messages, identifier of the callback query which triggerred the message if any
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
@@ -780,6 +801,7 @@ class ChatJoinRequest(TelegramObject):
             suggested_post_parameters=suggested_post_parameters,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
+            ephemeral_message_parameters=ephemeral_message_parameters,
             receiver_user_id=receiver_user_id,
             callback_query_id=callback_query_id,
             allow_sending_without_reply=allow_sending_without_reply,
@@ -803,6 +825,7 @@ class ChatJoinRequest(TelegramObject):
         suggested_post_parameters: SuggestedPostParameters | None = None,
         reply_parameters: ReplyParameters | None = None,
         reply_markup: ReplyMarkupUnion | None = None,
+        ephemeral_message_parameters: EphemeralMessageParameters | None = None,
         receiver_user_id: int | None = None,
         callback_query_id: str | None = None,
         allow_sending_without_reply: bool | None = None,
@@ -833,6 +856,7 @@ class ChatJoinRequest(TelegramObject):
         :param suggested_post_parameters: A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only. If the message is sent as a reply to another suggested post, then that suggested post is automatically declined
         :param reply_parameters: Description of the message to reply to
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
+        :param ephemeral_message_parameters: A JSON-serialized object containing the parameters of the ephemeral message to send
         :param receiver_user_id: For outgoing ephemeral messages, unique identifier of the user who will receive the message; for group and supergroup chats only. It is not guaranteed that the user will receive the message, especially if they are offline. See `ephemeral message sending <https://core.telegram.org/bots/api#ephemeral-messages-and-commands>`_ for more details
         :param callback_query_id: For outgoing ephemeral messages, identifier of the callback query which triggerred the message if any
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
@@ -860,6 +884,7 @@ class ChatJoinRequest(TelegramObject):
             suggested_post_parameters=suggested_post_parameters,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
+            ephemeral_message_parameters=ephemeral_message_parameters,
             receiver_user_id=receiver_user_id,
             callback_query_id=callback_query_id,
             allow_sending_without_reply=allow_sending_without_reply,
@@ -885,6 +910,7 @@ class ChatJoinRequest(TelegramObject):
         suggested_post_parameters: SuggestedPostParameters | None = None,
         reply_parameters: ReplyParameters | None = None,
         reply_markup: ReplyMarkupUnion | None = None,
+        ephemeral_message_parameters: EphemeralMessageParameters | None = None,
         receiver_user_id: int | None = None,
         callback_query_id: str | None = None,
         allow_sending_without_reply: bool | None = None,
@@ -917,6 +943,7 @@ class ChatJoinRequest(TelegramObject):
         :param suggested_post_parameters: A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only. If the message is sent as a reply to another suggested post, then that suggested post is automatically declined
         :param reply_parameters: Description of the message to reply to
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
+        :param ephemeral_message_parameters: A JSON-serialized object containing the parameters of the ephemeral message to send
         :param receiver_user_id: For outgoing ephemeral messages, unique identifier of the user who will receive the message; for group and supergroup chats only. It is not guaranteed that the user will receive the message, especially if they are offline. See `ephemeral message sending <https://core.telegram.org/bots/api#ephemeral-messages-and-commands>`_ for more details
         :param callback_query_id: For outgoing ephemeral messages, identifier of the callback query which triggerred the message if any
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
@@ -946,6 +973,7 @@ class ChatJoinRequest(TelegramObject):
             suggested_post_parameters=suggested_post_parameters,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
+            ephemeral_message_parameters=ephemeral_message_parameters,
             receiver_user_id=receiver_user_id,
             callback_query_id=callback_query_id,
             allow_sending_without_reply=allow_sending_without_reply,
@@ -971,6 +999,7 @@ class ChatJoinRequest(TelegramObject):
         suggested_post_parameters: SuggestedPostParameters | None = None,
         reply_parameters: ReplyParameters | None = None,
         reply_markup: ReplyMarkupUnion | None = None,
+        ephemeral_message_parameters: EphemeralMessageParameters | None = None,
         receiver_user_id: int | None = None,
         callback_query_id: str | None = None,
         allow_sending_without_reply: bool | None = None,
@@ -1003,6 +1032,7 @@ class ChatJoinRequest(TelegramObject):
         :param suggested_post_parameters: A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only. If the message is sent as a reply to another suggested post, then that suggested post is automatically declined
         :param reply_parameters: Description of the message to reply to
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
+        :param ephemeral_message_parameters: A JSON-serialized object containing the parameters of the ephemeral message to send
         :param receiver_user_id: For outgoing ephemeral messages, unique identifier of the user who will receive the message; for group and supergroup chats only. It is not guaranteed that the user will receive the message, especially if they are offline. See `ephemeral message sending <https://core.telegram.org/bots/api#ephemeral-messages-and-commands>`_ for more details
         :param callback_query_id: For outgoing ephemeral messages, identifier of the callback query which triggerred the message if any
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
@@ -1032,6 +1062,7 @@ class ChatJoinRequest(TelegramObject):
             suggested_post_parameters=suggested_post_parameters,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
+            ephemeral_message_parameters=ephemeral_message_parameters,
             receiver_user_id=receiver_user_id,
             callback_query_id=callback_query_id,
             allow_sending_without_reply=allow_sending_without_reply,
@@ -1419,6 +1450,7 @@ class ChatJoinRequest(TelegramObject):
         suggested_post_parameters: SuggestedPostParameters | None = None,
         reply_parameters: ReplyParameters | None = None,
         reply_markup: ReplyMarkupUnion | None = None,
+        ephemeral_message_parameters: EphemeralMessageParameters | None = None,
         receiver_user_id: int | None = None,
         callback_query_id: str | None = None,
         allow_sending_without_reply: bool | None = None,
@@ -1451,6 +1483,7 @@ class ChatJoinRequest(TelegramObject):
         :param suggested_post_parameters: A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only. If the message is sent as a reply to another suggested post, then that suggested post is automatically declined
         :param reply_parameters: Description of the message to reply to
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
+        :param ephemeral_message_parameters: A JSON-serialized object containing the parameters of the ephemeral message to send
         :param receiver_user_id: For outgoing ephemeral messages, unique identifier of the user who will receive the message; for group and supergroup chats only. It is not guaranteed that the user will receive the message, especially if they are offline. See `ephemeral message sending <https://core.telegram.org/bots/api#ephemeral-messages-and-commands>`_ for more details
         :param callback_query_id: For outgoing ephemeral messages, identifier of the callback query which triggerred the message if any
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
@@ -1480,6 +1513,7 @@ class ChatJoinRequest(TelegramObject):
             suggested_post_parameters=suggested_post_parameters,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
+            ephemeral_message_parameters=ephemeral_message_parameters,
             receiver_user_id=receiver_user_id,
             callback_query_id=callback_query_id,
             allow_sending_without_reply=allow_sending_without_reply,
@@ -1505,6 +1539,7 @@ class ChatJoinRequest(TelegramObject):
         suggested_post_parameters: SuggestedPostParameters | None = None,
         reply_parameters: ReplyParameters | None = None,
         reply_markup: ReplyMarkupUnion | None = None,
+        ephemeral_message_parameters: EphemeralMessageParameters | None = None,
         receiver_user_id: int | None = None,
         callback_query_id: str | None = None,
         allow_sending_without_reply: bool | None = None,
@@ -1537,6 +1572,7 @@ class ChatJoinRequest(TelegramObject):
         :param suggested_post_parameters: A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only. If the message is sent as a reply to another suggested post, then that suggested post is automatically declined
         :param reply_parameters: Description of the message to reply to
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
+        :param ephemeral_message_parameters: A JSON-serialized object containing the parameters of the ephemeral message to send
         :param receiver_user_id: For outgoing ephemeral messages, unique identifier of the user who will receive the message; for group and supergroup chats only. It is not guaranteed that the user will receive the message, especially if they are offline. See `ephemeral message sending <https://core.telegram.org/bots/api#ephemeral-messages-and-commands>`_ for more details
         :param callback_query_id: For outgoing ephemeral messages, identifier of the callback query which triggerred the message if any
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
@@ -1566,6 +1602,7 @@ class ChatJoinRequest(TelegramObject):
             suggested_post_parameters=suggested_post_parameters,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
+            ephemeral_message_parameters=ephemeral_message_parameters,
             receiver_user_id=receiver_user_id,
             callback_query_id=callback_query_id,
             allow_sending_without_reply=allow_sending_without_reply,
@@ -1709,6 +1746,7 @@ class ChatJoinRequest(TelegramObject):
         suggested_post_parameters: SuggestedPostParameters | None = None,
         reply_parameters: ReplyParameters | None = None,
         reply_markup: ReplyMarkupUnion | None = None,
+        ephemeral_message_parameters: EphemeralMessageParameters | None = None,
         receiver_user_id: int | None = None,
         callback_query_id: str | None = None,
         allow_sending_without_reply: bool | None = None,
@@ -1741,6 +1779,7 @@ class ChatJoinRequest(TelegramObject):
         :param suggested_post_parameters: A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only. If the message is sent as a reply to another suggested post, then that suggested post is automatically declined
         :param reply_parameters: Description of the message to reply to
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
+        :param ephemeral_message_parameters: A JSON-serialized object containing the parameters of the ephemeral message to send
         :param receiver_user_id: For outgoing ephemeral messages, unique identifier of the user who will receive the message; for group and supergroup chats only. It is not guaranteed that the user will receive the message, especially if they are offline. See `ephemeral message sending <https://core.telegram.org/bots/api#ephemeral-messages-and-commands>`_ for more details
         :param callback_query_id: For outgoing ephemeral messages, identifier of the callback query which triggerred the message if any
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
@@ -1770,6 +1809,7 @@ class ChatJoinRequest(TelegramObject):
             suggested_post_parameters=suggested_post_parameters,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
+            ephemeral_message_parameters=ephemeral_message_parameters,
             receiver_user_id=receiver_user_id,
             callback_query_id=callback_query_id,
             allow_sending_without_reply=allow_sending_without_reply,
@@ -1795,6 +1835,7 @@ class ChatJoinRequest(TelegramObject):
         suggested_post_parameters: SuggestedPostParameters | None = None,
         reply_parameters: ReplyParameters | None = None,
         reply_markup: ReplyMarkupUnion | None = None,
+        ephemeral_message_parameters: EphemeralMessageParameters | None = None,
         receiver_user_id: int | None = None,
         callback_query_id: str | None = None,
         allow_sending_without_reply: bool | None = None,
@@ -1827,6 +1868,7 @@ class ChatJoinRequest(TelegramObject):
         :param suggested_post_parameters: A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only. If the message is sent as a reply to another suggested post, then that suggested post is automatically declined
         :param reply_parameters: Description of the message to reply to
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
+        :param ephemeral_message_parameters: A JSON-serialized object containing the parameters of the ephemeral message to send
         :param receiver_user_id: For outgoing ephemeral messages, unique identifier of the user who will receive the message; for group and supergroup chats only. It is not guaranteed that the user will receive the message, especially if they are offline. See `ephemeral message sending <https://core.telegram.org/bots/api#ephemeral-messages-and-commands>`_ for more details
         :param callback_query_id: For outgoing ephemeral messages, identifier of the callback query which triggerred the message if any
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
@@ -1856,6 +1898,7 @@ class ChatJoinRequest(TelegramObject):
             suggested_post_parameters=suggested_post_parameters,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
+            ephemeral_message_parameters=ephemeral_message_parameters,
             receiver_user_id=receiver_user_id,
             callback_query_id=callback_query_id,
             allow_sending_without_reply=allow_sending_without_reply,
@@ -2275,6 +2318,7 @@ class ChatJoinRequest(TelegramObject):
         suggested_post_parameters: SuggestedPostParameters | None = None,
         reply_parameters: ReplyParameters | None = None,
         reply_markup: ReplyMarkupUnion | None = None,
+        ephemeral_message_parameters: EphemeralMessageParameters | None = None,
         receiver_user_id: int | None = None,
         callback_query_id: str | None = None,
         allow_sending_without_reply: bool | None = None,
@@ -2303,6 +2347,7 @@ class ChatJoinRequest(TelegramObject):
         :param suggested_post_parameters: A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only. If the message is sent as a reply to another suggested post, then that suggested post is automatically declined
         :param reply_parameters: Description of the message to reply to
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
+        :param ephemeral_message_parameters: A JSON-serialized object containing the parameters of the ephemeral message to send
         :param receiver_user_id: For outgoing ephemeral messages, unique identifier of the user who will receive the message; for group and supergroup chats only. It is not guaranteed that the user will receive the message, especially if they are offline. See `ephemeral message sending <https://core.telegram.org/bots/api#ephemeral-messages-and-commands>`_ for more details
         :param callback_query_id: For outgoing ephemeral messages, identifier of the callback query which triggerred the message if any
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
@@ -2328,6 +2373,7 @@ class ChatJoinRequest(TelegramObject):
             suggested_post_parameters=suggested_post_parameters,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
+            ephemeral_message_parameters=ephemeral_message_parameters,
             receiver_user_id=receiver_user_id,
             callback_query_id=callback_query_id,
             allow_sending_without_reply=allow_sending_without_reply,
@@ -2349,6 +2395,7 @@ class ChatJoinRequest(TelegramObject):
         suggested_post_parameters: SuggestedPostParameters | None = None,
         reply_parameters: ReplyParameters | None = None,
         reply_markup: ReplyMarkupUnion | None = None,
+        ephemeral_message_parameters: EphemeralMessageParameters | None = None,
         receiver_user_id: int | None = None,
         callback_query_id: str | None = None,
         allow_sending_without_reply: bool | None = None,
@@ -2377,6 +2424,7 @@ class ChatJoinRequest(TelegramObject):
         :param suggested_post_parameters: A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only. If the message is sent as a reply to another suggested post, then that suggested post is automatically declined
         :param reply_parameters: Description of the message to reply to
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
+        :param ephemeral_message_parameters: A JSON-serialized object containing the parameters of the ephemeral message to send
         :param receiver_user_id: For outgoing ephemeral messages, unique identifier of the user who will receive the message; for group and supergroup chats only. It is not guaranteed that the user will receive the message, especially if they are offline. See `ephemeral message sending <https://core.telegram.org/bots/api#ephemeral-messages-and-commands>`_ for more details
         :param callback_query_id: For outgoing ephemeral messages, identifier of the callback query which triggerred the message if any
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
@@ -2402,6 +2450,7 @@ class ChatJoinRequest(TelegramObject):
             suggested_post_parameters=suggested_post_parameters,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
+            ephemeral_message_parameters=ephemeral_message_parameters,
             receiver_user_id=receiver_user_id,
             callback_query_id=callback_query_id,
             allow_sending_without_reply=allow_sending_without_reply,
@@ -2429,6 +2478,7 @@ class ChatJoinRequest(TelegramObject):
         suggested_post_parameters: SuggestedPostParameters | None = None,
         reply_parameters: ReplyParameters | None = None,
         reply_markup: ReplyMarkupUnion | None = None,
+        ephemeral_message_parameters: EphemeralMessageParameters | None = None,
         receiver_user_id: int | None = None,
         callback_query_id: str | None = None,
         allow_sending_without_reply: bool | None = None,
@@ -2463,6 +2513,7 @@ class ChatJoinRequest(TelegramObject):
         :param suggested_post_parameters: A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only. If the message is sent as a reply to another suggested post, then that suggested post is automatically declined
         :param reply_parameters: Description of the message to reply to
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
+        :param ephemeral_message_parameters: A JSON-serialized object containing the parameters of the ephemeral message to send
         :param receiver_user_id: For outgoing ephemeral messages, unique identifier of the user who will receive the message; for group and supergroup chats only. It is not guaranteed that the user will receive the message, especially if they are offline. See `ephemeral message sending <https://core.telegram.org/bots/api#ephemeral-messages-and-commands>`_ for more details
         :param callback_query_id: For outgoing ephemeral messages, identifier of the callback query which triggerred the message if any
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
@@ -2494,6 +2545,7 @@ class ChatJoinRequest(TelegramObject):
             suggested_post_parameters=suggested_post_parameters,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
+            ephemeral_message_parameters=ephemeral_message_parameters,
             receiver_user_id=receiver_user_id,
             callback_query_id=callback_query_id,
             allow_sending_without_reply=allow_sending_without_reply,
@@ -2521,6 +2573,7 @@ class ChatJoinRequest(TelegramObject):
         suggested_post_parameters: SuggestedPostParameters | None = None,
         reply_parameters: ReplyParameters | None = None,
         reply_markup: ReplyMarkupUnion | None = None,
+        ephemeral_message_parameters: EphemeralMessageParameters | None = None,
         receiver_user_id: int | None = None,
         callback_query_id: str | None = None,
         allow_sending_without_reply: bool | None = None,
@@ -2555,6 +2608,7 @@ class ChatJoinRequest(TelegramObject):
         :param suggested_post_parameters: A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only. If the message is sent as a reply to another suggested post, then that suggested post is automatically declined
         :param reply_parameters: Description of the message to reply to
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
+        :param ephemeral_message_parameters: A JSON-serialized object containing the parameters of the ephemeral message to send
         :param receiver_user_id: For outgoing ephemeral messages, unique identifier of the user who will receive the message; for group and supergroup chats only. It is not guaranteed that the user will receive the message, especially if they are offline. See `ephemeral message sending <https://core.telegram.org/bots/api#ephemeral-messages-and-commands>`_ for more details
         :param callback_query_id: For outgoing ephemeral messages, identifier of the callback query which triggerred the message if any
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
@@ -2586,6 +2640,7 @@ class ChatJoinRequest(TelegramObject):
             suggested_post_parameters=suggested_post_parameters,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
+            ephemeral_message_parameters=ephemeral_message_parameters,
             receiver_user_id=receiver_user_id,
             callback_query_id=callback_query_id,
             allow_sending_without_reply=allow_sending_without_reply,
@@ -2618,6 +2673,7 @@ class ChatJoinRequest(TelegramObject):
         suggested_post_parameters: SuggestedPostParameters | None = None,
         reply_parameters: ReplyParameters | None = None,
         reply_markup: ReplyMarkupUnion | None = None,
+        ephemeral_message_parameters: EphemeralMessageParameters | None = None,
         receiver_user_id: int | None = None,
         callback_query_id: str | None = None,
         allow_sending_without_reply: bool | None = None,
@@ -2657,6 +2713,7 @@ class ChatJoinRequest(TelegramObject):
         :param suggested_post_parameters: A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only. If the message is sent as a reply to another suggested post, then that suggested post is automatically declined
         :param reply_parameters: Description of the message to reply to
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
+        :param ephemeral_message_parameters: A JSON-serialized object containing the parameters of the ephemeral message to send
         :param receiver_user_id: For outgoing ephemeral messages, unique identifier of the user who will receive the message; for group and supergroup chats only. It is not guaranteed that the user will receive the message, especially if they are offline. See `ephemeral message sending <https://core.telegram.org/bots/api#ephemeral-messages-and-commands>`_ for more details
         :param callback_query_id: For outgoing ephemeral messages, identifier of the callback query which triggerred the message if any
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
@@ -2693,6 +2750,7 @@ class ChatJoinRequest(TelegramObject):
             suggested_post_parameters=suggested_post_parameters,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
+            ephemeral_message_parameters=ephemeral_message_parameters,
             receiver_user_id=receiver_user_id,
             callback_query_id=callback_query_id,
             allow_sending_without_reply=allow_sending_without_reply,
@@ -2725,6 +2783,7 @@ class ChatJoinRequest(TelegramObject):
         suggested_post_parameters: SuggestedPostParameters | None = None,
         reply_parameters: ReplyParameters | None = None,
         reply_markup: ReplyMarkupUnion | None = None,
+        ephemeral_message_parameters: EphemeralMessageParameters | None = None,
         receiver_user_id: int | None = None,
         callback_query_id: str | None = None,
         allow_sending_without_reply: bool | None = None,
@@ -2764,6 +2823,7 @@ class ChatJoinRequest(TelegramObject):
         :param suggested_post_parameters: A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only. If the message is sent as a reply to another suggested post, then that suggested post is automatically declined
         :param reply_parameters: Description of the message to reply to
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
+        :param ephemeral_message_parameters: A JSON-serialized object containing the parameters of the ephemeral message to send
         :param receiver_user_id: For outgoing ephemeral messages, unique identifier of the user who will receive the message; for group and supergroup chats only. It is not guaranteed that the user will receive the message, especially if they are offline. See `ephemeral message sending <https://core.telegram.org/bots/api#ephemeral-messages-and-commands>`_ for more details
         :param callback_query_id: For outgoing ephemeral messages, identifier of the callback query which triggerred the message if any
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
@@ -2800,6 +2860,7 @@ class ChatJoinRequest(TelegramObject):
             suggested_post_parameters=suggested_post_parameters,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
+            ephemeral_message_parameters=ephemeral_message_parameters,
             receiver_user_id=receiver_user_id,
             callback_query_id=callback_query_id,
             allow_sending_without_reply=allow_sending_without_reply,
@@ -2823,6 +2884,7 @@ class ChatJoinRequest(TelegramObject):
         suggested_post_parameters: SuggestedPostParameters | None = None,
         reply_parameters: ReplyParameters | None = None,
         reply_markup: ReplyMarkupUnion | None = None,
+        ephemeral_message_parameters: EphemeralMessageParameters | None = None,
         receiver_user_id: int | None = None,
         callback_query_id: str | None = None,
         allow_sending_without_reply: bool | None = None,
@@ -2835,7 +2897,7 @@ class ChatJoinRequest(TelegramObject):
 
         - :code:`chat_id`
 
-        As of `v.4.0 <https://telegram.org/blog/video-messages-and-telescope>`_, Telegram clients support rounded square MPEG4 videos of up to 1 minute long. Use this method to send video messages. On success, the sent :class:`aiogram.types.message.Message` is returned.
+        Use this method to send a rounded square MPEG4 video of up to 1 minute long. On success, the sent :class:`aiogram.types.message.Message` is returned.
 
         Source: https://core.telegram.org/bots/api#sendvideonote
 
@@ -2853,6 +2915,7 @@ class ChatJoinRequest(TelegramObject):
         :param suggested_post_parameters: A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only. If the message is sent as a reply to another suggested post, then that suggested post is automatically declined
         :param reply_parameters: Description of the message to reply to
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
+        :param ephemeral_message_parameters: A JSON-serialized object containing the parameters of the ephemeral message to send
         :param receiver_user_id: For outgoing ephemeral messages, unique identifier of the user who will receive the message; for group and supergroup chats only. It is not guaranteed that the user will receive the message, especially if they are offline. See `ephemeral message sending <https://core.telegram.org/bots/api#ephemeral-messages-and-commands>`_ for more details
         :param callback_query_id: For outgoing ephemeral messages, identifier of the callback query which triggerred the message if any
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
@@ -2880,6 +2943,7 @@ class ChatJoinRequest(TelegramObject):
             suggested_post_parameters=suggested_post_parameters,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
+            ephemeral_message_parameters=ephemeral_message_parameters,
             receiver_user_id=receiver_user_id,
             callback_query_id=callback_query_id,
             allow_sending_without_reply=allow_sending_without_reply,
@@ -2903,6 +2967,7 @@ class ChatJoinRequest(TelegramObject):
         suggested_post_parameters: SuggestedPostParameters | None = None,
         reply_parameters: ReplyParameters | None = None,
         reply_markup: ReplyMarkupUnion | None = None,
+        ephemeral_message_parameters: EphemeralMessageParameters | None = None,
         receiver_user_id: int | None = None,
         callback_query_id: str | None = None,
         allow_sending_without_reply: bool | None = None,
@@ -2915,7 +2980,7 @@ class ChatJoinRequest(TelegramObject):
 
         - :code:`chat_id`
 
-        As of `v.4.0 <https://telegram.org/blog/video-messages-and-telescope>`_, Telegram clients support rounded square MPEG4 videos of up to 1 minute long. Use this method to send video messages. On success, the sent :class:`aiogram.types.message.Message` is returned.
+        Use this method to send a rounded square MPEG4 video of up to 1 minute long. On success, the sent :class:`aiogram.types.message.Message` is returned.
 
         Source: https://core.telegram.org/bots/api#sendvideonote
 
@@ -2933,6 +2998,7 @@ class ChatJoinRequest(TelegramObject):
         :param suggested_post_parameters: A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only. If the message is sent as a reply to another suggested post, then that suggested post is automatically declined
         :param reply_parameters: Description of the message to reply to
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
+        :param ephemeral_message_parameters: A JSON-serialized object containing the parameters of the ephemeral message to send
         :param receiver_user_id: For outgoing ephemeral messages, unique identifier of the user who will receive the message; for group and supergroup chats only. It is not guaranteed that the user will receive the message, especially if they are offline. See `ephemeral message sending <https://core.telegram.org/bots/api#ephemeral-messages-and-commands>`_ for more details
         :param callback_query_id: For outgoing ephemeral messages, identifier of the callback query which triggerred the message if any
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
@@ -2960,6 +3026,7 @@ class ChatJoinRequest(TelegramObject):
             suggested_post_parameters=suggested_post_parameters,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
+            ephemeral_message_parameters=ephemeral_message_parameters,
             receiver_user_id=receiver_user_id,
             callback_query_id=callback_query_id,
             allow_sending_without_reply=allow_sending_without_reply,
@@ -2984,6 +3051,7 @@ class ChatJoinRequest(TelegramObject):
         suggested_post_parameters: SuggestedPostParameters | None = None,
         reply_parameters: ReplyParameters | None = None,
         reply_markup: ReplyMarkupUnion | None = None,
+        ephemeral_message_parameters: EphemeralMessageParameters | None = None,
         receiver_user_id: int | None = None,
         callback_query_id: str | None = None,
         allow_sending_without_reply: bool | None = None,
@@ -3015,6 +3083,7 @@ class ChatJoinRequest(TelegramObject):
         :param suggested_post_parameters: A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only. If the message is sent as a reply to another suggested post, then that suggested post is automatically declined
         :param reply_parameters: Description of the message to reply to
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
+        :param ephemeral_message_parameters: A JSON-serialized object containing the parameters of the ephemeral message to send
         :param receiver_user_id: For outgoing ephemeral messages, unique identifier of the user who will receive the message; for group and supergroup chats only. It is not guaranteed that the user will receive the message, especially if they are offline. See `ephemeral message sending <https://core.telegram.org/bots/api#ephemeral-messages-and-commands>`_ for more details
         :param callback_query_id: For outgoing ephemeral messages, identifier of the callback query which triggerred the message if any
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
@@ -3043,6 +3112,7 @@ class ChatJoinRequest(TelegramObject):
             suggested_post_parameters=suggested_post_parameters,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
+            ephemeral_message_parameters=ephemeral_message_parameters,
             receiver_user_id=receiver_user_id,
             callback_query_id=callback_query_id,
             allow_sending_without_reply=allow_sending_without_reply,
@@ -3067,6 +3137,7 @@ class ChatJoinRequest(TelegramObject):
         suggested_post_parameters: SuggestedPostParameters | None = None,
         reply_parameters: ReplyParameters | None = None,
         reply_markup: ReplyMarkupUnion | None = None,
+        ephemeral_message_parameters: EphemeralMessageParameters | None = None,
         receiver_user_id: int | None = None,
         callback_query_id: str | None = None,
         allow_sending_without_reply: bool | None = None,
@@ -3098,6 +3169,7 @@ class ChatJoinRequest(TelegramObject):
         :param suggested_post_parameters: A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only. If the message is sent as a reply to another suggested post, then that suggested post is automatically declined
         :param reply_parameters: Description of the message to reply to
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
+        :param ephemeral_message_parameters: A JSON-serialized object containing the parameters of the ephemeral message to send
         :param receiver_user_id: For outgoing ephemeral messages, unique identifier of the user who will receive the message; for group and supergroup chats only. It is not guaranteed that the user will receive the message, especially if they are offline. See `ephemeral message sending <https://core.telegram.org/bots/api#ephemeral-messages-and-commands>`_ for more details
         :param callback_query_id: For outgoing ephemeral messages, identifier of the callback query which triggerred the message if any
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
@@ -3126,6 +3198,7 @@ class ChatJoinRequest(TelegramObject):
             suggested_post_parameters=suggested_post_parameters,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
+            ephemeral_message_parameters=ephemeral_message_parameters,
             receiver_user_id=receiver_user_id,
             callback_query_id=callback_query_id,
             allow_sending_without_reply=allow_sending_without_reply,

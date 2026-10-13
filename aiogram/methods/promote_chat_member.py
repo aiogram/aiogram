@@ -54,6 +54,8 @@ class PromoteChatMember(TelegramMethod[bool]):
     """Pass :code:`True` if the administrator can manage direct messages within the channel and decline suggested posts; for channels only"""
     can_manage_tags: bool | None = None
     """Pass :code:`True` if the administrator can edit the tags of regular members; for groups and supergroups only"""
+    can_send_welcome_messages: bool | None = None
+    """Pass :code:`True` if the administrator can manage chat welcome messages or directly send them in the case of bots"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!
@@ -81,6 +83,7 @@ class PromoteChatMember(TelegramMethod[bool]):
             can_manage_topics: bool | None = None,
             can_manage_direct_messages: bool | None = None,
             can_manage_tags: bool | None = None,
+            can_send_welcome_messages: bool | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!
@@ -107,5 +110,6 @@ class PromoteChatMember(TelegramMethod[bool]):
                 can_manage_topics=can_manage_topics,
                 can_manage_direct_messages=can_manage_direct_messages,
                 can_manage_tags=can_manage_tags,
+                can_send_welcome_messages=can_send_welcome_messages,
                 **__pydantic_kwargs,
             )
