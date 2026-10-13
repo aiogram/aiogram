@@ -44,6 +44,7 @@ TRIGGERS = {
         "plain",
         lambda actor: actor.reaction_count(actor.chat.messages[-1]),
     ),
+    "stopped_message_generation": ("plain", lambda actor: actor.stop_message_generation()),
 }
 
 
@@ -424,6 +425,16 @@ class TestRemainingUpdateKinds:
         await alice.update_subscription("sub-1")
 
         assert seen == ["sub-1"]
+
+    async def test_stopped_message_generation(self, env, alice):
+        seen = []
+        env.dispatcher.stopped_message_generation.register(
+            lambda event: seen.append(event.draft_id),
+        )
+
+        await alice.stop_message_generation(draft_id=7)
+
+        assert seen == [7]
 
     async def test_event_from_user_resolves_on_the_new_triggers(self, env, alice):
         seen = []

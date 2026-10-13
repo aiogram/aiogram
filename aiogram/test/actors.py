@@ -23,6 +23,7 @@ from aiogram.types import (
     InlineQuery,
     ManagedBotUpdated,
     Message,
+    MessageGenerationStopped,
     MessageReactionCountUpdated,
     MessageReactionUpdated,
     PaidMediaPurchased,
@@ -1151,6 +1152,31 @@ class UserActor:
         event = self._event(ChatBoostRemoved)
         return await self._feed(
             Update(update_id=self._next_update_id(), removed_chat_boost=event),
+            data,
+        )
+
+    async def stop_message_generation(self, draft_id: int = 1, **data: Any) -> Any:
+        """
+        The user taps the button Telegram shows on a draft to halt its generation.
+
+        Telegram only offers that button on a draft sent with ``can_stop=True`` (see
+        :meth:`~aiogram.client.bot.Bot.send_message_draft`); this actor does not track
+        that flag, so it is on the caller to trigger this only where the draft honestly
+        allowed it. The update is chat-bound, not user-bound — Telegram does not name
+        who tapped it — and carries the thread the draft was generated in the same way a
+        message does, so an actor bound to a non-general topic reports it here too.
+        """
+        event = self._event(
+            MessageGenerationStopped,
+            draft_id=draft_id,
+            message_thread_id=(
+                self.topic.message_thread_id
+                if self.topic is not None and not self.topic.is_general
+                else None
+            ),
+        )
+        return await self._feed(
+            Update(update_id=self._next_update_id(), stopped_message_generation=event),
             data,
         )
 

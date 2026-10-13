@@ -307,6 +307,23 @@ class TestTopicAddressing:
 
         assert seen == {"thread": support.message_thread_id, "is_topic": True}
 
+    async def test_stopped_message_generation_is_tagged(
+        self, forum_env, dp, forum_blueprint, support
+    ):
+        seen = {}
+
+        @dp.stopped_message_generation()
+        async def handler(event):
+            seen["thread"] = event.message_thread_id
+
+        actor = forum_env.user(forum_blueprint.users[0]).in_(
+            forum_blueprint.chats[0],
+            topic=support,
+        )
+        await actor.stop_message_generation()
+
+        assert seen == {"thread": support.message_thread_id}
+
     async def test_replies_stay_in_the_topic(self, forum_env, dp, forum_blueprint, forum, support):
         @dp.message()
         async def handler(message):
