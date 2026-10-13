@@ -659,7 +659,8 @@ Ephemeral messages
 ------------------
 
 An ephemeral message is shown to one user of a group. Sending one with
-``ephemeral_message_parameters`` returns it in Telegram's shape: ``message_id`` 0, an
+``ephemeral_message_parameters``, or with the deprecated ``receiver_user_id``, returns it in
+Telegram's shape: ``message_id`` 0, an
 ``ephemeral_message_id``, and the receiver as ``receiver_user``. It is not part of the
 chat's shared history, so ``chat.messages`` and :code:`wait_for_message` do not see it;
 read it back per receiver:
@@ -742,9 +743,9 @@ The clock drives every time limit the Bot API documents for something the toolki
   lie 5 to 2,628,000 seconds ahead, closes when the clock gets there. Its message shows it
   closed, voting is refused, and the bot receives a ``poll`` update. That last part is the
   toolkit's reading of "bots receive updates about polls sent by the bot".
-* **Live locations expire.** :code:`editMessageLiveLocation` fails once ``live_period`` has
-  passed since the message was sent, after :code:`stopMessageLiveLocation`, or on a
-  location that was never live. ``0x7FFFFFFF`` means forever. A new period may exceed the
+* **Live locations expire.** :code:`editMessageLiveLocation` and
+  :code:`stopMessageLiveLocation` fail once ``live_period`` has passed since the message was
+  sent, after the location was stopped, or on a location that was never live. ``0x7FFFFFFF`` means forever. A new period may exceed the
   current one by a day at most, and must end within 90 days.
 * **Old messages cannot be deleted.** :code:`deleteMessage` fails for a message 48 hours old
   or older, and for a dice in a private chat until more than 24 hours have passed.
@@ -1786,7 +1787,9 @@ all still promotes rather than reading as a demotion — there is no way to "exp
 nothing" through this call, so nothing asked for is simply nothing granted; ``demote()`` is
 what says "take the status away" instead. It drops the member to ``MEMBER`` and clears both
 the granted rights and the custom title, while the member's ``tag`` survives it, since a
-tag belongs to the membership rather than to the administrator status.
+tag belongs to the membership rather than to the administrator status. Only an
+administrator can be demoted: ``demote()`` on a restricted, banned or absent user raises
+rather than lifting the restriction or bringing them in.
 
 Dispatcher data goes through the keyword-only ``data=`` mapping, spelled the same way on
 both triggers even though only ``promote()`` competes for the rest of its keyword space with

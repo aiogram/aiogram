@@ -198,16 +198,14 @@ class TestEditingLiveLocation:
         assert stopped.message_id == original.message_id
         assert stopped.location.live_period is None
 
-    async def test_stopping_a_message_without_a_location(self, env, private):
+    async def test_stopping_a_message_without_a_location_fails(self, env, private):
         original = await env.bot.send_message(chat_id=private.id, text="hi")
 
-        stopped = await env.bot.stop_message_live_location(
-            chat_id=private.id,
-            message_id=original.message_id,
-        )
-
-        assert stopped.message_id == original.message_id
-        assert stopped.location is None
+        with pytest.raises(TelegramBadRequest, match="can't be edited"):
+            await env.bot.stop_message_live_location(
+                chat_id=private.id,
+                message_id=original.message_id,
+            )
 
 
 class TestEditingChecklist:

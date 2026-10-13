@@ -106,9 +106,9 @@ close again.
 
 ### Requirement: Live locations expire
 
-Editing a live location SHALL fail once its live period has elapsed since the message was
-sent, after `stopMessageLiveLocation`, or when the location was never live, unless the
-period is forever (`0x7FFFFFFF`). A new live period other than forever SHALL be refused
+Editing or stopping a live location SHALL fail once its live period has elapsed since the
+message was sent, after `stopMessageLiveLocation`, or when the location was never live,
+unless the period is forever (`0x7FFFFFFF`). A new live period other than forever SHALL be refused
 when it exceeds the current one by more than a day, or ends more than 90 days after the
 clock's time.
 
@@ -126,6 +126,12 @@ clock's time.
 #### Scenario: Editing a stopped location fails
 
 - **WHEN** a handler stops a live location and then edits it
+- **THEN** the call raises `TelegramBadRequest`
+
+#### Scenario: Stopping an expired location fails
+
+- **WHEN** the test advances the clock past a live location's period and the handler stops
+  it
 - **THEN** the call raises `TelegramBadRequest`
 
 #### Scenario: A forever location never expires

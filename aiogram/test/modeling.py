@@ -233,6 +233,7 @@ from aiogram.types import (
     ChatFullInfo,
     ChatInviteLink,
     ChatPermissions,
+    EphemeralMessageParameters,
     File,
     ForumTopic,
     ForumTopicClosed,
@@ -586,6 +587,13 @@ def _ephemeral_receiver(
     is not a documented condition, so it is not checked.
     """
     parameters = getattr(method, "ephemeral_message_parameters", None)
+    legacy_receiver = getattr(method, "receiver_user_id", None)
+    if parameters is None and legacy_receiver is not None:
+        # The deprecated top-level fields still make a send ephemeral.
+        parameters = EphemeralMessageParameters(
+            receiver_user_id=legacy_receiver,
+            callback_query_id=getattr(method, "callback_query_id", None),
+        )
     reply_parameters = getattr(method, "reply_parameters", None)
     replied_id = None if reply_parameters is None else reply_parameters.ephemeral_message_id
     if parameters is None:
@@ -1032,6 +1040,27 @@ LIVE_FOREVER = 0x7FFFFFFF
 _DAY = 86400
 
 
+def _require_live(env: BotTestEnvironment, stored: Message) -> Location:
+    """
+    A location that is still live, or a refusal.
+
+    The Bot API lets a live location be edited or stopped "until its
+    live_period expires" or it is stopped; a static location never was.
+    """
+    location = stored.location
+    current = location.live_period if location is not None else None
+    if (
+        location is None
+        or current is None
+        or (
+            current != LIVE_FOREVER
+            and env.world.now >= stored.date + datetime.timedelta(seconds=current)
+        )
+    ):
+        raise ApiRejection("message can't be edited")
+    return location
+
+
 @models(EditMessageLiveLocation)
 def handle_edit_live_location(
     env: BotTestEnvironment,
@@ -1039,14 +1068,9 @@ def handle_edit_live_location(
 ) -> Message:
     chat, message_id = _edit_target(env, method)
     stored = chat.require_message(message_id)
-    current = stored.location.live_period if stored.location is not None else None
+    # A live location always has a period; `or 0` only narrows the type.
+    current = _require_live(env, stored).live_period or 0
     now = env.world.now
-    if current is None or (
-        current != LIVE_FOREVER and now >= stored.date + datetime.timedelta(seconds=current)
-    ):
-        # Never live, stopped, or past its period: the Bot API allows
-        # edits "until its live_period expires" or it is stopped.
-        raise ApiRejection("message can't be edited")
     live_period = method.live_period
     if live_period is None:
         # Omitting live_period leaves the existing one running, it does not end it.
@@ -1081,10 +1105,12 @@ def handle_stop_live_location(
     """
     chat, message_id = _edit_target(env, method)
     stored = chat.require_message(message_id)
-    changes: dict[str, Any] = {"reply_markup": method.reply_markup}
-    if stored.location is not None:
-        changes["location"] = stored.location.model_copy(update={"live_period": None})
-    return chat.update_message(message_id, **changes)
+    location = _require_live(env, stored)
+    return chat.update_message(
+        message_id,
+        reply_markup=method.reply_markup,
+        location=location.model_copy(update={"live_period": None}),
+    )
 
 
 @models(EditMessageChecklist)

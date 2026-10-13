@@ -764,10 +764,12 @@ class UserActor:
         if self.business is not None:
             msg = "A business connection does not carry ephemeral messages"
             raise WorldLookupError(msg)
+        # Check the reply first, so a refused one uses up no id.
+        requested = self._with_reply_to(fields, reply_to) or {}
         overrides = {
             "message_id": 0,
             "ephemeral_message_id": chat.allocate_ephemeral_message_id(),
-            **(self._with_reply_to(fields, reply_to) or {}),
+            **requested,
         }
         message = self._build_message(text=text, fields=overrides)
         chat.add_ephemeral_command(message)
@@ -846,7 +848,7 @@ class UserActor:
             self._require_visible(
                 message,
                 f"press callback_data={callback_data!r}",
-                self._receiver_hint(callback_data),
+                callback_data,
             )
         source = message if message is not None else self._find_button_message(callback_data)
         world = self.environment.world
@@ -1070,6 +1072,10 @@ class UserActor:
         ``subject`` defaults to the bot itself, the same as `promote()`. Refuses to
         demote the chat's owner, exactly as `promoteChatMember` does.
 
+        Only an administrator can be demoted: a restricted, banned or
+        absent user is refused, since demoting is not a way to lift a
+        restriction or bring someone in.
+
         ``data`` is the dispatcher data to feed the update with, as a mapping rather than
         as ``**kwargs``. It used to be ``**data`` here and ``**rights`` on `promote`, so
         the same keyword on the two twins meant two different things — the one asymmetry in
@@ -1079,6 +1085,13 @@ class UserActor:
         """
         target = self._resolve_member_subject(subject)
         self._guard_not_owner(target)
+        status = self.chat.member(target.id).status
+        if status != ChatMemberStatus.ADMINISTRATOR:
+            msg = (
+                f"User {target.id} is {status} in chat {self.chat.id}, not an "
+                "administrator, so there is nothing to demote"
+            )
+            raise WorldLookupError(msg)
 
         def _demote(member: MemberState) -> None:
             member.rights = None
@@ -1541,13 +1554,20 @@ class UserActor:
         yield from reversed(self.chat.ephemeral_messages(self.user.id))
         yield from reversed(self.chat.messages)
 
-    def _require_visible(self, message: Message, action: str, hint: str = "") -> None:
+    def _require_visible(
+        self,
+        message: Message,
+        action: str,
+        callback_data: str | None = None,
+    ) -> None:
         """Refuse acting on someone else's ephemeral message."""
         receiver = message.receiver_user
         if message.ephemeral_message_id is None or (
             receiver is not None and receiver.id == self.user.id
         ):
             return
+        # Only a refusal names the receiver, so only it scans.
+        hint = "" if callback_data is None else self._receiver_hint(callback_data)
         msg = (
             f"Ephemeral message {message.ephemeral_message_id} is not addressed to user "
             f"{self.user.id}, so they cannot {action} on it{hint}"

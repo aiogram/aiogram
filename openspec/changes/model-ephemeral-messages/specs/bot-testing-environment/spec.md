@@ -15,6 +15,12 @@ receiver the world does not declare.
 - **THEN** the returned message has `message_id` 0, an `ephemeral_message_id`, and that
   user as `receiver_user`
 
+#### Scenario: The deprecated receiver parameter sends one too
+
+- **WHEN** a handler sends a message to a group with the deprecated `receiver_user_id`
+  parameter instead of ephemeral message parameters
+- **THEN** the message is ephemeral for that user, exactly as with the new parameters
+
 #### Scenario: An ephemeral message stays out of the shared history
 
 - **WHEN** a handler sends an ephemeral message to a group

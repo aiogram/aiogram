@@ -101,6 +101,18 @@ class TestOutgoingEphemeralMessages:
         assert message.ephemeral_message_id == 1
         assert message.receiver_user.id == alice.id
 
+    async def test_the_deprecated_receiver_user_id_sends_one_too(self, env, team, alice):
+        message = await env.bot.send_message(
+            chat_id=team.id,
+            text="only you",
+            receiver_user_id=alice.id,
+        )
+
+        assert message.message_id == 0
+        assert message.receiver_user.id == alice.id
+        assert team.ephemeral_messages(alice) == [message]
+        assert not any(m.text == "only you" for m in team.messages)
+
     async def test_it_stays_out_of_the_shared_history(self, env, team, alice):
         await env.bot.send_message(chat_id=team.id, text="public")
         await send_to(env, team, alice)

@@ -361,6 +361,19 @@ class TestScheduledPolls:
 
         assert updates == []
 
+    async def test_a_stale_close_keeps_the_last_route(self, env, team, alice):
+        async def on_text(message):
+            pass
+
+        env.dispatcher.message.register(on_text)
+        sent = await self.send(env, team, open_period=60)
+        await env.bot.stop_poll(chat_id=team.id, message_id=sent.message_id)
+        await env.user(alice).in_(team).send("hello")
+
+        await env.advance_time(60)
+
+        env.assert_handled_by("on_text")
+
     async def test_a_deleted_poll_message_does_not_close(self, env, team):
         updates = []
         env.dispatcher.poll.register(updates.append)
@@ -449,6 +462,19 @@ class TestLiveLocations:
 
         with pytest.raises(TelegramBadRequest, match="can't be edited"):
             await self.edit(env, private, sent)
+
+    async def test_stopping_an_expired_or_stopped_location_fails(self, env, private):
+        expired = await self.send(env, private)
+        stopped = await self.send(env, private, live_period=LIVE_FOREVER)
+        await env.bot.stop_message_live_location(chat_id=private.id, message_id=stopped.message_id)
+        await env.advance_time(600)
+
+        for sent in (expired, stopped):
+            with pytest.raises(TelegramBadRequest, match="can't be edited"):
+                await env.bot.stop_message_live_location(
+                    chat_id=private.id,
+                    message_id=sent.message_id,
+                )
 
     async def test_a_forever_location_never_expires(self, env, private):
         sent = await self.send(env, private, live_period=LIVE_FOREVER)

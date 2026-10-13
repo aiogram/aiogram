@@ -676,11 +676,18 @@ class BotTestEnvironment:
                 if self._due and self._due[0][0] <= target
                 else contextlib.nullcontext()
             )
+            previous = self._last_trigger
             with scope:
                 while self._due and self._due[0][0] <= target:
                     moment, _order, action = heapq.heappop(self._due)
                     self.world.move_clock(max(self.world.now, moment))
                     await action()
+            # A due action can turn out to have nothing to do, such as
+            # closing a poll already stopped; its empty scope must not
+            # replace the routes of the trigger before it.
+            last = self._last_trigger
+            if last is not previous and last is not None and not last.records:
+                self._last_trigger = previous
             self.world.move_clock(target)
         finally:
             self._advancing = False

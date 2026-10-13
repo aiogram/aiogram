@@ -63,6 +63,17 @@ for supergroups and channels only.
 - **WHEN** a handler bans a user in a basic group with an end date
 - **THEN** `getChatMember` reports `until_date` as the Unix epoch
 
+### Requirement: The demote trigger demotes administrators only
+
+The actor's demote trigger SHALL refuse, as a setup error, a subject who is not an
+administrator, and SHALL leave their membership unchanged. Demoting is not a way to lift a
+restriction or bring an absent user in.
+
+#### Scenario: Demoting a restricted member is refused
+
+- **WHEN** a test demotes a restricted member through the actor
+- **THEN** the trigger fails as a setup error, and the member stays restricted
+
 ### Requirement: Unbanning honours `only_if_banned`
 
 `unbanChatMember` SHALL leave the user absent and free to join, removing a present member as

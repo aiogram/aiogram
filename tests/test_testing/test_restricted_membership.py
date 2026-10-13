@@ -4,7 +4,7 @@ import pytest
 
 from aiogram.enums import ChatMemberStatus
 from aiogram.exceptions import TelegramBadRequest
-from aiogram.test import Blueprint, BotTestEnvironment
+from aiogram.test import Blueprint, BotTestEnvironment, WorldLookupError
 from aiogram.test.world import UNTIL_FOREVER
 from aiogram.types import ChatPermissions
 
@@ -182,6 +182,22 @@ class TestEndDates:
         await env.bot.promote_chat_member(chat_id=team.id, user_id=alice.id, can_pin_messages=True)
 
         assert team.member(alice.id).until_date is None
+
+
+class TestDemotingOnlyAdministrators:
+    async def test_the_demote_trigger_refuses_a_restricted_member(self, env, team, alice):
+        await restrict(env, team, alice)
+
+        with pytest.raises(WorldLookupError, match="nothing to demote"):
+            await env.user(alice).in_(team).demote(subject=alice)
+
+        assert team.member(alice.id).status == ChatMemberStatus.RESTRICTED
+
+    async def test_the_demote_trigger_refuses_an_absent_user(self, env, team, alice, bob):
+        with pytest.raises(WorldLookupError, match="nothing to demote"):
+            await env.user(alice).in_(team).demote(subject=bob)
+
+        assert team.member(bob.id).status == ChatMemberStatus.LEFT
 
 
 class TestUnbanning:
