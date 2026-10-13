@@ -1792,6 +1792,20 @@ follows ``can_send_messages``, ``can_edit_tag`` and ``can_manage_topics`` follow
 either method. A bot that gates itself on ``can_send_messages`` therefore takes the same
 branch here as it does in production.
 
+A restriction is separate from being in the chat, as it is in Telegram. Restricting a user
+who never joined reports them restricted with ``is_member=False``, and they do not count in
+:code:`getChatMemberCount`. A restricted member who leaves stays restricted, so the
+``chat_member`` update goes from restricted with ``is_member=True`` to restricted with
+``is_member=False``, and rejoining flips it back with the same permissions. Restricting
+again with every permission granted lifts the restriction: the user becomes a plain member,
+or has left if they were not in the chat.
+
+A restriction or ban with no end reports ``until_date`` as the Unix epoch, which is how the
+Bot API says "forever". In a basic group a ban always has no end, because the Bot API
+applies ``until_date`` to supergroups and channels only. :code:`unbanChatMember` removes a
+present member, as the Bot API documents for its default, unless the call passes
+``only_if_banned=True``.
+
 Where Telegram posts a service message, so does the environment:
 
 .. code-block:: python

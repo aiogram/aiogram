@@ -60,6 +60,9 @@ BASE_DATE: datetime.datetime = datetime.datetime(
 )
 """Fixed point in time every synthesized date is derived from, so tests are reproducible."""
 
+#: How the Bot API reports a restriction or ban with no end: Unix time 0.
+UNTIL_FOREVER: datetime.datetime = datetime.datetime(1970, 1, 1, tzinfo=datetime.timezone.utc)
+
 DEFAULT_TOPIC_ICON_COLOR = 0x6FB9F0
 GENERAL_TOPIC_NAME = "General"
 #: How much of a message's text a failure message shows before cutting it off.
@@ -375,10 +378,32 @@ class MemberState:
     #: What a restricted member may do. ``None`` means every permission is denied, which is
     #: what a restriction with no permissions passed amounts to.
     permissions: ChatPermissions | None = None
+    #: Whether a restricted user is in the chat. A restriction outlives
+    #: leaving, and can be set on someone who never joined, so presence
+    #: is stored apart from it. Other statuses carry presence in
+    #: themselves, so this is only read while restricted.
+    is_member: bool = True
 
     @property
     def is_present(self) -> bool:
+        if self.status == ChatMemberStatus.RESTRICTED:
+            return self.is_member
         return self.status not in {ChatMemberStatus.LEFT, ChatMemberStatus.KICKED}
+
+    def set_status(self, status: str) -> None:
+        """
+        Move to ``status``, keeping what belongs to the membership.
+
+        A restriction keeps the user's presence, so a user restricted
+        while absent stays absent. An end date belongs to a restriction
+        or a ban only: on any other status the Bot API reads
+        ``until_date`` as a subscription's expiry, so it is cleared.
+        """
+        was_present = self.is_present
+        self.status = status
+        self.is_member = was_present if status == ChatMemberStatus.RESTRICTED else True
+        if status not in {ChatMemberStatus.RESTRICTED, ChatMemberStatus.KICKED}:
+            self.until_date = None
 
     def as_chat_member(self, user: User, chat_type: str) -> ChatMemberUnion:
         """
@@ -407,15 +432,15 @@ class MemberState:
             permissions = self.permissions if self.permissions is not None else ChatPermissions()
             return ChatMemberRestricted(
                 user=user,
-                is_member=True,
+                is_member=self.is_member,
                 tag=self.tag,
-                until_date=self.until_date or BASE_DATE,
+                until_date=self.until_date or UNTIL_FOREVER,
                 # An unset permission is a denied one: the Bot API's own restricted member
                 # carries plain booleans, while a request omits what it does not grant.
                 **mask(ChatPermissions, permissions, coerce=True),
             )
         if self.status == ChatMemberStatus.KICKED:
-            return ChatMemberBanned(user=user, until_date=self.until_date or BASE_DATE)
+            return ChatMemberBanned(user=user, until_date=self.until_date or UNTIL_FOREVER)
         if self.status == ChatMemberStatus.LEFT:
             return ChatMemberLeft(user=user)
         return ChatMemberMember(user=user, tag=self.tag, until_date=self.until_date)

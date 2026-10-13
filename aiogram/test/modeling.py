@@ -1008,15 +1008,28 @@ def _not_the_owner(chat: ChatState, user_id: int) -> MemberState:
 def handle_ban(env: BotTestEnvironment, method: BanChatMember) -> bool:
     chat = resolve_chat(env, method.chat_id)
     member = _not_the_owner(chat, method.user_id)
-    member.status = ChatMemberStatus.KICKED
-    member.until_date = _as_datetime(method.until_date)
+    member.set_status(ChatMemberStatus.KICKED)
+    # The Bot API applies `until_date` for supergroups and channels only,
+    # so a ban in a basic group has no end.
+    if chat.type != ChatType.GROUP:
+        member.until_date = _as_datetime(method.until_date)
     return True
 
 
 @models(UnbanChatMember)
 def handle_unban(env: BotTestEnvironment, method: UnbanChatMember) -> bool:
+    """
+    Leave the user free to join, and outside the chat.
+
+    By default the Bot API also removes a user who is a member, so the
+    call always ends with the user absent. ``only_if_banned`` limits it
+    to a banned user, leaving anyone else as they are.
+    """
     chat = resolve_chat(env, method.chat_id)
-    chat.member(method.user_id).status = ChatMemberStatus.LEFT
+    member = chat.member(method.user_id)
+    if method.only_if_banned and member.status != ChatMemberStatus.KICKED:
+        return True
+    member.set_status(ChatMemberStatus.LEFT)
     return True
 
 
@@ -1055,11 +1068,11 @@ def handle_promote(env: BotTestEnvironment, method: PromoteChatMember) -> bool:
     member = _not_the_owner(chat, method.user_id)
     granted = mask(ChatAdministratorRights, method, coerce=True)
     if not any(granted.values()):
-        member.status = ChatMemberStatus.MEMBER
+        member.set_status(ChatMemberStatus.MEMBER)
         member.rights = None
         member.custom_title = None
         return True
-    member.status = ChatMemberStatus.ADMINISTRATOR
+    member.set_status(ChatMemberStatus.ADMINISTRATOR)
     member.rights = ChatAdministratorRights(**granted)
     return True
 
@@ -1143,14 +1156,26 @@ def handle_restrict(env: BotTestEnvironment, method: RestrictChatMember) -> bool
     couplings ``use_independent_chat_permissions`` switches off. What is stored is a fresh
     object, so nothing the caller holds is in the world. The chat's owner cannot be
     restricted — see :func:`_not_the_owner`.
+
+    Granting every permission lifts a restriction, as the Bot API
+    documents: the user becomes a member if present and left otherwise.
+    On a user who is not restricted, that is a no-op.
     """
     chat = resolve_chat(env, method.chat_id)
     member = _not_the_owner(chat, method.user_id)
-    member.status = ChatMemberStatus.RESTRICTED
-    member.permissions = granted_permissions(
+    granted = granted_permissions(
         method.permissions,
         method.use_independent_chat_permissions,
     )
+    if all(mask(ChatPermissions, granted, coerce=True).values()):
+        if member.status == ChatMemberStatus.RESTRICTED:
+            member.set_status(
+                ChatMemberStatus.MEMBER if member.is_present else ChatMemberStatus.LEFT,
+            )
+            member.permissions = None
+        return True
+    member.set_status(ChatMemberStatus.RESTRICTED)
+    member.permissions = granted
     member.rights = None
     member.until_date = _as_datetime(method.until_date)
     return True
@@ -1159,7 +1184,7 @@ def handle_restrict(env: BotTestEnvironment, method: RestrictChatMember) -> bool
 @models(LeaveChat)
 def handle_leave(env: BotTestEnvironment, method: LeaveChat) -> bool:
     chat = resolve_chat(env, method.chat_id)
-    chat.member(env.world.bot_user.id).status = ChatMemberStatus.LEFT
+    chat.member(env.world.bot_user.id).set_status(ChatMemberStatus.LEFT)
     return True
 
 
@@ -2064,7 +2089,7 @@ def handle_approve_join_request(
     method: ApproveChatJoinRequest,
 ) -> bool:
     chat = _pending_request(env, method)
-    chat.member(method.user_id).status = ChatMemberStatus.MEMBER
+    chat.member(method.user_id).set_status(ChatMemberStatus.MEMBER)
     return True
 
 

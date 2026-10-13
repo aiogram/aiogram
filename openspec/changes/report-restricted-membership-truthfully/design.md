@@ -66,6 +66,12 @@ user becomes `MEMBER` if present and `LEFT` otherwise, and their permissions and
 - `as_chat_member` reports a missing end as `datetime(1970, 1, 1, tzinfo=UTC)`. That is
   what aiogram parses `0` into, and what a bot reading the field sees.
 
+### D5. `only_if_banned` is read
+
+`handle_unban` returns without a change when `only_if_banned` is set and the user is not
+banned. Otherwise it moves the user to `LEFT` through the status helper, which also covers
+the documented default of removing a present member.
+
 ## Risks / Trade-offs
 
 - [The restricted → restricted update on leave is inferred from `is_member`'s existence and

@@ -17,6 +17,8 @@ bot can observe. A review of the time proposal found them, and they stand on the
   restriction date in `ChatMemberMember.until_date`, which means subscription expiry.
 - **Basic groups.** A ban's `until_date` in a basic group is stored, though the Bot API
   applies it "for supergroups and channels only".
+- **`only_if_banned` is ignored.** `unbanChatMember` removes a present member even when
+  the bot asked to unban only a banned user.
 
 ## What Changes
 
@@ -29,6 +31,7 @@ bot can observe. A review of the time proposal found them, and they stand on the
 - A restriction or ban with no end reports `until_date` as the Unix epoch.
 - Any change to a status other than restricted or banned clears `until_date`.
 - A ban in a basic group is stored with no end, whatever `until_date` says.
+- `unbanChatMember(only_if_banned=True)` leaves anyone who is not banned as they are.
 
 Observable behavior changes, all toward the Bot API:
 
@@ -47,8 +50,8 @@ None.
 
 ### Modified Capabilities
 
-- `bot-testing-environment`: gains three requirements, covering presence of restricted
-  users, lifting a restriction, and how `until_date` is reported. No existing requirement
+- `bot-testing-environment`: gains four requirements, covering presence of restricted
+  users, lifting a restriction, how `until_date` is reported, and `only_if_banned`. No existing requirement
   text changes. "Membership reads are derived from membership state" keeps holding, and
   its member-count scenario now counts present users only.
 

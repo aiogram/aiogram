@@ -62,3 +62,19 @@ for supergroups and channels only.
 
 - **WHEN** a handler bans a user in a basic group with an end date
 - **THEN** `getChatMember` reports `until_date` as the Unix epoch
+
+### Requirement: Unbanning honours `only_if_banned`
+
+`unbanChatMember` SHALL leave the user absent and free to join, removing a present member as
+the Bot API documents for the default. With `only_if_banned`, it SHALL act on a banned user
+only and leave anyone else as they are.
+
+#### Scenario: Unbanning removes a present member by default
+
+- **WHEN** a handler unbans a user who is a member of the chat
+- **THEN** the user reads as having left
+
+#### Scenario: `only_if_banned` leaves a member alone
+
+- **WHEN** a handler unbans a member of the chat with `only_if_banned`
+- **THEN** the user is still a member
