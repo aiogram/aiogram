@@ -205,6 +205,15 @@ no end reports ``until_date`` as the Unix epoch instead of a fixed date, a basic
 no end, an end date no longer outlives the status it belonged to, and ``unbanChatMember``
 honours ``only_if_banned``.
 
+An ephemeral message is modeled as Telegram shows it: a send with
+``ephemeral_message_parameters`` returns ``message_id`` 0, an ``ephemeral_message_id`` and the
+``receiver_user``, stays out of ``chat.messages`` and is read back with
+``chat.ephemeral_messages(user)``. Only its receiver can press its buttons, the
+``editEphemeralMessage*`` and ``deleteEphemeralMessage`` methods act on it instead of being
+record-only, and ``send(..., ephemeral=True)`` delivers an ephemeral command whose
+``message.reply()`` answer is ephemeral too, with replies to ephemeral messages validated as
+the Bot API describes.
+
 .. warning::
 
     This is a **proof of concept**. The module name, the fixtures, the blueprint and actor

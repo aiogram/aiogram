@@ -1031,6 +1031,13 @@ class BotTestEnvironment:
             if chat is None:
                 # Not a chat this world declared; nothing to keep it in.
                 return
+            if message.ephemeral_message_id is not None:
+                # Every ephemeral message has message_id 0, so it
+                # is kept apart from the shared history, by its
+                # ephemeral id.
+                if chat.find_ephemeral_command(message.ephemeral_message_id) is None:
+                    chat.add_ephemeral_command(message)
+                return
             existing = chat.find_message(message.message_id)
             if existing is None:
                 chat.add_message(message)

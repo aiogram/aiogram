@@ -60,7 +60,7 @@ BASE_DATE: datetime.datetime = datetime.datetime(
 )
 """Fixed point in time every synthesized date is derived from, so tests are reproducible."""
 
-#: How the Bot API reports a restriction or ban with no end: Unix time 0.
+#: How the Bot API reports a restriction or ban with no end: Unix 0.
 UNTIL_FOREVER: datetime.datetime = datetime.datetime(1970, 1, 1, tzinfo=datetime.timezone.utc)
 
 DEFAULT_TOPIC_ICON_COLOR = 0x6FB9F0
@@ -841,6 +841,12 @@ class ChatState:
     #: message id -> user id -> that user's current reactions.
     reactions: dict[int, dict[int, list[ReactionTypeUnion]]] = field(default_factory=dict)
     last_message_id: int = 0
+    #: Ephemeral messages live apart from `messages`: Telegram shows
+    #: each to one user only. The bot's are keyed by receiver, users'
+    #: by sender, each list in send order; one counter numbers both.
+    sent_ephemeral: dict[int, list[Message]] = field(default_factory=dict)
+    received_ephemeral: dict[int, list[Message]] = field(default_factory=dict)
+    last_ephemeral_message_id: int = 0
     description: str | None = None
     permissions: ChatPermissions | None = None
     photo: ChatPhoto | None = None
@@ -961,6 +967,78 @@ class ChatState:
         """Mount a message and everything new in it to the world's bot, if there is one."""
         if self.bound_bot is not None:
             mount(message, self.bound_bot)
+        return message
+
+    def allocate_ephemeral_message_id(self) -> int:
+        self.last_ephemeral_message_id += 1
+        return self.last_ephemeral_message_id
+
+    def ephemeral_messages(self, user: UserState | UserSpec | int) -> list[Message]:
+        """The bot's ephemeral messages to ``user``, oldest first."""
+        return list(self.sent_ephemeral.get(_user_id(user), ()))
+
+    def ephemeral_commands(self, user: UserState | UserSpec | int) -> list[Message]:
+        """The ephemeral messages ``user`` sent here, oldest first."""
+        return list(self.received_ephemeral.get(_user_id(user), ()))
+
+    def add_ephemeral_message(self, message: Message) -> Message:
+        """Store a bot's ephemeral message, under its receiver."""
+        if message.receiver_user is None:
+            msg = "An ephemeral message the bot sends names its receiver_user"
+            raise ValueError(msg)
+        self.sent_ephemeral.setdefault(message.receiver_user.id, []).append(message)
+        return self._bind(message)
+
+    def add_ephemeral_command(self, message: Message) -> Message:
+        """Store an ephemeral message a user sent, under its sender."""
+        if message.from_user is None or message.ephemeral_message_id is None:
+            msg = "An incoming ephemeral message names its sender and its id"
+            raise ValueError(msg)
+        self.received_ephemeral.setdefault(message.from_user.id, []).append(message)
+        self.last_ephemeral_message_id = max(
+            self.last_ephemeral_message_id,
+            message.ephemeral_message_id,
+        )
+        return self._bind(message)
+
+    def find_ephemeral_message(self, receiver_id: int, ephemeral_id: int) -> Message | None:
+        for message in self.sent_ephemeral.get(receiver_id, ()):
+            if message.ephemeral_message_id == ephemeral_id:
+                return message
+        return None
+
+    def find_ephemeral_command(self, ephemeral_id: int) -> Message | None:
+        for messages in self.received_ephemeral.values():
+            for message in messages:
+                if message.ephemeral_message_id == ephemeral_id:
+                    return message
+        return None
+
+    def update_ephemeral_message(
+        self,
+        receiver_id: int,
+        ephemeral_id: int,
+        **changes: Any,
+    ) -> Message:
+        """Replace a stored ephemeral message with an edited copy."""
+        message = self._require_ephemeral(receiver_id, ephemeral_id, "message to edit not found")
+        edited = derive_message(message, changes, self.bound_bot)
+        stored = self.sent_ephemeral[receiver_id]
+        stored[stored.index(message)] = edited
+        return self._bind(edited)
+
+    def delete_ephemeral_message(self, receiver_id: int, ephemeral_id: int) -> None:
+        message = self._require_ephemeral(
+            receiver_id,
+            ephemeral_id,
+            "message to delete not found",
+        )
+        self.sent_ephemeral[receiver_id].remove(message)
+
+    def _require_ephemeral(self, receiver_id: int, ephemeral_id: int, error: str) -> Message:
+        message = self.find_ephemeral_message(receiver_id, ephemeral_id)
+        if message is None:
+            raise ApiRejection(error)
         return message
 
     def delete_message(self, message_id: int) -> None:
@@ -1268,6 +1346,9 @@ class World:
     profile: BotProfileState = field(default_factory=BotProfileState)
     #: Query ids issued by a trigger and not yet answered, by query kind.
     pending_queries: dict[str, str] = field(default_factory=dict)
+    #: The message each callback query came from, by query id: how
+    #: one may be answered depends on whether that was ephemeral.
+    callback_origins: dict[str, Message] = field(default_factory=dict)
     polls: dict[str, PollState] = field(default_factory=dict)
     #: Downloadable content by ``file_id``. Declared on a blueprint, or registered when a
     #: handler uploads a file whose input carries its bytes.
@@ -1496,6 +1577,10 @@ class World:
 
     def next_date(self) -> datetime.datetime:
         return BASE_DATE + datetime.timedelta(seconds=self.last_update_id)
+
+
+def _user_id(user: UserState | UserSpec | int) -> int:
+    return user if isinstance(user, int) else user.id
 
 
 def private_chat_shape(user: UserState | UserSpec) -> dict[str, Any]:

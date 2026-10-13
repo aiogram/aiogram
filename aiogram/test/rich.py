@@ -42,7 +42,7 @@ def counterpart(model: type[BaseModel]) -> type[BaseModel] | None:
 
 
 def models_in(annotation: Any) -> Iterator[type[BaseModel]]:
-    """Every model class an annotation can hold, through unions and lists."""
+    """Every model class an annotation can hold, through containers."""
     if isinstance(annotation, TypeAliasType):
         yield from models_in(annotation.__value__)
         return

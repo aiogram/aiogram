@@ -62,8 +62,8 @@ own message as the "incoming" one.
 
 | Store | Holds | Keyed by | Read with |
 |---|---|---|---|
-| outgoing | what the bot sent | `(receiver_id, ephemeral_message_id)` | `chat.ephemeral_messages(user)` |
-| incoming | what users sent | `(sender_id, ephemeral_message_id)` | `chat.ephemeral_commands(user)` |
+| outgoing (`sent_ephemeral`) | what the bot sent | `(receiver_id, ephemeral_message_id)` | `chat.ephemeral_messages(user)` |
+| incoming (`received_ephemeral`) | what users sent | `(sender_id, ephemeral_message_id)` | `chat.ephemeral_commands(user)` |
 
 - Clicks, the receiver-naming hint, and the edit and delete family see the outgoing store
   only.
@@ -82,10 +82,11 @@ filter, which is the same failure mode as flagging messages in `messages`.
 ### D2. Registration routes by `ephemeral_message_id`
 
 `_register_carried_message` sends any carried message that has an `ephemeral_message_id`
-to the incoming store and skips the shared-history id check for it. That holds whether the
-message came from `send(ephemeral=True)`, a `fields=` override, or a hand-built update fed
-directly. The actor does not store the command itself, so registration is the one place it
-happens, as it already is for ordinary messages.
+to the incoming store, unless that id is already there, and skips the shared-history id
+check for it. That holds whether the message came from `send(ephemeral=True)`, a `fields=`
+override, or a hand-built update fed directly. `send(ephemeral=True)` stores the command
+before feeding it, as `send` does for ordinary messages, so registration finds it already
+there and does nothing.
 
 ### D3. The outgoing path is chosen by the request, not by the method
 

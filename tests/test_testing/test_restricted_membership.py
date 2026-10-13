@@ -15,7 +15,7 @@ LATER = datetime.datetime(2030, 1, 1, tzinfo=datetime.timezone.utc)
 def world_blueprint():
     blueprint = Blueprint()
     alice = blueprint.add_user("Alice")
-    bob = blueprint.add_user("Bob")
+    blueprint.add_user("Bob")
     blueprint.add_supergroup("Team", members={alice: ChatMemberStatus.MEMBER})
     blueprint.add_group("Club", members={alice: ChatMemberStatus.MEMBER})
     return blueprint

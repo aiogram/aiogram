@@ -571,6 +571,21 @@ def _buttons_of(message: Message) -> Iterator[Button]:
             stack.extend(reversed(current))
 
 
+def _refuse_ephemeral(message: Message, action: str) -> None:
+    """
+    Refuse a user action on an ephemeral message.
+
+    The Bot API does not describe a user editing or replying to one,
+    so a test doing it would be guessing at behavior.
+    """
+    if message.ephemeral_message_id is not None:
+        msg = (
+            f"Ephemeral message {message.ephemeral_message_id} cannot be {action} by a "
+            "user actor: the Bot API does not describe what that does"
+        )
+        raise WorldLookupError(msg)
+
+
 def _detached(value: Any, bot: Bot) -> Any:
     """
     Copy what the caller handed a trigger, before an update carries it into the world.
@@ -694,6 +709,7 @@ class UserActor:
         *,
         fields: dict[str, Any] | None = None,
         reply_to: Message | int | None = None,
+        ephemeral: bool = False,
         **data: Any,
     ) -> Any:
         """
@@ -709,7 +725,16 @@ class UserActor:
         This trigger returns the handler's result, not the `Message` it sent — reach for
         ``self.chat.messages[-1]`` right after this call to get it, most of all when the
         next step is replying to it.
+
+        ``ephemeral=True`` sends an ephemeral message, such as a
+        command only the sender and the bot see. It has
+        ``message_id`` 0 and an ``ephemeral_message_id``, stays out
+        of the shared history, and is read back with
+        ``self.chat.ephemeral_commands(user)``. Telegram has them in
+        groups and supergroups only.
         """
+        if ephemeral:
+            return await self._send_ephemeral(text, fields, reply_to, data)
         message = self._build_message(text=text, fields=self._with_reply_to(fields, reply_to))
         self.chat.add_message(message)
         if self.business is not None:
@@ -721,6 +746,35 @@ class UserActor:
         if self.chat.type == ChatType.CHANNEL:
             return await self._feed(Update(update_id=update_id, channel_post=message), data)
         return await self._feed(Update(update_id=update_id, message=message), data)
+
+    async def _send_ephemeral(
+        self,
+        text: str | None,
+        fields: dict[str, Any] | None,
+        reply_to: Message | int | None,
+        data: dict[str, Any],
+    ) -> Any:
+        chat = self.chat
+        if chat.type not in {ChatType.GROUP, ChatType.SUPERGROUP}:
+            msg = (
+                f"Ephemeral messages exist in groups and supergroups only, and chat "
+                f"{chat.id} is a {chat.type}; bind the actor with `.in_(group)`"
+            )
+            raise WorldLookupError(msg)
+        if self.business is not None:
+            msg = "A business connection does not carry ephemeral messages"
+            raise WorldLookupError(msg)
+        overrides = {
+            "message_id": 0,
+            "ephemeral_message_id": chat.allocate_ephemeral_message_id(),
+            **(self._with_reply_to(fields, reply_to) or {}),
+        }
+        message = self._build_message(text=text, fields=overrides)
+        chat.add_ephemeral_command(message)
+        return await self._feed(
+            Update(update_id=self._next_update_id(), message=message),
+            data,
+        )
 
     async def reply(
         self,
@@ -751,6 +805,7 @@ class UserActor:
         **data: Any,
     ) -> Any:
         """Edit a message this user sent earlier."""
+        _refuse_ephemeral(message, "edited")
         changes: dict[str, Any] = {"text": text, **_detached(fields or {}, self.environment.bot)}
         edited = self.chat.update_message(message.message_id, **changes)
         if self.business is not None:
@@ -776,8 +831,8 @@ class UserActor:
         """
         Press a button of a message the bot actually sent.
 
-        ``target`` is the button's ``callback_data`` or the button itself,
-        from an inline keyboard or from the message's rich content.
+        ``target`` is the button's ``callback_data`` or the button
+        itself, from an inline keyboard or from rich content.
         """
         callback_data = (
             target.callback_data
@@ -787,14 +842,18 @@ class UserActor:
         if callback_data is None:
             msg = "The button carries no callback_data and cannot be clicked"
             raise WorldLookupError(msg)
+        if message is not None:
+            self._require_visible(message, callback_data)
         source = message if message is not None else self._find_button_message(callback_data)
+        world = self.environment.world
         query = CallbackQuery(
-            id=self.environment.world.next_query_id(QueryKind.CALLBACK),
+            id=world.next_query_id(QueryKind.CALLBACK),
             from_user=self.user.as_user(),
             chat_instance=str(self.chat.id),
             message=source,
             data=callback_data,
         )
+        world.callback_origins[query.id] = source
         return await self._feed(
             Update(update_id=self._next_update_id(), callback_query=query),
             data,
@@ -1410,11 +1469,12 @@ class UserActor:
     def _build_message(self, text: str | None, fields: dict[str, Any] | None) -> Message:
         chat = self.chat
         values: dict[str, Any] = {
-            "message_id": chat.allocate_message_id(),
             "date": self.environment.world.next_date(),
             "chat": chat.as_chat(),
             "from_user": self.user.as_user(),
         }
+        if fields is None or "message_id" not in fields:
+            values["message_id"] = chat.allocate_message_id()
         if chat.type == ChatType.CHANNEL:
             # A channel post is attributed to the channel, not to whoever published it.
             values["from_user"] = None
@@ -1448,6 +1508,7 @@ class UserActor:
         if reply_to is None:
             return fields
         message = reply_to if isinstance(reply_to, Message) else self._require_message(reply_to)
+        _refuse_ephemeral(message, "replied to")
         return {"reply_to_message": message, **(fields or {})}
 
     def _require_message(self, message_id: int) -> Message:
@@ -1459,13 +1520,37 @@ class UserActor:
 
     @staticmethod
     def _iter_buttons(scope: Iterable[Message]) -> Iterator[tuple[Message, Button]]:
-        """Walk every button of every message once, for every searcher."""
+        """Walk every button of every message, for every searcher."""
         for candidate in scope:
             for button in _buttons_of(candidate):
                 yield candidate, button
 
+    def _visible_messages(self) -> Iterator[Message]:
+        """
+        The messages this actor can press buttons on, newest first.
+
+        Its own ephemeral messages come first: they are addressed to it,
+        and with ``message_id`` 0 they cannot be ordered against the
+        shared history by id.
+        """
+        yield from reversed(self.chat.ephemeral_messages(self.user.id))
+        yield from reversed(self.chat.messages)
+
+    def _require_visible(self, message: Message, callback_data: str) -> None:
+        receiver = message.receiver_user
+        if message.ephemeral_message_id is None or (
+            receiver is not None and receiver.id == self.user.id
+        ):
+            return
+        msg = (
+            f"Ephemeral message {message.ephemeral_message_id} is not addressed to user "
+            f"{self.user.id}, so they cannot press callback_data={callback_data!r} on it"
+            f"{self._receiver_hint(callback_data)}"
+        )
+        raise WorldLookupError(msg)
+
     def _find_button_message(self, callback_data: str) -> Message:
-        for candidate, button in self._iter_buttons(reversed(self.chat.messages)):
+        for candidate, button in self._iter_buttons(self._visible_messages()):
             if button.callback_data == callback_data:
                 return candidate
         msg = (
@@ -1485,6 +1570,9 @@ class UserActor:
         scans the rest of the world for the button before giving up, so the first case
         says so directly instead of leaving the search to whoever reads the failure.
         """
+        receiver = self._receiver_hint(callback_data)
+        if receiver:
+            return receiver
         this_chat_id = self.chat.id
         for chat_id, chat in self.environment.world.chats.items():
             if chat_id == this_chat_id:
@@ -1495,6 +1583,20 @@ class UserActor:
                     return (
                         f"; a button with this callback_data exists in chat {chat_id} "
                         f"({title!r}) — bind the actor with `.in_(...)`"
+                    )
+        return ""
+
+    def _receiver_hint(self, callback_data: str) -> str:
+        """Name whom an ephemeral message with the button is for."""
+        for receiver_id, messages in self.chat.sent_ephemeral.items():
+            if receiver_id == self.user.id:
+                continue
+            for _candidate, button in self._iter_buttons(reversed(messages)):
+                if button.callback_data == callback_data:
+                    name = self.environment.world.user(receiver_id).first_name
+                    return (
+                        f"; a button with this callback_data is on an ephemeral message "
+                        f"addressed to user {receiver_id} ({name!r}) — click as that user"
                     )
         return ""
 
@@ -1743,7 +1845,8 @@ class UserActor:
         old = member.as_chat_member(user, chat.type)
         presence: dict[str, bool] = {ChatMemberStatus.MEMBER: True, ChatMemberStatus.LEFT: False}
         if member.status == ChatMemberStatus.RESTRICTED and mutate is None and status in presence:
-            # A restriction outlives leaving and rejoining; only presence moves.
+            # A restriction outlives leaving and rejoining;
+            # only presence moves.
             member.is_member = presence[status]
         else:
             member.set_status(status)

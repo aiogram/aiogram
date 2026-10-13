@@ -279,6 +279,7 @@ from .world import (
     QueryKind,
     StickerSetState,
     TopicState,
+    UserState,
     WorldLookupError,
     create_topic,
     mask,
@@ -335,13 +336,8 @@ EDITABLE_MEDIA_FIELDS: tuple[str, ...] = tuple(
 #: the same answer as "no".
 RECORD_ONLY: frozenset[type[TelegramMethod[Any]]] = frozenset(
     {
-        # Ephemeral previews. Telegram does not persist these either, so there is no
-        # state a test could read back.
-        DeleteEphemeralMessage,
-        EditEphemeralMessageCaption,
-        EditEphemeralMessageMedia,
-        EditEphemeralMessageReplyMarkup,
-        EditEphemeralMessageText,
+        # Drafts are a temporary preview Telegram does not
+        # persist, so there is no state a test could read back.
         SendMessageDraft,
         SendRichMessageDraft,
         # Managed bots: a second bot-identity concept, read by nothing else in the world.
@@ -520,8 +516,9 @@ def build_message(
     if thread_id is not None and chat.is_forum:
         # An unknown thread id must fail rather than silently produce an untagged message.
         chat.topic(thread_id)
+    receiver = _ephemeral_receiver(env, method, chat)
     values: dict[str, Any] = {
-        "message_id": chat.allocate_message_id(),
+        "message_id": 0 if receiver is not None else chat.allocate_message_id(),
         "date": env.world.next_date(),
         "chat": chat.as_chat(),
         "from_user": env.world.bot_user.as_user(),
@@ -565,8 +562,56 @@ def build_message(
         )
         _register_uploaded_content(env, method, media_field, values[media_field])
 
+    if receiver is not None:
+        values["ephemeral_message_id"] = chat.allocate_ephemeral_message_id()
+        values["receiver_user"] = receiver.as_user()
+        # A reply to an ephemeral message "may" omit what it
+        # replied to.
+        values.pop("reply_to_message", None)
+        return chat.add_ephemeral_message(Message(**values))
     message = Message(**values)
     return chat.add_message(message)
+
+
+def _ephemeral_receiver(
+    env: BotTestEnvironment,
+    method: TelegramMethod[Any],
+    chat: ChatState,
+) -> UserState | None:
+    """
+    Check an ephemeral send, returning its receiver, or ``None``.
+
+    Only the rules the Bot API states are enforced. Ephemeral messages
+    are group-only per the deprecated ``receiver_user_id`` text, which
+    the current parameters no longer repeat; membership of the receiver
+    is not a documented condition, so it is not checked.
+    """
+    parameters = getattr(method, "ephemeral_message_parameters", None)
+    reply_parameters = getattr(method, "reply_parameters", None)
+    replied_id = None if reply_parameters is None else reply_parameters.ephemeral_message_id
+    if parameters is None:
+        if replied_id is not None:
+            msg = "a reply to an ephemeral message must itself be an ephemeral message"
+            raise ApiRejection(msg)
+        return None
+    if chat.type not in {ChatType.GROUP, ChatType.SUPERGROUP}:
+        msg = "ephemeral messages can be sent only to group and supergroup chats"
+        raise ApiRejection(msg)
+    receiver = env.world.user(parameters.receiver_user_id)
+    if replied_id is not None and chat.find_ephemeral_command(replied_id) is None:
+        raise ApiRejection("message to be replied not found")
+    origin = env.world.callback_origins.get(parameters.callback_query_id or "")
+    if (
+        parameters.replace_callback_query_message
+        and origin is not None
+        and origin.ephemeral_message_id is not None
+    ):
+        msg = (
+            "an ephemeral message can't replace an ephemeral message; "
+            "edit it with the editEphemeralMessage methods instead"
+        )
+        raise ApiRejection(msg)
+    return receiver
 
 
 def _register_uploaded_content(
@@ -756,39 +801,50 @@ def handle_copy_many(env: BotTestEnvironment, method: CopyMessages) -> list[Mess
 # -- editing ---------------------------------------------------------------------------
 
 
-@models(EditMessageText)
-def handle_edit_text(env: BotTestEnvironment, method: EditMessageText) -> Message:
+def _text_changes(
+    env: BotTestEnvironment,
+    method: EditMessageText | EditEphemeralMessageText,
+) -> dict[str, Any]:
     """
-    Replace the message's content with what the request carries.
+    Replace a message's content with what the request carries.
 
     Text and rich content are alternatives, so setting one clears the
     other. The reply markup is what the request passes, or none.
     """
-    chat, message_id = _edit_target(env, method)
     rich_message = None
     if method.rich_message is not None:
         rich_message = materialize_rich_message(
             method.rich_message,
             env.synthesis_context(),
         )
-    return chat.update_message(
-        message_id,
-        text=method.text,
-        entities=method.entities,
-        rich_message=rich_message,
-        reply_markup=method.reply_markup,
-    )
+    return {
+        "text": method.text,
+        "entities": method.entities,
+        "rich_message": rich_message,
+        "reply_markup": method.reply_markup,
+    }
+
+
+def _caption_changes(
+    method: EditMessageCaption | EditEphemeralMessageCaption,
+) -> dict[str, Any]:
+    return {
+        "caption": method.caption,
+        "caption_entities": method.caption_entities,
+        "reply_markup": method.reply_markup,
+    }
+
+
+@models(EditMessageText)
+def handle_edit_text(env: BotTestEnvironment, method: EditMessageText) -> Message:
+    chat, message_id = _edit_target(env, method)
+    return chat.update_message(message_id, **_text_changes(env, method))
 
 
 @models(EditMessageCaption)
 def handle_edit_caption(env: BotTestEnvironment, method: EditMessageCaption) -> Message:
     chat, message_id = _edit_target(env, method)
-    return chat.update_message(
-        message_id,
-        caption=method.caption,
-        caption_entities=method.caption_entities,
-        reply_markup=method.reply_markup,
-    )
+    return chat.update_message(message_id, **_caption_changes(method))
 
 
 @models(EditMessageReplyMarkup)
@@ -816,9 +872,10 @@ def media_field(input_media: Any) -> str:
     return field
 
 
-@models(EditMessageMedia)
-def handle_edit_media(env: BotTestEnvironment, method: EditMessageMedia) -> Message:
-    chat, message_id = _edit_target(env, method)
+def _media_changes(
+    env: BotTestEnvironment,
+    method: EditMessageMedia | EditEphemeralMessageMedia,
+) -> dict[str, Any]:
     field = media_field(method.media)
     # A message carries one kind of content: drop whatever it held before.
     changes: dict[str, Any] = dict.fromkeys(EDITABLE_MEDIA_FIELDS)
@@ -828,7 +885,79 @@ def handle_edit_media(env: BotTestEnvironment, method: EditMessageMedia) -> Mess
     changes["caption_entities"] = method.media.caption_entities
     if method.reply_markup is not None:
         changes["reply_markup"] = method.reply_markup
-    return chat.update_message(message_id, **changes)
+    return changes
+
+
+@models(EditMessageMedia)
+def handle_edit_media(env: BotTestEnvironment, method: EditMessageMedia) -> Message:
+    chat, message_id = _edit_target(env, method)
+    return chat.update_message(message_id, **_media_changes(env, method))
+
+
+# An ephemeral message is addressed by chat, receiver and ephemeral
+# id, so these act on the chat's store of the bot's ephemeral
+# messages, never on its shared history. Each returns True, as the
+# Bot API declares.
+
+
+@models(EditEphemeralMessageText)
+def handle_edit_ephemeral_text(env: BotTestEnvironment, method: EditEphemeralMessageText) -> bool:
+    chat = resolve_chat(env, method.chat_id)
+    chat.update_ephemeral_message(
+        method.receiver_user_id,
+        method.ephemeral_message_id,
+        **_text_changes(env, method),
+    )
+    return True
+
+
+@models(EditEphemeralMessageCaption)
+def handle_edit_ephemeral_caption(
+    env: BotTestEnvironment,
+    method: EditEphemeralMessageCaption,
+) -> bool:
+    chat = resolve_chat(env, method.chat_id)
+    chat.update_ephemeral_message(
+        method.receiver_user_id,
+        method.ephemeral_message_id,
+        **_caption_changes(method),
+    )
+    return True
+
+
+@models(EditEphemeralMessageMedia)
+def handle_edit_ephemeral_media(
+    env: BotTestEnvironment,
+    method: EditEphemeralMessageMedia,
+) -> bool:
+    chat = resolve_chat(env, method.chat_id)
+    chat.update_ephemeral_message(
+        method.receiver_user_id,
+        method.ephemeral_message_id,
+        **_media_changes(env, method),
+    )
+    return True
+
+
+@models(EditEphemeralMessageReplyMarkup)
+def handle_edit_ephemeral_reply_markup(
+    env: BotTestEnvironment,
+    method: EditEphemeralMessageReplyMarkup,
+) -> bool:
+    chat = resolve_chat(env, method.chat_id)
+    chat.update_ephemeral_message(
+        method.receiver_user_id,
+        method.ephemeral_message_id,
+        reply_markup=method.reply_markup,
+    )
+    return True
+
+
+@models(DeleteEphemeralMessage)
+def handle_delete_ephemeral(env: BotTestEnvironment, method: DeleteEphemeralMessage) -> bool:
+    chat = resolve_chat(env, method.chat_id)
+    chat.delete_ephemeral_message(method.receiver_user_id, method.ephemeral_message_id)
+    return True
 
 
 def _location(method: TelegramMethod[Any], live_period: int | None) -> Location:
@@ -1009,8 +1138,8 @@ def handle_ban(env: BotTestEnvironment, method: BanChatMember) -> bool:
     chat = resolve_chat(env, method.chat_id)
     member = _not_the_owner(chat, method.user_id)
     member.set_status(ChatMemberStatus.KICKED)
-    # The Bot API applies `until_date` for supergroups and channels only,
-    # so a ban in a basic group has no end.
+    # The Bot API applies `until_date` for supergroups and channels
+    # only, so a ban in a basic group has no end.
     if chat.type != ChatType.GROUP:
         member.until_date = _as_datetime(method.until_date)
     return True

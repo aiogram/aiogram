@@ -604,9 +604,9 @@ handler never breaks just because a call was not configured.
 .. note::
 
     :code:`sendInvoice` stores a message carrying an :class:`aiogram.types.invoice.Invoice`;
-    it does not model a payment flow. Ephemeral methods such as :code:`sendMessageDraft`
-    and :code:`sendRichMessageDraft` stay record-only, matching Telegram, which does not
-    persist them either.
+    it does not model a payment flow. The draft methods :code:`sendMessageDraft` and
+    :code:`sendRichMessageDraft` stay record-only, matching Telegram, which does not
+    persist drafts either.
 
 A few methods have nothing to mutate but a useful answer, so they are drawn from the world
 rather than synthesized: :code:`sendChatAction` rejects an unknown chat and otherwise
@@ -653,6 +653,61 @@ Buttons are searched keyboard first, then the blocks in document order.
     Telegram would not produce. Buttons declared in that markup are therefore not clickable;
     send blocks in the test, or override the call with :code:`env.on(...)`. Media referenced
     through :code:`InputRichMessage.media` is not resolved either.
+
+Ephemeral messages
+------------------
+
+An ephemeral message is shown to one user of a group. Sending one with
+``ephemeral_message_parameters`` returns it in Telegram's shape: ``message_id`` 0, an
+``ephemeral_message_id``, and the receiver as ``receiver_user``. It is not part of the
+chat's shared history, so ``chat.messages`` and :code:`wait_for_message` do not see it;
+read it back per receiver:
+
+.. code-block:: python
+
+    await bot.send_message(
+        chat_id=group_id,
+        text="Only you see this",
+        ephemeral_message_parameters=EphemeralMessageParameters(receiver_user_id=alice_id),
+    )
+
+    (message,) = chat.ephemeral_messages(alice)
+
+Only the receiver can press its buttons: another member's :code:`click()` fails and names
+whom the message is for. :code:`editEphemeralMessageText`, :code:`...Caption`,
+:code:`...Media`, :code:`...ReplyMarkup` and :code:`deleteEphemeralMessage` act on the stored
+message, addressed by chat, receiver and ephemeral id, and so do the
+:code:`message.edit_ephemeral_*` and :code:`message.delete_ephemeral()` shortcuts. The
+regular edit and delete methods do not reach an ephemeral message. A callback query from an
+ephemeral message cannot be answered with an ephemeral message that replaces it, as the Bot
+API states.
+
+A user can send an ephemeral command, such as a command registered with
+``is_ephemeral=True``:
+
+.. code-block:: python
+
+    @router.message(Command("secret"))
+    async def secret(message: Message):
+        await message.reply("Only for you")
+
+    await alice.in_(group).send("/secret", ephemeral=True)
+
+    (reply,) = chat.ephemeral_messages(alice)
+    (command,) = chat.ephemeral_commands(alice)
+
+``message.reply()`` answers it ephemerally, because aiogram's shortcut fills in the
+ephemeral parameters for a reply to an ephemeral message; ``message.answer()`` sends an
+ordinary message everyone sees. A reply that names an ephemeral message must itself be
+ephemeral, and must name a message a user sent in that chat; otherwise the call raises
+:class:`aiogram.exceptions.TelegramBadRequest`.
+
+.. note::
+
+    Ephemeral messages are sent to groups and supergroups only. The current Bot API text
+    no longer states it, so the toolkit follows the deprecated ``receiver_user_id``
+    parameter, which did: "for group and supergroup chats only". Whether the receiver is a
+    member of the chat is not checked, because the Bot API does not make it a condition.
 
 Sticker sets
 ============
@@ -807,8 +862,8 @@ recorded call is the whole useful assertion:
 
     * - Surface
       - Why not
-    * - Ephemeral messages and drafts
-      - Telegram does not persist them either, so there is no state to read back.
+    * - Message drafts
+      - A temporary preview Telegram does not persist, so there is no state to read back.
     * - Managed bots
       - A second bot-identity concept that nothing else in the world reads.
     * - Verification badges
