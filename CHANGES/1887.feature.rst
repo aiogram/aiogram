@@ -192,6 +192,12 @@ the pytest fixture's teardown is synchronous and cannot await a cancellation, an
 tasks a test never mentioned as an invisible side effect of a fixture going out of scope
 would turn a stopped scheduler into a mystery.
 
+A rich message sent as blocks is stored with those blocks in the shape Telegram returns, nested
+blocks and media included, instead of as an empty rich message; ``editMessageText`` replaces
+text with rich content and back, and ``click()`` and ``follow_deep_link()`` reach buttons
+anywhere inside rich content as well as on the inline keyboard. Rich content given only as
+``html`` or ``markdown`` is stored without blocks, since that rendering is Telegram's own.
+
 .. warning::
 
     This is a **proof of concept**. The module name, the fixtures, the blueprint and actor

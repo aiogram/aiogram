@@ -614,6 +614,46 @@ returns ``True``, :code:`getFile` echoes the ``file_id`` it was asked for so a d
 path can be correlated, :code:`createInvoiceLink` returns a unique link, and
 :code:`getUserPersonalChatMessages` reads from that user's private chat.
 
+Rich messages
+-------------
+
+A rich message sent as blocks is stored with those blocks, in the shape Telegram returns
+them: an :class:`aiogram.types.input_rich_block_paragraph.InputRichBlockParagraph` becomes
+a :class:`aiogram.types.rich_block_paragraph.RichBlockParagraph` carrying the same text,
+and so on for every block type, nested ones included. Media inside a block is synthesized
+the same way as for :code:`sendPhoto`. A field Telegram fills in on its side, such as a list
+item's label or a map's size when the request leaves it out, is stored as a zero value,
+because Telegram does not document what it picks. :code:`editMessageText` replaces the
+content: rich content replaces text and text replaces rich content.
+
+Buttons inside rich content are as clickable as keyboard buttons, at any depth:
+
+.. code-block:: python
+
+    await bot.send_rich_message(
+        chat_id=chat_id,
+        rich_message=InputRichMessage(
+            blocks=[
+                InputRichBlockButtons(
+                    buttons=[RichMessageButton(text="Confirm", callback_data="confirm")],
+                ),
+            ],
+        ),
+    )
+
+    await user.click("confirm")  # dispatches a callback_query
+
+:code:`click()` and :code:`follow_deep_link()` also accept such a button object directly.
+Buttons are searched keyboard first, then the blocks in document order.
+
+.. note::
+
+    Rich content given as :code:`html` or :code:`markdown` is stored without blocks. Turning
+    it into blocks is Telegram's renderer, and a partial copy of it would show a test blocks
+    Telegram would not produce. Buttons declared in that markup are therefore not clickable;
+    send blocks in the test, or override the call with :code:`env.on(...)`. Media referenced
+    through :code:`InputRichMessage.media` is not resolved either.
+
 Sticker sets
 ============
 

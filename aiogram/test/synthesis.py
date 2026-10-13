@@ -50,6 +50,20 @@ def annotation_accepts(annotation: Any, target: type) -> bool:
     return False
 
 
+def nonempty(annotation: Any, context: SynthesisContext, *, name: str) -> Any:
+    """Synthesize a value, making a list annotation carry one element."""
+    members = annotation
+    if get_origin(annotation) in {UnionType, Union}:
+        members = next(
+            (arg for arg in get_args(annotation) if arg is not type(None)),
+            annotation,
+        )
+    if get_origin(members) is list:
+        (item_type,) = get_args(members)
+        return [synthesize(item_type, context, name=name)]
+    return synthesize(members, context, name=name)
+
+
 def synthesize(
     annotation: Any,
     context: SynthesisContext,

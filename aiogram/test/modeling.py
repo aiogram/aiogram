@@ -244,6 +244,7 @@ from aiogram.types import (
     Gift,
     Gifts,
     InlineKeyboardMarkup,
+    InputRichMessage,
     InputSticker,
     Location,
     MenuButtonDefault,
@@ -265,7 +266,8 @@ from aiogram.types import (
 
 from .errors import ApiRejection
 from .mounting import detached_copy
-from .synthesis import annotation_accepts, synthesize
+from .rich import materialize_rich_message
+from .synthesis import annotation_accepts, nonempty, synthesize
 from .world import (
     BASE_DATE,
     DEFAULT_TOPIC_ICON_COLOR,
@@ -505,16 +507,7 @@ def _chat_label(chat: ChatState) -> str:
 
 def _nonempty(annotation: Any, env: BotTestEnvironment, name: str) -> Any:
     """Synthesize a value, making a list annotation carry one element."""
-    members = annotation
-    if get_origin(annotation) in {UnionType, Union}:
-        members = next(
-            (arg for arg in get_args(annotation) if arg is not type(None)),
-            annotation,
-        )
-    if get_origin(members) is list:
-        (item_type,) = get_args(members)
-        return [synthesize(item_type, env.synthesis_context(), name=name)]
-    return synthesize(members, env.synthesis_context(), name=name)
+    return nonempty(annotation, env.synthesis_context(), name=name)
 
 
 def build_message(
@@ -559,7 +552,13 @@ def build_message(
         if replied is not None:
             values["reply_to_message"] = replied
 
-    if media_field is not None:
+    rich_message = getattr(method, "rich_message", None)
+    if isinstance(rich_message, InputRichMessage):
+        values["rich_message"] = materialize_rich_message(
+            rich_message,
+            env.synthesis_context(),
+        )
+    elif media_field is not None:
         values[media_field] = _carry_request_values(
             method,
             _nonempty(Message.model_fields[media_field].annotation, env, media_field),
@@ -759,11 +758,24 @@ def handle_copy_many(env: BotTestEnvironment, method: CopyMessages) -> list[Mess
 
 @models(EditMessageText)
 def handle_edit_text(env: BotTestEnvironment, method: EditMessageText) -> Message:
+    """
+    Replace the message's content with what the request carries.
+
+    Text and rich content are alternatives, so setting one clears the
+    other. The reply markup is what the request passes, or none.
+    """
     chat, message_id = _edit_target(env, method)
+    rich_message = None
+    if method.rich_message is not None:
+        rich_message = materialize_rich_message(
+            method.rich_message,
+            env.synthesis_context(),
+        )
     return chat.update_message(
         message_id,
         text=method.text,
         entities=method.entities,
+        rich_message=rich_message,
         reply_markup=method.reply_markup,
     )
 

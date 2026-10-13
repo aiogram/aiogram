@@ -64,8 +64,9 @@ An `InputRich*` model converts to the stored model whose name is the same minus 
    `InputRichBlockType` and `RichBlockType` are different enums.
 
 No synthesizer change is needed: only media is synthesized, and media types already
-synthesize. The conversion is a module-level function in `modeling.py`, so
-`model-ephemeral-messages` can reuse it.
+synthesize. The conversion lives in its own module, `aiogram/test/rich.py`, so
+`model-ephemeral-messages` can reuse it. The non-empty media helper it shares with
+`sendPhoto` moves into `synthesis.py` as `nonempty`, so both use one copy.
 
 *Alternative considered:* a synthesized base with `_carry_request_values` applied
 recursively. Rejected because the review showed it cannot build a paragraph and drops text

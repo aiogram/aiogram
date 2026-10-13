@@ -39,8 +39,9 @@ None.
 
 ## Impact
 
-- **Code**: `aiogram/test/modeling.py` (rich conversion, the send and edit-text handlers)
-  and `aiogram/test/actors.py` (button search, and the `click` and `follow_deep_link`
+- **Code**: `aiogram/test/rich.py` (new: the conversion), `aiogram/test/modeling.py` (the
+  send and edit-text handlers), `aiogram/test/synthesis.py` (the shared `nonempty`), and
+  `aiogram/test/actors.py` (button search, and the `click` and `follow_deep_link`
   signatures). No generated code changes.
 - **Tests**: `tests/test_testing/` covers the conversion, a guard on the `Input` naming
   convention, rich edits, and clicks inside rich content.

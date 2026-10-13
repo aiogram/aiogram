@@ -6,6 +6,8 @@ from types import SimpleNamespace
 from typing import TYPE_CHECKING, Any, NamedTuple
 from urllib.parse import parse_qs, urlsplit
 
+from pydantic import BaseModel
+
 from aiogram.enums import ChatMemberStatus, ChatType
 from aiogram.types import (
     BotSubscriptionUpdated,
@@ -31,6 +33,7 @@ from aiogram.types import (
     PreCheckoutQuery,
     ReactionTypeEmoji,
     ReactionTypeUnion,
+    RichMessageButton,
     ShippingQuery,
     SuccessfulPayment,
     Update,
@@ -538,6 +541,36 @@ def _validate_rights(rights: dict[str, bool]) -> None:
         raise TypeError(msg)
 
 
+#: A button a user can press: one on an inline keyboard, or one inside a
+#: message's rich content. Both carry ``callback_data`` and ``url``.
+Button = InlineKeyboardButton | RichMessageButton
+
+
+def _buttons_of(message: Message) -> Iterator[Button]:
+    """
+    Every button of a message, in the order a reader meets them.
+
+    The inline keyboard comes first, then the rich content, depth-first
+    in document order. The walk does not know which blocks hold buttons:
+    rich text nests buttons through formatting, list items, details and
+    table cells, and a block type a future Bot API version adds is
+    walked the same way. It is iterative, so deep nesting cannot reach
+    the recursion limit.
+    """
+    if message.reply_markup is not None:
+        for row in message.reply_markup.inline_keyboard:
+            yield from row
+    stack: list[Any] = [message.rich_message]
+    while stack:
+        current = stack.pop()
+        if isinstance(current, RichMessageButton):
+            yield current
+        elif isinstance(current, BaseModel):
+            stack.extend(reversed(current.__dict__.values()))
+        elif isinstance(current, list):
+            stack.extend(reversed(current))
+
+
 def _detached(value: Any, bot: Bot) -> Any:
     """
     Copy what the caller handed a trigger, before an update carries it into the world.
@@ -735,14 +768,21 @@ class UserActor:
 
     async def click(
         self,
-        target: str | InlineKeyboardButton,
+        target: str | Button,
         *,
         message: Message | None = None,
         **data: Any,
     ) -> Any:
-        """Press an inline keyboard button of a message the bot actually sent."""
+        """
+        Press a button of a message the bot actually sent.
+
+        ``target`` is the button's ``callback_data`` or the button itself,
+        from an inline keyboard or from the message's rich content.
+        """
         callback_data = (
-            target.callback_data if isinstance(target, InlineKeyboardButton) else target
+            target.callback_data
+            if isinstance(target, (InlineKeyboardButton, RichMessageButton))
+            else target
         )
         if callback_data is None:
             msg = "The button carries no callback_data and cannot be clicked"
@@ -762,7 +802,7 @@ class UserActor:
 
     async def follow_deep_link(
         self,
-        target: str | InlineKeyboardButton | None = None,
+        target: str | Button | None = None,
         *,
         message: Message | None = None,
         validate_payload: bool = True,
@@ -793,7 +833,7 @@ class UserActor:
         the bot itself built wrong is still named as the bug it is.
         """
         bot_username = self.bot_user.username or ""
-        if isinstance(target, InlineKeyboardButton):
+        if isinstance(target, (InlineKeyboardButton, RichMessageButton)):
             url = target.url
             if url is None:
                 msg = "The button carries no url and cannot be followed as a deep link"
@@ -1418,17 +1458,11 @@ class UserActor:
         return message
 
     @staticmethod
-    def _iter_buttons(
-        scope: Iterable[Message],
-    ) -> Iterator[tuple[Message, InlineKeyboardButton]]:
-        """Walk message → markup → row → button once, front-to-back, for every searcher."""
+    def _iter_buttons(scope: Iterable[Message]) -> Iterator[tuple[Message, Button]]:
+        """Walk every button of every message once, for every searcher."""
         for candidate in scope:
-            markup = candidate.reply_markup
-            if markup is None:
-                continue
-            for row in markup.inline_keyboard:
-                for button in row:
-                    yield candidate, button
+            for button in _buttons_of(candidate):
+                yield candidate, button
 
     def _find_button_message(self, callback_data: str) -> Message:
         for candidate, button in self._iter_buttons(reversed(self.chat.messages)):
