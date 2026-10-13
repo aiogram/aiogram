@@ -1,6 +1,6 @@
 ---
 name: aiogram-pr-gate
-description: Read-only pre-PR reviewer for this repo. Use before opening or updating a PR against dev-3.x, or when asked to review a diff/branch. Checks the exact things CI and the maintainer reject — changelog fragment, generated-vs-hand edits, test coverage, strict mypy, and the 3.10–3.14 / PyPy / Windows compatibility matrix.
+description: Read-only pre-PR reviewer for this repo. Use before opening or updating a PR against dev-3.x, or when asked to review a diff/branch. Checks the exact things CI and the maintainer reject — changelog fragment, generated-vs-hand edits, test coverage, strict mypy, and the 3.10–3.15 / PyPy / Windows compatibility matrix.
 tools: Read, Grep, Glob, Bash
 ---
 
@@ -56,18 +56,18 @@ rtk git diff dev-3.x...HEAD --stat && rtk git diff dev-3.x...HEAD
 - **New shortcut added by hand** instead of `.butcher/types/<Type>/aliases.yml`.
 - **New dependency** for something small — pushed back on repeatedly. Runtime deps
   live in `pyproject.toml [project.dependencies]` with hard upper bounds
-  (`pydantic<2.14`, `aiohttp<3.15`, `magic-filter<1.1`); widening one is a deliberate
+  (`pydantic<2.15`, `aiohttp<3.15`, `magic-filter<1.1`); widening one is a deliberate
   decision, not a drive-by.
 - **Workflow-data contract broken** — dispatcher/bots must reach handlers and
   startup/shutdown callbacks identically on the polling and webhook paths.
 - **Unrelated refactors / reformatting** mixed into the diff.
 - **`docs/locale/**`** touched by hand (managed by `sphinx-intl`).
 
-## 3. Compatibility matrix (one `Tests` job, 17 legs)
+## 3. Compatibility matrix (one `Tests` job, 20 legs)
 
-- Python **3.10 – 3.14** on ubuntu/macos/windows, plus PyPy 3.11 on ubuntu and macos
+- Python **3.10 – 3.15** on ubuntu/macos/windows, plus PyPy 3.11 on ubuntu and macos
   (excluded on windows) — all in a single `Tests` job. Coverage is uploaded from the
-  15 CPython legs only; codecov's `after_n_builds: 15` waits for exactly those.
+  18 CPython legs only; codecov's `after_n_builds: 18` waits for exactly those.
 - mypy targets `python_version = 3.10` → no 3.11+ only syntax or stdlib.
 - Redis/MongoDB tests run only on Linux legs; on macOS/Windows the `--redis`/`--mongo`
   fixtures skip. A test whose assertion exists only under `--redis`/`--mongo` is

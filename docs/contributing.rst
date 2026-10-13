@@ -15,8 +15,8 @@ the project to your PC and know how to do a pull-request.
 
 How to work with pull-request you can read in the `GitHub docs <https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request>`_
 
-Also in due to this project is written in Python, you will need Python to be installed
-(is recommended to use latest Python versions, but any version starting from 3.8 can be used)
+To develop aiogram, install Python 3.10 through 3.15.
+Using the latest supported Python version is recommended.
 
 
 Use virtualenv
