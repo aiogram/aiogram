@@ -12,7 +12,10 @@ communities and invite links — then drive it through actors (``await user.send
 ``await user.reply(message, "text")``, ``await user.click(button)``,
 ``await user.follow_deep_link()``, ``await user.promote(**rights)``) and assert on the
 resulting chat state or on the recorded calls. There is a trigger for every
-:class:`aiogram.types.Update` variant, so no registered handler is unreachable from a test.
+:class:`aiogram.types.Update` variant, so no registered handler is unreachable from a test,
+including ``stop_message_generation()`` for ``stopped_message_generation``, which always
+arrives in the user's own private chat with the bot, the only chat ``sendMessageDraft``
+targets.
 Joining a group or adding the bot to one now also delivers the ``new_chat_members`` service
 message a real client shows alongside the membership update, in the order Telegram posts
 the two — pass ``service_message=False`` for the previous single-update behavior. A

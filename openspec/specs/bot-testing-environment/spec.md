@@ -236,6 +236,15 @@ indistinguishable in shape from one Telegram would deliver.
 - **THEN** the toolkit exposes a trigger producing it, and a test asserting this over the
   full set of variants passes with no exemptions declared
 
+#### Scenario: Stopping a draft's generation
+
+- **WHEN** a user actor triggers `stopped_message_generation`
+- **THEN** the update is about that user's own private chat with the bot, the only chat
+  type `sendMessageDraft` targets, so the dispatcher resolves the event user to the actor,
+  and an actor bound to a topic of that chat reports the topic's thread
+- **AND** an actor bound to any other chat raises a setup error instead of producing an
+  update Telegram never sends
+
 #### Scenario: Posting to a channel
 
 - **WHEN** a post is made to a chat declared as a channel

@@ -3,7 +3,7 @@ import pytest
 from aiogram import Dispatcher
 from aiogram.exceptions import TelegramBadRequest
 from aiogram.methods import AnswerPreCheckoutQuery, AnswerShippingQuery
-from aiogram.test import Blueprint, BotTestEnvironment
+from aiogram.test import Blueprint, BotTestEnvironment, WorldLookupError
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, Update
 
 #: How to drive each update variant: the actor to use, and what to call on it.
@@ -44,6 +44,7 @@ TRIGGERS = {
         "plain",
         lambda actor: actor.reaction_count(actor.chat.messages[-1]),
     ),
+    "stopped_message_generation": ("plain", lambda actor: actor.stop_message_generation()),
 }
 
 
@@ -424,6 +425,24 @@ class TestRemainingUpdateKinds:
         await alice.update_subscription("sub-1")
 
         assert seen == ["sub-1"]
+
+    async def test_stopped_message_generation(self, env, alice):
+        seen = []
+
+        async def handler(event, event_from_user, state):
+            seen.append((event.draft_id, event.chat.id, event_from_user.id))
+            await state.set_state("stopped")
+
+        env.dispatcher.stopped_message_generation.register(handler)
+
+        await alice.stop_message_generation(draft_id=7)
+
+        assert seen == [(7, alice.user.id, alice.user.id)]
+        assert await alice.state().get_state() == "stopped"
+
+    async def test_stopped_message_generation_needs_the_private_chat(self, env, team, alice):
+        with pytest.raises(WorldLookupError, match="own private chat"):
+            await alice.in_(team).stop_message_generation()
 
     async def test_event_from_user_resolves_on_the_new_triggers(self, env, alice):
         seen = []

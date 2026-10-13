@@ -23,6 +23,7 @@ from aiogram.types import (
     InlineQuery,
     ManagedBotUpdated,
     Message,
+    MessageGenerationStopped,
     MessageReactionCountUpdated,
     MessageReactionUpdated,
     PaidMediaPurchased,
@@ -1151,6 +1152,43 @@ class UserActor:
         event = self._event(ChatBoostRemoved)
         return await self._feed(
             Update(update_id=self._next_update_id(), removed_chat_boost=event),
+            data,
+        )
+
+    async def stop_message_generation(self, draft_id: int = 1, **data: Any) -> Any:
+        """
+        The user taps the button that stops a draft's generation.
+
+        Telegram shows that button only on a draft sent with
+        ``can_stop=True`` (see
+        :meth:`~aiogram.client.bot.Bot.send_message_draft`). Drafts are
+        not tracked, so trigger this only where such a draft was sent.
+
+        ``sendMessageDraft`` targets private chats, so the update is
+        always about the user's own private chat with the bot, and the
+        dispatcher resolves its user from that chat. An actor bound to
+        any other chat raises instead. An actor bound to a topic of the
+        private chat reports that topic's thread, as a message does.
+        """
+        chat = self.chat
+        if chat.id != self.user.id:
+            msg = (
+                "stop_message_generation() happens only in the user's own private chat "
+                "with the bot: sendMessageDraft targets private chats. Use the unbound "
+                "actor, or bind it with `.in_(user)`"
+            )
+            raise WorldLookupError(msg)
+        event = self._event(
+            MessageGenerationStopped,
+            draft_id=draft_id,
+            message_thread_id=(
+                self.topic.message_thread_id
+                if self.topic is not None and not self.topic.is_general
+                else None
+            ),
+        )
+        return await self._feed(
+            Update(update_id=self._next_update_id(), stopped_message_generation=event),
             data,
         )
 

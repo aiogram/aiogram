@@ -384,6 +384,13 @@ version adds one without a trigger:
     await user.guest_message("hello")        # guest_message
     await user.manage_bot()                  # managed_bot
     await user.update_subscription()         # subscription
+    await user.stop_message_generation()     # stopped_message_generation
+
+``stop_message_generation`` is the user tapping the stop button on a draft the bot streamed
+with ``sendMessageDraft(..., can_stop=True)``. That method only targets private chats, so the
+trigger runs in the user's own private chat with the bot and the dispatcher resolves the event
+user from it; an actor bound to any other chat raises
+:class:`~aiogram.test.WorldLookupError`.
 
 Two routing rules follow the chat rather than the trigger name, because that is how
 Telegram itself decides:
