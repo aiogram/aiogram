@@ -33,6 +33,7 @@ from aiogram.types import (
     LabeledPrice,
     MessageEntity,
     PaidMediaInfo,
+    Poll,
     ReplyParameters,
     RichTextBold,
     Sticker,
@@ -180,6 +181,34 @@ class TestMediaGroups:
         assert env.world.last_file_number == 0
 
 
+class TestStoredContent:
+    async def test_a_venue_is_where_the_request_put_it(self, env, private):
+        message = await env.bot.send_venue(
+            chat_id=private.id,
+            latitude=55.75,
+            longitude=37.62,
+            title="Square",
+            address="Centre",
+        )
+
+        assert (message.venue.location.latitude, message.venue.location.longitude) == (
+            55.75,
+            37.62,
+        )
+
+    async def test_an_invoice_totals_its_prices(self, env, private):
+        message = await env.bot.send_invoice(
+            chat_id=private.id,
+            title="Pack",
+            description="Two items",
+            payload="pack",
+            currency="XTR",
+            prices=[LabeledPrice(label="a", amount=30), LabeledPrice(label="b", amount=20)],
+        )
+
+        assert message.invoice.total_amount == 50
+
+
 class TestReplies:
     async def test_a_reply_to_a_missing_message_fails(self, env, private):
         with pytest.raises(TelegramBadRequest, match="message to be replied not found"):
@@ -258,6 +287,44 @@ class TestReplies:
         )
 
         assert message.reply_to_message is None
+
+    async def test_an_ephemeral_message_cannot_reply_in_another_chat(
+        self,
+        env,
+        team,
+        private,
+        alice,
+    ):
+        target = await env.bot.send_message(chat_id=private.id, text="elsewhere")
+
+        with pytest.raises(TelegramBadRequest, match="another chat is not supported"):
+            await env.bot.send_message(
+                chat_id=team.id,
+                text="answer",
+                ephemeral_message_parameters=EphemeralMessageParameters(
+                    receiver_user_id=alice.id,
+                ),
+                reply_parameters=ReplyParameters(message_id=target.message_id, chat_id=private.id),
+            )
+
+        assert team.ephemeral_messages(alice) == []
+
+    async def test_a_business_message_cannot_reply_in_another_chat(
+        self,
+        env,
+        private,
+        bobs,
+        connection,
+    ):
+        target = await env.bot.send_message(chat_id=bobs.id, text="elsewhere")
+
+        with pytest.raises(TelegramBadRequest, match="another chat is not supported"):
+            await env.bot.send_message(
+                business_connection_id=connection.id,
+                chat_id=private.id,
+                text="answer",
+                reply_parameters=ReplyParameters(message_id=target.message_id, chat_id=bobs.id),
+            )
 
     async def test_the_deprecated_reply_id_still_replies(self, env, private):
         target = await env.bot.send_message(chat_id=private.id, text="question")
@@ -717,6 +784,36 @@ class TestEditDates:
 
 
 class TestPolls:
+    async def test_a_copied_poll_is_a_poll_of_its_own(self, env, private, bobs):
+        original = await env.bot.send_poll(chat_id=private.id, question="Q?", options=["a", "b"])
+        copied = await env.bot.copy_message(
+            chat_id=bobs.id,
+            from_chat_id=private.id,
+            message_id=original.message_id,
+        )
+
+        stopped = await env.bot.stop_poll(chat_id=bobs.id, message_id=copied.message_id)
+
+        assert stopped.is_closed is True
+        assert stopped.id != original.poll.id
+        assert env.world.poll(original.poll.id).is_closed is False
+        also_stopped = await env.bot.stop_poll(chat_id=private.id, message_id=original.message_id)
+        assert also_stopped.is_closed is True
+
+    async def test_a_copied_poll_the_world_never_stored_is_kept(self, env, alice, private, bobs):
+        poll = synthesize(Poll, SynthesisContext())
+        await env.user(alice).send(fields={"poll": poll})
+        sent = private.messages[-1]
+
+        copied = await env.bot.copy_message(
+            chat_id=bobs.id,
+            from_chat_id=private.id,
+            message_id=sent.message_id,
+        )
+
+        stored = bobs.find_message(copied.message_id).poll
+        assert (stored.id, stored.question) == (poll.id, poll.question)
+
     async def test_a_refused_poll_is_not_registered(self, env, private):
         with pytest.raises(TelegramBadRequest, match="message to be replied not found"):
             await env.bot.send_poll(
@@ -1132,6 +1229,9 @@ class TestEditableAdministrators:
 
 
 class TestDeclaredWorlds:
+    async def test_a_declared_business_connection_is_dated_by_the_clock(self, env, connection):
+        assert env.world.business_connections[connection.id].date == env.now
+
     async def test_declared_permissions_follow_their_defaults(self, dp):
         blueprint = Blueprint()
         quiet = blueprint.add_user("Quiet")

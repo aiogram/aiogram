@@ -36,6 +36,7 @@ catch.
 
 from __future__ import annotations
 
+import dataclasses
 import datetime
 import functools
 import re
@@ -250,6 +251,7 @@ from aiogram.types import (
     InputChecklist,
     InputRichMessage,
     InputSticker,
+    Invoice,
     Location,
     MenuButtonDefault,
     Message,
@@ -267,6 +269,7 @@ from aiogram.types import (
     UniqueGift,
     Update,
     User,
+    Venue,
 )
 
 from .errors import ApiRejection
@@ -649,7 +652,9 @@ def _reply_target(
     reads as false for a reply in another chat or a forum topic and in
     an ephemeral message, and as true on behalf of a business account.
     A target in another chat is checked but not carried, since
-    ``reply_to_message`` is a message of the same chat.
+    ``reply_to_message`` is a message of the same chat; an ephemeral
+    message or one sent on behalf of a business account cannot reply
+    in another chat at all, as ``ReplyParameters.chat_id`` states.
 
     The deprecated top-level ``reply_to_message_id`` and
     ``allow_sending_without_reply`` still name a reply in the same chat
@@ -667,10 +672,17 @@ def _reply_target(
     if message_id is None:
         return None
     where = chat if target_chat is None else resolve_chat(env, target_chat)
+    on_behalf = getattr(method, "business_connection_id", None) is not None
+    if where is not chat and (ephemeral or on_behalf):
+        msg = (
+            "a reply in another chat is not supported for ephemeral messages or "
+            "messages sent on behalf of a business account"
+        )
+        raise ApiRejection(msg)
     replied = where.find_message(message_id)
     if replied is None:
         in_topic = chat.is_forum and getattr(method, "message_thread_id", None) is not None
-        if getattr(method, "business_connection_id", None) is not None:
+        if on_behalf:
             allowed = True
         elif where is not chat or in_topic or ephemeral:
             allowed = False
@@ -723,6 +735,14 @@ def stored_content(
     if isinstance(payload, Dice):
         faces = _DICE_FACES.get(payload.emoji, 6)
         return payload.model_copy(update={"value": (payload.value - 1) % faces + 1})
+    if isinstance(payload, Venue):
+        # The request states the venue's place as flat coordinates,
+        # which no field of the same name carries over.
+        return payload.model_copy(update={"location": _location(request, None)})  # type: ignore[arg-type]
+    if isinstance(payload, Invoice):
+        # The total is what the request's prices add up to.
+        prices = getattr(request, "prices", None) or []
+        return payload.model_copy(update={"total_amount": sum(price.amount for price in prices)})
     return with_passed_file(payload, uploaded, env.synthesis_context())
 
 
@@ -1119,6 +1139,8 @@ def copy_one(
         raise ApiRejection("message to copy not found")
     if not _copyable(original):
         raise ApiRejection("message can't be copied")
+    if original.poll is not None and "poll" not in changes:
+        changes = {**changes, "poll": _copied_poll(env, original.poll)}
     return target.add_derived(
         original,
         message_id=target.allocate_message_id(),
@@ -1133,6 +1155,32 @@ def copy_one(
             **changes,
         },
     )
+
+
+def _copied_poll(env: BotTestEnvironment, poll: Poll) -> Poll:
+    """
+    The poll a copy carries: a new poll, unlike a forward's.
+
+    It has its own id and no votes yet, so stopping or voting in one
+    of the two leaves the other as it was. It takes no schedule along,
+    as nothing would close the copy on it.
+    """
+    stored = env.world.polls.get(poll.id)
+    if stored is None:
+        return poll
+    copied = dataclasses.replace(
+        stored,
+        id=env.world.next_query_id(),
+        options=list(stored.options),
+        correct_option_ids=(
+            None if stored.correct_option_ids is None else list(stored.correct_option_ids)
+        ),
+        votes={},
+        open_period=None,
+        close_date=None,
+    )
+    env.world.polls[copied.id] = copied
+    return copied.as_poll()
 
 
 @models(CopyMessage)

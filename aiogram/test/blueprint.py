@@ -637,6 +637,8 @@ class Blueprint:
                 is_enabled=connection.is_enabled,
                 can_reply=connection.can_reply,
                 rights=connection.rights,
+                # Dated by the clock, as declared topics and polls are.
+                date=world.now,
             )
         for index, topic in enumerate(spec.topics):
             # Declared topics go through the same path as `createForumTopic`, so a
