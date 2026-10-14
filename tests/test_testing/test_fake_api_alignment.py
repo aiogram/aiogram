@@ -1027,6 +1027,30 @@ class TestChatRegistryRecipe:
             donor.dispose_sync()
             other.dispose_sync()
 
+    async def test_a_moved_chat_binds_its_ephemeral_messages(self, blueprint, dp):
+        team_id = blueprint.chats[2].id
+        receiver_id = blueprint.users[0].id
+        donor = BotTestEnvironment(blueprint=blueprint, dispatcher=dp)
+        other = BotTestEnvironment(blueprint=blueprint, dispatcher=dp)
+        try:
+            await donor.bot.send_message(
+                chat_id=team_id,
+                text="only you",
+                ephemeral_message_parameters=EphemeralMessageParameters(
+                    receiver_user_id=receiver_id,
+                ),
+            )
+            chat = donor.world.chats[team_id]
+            memo = {id(chat.world): None, id(chat.bound_bot): None}
+            clone = copy.deepcopy(chat, memo)
+            del other.world.chats[team_id]
+            other.world.chats[team_id] = clone
+
+            assert clone.ephemeral_messages(receiver_id)[0].bot is other.bot
+        finally:
+            donor.dispose_sync()
+            other.dispose_sync()
+
     def test_a_world_without_a_bot_registers_chats_as_they_are(self, blueprint):
         world: World = blueprint.build()
         chat = world.chats.pop(blueprint.chats[0].id)

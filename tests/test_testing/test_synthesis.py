@@ -6,6 +6,7 @@ import pytest
 from pydantic import BaseModel
 
 from aiogram import methods
+from aiogram.enums import ChatType, PassportElementErrorType
 from aiogram.methods.base import TelegramMethod
 from aiogram.test.synthesis import (
     SynthesisContext,
@@ -14,7 +15,14 @@ from aiogram.test.synthesis import (
     synthesize,
     synthesize_result,
 )
-from aiogram.types import BusinessConnection, Chat, Message, User
+from aiogram.types import (
+    BusinessConnection,
+    Chat,
+    ChatFullInfo,
+    Message,
+    PassportElementErrorDataField,
+    User,
+)
 
 
 def all_methods() -> list[type[TelegramMethod[Any]]]:
@@ -125,6 +133,17 @@ class TestModels:
         message = synthesize(Message, SynthesisContext(chat=None))
 
         assert message.chat.id
+
+    def test_a_subclass_field_takes_its_base_enum(self):
+        chat = synthesize(ChatFullInfo, SynthesisContext())
+
+        assert chat.type == ChatType.PRIVATE
+
+    def test_a_base_without_the_field_names_no_enum(self):
+        """`PassportElementErrorType` holds error sources, not types."""
+        error = synthesize(PassportElementErrorDataField, SynthesisContext())
+
+        assert error.type not in set(PassportElementErrorType)
 
 
 class TestAnnotationAccepts:

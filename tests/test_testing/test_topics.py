@@ -289,6 +289,18 @@ class TestGeneralForumMethods:
         assert forum.pinned_message_ids == [inside.message_id]
 
 
+class TestTopicCreationMessage:
+    async def test_it_cannot_be_deleted(self, forum_env, forum, support):
+        created = forum.messages[0]
+        assert created.forum_topic_created is not None
+
+        with pytest.raises(TelegramBadRequest, match="can't be deleted"):
+            await forum_env.bot.delete_message(chat_id=forum.id, message_id=created.message_id)
+        await forum_env.bot.delete_messages(chat_id=forum.id, message_ids=[created.message_id])
+
+        assert forum.find_message(created.message_id) is created
+
+
 class TestTopicAddressing:
     async def test_triggers_are_tagged(self, forum_env, dp, forum_blueprint, support):
         seen = {}

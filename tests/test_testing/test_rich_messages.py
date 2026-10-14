@@ -199,6 +199,27 @@ class TestRichContentIsCarried:
 
         assert message.rich_message.blocks[0].zoom == 13
 
+    def test_a_list_item_label_type_is_carried(self):
+        stored = materialize_rich_message(
+            InputRichMessage(
+                blocks=[
+                    InputRichBlockList(
+                        items=[
+                            InputRichBlockListItem(
+                                blocks=[InputRichBlockParagraph(text="x")],
+                                type="A",
+                                value=3,
+                            ),
+                        ],
+                    ),
+                ],
+            ),
+            SynthesisContext(),
+        )
+
+        item = stored.blocks[0].items[0]
+        assert (item.type, item.value) == ("A", 3)
+
     @pytest.mark.parametrize("content", [{"html": "<p>hi</p>"}, {"markdown": "*hi*"}])
     async def test_markup_only_content_stores_no_blocks(self, env, private, content):
         message = await self.send(env, private, **content)

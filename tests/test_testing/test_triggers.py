@@ -418,6 +418,14 @@ class TestRemainingUpdateKinds:
 
         assert seen == [alice.user.id]
 
+    async def test_the_managed_bot_is_a_bot(self, env, alice):
+        seen = []
+        env.dispatcher.managed_bot.register(lambda event: seen.append(event.bot_user.is_bot))
+
+        await alice.manage_bot()
+
+        assert seen == [True]
+
     async def test_subscription(self, env, alice):
         seen = []
         env.dispatcher.subscription.register(lambda event: seen.append(event.invoice_payload))

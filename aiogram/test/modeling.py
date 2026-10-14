@@ -1241,9 +1241,18 @@ def _edit_ephemeral(env: BotTestEnvironment, method: _EphemeralEdit, **changes: 
     return True
 
 
-def _stored_ephemeral(env: BotTestEnvironment, method: _EphemeralEdit) -> Message | None:
+def _stored_ephemeral(env: BotTestEnvironment, method: _EphemeralEdit) -> Message:
+    """
+    The ephemeral message an edit targets, or a refusal.
+
+    Checked before the new content is built, so a refused edit
+    registers no file and uses up no file number.
+    """
     chat = resolve_chat(env, method.chat_id)
-    return chat.find_ephemeral_message(method.receiver_user_id, method.ephemeral_message_id)
+    message = chat.find_ephemeral_message(method.receiver_user_id, method.ephemeral_message_id)
+    if message is None:
+        raise ApiRejection("message to edit not found")
+    return message
 
 
 @models(EditEphemeralMessageText)
@@ -1266,6 +1275,7 @@ def handle_edit_ephemeral_media(
     env: BotTestEnvironment,
     method: EditEphemeralMessageMedia,
 ) -> bool:
+    _stored_ephemeral(env, method)
     return _edit_ephemeral(env, method, **_media_changes(env, method))
 
 
@@ -1390,7 +1400,18 @@ _DELETABLE_FOR = datetime.timedelta(hours=48)
 _PRIVATE_DICE_KEPT_FOR = datetime.timedelta(hours=24)
 
 
+#: Service messages the Bot API names as never deletable: those about a
+#: supergroup, channel, or forum topic creation.
+_UNDELETABLE_SERVICE_FIELDS = (
+    "supergroup_chat_created",
+    "channel_chat_created",
+    "forum_topic_created",
+)
+
+
 def _deletable(env: BotTestEnvironment, chat: ChatState, message: Message) -> bool:
+    if any(getattr(message, name) for name in _UNDELETABLE_SERVICE_FIELDS):
+        return False
     age = _age(env, message)
     if age >= _DELETABLE_FOR:
         return False

@@ -408,6 +408,20 @@ class TestEphemeralEditsAndDeletions:
 
         assert team.ephemeral_messages(alice)[0].text == "only you"
 
+    async def test_a_refused_media_edit_registers_no_upload(self, env, team, alice, bob):
+        sent = await send_to(env, team, alice)
+        files = dict(env.world.files)
+
+        with pytest.raises(TelegramBadRequest, match="message to edit not found"):
+            await env.bot.edit_ephemeral_message_media(
+                chat_id=team.id,
+                receiver_user_id=bob.id,
+                ephemeral_message_id=sent.ephemeral_message_id,
+                media=InputMediaPhoto(media=BufferedInputFile(b"x", "x.jpg")),
+            )
+
+        assert env.world.files == files
+
     async def test_the_messages_own_shortcuts(self, env, team, alice):
         sent = await send_to(env, team, alice)
 

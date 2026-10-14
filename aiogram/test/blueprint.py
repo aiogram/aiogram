@@ -6,7 +6,7 @@ from dataclasses import dataclass, field
 from typing import Any
 
 from aiogram.client.default import DefaultBotProperties
-from aiogram.enums import ChatMemberStatus, ChatType, PollType
+from aiogram.enums import ChatMemberStatus, ChatType
 from aiogram.types import (
     BotCommand,
     BusinessBotRights,

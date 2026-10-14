@@ -106,6 +106,19 @@ class TestUploadedContent:
         with pytest.raises(NoFileContentError):
             await download(env.bot, message.document)
 
+    async def test_resending_a_file_id_keeps_its_unique_id(self, files_env):
+        """The same file sent again is the same file, unique id included."""
+        env, chat = files_env
+
+        first = await env.bot.send_document(
+            chat_id=chat.id,
+            document=BufferedInputFile(CONTENT, filename="a.txt"),
+        )
+        again = await env.bot.send_document(chat_id=chat.id, document=first.document.file_id)
+
+        assert again.document.file_id == first.document.file_id
+        assert again.document.file_unique_id == first.document.file_unique_id
+
 
 class TestMissingContentFailsLoudly:
     async def test_downloading_undeclared_content_raises(self, files_env):

@@ -663,7 +663,8 @@ handler never breaks just because a call was not configured.
     ever read. Only the scalar values a request states — coordinates, durations,
     dimensions, star counts, contact details — are carried through to the stored message.
     Every synthesized file gets an id of its own, numbered by the world (``file-1``,
-    ``unique-1``), and a file id the request passes is the id stored. A dice carries the
+    ``unique-1``), and a file id the request passes is the id stored, with the unique id
+    that file was minted with. A dice carries the
     emoji it was sent with, 🎲 by default, and a value in that emoji's range. A checklist
     is stored with the title and tasks its request stated.
 
@@ -825,12 +826,14 @@ The clock drives every time limit the Bot API documents for something the toolki
   toolkit's reading of "bots receive updates about polls sent by the bot".
 * **Live locations expire.** :code:`editMessageLiveLocation` and
   :code:`stopMessageLiveLocation` fail once ``live_period`` has passed since the message was
-  sent, after the location was stopped, or on a location that was never live. ``0x7FFFFFFF`` means forever. A new period may exceed the
-  current one by a day at most, and must end within 90 days.
+  sent, after the location was stopped, or on a location that was never live.
+  ``0x7FFFFFFF`` means forever. A new period may exceed the current one by a day at most,
+  and must end within 90 days.
 * **Old messages cannot be deleted.** :code:`deleteMessage` fails for a message 48 hours old
   or older, and for a dice in a private chat until more than 24 hours have passed.
   :code:`deleteMessages` skips such messages, which is the toolkit's reading of "see
-  deleteMessage for limitations".
+  deleteMessage for limitations". The service message about a supergroup, channel or
+  forum topic creation cannot be deleted at any age.
 * **Old business messages cannot be edited.** A business message the bot did not send,
   with no inline keyboard, cannot be edited by text, caption, media or markup once more
   than 48 hours have passed.

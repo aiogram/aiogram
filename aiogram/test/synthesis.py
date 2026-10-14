@@ -46,6 +46,11 @@ class SynthesisContext:
         return self.next_int()
 
 
+#: How synthesized file ids and their unique ids are spelled.
+_FILE_ID_PREFIX = "file-"
+_UNIQUE_ID_PREFIX = "unique-"
+
+
 def passed_file_id(uploaded: Any) -> str | None:
     """
     The file id a request passed as its media, if it passed one.
@@ -70,15 +75,26 @@ def with_passed_file(payload: Any, uploaded: Any, context: SynthesisContext) -> 
     items = payload if isinstance(payload, list) else [payload]
     file_id = passed_file_id(uploaded)
     if file_id is not None:
-        items = [
-            item.model_copy(update={"file_id": file_id}) if hasattr(item, "file_id") else item
-            for item in items
-        ]
+        items = [_with_file_id(item, file_id) for item in items]
     elif isinstance(uploaded, BufferedInputFile) and context.files is not None:
         for item in items:
             if hasattr(item, "file_id"):
                 context.files[item.file_id] = uploaded.data
     return items if isinstance(payload, list) else items[0]
+
+
+def _with_file_id(item: Any, file_id: str) -> Any:
+    """
+    The file ``item`` holding the file ``file_id`` names.
+
+    Its ``file_unique_id`` follows the id, as a file's does in Telegram:
+    the same file sent again keeps its unique id, and a synthesized
+    ``file-N`` keeps the ``unique-N`` it was minted with.
+    """
+    number = file_id.removeprefix(_FILE_ID_PREFIX)
+    return item.model_copy(
+        update={"file_id": file_id, "file_unique_id": f"{_UNIQUE_ID_PREFIX}{number}"},
+    )
 
 
 @cache
@@ -213,8 +229,8 @@ def _synthesize_model(
     values: dict[str, Any] = {}
     if {"file_id", "file_unique_id"} <= model.model_fields.keys():
         number = context.next_file_number()
-        values["file_id"] = f"file-{number}"
-        values["file_unique_id"] = f"unique-{number}"
+        values["file_id"] = f"{_FILE_ID_PREFIX}{number}"
+        values["file_unique_id"] = f"{_UNIQUE_ID_PREFIX}{number}"
     for name, info in _required_fields(model):
         if name in values:
             continue
@@ -253,10 +269,17 @@ def _enumerated(model: type, name: str) -> str | None:
     Bot API with no list kept here.
     """
     camel = "".join(part.capitalize() for part in name.split("_"))
-    enum = getattr(api_enums, f"{model.__name__}{camel}", None)
-    if isinstance(enum, type) and issubclass(enum, Enum):
-        member = next(m for m in enum if m not in _ONLY_ELSEWHERE)
-        return str(member.value)
+    # A subclass shares its base's field, and the enum named after it:
+    # ``ChatFullInfo.type`` takes the values of ``ChatType``. Only a
+    # base that declares the field names its enum.
+    owners = [model] + [
+        base for base in model.__mro__[1:] if name in getattr(base, "model_fields", {})
+    ]
+    for owner in owners:
+        enum = getattr(api_enums, f"{owner.__name__}{camel}", None)
+        if isinstance(enum, type) and issubclass(enum, Enum):
+            member = next(m for m in enum if m not in _ONLY_ELSEWHERE)
+            return str(member.value)
     return None
 
 

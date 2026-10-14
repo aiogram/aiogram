@@ -1238,6 +1238,14 @@ class ChatState:
         """The ephemeral messages ``user`` sent here, oldest first."""
         return list(self.received_ephemeral.get(_user_id(user), ()))
 
+    def stored_messages(self) -> list[Message]:
+        """Every message the chat holds, ephemeral ones included."""
+        return [
+            *self.messages,
+            *(message for stored in self.sent_ephemeral.values() for message in stored),
+            *(message for stored in self.received_ephemeral.values() for message in stored),
+        ]
+
     def add_ephemeral_message(self, message: Message) -> Message:
         """Store a bot's ephemeral message, under its receiver."""
         if message.receiver_user is None:
@@ -1585,7 +1593,7 @@ class ChatRegistry(dict[int, ChatState]):
         bot = getattr(self.world, "bound_bot", None)
         if bot is not None:
             # What the chat already holds becomes usable here too.
-            mount(chat.messages, bot)
+            mount(chat.stored_messages(), bot)
         super().__setitem__(chat_id, chat)
 
     def update(self, other: _Chats = (), /) -> None:  # type: ignore[override]
@@ -1730,7 +1738,7 @@ class World:
         """
         self.bound_bot = bot
         for chat in self.chats.values():
-            mount(chat.messages, bot)
+            mount(chat.stored_messages(), bot)
 
     def user(self, user_id: int) -> UserState:
         if user_id == self.bot_user.id:

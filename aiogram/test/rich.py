@@ -10,7 +10,7 @@ block type a future Bot API version adds converts with no change here.
 
 from __future__ import annotations
 
-from typing import Any, cast, get_origin
+from typing import Any, Literal, cast, get_origin
 
 from pydantic import BaseModel
 
@@ -61,9 +61,10 @@ def _convert_model(value: BaseModel, context: SynthesisContext) -> BaseModel:
         raise TypeError(msg)
     values: dict[str, Any] = {}
     for name, info in target_type.model_fields.items():
-        if name == "type":
+        if name == "type" and get_origin(info.annotation) is Literal:
             # The input and stored discriminators are different enums,
-            # so the target keeps its own default.
+            # so the target keeps its own default. A plain ``type``
+            # field, such as a list item's label type, is content.
             continue
         source_info = source_type.model_fields.get(name)
         raw = getattr(value, name, None) if source_info is not None else None

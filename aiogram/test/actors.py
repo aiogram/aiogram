@@ -1444,6 +1444,10 @@ class UserActor:
 
     async def manage_bot(self, **data: Any) -> Any:
         event = self._event(ManagedBotUpdated, user=self.user.as_user())
+        # A synthesized user is not a bot, and the managed one is.
+        event = event.model_copy(
+            update={"bot_user": event.bot_user.model_copy(update={"is_bot": True})},
+        )
         return await self._feed(
             Update(update_id=self._next_update_id(), managed_bot=event),
             data,
@@ -1597,6 +1601,8 @@ class UserActor:
             user=self.user.as_user(),
             date=world.next_date(),
             counter=world.last_update_id,
+            file_numbers=world.next_file_number,
+            files=world.files,
         )
         event = synthesize(event_type, context, name=event_type.__name__)
         return event.model_copy(update=overrides) if overrides else event
