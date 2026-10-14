@@ -10,7 +10,9 @@ answers everything else with a schema-valid synthesized result, and records ever
 assertion. Everything crossing the boundary between the world and the code under test is
 bound to the environment's bot the way a parsed response is, and copied where the two sides
 must not share state.
+
 ## Requirements
+
 ### Requirement: Environment blueprint declares a reusable world
 
 A blueprint SHALL declare the participants of a test world — chats, users, chat
@@ -1882,9 +1884,9 @@ all-`False` administrator rights, and the bot's own first name for the bot name.
 Every trigger that produces a query — callback query, inline query, shipping query,
 pre-checkout query — SHALL register that query's identifier as outstanding. The
 corresponding answer methods SHALL be applied to that registry: answering an outstanding
-query SHALL succeed and clear it, and answering an unknown or already-answered identifier
-SHALL raise `TelegramBadRequest`, as Telegram does when a query has expired or was already
-answered.
+query SHALL succeed and clear it, and answering an unknown, expired or already-answered
+identifier SHALL raise `TelegramBadRequest`. A pre-checkout query SHALL expire 10 seconds
+after it was issued, by the world clock; other kinds do not expire.
 
 #### Scenario: Answering an outstanding callback query succeeds
 
@@ -1906,6 +1908,18 @@ answered.
 - **WHEN** an inline query, a shipping query or a pre-checkout query is answered with an
   identifier that is not outstanding
 - **THEN** the call raises `TelegramBadRequest`
+
+#### Scenario: A late pre-checkout answer fails
+
+- **WHEN** the test advances the clock by 11 seconds before the bot answers a pending
+  pre-checkout query
+- **THEN** the answer raises `TelegramBadRequest`, reporting the query as too old
+
+#### Scenario: Other queries do not expire
+
+- **WHEN** the test advances the clock by an hour before the bot answers a pending callback
+  query
+- **THEN** the answer succeeds
 
 ### Requirement: Chat join requests are world state
 
@@ -1966,8 +1980,8 @@ update.
 
 A poll sent by the bot SHALL be stored on the message that carries it, holding its
 question, options, type, anonymity, multiple-answer flag, quiz answer and explanation,
-the votes cast, and whether it is closed. A blueprint SHALL be able to declare an existing
-poll.
+the votes cast, whether it is closed, and when it is scheduled to close. A blueprint SHALL
+be able to declare an existing poll.
 
 #### Scenario: A sent poll is stored on its message
 
@@ -1979,6 +1993,11 @@ poll.
 
 - **WHEN** a blueprint declares a poll in a chat and a user actor votes in it
 - **THEN** the vote is recorded without the poll having been sent through the API first
+
+#### Scenario: A scheduled close is reported
+
+- **WHEN** a handler sends a poll with an open period
+- **THEN** the stored poll reports the moment it will close
 
 ### Requirement: Voting updates the stored poll
 
@@ -2715,3 +2734,969 @@ nothing reads them back, and thumbnails are media processing.
 
 - **WHEN** a handler sets a sticker's keywords
 - **THEN** the call succeeds and is visible in the call log, and the stored set is unchanged
+
+### Requirement: A rich message carries the content its request stated
+
+A rich message the environment stores, whether sent, edited, copied or forwarded, SHALL
+carry the blocks and settings its request stated, in the shape Telegram returns them. Media
+inside a block SHALL be synthesized as it is for the matching send method. A field the
+stored shape requires but the request left unset SHALL get a valid value. Content given
+only as `html` or `markdown` is not parsed into blocks.
+
+#### Scenario: Sent blocks are stored
+
+- **WHEN** a handler sends a rich message whose blocks include a paragraph, a list, a table
+  and a button block
+- **THEN** the stored message's rich content has the same blocks in the same order,
+  carrying the same text, cells and buttons
+
+#### Scenario: Media inside a block is synthesized
+
+- **WHEN** a handler sends a rich message containing a photo block marked as a spoiler
+- **THEN** the stored block carries a non-empty, schema-valid photo, the same as a photo
+  sent with `sendPhoto`, and is marked as a spoiler
+
+#### Scenario: Unset required fields get valid values
+
+- **WHEN** a handler sends a map block without zoom or size, or a list without item labels
+- **THEN** the stored blocks carry values within the ranges the Bot API documents for them
+
+#### Scenario: Markup-only content is not parsed
+
+- **WHEN** a handler sends a rich message given only as `html` or `markdown`
+- **THEN** the message is stored and returned, and its rich content carries no blocks
+
+#### Scenario: A copied rich message keeps its content
+
+- **WHEN** a handler copies or forwards a stored rich message
+- **THEN** the resulting message carries the same rich content
+
+### Requirement: Editing text replaces either kind of content
+
+`editMessageText` SHALL replace a stored message's content with what the request carries:
+rich content replaces text and text replaces rich content, so the message never carries
+both. The reply markup SHALL follow the method's existing rule: what the request passes,
+and none when it passes none.
+
+#### Scenario: Editing in rich content
+
+- **WHEN** a handler edits a stored text message with rich content
+- **THEN** the stored message carries the new blocks and no longer carries the old text
+
+#### Scenario: Editing a rich message back to text
+
+- **WHEN** a handler edits a stored rich message with plain text
+- **THEN** the stored message carries the text and no longer carries rich content
+
+#### Scenario: Editing only the keyboard keeps the rich content
+
+- **WHEN** a handler edits the reply markup of a stored rich message
+- **THEN** the rich content is unchanged and the new keyboard is stored
+
+### Requirement: Buttons inside rich content are clickable
+
+A click trigger SHALL resolve a `callback_data` from a button anywhere in a stored rich
+message's content, at any nesting depth, as well as from its inline keyboard, and SHALL
+accept such a button object directly. Buttons SHALL be considered in document order: the
+inline keyboard first, then the blocks. Deep-link following and the misdirected-click hint
+SHALL cover these buttons the same way.
+
+#### Scenario: Clicking a button block
+
+- **WHEN** a handler sends a rich message with a callback button in a button block, and a
+  user actor clicks its `callback_data`
+- **THEN** a `callback_query` update is dispatched whose `data` is that `callback_data` and
+  whose `message` is the stored rich message
+
+#### Scenario: Clicking a button nested in text
+
+- **WHEN** the callback button sits in rich text inside a nested block, such as a list item
+  or a details block
+- **THEN** the click resolves it exactly as it resolves a top-level button block
+
+#### Scenario: Clicking a rich button object
+
+- **WHEN** a test passes a button object taken from stored rich content to the click
+  trigger
+- **THEN** the click uses that button's `callback_data`
+
+#### Scenario: Following a deep link from a rich button
+
+- **WHEN** a handler sends a rich message whose `url` button carries a start link to the
+  bot, and a user actor follows the deep link
+- **THEN** the link is followed exactly as it is from an inline keyboard button
+
+#### Scenario: A rich button in another chat is named
+
+- **WHEN** an actor clicks a `callback_data` that exists only on a rich button in a
+  different chat
+- **THEN** the failure names that chat, as it does for an inline keyboard button
+
+### Requirement: A restriction is reported separately from presence
+
+A restricted user SHALL be reported with `is_member` telling whether they are in the chat,
+and SHALL count as a member only while they are. Restricting a user who is not in the chat
+SHALL leave them absent. A restricted member who leaves or rejoins SHALL stay restricted,
+with only `is_member` changing, in both membership reads and membership updates.
+
+#### Scenario: Restricting an absent user
+
+- **WHEN** a handler restricts a user who never joined the chat
+- **THEN** `getChatMember` reports them restricted with `is_member` false, and
+  `getChatMemberCount` does not count them
+
+#### Scenario: A restricted member leaves
+
+- **WHEN** a restricted member's actor leaves the chat
+- **THEN** the `chat_member` update moves them from restricted with `is_member` true to
+  restricted with `is_member` false, and the permissions are unchanged
+
+#### Scenario: A restricted user rejoins
+
+- **WHEN** that user's actor joins again
+- **THEN** they are restricted with `is_member` true and the same permissions
+
+### Requirement: Granting every permission lifts a restriction
+
+`restrictChatMember` granting every permission SHALL lift the restriction. The user SHALL
+become a member if present and left otherwise, with no stored permissions or end date.
+
+#### Scenario: Lifting a present member's restriction
+
+- **WHEN** a handler restricts a member and then restricts them again granting every
+  permission
+- **THEN** `getChatMember` reports a plain member
+
+#### Scenario: Lifting an absent user's restriction
+
+- **WHEN** a handler lifts the restriction of a user who is not in the chat
+- **THEN** `getChatMember` reports them as having left
+
+### Requirement: Restriction and ban end dates are reported as Telegram reports them
+
+A restriction or ban with no end SHALL report `until_date` as the Unix epoch, which is `0`
+on the wire. A change to any status other than restricted or banned SHALL clear the stored
+end date. A ban in a basic group SHALL have no end, since the Bot API applies `until_date`
+for supergroups and channels only.
+
+#### Scenario: A permanent ban
+
+- **WHEN** a handler bans a user without an end date
+- **THEN** `getChatMember` reports `until_date` as the Unix epoch
+
+#### Scenario: Unbanning clears the end date
+
+- **WHEN** a handler bans a user until a date and then unbans them
+- **THEN** the user reads as having left, with no restriction end carried into a later
+  membership
+
+#### Scenario: A basic-group ban has no end
+
+- **WHEN** a handler bans a user in a basic group with an end date
+- **THEN** `getChatMember` reports `until_date` as the Unix epoch
+
+### Requirement: The demote trigger demotes administrators only
+
+The actor's demote trigger SHALL refuse, as a setup error, a subject who is not an
+administrator, and SHALL leave their membership unchanged. Demoting is not a way to lift a
+restriction or bring an absent user in.
+
+#### Scenario: Demoting a restricted member is refused
+
+- **WHEN** a test demotes a restricted member through the actor
+- **THEN** the trigger fails as a setup error, and the member stays restricted
+
+### Requirement: Unbanning honours `only_if_banned`
+
+`unbanChatMember` SHALL leave the user absent and free to join, removing a present member as
+the Bot API documents for the default. With `only_if_banned`, it SHALL act on a banned user
+only and leave anyone else as they are.
+
+#### Scenario: Unbanning removes a present member by default
+
+- **WHEN** a handler unbans a user who is a member of the chat
+- **THEN** the user reads as having left
+
+#### Scenario: `only_if_banned` leaves a member alone
+
+- **WHEN** a handler unbans a member of the chat with `only_if_banned`
+- **THEN** the user is still a member
+
+### Requirement: Ephemeral messages are addressed to one receiver
+
+A message the bot sends with ephemeral message parameters SHALL be returned in Telegram's
+ephemeral shape: message id 0, an ephemeral message id, and the receiver. It SHALL be kept
+apart from the chat's shared history, readable back per receiver in send order, and SHALL
+keep its topic thread. It SHALL be refused outside a group or supergroup, and for a
+receiver the world does not declare.
+
+#### Scenario: An ephemeral send has Telegram's shape
+
+- **WHEN** a handler sends a message to a group with ephemeral message parameters naming a
+  user
+- **THEN** the returned message has `message_id` 0, an `ephemeral_message_id`, and that
+  user as `receiver_user`
+
+#### Scenario: The deprecated receiver parameter sends one too
+
+- **WHEN** a handler sends a message to a group with the deprecated `receiver_user_id`
+  parameter instead of ephemeral message parameters
+- **THEN** the message is ephemeral for that user, exactly as with the new parameters
+
+#### Scenario: An ephemeral message stays out of the shared history
+
+- **WHEN** a handler sends an ephemeral message to a group
+- **THEN** the group's message list does not contain it, and a wait for the next message in
+  that group is not satisfied by it
+
+#### Scenario: An ephemeral message is readable back for its receiver
+
+- **WHEN** a test asks the chat for the ephemeral messages sent to a user
+- **THEN** it gets the ephemeral messages the bot sent to that user, in the order they were
+  sent, and none the user sent
+
+#### Scenario: An ephemeral send outside a group is rejected
+
+- **WHEN** a handler sends an ephemeral message to a private chat or a channel
+- **THEN** the call fails as a Telegram error, and nothing is stored
+
+#### Scenario: An ephemeral send to an undeclared user is a setup error
+
+- **WHEN** a handler sends an ephemeral message naming a user the world does not declare
+- **THEN** the call fails as a setup error naming that user, and nothing is stored
+
+#### Scenario: An ephemeral send keeps its topic
+
+- **WHEN** a handler sends an ephemeral message into a forum topic
+- **THEN** the returned message carries that topic's thread identifier
+
+### Requirement: Only the receiver can click an ephemeral message
+
+A click trigger SHALL resolve buttons on the ephemeral messages addressed to the clicking
+actor, ahead of the shared history, and on no other ephemeral message, including one passed
+explicitly. A miss SHALL name the receiver of the ephemeral message that holds the button.
+The produced `callback_query` SHALL carry the ephemeral message.
+
+#### Scenario: The receiver clicks an ephemeral button
+
+- **WHEN** a handler sends an ephemeral message with a callback button to a member, and
+  that member's actor clicks it
+- **THEN** a `callback_query` update is dispatched whose `message` is the ephemeral message,
+  carrying its `ephemeral_message_id` and `receiver_user`
+
+#### Scenario: Another member cannot click it
+
+- **WHEN** a different member of the same chat clicks that `callback_data`, by data or by
+  passing the ephemeral message itself
+- **THEN** the click fails, and the failure names the member the ephemeral message is
+  addressed to rather than reading as a `callback_data` that exists nowhere
+
+#### Scenario: An answer cannot replace an ephemeral message
+
+- **WHEN** a handler answers a callback query from an ephemeral message with an ephemeral
+  message that asks to replace the original
+- **THEN** the call fails as a Telegram error, because the Bot API requires ephemeral
+  messages to be edited with the ephemeral edit methods instead
+
+### Requirement: Ephemeral edits and deletions act on stored ephemeral messages
+
+The ephemeral edit methods SHALL change the stored ephemeral message they name, addressed by
+chat, receiver and ephemeral id: text or rich content, caption, media and reply markup. The
+ephemeral delete method SHALL remove it. A call naming a message that does not exist for
+that chat and receiver SHALL fail as a Telegram error. The regular edit and delete methods
+SHALL NOT reach ephemeral messages.
+
+#### Scenario: Editing an ephemeral message's text
+
+- **WHEN** a handler edits the text of an ephemeral message it sent
+- **THEN** the stored ephemeral message carries the new text, and the shared history is
+  unchanged
+
+#### Scenario: Deleting an ephemeral message
+
+- **WHEN** a handler deletes an ephemeral message it sent
+- **THEN** it is no longer readable back for its receiver, and a later edit of it fails
+
+#### Scenario: Editing through the message's own shortcut
+
+- **WHEN** a handler edits or deletes an ephemeral message through that message object's own
+  ephemeral shortcuts
+- **THEN** the calls address the stored message and succeed
+
+#### Scenario: The wrong receiver does not match
+
+- **WHEN** a handler edits an ephemeral message by its id but names a different receiver
+- **THEN** the call fails as a Telegram error, and the stored message is unchanged
+
+#### Scenario: Regular edits do not reach ephemeral messages
+
+- **WHEN** a handler calls the regular text edit or delete shortcut on an ephemeral message
+- **THEN** the call fails as a Telegram error, and the stored ephemeral message is unchanged
+
+### Requirement: Actors can send ephemeral commands
+
+The send trigger SHALL be able to produce an incoming ephemeral message, in a group or
+supergroup only: message id 0 and an ephemeral message id, kept out of the shared history,
+whether the actor produced it or a test fed it directly. A bot message replying to it SHALL
+have to be ephemeral and SHALL have to name an incoming ephemeral message that exists in
+that chat. Such a reply carries no `reply_to_message`.
+
+#### Scenario: Sending an ephemeral command
+
+- **WHEN** a user actor in a group sends a command marked as ephemeral, twice
+- **THEN** each dispatched message has `message_id` 0 and its own `ephemeral_message_id`,
+  and the group's message list contains neither
+
+#### Scenario: Replying with the message's own reply shortcut
+
+- **WHEN** a handler answers that command with `message.reply(...)`
+- **THEN** the reply is an ephemeral message addressed to the command's sender, with no
+  `reply_to_message`
+
+#### Scenario: A non-ephemeral reply to an ephemeral message is rejected
+
+- **WHEN** a handler replies to an ephemeral command by its `ephemeral_message_id` without
+  ephemeral message parameters
+- **THEN** the call fails as a Telegram error, and nothing is stored
+
+#### Scenario: A reply must name an incoming ephemeral message
+
+- **WHEN** a handler replies naming an `ephemeral_message_id` that no user sent in that
+  chat, including the id of the bot's own ephemeral message
+- **THEN** the call fails as a Telegram error, and nothing is stored
+
+#### Scenario: An ephemeral command outside a group is a setup error
+
+- **WHEN** a test sends an ephemeral command from an actor bound to a private chat
+- **THEN** the trigger fails as a setup error, and nothing is dispatched
+
+### Requirement: The world has a clock the test controls
+
+World time SHALL start at the real time, to the second, or at a start the test gives, and
+SHALL then stand still unless the test advances it, never backwards. A date for something
+happening now SHALL be the clock's time. Advancing SHALL dispatch the updates time causes
+before returning, ordered by moment and then by scheduling order.
+
+#### Scenario: The clock starts at the real time
+
+- **WHEN** a test builds an environment without giving a start
+- **THEN** the clock reads the real time to the second, so a date a bot computes from the
+  real clock lands where Telegram would see it
+
+#### Scenario: A pinned start makes dates reproducible
+
+- **WHEN** a test builds an environment with a fixed start
+- **THEN** the clock reads that start until the test advances it
+
+#### Scenario: Time does not move on its own
+
+- **WHEN** a test feeds several updates without advancing the clock
+- **THEN** every message they produce carries the same date
+
+#### Scenario: Advancing moves every later date
+
+- **WHEN** a test advances the clock by one hour and a user then sends a message
+- **THEN** that message's date is one hour after the dates produced before the advance
+
+#### Scenario: Time cannot go backwards
+
+- **WHEN** a test advances the clock by a negative amount
+- **THEN** the call fails, and the clock is unchanged
+
+#### Scenario: Advancing cannot overlap itself
+
+- **WHEN** a handler running inside an advance, or a concurrent task, advances the clock
+- **THEN** that call fails as a setup error, and the running advance is unaffected
+
+#### Scenario: Events due during an advance fire within it
+
+- **WHEN** a handler reacting to an event during an advance schedules another event that
+  falls before the advance's target
+- **THEN** that event also fires before the advance returns, at its own moment
+
+### Requirement: Restrictions and bans expire
+
+An `until_date` given as a duration SHALL be measured from the clock. One less than 30
+seconds or more than 366 days ahead SHALL mean forever. Once the clock reaches a stored
+`until_date`, every membership read SHALL see the restriction ended: a present restricted
+user reads as a member, an absent one and a banned user as having left, carrying no end
+date.
+
+#### Scenario: A mute lifts on time
+
+- **WHEN** a handler restricts a member for one hour, and the test advances the clock by
+  one hour
+- **THEN** reading that member reports an ordinary member with no `until_date`
+
+#### Scenario: A mute on an absent user ends as left
+
+- **WHEN** a handler restricts a user who is not in the chat for one hour, and the test
+  advances the clock by one hour
+- **THEN** reading that user reports that they have left
+
+#### Scenario: A ban lifts on time
+
+- **WHEN** a handler bans a user for one day, and the test advances the clock by one day
+- **THEN** reading that user reports that they have left the chat
+
+#### Scenario: A short or very long period means forever
+
+- **WHEN** a handler restricts a member until 10 seconds from now, or until 400 days from
+  now
+- **THEN** the member reads as restricted with `until_date` at the Unix epoch, and advancing
+  the clock by any amount does not lift it
+
+#### Scenario: A duration counts from now
+
+- **WHEN** the test has advanced the clock, and a handler then restricts a member with a
+  duration of one hour
+- **THEN** the stored `until_date` is one hour after the clock's current time
+
+### Requirement: Polls close on schedule
+
+A poll sent with an open period or a close date, never both, SHALL close when the clock
+reaches that moment: the stored poll and its message SHALL show it closed, the bot SHALL
+receive a `poll` update with it, and voting SHALL be refused. A moment less than 5 or more
+than 2628000 seconds ahead SHALL fail as a Telegram error. A poll stopped earlier SHALL not
+close again.
+
+#### Scenario: A poll closes when its period ends
+
+- **WHEN** a handler sends a poll with a 60-second open period, and the test advances the
+  clock by 60 seconds
+- **THEN** a `poll` update is dispatched whose poll is closed, and the stored poll and the
+  message carrying it are closed
+
+#### Scenario: A poll stays open before its time
+
+- **WHEN** the test advances the clock by less than the open period
+- **THEN** no `poll` update is dispatched, and users can still vote
+
+#### Scenario: A stopped poll does not close twice
+
+- **WHEN** a handler stops a scheduled poll and the test then advances past its close
+  moment
+- **THEN** no `poll` update is dispatched for it
+
+#### Scenario: An invalid schedule is rejected
+
+- **WHEN** a handler sends a poll whose close date is 2 seconds ahead, or that passes both
+  an open period and a close date
+- **THEN** the call raises `TelegramBadRequest`, and no poll is stored
+
+### Requirement: Live locations expire
+
+Editing or stopping a live location SHALL fail once its live period has elapsed since the
+message was sent, after `stopMessageLiveLocation`, or when the location was never live,
+unless the period is forever (`0x7FFFFFFF`). A new live period other than forever SHALL be refused
+when it exceeds the current one by more than a day, or ends more than 90 days after the
+clock's time.
+
+#### Scenario: Editing within the period works
+
+- **WHEN** a handler sends a live location for 10 minutes and edits it 5 minutes later
+- **THEN** the stored location carries the new coordinates
+
+#### Scenario: Editing after the period fails
+
+- **WHEN** the test advances the clock past the live period and the handler edits the
+  location
+- **THEN** the call raises `TelegramBadRequest`, and the stored location is unchanged
+
+#### Scenario: Editing a stopped location fails
+
+- **WHEN** a handler stops a live location and then edits it
+- **THEN** the call raises `TelegramBadRequest`
+
+#### Scenario: Stopping an expired location fails
+
+- **WHEN** the test advances the clock past a live location's period and the handler stops
+  it
+- **THEN** the call raises `TelegramBadRequest`
+
+#### Scenario: A forever location never expires
+
+- **WHEN** a handler sends a live location with the forever period and the test advances
+  the clock by a year
+- **THEN** editing it still works
+
+#### Scenario: Extending by more than a day is refused, forever is not
+
+- **WHEN** a handler edits a one-hour live location with a period two days longer, and then
+  with the forever period
+- **THEN** the first call raises `TelegramBadRequest` and the second succeeds
+
+### Requirement: Old messages cannot be deleted or edited
+
+Deleting a message sent 48 hours or more before the clock's time SHALL fail as a Telegram
+error, and a dice in a private chat SHALL be deletable only once more than 24 hours have
+passed. Batch deletion SHALL skip such messages, which is the toolkit's reading. Editing
+the text, caption, media or markup of a business message not sent by the bot and carrying
+no inline keyboard SHALL fail once more than 48 hours have passed.
+
+#### Scenario: A fresh message can be deleted
+
+- **WHEN** a handler deletes a message sent an hour earlier
+- **THEN** the message is removed
+
+#### Scenario: A two-day-old message cannot be deleted
+
+- **WHEN** the test advances the clock by 48 hours and a handler deletes an earlier message
+- **THEN** the call raises `TelegramBadRequest`, and the message stays
+
+#### Scenario: A fresh dice in a private chat cannot be deleted
+
+- **WHEN** a handler deletes a dice it just sent in a private chat
+- **THEN** the call raises `TelegramBadRequest`, and the same call succeeds once more than
+  24 hours have passed
+
+#### Scenario: Batch deletion skips messages too old to delete
+
+- **WHEN** a handler batch-deletes one fresh and one two-day-old message
+- **THEN** the fresh one is removed, the old one stays, and the call succeeds
+
+#### Scenario: An old business message cannot be edited
+
+- **WHEN** a handler edits a business message sent by the account owner, carrying no inline
+  keyboard, 49 hours after it was sent
+- **THEN** the call raises `TelegramBadRequest`, while a business message the bot sent stays
+  editable
+
+### Requirement: An ephemeral command must be answered within 15 seconds
+
+A reply to an incoming ephemeral message SHALL fail as a Telegram error once more than 15
+seconds have passed since that message was sent.
+
+#### Scenario: A prompt reply succeeds
+
+- **WHEN** a handler replies to an ephemeral command without the clock moving
+- **THEN** the reply is stored for its receiver
+
+#### Scenario: A late reply fails
+
+- **WHEN** the test advances the clock by 16 seconds and the bot then replies to the
+  command
+- **THEN** the call raises `TelegramBadRequest`, and nothing is stored
+
+### Requirement: A media group stores its items
+
+`sendMediaGroup` SHALL store one message per item, each carrying that item's media, caption
+and caption entities, all under one shared `media_group_id`. A request with fewer than 2 or
+more than 10 items SHALL fail as a Telegram error.
+
+#### Scenario: An album keeps each item's media and caption
+
+- **WHEN** a handler sends a media group of two photos with captions
+- **THEN** two messages are stored, each with a photo and its own caption, sharing one
+  `media_group_id`
+
+#### Scenario: A one-item album is refused
+
+- **WHEN** a handler sends a media group with one item
+- **THEN** the call raises `TelegramBadRequest`, and nothing is stored
+
+### Requirement: A reply resolves its target where the request says
+
+A send with reply parameters SHALL look its target up in the chat the parameters name, or in
+the target chat otherwise. It SHALL set `reply_to_message` only for a target in the same
+chat, and SHALL describe a target in another chat with `external_reply`. A target that does not exist SHALL fail as a Telegram error, unless the request allows
+sending without the reply.
+
+#### Scenario: A reply to a missing message fails
+
+- **WHEN** a handler replies to a message id that does not exist in the chat
+- **THEN** the call raises `TelegramBadRequest`
+
+#### Scenario: Sending without the reply is allowed when asked
+
+- **WHEN** the same reply passes `allow_sending_without_reply`
+- **THEN** the message is sent without `reply_to_message`
+
+#### Scenario: A reply in another chat is looked up there
+
+- **WHEN** a handler replies to a message of another chat, naming that chat
+- **THEN** the target is resolved in that chat, and the message carries no
+  `reply_to_message` from its own chat, but an `external_reply` naming the target's origin
+
+### Requirement: Copies and forwards follow the documented rules
+
+A copy or forward SHALL land in the target thread the request names, or in none. A copy
+SHALL carry the request's new caption with its entities, drop the caption when asked, and
+store the request's inline keyboard. Service, invoice, paid-media and giveaway messages SHALL
+not be copied, and protected or service messages SHALL not be forwarded; a single call fails
+as a Telegram error and a batch call skips them.
+
+#### Scenario: A copy into a topic lands in it
+
+- **WHEN** a handler copies a message into a forum topic of another chat
+- **THEN** the copy carries that topic's thread, and a copy into a non-forum chat carries
+  none
+
+#### Scenario: A new caption brings its own entities
+
+- **WHEN** a handler copies a captioned message with a new caption and no entities
+- **THEN** the copy carries the new caption and none of the old entities
+
+#### Scenario: A protected message cannot be forwarded
+
+- **WHEN** a handler forwards a message sent with protected content
+- **THEN** the call raises `TelegramBadRequest`
+
+#### Scenario: A service message cannot be copied
+
+- **WHEN** a handler copies a service message
+- **THEN** the call raises `TelegramBadRequest`, and a batch copy including it skips it
+
+### Requirement: Unpinning without an id unpins the newest pin
+
+`unpinChatMessage` without a message id SHALL unpin only the most recently sent pinned
+message, leaving the others pinned.
+
+#### Scenario: Two pins, one unpin
+
+- **WHEN** a handler pins two messages and then unpins without an id
+- **THEN** only the more recently sent message is unpinned
+
+### Requirement: An edit acts on the content the message has
+
+`editMessageText` SHALL fail as a Telegram error on a message with no text or rich content,
+and `editMessageCaption` SHALL fail on a message with no media that can carry a caption.
+
+#### Scenario: Editing text on a photo fails
+
+- **WHEN** a handler edits the text of a photo message
+- **THEN** the call raises `TelegramBadRequest`, and the stored message is unchanged
+
+#### Scenario: Editing a caption on a text message fails
+
+- **WHEN** a handler edits the caption of a text message
+- **THEN** the call raises `TelegramBadRequest`
+
+### Requirement: Polls keep their documented settings
+
+A poll SHALL store all of its correct option ids, and SHALL allow revoting by default unless
+it is a quiz. A quiz without correct option ids SHALL fail as a Telegram error. `stopPoll`
+SHALL store the inline keyboard it is given.
+
+#### Scenario: A quiz keeps its correct answers
+
+- **WHEN** a handler sends a quiz with two correct option ids
+- **THEN** the stored poll reports both
+
+#### Scenario: A regular poll allows revoting by default
+
+- **WHEN** a handler sends a regular poll without saying whether revoting is allowed
+- **THEN** the stored poll allows revoting
+
+#### Scenario: A quiz without an answer is refused
+
+- **WHEN** a handler sends a quiz with no correct option ids
+- **THEN** the call raises `TelegramBadRequest`
+
+### Requirement: Forum topic calls apply their documented couplings
+
+Hiding the General topic SHALL also close it, and reopening it SHALL also unhide it.
+`editForumTopic` with an empty name SHALL keep the current name, and an empty custom emoji id
+SHALL remove the icon.
+
+#### Scenario: Hiding General closes it
+
+- **WHEN** a handler hides an open General topic
+- **THEN** the General topic is hidden and closed
+
+#### Scenario: An empty name keeps the name
+
+- **WHEN** a handler edits a topic with an empty name
+- **THEN** the topic keeps its name
+
+### Requirement: Business deletions stay in one chat
+
+`deleteBusinessMessages` SHALL delete messages from one chat only, and SHALL fail as a
+Telegram error when the ids belong to different chats. Business messages SHALL be numbered
+per business connection, so two chats of one connection never hold the same id.
+
+#### Scenario: Another chat's message is untouched
+
+- **WHEN** two chats of a business connection each hold a business message, and a handler
+  deletes the first one
+- **THEN** the other chat's message stays
+
+#### Scenario: Ids from two chats are refused
+
+- **WHEN** a handler deletes business messages from two chats in one call
+- **THEN** the call fails as a Telegram error, and nothing is deleted
+
+### Requirement: Checklists carry their content
+
+A checklist sent or edited SHALL be stored with the title and tasks its request stated.
+
+#### Scenario: A sent checklist keeps its tasks
+
+- **WHEN** a handler sends a checklist with a title and two tasks
+- **THEN** the stored checklist carries that title and those two tasks
+
+### Requirement: Synthesized values are valid and distinct
+
+Synthesized content SHALL be schema-valid and distinguishable:
+
+- every synthesized file SHALL get a unique id, and a file id the request passes SHALL be
+  the stored one;
+- a dice SHALL carry its emoji, 🎲 by default, and a value in that emoji's range;
+- a string field aiogram enumerates SHALL take one of its values;
+- a synthesized boolean SHALL be false, and a count of an empty list zero;
+- every rich media block SHALL convert.
+
+#### Scenario: Two uploads stay apart
+
+- **WHEN** a handler uploads two different documents with their bytes
+- **THEN** the two stored documents have different file ids, and each downloads its own
+  bytes
+
+#### Scenario: A dice is a dice
+
+- **WHEN** a handler sends a dice without an emoji several times
+- **THEN** each carries 🎲 and a value from 1 to 6
+
+#### Scenario: A sticker is a regular sticker
+
+- **WHEN** a handler sends a sticker
+- **THEN** the stored sticker's type is one of the documented types, and it is not both
+  animated and a video
+
+### Requirement: Star transactions read like Telegram's
+
+A star transaction SHALL report the payment's charge id as its id, a positive amount, and
+the user on the other side as its source or receiver.
+
+#### Scenario: A payment and its refund
+
+- **WHEN** a user pays and the bot refunds the charge
+- **THEN** the bot's transactions report the charge id, positive amounts, and the user as
+  the payment's source and the refund's receiver
+
+### Requirement: The bot can edit the administrators it promoted
+
+An administrator the bot promoted SHALL report `can_be_edited` as true, and others as false.
+
+#### Scenario: A promoted member is editable by the bot
+
+- **WHEN** the bot promotes a member and reads them back
+- **THEN** the member reports `can_be_edited` true
+
+### Requirement: A declared world matches one built through the API
+
+What a blueprint declares SHALL read back as the same state reached through API calls:
+declared permissions SHALL apply the documented defaults, declared topics SHALL be created
+by the bot, and a declared poll SHALL be stored on a message in its chat.
+
+#### Scenario: Declared permissions follow their defaults
+
+- **WHEN** a blueprint declares a restricted member allowed to send messages
+- **THEN** the member reads back allowed to react, as the same restriction through the API
+  does
+
+#### Scenario: A declared poll is stored on a message
+
+- **WHEN** a blueprint declares a poll in a chat
+- **THEN** the chat holds a message carrying that poll, and users can vote in it
+
+### Requirement: The bot edits only what Telegram lets it edit
+
+An edit method SHALL refuse, as a Telegram error, a message the bot did not send outside a
+channel or a business chat, a customer's message in a business chat, a forward, and a
+business message addressed without its connection or a plain message addressed with one.
+Every edit SHALL set `edit_date`, and the business account's 48-hour edit window SHALL bind
+every edit method.
+
+#### Scenario: A user's message cannot be edited by the bot
+
+- **WHEN** a handler edits the text of a message a user sent in a group
+- **THEN** the call raises `TelegramBadRequest`, and the message is unchanged
+
+#### Scenario: An edit is dated
+
+- **WHEN** the bot edits its own message
+- **THEN** the returned and stored message carry an `edit_date`
+
+### Requirement: Copies and forwards are new messages of their chat
+
+A copy or forward SHALL be the bot's own message: it SHALL keep no reply, edit date,
+protection, business connection, album, sender chat or sending details of the original, and
+SHALL take only the keyboard its request passes. A forward SHALL keep the first origin of a
+forwarded original. A copied poll SHALL be a poll of its own, which the bot can stop.
+
+#### Scenario: A forward of a forward names the first origin
+
+- **WHEN** the bot forwards a message a user forwarded to it
+- **THEN** the new message's `forward_origin` names the original author
+
+#### Scenario: A copied poll is separate
+
+- **WHEN** the bot copies a poll and stops the copy
+- **THEN** the original poll stays open
+
+### Requirement: Channel posts are the channel's
+
+A message the bot posts in a channel, a copy, a forward and a service message included,
+SHALL carry the channel as `sender_chat` and no `from_user`.
+
+#### Scenario: The bot posts in a channel
+
+- **WHEN** a handler sends a message to a channel
+- **THEN** the stored post has no `from_user`, and its `sender_chat` is the channel
+
+### Requirement: A pin is announced
+
+`pinChatMessage` SHALL post a `pinned_message` service message carrying the pinned message
+without its own `reply_to_message`, in the pinned message's topic, once per pin.
+
+#### Scenario: Pinning twice announces once
+
+- **WHEN** a handler pins the same message twice
+- **THEN** the chat holds one `pinned_message` service message for it
+
+### Requirement: Dates count in whole seconds
+
+A date or end date a bot passes SHALL be read in whole seconds and measured against the
+clock's whole second, so an end computed from the current time is reached by advancing the
+clock as far.
+
+#### Scenario: A one-minute restriction ends after a minute
+
+- **WHEN** a handler restricts a member until one minute from `datetime.now()`, and the test
+  advances the clock by a minute
+- **THEN** the member is no longer restricted
+
+### Requirement: A click on a given message checks the stored button
+
+A click trigger given a message SHALL resolve that message's stored version in the actor's
+chat, and SHALL require the clicked `callback_data` to be on it, failing as a setup error
+otherwise.
+
+#### Scenario: A stale copy resolves to the stored message
+
+- **WHEN** the bot edits a message after the test kept a copy, and the test clicks with the
+  copy
+- **THEN** the dispatched `callback_query` carries the stored, edited message
+
+#### Scenario: A button that is not there is refused
+
+- **WHEN** a test clicks a `callback_data` that the given message does not carry
+- **THEN** the trigger fails as a setup error, and nothing is dispatched
+
+### Requirement: A skipped handler is not reported as the one that ran
+
+Routing diagnostics SHALL not report a handler that raised `SkipHandler` as the handler that
+ran, nor record that exception as its error.
+
+#### Scenario: A skipping handler falls through
+
+- **WHEN** the first matching handler raises `SkipHandler` and a later one handles the
+  update
+- **THEN** the route names the later handler, with no exception
+
+### Requirement: A user's edit has Telegram's shape
+
+An edit trigger SHALL set `edit_date`, SHALL change only the fields the test passes, and
+SHALL refuse, as a setup error, to edit a message the actor did not send. An edited message
+fed by hand SHALL replace the stored message with the same id.
+
+#### Scenario: An edit is dated
+
+- **WHEN** a user actor edits a message it sent
+- **THEN** the dispatched message carries an `edit_date`
+
+#### Scenario: A user cannot edit the bot's message
+
+- **WHEN** a user actor edits a message the bot sent
+- **THEN** the trigger fails as a setup error
+
+### Requirement: Drain reports only unretrieved exceptions
+
+`drain()` SHALL report a finished task's exception only if nothing retrieved it.
+
+#### Scenario: A caught failure is not reported
+
+- **WHEN** a handler awaits a task that fails and catches the exception
+- **THEN** `drain()` raises nothing for it
+
+### Requirement: Business connection updates name the owner
+
+A business connection update SHALL carry the account owner as its user, whoever triggers
+it.
+
+#### Scenario: A customer-bound actor disables the connection
+
+- **WHEN** an actor bound to a business connection it does not own disables it
+- **THEN** the update's user is the account owner
+
+### Requirement: Payment and subscription triggers carry documented fields
+
+The subscription trigger SHALL take its state, refusing a value other than `active`,
+`canceled` or `failed`. A subscription payment SHALL carry its expiry date and
+first-recurring flag.
+
+#### Scenario: A cancelled subscription can be tested
+
+- **WHEN** a test triggers a subscription update with state `canceled`
+- **THEN** the handler receives that state
+
+### Requirement: Inline queries carry their chat type
+
+An inline query trigger SHALL set `chat_type`: `sender` for the actor's own private chat
+with the bot, and the chat's type otherwise.
+
+#### Scenario: An inline query from a group
+
+- **WHEN** an actor bound to a supergroup triggers an inline query
+- **THEN** the query's `chat_type` is `supergroup`
+
+### Requirement: Votes respect the poll's rules
+
+A vote trigger SHALL refuse, as a setup error, an option the poll does not have, several
+options on a poll that does not allow multiple answers, and a changed vote on a poll that
+does not allow revoting.
+
+#### Scenario: Two answers on a single-answer poll
+
+- **WHEN** a user votes for two options on a single-answer poll
+- **THEN** the trigger fails as a setup error, and no answer is dispatched
+
+### Requirement: Guest messages can be answered
+
+A guest message trigger SHALL carry a `guest_query_id`, unique in the world, SHALL accept
+field overrides, and its message SHALL be registered like other carried messages. Answering
+it stays record-only.
+
+#### Scenario: The canonical guest handler works
+
+- **WHEN** a handler answers a guest message through its `guest_query_id`
+- **THEN** the answer is accepted
+
+### Requirement: Membership triggers respect standing
+
+A banned user's `join()`, `leave()` and `request_join()` SHALL fail as a setup error until
+the ban ends, and a ban SHALL drop the user's pending join request. A `join()` by an
+administrator or the owner already in the chat SHALL keep their status.
+
+#### Scenario: A banned user cannot rejoin
+
+- **WHEN** the bot bans a user and the user's actor joins
+- **THEN** the trigger fails as a setup error, and the user stays banned
+
+#### Scenario: Joining does not demote
+
+- **WHEN** an administrator's actor joins the chat
+- **THEN** the member is still an administrator with the same rights
+
+### Requirement: Ephemeral messages can be waited for
+
+A chat wait SHALL take a receiver and wait among the bot's ephemeral messages to that user,
+and a wait on the shared history that times out SHALL say when the bot sent ephemeral
+messages.
+
+#### Scenario: Waiting for an ephemeral message
+
+- **WHEN** a background task sends an ephemeral message to a user and the test waits with
+  that receiver
+- **THEN** the wait returns the message
