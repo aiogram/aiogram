@@ -56,6 +56,7 @@ from .world import (
     UserState,
     WorldLookupError,
     mask,
+    posted_by,
     resolve_topic,
 )
 
@@ -838,12 +839,19 @@ class UserActor:
         A user can edit only their own messages, so a message the
         actor did not send is refused. A channel post is attributed to
         the channel rather than to whoever published it, so an actor
-        bound to a channel can edit the channel's posts.
+        bound to a channel can edit the channel's posts. A forward
+        shows another message's content, so no one can edit it.
         """
         _refuse_ephemeral(message, "edited")
         self._require_in_chat(message)
         stored = self._require_message(message.message_id)
         self._require_own(stored)
+        if stored.forward_origin is not None:
+            msg = (
+                f"Message {stored.message_id} in chat {self.chat.id} is a forward, and "
+                "a forward cannot be edited"
+            )
+            raise WorldLookupError(msg)
         changes: dict[str, Any] = edit_stamp(self.environment)
         if text is not None:
             changes["text"] = text
@@ -1671,14 +1679,12 @@ class UserActor:
         values: dict[str, Any] = {
             "date": self.environment.world.next_date(),
             "chat": chat.as_chat(),
-            "from_user": self.user.as_user(),
+            # A channel post is the channel's, whoever published it.
+            **posted_by(chat, self.user.as_user()),
         }
         if fields is None or "message_id" not in fields:
             values["message_id"] = chat.allocate_message_id(self.business)
         if chat.type == ChatType.CHANNEL:
-            # A channel post is attributed to the channel, not to whoever published it.
-            values["from_user"] = None
-            values["sender_chat"] = chat.as_chat()
             values["author_signature"] = self.user.first_name
         if text is not None:
             values["text"] = text

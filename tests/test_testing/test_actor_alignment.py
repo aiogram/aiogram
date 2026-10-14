@@ -24,7 +24,9 @@ from aiogram.types import (
     InputTextMessageContent,
     Location,
     Message,
+    MessageOriginUser,
     Update,
+    User,
 )
 
 
@@ -210,6 +212,16 @@ class TestUserEdits:
 
         with pytest.raises(WorldLookupError, match="sent by chat -100777"):
             await alice.in_(team).edit(stored, "changed")
+
+    async def test_a_forward_is_refused(self, env, alice, private):
+        origin = MessageOriginUser(
+            date=env.now,
+            sender_user=User(id=-7, is_bot=False, first_name="Carol"),
+        )
+        await alice.send("passed on", fields={"forward_origin": origin})
+
+        with pytest.raises(WorldLookupError, match="a forward cannot be edited"):
+            await alice.edit(private.messages[-1], "changed")
 
     async def test_a_message_with_no_sender_is_refused(self, env, alice, team):
         stored = team.add_message(

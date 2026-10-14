@@ -258,6 +258,7 @@ from aiogram.types import (
     Message,
     MessageId,
     MessageOriginChannel,
+    MessageOriginChat,
     MessageOriginUser,
     OwnedGiftRegular,
     OwnedGifts,
@@ -1042,9 +1043,10 @@ def forward_origin(source: ChatState, original: Message, sender: User) -> Any:
     """
     Where a forwarded message came from — what tells a forward apart from a copy.
 
-    Every message the world stores carries a sender, so only the channel and user origins
-    are reachable; the hidden-user and sender-chat origins wait for the change that makes
-    anonymous senders possible.
+    A channel post comes from its channel, and a message sent on
+    behalf of a chat, such as an anonymous administrator's, from that
+    chat; anything else from ``sender``. The hidden-user origin waits
+    for the change that makes hidden senders possible.
 
     A message that is itself a forward keeps the origin it already
     names, and a channel post's signature moves into its origin.
@@ -1056,6 +1058,12 @@ def forward_origin(source: ChatState, original: Message, sender: User) -> Any:
             date=original.date,
             chat=source.as_chat(),
             message_id=original.message_id,
+            author_signature=original.author_signature,
+        )
+    if original.sender_chat is not None:
+        return MessageOriginChat(
+            date=original.date,
+            sender_chat=original.sender_chat,
             author_signature=original.author_signature,
         )
     return MessageOriginUser(date=original.date, sender_user=sender)
@@ -1144,7 +1152,8 @@ def forward_one(
         message_id=target.allocate_message_id(),
         chat=target.as_chat(),
         date=env.world.next_date(),
-        # Stored messages always carry a sender; the bot stands in only for typing.
+        # Only a user origin reads the sender; the bot stands in
+        # for typing.
         forward_origin=forward_origin(
             source,
             original,
@@ -1308,7 +1317,15 @@ def copy_one(
 
 
 def _poll_state(poll: Poll) -> PollState:
-    """The state a ``Poll`` the world does not hold describes."""
+    """
+    The state a ``Poll`` the world does not hold describes.
+
+    The correct option ids fall back to the deprecated single id, as
+    ``sendPoll`` reads them, so a quiz copies with its answer.
+    """
+    correct_option_ids = poll.correct_option_ids
+    if correct_option_ids is None and poll.correct_option_id is not None:
+        correct_option_ids = [poll.correct_option_id]
     return PollState(
         id=poll.id,
         question=poll.question,
@@ -1317,7 +1334,8 @@ def _poll_state(poll: Poll) -> PollState:
         type=poll.type,
         allows_multiple_answers=poll.allows_multiple_answers,
         allows_revoting=bool(poll.allows_revoting),
-        correct_option_ids=poll.correct_option_ids,
+        members_only=bool(poll.members_only),
+        correct_option_ids=correct_option_ids,
         explanation=poll.explanation,
         is_closed=poll.is_closed,
     )

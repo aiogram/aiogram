@@ -792,6 +792,26 @@ class TestCopiesAndForwards:
 
         assert forwarded.forward_origin.sender_user.first_name == "Carol"
 
+    async def test_a_forward_of_a_message_sent_as_a_chat_names_the_chat(
+        self, env, alice, team, bobs
+    ):
+        await (
+            env.user(alice)
+            .in_(team)
+            .send(
+                "anonymous",
+                fields={"from_user": None, "sender_chat": team.as_chat()},
+            )
+        )
+
+        forwarded = await env.bot.forward_message(
+            chat_id=bobs.id,
+            from_chat_id=team.id,
+            message_id=team.messages[-1].message_id,
+        )
+
+        assert forwarded.forward_origin.sender_chat.id == team.id
+
     async def test_a_forwarded_channel_post_names_its_signature(self, dp):
         blueprint = Blueprint()
         alice = blueprint.add_user("Alice")
@@ -1200,6 +1220,28 @@ class TestPolls:
 
         assert stopped.id != poll.id
         assert (stopped.question, stopped.is_closed) == (poll.question, True)
+
+    async def test_a_copy_of_a_users_quiz_keeps_its_answer_and_audience(
+        self, env, alice, private, bobs
+    ):
+        poll = synthesize(Poll, SynthesisContext()).model_copy(
+            update={
+                "type": "quiz",
+                "correct_option_id": 0,
+                "correct_option_ids": None,
+                "members_only": True,
+            },
+        )
+        await env.user(alice).send(fields={"poll": poll})
+
+        copied = await env.bot.copy_message(
+            chat_id=bobs.id,
+            from_chat_id=private.id,
+            message_id=private.messages[-1].message_id,
+        )
+
+        stored = bobs.find_message(copied.message_id).poll
+        assert (stored.correct_option_ids, stored.members_only) == ([0], True)
 
     async def test_a_refused_poll_is_not_registered(self, env, private):
         with pytest.raises(TelegramBadRequest, match="message to be replied not found"):
