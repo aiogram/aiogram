@@ -598,7 +598,11 @@ class TestWaitForMessageInManyChats:
         task = asyncio.create_task(self.deal(table, chat_ids))
 
         try:
-            found = await table.wait_for_message_in(chat_ids, lambda m: m.text == "Night falls")
+            # The deal takes three delays, too close to the short default
+            # timeout on a loaded machine.
+            found = await table.wait_for_message_in(
+                chat_ids, lambda m: m.text == "Night falls", timeout=1.0
+            )
         finally:
             await task
 

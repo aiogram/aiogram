@@ -688,3 +688,20 @@ class TestWaitingForEphemeralMessages:
 
         with pytest.raises(WaitTimeoutError, match="as seen by user"):
             await team.wait_for_message(receiver=bob, timeout=0.05)
+
+    async def test_a_timeout_names_each_message_the_predicate_raised_on(self, env, team, alice):
+        """Every ephemeral message has message_id 0, so they are told apart by ephemeral id."""
+        await send_to(env, team, alice, text="one")
+        await send_to(env, team, alice, text="two")
+
+        with pytest.raises(WaitTimeoutError) as raised:
+            await team.wait_for_message(
+                lambda m: m.caption.startswith("x"),
+                receiver=alice,
+                timeout=0.05,
+            )
+
+        text = str(raised.value)
+        assert "raised on 2 of them" in text
+        assert "ephemeral #1 'one'" in text
+        assert "on ephemeral message #2" in text

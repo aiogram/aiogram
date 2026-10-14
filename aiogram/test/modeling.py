@@ -933,8 +933,15 @@ def _check_editable_by_bot(env: BotTestEnvironment, chat: ChatState, message: Me
 def _edit_target(
     env: BotTestEnvironment,
     method: TelegramMethod[Any],
+    *,
+    forwarded: str = "message can't be edited",
 ) -> tuple[ChatState, Message]:
-    """The chat and stored message an edit targets, or a refusal."""
+    """
+    The chat and stored message an edit targets, or a refusal.
+
+    A forward shows the original's content in another place, so no
+    edit method changes it; ``forwarded`` is the refusal's text.
+    """
     if getattr(method, "inline_message_id", None) is not None:
         msg = "inline messages are not modeled by the test environment"
         raise WorldLookupError(msg)
@@ -951,6 +958,8 @@ def _edit_target(
         raise ApiRejection(msg)
     # Every edit method is bound by these rules, so check them here.
     _check_editable_by_bot(env, chat, stored)
+    if stored.forward_origin is not None:
+        raise ApiRejection(forwarded)
     _check_business_edit_window(env, stored)
     return chat, stored
 
@@ -1124,6 +1133,8 @@ def forward_one(
         raise ApiRejection("message to forward not found")
     if not _forwardable(original):
         raise ApiRejection("message can't be forwarded")
+    # Checked before an id is allocated, so a refused forward uses none.
+    thread = _thread_changes(target, thread_id)
     return target.add_derived(
         original,
         message_id=target.allocate_message_id(),
@@ -1137,7 +1148,7 @@ def forward_one(
             original.from_user or env.world.bot_user.as_user(),
         ),
         **{
-            **_thread_changes(target, thread_id),
+            **thread,
             **_new_message_changes(protect_content),
             "media_group_id": media_group_id,
         },
@@ -1268,6 +1279,9 @@ def copy_one(
             for name, value in changes.items()
             if name not in {"caption", "caption_entities", "show_caption_above_media"}
         }
+    # Checked before an id or a poll is allocated, so a refused copy
+    # uses neither.
+    thread = _thread_changes(target, thread_id)
     if original.poll is not None and "poll" not in changes:
         changes = {**changes, "poll": _copied_poll(env, original.poll)}
     return target.add_derived(
@@ -1279,7 +1293,7 @@ def copy_one(
         # A copy carries no trace of where it came from — that is the whole difference.
         forward_origin=None,
         **{
-            **_thread_changes(target, thread_id),
+            **thread,
             **_new_message_changes(protect_content),
             **changes,
         },
@@ -2958,13 +2972,10 @@ def handle_stop_poll(env: BotTestEnvironment, method: StopPoll) -> Poll:
     ``stopPoll`` names "the original message with the poll", so a
     forward of it, which carries the same poll, is refused.
     """
-    chat, stored = _edit_target(env, method)
+    chat, stored = _edit_target(env, method, forwarded="message with poll to stop not found")
     message_id = stored.message_id
     if stored.poll is None:
         msg = "message doesn't contain a poll"
-        raise ApiRejection(msg)
-    if stored.forward_origin is not None:
-        msg = "message with poll to stop not found"
         raise ApiRejection(msg)
     poll = env.world.poll(stored.poll.id)
     if poll.is_closed:

@@ -240,7 +240,7 @@ keyboard and their own reply, and service, protected, invoice, paid media and gi
 are refused where the Bot API refuses them; ``unpinChatMessage`` without an id unpins only the
 newest pin; editing text or a caption fails on a message without that content, and every edit
 sets ``edit_date``, the bot edits only its own messages outside channels and, in business
-chats, the account's but not the customer's; ``editMessageMedia`` keeps an album item to its
+chats, the account's but not the customer's, and never a forward; ``editMessageMedia`` keeps an album item to its
 album's kind, and ``sendMediaGroup`` keeps documents and audio apart from other media; a quiz
 is copied only with a known answer; dates the bot passes count in whole seconds; a business
 message is edited only through its connection; a reply chain does not nest;

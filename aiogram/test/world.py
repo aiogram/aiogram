@@ -312,7 +312,14 @@ def describe_message(message: Message) -> str:
     else:
         preview = repr(body)
     keyboard = " [inline keyboard]" if message.reply_markup is not None else ""
-    return f"#{message.message_id} {preview}{keyboard}"
+    # Every ephemeral message has message_id 0; its ephemeral id is
+    # what tells it apart.
+    ident = (
+        f"#{message.message_id}"
+        if message.ephemeral_message_id is None
+        else f"ephemeral #{message.ephemeral_message_id}"
+    )
+    return f"{ident} {preview}{keyboard}"
 
 
 def _describe_messages(messages: list[Message], noun: str) -> str:
@@ -343,6 +350,9 @@ def newest_match(
     report a predicate that is simply buggy instead of quietly finding nothing. A chat
     holds messages of every shape, and the natural ``m.text.startswith(...)`` blows up on
     the first service message it meets.
+
+    An ephemeral message is collected by its ephemeral id, since every
+    one of them has ``message_id`` 0.
     """
     newest: Message | None = None
     for message in messages:
@@ -351,7 +361,8 @@ def newest_match(
                 matched = predicate(message)
             except Exception as error:
                 if raised is not None:
-                    raised[message.message_id] = error
+                    key = message.ephemeral_message_id
+                    raised[message.message_id if key is None else key] = error
                 continue
             if not matched:
                 continue
@@ -380,6 +391,7 @@ async def _wait_for_message(
     timeout: float,
     interval: float,
     hint: Callable[[], str] | None = None,
+    kind: str = "message",
 ) -> Message:
     """
     The polling core behind :meth:`ChatState.wait_for_message` and its topic-scoped twin.
@@ -388,6 +400,8 @@ async def _wait_for_message(
     view recomputed on every read — capturing the list once would wait on a snapshot taken
     before the message being waited for arrived. ``noun`` and ``where`` are how the failure
     message names the view ("the topic holds…", "…in topic #7 'Support' of chat -100").
+
+    ``kind`` names one of its messages by the id it is told apart by.
 
     **The newest match wins, by id and not by position.** Every match is evaluated and the
     highest ``message_id`` among them is returned, rather than the last one the list
@@ -413,7 +427,7 @@ async def _wait_for_message(
         problems = ""
         if raised:
             details = "; ".join(
-                f"{type(error).__name__}({str(error)!r}) on message #{message_id}"
+                f"{type(error).__name__}({str(error)!r}) on {kind} #{message_id}"
                 for message_id, error in sorted(raised.items())
             )
             problems = (
@@ -1401,6 +1415,7 @@ class ChatState:
                 where=f"{self.label}, as seen by user {receiver_id}",
                 timeout=wait,
                 interval=interval,
+                kind="ephemeral message",
             )
         return await _wait_for_message(
             lambda: self.messages,

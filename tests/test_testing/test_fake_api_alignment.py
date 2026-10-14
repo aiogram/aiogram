@@ -580,6 +580,23 @@ class TestCopiesAndForwards:
 
         assert forwarded.message_thread_id == topic.message_thread_id
 
+    @pytest.mark.parametrize("method", ["copy_message", "forward_message"])
+    async def test_a_refused_move_into_an_unknown_topic_uses_no_id(
+        self, env, forum, private, method
+    ):
+        source = await env.bot.send_message(chat_id=private.id, text="hi")
+        before = forum.last_message_id
+
+        with pytest.raises(TelegramBadRequest, match="does not exist"):
+            await getattr(env.bot, method)(
+                chat_id=forum.id,
+                from_chat_id=private.id,
+                message_id=source.message_id,
+                message_thread_id=999,
+            )
+
+        assert forum.last_message_id == before
+
     async def test_a_channel_post_moved_by_the_bot_is_not_posted_as_the_channel(self, dp):
         blueprint = Blueprint()
         alice = blueprint.add_user("Alice")
@@ -900,6 +917,23 @@ class TestUnpinning:
 
 
 class TestEditsActOnTheirContent:
+    async def test_the_bot_cannot_edit_a_forward(self, env, private, bobs):
+        source = await env.bot.send_message(chat_id=private.id, text="hi")
+        forwarded = await env.bot.forward_message(
+            chat_id=bobs.id,
+            from_chat_id=private.id,
+            message_id=source.message_id,
+        )
+
+        with pytest.raises(TelegramBadRequest, match="can't be edited"):
+            await env.bot.edit_message_text(
+                chat_id=bobs.id,
+                message_id=forwarded.message_id,
+                text="changed",
+            )
+
+        assert bobs.find_message(forwarded.message_id).text == "hi"
+
     async def test_the_bot_cannot_edit_a_users_message(self, env, alice, team):
         await env.user(alice).in_(team).send("mine")
         users = team.messages[-1]
