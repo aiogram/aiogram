@@ -6,7 +6,7 @@ build-backend = "hatchling.build"
 name = "aiogram"
 description = 'Modern and fully asynchronous framework for Telegram Bot API'
 readme = "README.rst"
-requires-python = ">=3.10,<3.15"
+requires-python = ">=3.10,<3.16"
 license = "MIT"
 authors = [
     { name = "Alex Root Junior", email = "jroot.junior@gmail.com" },
@@ -35,6 +35,7 @@ classifiers = [
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
     "Programming Language :: Python :: 3.14",
+    "Programming Language :: Python :: 3.15",
     "Programming Language :: Python :: Implementation :: PyPy",
     "Topic :: Software Development :: Libraries :: Application Frameworks",
     "Topic :: Software Development :: Libraries :: Python Modules",
@@ -43,7 +44,7 @@ classifiers = [
 dependencies = [
     "magic-filter>=1.0.12,<1.1",
     "aiohttp>=3.9.0,<3.15",
-    "pydantic>=2.7.0,<2.14",
+    "pydantic>=2.7.0,<2.15",
     "aiofiles>=23.2.1,<26.0",
     "certifi>=2023.7.22",
     "typing-extensions>=4.7.0,<=5.0",
@@ -95,7 +96,7 @@ docs = [
 [dependency-groups]
 dev = [
     "ruff~=0.15",
-    "mypy==2.0.0; platform_python_implementation != 'PyPy'",
+    "mypy==2.4.0; platform_python_implementation != 'PyPy'",
     "toml~=0.10.2",
     "pre-commit~=4.3",
     "packaging~=26.0",

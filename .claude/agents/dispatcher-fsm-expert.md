@@ -23,7 +23,7 @@ silently absent instead of raising. Past misses: business-account callback queri
 
 **Dependency injection** — `dispatcher/event/handler.py` filters kwargs by handler
 signature. It broke on `ForwardRef` annotations under Python 3.14 (#1741). Any
-change here must be checked against the whole 3.10–3.14 matrix, not just local Python.
+change here must be checked against the whole 3.10–3.15 matrix, not just local Python.
 
 **Workflow-data contract** — polling and webhook must inject the *same* keys.
 `dispatcher` was missing from handler kwargs on the webhook feed path while polling
