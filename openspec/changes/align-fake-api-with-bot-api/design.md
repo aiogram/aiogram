@@ -32,8 +32,10 @@ value.
 ### D2. Booleans are false; counts of nothing are zero
 
 A synthesized `bool` is `False`, the absent-flag reading every optional Bot API boolean
-documents. A synthesized `int` whose name ends in `_count` is `0`, because synthesized lists
-are empty and a count that disagrees with its list breaks the obvious `[0]` access.
+documents. A synthesized count of what a list holds (`total_count`, `voter_count`,
+`total_voter_count`, `pending_update_count`) is `0`, because synthesized lists are empty and
+a count that disagrees with its list breaks the obvious `[0]` access. Other counts, such as
+a price in `star_count` or a giveaway's `winner_count`, stay positive.
 
 ### D3. File ids come from a world counter
 
@@ -64,6 +66,15 @@ income and as `receiver` for an outgoing payment.
 `Blueprint.build` runs declared permissions through `granted_permissions` (moved into
 `world.py` to avoid an import cycle), creates declared topics with the bot as `from_user`,
 and stores a declared poll the way `sendPoll` does, on a message from the bot.
+
+### D8. Business messages are numbered per connection
+
+`deleteBusinessMessages` names no chat, and Telegram finds the chat because a user account
+numbers the messages of all its private chats from one sequence. The fake numbers per chat,
+so two business chats could share an id and the deletion could not tell which one is meant.
+`ChatState.allocate_message_id` takes the connection, and a business message gets the next
+id after both the chat's and the connection's last one. The ids then name one chat, and ids
+found in two chats are refused as mixed.
 
 ## Risks / Trade-offs
 

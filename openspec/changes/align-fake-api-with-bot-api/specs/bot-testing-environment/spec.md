@@ -134,13 +134,19 @@ SHALL remove the icon.
 ### Requirement: Business deletions stay in one chat
 
 `deleteBusinessMessages` SHALL delete messages from one chat only, and SHALL fail as a
-Telegram error when the ids belong to different chats.
+Telegram error when the ids belong to different chats. Business messages SHALL be numbered
+per business connection, so two chats of one connection never hold the same id.
 
-#### Scenario: Equal ids in another chat are untouched
+#### Scenario: Another chat's message is untouched
 
-- **WHEN** two chats of a business connection both hold a message with id 1, and a handler
-  deletes id 1 from one of them
+- **WHEN** two chats of a business connection each hold a business message, and a handler
+  deletes the first one
 - **THEN** the other chat's message stays
+
+#### Scenario: Ids from two chats are refused
+
+- **WHEN** a handler deletes business messages from two chats in one call
+- **THEN** the call fails as a Telegram error, and nothing is deleted
 
 ### Requirement: Checklists carry their content
 

@@ -12,12 +12,12 @@
 
 - [x] 2.1 Store `correct_option_ids` (falling back to the deprecated single id), default `allows_revoting` to true outside quizzes, refuse a quiz without correct ids, and store `stopPoll`'s `reply_markup`; verify each scenario
 - [x] 2.2 Couple hiding/reopening the General topic, and keep the name on an empty `editForumTopic` name and drop the icon on an empty emoji id; verify each
-- [x] 2.3 Confine `deleteBusinessMessages` to one chat and refuse mixed chats; verify the colliding-id scenario
+- [x] 2.3 Confine `deleteBusinessMessages` to one chat and refuse mixed chats, numbering business messages per connection (design D8); verify both scenarios
 - [x] 2.4 Convert `InputChecklist` into the stored `Checklist` for send and edit; verify title and tasks round-trip
 
 ## 3. Synthesis and content
 
-- [x] 3.1 Synthesize enumerated strings from `aiogram.enums` by name, booleans as false and `*_count` as zero (design D1, D2); verify a sticker, a chat and the profile photos result
+- [x] 3.1 Synthesize enumerated strings from `aiogram.enums` by name, booleans as false and counts of lists as zero (design D1, D2); verify a sticker, a chat and the profile photos result
 - [x] 3.2 Number files from a world counter and store a passed file id (design D3); verify two uploads download their own bytes and a resent id is kept
 - [x] 3.3 Fold dice values into the emoji's range with 🎲 as default (design D4); verify values for each emoji
 - [x] 3.4 Convert every rich media block, including ones whose input media does not subclass `InputMedia`; verify a voice-note block

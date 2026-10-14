@@ -9,7 +9,7 @@ from urllib.parse import parse_qs, urlsplit
 
 from pydantic import BaseModel
 
-from aiogram.enums import ChatMemberStatus, ChatType
+from aiogram.enums import BotSubscriptionUpdatedState, ChatMemberStatus, ChatType
 from aiogram.types import (
     BotSubscriptionUpdated,
     BusinessMessagesDeleted,
@@ -423,7 +423,14 @@ _START_PAYLOAD = re.compile(r"[A-Za-z0-9_-]{1,64}")
 _MEMBER_SERVICE_MESSAGE_CHAT_TYPES = frozenset({ChatType.GROUP, ChatType.SUPERGROUP})
 
 #: The states ``BotSubscriptionUpdated.state`` can take.
-_SUBSCRIPTION_STATES = frozenset({"active", "canceled", "failed"})
+_SUBSCRIPTION_STATES = frozenset(state.value for state in BotSubscriptionUpdatedState)
+
+
+def _label(message: Message) -> str:
+    """Name ``message`` in an error, by the id that finds it."""
+    if message.ephemeral_message_id is not None:
+        return f"Ephemeral message {message.ephemeral_message_id}"
+    return f"Message {message.message_id}"
 
 
 def _rejection_message(url: str, deep_link: _DeepLink) -> str:
@@ -954,6 +961,7 @@ class UserActor:
 
         if message is not None:
             self._require_visible(message, "follow its deep-link buttons")
+            message = self._stored_version(message)
         scope: Iterable[Message] = [message] if message is not None else self._visible_messages()
         deep_link: _DeepLink | None
         if url is None:
@@ -1110,6 +1118,9 @@ class UserActor:
 
         def _promote(member: MemberState) -> None:
             member.rights = ChatAdministratorRights(**granted)
+            # The actor is now the promoter, so the bot may no longer
+            # edit rights it granted before.
+            member.promoted_by = self.user.id
 
         return await self._change_membership(
             ChatMemberStatus.ADMINISTRATOR,
@@ -1660,7 +1671,7 @@ class UserActor:
             "from_user": self.user.as_user(),
         }
         if fields is None or "message_id" not in fields:
-            values["message_id"] = chat.allocate_message_id()
+            values["message_id"] = chat.allocate_message_id(self.business)
         if chat.type == ChatType.CHANNEL:
             # A channel post is attributed to the channel, not to whoever published it.
             values["from_user"] = None
@@ -1784,28 +1795,34 @@ class UserActor:
             )
             raise WorldLookupError(msg)
 
-    def _stored_button_message(self, message: Message, callback_data: str) -> Message:
+    def _stored_version(self, message: Message) -> Message:
         """
-        The stored version of ``message``, which must carry the button.
+        The version of ``message`` this actor's chat holds now.
 
-        Telegram delivers a callback query for a button on a message as
-        the chat holds it now, so a copy the test kept is resolved
-        again, and a button missing from the stored version is refused.
+        Telegram acts on a message as the chat holds it, so a copy the
+        test kept is looked up again, by id or, for an ephemeral
+        message addressed to the actor, by ephemeral id.
         """
         chat = self.chat
         self._require_in_chat(message)
         if message.ephemeral_message_id is not None:
             stored = chat.find_ephemeral_message(self.user.id, message.ephemeral_message_id)
-            label = f"Ephemeral message {message.ephemeral_message_id}"
         else:
             stored = chat.find_message(message.message_id)
-            label = f"Message {message.message_id}"
         if stored is None:
-            msg = f"{label} does not exist in chat {chat.id}"
+            msg = f"{_label(message)} does not exist in chat {chat.id}"
             raise WorldLookupError(msg)
+        return stored
+
+    def _stored_button_message(self, message: Message, callback_data: str) -> Message:
+        """The stored ``message``, which must carry the button."""
+        stored = self._stored_version(message)
         if any(button.callback_data == callback_data for button in _buttons_of(stored)):
             return stored
-        msg = f"{label} in chat {chat.id} carries no button with callback_data={callback_data!r}"
+        msg = (
+            f"{_label(message)} in chat {self.chat.id} carries no button with "
+            f"callback_data={callback_data!r}"
+        )
         if stored is not message and any(
             button.callback_data == callback_data for button in _buttons_of(message)
         ):

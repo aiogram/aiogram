@@ -20,8 +20,8 @@ was reproduced. Examples:
 
 - **Clicks:** a click with an explicit message resolves that message's stored version and
   requires the button to be on it.
-- **Routing diagnostics:** a handler that skips (`SkipHandler`) or cancels is not reported
-  as the handler that ran.
+- **Routing diagnostics:** a handler that skips (`SkipHandler`) is not reported as the
+  handler that ran.
 - **User edits:** they carry `edit_date`, change only what the test passes, and are refused
   on a message the user did not send. A hand-fed edit updates the stored message instead of
   colliding with it.

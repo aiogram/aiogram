@@ -12,7 +12,7 @@
 
 ## 2. Environment
 
-- [x] 2.1 Stop reporting `SkipHandler`/`CancelHandler` as the handler that ran (design D2); verify the fall-through scenario
+- [x] 2.1 Stop reporting `SkipHandler` as the handler that ran (design D2); verify the fall-through scenario
 - [x] 2.2 Report only unretrieved exceptions in `drain()` (design D3); verify a caught failure and an uncaught one
 - [x] 2.3 Treat hand-fed edited messages as replacements (design D4); verify a fed `edited_message`
 

@@ -20,6 +20,7 @@ from aiogram.types import (
     Chat,
     ChatPermissions,
     EphemeralMessageParameters,
+    Giveaway,
     InlineKeyboardButton,
     InlineKeyboardMarkup,
     InputChecklist,
@@ -30,9 +31,11 @@ from aiogram.types import (
     InputRichMessage,
     LabeledPrice,
     MessageEntity,
+    PaidMediaInfo,
     ReplyParameters,
     RichTextBold,
     Sticker,
+    Story,
     TransactionPartnerUser,
 )
 from aiogram.types.rich_text_union import RichTextUnion
@@ -354,6 +357,37 @@ class TestCopiesAndForwards:
         assert len(copied) == 1
         assert private.find_message(copied[0].message_id).text == "hi"
 
+    async def test_a_forwarded_story_can_be_forwarded_and_copied(self, env, alice, private, bobs):
+        story = Story(chat=Chat(id=-100500, type=ChatType.CHANNEL), id=5)
+        await env.user(alice).send(fields={"story": story})
+        source = private.messages[-1]
+
+        forwarded = await env.bot.forward_message(
+            chat_id=bobs.id,
+            from_chat_id=private.id,
+            message_id=source.message_id,
+        )
+        copied = await env.bot.copy_message(
+            chat_id=bobs.id,
+            from_chat_id=private.id,
+            message_id=source.message_id,
+        )
+
+        assert forwarded.story is not None
+        assert bobs.find_message(copied.message_id).story is not None
+
+    async def test_an_empty_caption_removes_the_original(self, env, private, bobs):
+        source = await env.bot.send_photo(chat_id=private.id, photo="photo", caption="hi")
+
+        copied = await env.bot.copy_message(
+            chat_id=bobs.id,
+            from_chat_id=private.id,
+            message_id=source.message_id,
+            caption="",
+        )
+
+        assert bobs.find_message(copied.message_id).caption is None
+
     async def test_an_invoice_cannot_be_copied(self, env, private, bobs):
         invoice = await env.bot.send_invoice(
             chat_id=private.id,
@@ -528,13 +562,7 @@ class TestForumTopics:
 
 
 class TestBusinessDeletions:
-    async def test_equal_ids_in_another_chat_are_untouched(
-        self,
-        env,
-        private,
-        bobs,
-        connection,
-    ):
+    async def test_another_chats_message_is_untouched(self, env, private, bobs, connection):
         mine = await env.bot.send_message(
             business_connection_id=connection.id,
             chat_id=private.id,
@@ -545,14 +573,34 @@ class TestBusinessDeletions:
             chat_id=bobs.id,
             text="theirs",
         )
-        assert mine.message_id == theirs.message_id
+        # One account numbers its chats' messages from one sequence.
+        assert mine.message_id != theirs.message_id
 
         await env.bot.delete_business_messages(
             business_connection_id=connection.id,
             message_ids=[mine.message_id],
         )
 
-        assert len(private.messages) + len(bobs.messages) == 1
+        assert private.messages == []
+        assert bobs.messages == [theirs]
+
+    async def test_a_customers_message_takes_the_accounts_next_id(
+        self,
+        env,
+        bob,
+        private,
+        bobs,
+        connection,
+    ):
+        sent = await env.bot.send_message(
+            business_connection_id=connection.id,
+            chat_id=private.id,
+            text="hi",
+        )
+
+        await env.user(bob).in_(bobs, business=connection).send("hello")
+
+        assert bobs.messages[-1].message_id > sent.message_id
 
     async def test_ids_from_different_chats_are_refused(self, env, private, bobs, connection):
         mine = await env.bot.send_message(
@@ -708,6 +756,12 @@ class TestSynthesis:
         assert photos.total_count == 0
         assert photos.photos == []
 
+    def test_counts_that_are_not_list_lengths_stay_positive(self):
+        context = SynthesisContext()
+
+        assert synthesize(PaidMediaInfo, context).star_count > 0
+        assert synthesize(Giveaway, context).winner_count > 0
+
     async def test_a_voice_note_block_converts(self, env, private):
         message = await env.bot.send_rich_message(
             chat_id=private.id,
@@ -749,6 +803,14 @@ class TestEditableAdministrators:
 
         assert member.can_be_edited is True
         assert [admin.can_be_edited for admin in admins if admin.user.id == bob.id] == [True]
+
+    async def test_a_member_someone_else_promoted_again_is_not(self, env, team, alice, bob):
+        await env.bot.promote_chat_member(chat_id=team.id, user_id=bob.id, can_pin_messages=True)
+        await env.user(alice).in_(team).promote(bob, can_delete_messages=True)
+
+        member = await env.bot.get_chat_member(chat_id=team.id, user_id=bob.id)
+
+        assert member.can_be_edited is False
 
     async def test_a_declared_administrator_is_not(self, env, team, blueprint):
         member = await env.bot.get_chat_member(chat_id=team.id, user_id=blueprint.bot.id)

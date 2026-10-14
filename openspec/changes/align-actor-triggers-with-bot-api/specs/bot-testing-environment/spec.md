@@ -19,8 +19,8 @@ otherwise.
 
 ### Requirement: A skipped handler is not reported as the one that ran
 
-Routing diagnostics SHALL not report a handler that raised `SkipHandler` or `CancelHandler`
-as the handler that ran, nor record that control-flow exception as its error.
+Routing diagnostics SHALL not report a handler that raised `SkipHandler` as the handler that
+ran, nor record that exception as its error.
 
 #### Scenario: A skipping handler falls through
 

@@ -148,7 +148,9 @@ class TestSkippedHandlers:
         assert route.router is None
         assert route.exception is None
 
-    async def test_a_cancelling_handler_is_not_the_one_that_ran(self, env, dp, alice):
+    async def test_a_cancelling_handler_is_the_one_that_failed(self, env, dp, alice):
+        """aiogram catches only `SkipHandler`; a cancel fails the update."""
+
         @dp.message()
         async def cancelling(message):
             raise CancelHandler
@@ -156,7 +158,9 @@ class TestSkippedHandlers:
         with pytest.raises(CancelHandler):
             await alice.send("hi")
 
-        assert env.last_route.handler is None
+        route = env.last_route
+        assert route.handler.endswith("cancelling")
+        assert isinstance(route.exception, CancelHandler)
 
 
 class TestUserEdits:

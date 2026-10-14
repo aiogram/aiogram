@@ -272,6 +272,17 @@ class TestEphemeralClicks:
         with pytest.raises(WorldLookupError, match="is not addressed to user"):
             await env.user(bob).in_(team).follow_deep_link(message=sent)
 
+    async def test_a_deleted_one_cannot_be_clicked(self, env, team, alice):
+        sent = await send_to(env, team, alice, reply_markup=keyboard())
+        await env.bot.delete_ephemeral_message(
+            chat_id=team.id,
+            receiver_user_id=alice.id,
+            ephemeral_message_id=sent.ephemeral_message_id,
+        )
+
+        with pytest.raises(WorldLookupError, match="Ephemeral message .* does not exist"):
+            await env.user(alice).in_(team).click("ok", message=sent)
+
     async def test_a_command_is_not_a_button_target(self, env, team, alice):
         actor = env.user(alice).in_(team)
         await actor.send("/x", ephemeral=True)

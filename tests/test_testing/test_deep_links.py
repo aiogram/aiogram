@@ -416,6 +416,17 @@ class TestFollowDeepLink:
         with pytest.raises(WorldLookupError, match=f"Message {other.message_id}"):
             await alice.in_(team).follow_deep_link(message=other)
 
+    async def test_a_stale_copy_resolves_to_the_stored_message(self, env, team, alice):
+        sent = await env.bot.send_message(
+            chat_id=team.id,
+            text="Join us!",
+            reply_markup=_join_button("https://t.me/test_bot?start=gone"),
+        )
+        await env.bot.edit_message_reply_markup(chat_id=team.id, message_id=sent.message_id)
+
+        with pytest.raises(WorldLookupError, match=f"Message {sent.message_id}"):
+            await alice.in_(team).follow_deep_link(message=sent)
+
     async def test_no_matching_button_raises_a_scan_error(self, env, team, alice):
         with pytest.raises(WorldLookupError, match="deep-link button"):
             await alice.in_(team).follow_deep_link()

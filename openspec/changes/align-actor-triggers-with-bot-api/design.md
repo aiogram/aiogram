@@ -24,10 +24,12 @@ actor triggers and the environment. This document records only the choices the f
 It requires the button on the stored version, which is the one dispatched. This reuses the
 visibility check the ephemeral change added.
 
-### D2. Control-flow exceptions are not handler errors
+### D2. A skip is not a handler error
 
-`_HandlerMiddleware` catches `SkipHandler` and `CancelHandler`, clears the record's handler,
-module and router, and re-raises without recording an exception.
+`_HandlerMiddleware` catches `SkipHandler`, clears the record's handler, module and router,
+and re-raises without recording an exception. `CancelHandler` is not caught: aiogram's
+handler loop catches only `SkipHandler`, so a `CancelHandler` raised by a handler fails the
+update, and the route keeps naming that handler, with the exception.
 
 ### D3. Retrieved exceptions are recognized through asyncio's own flag
 

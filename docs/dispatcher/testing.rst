@@ -1370,10 +1370,11 @@ leaves a test staring at a missing reply with no clue that a handler ever raised
     assert bot_env.last_route.handler and "boom" in bot_env.last_route.handler
     assert isinstance(bot_env.last_route.exception, RuntimeError)
 
-``SkipHandler`` and ``CancelHandler`` are control flow, not errors. A handler that raises
-one is not reported as the handler that ran, and the exception is not recorded as its
-error: when a skipping handler falls through to a later one, ``handler`` names the later
-one and ``exception`` stays ``None``.
+``SkipHandler`` is control flow, not an error. A handler that raises it is not reported as
+the handler that ran, and the exception is not recorded as its error: when a skipping
+handler falls through to a later one, ``handler`` names the later one and ``exception``
+stays ``None``. aiogram catches nothing else, so a ``CancelHandler`` raised by a handler
+fails the update, and the route names that handler with the exception.
 
 One thing a test does is often more than one update. A real join delivers a ``chat_member``
 transition *and* the group's own ``new_chat_members`` service message (see `Joining and
@@ -2355,9 +2356,9 @@ with the bot recorded as the sending business bot — which is what the customer
 
 ``getBusinessConnection`` answers from the declared state, and ``readBusinessMessage`` and
 ``deleteBusinessMessages`` are applied to the world; the business *account* methods stay on
-the record-and-synthesize path. ``deleteBusinessMessages`` names no chat, and the Bot API
-requires its messages to be from one chat: it deletes from the chat holding the most of
-the ids, and fails when an id is held only by another chat.
+the record-and-synthesize path. ``deleteBusinessMessages`` names no chat: as in Telegram,
+a business account numbers the messages of all its chats from one sequence, so the ids find
+their chat, and ids from different chats fail as the Bot API requires.
 
 .. note::
 

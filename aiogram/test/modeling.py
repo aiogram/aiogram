@@ -528,16 +528,16 @@ def build_message(
         chat.topic(thread_id)
     receiver = _ephemeral_receiver(env, method, chat)
     replied = _reply_target(env, method, chat, ephemeral=receiver is not None)
+    connection_id = getattr(method, "business_connection_id", None)
+    connection = None if connection_id is None else env.world.business_connection(connection_id)
     values: dict[str, Any] = {
-        "message_id": 0 if receiver is not None else chat.allocate_message_id(),
+        "message_id": 0 if receiver is not None else chat.allocate_message_id(connection),
         "date": env.world.next_date(),
         "chat": chat.as_chat(),
         "from_user": env.world.bot_user.as_user(),
     }
-    connection_id = getattr(method, "business_connection_id", None)
-    if connection_id is not None:
+    if connection is not None:
         # Telegram sends on behalf of the business account, not the bot.
-        connection = env.world.business_connection(connection_id)
         values["from_user"] = env.world.user(connection.user_id).as_user()
         values["sender_business_bot"] = env.world.bot_user.as_user()
         values["business_connection_id"] = connection_id
@@ -917,9 +917,12 @@ def forward_origin(source: ChatState, original: Message, sender: User) -> Any:
     return MessageOriginUser(date=original.date, sender_user=sender)
 
 
-#: The ``Message`` fields a send method fills: a message carrying none
-#: of them is a service message.
-_CONTENT_FIELDS: frozenset[str] = frozenset({*MEDIA_FIELDS.values(), "text", "poll"})
+#: The ``Message`` fields that carry content: a message with none of
+#: them is a service message. Besides what send methods fill, a
+#: message can carry a forwarded story or a giveaway.
+_CONTENT_FIELDS: frozenset[str] = frozenset(
+    {*MEDIA_FIELDS.values(), "text", "poll", "story", "giveaway", "giveaway_winners"},
+)
 
 #: Content the Bot API names as impossible to copy, besides service
 #: messages.
@@ -1049,8 +1052,9 @@ def handle_copy(env: BotTestEnvironment, method: CopyMessage) -> MessageId:
     target = resolve_chat(env, method.chat_id)
     changes: dict[str, Any] = {}
     if method.caption is not None:
-        changes["caption"] = method.caption
-        changes["caption_entities"] = method.caption_entities
+        # An empty caption removes the original one.
+        changes["caption"] = method.caption or None
+        changes["caption_entities"] = method.caption_entities if method.caption else None
         changes["show_caption_above_media"] = method.show_caption_above_media
     if isinstance(method.reply_markup, InlineKeyboardMarkup):
         changes["reply_markup"] = method.reply_markup
@@ -2877,28 +2881,28 @@ def handle_delete_business_messages(
     """
     Delete business messages, all of them from one chat.
 
-    The method names no chat, so the chat holding the most of the ids
-    is the one meant, the first such chat on a tie. An id only another
-    chat holds mixes chats, which the Bot API refuses.
+    The method names no chat: the account numbers its business
+    messages from one sequence, so the ids find their chat. Ids held
+    by more than one chat mix chats, which the Bot API refuses.
     """
     connection = env.world.business_connection(method.business_connection_id)
     wanted = set(method.message_ids)
     held = {
-        chat.id: {
-            message.message_id
-            for message in chat.messages
-            if message.message_id in wanted and message.business_connection_id == connection.id
-        }
+        chat.id: ids
         for chat in env.world.chats.values()
+        if (
+            ids := {
+                message.message_id
+                for message in chat.messages
+                if message.message_id in wanted and message.business_connection_id == connection.id
+            }
+        )
     }
-    chat_id = max(held, key=lambda key: len(held[key]), default=None)
-    if chat_id is None or not held[chat_id]:
-        return True
-    elsewhere = {message_id for key, ids in held.items() if key != chat_id for message_id in ids}
-    if elsewhere - held[chat_id]:
+    if len(held) > 1:
         msg = "all messages must be from the same chat"
         raise ApiRejection(msg)
-    chat = env.world.chat(chat_id)
-    for message_id in sorted(held[chat_id]):
-        chat.delete_message(message_id)
+    for chat_id, ids in held.items():
+        chat = env.world.chat(chat_id)
+        for message_id in sorted(ids):
+            chat.delete_message(message_id)
     return True

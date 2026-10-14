@@ -12,7 +12,7 @@ from typing import TYPE_CHECKING, Any, NoReturn, TypeAlias, cast
 
 from aiogram.client.bot import Bot
 from aiogram.dispatcher.dispatcher import Dispatcher
-from aiogram.dispatcher.event.bases import UNHANDLED, CancelHandler, SkipHandler
+from aiogram.dispatcher.event.bases import UNHANDLED, SkipHandler
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.methods import TelegramMethod
@@ -338,10 +338,11 @@ class _HandlerMiddleware:
             record.router = getattr(data.get("event_router"), "name", None)
         try:
             return await handler(event, data)
-        except (SkipHandler, CancelHandler):
+        except SkipHandler:
             # Control flow, not a failure: a skipping handler did not
-            # claim the update, and a cancelling one stopped it before
-            # anything ran. Neither is the handler that ran.
+            # claim the update, so it is not the handler that ran.
+            # aiogram catches nothing else, so a `CancelHandler` the
+            # handler raised fails the update and is recorded below.
             if record is not None:
                 record.handler = None
                 record.handler_module = None
@@ -1186,6 +1187,14 @@ class BotTestEnvironment:
                 raise WorldLookupError(msg)
             # Even an already-known message may have been allocated elsewhere.
             chat.last_message_id = max(chat.last_message_id, message.message_id)
+            connection = self.world.business_connections.get(
+                message.business_connection_id or "",
+            )
+            if connection is not None:
+                connection.last_message_id = max(
+                    connection.last_message_id,
+                    message.message_id,
+                )
             return
 
     # -- waiting ----------------------------------------------------------------------

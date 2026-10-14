@@ -252,7 +252,7 @@ and a changed or retracted vote where revoting is not allowed; ``inline_query`` 
 can answer; ``update_subscription(state=...)`` takes one of the documented states; a
 subscription ``pay()`` sets ``subscription_expiration_date`` and ``is_first_recurring``; and a
 ``business_connection`` update names the account owner. Routing diagnostics no longer report a
-handler that raised ``SkipHandler`` or ``CancelHandler`` as the one that ran, and ``drain()``
+handler that raised ``SkipHandler`` as the one that ran, and ``drain()``
 no longer reports an exception the bot already retrieved.
 
 .. warning::

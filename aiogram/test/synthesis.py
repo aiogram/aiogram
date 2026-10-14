@@ -136,7 +136,7 @@ def synthesize(
         return False
     if issubclass(annotation, int):
         # Synthesized lists are empty, so whatever they count is zero.
-        return 0 if name.endswith("_count") else context.next_int()
+        return 0 if name in _LIST_COUNTS else context.next_int()
     if issubclass(annotation, float):
         return float(context.next_int())
     if issubclass(annotation, datetime.datetime):
@@ -194,6 +194,12 @@ def _synthesize_model(
         )
     return model(**values)
 
+
+#: The counts of what a list holds. Synthesized lists are empty, so
+#: these are zero; other counts, a price or a winner count, are not.
+_LIST_COUNTS = frozenset(
+    {"total_count", "voter_count", "total_voter_count", "pending_update_count"},
+)
 
 #: Enum members valid only in a field other than the one the enum
 #: is named after: ``sender`` is an inline query's ``chat_type``,

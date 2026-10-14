@@ -691,6 +691,9 @@ class BusinessConnectionState:
     can_reply: bool = True
     rights: BusinessBotRights | None = None
     date: datetime.datetime = BASE_DATE
+    #: The account numbers messages in all its private chats from one
+    #: sequence, so its business messages never share an id.
+    last_message_id: int = 0
 
     def as_business_connection(self, user: User) -> BusinessConnection:
         # The rights are the world's own object, and a result gets mounted — see the note
@@ -1128,8 +1131,22 @@ class ChatState:
             is_forum=self.is_forum or None,
         )
 
-    def allocate_message_id(self) -> int:
-        self.last_message_id += 1
+    def allocate_message_id(
+        self,
+        connection: BusinessConnectionState | None = None,
+    ) -> int:
+        """
+        The next message id in this chat.
+
+        A business message is numbered by its ``connection`` too, so
+        two chats of one business account never share an id, which
+        ``deleteBusinessMessages`` relies on as it names no chat.
+        """
+        last = self.last_message_id
+        if connection is not None:
+            last = max(last, connection.last_message_id)
+            connection.last_message_id = last + 1
+        self.last_message_id = last + 1
         return self.last_message_id
 
     def add_message(self, message: Message) -> Message:
