@@ -828,9 +828,12 @@ def _edit_target(env: BotTestEnvironment, method: TelegramMethod[Any]) -> tuple[
         raise WorldLookupError(msg)
     chat = resolve_chat(env, getattr(method, "chat_id", None))
     message_id: int | None = getattr(method, "message_id", None)
-    if message_id is None or chat.find_message(message_id) is None:
+    stored = None if message_id is None else chat.find_message(message_id)
+    if message_id is None or stored is None:
         msg = "message to edit not found"
         raise ApiRejection(msg)
+    # Every edit method is bound by the window, so it is checked here.
+    _check_business_edit_window(env, stored)
     return chat, message_id
 
 
@@ -998,7 +1001,9 @@ def _new_message_changes(protect_content: object) -> dict[str, Any]:
     chat, since ``reply_to_message`` is a message of the same chat.
     The bot sends it itself, so it is not a business message even when
     the original was: ``deleteBusinessMessages`` and the business edit
-    window must not reach it.
+    window must not reach it. Nor is it posted on behalf of the
+    original's chat: a channel post's sender chat and signature stay
+    with the original, and a forward names them in its origin.
     """
     return {
         "reply_to_message": None,
@@ -1006,6 +1011,8 @@ def _new_message_changes(protect_content: object) -> dict[str, Any]:
         "has_protected_content": True if protect_content else None,
         "business_connection_id": None,
         "sender_business_bot": None,
+        "sender_chat": None,
+        "author_signature": None,
     }
 
 
@@ -1168,6 +1175,7 @@ def _caption_changes(
     return {
         "caption": method.caption,
         "caption_entities": method.caption_entities,
+        "show_caption_above_media": method.show_caption_above_media,
         "reply_markup": method.reply_markup,
     }
 
@@ -1194,7 +1202,6 @@ def handle_edit_text(env: BotTestEnvironment, method: EditMessageText) -> Messag
     chat, message_id = _edit_target(env, method)
     stored = chat.require_message(message_id)
     _require_content(stored, _TEXT_FIELDS, "text")
-    _check_business_edit_window(env, stored)
     return chat.update_message(message_id, **edit_stamp(env), **_text_changes(env, method))
 
 
@@ -1203,7 +1210,6 @@ def handle_edit_caption(env: BotTestEnvironment, method: EditMessageCaption) -> 
     chat, message_id = _edit_target(env, method)
     stored = chat.require_message(message_id)
     _require_content(stored, CAPTIONED_FIELDS, "caption")
-    _check_business_edit_window(env, stored)
     return chat.update_message(message_id, **edit_stamp(env), **_caption_changes(method))
 
 
@@ -1213,7 +1219,6 @@ def handle_edit_reply_markup(
     method: EditMessageReplyMarkup,
 ) -> Message:
     chat, message_id = _edit_target(env, method)
-    _check_business_edit_window(env, chat.require_message(message_id))
     return chat.update_message(message_id, **edit_stamp(env), reply_markup=method.reply_markup)
 
 
@@ -1256,7 +1261,6 @@ def _media_changes(
 @models(EditMessageMedia)
 def handle_edit_media(env: BotTestEnvironment, method: EditMessageMedia) -> Message:
     chat, message_id = _edit_target(env, method)
-    _check_business_edit_window(env, chat.require_message(message_id))
     return chat.update_message(message_id, **edit_stamp(env), **_media_changes(env, method))
 
 

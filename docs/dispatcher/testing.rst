@@ -839,8 +839,8 @@ The clock drives every time limit the Bot API documents for something the toolki
   deleteMessage for limitations". The service message about a supergroup, channel or
   forum topic creation cannot be deleted at any age.
 * **Old business messages cannot be edited.** A business message the bot did not send,
-  with no inline keyboard, cannot be edited by text, caption, media or markup once more
-  than 48 hours have passed.
+  with no inline keyboard, cannot be edited by any edit method once more than 48 hours have
+  passed.
 * **Answer windows.** A pre-checkout query must be answered within 10 seconds, and an
   ephemeral command replied to within 15. Other queries have no documented limit and do
   not expire.

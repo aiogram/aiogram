@@ -305,6 +305,36 @@ class TestCopiesAndForwards:
 
         assert forwarded.message_thread_id == topic.message_thread_id
 
+    async def test_a_channel_post_moved_by_the_bot_is_not_posted_as_the_channel(self, dp):
+        blueprint = Blueprint()
+        alice = blueprint.add_user("Alice")
+        private_spec = blueprint.add_private_chat(alice)
+        news = blueprint.add_channel("News", members={alice: ChatMemberStatus.CREATOR})
+        environment = BotTestEnvironment(blueprint=blueprint, dispatcher=dp)
+        try:
+            channel = environment.chat(news)
+            target = environment.chat(private_spec)
+            await environment.user(alice).in_(news).send("post")
+            post = channel.messages[-1]
+
+            forwarded = await environment.bot.forward_message(
+                chat_id=target.id,
+                from_chat_id=channel.id,
+                message_id=post.message_id,
+            )
+            copied = await environment.bot.copy_message(
+                chat_id=target.id,
+                from_chat_id=channel.id,
+                message_id=post.message_id,
+            )
+
+            assert forwarded.forward_origin.chat.id == channel.id
+            for moved in (forwarded, target.find_message(copied.message_id)):
+                assert moved.sender_chat is None
+                assert moved.author_signature is None
+        finally:
+            environment.dispose_sync()
+
     async def test_a_new_caption_brings_its_own_entities(self, env, private, bobs):
         bold = MessageEntity(type="bold", offset=6, length=5)
         source = await env.bot.send_photo(
@@ -575,6 +605,19 @@ class TestEditsActOnTheirContent:
                 ephemeral_message_id=text.ephemeral_message_id,
                 caption="c",
             )
+
+    async def test_a_caption_edit_sets_where_the_caption_shows(self, env, private):
+        photo = await env.bot.send_photo(chat_id=private.id, photo="photo", caption="c")
+
+        edited = await env.bot.edit_message_caption(
+            chat_id=private.id,
+            message_id=photo.message_id,
+            caption="above",
+            show_caption_above_media=True,
+        )
+
+        assert edited.show_caption_above_media is True
+        assert private.find_message(photo.message_id).show_caption_above_media is True
 
 
 class TestEditDates:

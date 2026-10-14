@@ -13,6 +13,7 @@ from aiogram.types import (
     InlineKeyboardButton,
     InlineKeyboardMarkup,
     InputMediaPhoto,
+    Location,
     PhotoSize,
 )
 
@@ -701,6 +702,27 @@ class TestBusinessEditWindow:
 
         with pytest.raises(TelegramBadRequest, match="can't be edited"):
             await edit(env.bot, target)
+
+    async def test_an_old_owner_live_location_cannot_be_edited(
+        self,
+        env,
+        alice,
+        private,
+        connection,
+    ):
+        live = Location(latitude=1.0, longitude=2.0, live_period=LIVE_FOREVER)
+        await env.user(alice).in_(private, business=connection).send(fields={"location": live})
+        message = private.messages[-1]
+        await env.advance_time(datetime.timedelta(hours=49))
+
+        with pytest.raises(TelegramBadRequest, match="can't be edited"):
+            await env.bot.edit_message_live_location(
+                business_connection_id=connection.id,
+                chat_id=private.id,
+                message_id=message.message_id,
+                latitude=3.0,
+                longitude=4.0,
+            )
 
     async def test_a_message_with_a_keyboard_stays_editable(
         self,

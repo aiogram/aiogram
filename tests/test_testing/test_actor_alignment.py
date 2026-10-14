@@ -12,6 +12,7 @@ import datetime
 import pytest
 
 from aiogram.dispatcher.event.bases import CancelHandler, SkipHandler
+from aiogram.enums import ChatMemberStatus
 from aiogram.methods import AnswerGuestQuery
 from aiogram.test import Blueprint, BotTestEnvironment, WorldLookupError
 from aiogram.test.modeling import SUBSCRIPTION_PERIOD
@@ -256,6 +257,23 @@ class TestUserEdits:
         assert private.find_message(stored.message_id) is message
         assert message.text == "after"
         assert len(private.messages) == 1
+
+    async def test_a_channel_actor_can_edit_the_bots_post(self, dp):
+        blueprint = Blueprint()
+        alice = blueprint.add_user("Alice")
+        news = blueprint.add_channel("News", members={alice: ChatMemberStatus.CREATOR})
+        environment = BotTestEnvironment(blueprint=blueprint, dispatcher=dp)
+        try:
+            seen = []
+            dp.edited_channel_post.register(seen.append)
+            post = await environment.bot.send_message(chat_id=news.id, text="by the bot")
+
+            await environment.user(alice).in_(news).edit(post, "by an admin")
+
+            (edited,) = seen
+            assert edited.text == "by an admin"
+        finally:
+            environment.dispose_sync()
 
 
 class TestDrain:
