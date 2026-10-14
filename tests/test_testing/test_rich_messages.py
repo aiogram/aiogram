@@ -45,7 +45,8 @@ def models_in(annotation: Any) -> Iterator[type[BaseModel]]:
     if isinstance(annotation, TypeAliasType):
         yield from models_in(annotation.__value__)
         return
-    if isinstance(annotation, type):
+    # Python 3.10 reports `list[X]` as a type, so ask for the origin.
+    if isinstance(annotation, type) and get_origin(annotation) is None:
         if issubclass(annotation, BaseModel):
             yield annotation
         return
