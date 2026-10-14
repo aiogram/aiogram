@@ -195,6 +195,12 @@ def _synthesize_model(
     return model(**values)
 
 
+#: Enum members valid only in a field other than the one the enum
+#: is named after: ``sender`` is an inline query's ``chat_type``,
+#: never a ``Chat.type``.
+_ONLY_ELSEWHERE: frozenset[Enum] = frozenset({api_enums.ChatType.SENDER})
+
+
 def _enumerated(model: type, name: str) -> str | None:
     """
     The first value aiogram enumerates for ``model.name``, if any.
@@ -206,7 +212,8 @@ def _enumerated(model: type, name: str) -> str | None:
     camel = "".join(part.capitalize() for part in name.split("_"))
     enum = getattr(api_enums, f"{model.__name__}{camel}", None)
     if isinstance(enum, type) and issubclass(enum, Enum):
-        return str(next(iter(enum)).value)
+        member = next(m for m in enum if m not in _ONLY_ELSEWHERE)
+        return str(member.value)
     return None
 
 

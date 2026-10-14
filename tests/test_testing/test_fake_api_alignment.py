@@ -691,6 +691,8 @@ class TestSynthesis:
         chat = synthesize(Chat, SynthesisContext())
 
         assert chat.type in set(ChatType)
+        # `sender` is an inline query's chat type, not a chat's.
+        assert chat.type == ChatType.PRIVATE
 
     def test_a_synthesized_file_numbers_itself_without_a_world(self):
         context = SynthesisContext()
