@@ -591,6 +591,30 @@ class TestPromoteAndRestrictPersist:
         assert isinstance(member, ChatMemberAdministrator)
         assert member.custom_title is None
 
+    async def test_leaving_drops_the_custom_title(self, env, team, alice):
+        await env.bot.promote_chat_member(
+            chat_id=team.id,
+            user_id=alice.user.id,
+            can_pin_messages=True,
+        )
+        await env.bot.set_chat_administrator_custom_title(
+            chat_id=team.id,
+            user_id=alice.user.id,
+            custom_title="Boss",
+        )
+        await alice.in_(team).leave()
+        await alice.in_(team).join()
+
+        await env.bot.promote_chat_member(
+            chat_id=team.id,
+            user_id=alice.user.id,
+            can_pin_messages=True,
+        )
+
+        member = await env.bot.get_chat_member(chat_id=team.id, user_id=alice.user.id)
+        assert isinstance(member, ChatMemberAdministrator)
+        assert member.custom_title is None
+
     async def test_a_demotion_keeps_the_tag(self, env, team, alice):
         """
         ``tag`` is not a title: ``ChatMemberMember`` carries one, so it survives.

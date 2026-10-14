@@ -684,8 +684,24 @@ class TestCopiesAndForwards:
             bobs.find_message(copied.message_id).reply_markup.model_dump() == KEYBOARD.model_dump()
         )
 
+    async def test_a_copy_does_not_take_the_originals_keyboard(self, env, private, bobs):
+        source = await env.bot.send_message(chat_id=private.id, text="hi", reply_markup=KEYBOARD)
+
+        copied = await env.bot.copy_message(
+            chat_id=bobs.id,
+            from_chat_id=private.id,
+            message_id=source.message_id,
+        )
+
+        assert bobs.find_message(copied.message_id).reply_markup is None
+
     async def test_copies_can_drop_their_captions(self, env, private, bobs):
-        source = await env.bot.send_photo(chat_id=private.id, photo="photo", caption="hi")
+        source = await env.bot.send_photo(
+            chat_id=private.id,
+            photo="photo",
+            caption="hi",
+            show_caption_above_media=True,
+        )
 
         copied = await env.bot.copy_messages(
             chat_id=bobs.id,
@@ -694,7 +710,9 @@ class TestCopiesAndForwards:
             remove_caption=True,
         )
 
-        assert bobs.find_message(copied[0].message_id).caption is None
+        stored = bobs.find_message(copied[0].message_id)
+        assert stored.caption is None
+        assert stored.show_caption_above_media is None
 
     async def test_a_protected_message_cannot_be_forwarded(self, env, private, bobs):
         source = await env.bot.send_message(chat_id=private.id, text="hi", protect_content=True)

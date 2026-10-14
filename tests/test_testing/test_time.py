@@ -400,6 +400,19 @@ class TestRestrictionsExpire:
         assert member.status == ChatMemberStatus.RESTRICTED
         assert member.until_date == UNTIL_FOREVER
 
+    async def test_a_fractional_clock_keeps_a_30_second_end(self, env, team, alice):
+        await env.advance_time(0.5)
+
+        await env.bot.restrict_chat_member(
+            chat_id=team.id,
+            user_id=alice.id,
+            permissions=MUTED,
+            until_date=datetime.timedelta(seconds=30),
+        )
+
+        member = await self.read(env, team, alice)
+        assert member.until_date == BASE_DATE + datetime.timedelta(seconds=30)
+
     async def test_a_duration_counts_from_now(self, env, team, alice):
         await env.advance_time(DAY)
 
@@ -444,6 +457,13 @@ class TestScheduledPolls:
         assert update.is_closed is True
         assert env.world.polls[sent.poll.id].is_closed is True
         assert team.find_message(sent.message_id).poll.is_closed is True
+
+    async def test_a_fractional_clock_accepts_the_shortest_close_date(self, env, team):
+        await env.advance_time(0.5)
+
+        sent = await self.send(env, team, close_date=datetime.timedelta(seconds=5))
+
+        assert sent.poll.close_date == BASE_DATE + datetime.timedelta(seconds=5)
 
     async def test_voting_works_before_and_is_refused_after(self, env, team, alice):
         sent = await self.send(env, team, open_period=60)

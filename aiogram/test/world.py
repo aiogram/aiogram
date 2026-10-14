@@ -543,7 +543,9 @@ class MemberState:
         or a ban only: on any other status the Bot API reads
         ``until_date`` as a subscription's expiry, so it is cleared on
         a move into such a status. Staying in one, such as a member
-        joining again, keeps the subscription's expiry.
+        joining again, keeps the subscription's expiry. A custom title
+        belongs to an administrator or the owner, so it ends with that
+        status rather than coming back on a later promotion.
         """
         was_present = self.is_present
         previous = self.status
@@ -551,6 +553,8 @@ class MemberState:
         self.is_member = was_present if status == ChatMemberStatus.RESTRICTED else True
         if status != ChatMemberStatus.ADMINISTRATOR:
             self.promoted_by = None
+        if status not in {ChatMemberStatus.ADMINISTRATOR, ChatMemberStatus.CREATOR}:
+            self.custom_title = None
         if status != previous and status not in {
             ChatMemberStatus.RESTRICTED,
             ChatMemberStatus.KICKED,

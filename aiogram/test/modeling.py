@@ -880,7 +880,10 @@ def normalize_until(value: Any, now: datetime.datetime) -> datetime.datetime | N
     if moment is None:
         return None
     shortest, longest = _UNTIL_RANGE
-    if not shortest <= moment - now <= longest:
+    # The moment is in whole seconds, so it is measured from the clock's
+    # whole second: a clock advanced by a fraction must not turn a
+    # 30-second restriction into a forever one.
+    if not shortest <= moment - now.replace(microsecond=0) <= longest:
         return None
     return moment
 
@@ -1295,6 +1298,9 @@ def copy_one(
         **{
             **thread,
             **_new_message_changes(protect_content),
+            # A copy takes only the original's content: its keyboard is
+            # the one the request passes, or none.
+            "reply_markup": None,
             **changes,
         },
     )
@@ -1365,6 +1371,8 @@ def handle_copy_many(env: BotTestEnvironment, method: CopyMessages) -> list[Mess
     if method.remove_caption:
         changes["caption"] = None
         changes["caption_entities"] = None
+        # With no caption there is nothing to show above the media.
+        changes["show_caption_above_media"] = None
     # Telegram skips what it cannot copy rather than failing the batch.
     originals = [
         original
@@ -2876,13 +2884,17 @@ def _poll_close(env: BotTestEnvironment, method: SendPoll) -> datetime.datetime 
     now = env.world.now
     moment: datetime.datetime | None
     if method.open_period is not None:
+        start = now
         moment = now + datetime.timedelta(seconds=method.open_period)
     else:
+        # A close date is in whole seconds, so it is measured from the
+        # clock's whole second, as `normalize_until` measures an end.
+        start = now.replace(microsecond=0)
         moment = resolve_date(method.close_date, now)
     if moment is None:
         return None
     shortest, longest = _POLL_SCHEDULE_RANGE
-    if not shortest <= (moment - now).total_seconds() <= longest:
+    if not shortest <= (moment - start).total_seconds() <= longest:
         msg = f"a poll must close {shortest} to {longest} seconds from now"
         raise ApiRejection(msg)
     return moment

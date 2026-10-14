@@ -641,7 +641,7 @@ API states for these methods hold too:
   target chat is a forum, and in no thread otherwise. A copy carries the request's new
   caption with its entities, keeps the original caption when the request names none, drops
   it for :code:`copyMessages(remove_caption=True)`, and stores the request's inline
-  keyboard. Service, invoice, paid media, giveaway and giveaway winners messages cannot be
+  keyboard, or none: the original's keyboard is not copied. Service, invoice, paid media, giveaway and giveaway winners messages cannot be
   copied, nor can a quiz whose correct answer the bot does not know, and service messages and protected content cannot be forwarded: a single call
   fails, and a batch call skips them. A single forward or copy of an album item is in no
   album; a batch keeps each album together under a new :code:`media_group_id`.
