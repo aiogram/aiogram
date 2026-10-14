@@ -1830,11 +1830,30 @@ def handle_delete_many(env: BotTestEnvironment, method: DeleteMessages) -> bool:
 
 @models(PinChatMessage)
 def handle_pin(env: BotTestEnvironment, method: PinChatMessage) -> bool:
+    """
+    Pin a message, and post the service message Telegram posts for it.
+
+    The service message carries the pinned message without its own
+    ``reply_to_message``, as the Bot API states. A message already
+    pinned is not announced again.
+    """
     chat = resolve_chat(env, method.chat_id)
-    if method.message_id is None or chat.find_message(method.message_id) is None:
+    pinned = None if method.message_id is None else chat.find_message(method.message_id)
+    if pinned is None:
         raise ApiRejection("message to pin not found")
-    if method.message_id not in chat.pinned_message_ids:
-        chat.pinned_message_ids.append(method.message_id)
+    if pinned.message_id in chat.pinned_message_ids:
+        return True
+    chat.pinned_message_ids.append(pinned.message_id)
+    fields: dict[str, Any] = {
+        "pinned_message": pinned.model_copy(update={"reply_to_message": None}),
+    }
+    if method.business_connection_id is not None:
+        # Pinned on behalf of the business account, which announces it.
+        connection = env.world.business_connection(method.business_connection_id)
+        fields["from_user"] = env.world.user(connection.user_id).as_user()
+        fields["business_connection_id"] = connection.id
+    thread_id = pinned.message_thread_id if pinned.is_topic_message else None
+    service_message(env, chat, fields, thread_id)
     return True
 
 

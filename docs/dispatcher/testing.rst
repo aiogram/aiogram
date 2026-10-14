@@ -646,6 +646,8 @@ API states for these methods hold too:
   copied, nor can a quiz whose correct answer the bot does not know, and service messages and protected content cannot be forwarded: a single call
   fails, and a batch call skips them. A single forward or copy of an album item is in no
   album; a batch keeps each album together under a new :code:`media_group_id`.
+* :code:`pinChatMessage` posts the ``pinned_message`` service message Telegram posts, in
+  the pinned message's topic, once per pin.
 * :code:`unpinChatMessage` without a message id unpins the most recently sent pinned
   message only.
 * :code:`editMessageText` fails on a message with no text, rich or game content, and

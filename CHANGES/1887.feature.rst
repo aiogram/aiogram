@@ -237,28 +237,29 @@ forwards land in the requested topic as new messages that keep no reply, edit or
 from the original, a forward of a forward keeps its first origin and a forwarded channel post
 names its signature in the origin, copies carry the new caption, its entities, the inline
 keyboard and their own reply, and service, protected, invoice, paid media and giveaway messages
-are refused where the Bot API refuses them; ``unpinChatMessage`` without an id unpins only the
-newest pin; editing text or a caption fails on a message without that content, and every edit
-sets ``edit_date``, the bot edits only its own messages outside channels and, in business
-chats, the account's but not the customer's, and never a forward; ``editMessageMedia`` keeps an
-album item to its album's kind, and ``sendMediaGroup`` keeps documents and audio apart from
-other media; a quiz is copied only with a known answer; dates the bot passes count in whole
-seconds; a business message is edited only through its connection; a reply chain does not nest;
-the bot's channel posts, copies, forwards and service messages are the channel's, with no
-``from_user``; a copy of a user's poll is a poll the bot can stop; ``restrictChatMember`` works
-in supergroups only; sends and media edits store the spoiler and caption placement flags;
-quizzes keep all their ``correct_option_ids``, regular polls allow revoting by default and
-``stopPoll`` stores its keyboard; hiding the General topic closes it and reopening unhides it;
-an empty topic name keeps the name; business messages are numbered per account, so
-``deleteBusinessMessages`` finds their one chat; and checklists keep their title and tasks.
-Creation service messages cannot be deleted. Synthesized files get distinct ids and keep a file
-id the request passed with its unique id, dice carry their emoji and a value in its range,
-enumerated strings take valid values, booleans are false, rich voice note blocks convert, star
-transactions report the charge id, a positive amount and the user, and an administrator the bot
-promoted reports ``can_be_edited``, while one known to be promoted by someone else cannot be
-edited, demoted or titled by the bot, and a star payment is refunded only to the user who paid
-it. A declared world matches one built through the API: declared permissions get the documented
-defaults, declared topics are created by the bot, and ``Blueprint.add_poll`` declares a poll.
+are refused where the Bot API refuses them; ``pinChatMessage`` posts its ``pinned_message``
+service message and ``unpinChatMessage`` without an id unpins only the newest pin; editing text
+or a caption fails on a message without that content, and every edit sets ``edit_date``, the
+bot edits only its own messages outside channels and, in business chats, the account's but not
+the customer's, and never a forward; ``editMessageMedia`` keeps an album item to its album's
+kind, and ``sendMediaGroup`` keeps documents and audio apart from other media; a quiz is copied
+only with a known answer; dates the bot passes count in whole seconds; a business message is
+edited only through its connection; a reply chain does not nest; the bot's channel posts,
+copies, forwards and service messages are the channel's, with no ``from_user``; a copy of a
+user's poll is a poll the bot can stop; ``restrictChatMember`` works in supergroups only; sends
+and media edits store the spoiler and caption placement flags; quizzes keep all their
+``correct_option_ids``, regular polls allow revoting by default and ``stopPoll`` stores its
+keyboard; hiding the General topic closes it and reopening unhides it; an empty topic name
+keeps the name; business messages are numbered per account, so ``deleteBusinessMessages`` finds
+their one chat; and checklists keep their title and tasks. Creation service messages cannot be
+deleted. Synthesized files get distinct ids and keep a file id the request passed with its
+unique id, dice carry their emoji and a value in its range, enumerated strings take valid
+values, booleans are false, rich voice note blocks convert, star transactions report the charge
+id, a positive amount and the user, and an administrator the bot promoted reports
+``can_be_edited``, while one known to be promoted by someone else cannot be edited, demoted or
+titled by the bot, and a star payment is refunded only to the user who paid it. A declared
+world matches one built through the API: declared permissions get the documented defaults,
+declared topics are created by the bot, and ``Blueprint.add_poll`` declares a poll.
 
 Actor triggers produce only updates Telegram would deliver. ``click(..., message=m)`` presses
 the button on the stored version of ``m`` in the actor's chat and refuses a button it does

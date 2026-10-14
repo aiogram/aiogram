@@ -954,6 +954,54 @@ class TestUnpinning:
         assert private.pinned_message_ids == []
 
 
+class TestPinning:
+    async def test_a_pin_is_announced_once(self, env, private):
+        first = await env.bot.send_message(chat_id=private.id, text="one")
+        reply = await env.bot.send_message(
+            chat_id=private.id,
+            text="two",
+            reply_parameters=ReplyParameters(message_id=first.message_id),
+        )
+
+        await env.bot.pin_chat_message(chat_id=private.id, message_id=reply.message_id)
+        await env.bot.pin_chat_message(chat_id=private.id, message_id=reply.message_id)
+
+        (service,) = [m for m in private.messages if m.pinned_message is not None]
+        assert service.pinned_message.message_id == reply.message_id
+        # The pinned message carries no further reply, as the Bot API states.
+        assert service.pinned_message.reply_to_message is None
+
+    async def test_a_pin_in_a_topic_is_announced_there(self, env, forum, topic):
+        sent = await env.bot.send_message(
+            chat_id=forum.id,
+            message_thread_id=topic.message_thread_id,
+            text="rules",
+        )
+
+        await env.bot.pin_chat_message(chat_id=forum.id, message_id=sent.message_id)
+
+        assert forum.messages[-1].pinned_message.message_id == sent.message_id
+        assert forum.messages[-1].message_thread_id == topic.message_thread_id
+
+    async def test_a_business_pin_is_the_accounts(self, env, alice, private, connection):
+        sent = await env.bot.send_message(
+            business_connection_id=connection.id,
+            chat_id=private.id,
+            text="offer",
+        )
+
+        await env.bot.pin_chat_message(
+            business_connection_id=connection.id,
+            chat_id=private.id,
+            message_id=sent.message_id,
+        )
+
+        service = private.messages[-1]
+        assert service.pinned_message.message_id == sent.message_id
+        assert service.from_user.id == alice.id
+        assert service.business_connection_id == connection.id
+
+
 class TestEditsActOnTheirContent:
     async def test_the_bot_cannot_edit_a_forward(self, env, private, bobs):
         source = await env.bot.send_message(chat_id=private.id, text="hi")

@@ -449,7 +449,7 @@ class TestUnpinningEverything:
     async def test_unpin_all_clears_the_pinned_list(self, env, private, alice):
         for text in ("one", "two"):
             await alice.send(text)
-        for message in private.messages:
+        for message in list(private.messages):
             await env.bot.pin_chat_message(chat_id=private.id, message_id=message.message_id)
         assert len(private.pinned_message_ids) == 2
 
