@@ -158,6 +158,10 @@ class TestAnnotationAccepts:
     def test_anything_else(self):
         assert not annotation_accepts("not-a-type", Chat)
 
+    def test_a_base_class_field_takes_a_subclass(self):
+        assert annotation_accepts(Chat, ChatFullInfo)
+        assert not annotation_accepts(ChatFullInfo, Chat)
+
 
 class TestFailures:
     def test_recursive_required_field(self):
