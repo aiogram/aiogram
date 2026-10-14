@@ -961,7 +961,12 @@ class UserActor:
 
         if message is not None:
             self._require_visible(message, "follow its deep-link buttons")
-            message = self._stored_version(message)
+            # The link opens the private chat whichever chat showed
+            # it, so the message is resolved in its own chat. A message
+            # built by hand for a chat the world lacks is taken as is.
+            shown_in = self.environment.world.chats.get(message.chat.id)
+            if shown_in is not None:
+                message = self._stored_version(message, shown_in)
         scope: Iterable[Message] = [message] if message is not None else self._visible_messages()
         deep_link: _DeepLink | None
         if url is None:
@@ -1801,16 +1806,14 @@ class UserActor:
             )
             raise WorldLookupError(msg)
 
-    def _stored_version(self, message: Message) -> Message:
+    def _stored_version(self, message: Message, chat: ChatState) -> Message:
         """
-        The version of ``message`` this actor's chat holds now.
+        The version of ``message`` that ``chat`` holds now.
 
         Telegram acts on a message as the chat holds it, so a copy the
         test kept is looked up again, by id or, for an ephemeral
         message addressed to the actor, by ephemeral id.
         """
-        chat = self.chat
-        self._require_in_chat(message)
         if message.ephemeral_message_id is not None:
             stored = chat.find_ephemeral_message(self.user.id, message.ephemeral_message_id)
         else:
@@ -1826,7 +1829,8 @@ class UserActor:
         def carries(candidate: Message) -> bool:
             return any(button.callback_data == callback_data for button in _buttons_of(candidate))
 
-        stored = self._stored_version(message)
+        self._require_in_chat(message)
+        stored = self._stored_version(message, self.chat)
         if carries(stored):
             return stored
         msg = (

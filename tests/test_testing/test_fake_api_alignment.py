@@ -133,6 +133,20 @@ class TestMediaGroups:
 
         assert private.messages == []
 
+    async def test_a_refused_album_registers_no_file(self, env, private):
+        with pytest.raises(TelegramBadRequest, match="message to be replied not found"):
+            await env.bot.send_media_group(
+                chat_id=private.id,
+                media=[
+                    InputMediaPhoto(media=BufferedInputFile(b"a", filename="a.jpg")),
+                    InputMediaPhoto(media=BufferedInputFile(b"b", filename="b.jpg")),
+                ],
+                reply_parameters=ReplyParameters(message_id=999),
+            )
+
+        assert env.world.files == {}
+        assert env.world.last_file_number == 0
+
 
 class TestReplies:
     async def test_a_reply_to_a_missing_message_fails(self, env, private):
@@ -532,6 +546,17 @@ class TestEditsActOnTheirContent:
 
 
 class TestPolls:
+    async def test_a_refused_poll_is_not_registered(self, env, private):
+        with pytest.raises(TelegramBadRequest, match="message to be replied not found"):
+            await env.bot.send_poll(
+                chat_id=private.id,
+                question="Q?",
+                options=["a", "b"],
+                reply_parameters=ReplyParameters(message_id=999),
+            )
+
+        assert env.world.polls == {}
+
     async def test_a_quiz_keeps_its_correct_answers(self, env, private):
         message = await env.bot.send_poll(
             chat_id=private.id,

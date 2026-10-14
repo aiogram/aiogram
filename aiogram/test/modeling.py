@@ -37,6 +37,7 @@ catch.
 from __future__ import annotations
 
 import datetime
+import functools
 import re
 from collections.abc import Callable
 from typing import TYPE_CHECKING, Any, get_args
@@ -513,13 +514,15 @@ def build_message(
     chat: ChatState,
     media_field: str | None = None,
     *,
-    content: dict[str, Any] | None = None,
+    content: Callable[[], dict[str, Any]] | None = None,
 ) -> Message:
     """
     Store the message a send method produces, and return it.
 
-    ``content`` is what the message carries when the method alone does
-    not say, such as one item of a media group.
+    ``content`` builds what the message carries when the method alone
+    does not say, such as one item of a media group. It is called once
+    the send is checked, so a refused one registers no file and uses up
+    no file number.
     """
     thread_id = getattr(method, "message_thread_id", None)
     if thread_id is not None and chat.is_forum:
@@ -564,7 +567,7 @@ def build_message(
             getattr(method, media_field, None),
         )
     if content is not None:
-        values.update(content)
+        values.update(content())
 
     if receiver is not None:
         values["ephemeral_message_id"] = chat.allocate_ephemeral_message_id()
@@ -803,8 +806,7 @@ def normalize_until(value: Any, now: datetime.datetime) -> datetime.datetime | N
 _BUSINESS_EDIT_WINDOW = datetime.timedelta(hours=48)
 
 
-def _check_business_edit_window(env: BotTestEnvironment, chat: ChatState, message_id: int) -> None:
-    message = chat.require_message(message_id)
+def _check_business_edit_window(env: BotTestEnvironment, message: Message) -> None:
     if (
         message.business_connection_id is not None
         and message.sender_business_bot is None
@@ -852,7 +854,12 @@ def handle_send_media_group(
         raise ApiRejection(msg)
     group_id = env.world.next_query_id()
     return [
-        build_message(env, method, chat, content=_media_group_item(env, item, group_id))
+        build_message(
+            env,
+            method,
+            chat,
+            content=functools.partial(_media_group_item, env, item, group_id),
+        )
         for item in method.media
     ]
 
@@ -1019,6 +1026,7 @@ def copy_one(
     target: ChatState,
     message_id: int,
     thread_id: int | None = None,
+    protect_content: object = None,
     **changes: Any,
 ) -> Message:
     """
@@ -1042,7 +1050,7 @@ def copy_one(
         forward_origin=None,
         **{
             **_thread_changes(target, thread_id),
-            **_new_message_changes(None),
+            **_new_message_changes(protect_content),
             **changes,
         },
     )
@@ -1066,7 +1074,6 @@ def handle_copy(env: BotTestEnvironment, method: CopyMessage) -> MessageId:
         changes["show_caption_above_media"] = method.show_caption_above_media
     if isinstance(method.reply_markup, InlineKeyboardMarkup):
         changes["reply_markup"] = method.reply_markup
-    changes.update(_new_message_changes(method.protect_content))
     changes["reply_to_message"] = _reply_target(env, method, target, ephemeral=False)
     copied = copy_one(
         env,
@@ -1074,6 +1081,7 @@ def handle_copy(env: BotTestEnvironment, method: CopyMessage) -> MessageId:
         target,
         method.message_id,
         method.message_thread_id,
+        method.protect_content,
         **changes,
     )
     return MessageId(message_id=copied.message_id)
@@ -1083,13 +1091,21 @@ def handle_copy(env: BotTestEnvironment, method: CopyMessage) -> MessageId:
 def handle_copy_many(env: BotTestEnvironment, method: CopyMessages) -> list[MessageId]:
     source = resolve_chat(env, method.from_chat_id)
     target = resolve_chat(env, method.chat_id)
-    changes = _new_message_changes(method.protect_content)
+    changes: dict[str, Any] = {}
     if method.remove_caption:
         changes["caption"] = None
         changes["caption_entities"] = None
     # Telegram skips what it cannot copy rather than failing the batch.
     copied = [
-        copy_one(env, source, target, message_id, method.message_thread_id, **changes)
+        copy_one(
+            env,
+            source,
+            target,
+            message_id,
+            method.message_thread_id,
+            method.protect_content,
+            **changes,
+        )
         for message_id in method.message_ids
         if (original := source.find_message(message_id)) is not None and _copyable(original)
     ]
@@ -1153,16 +1169,18 @@ def _require_content(message: Message | None, fields: tuple[str, ...], kind: str
 @models(EditMessageText)
 def handle_edit_text(env: BotTestEnvironment, method: EditMessageText) -> Message:
     chat, message_id = _edit_target(env, method)
-    _require_content(chat.find_message(message_id), _TEXT_FIELDS, "text")
-    _check_business_edit_window(env, chat, message_id)
+    stored = chat.require_message(message_id)
+    _require_content(stored, _TEXT_FIELDS, "text")
+    _check_business_edit_window(env, stored)
     return chat.update_message(message_id, **_text_changes(env, method))
 
 
 @models(EditMessageCaption)
 def handle_edit_caption(env: BotTestEnvironment, method: EditMessageCaption) -> Message:
     chat, message_id = _edit_target(env, method)
-    _require_content(chat.find_message(message_id), CAPTIONED_FIELDS, "caption")
-    _check_business_edit_window(env, chat, message_id)
+    stored = chat.require_message(message_id)
+    _require_content(stored, CAPTIONED_FIELDS, "caption")
+    _check_business_edit_window(env, stored)
     return chat.update_message(message_id, **_caption_changes(method))
 
 
@@ -1172,7 +1190,7 @@ def handle_edit_reply_markup(
     method: EditMessageReplyMarkup,
 ) -> Message:
     chat, message_id = _edit_target(env, method)
-    _check_business_edit_window(env, chat, message_id)
+    _check_business_edit_window(env, chat.require_message(message_id))
     return chat.update_message(message_id, reply_markup=method.reply_markup)
 
 
@@ -1213,7 +1231,7 @@ def _media_changes(
 @models(EditMessageMedia)
 def handle_edit_media(env: BotTestEnvironment, method: EditMessageMedia) -> Message:
     chat, message_id = _edit_target(env, method)
-    _check_business_edit_window(env, chat, message_id)
+    _check_business_edit_window(env, chat.require_message(message_id))
     return chat.update_message(message_id, **_media_changes(env, method))
 
 
@@ -2554,8 +2572,10 @@ def handle_send_poll(env: BotTestEnvironment, method: SendPoll) -> Message:
         open_period=method.open_period,
         close_date=close_at,
     )
-    env.world.polls[poll.id] = poll
     message = build_message(env, method, chat)
+    # Registered once the send went through, so a refused one leaves no
+    # poll behind to vote in.
+    env.world.polls[poll.id] = poll
     if close_at is not None and not poll.is_closed:
         message_id = message.message_id
 

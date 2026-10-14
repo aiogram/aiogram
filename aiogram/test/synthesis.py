@@ -260,6 +260,7 @@ _LIST_COUNTS = frozenset(
 _ONLY_ELSEWHERE: frozenset[Enum] = frozenset({api_enums.ChatType.SENDER})
 
 
+@cache
 def _enumerated(model: type, name: str) -> str | None:
     """
     The first value aiogram enumerates for ``model.name``, if any.

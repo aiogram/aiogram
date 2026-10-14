@@ -309,6 +309,18 @@ class TestRestrictionsExpire:
         assert member.until_date is None
         assert team.member(alice.id).permissions is None
 
+    async def test_a_naive_end_date_is_read_as_local_time(self, env, team, alice):
+        member = team.member(alice.id)
+        ends = env.now + datetime.timedelta(hours=1)
+        member.set_status(ChatMemberStatus.RESTRICTED)
+        member.until_date = ends.astimezone().replace(tzinfo=None)
+
+        assert team.member(alice.id).status == ChatMemberStatus.RESTRICTED
+
+        await env.advance_time(HOUR)
+
+        assert team.member(alice.id).status == ChatMemberStatus.MEMBER
+
     async def test_the_member_map_reads_the_lifted_mute(self, env, team, alice):
         await env.bot.restrict_chat_member(
             chat_id=team.id,

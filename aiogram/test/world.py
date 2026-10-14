@@ -494,7 +494,9 @@ class MemberState:
         banned user, has left. No update is sent: the Bot API documents
         none for a restriction running out.
         """
-        if self.until_date is None or now < self.until_date:
+        # A test can set a naive end date by hand; it is read as local
+        # time rather than failing to compare with the aware clock.
+        if self.until_date is None or now < aware(self.until_date):
             return
         if self.status == ChatMemberStatus.RESTRICTED:
             self.set_status(ChatMemberStatus.MEMBER if self.is_member else ChatMemberStatus.LEFT)

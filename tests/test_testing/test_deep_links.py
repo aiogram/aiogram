@@ -3,7 +3,7 @@ import pytest
 from aiogram.enums import ChatMemberStatus, ChatType
 from aiogram.filters import Command, CommandStart
 from aiogram.test import Blueprint, BotTestEnvironment, WorldLookupError
-from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
+from aiogram.types import Chat, InlineKeyboardButton, InlineKeyboardMarkup, Message
 
 
 def _join_button(url: str, text: str = "Join") -> InlineKeyboardMarkup:
@@ -426,6 +426,40 @@ class TestFollowDeepLink:
 
         with pytest.raises(WorldLookupError, match=f"Message {sent.message_id}"):
             await alice.in_(team).follow_deep_link(message=sent)
+
+    async def test_an_unbound_actor_follows_a_link_from_a_group(self, env, team, alice):
+        seen = []
+        env.dispatcher.message.register(
+            lambda message, command: seen.append((message.chat.id, command.args)),
+            CommandStart(deep_link=True),
+        )
+        sent = await env.bot.send_message(
+            chat_id=team.id,
+            text="Join us!",
+            reply_markup=_join_button("https://t.me/test_bot?start=from-group"),
+        )
+
+        await alice.follow_deep_link(message=sent)
+
+        assert seen == [(alice.user.id, "from-group")]
+
+    async def test_a_message_of_an_unknown_chat_is_taken_as_is(self, env, alice):
+        seen = []
+        env.dispatcher.message.register(
+            lambda message, command: seen.append(command.args),
+            CommandStart(deep_link=True),
+        )
+        handmade = Message(
+            message_id=1,
+            date=env.world.now,
+            chat=Chat(id=-1009999, type="channel", title="Elsewhere"),
+            text="Join",
+            reply_markup=_join_button("https://t.me/test_bot?start=handmade"),
+        )
+
+        await alice.follow_deep_link(message=handmade)
+
+        assert seen == ["handmade"]
 
     async def test_no_matching_button_raises_a_scan_error(self, env, team, alice):
         with pytest.raises(WorldLookupError, match="deep-link button"):
