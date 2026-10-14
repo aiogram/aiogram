@@ -238,6 +238,7 @@ from aiogram.types import (
     ChecklistTask,
     Dice,
     EphemeralMessageParameters,
+    ExternalReplyInfo,
     File,
     ForumTopic,
     ForumTopicClosed,
@@ -538,7 +539,7 @@ def build_message(
         # An unknown thread id must fail rather than silently produce an untagged message.
         chat.topic(thread_id)
     receiver = _ephemeral_receiver(env, method, chat)
-    replied = _reply_target(env, method, chat, ephemeral=receiver is not None)
+    reply = _reply_changes(env, method, chat, ephemeral=receiver is not None)
     connection_id = getattr(method, "business_connection_id", None)
     connection = None if connection_id is None else env.world.business_connection(connection_id)
     values: dict[str, Any] = {
@@ -566,8 +567,7 @@ def build_message(
     if thread_id is not None and chat.is_forum:
         values["is_topic_message"] = True
 
-    if replied is not None:
-        values["reply_to_message"] = replied
+    values.update(reply)
 
     if media_field is not None:
         values[media_field] = stored_content(
@@ -642,25 +642,25 @@ def _ephemeral_receiver(
     return receiver
 
 
-def _reply_target(
+def _reply_changes(
     env: BotTestEnvironment,
     method: TelegramMethod[Any],
     chat: ChatState,
     *,
     ephemeral: bool,
-) -> Message | None:
+) -> dict[str, Any]:
     """
-    The message a send replies to in its own chat, if any.
+    The reply fields of the message a send stores in ``chat``.
 
     The target is looked up in the chat ``reply_parameters.chat_id``
     names, or in ``chat``. A target that does not exist fails the send
     unless ``allow_sending_without_reply`` is set, which the Bot API
     reads as false for a reply in another chat or a forum topic and in
     an ephemeral message, and as true on behalf of a business account.
-    A target in another chat is checked but not carried, since
-    ``reply_to_message`` is a message of the same chat; an ephemeral
-    message or one sent on behalf of a business account cannot reply
-    in another chat at all, as ``ReplyParameters.chat_id`` states.
+    A target in ``chat`` is the ``reply_to_message``; one in another
+    chat is described by ``external_reply``. An ephemeral message or
+    one sent on behalf of a business account cannot reply in another
+    chat at all, as ``ReplyParameters.chat_id`` states.
 
     The deprecated top-level ``reply_to_message_id`` and
     ``allow_sending_without_reply`` still name a reply in the same chat
@@ -676,7 +676,7 @@ def _reply_target(
         target_chat = None
         allow_without_reply = getattr(method, "allow_sending_without_reply", None)
     if message_id is None:
-        return None
+        return {}
     where = chat if target_chat is None else resolve_chat(env, target_chat)
     on_behalf = getattr(method, "business_connection_id", None) is not None
     if where is not chat and (ephemeral or on_behalf):
@@ -696,8 +696,41 @@ def _reply_target(
             allowed = bool(allow_without_reply)
         if not allowed:
             raise ApiRejection("message to be replied not found")
-        return None
-    return replied if where is chat else None
+        return {}
+    if where is chat:
+        return {"reply_to_message": replied}
+    return {"external_reply": _external_reply(env, where, replied)}
+
+
+#: The ``ExternalReplyInfo`` fields that describe where the replied
+#: message is rather than what it carries.
+_EXTERNAL_REPLY_PLACE = frozenset({"origin", "chat", "message_id"})
+
+
+def _external_reply(
+    env: BotTestEnvironment,
+    where: ChatState,
+    replied: Message,
+) -> ExternalReplyInfo:
+    """
+    What a message knows about the message it replies to elsewhere.
+
+    It names the replied message's origin, as a forward would, and
+    carries its content. The chat and message id are given only for a
+    supergroup or a channel, as ``ExternalReplyInfo`` documents.
+    """
+    content = {
+        name: value
+        for name in ExternalReplyInfo.model_fields.keys() - _EXTERNAL_REPLY_PLACE
+        if (value := getattr(replied, name, None)) is not None
+    }
+    public = where.type in {ChatType.SUPERGROUP, ChatType.CHANNEL}
+    return ExternalReplyInfo(
+        origin=forward_origin(where, replied, replied.from_user or env.world.bot_user.as_user()),
+        chat=where.as_chat() if public else None,
+        message_id=replied.message_id if public else None,
+        **content,
+    )
 
 
 #: The highest value each dice emoji can show, as ``Dice`` documents.
@@ -1246,7 +1279,7 @@ def handle_copy(env: BotTestEnvironment, method: CopyMessage) -> MessageId:
         changes["show_caption_above_media"] = method.show_caption_above_media
     if isinstance(method.reply_markup, InlineKeyboardMarkup):
         changes["reply_markup"] = method.reply_markup
-    changes["reply_to_message"] = _reply_target(env, method, target, ephemeral=False)
+    changes.update(_reply_changes(env, method, target, ephemeral=False))
     copied = copy_one(
         env,
         source,

@@ -243,6 +243,25 @@ class TestReplies:
         )
 
         assert message.reply_to_message is None
+        reply = message.external_reply
+        assert reply.origin.sender_user.id == env.bot.id
+        # A private chat is not named, as ExternalReplyInfo documents.
+        assert (reply.chat, reply.message_id) == (None, None)
+
+    async def test_a_reply_to_a_supergroup_names_the_message(self, env, alice, private, team):
+        await env.user(alice).in_(team).send("question")
+        target = team.messages[-1]
+
+        message = await env.bot.send_message(
+            chat_id=private.id,
+            text="answer",
+            reply_parameters=ReplyParameters(message_id=target.message_id, chat_id=team.id),
+        )
+
+        reply = message.external_reply
+        assert reply.origin.sender_user.id == alice.id
+        assert (reply.chat.id, reply.message_id) == (team.id, target.message_id)
+        assert private.find_message(message.message_id).external_reply == reply
 
     async def test_a_missing_reply_in_another_chat_always_fails(self, env, private, bobs):
         with pytest.raises(TelegramBadRequest, match="message to be replied not found"):

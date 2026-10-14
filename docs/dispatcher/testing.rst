@@ -633,8 +633,9 @@ API states for these methods hold too:
   the target chat. A target that does not exist fails the send with "message to be replied
   not found", unless :code:`allow_sending_without_reply` is set, which the Bot API reads as
   false for a reply in another chat, in a forum topic or in an ephemeral message, and as
-  true on behalf of a business account. A target in another chat is checked but not stored
-  as :code:`reply_to_message`. The deprecated :code:`reply_to_message_id` and top-level
+  true on behalf of a business account. A target in another chat is described by
+  :code:`external_reply`, with its origin and content, rather than by
+  :code:`reply_to_message`. The deprecated :code:`reply_to_message_id` and top-level
   :code:`allow_sending_without_reply` are read the same way, for a reply in the same chat.
 * A forward or copy lands in the :code:`message_thread_id` the request names when the
   target chat is a forum, and in no thread otherwise. A copy carries the request's new

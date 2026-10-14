@@ -21,7 +21,7 @@ more than 10 items SHALL fail as a Telegram error.
 
 A send with reply parameters SHALL look its target up in the chat the parameters name, or in
 the target chat otherwise. It SHALL set `reply_to_message` only for a target in the same
-chat. A target that does not exist SHALL fail as a Telegram error, unless the request allows
+chat, and SHALL describe a target in another chat with `external_reply`. A target that does not exist SHALL fail as a Telegram error, unless the request allows
 sending without the reply.
 
 #### Scenario: A reply to a missing message fails
@@ -38,7 +38,7 @@ sending without the reply.
 
 - **WHEN** a handler replies to a message of another chat, naming that chat
 - **THEN** the target is resolved in that chat, and the message carries no
-  `reply_to_message` from its own chat
+  `reply_to_message` from its own chat, but an `external_reply` naming the target's origin
 
 ### Requirement: Copies and forwards follow the documented rules
 

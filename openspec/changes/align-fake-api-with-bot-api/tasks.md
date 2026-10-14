@@ -3,7 +3,7 @@
 ## 1. Messages
 
 - [x] 1.1 Store each media group item's media, caption and entities under one `media_group_id`, refusing fewer than 2 or more than 10 items; verify with an album test and a one-item refusal
-- [x] 1.2 Resolve reply targets in `reply_parameters.chat_id` or the target chat, set `reply_to_message` only within the same chat, and refuse a missing target unless `allow_sending_without_reply`; verify the three scenarios
+- [x] 1.2 Resolve reply targets in `reply_parameters.chat_id` or the target chat, set `reply_to_message` only within the same chat and `external_reply` otherwise, and refuse a missing target unless `allow_sending_without_reply`; verify the three scenarios
 - [x] 1.3 Make copy and forward honour `message_thread_id` (cleared outside forums), copy's `caption`/`caption_entities`/`reply_markup`, and the documented exclusions with batch skipping (design D5); verify each scenario
 - [x] 1.4 Unpin only the newest pin (by date, then id) when no id is given; verify the two-pin scenario
 - [x] 1.5 Refuse `editMessageText` without text or rich content and `editMessageCaption` without captionable media, for the regular and ephemeral edits; verify both refusals
