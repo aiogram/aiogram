@@ -286,6 +286,7 @@ from .synthesis import (
 )
 from .world import (
     DEFAULT_TOPIC_ICON_COLOR,
+    UNTIL_FOREVER,
     BusinessConnectionState,
     ChatState,
     InviteLinkState,
@@ -871,7 +872,9 @@ def resolve_date(value: Any, now: datetime.datetime) -> datetime.datetime | None
     if isinstance(value, datetime.timedelta):
         return (now + value).replace(microsecond=0)
     if isinstance(value, int):
-        return datetime.datetime.fromtimestamp(value, tz=datetime.timezone.utc)
+        # Counted from the epoch rather than through fromtimestamp,
+        # which refuses a negative time on Windows.
+        return UNTIL_FOREVER + datetime.timedelta(seconds=value)
     return None
 
 
