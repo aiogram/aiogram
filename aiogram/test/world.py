@@ -499,10 +499,14 @@ class MemberState:
         if self.until_date is None or now < aware(self.until_date):
             return
         if self.status == ChatMemberStatus.RESTRICTED:
-            self.set_status(ChatMemberStatus.MEMBER if self.is_member else ChatMemberStatus.LEFT)
-            self.permissions = None
+            self.lift_restriction()
         elif self.status == ChatMemberStatus.KICKED:
             self.set_status(ChatMemberStatus.LEFT)
+
+    def lift_restriction(self) -> None:
+        """End a restriction: present users stay, absent ones left."""
+        self.set_status(ChatMemberStatus.MEMBER if self.is_member else ChatMemberStatus.LEFT)
+        self.permissions = None
 
     def set_status(self, status: str) -> None:
         """
@@ -1269,25 +1273,17 @@ class ChatState:
         return self._bind(message)
 
     def find_ephemeral_message(self, receiver_id: int, ephemeral_id: int) -> Message | None:
-        for message in self.sent_ephemeral.get(receiver_id, ()):
-            if message.ephemeral_message_id == ephemeral_id:
-                return message
-        return None
+        return _find_ephemeral([self.sent_ephemeral.get(receiver_id, [])], ephemeral_id)
 
     def find_any_ephemeral(self, ephemeral_id: int) -> Message | None:
         """The ephemeral message ``ephemeral_id``, sent or received."""
-        for messages in (*self.sent_ephemeral.values(), *self.received_ephemeral.values()):
-            for message in messages:
-                if message.ephemeral_message_id == ephemeral_id:
-                    return message
-        return None
+        return _find_ephemeral(
+            [*self.sent_ephemeral.values(), *self.received_ephemeral.values()],
+            ephemeral_id,
+        )
 
     def find_ephemeral_command(self, ephemeral_id: int) -> Message | None:
-        for messages in self.received_ephemeral.values():
-            for message in messages:
-                if message.ephemeral_message_id == ephemeral_id:
-                    return message
-        return None
+        return _find_ephemeral(self.received_ephemeral.values(), ephemeral_id)
 
     def update_ephemeral_message(
         self,
@@ -1911,6 +1907,15 @@ def aware(moment: datetime.datetime) -> datetime.datetime:
 
 def _user_id(user: UserState | UserSpec | int) -> int:
     return user if isinstance(user, int) else user.id
+
+
+def _find_ephemeral(stores: Iterable[list[Message]], ephemeral_id: int) -> Message | None:
+    """The message ``ephemeral_id`` in any of ``stores``."""
+    for messages in stores:
+        for message in messages:
+            if message.ephemeral_message_id == ephemeral_id:
+                return message
+    return None
 
 
 def private_chat_shape(user: UserState | UserSpec) -> dict[str, Any]:

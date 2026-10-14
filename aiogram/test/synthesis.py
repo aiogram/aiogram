@@ -229,6 +229,10 @@ def _synthesize_model(
     values: dict[str, Any] = {}
     if {"file_id", "file_unique_id"} <= model.model_fields.keys():
         number = context.next_file_number()
+        # A declared file may already hold an id of this shape; a
+        # synthesized file must not take it over.
+        while context.files is not None and f"{_FILE_ID_PREFIX}{number}" in context.files:
+            number = context.next_file_number()
         values["file_id"] = f"{_FILE_ID_PREFIX}{number}"
         values["file_unique_id"] = f"{_UNIQUE_ID_PREFIX}{number}"
     for name, info in _required_fields(model):

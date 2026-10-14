@@ -996,11 +996,16 @@ def _new_message_changes(protect_content: object) -> dict[str, Any]:
     It is a new message of its own chat: not edited, protected only
     when the request asks, and replying to nothing in the original's
     chat, since ``reply_to_message`` is a message of the same chat.
+    The bot sends it itself, so it is not a business message even when
+    the original was: ``deleteBusinessMessages`` and the business edit
+    window must not reach it.
     """
     return {
         "reply_to_message": None,
         "edit_date": None,
         "has_protected_content": True if protect_content else None,
+        "business_connection_id": None,
+        "sender_business_bot": None,
     }
 
 
@@ -1718,10 +1723,7 @@ def handle_restrict(env: BotTestEnvironment, method: RestrictChatMember) -> bool
     )
     if all(mask(ChatPermissions, granted, coerce=True).values()):
         if member.status == ChatMemberStatus.RESTRICTED:
-            member.set_status(
-                ChatMemberStatus.MEMBER if member.is_present else ChatMemberStatus.LEFT,
-            )
-            member.permissions = None
+            member.lift_restriction()
         return True
     member.set_status(ChatMemberStatus.RESTRICTED)
     member.permissions = granted

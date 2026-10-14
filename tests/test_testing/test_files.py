@@ -65,6 +65,24 @@ class TestDeclaredContent:
             first.dispose_sync()
             second.dispose_sync()
 
+    async def test_an_upload_does_not_take_a_declared_file_id(self, blueprint):
+        """A declared id shaped like a synthesized one keeps its content."""
+        user = blueprint.add_user("Ann")
+        chat = blueprint.add_private_chat(user)
+        blueprint.add_file("file-1", b"declared")
+        env = BotTestEnvironment(blueprint=blueprint, dispatcher=Dispatcher())
+        try:
+            message = await env.bot.send_document(
+                chat_id=chat.id,
+                document=BufferedInputFile(b"uploaded", filename="notes.txt"),
+            )
+
+            assert message.document.file_id != "file-1"
+            assert await download(env.bot, "file-1") == b"declared"
+            assert await download(env.bot, message.document) == b"uploaded"
+        finally:
+            env.dispose_sync()
+
 
 class TestUploadedContent:
     async def test_upload_then_download_round_trips(self, files_env):

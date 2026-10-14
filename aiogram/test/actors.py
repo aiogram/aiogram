@@ -1916,7 +1916,7 @@ class UserActor:
             details = "; ".join(_rejection_message(url, dl) for url, dl in candidates)
             if message is not None:
                 msg = (
-                    f"Message {message.message_id} carries no followable (`start`) "
+                    f"{_label(message)} carries no followable (`start`) "
                     f"deep-link button to @{bot_username}, only unfollowable ones: {details}"
                 )
             else:
@@ -1926,7 +1926,7 @@ class UserActor:
                 )
             raise WorldLookupError(msg)
         if message is not None:
-            msg = f"Message {message.message_id} carries no deep-link button to @{bot_username}"
+            msg = f"{_label(message)} carries no deep-link button to @{bot_username}"
         else:
             msg = (
                 f"No message in chat {self.chat.id} carries a deep-link button to @{bot_username}"
