@@ -223,6 +223,29 @@ class TestEndDates:
         assert member.until_date == LATER
 
 
+class TestBannedUsersStayOut:
+    @pytest.mark.parametrize("action", ["join", "leave"])
+    async def test_a_banned_user_cannot_lift_their_own_ban(self, env, team, alice, action):
+        await env.bot.ban_chat_member(chat_id=team.id, user_id=alice.id)
+
+        with pytest.raises(WorldLookupError, match="is banned"):
+            await getattr(env.user(alice).in_(team), action)()
+
+        assert team.member(alice.id).status == ChatMemberStatus.KICKED
+
+    async def test_a_ban_that_ended_lets_the_user_join(self, env, team, alice):
+        await env.bot.ban_chat_member(
+            chat_id=team.id,
+            user_id=alice.id,
+            until_date=datetime.timedelta(minutes=5),
+        )
+        await env.advance_time(datetime.timedelta(minutes=6))
+
+        await env.user(alice).in_(team).join(service_message=False)
+
+        assert team.member(alice.id).status == ChatMemberStatus.MEMBER
+
+
 class TestDemotingOnlyAdministrators:
     async def test_the_demote_trigger_refuses_a_restricted_member(self, env, team, alice):
         await restrict(env, team, alice)

@@ -1001,6 +1001,34 @@ class TestPinning:
         assert service.from_user.id == alice.id
         assert service.business_connection_id == connection.id
 
+    async def test_a_business_pin_takes_the_accounts_next_id(
+        self,
+        env,
+        private,
+        bobs,
+        connection,
+    ):
+        sent = await env.bot.send_message(
+            business_connection_id=connection.id,
+            chat_id=private.id,
+            text="offer",
+        )
+        await env.bot.pin_chat_message(
+            business_connection_id=connection.id,
+            chat_id=private.id,
+            message_id=sent.message_id,
+        )
+        service = private.messages[-1]
+
+        other = await env.bot.send_message(
+            business_connection_id=connection.id,
+            chat_id=bobs.id,
+            text="elsewhere",
+        )
+
+        # One account numbers all its business messages from one sequence.
+        assert other.message_id > service.message_id
+
 
 class TestEditsActOnTheirContent:
     async def test_the_bot_cannot_edit_a_forward(self, env, private, bobs):

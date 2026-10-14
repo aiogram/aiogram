@@ -1044,13 +1044,27 @@ class UserActor:
         Pass ``service_message=False`` to get the old single-update behavior back.
         See :meth:`_change_membership` for why the group-only carve-out and the ordering
         between the two updates are what they are.
+
+        A banned user cannot join, so it raises until the ban ends.
         """
+        self._refuse_banned("join")
         return await self._change_membership(
             ChatMemberStatus.MEMBER, data, service_message=service_message
         )
 
     async def leave(self, **data: Any) -> Any:
+        """Leave this chat. A banned user is not in it, so it raises."""
+        self._refuse_banned("leave")
         return await self._change_membership(ChatMemberStatus.LEFT, data)
+
+    def _refuse_banned(self, action: str) -> None:
+        """Refuse a banned user's own move: only an unban ends a ban."""
+        if self.chat.member(self.user.id).status == ChatMemberStatus.KICKED:
+            msg = (
+                f"User {self.user.id} is banned from chat {self.chat.id}, so they cannot "
+                f"{action} it; unban them first"
+            )
+            raise WorldLookupError(msg)
 
     async def add_bot(self, *, service_message: bool = True, **data: Any) -> Any:
         """

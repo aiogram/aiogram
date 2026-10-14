@@ -286,6 +286,7 @@ from .synthesis import (
 )
 from .world import (
     DEFAULT_TOPIC_ICON_COLOR,
+    BusinessConnectionState,
     ChatState,
     InviteLinkState,
     MemberState,
@@ -552,9 +553,8 @@ def build_message(
     }
     if connection is not None:
         # Telegram sends on behalf of the business account, not the bot.
-        values["from_user"] = env.world.user(connection.user_id).as_user()
+        values.update(_on_behalf_of(env, connection))
         values["sender_business_bot"] = env.world.bot_user.as_user()
-        values["business_connection_id"] = connection_id
     for name in _COPIED_FIELDS:
         value = getattr(method, name, None)
         if value is not None:
@@ -587,6 +587,14 @@ def build_message(
         return chat.add_ephemeral_message(Message(**values))
     message = Message(**values)
     return chat.add_message(message)
+
+
+def _on_behalf_of(env: BotTestEnvironment, connection: BusinessConnectionState) -> dict[str, Any]:
+    """The sender fields of a message sent for a business account."""
+    return {
+        "from_user": env.world.user(connection.user_id).as_user(),
+        "business_connection_id": connection.id,
+    }
 
 
 #: How long the Bot API lets an ephemeral message be replied to.
@@ -1316,6 +1324,13 @@ def copy_one(
     )
 
 
+def _correct_option_ids(source: Poll | SendPoll) -> list[int] | None:
+    """The correct option ids, or the deprecated single id."""
+    if source.correct_option_ids is None and source.correct_option_id is not None:
+        return [source.correct_option_id]
+    return source.correct_option_ids
+
+
 def _poll_state(poll: Poll) -> PollState:
     """
     The state a ``Poll`` the world does not hold describes.
@@ -1323,9 +1338,6 @@ def _poll_state(poll: Poll) -> PollState:
     The correct option ids fall back to the deprecated single id, as
     ``sendPoll`` reads them, so a quiz copies with its answer.
     """
-    correct_option_ids = poll.correct_option_ids
-    if correct_option_ids is None and poll.correct_option_id is not None:
-        correct_option_ids = [poll.correct_option_id]
     return PollState(
         id=poll.id,
         question=poll.question,
@@ -1335,7 +1347,7 @@ def _poll_state(poll: Poll) -> PollState:
         allows_multiple_answers=poll.allows_multiple_answers,
         allows_revoting=bool(poll.allows_revoting),
         members_only=bool(poll.members_only),
-        correct_option_ids=correct_option_ids,
+        correct_option_ids=_correct_option_ids(poll),
         explanation=poll.explanation,
         is_closed=poll.is_closed,
     )
@@ -1841,19 +1853,22 @@ def handle_pin(env: BotTestEnvironment, method: PinChatMessage) -> bool:
     pinned = None if method.message_id is None else chat.find_message(method.message_id)
     if pinned is None:
         raise ApiRejection("message to pin not found")
+    connection = (
+        None
+        if method.business_connection_id is None
+        else env.world.business_connection(method.business_connection_id)
+    )
     if pinned.message_id in chat.pinned_message_ids:
         return True
     chat.pinned_message_ids.append(pinned.message_id)
     fields: dict[str, Any] = {
         "pinned_message": pinned.model_copy(update={"reply_to_message": None}),
     }
-    if method.business_connection_id is not None:
+    if connection is not None:
         # Pinned on behalf of the business account, which announces it.
-        connection = env.world.business_connection(method.business_connection_id)
-        fields["from_user"] = env.world.user(connection.user_id).as_user()
-        fields["business_connection_id"] = connection.id
+        fields.update(_on_behalf_of(env, connection))
     thread_id = pinned.message_thread_id if pinned.is_topic_message else None
-    service_message(env, chat, fields, thread_id)
+    service_message(env, chat, fields, thread_id, connection)
     return True
 
 
@@ -2988,9 +3003,6 @@ def handle_send_poll(env: BotTestEnvironment, method: SendPoll) -> Message:
     """
     chat = resolve_chat(env, method.chat_id)
     close_at = _poll_close(env, method)
-    correct_option_ids = method.correct_option_ids
-    if correct_option_ids is None and method.correct_option_id is not None:
-        correct_option_ids = [method.correct_option_id]
     poll = new_poll(
         env.world.next_query_id(),
         method.question,
@@ -2999,7 +3011,7 @@ def handle_send_poll(env: BotTestEnvironment, method: SendPoll) -> Message:
         is_anonymous=method.is_anonymous,
         allows_multiple_answers=method.allows_multiple_answers,
         allows_revoting=method.allows_revoting,
-        correct_option_ids=correct_option_ids,
+        correct_option_ids=_correct_option_ids(method),
         members_only=bool(method.members_only),
         explanation=method.explanation,
         is_closed=bool(method.is_closed),
@@ -3178,10 +3190,16 @@ def service_message(
     chat: ChatState,
     fields: dict[str, Any],
     thread_id: int | None = None,
+    connection: BusinessConnectionState | None = None,
 ) -> Message:
-    """Emit a service message the way Telegram posts one for an administrative action."""
+    """
+    Emit a service message the way Telegram posts one for an administrative action.
+
+    One posted on behalf of a business account is numbered by its
+    ``connection`` too, as every business message is.
+    """
     values: dict[str, Any] = {
-        "message_id": chat.allocate_message_id(),
+        "message_id": chat.allocate_message_id(connection),
         "date": env.world.next_date(),
         "chat": chat.as_chat(),
         **posted_by(chat, env.world.bot_user.as_user()),
