@@ -547,6 +547,7 @@ def build_message(
         value = getattr(method, name, None)
         if value is not None:
             values[name] = value
+    values.update({name: flag for name, flag in media_flags(method).items() if flag is not None})
 
     reply_markup = getattr(method, "reply_markup", None)
     if isinstance(reply_markup, InlineKeyboardMarkup):
@@ -806,7 +807,7 @@ def normalize_until(value: Any, now: datetime.datetime) -> datetime.datetime | N
 _BUSINESS_EDIT_WINDOW = datetime.timedelta(hours=48)
 
 
-def _edited(env: BotTestEnvironment) -> dict[str, Any]:
+def edit_stamp(env: BotTestEnvironment) -> dict[str, Any]:
     """The change every edit makes: it dates the message's last edit."""
     return {"edit_date": int(env.world.next_date().timestamp())}
 
@@ -880,9 +881,21 @@ def _media_group_item(env: BotTestEnvironment, item: Any, group_id: str) -> dict
         field: stored_content(env, item, field, item.media),
         "caption": item.caption,
         "caption_entities": item.caption_entities,
-        "show_caption_above_media": getattr(item, "show_caption_above_media", None),
-        "has_media_spoiler": getattr(item, "has_spoiler", None),
+        **media_flags(item),
         "media_group_id": group_id,
+    }
+
+
+def media_flags(source: BaseModel) -> dict[str, Any]:
+    """
+    How a request asks its media to be shown, as the message stores it.
+
+    A send method and an input media both spell the spoiler
+    ``has_spoiler``, while the message spells it ``has_media_spoiler``.
+    """
+    return {
+        "show_caption_above_media": getattr(source, "show_caption_above_media", None),
+        "has_media_spoiler": getattr(source, "has_spoiler", None),
     }
 
 
@@ -1177,7 +1190,7 @@ def handle_edit_text(env: BotTestEnvironment, method: EditMessageText) -> Messag
     stored = chat.require_message(message_id)
     _require_content(stored, _TEXT_FIELDS, "text")
     _check_business_edit_window(env, stored)
-    return chat.update_message(message_id, **_edited(env), **_text_changes(env, method))
+    return chat.update_message(message_id, **edit_stamp(env), **_text_changes(env, method))
 
 
 @models(EditMessageCaption)
@@ -1186,7 +1199,7 @@ def handle_edit_caption(env: BotTestEnvironment, method: EditMessageCaption) -> 
     stored = chat.require_message(message_id)
     _require_content(stored, CAPTIONED_FIELDS, "caption")
     _check_business_edit_window(env, stored)
-    return chat.update_message(message_id, **_edited(env), **_caption_changes(method))
+    return chat.update_message(message_id, **edit_stamp(env), **_caption_changes(method))
 
 
 @models(EditMessageReplyMarkup)
@@ -1196,7 +1209,7 @@ def handle_edit_reply_markup(
 ) -> Message:
     chat, message_id = _edit_target(env, method)
     _check_business_edit_window(env, chat.require_message(message_id))
-    return chat.update_message(message_id, **_edited(env), reply_markup=method.reply_markup)
+    return chat.update_message(message_id, **edit_stamp(env), reply_markup=method.reply_markup)
 
 
 def media_field(input_media: Any) -> str:
@@ -1228,6 +1241,8 @@ def _media_changes(
     changes[field] = stored_content(env, method.media, field, method.media.media)
     changes["caption"] = method.media.caption
     changes["caption_entities"] = method.media.caption_entities
+    # The new media brings its own presentation, or none.
+    changes.update(media_flags(method.media))
     if method.reply_markup is not None:
         changes["reply_markup"] = method.reply_markup
     return changes
@@ -1237,7 +1252,7 @@ def _media_changes(
 def handle_edit_media(env: BotTestEnvironment, method: EditMessageMedia) -> Message:
     chat, message_id = _edit_target(env, method)
     _check_business_edit_window(env, chat.require_message(message_id))
-    return chat.update_message(message_id, **_edited(env), **_media_changes(env, method))
+    return chat.update_message(message_id, **edit_stamp(env), **_media_changes(env, method))
 
 
 # An ephemeral message is addressed by chat, receiver and ephemeral
@@ -1259,7 +1274,7 @@ def _edit_ephemeral(env: BotTestEnvironment, method: _EphemeralEdit, **changes: 
     chat.update_ephemeral_message(
         method.receiver_user_id,
         method.ephemeral_message_id,
-        **_edited(env),
+        **edit_stamp(env),
         **changes,
     )
     return True
@@ -1378,7 +1393,7 @@ def handle_edit_live_location(
             raise ApiRejection(msg)
     return chat.update_message(
         message_id,
-        **_edited(env),
+        **edit_stamp(env),
         location=_location(method, live_period),
         reply_markup=method.reply_markup,
     )
@@ -1400,7 +1415,7 @@ def handle_stop_live_location(
     location = _require_live(env, stored)
     return chat.update_message(
         message_id,
-        **_edited(env),
+        **edit_stamp(env),
         reply_markup=method.reply_markup,
         location=location.model_copy(update={"live_period": None}),
     )
@@ -1414,7 +1429,7 @@ def handle_edit_checklist(
     chat, message_id = _edit_target(env, method)
     return chat.update_message(
         message_id,
-        **_edited(env),
+        **edit_stamp(env),
         checklist=stored_checklist(method.checklist),
         reply_markup=method.reply_markup,
     )
@@ -2599,7 +2614,12 @@ def handle_send_poll(env: BotTestEnvironment, method: SendPoll) -> Message:
 
         async def close() -> None:
             # A poll stopped before its moment does not close twice.
-            if poll.is_closed or chat.find_message(message_id) is None:
+            if poll.is_closed:
+                return
+            if chat.find_message(message_id) is None:
+                # Its message is gone, but the poll still closes on
+                # schedule, so no answer counts after its close date.
+                poll.is_closed = True
                 return
             closed = _close_poll(chat, message_id, poll)
             await env.feed(Update(update_id=env.world.next_update_id(), poll=closed))

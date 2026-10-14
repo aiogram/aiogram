@@ -233,9 +233,10 @@ from the original, copies carry the new caption, its entities, the inline keyboa
 own reply, and service, protected, invoice, paid media and giveaway messages are refused where
 the Bot API refuses them; ``unpinChatMessage`` without an id unpins only the newest pin;
 editing text or a caption fails on a message without that content, and every edit sets
-``edit_date``; quizzes keep all their ``correct_option_ids``, regular polls allow revoting by
-default and ``stopPoll`` stores its keyboard; hiding the General topic closes it and reopening
-unhides it; an empty topic name keeps the name; business messages are numbered per account, so
+``edit_date``; sends and media edits store the spoiler and caption placement flags; quizzes
+keep all their ``correct_option_ids``, regular polls allow revoting by default and ``stopPoll``
+stores its keyboard; hiding the General topic closes it and reopening unhides it; an empty
+topic name keeps the name; business messages are numbered per account, so
 ``deleteBusinessMessages`` finds their one chat; and checklists keep their title and tasks.
 Creation service messages cannot be deleted. Synthesized files get distinct ids and keep a file
 id the request passed with its unique id, dice carry their emoji and a value in its range,

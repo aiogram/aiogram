@@ -465,6 +465,8 @@ class TestScheduledPolls:
         await env.advance_time(60)
 
         assert updates == []
+        # The poll itself still closes on schedule, so no vote counts after it.
+        assert env.world.polls[sent.poll.id].is_closed is True
 
     async def test_a_close_date_works_and_is_reported(self, env, team):
         sent = await self.send(env, team, close_date=BASE_DATE + datetime.timedelta(minutes=5))

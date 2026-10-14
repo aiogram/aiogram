@@ -647,6 +647,8 @@ API states for these methods hold too:
 * :code:`editMessageText` fails on a message with no text, rich or game content, and
   :code:`editMessageCaption` on a message with no media that takes a caption; so do their
   :code:`editEphemeralMessage*` counterparts.
+* A send stores the media's ``has_spoiler`` and ``show_caption_above_media``, and
+  :code:`editMessageMedia` takes them from the new media.
 * Every edit sets ``edit_date`` to the world's clock, on the message returned and the one
   stored. A forward or copy of an edited message is a new message, with no ``edit_date``.
 

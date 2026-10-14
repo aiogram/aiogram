@@ -123,6 +123,38 @@ class TestMediaGroups:
         assert messages[0].media_group_id is not None
         assert messages[0].media_group_id == messages[1].media_group_id
 
+    async def test_a_single_photo_keeps_its_spoiler_and_caption_placement(self, env, private):
+        """A single send stores the flags an album item stores."""
+        message = await env.bot.send_photo(
+            chat_id=private.id,
+            photo="photo",
+            caption="c",
+            has_spoiler=True,
+            show_caption_above_media=True,
+        )
+
+        assert message.has_media_spoiler is True
+        assert message.show_caption_above_media is True
+
+    async def test_new_media_brings_its_own_flags(self, env, private):
+        """Editing the media replaces the spoiler and caption placement too."""
+        sent = await env.bot.send_photo(
+            chat_id=private.id,
+            photo="photo",
+            caption="c",
+            has_spoiler=True,
+            show_caption_above_media=True,
+        )
+
+        edited = await env.bot.edit_message_media(
+            chat_id=private.id,
+            message_id=sent.message_id,
+            media=InputMediaPhoto(media="other", caption="d"),
+        )
+
+        assert edited.has_media_spoiler is None
+        assert edited.show_caption_above_media is None
+
     @pytest.mark.parametrize("size", [1, 11])
     async def test_an_album_of_the_wrong_size_is_refused(self, env, private, size):
         with pytest.raises(TelegramBadRequest, match="2-10 items"):

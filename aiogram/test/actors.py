@@ -41,7 +41,7 @@ from aiogram.types import (
     Update,
 )
 
-from .modeling import SUBSCRIPTION_PERIOD
+from .modeling import SUBSCRIPTION_PERIOD, edit_stamp
 from .mounting import owned_or_copied
 from .synthesis import synthesize
 from .world import (
@@ -844,8 +844,7 @@ class UserActor:
         self._require_in_chat(message)
         stored = self._require_message(message.message_id)
         self._require_own(stored)
-        edit_date = int(self.environment.world.next_date().timestamp())
-        changes: dict[str, Any] = {"edit_date": edit_date}
+        changes: dict[str, Any] = edit_stamp(self.environment)
         if text is not None:
             changes["text"] = text
         changes.update(_detached(fields or {}, self.environment.bot))
