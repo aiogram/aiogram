@@ -43,7 +43,7 @@ from typing import TYPE_CHECKING, Any, get_args
 
 from pydantic import BaseModel
 
-from aiogram.enums import ChatMemberStatus, ChatType
+from aiogram.enums import ChatMemberStatus, ChatType, DiceEmoji
 from aiogram.methods import (
     AddStickerToSet,
     AnswerCallbackQuery,
@@ -233,6 +233,9 @@ from aiogram.types import (
     ChatFullInfo,
     ChatInviteLink,
     ChatPermissions,
+    Checklist,
+    ChecklistTask,
+    Dice,
     EphemeralMessageParameters,
     File,
     ForumTopic,
@@ -244,6 +247,7 @@ from aiogram.types import (
     Gift,
     Gifts,
     InlineKeyboardMarkup,
+    InputChecklist,
     InputRichMessage,
     InputSticker,
     Location,
@@ -283,7 +287,9 @@ from .world import (
     WorldLookupError,
     aware,
     create_topic,
+    granted_permissions,
     mask,
+    new_poll,
     no_administrator_rights,
     scope_key,
 )
@@ -507,12 +513,21 @@ def build_message(
     method: TelegramMethod[Any],
     chat: ChatState,
     media_field: str | None = None,
+    *,
+    content: dict[str, Any] | None = None,
 ) -> Message:
+    """
+    Store the message a send method produces, and return it.
+
+    ``content`` is what the message carries when the method alone does
+    not say, such as one item of a media group.
+    """
     thread_id = getattr(method, "message_thread_id", None)
     if thread_id is not None and chat.is_forum:
         # An unknown thread id must fail rather than silently produce an untagged message.
         chat.topic(thread_id)
     receiver = _ephemeral_receiver(env, method, chat)
+    replied = _reply_target(env, method, chat, ephemeral=receiver is not None)
     values: dict[str, Any] = {
         "message_id": 0 if receiver is not None else chat.allocate_message_id(),
         "date": env.world.next_date(),
@@ -539,28 +554,18 @@ def build_message(
     if thread_id is not None and chat.is_forum:
         values["is_topic_message"] = True
 
-    reply_parameters = getattr(method, "reply_parameters", None)
-    if reply_parameters is not None and reply_parameters.message_id is not None:
-        replied = chat.find_message(reply_parameters.message_id)
-        if replied is not None:
-            values["reply_to_message"] = replied
+    if replied is not None:
+        values["reply_to_message"] = replied
 
-    rich_message = getattr(method, "rich_message", None)
-    if isinstance(rich_message, InputRichMessage):
-        values["rich_message"] = materialize_rich_message(
-            rich_message,
-            env.synthesis_context(),
-        )
-    elif media_field is not None:
-        values[media_field] = _carry_request_values(
+    if media_field is not None:
+        values[media_field] = stored_content(
+            env,
             method,
-            nonempty(
-                Message.model_fields[media_field].annotation,
-                env.synthesis_context(),
-                name=media_field,
-            ),
+            media_field,
+            getattr(method, media_field, None),
         )
-        _register_uploaded_content(env, method, media_field, values[media_field])
+    if content is not None:
+        values.update(content)
 
     if receiver is not None:
         values["ephemeral_message_id"] = chat.allocate_ephemeral_message_id()
@@ -625,29 +630,133 @@ def _ephemeral_receiver(
     return receiver
 
 
-def _register_uploaded_content(
+def _reply_target(
     env: BotTestEnvironment,
     method: TelegramMethod[Any],
-    media_field: str,
-    payload: Any,
-) -> None:
+    chat: ChatState,
+    *,
+    ephemeral: bool,
+) -> Message | None:
     """
-    Make an upload that carried its own bytes downloadable again.
+    The message a send replies to in its own chat, if any.
 
-    Only :class:`~aiogram.types.input_file.BufferedInputFile` is read: it already holds the
-    bytes. ``FSInputFile`` and ``URLInputFile`` are deliberately left alone, because a test
-    environment must not touch the disk or the network — see design decision D3.
+    The target is looked up in the chat ``reply_parameters.chat_id``
+    names, or in ``chat``. A target that does not exist fails the send
+    unless ``allow_sending_without_reply`` is set, which the Bot API
+    reads as false for a reply in another chat or a forum topic and in
+    an ephemeral message, and as true on behalf of a business account.
+    A target in another chat is checked but not carried, since
+    ``reply_to_message`` is a message of the same chat.
     """
-    uploaded = getattr(method, media_field, None)
-    if not isinstance(uploaded, BufferedInputFile):
-        return
-    stored = payload[0] if isinstance(payload, list) and payload else payload
-    file_id = getattr(stored, "file_id", None)
+    parameters = getattr(method, "reply_parameters", None)
+    if parameters is None or parameters.message_id is None:
+        return None
+    where = chat if parameters.chat_id is None else resolve_chat(env, parameters.chat_id)
+    replied = where.find_message(parameters.message_id)
+    if replied is None:
+        in_topic = chat.is_forum and getattr(method, "message_thread_id", None) is not None
+        if getattr(method, "business_connection_id", None) is not None:
+            allowed = True
+        elif where is not chat or in_topic or ephemeral:
+            allowed = False
+        else:
+            allowed = bool(parameters.allow_sending_without_reply)
+        if not allowed:
+            raise ApiRejection("message to be replied not found")
+        return None
+    return replied if where is chat else None
+
+
+#: The highest value each dice emoji can show, as ``Dice`` documents.
+_DICE_FACES: dict[str, int] = {
+    DiceEmoji.DICE.value: 6,
+    DiceEmoji.DART.value: 6,
+    DiceEmoji.BOWLING.value: 6,
+    DiceEmoji.BASKETBALL.value: 5,
+    DiceEmoji.FOOTBALL.value: 5,
+    DiceEmoji.SLOT_MACHINE.value: 64,
+}
+
+
+def _passed_file_id(uploaded: Any) -> str | None:
+    """
+    The file id a request passed as its media, if it passed one.
+
+    A string is a file id, or an HTTP URL Telegram downloads, which
+    gets an id of its own.
+    """
+    if isinstance(uploaded, str) and not uploaded.startswith(("http://", "https://")):
+        return uploaded
+    return None
+
+
+def stored_content(
+    env: BotTestEnvironment,
+    request: BaseModel,
+    field: str,
+    uploaded: Any,
+) -> Any:
+    """
+    What a message stores in ``field`` for content a request sent.
+
+    Rich content and checklists convert from what the request stated.
+    Anything else is synthesized with the request's own values carried
+    over, a dice folded into its emoji's range, and a file given the
+    id the request passed or a fresh one. An upload that carried its
+    bytes registers them under that id; only
+    :class:`~aiogram.types.input_file.BufferedInputFile` is read, since
+    a test environment must not touch the disk or the network.
+    """
+    if isinstance(uploaded, InputRichMessage):
+        return materialize_rich_message(uploaded, env.synthesis_context())
+    if isinstance(uploaded, InputChecklist):
+        return stored_checklist(uploaded)
+    payload = _carry_request_values(
+        request,
+        nonempty(
+            Message.model_fields[field].annotation,
+            env.synthesis_context(),
+            name=field,
+        ),
+    )
+    if isinstance(payload, Dice):
+        faces = _DICE_FACES.get(payload.emoji, 6)
+        return payload.model_copy(update={"value": (payload.value - 1) % faces + 1})
+    file_id = _passed_file_id(uploaded)
+    items = payload if isinstance(payload, list) else [payload]
     if file_id is not None:
-        env.world.files[file_id] = uploaded.data
+        items = [
+            item.model_copy(update={"file_id": file_id}) if hasattr(item, "file_id") else item
+            for item in items
+        ]
+    elif isinstance(uploaded, BufferedInputFile):
+        for item in items:
+            if hasattr(item, "file_id"):
+                env.world.files[item.file_id] = uploaded.data
+    return items if isinstance(payload, list) else items[0]
 
 
-def _carry_request_values(method: TelegramMethod[Any], payload: Any) -> Any:
+def stored_checklist(checklist: InputChecklist) -> Checklist:
+    """
+    The checklist a message stores for one a request stated.
+
+    Fields are carried by name, so a field both shapes gain later
+    carries over with no change here.
+    """
+    tasks = [ChecklistTask(**_shared_fields(task, ChecklistTask)) for task in checklist.tasks]
+    return Checklist(**{**_shared_fields(checklist, Checklist), "tasks": tasks})
+
+
+def _shared_fields(source: BaseModel, target: type[BaseModel]) -> dict[str, Any]:
+    """The values ``source`` sets for fields ``target`` has too."""
+    return {
+        name: value
+        for name in target.model_fields
+        if name in type(source).model_fields and (value := getattr(source, name)) is not None
+    }
+
+
+def _carry_request_values(method: BaseModel, payload: Any) -> Any:
     """
     Overwrite a synthesized payload with the values the request actually carried.
 
@@ -757,8 +866,38 @@ def handle_send_media_group(
     env: BotTestEnvironment,
     method: SendMediaGroup,
 ) -> list[Message]:
+    """
+    Store one message per item, under one ``media_group_id``.
+
+    Each message carries its item's media and caption. The Bot API
+    takes 2-10 items.
+    """
     chat = resolve_chat(env, method.chat_id)
-    return [build_message(env, method, chat) for _ in method.media]
+    if not _MEDIA_GROUP_SIZE[0] <= len(method.media) <= _MEDIA_GROUP_SIZE[1]:
+        msg = "media group must include 2-10 items"
+        raise ApiRejection(msg)
+    group_id = env.world.next_query_id()
+    return [
+        build_message(env, method, chat, content=_media_group_item(env, item, group_id))
+        for item in method.media
+    ]
+
+
+#: How many items a media group takes, as ``sendMediaGroup`` states.
+_MEDIA_GROUP_SIZE = (2, 10)
+
+
+def _media_group_item(env: BotTestEnvironment, item: Any, group_id: str) -> dict[str, Any]:
+    """What one media group item puts on its message."""
+    field = media_field(item)
+    return {
+        field: stored_content(env, item, field, item.media),
+        "caption": item.caption,
+        "caption_entities": item.caption_entities,
+        "show_caption_above_media": getattr(item, "show_caption_above_media", None),
+        "has_media_spoiler": getattr(item, "has_spoiler", None),
+        "media_group_id": group_id,
+    }
 
 
 def forward_origin(source: ChatState, original: Message, sender: User) -> Any:
@@ -778,12 +917,58 @@ def forward_origin(source: ChatState, original: Message, sender: User) -> Any:
     return MessageOriginUser(date=original.date, sender_user=sender)
 
 
+#: The ``Message`` fields a send method fills: a message carrying none
+#: of them is a service message.
+_CONTENT_FIELDS: frozenset[str] = frozenset({*MEDIA_FIELDS.values(), "text", "poll"})
+
+#: Content the Bot API names as impossible to copy, besides service
+#: messages.
+_UNCOPYABLE_FIELDS = ("invoice", "paid_media", "giveaway", "giveaway_winners")
+
+
+def is_service_message(message: Message) -> bool:
+    """Whether ``message`` carries none of the content sends produce."""
+    return all(getattr(message, name) is None for name in _CONTENT_FIELDS)
+
+
+def _forwardable(message: Message) -> bool:
+    """Whether ``message`` is neither a service message nor protected."""
+    return not (message.has_protected_content or is_service_message(message))
+
+
+def _copyable(message: Message) -> bool:
+    """Whether ``message`` is none of the kinds copying refuses."""
+    return not (
+        is_service_message(message)
+        or any(getattr(message, name) is not None for name in _UNCOPYABLE_FIELDS)
+    )
+
+
+def _thread_changes(target: ChatState, thread_id: int | None) -> dict[str, Any]:
+    """
+    Where a forward or copy lands within ``target``.
+
+    That is the thread the request names, in a forum, and no thread
+    otherwise: the original's thread belongs to its own chat.
+    """
+    if thread_id is None or not target.is_forum:
+        return {"message_thread_id": None, "is_topic_message": None}
+    target.topic(thread_id)
+    return {"message_thread_id": thread_id, "is_topic_message": True}
+
+
 def forward_one(
-    env: BotTestEnvironment, source: ChatState, target: ChatState, message_id: int
+    env: BotTestEnvironment,
+    source: ChatState,
+    target: ChatState,
+    message_id: int,
+    thread_id: int | None = None,
 ) -> Message:
     original = source.find_message(message_id)
     if original is None:
         raise ApiRejection("message to forward not found")
+    if not _forwardable(original):
+        raise ApiRejection("message can't be forwarded")
     return target.add_derived(
         original,
         message_id=target.allocate_message_id(),
@@ -796,6 +981,7 @@ def forward_one(
             original,
             original.from_user or env.world.bot_user.as_user(),
         ),
+        **_thread_changes(target, thread_id),
     )
 
 
@@ -803,7 +989,7 @@ def forward_one(
 def handle_forward(env: BotTestEnvironment, method: ForwardMessage) -> Message:
     source = resolve_chat(env, method.from_chat_id)
     target = resolve_chat(env, method.chat_id)
-    return forward_one(env, source, target, method.message_id)
+    return forward_one(env, source, target, method.message_id, method.message_thread_id)
 
 
 @models(ForwardMessages)
@@ -812,9 +998,9 @@ def handle_forward_many(env: BotTestEnvironment, method: ForwardMessages) -> lis
     target = resolve_chat(env, method.chat_id)
     # Telegram skips what it cannot forward rather than failing the whole batch.
     forwarded = [
-        forward_one(env, source, target, message_id)
+        forward_one(env, source, target, message_id, method.message_thread_id)
         for message_id in method.message_ids
-        if source.find_message(message_id) is not None
+        if (original := source.find_message(message_id)) is not None and _forwardable(original)
     ]
     return [MessageId(message_id=message.message_id) for message in forwarded]
 
@@ -824,28 +1010,58 @@ def copy_one(
     source: ChatState,
     target: ChatState,
     message_id: int,
-    caption: str | None = None,
+    thread_id: int | None = None,
+    **changes: Any,
 ) -> Message:
+    """
+    Store a copy of a message in ``target``.
+
+    ``changes`` are what the request replaces: a caption, an inline
+    keyboard. The rest is the original's.
+    """
     original = source.find_message(message_id)
     if original is None:
         raise ApiRejection("message to copy not found")
+    if not _copyable(original):
+        raise ApiRejection("message can't be copied")
     return target.add_derived(
         original,
         message_id=target.allocate_message_id(),
         chat=target.as_chat(),
         date=env.world.next_date(),
         from_user=env.world.bot_user.as_user(),
-        caption=caption if caption is not None else original.caption,
         # A copy carries no trace of where it came from — that is the whole difference.
         forward_origin=None,
+        **_thread_changes(target, thread_id),
+        **changes,
     )
 
 
 @models(CopyMessage)
 def handle_copy(env: BotTestEnvironment, method: CopyMessage) -> MessageId:
+    """
+    Copy one message, with what the request replaces.
+
+    A new caption brings its own entities, and the original caption is
+    kept when the request names none.
+    """
     source = resolve_chat(env, method.from_chat_id)
     target = resolve_chat(env, method.chat_id)
-    copied = copy_one(env, source, target, method.message_id, method.caption)
+    changes: dict[str, Any] = {}
+    if method.caption is not None:
+        changes["caption"] = method.caption
+        changes["caption_entities"] = method.caption_entities
+        changes["show_caption_above_media"] = method.show_caption_above_media
+    if isinstance(method.reply_markup, InlineKeyboardMarkup):
+        changes["reply_markup"] = method.reply_markup
+    copied = copy_one(
+        env,
+        source,
+        target,
+        method.message_id,
+        method.message_thread_id,
+        **changes,
+    )
     return MessageId(message_id=copied.message_id)
 
 
@@ -853,10 +1069,15 @@ def handle_copy(env: BotTestEnvironment, method: CopyMessage) -> MessageId:
 def handle_copy_many(env: BotTestEnvironment, method: CopyMessages) -> list[MessageId]:
     source = resolve_chat(env, method.from_chat_id)
     target = resolve_chat(env, method.chat_id)
+    changes: dict[str, Any] = {}
+    if method.remove_caption:
+        changes["caption"] = None
+        changes["caption_entities"] = None
+    # Telegram skips what it cannot copy rather than failing the batch.
     copied = [
-        copy_one(env, source, target, message_id)
+        copy_one(env, source, target, message_id, method.message_thread_id, **changes)
         for message_id in method.message_ids
-        if source.find_message(message_id) is not None
+        if (original := source.find_message(message_id)) is not None and _copyable(original)
     ]
     return [MessageId(message_id=message.message_id) for message in copied]
 
@@ -898,9 +1119,27 @@ def _caption_changes(
     }
 
 
+#: What ``editMessageText`` edits: text, rich and game messages.
+_TEXT_FIELDS = ("text", "rich_message", "game")
+
+#: The content a caption sits on: that of every send method taking
+#: one, read off the methods so the set follows the Bot API.
+CAPTIONED_FIELDS: tuple[str, ...] = tuple(
+    field for method, field in MEDIA_FIELDS.items() if "caption" in method.model_fields
+)
+
+
+def _require_content(message: Message | None, fields: tuple[str, ...], kind: str) -> None:
+    """Refuse to edit ``kind`` on a message with none of ``fields``."""
+    if message is not None and all(getattr(message, name) is None for name in fields):
+        msg = f"there is no {kind} in the message to edit"
+        raise ApiRejection(msg)
+
+
 @models(EditMessageText)
 def handle_edit_text(env: BotTestEnvironment, method: EditMessageText) -> Message:
     chat, message_id = _edit_target(env, method)
+    _require_content(chat.find_message(message_id), _TEXT_FIELDS, "text")
     _check_business_edit_window(env, chat, message_id)
     return chat.update_message(message_id, **_text_changes(env, method))
 
@@ -908,6 +1147,7 @@ def handle_edit_text(env: BotTestEnvironment, method: EditMessageText) -> Messag
 @models(EditMessageCaption)
 def handle_edit_caption(env: BotTestEnvironment, method: EditMessageCaption) -> Message:
     chat, message_id = _edit_target(env, method)
+    _require_content(chat.find_message(message_id), CAPTIONED_FIELDS, "caption")
     _check_business_edit_window(env, chat, message_id)
     return chat.update_message(message_id, **_caption_changes(method))
 
@@ -948,11 +1188,7 @@ def _media_changes(
     changes["text"] = None
     changes["entities"] = None
     changes["rich_message"] = None
-    changes[field] = nonempty(
-        Message.model_fields[field].annotation,
-        env.synthesis_context(),
-        name=field,
-    )
+    changes[field] = stored_content(env, method.media, field, method.media.media)
     changes["caption"] = method.media.caption
     changes["caption_entities"] = method.media.caption_entities
     if method.reply_markup is not None:
@@ -991,8 +1227,14 @@ def _edit_ephemeral(env: BotTestEnvironment, method: _EphemeralEdit, **changes: 
     return True
 
 
+def _stored_ephemeral(env: BotTestEnvironment, method: _EphemeralEdit) -> Message | None:
+    chat = resolve_chat(env, method.chat_id)
+    return chat.find_ephemeral_message(method.receiver_user_id, method.ephemeral_message_id)
+
+
 @models(EditEphemeralMessageText)
 def handle_edit_ephemeral_text(env: BotTestEnvironment, method: EditEphemeralMessageText) -> bool:
+    _require_content(_stored_ephemeral(env, method), _TEXT_FIELDS, "text")
     return _edit_ephemeral(env, method, **_text_changes(env, method))
 
 
@@ -1001,6 +1243,7 @@ def handle_edit_ephemeral_caption(
     env: BotTestEnvironment,
     method: EditEphemeralMessageCaption,
 ) -> bool:
+    _require_content(_stored_ephemeral(env, method), CAPTIONED_FIELDS, "caption")
     return _edit_ephemeral(env, method, **_caption_changes(method))
 
 
@@ -1121,11 +1364,7 @@ def handle_edit_checklist(
     chat, message_id = _edit_target(env, method)
     return chat.update_message(
         message_id,
-        checklist=nonempty(
-            Message.model_fields["checklist"].annotation,
-            env.synthesis_context(),
-            name="checklist",
-        ),
+        checklist=stored_checklist(method.checklist),
         reply_markup=method.reply_markup,
     )
 
@@ -1189,9 +1428,21 @@ def handle_pin(env: BotTestEnvironment, method: PinChatMessage) -> bool:
 
 @models(UnpinChatMessage)
 def handle_unpin(env: BotTestEnvironment, method: UnpinChatMessage) -> bool:
+    """
+    Unpin a message, or without an id the most recent pin by date.
+
+    Messages sent in the same second are told apart by id.
+    """
     chat = resolve_chat(env, method.chat_id)
     if method.message_id is None:
-        chat.pinned_message_ids.clear()
+        pinned = [
+            message
+            for message_id in chat.pinned_message_ids
+            if (message := chat.find_message(message_id)) is not None
+        ]
+        if pinned:
+            newest = max(pinned, key=lambda message: (aware(message.date), message.message_id))
+            chat.pinned_message_ids.remove(newest.message_id)
     elif method.message_id in chat.pinned_message_ids:
         chat.pinned_message_ids.remove(method.message_id)
     return True
@@ -1351,77 +1602,8 @@ def handle_promote(env: BotTestEnvironment, method: PromoteChatMember) -> bool:
         return True
     member.set_status(ChatMemberStatus.ADMINISTRATOR)
     member.rights = ChatAdministratorRights(**granted)
+    member.promoted_by = env.world.bot_user.id
     return True
-
-
-#: The message kinds that ``can_send_other_messages`` and ``can_add_web_page_previews``
-#: bring with them when permissions are not set independently.
-_IMPLIED_MESSAGE_PERMISSIONS = (
-    "can_send_messages",
-    "can_send_audios",
-    "can_send_documents",
-    "can_send_photos",
-    "can_send_videos",
-    "can_send_video_notes",
-    "can_send_voice_notes",
-)
-
-#: Permission -> the permissions granting it also grants, unless the request passed
-#: ``use_independent_chat_permissions=True``. Stated by ``restrictChatMember`` and
-#: ``setChatPermissions`` in identical words, on that very parameter.
-_COUPLED_PERMISSIONS: dict[str, tuple[str, ...]] = {
-    "can_send_other_messages": _IMPLIED_MESSAGE_PERMISSIONS,
-    "can_add_web_page_previews": _IMPLIED_MESSAGE_PERMISSIONS,
-    "can_send_polls": ("can_send_messages",),
-}
-
-#: Permission -> the one it copies when the request leaves it unset. Unlike the couplings
-#: above, these hold however permissions are set:
-#: :class:`~aiogram.types.chat_permissions.ChatPermissions` states them on the fields
-#: themselves rather than on the methods, so ``use_independent_chat_permissions`` does not
-#: switch them off.
-_PERMISSION_DEFAULTS: dict[str, str] = {
-    "can_react_to_messages": "can_send_messages",
-    "can_edit_tag": "can_pin_messages",
-    "can_manage_topics": "can_pin_messages",
-}
-
-
-def granted_permissions(
-    permissions: ChatPermissions,
-    use_independent_chat_permissions: bool | None,
-) -> ChatPermissions:
-    """
-    What a permissions request actually grants, once the Bot API's couplings are applied.
-
-    ``restrictChatMember`` and ``setChatPermissions`` do not store the mask they are handed.
-    Unless the request passes ``use_independent_chat_permissions=True``, granting
-    ``can_send_other_messages`` or ``can_add_web_page_previews`` also grants every kind of
-    message — a sticker is a message, and Telegram will not let a user send one while
-    forbidding text — and granting ``can_send_polls`` grants ``can_send_messages``. A fake
-    that stored the raw mask reported a member who may send stickers but not text, a state
-    the real API cannot produce, and a bot gating itself on ``can_send_messages`` took the
-    wrong branch against it.
-
-    Independently of that switch, three permissions default to another when the request
-    leaves them unset — ``can_react_to_messages`` to ``can_send_messages``, ``can_edit_tag``
-    and ``can_manage_topics`` to ``can_pin_messages`` — because the Bot API documents those
-    defaults on the fields rather than on the methods. They are filled after the couplings,
-    so a permission a coupling granted is one they can inherit.
-
-    The result is a fresh object either way, so nothing a caller still holds is mutated, and
-    ``model_copy`` rather than a new instance keeps whatever a future Bot API version parked
-    in the request's extra fields.
-    """
-    values = mask(ChatPermissions, permissions)
-    if not use_independent_chat_permissions:
-        for source, implied in _COUPLED_PERMISSIONS.items():
-            if values[source]:
-                values.update(dict.fromkeys(implied, True))
-    for name, fallback in _PERMISSION_DEFAULTS.items():
-        if values[name] is None:
-            values[name] = values[fallback]
-    return permissions.model_copy(update=values)
 
 
 @models(RestrictChatMember)
@@ -1469,7 +1651,11 @@ def handle_leave(env: BotTestEnvironment, method: LeaveChat) -> bool:
 def handle_get_chat_member(env: BotTestEnvironment, method: GetChatMember) -> Any:
     chat = resolve_chat(env, method.chat_id)
     user = env.world.user(method.user_id)
-    return chat.member(method.user_id).as_chat_member(user.as_user(), chat.type)
+    return chat.member(method.user_id).as_chat_member(
+        user.as_user(),
+        chat.type,
+        env.world.bot_user.id,
+    )
 
 
 @models(GetChat)
@@ -1718,7 +1904,12 @@ def _owned_gifts_result(env: BotTestEnvironment, owner_id: int) -> OwnedGifts:
     )
 
 
-def _spend(env: BotTestEnvironment, amount: int, charge_id: str | None = None) -> None:
+def _spend(
+    env: BotTestEnvironment,
+    amount: int,
+    charge_id: str | None = None,
+    partner_id: int | None = None,
+) -> None:
     """
     Debit the ledger.
 
@@ -1730,6 +1921,7 @@ def _spend(env: BotTestEnvironment, amount: int, charge_id: str | None = None) -
         -amount,
         env.world.next_date(),
         charge_id=charge_id,
+        partner_id=partner_id,
     )
 
 
@@ -1745,7 +1937,12 @@ def handle_get_star_transactions(
 ) -> StarTransactions:
     """Every recorded transaction; `offset` and `limit` are not modeled (design open question)."""
     return StarTransactions(
-        transactions=[item.as_star_transaction() for item in env.world.stars.transactions],
+        transactions=[
+            item.as_star_transaction(
+                None if item.partner_id is None else env.world.user(item.partner_id).as_user(),
+            )
+            for item in env.world.stars.transactions
+        ],
     )
 
 
@@ -1756,7 +1953,7 @@ def handle_refund_star_payment(env: BotTestEnvironment, method: RefundStarPaymen
         msg = f"Charge {charge.id!r} has already been refunded"
         raise ApiRejection(msg)
     charge.is_refunded = True
-    _spend(env, charge.amount, charge_id=charge.id)
+    _spend(env, charge.amount, charge_id=charge.id, partner_id=charge.user_id)
     return True
 
 
@@ -2077,7 +2274,11 @@ def handle_get_chat_administrators(
     # Creator first, then a stable order, so a test indexing [0] is not flaky.
     admins.sort(key=lambda member: (member.status != ChatMemberStatus.CREATOR, member.user_id))
     return [
-        member.as_chat_member(env.world.user(member.user_id).as_user(), chat.type)
+        member.as_chat_member(
+            env.world.user(member.user_id).as_user(),
+            chat.type,
+            env.world.bot_user.id,
+        )
         for member in admins
     ]
 
@@ -2281,26 +2482,34 @@ def _poll_close(env: BotTestEnvironment, method: SendPoll) -> datetime.datetime 
     return moment
 
 
-def _close_poll(chat: ChatState, message_id: int, poll: PollState) -> Poll:
+def _close_poll(chat: ChatState, message_id: int, poll: PollState, **changes: Any) -> Poll:
     poll.is_closed = True
-    chat.update_message(message_id, poll=poll.as_poll())
+    chat.update_message(message_id, poll=poll.as_poll(), **changes)
     return poll.as_poll()
 
 
 @models(SendPoll)
 def handle_send_poll(env: BotTestEnvironment, method: SendPoll) -> Message:
+    """
+    Store a poll with the defaults the Bot API documents.
+
+    The correct option ids fall back to the deprecated single id.
+    """
     chat = resolve_chat(env, method.chat_id)
     close_at = _poll_close(env, method)
-    poll = PollState(
-        id=env.world.next_query_id(),
-        question=method.question,
-        options=[option if isinstance(option, str) else option.text for option in method.options],
-        is_anonymous=True if method.is_anonymous is None else method.is_anonymous,
-        type=method.type or "regular",
-        allows_multiple_answers=bool(method.allows_multiple_answers),
-        allows_revoting=bool(method.allows_revoting),
+    correct_option_ids = method.correct_option_ids
+    if correct_option_ids is None and method.correct_option_id is not None:
+        correct_option_ids = [method.correct_option_id]
+    poll = new_poll(
+        env.world.next_query_id(),
+        method.question,
+        [option if isinstance(option, str) else option.text for option in method.options],
+        poll_type=method.type,
+        is_anonymous=method.is_anonymous,
+        allows_multiple_answers=method.allows_multiple_answers,
+        allows_revoting=method.allows_revoting,
+        correct_option_ids=correct_option_ids,
         members_only=bool(method.members_only),
-        correct_option_id=method.correct_option_id,
         explanation=method.explanation,
         is_closed=bool(method.is_closed),
         open_period=method.open_period,
@@ -2333,7 +2542,8 @@ def handle_stop_poll(env: BotTestEnvironment, method: StopPoll) -> Poll:
     if poll.is_closed:
         msg = "poll has already been closed"
         raise ApiRejection(msg)
-    return _close_poll(chat, message_id, poll)
+    # The keyboard is the one the request passes, or none.
+    return _close_poll(chat, message_id, poll, reply_markup=method.reply_markup)
 
 
 # -- reactions -------------------------------------------------------------------------
@@ -2500,17 +2710,23 @@ def handle_create_forum_topic(env: BotTestEnvironment, method: CreateForumTopic)
 
 @models(EditForumTopic)
 def handle_edit_forum_topic(env: BotTestEnvironment, method: EditForumTopic) -> bool:
+    """
+    Edit a topic's name and icon.
+
+    An empty name keeps the current one, and an empty emoji id removes
+    the icon, as the Bot API documents.
+    """
     chat, topic = _topic(env, method)
-    if method.name is not None:
+    if method.name:
         topic.name = method.name
     if method.icon_custom_emoji_id is not None:
-        topic.icon_custom_emoji_id = method.icon_custom_emoji_id
+        topic.icon_custom_emoji_id = method.icon_custom_emoji_id or None
     service_message(
         env,
         chat,
         {
             "forum_topic_edited": ForumTopicEdited(
-                name=method.name,
+                name=method.name or None,
                 icon_custom_emoji_id=method.icon_custom_emoji_id,
             ),
         },
@@ -2585,7 +2801,10 @@ def handle_reopen_general_forum_topic(
     env: BotTestEnvironment,
     method: ReopenGeneralForumTopic,
 ) -> bool:
-    resolve_chat(env, method.chat_id).general_topic.is_closed = False
+    general = resolve_chat(env, method.chat_id).general_topic
+    # Reopening the General topic unhides it too.
+    general.is_closed = False
+    general.is_hidden = False
     return True
 
 
@@ -2596,6 +2815,8 @@ def handle_hide_general_forum_topic(
 ) -> bool:
     chat = resolve_chat(env, method.chat_id)
     chat.general_topic.is_hidden = True
+    # Hiding the General topic closes it too.
+    chat.general_topic.is_closed = True
     service_message(env, chat, {"general_forum_topic_hidden": GeneralForumTopicHidden()})
     return True
 
@@ -2653,10 +2874,31 @@ def handle_delete_business_messages(
     env: BotTestEnvironment,
     method: DeleteBusinessMessages,
 ) -> bool:
+    """
+    Delete business messages, all of them from one chat.
+
+    The method names no chat, so the chat holding the most of the ids
+    is the one meant, the first such chat on a tie. An id only another
+    chat holds mixes chats, which the Bot API refuses.
+    """
     connection = env.world.business_connection(method.business_connection_id)
     wanted = set(method.message_ids)
-    for chat in env.world.chats.values():
-        for message in list(chat.messages):
-            if message.message_id in wanted and (message.business_connection_id == connection.id):
-                chat.delete_message(message.message_id)
+    held = {
+        chat.id: {
+            message.message_id
+            for message in chat.messages
+            if message.message_id in wanted and message.business_connection_id == connection.id
+        }
+        for chat in env.world.chats.values()
+    }
+    chat_id = max(held, key=lambda key: len(held[key]), default=None)
+    if chat_id is None or not held[chat_id]:
+        return True
+    elsewhere = {message_id for key, ids in held.items() if key != chat_id for message_id in ids}
+    if elsewhere - held[chat_id]:
+        msg = "all messages must be from the same chat"
+        raise ApiRejection(msg)
+    chat = env.world.chat(chat_id)
+    for message_id in sorted(held[chat_id]):
+        chat.delete_message(message_id)
     return True

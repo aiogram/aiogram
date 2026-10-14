@@ -13,6 +13,7 @@ from aiogram.types import (
     InlineKeyboardButton,
     InlineKeyboardMarkup,
     InputMediaPhoto,
+    PhotoSize,
 )
 
 HOUR = datetime.timedelta(hours=1)
@@ -626,25 +627,42 @@ class TestMessageAgeLimits:
 
 
 class TestBusinessEditWindow:
-    async def owner_message(self, env, alice, private, connection, keyboard=False):
+    async def owner_message(
+        self,
+        env,
+        alice,
+        private,
+        connection,
+        keyboard=False,
+        captioned=False,
+    ):
         fields = {}
         if keyboard:
             fields["reply_markup"] = InlineKeyboardMarkup(
                 inline_keyboard=[[InlineKeyboardButton(text="K", callback_data="k")]],
             )
-        await env.user(alice).in_(private, business=connection).send("mine", fields=fields)
+        text = "mine"
+        if captioned:
+            # A caption edit needs media to sit on.
+            text = None
+            fields["photo"] = [PhotoSize(file_id="p", file_unique_id="p", width=1, height=1)]
+            fields["caption"] = "mine"
+        await env.user(alice).in_(private, business=connection).send(text, fields=fields)
         return private.messages[-1]
 
     @pytest.mark.parametrize(
-        "edit",
+        ("edit", "captioned"),
         [
-            lambda bot, target: bot.edit_message_text(text="new", **target),
-            lambda bot, target: bot.edit_message_caption(caption="new", **target),
-            lambda bot, target: bot.edit_message_media(
-                media=InputMediaPhoto(media="id"),
-                **target,
+            (lambda bot, target: bot.edit_message_text(text="new", **target), False),
+            (lambda bot, target: bot.edit_message_caption(caption="new", **target), True),
+            (
+                lambda bot, target: bot.edit_message_media(
+                    media=InputMediaPhoto(media="id"),
+                    **target,
+                ),
+                False,
             ),
-            lambda bot, target: bot.edit_message_reply_markup(**target),
+            (lambda bot, target: bot.edit_message_reply_markup(**target), False),
         ],
         ids=["text", "caption", "media", "markup"],
     )
@@ -655,8 +673,9 @@ class TestBusinessEditWindow:
         private,
         connection,
         edit,
+        captioned,
     ):
-        message = await self.owner_message(env, alice, private, connection)
+        message = await self.owner_message(env, alice, private, connection, captioned=captioned)
         target = {
             "business_connection_id": connection.id,
             "chat_id": private.id,

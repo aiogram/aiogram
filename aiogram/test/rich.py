@@ -15,9 +15,15 @@ from typing import Any, cast, get_origin
 from pydantic import BaseModel
 
 import aiogram.types as api_types
-from aiogram.types import InputMedia, InputRichMessage, RichMessage
+from aiogram.types import InputRichMessage, RichMessage
 
-from .synthesis import SynthesisContext, list_item, nonempty, synthesize
+from .synthesis import (
+    SynthesisContext,
+    annotation_accepts,
+    list_item,
+    nonempty,
+    synthesize,
+)
 
 _INPUT_PREFIX = "Input"
 
@@ -68,7 +74,7 @@ def _convert_model(value: BaseModel, context: SynthesisContext) -> BaseModel:
             continue
         # Only a field the input block lacks is read off its media: one
         # it has, such as `caption`, has its own type on the block.
-        carried = _media_attribute(value, name) if source_info is None else None
+        carried = _media_attribute(value, target_type, name) if source_info is None else None
         if carried is not None:
             values[name] = carried
         elif info.is_required():
@@ -86,14 +92,30 @@ def _convert_value(
         item = list_item(annotation)
         entry_type = annotation if item is None else item
         return [_convert_value(entry, entry_type, name, context) for entry in raw]
-    if isinstance(raw, InputMedia):
+    if _is_media(raw, annotation):
         return nonempty(annotation, context, name=name)
     if isinstance(raw, BaseModel) and counterpart(type(raw)) is not None:
         return _convert_model(raw, context)
     return raw
 
 
-def _media_attribute(value: BaseModel, name: str) -> Any:
+def _is_media(raw: Any, annotation: Any) -> bool:
+    """
+    Whether ``raw`` is media the stored shape holds as a file instead.
+
+    A model with no stored counterpart that the stored field does not
+    accept as it is can only be media: ``InputMediaPhoto`` becomes a
+    list of ``PhotoSize``, ``InputMediaVoiceNote`` a ``Voice``. Not
+    every input media subclasses ``InputMedia``, so this does not ask.
+    """
+    return (
+        isinstance(raw, BaseModel)
+        and counterpart(type(raw)) is None
+        and not annotation_accepts(annotation, type(raw))
+    )
+
+
+def _media_attribute(value: BaseModel, target_type: type[BaseModel], name: str) -> Any:
     """
     A media attribute the stored block carries itself.
 
@@ -102,7 +124,8 @@ def _media_attribute(value: BaseModel, name: str) -> Any:
     """
     for field in type(value).model_fields:
         media = getattr(value, field, None)
-        if isinstance(media, InputMedia):
+        stored = target_type.model_fields.get(field)
+        if stored is not None and _is_media(media, stored.annotation):
             attribute = getattr(media, name, None)
             if attribute is not None:
                 return attribute

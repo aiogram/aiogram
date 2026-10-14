@@ -1,0 +1,880 @@
+"""
+Regression tests for the places the fake Bot API disagreed with the
+Bot API: each test reproduces one finding of the audit that led to the
+`align-fake-api-with-bot-api` change.
+"""
+
+import copy
+import io
+
+import pytest
+
+from aiogram.enums import ChatMemberStatus, ChatType, DiceEmoji, StickerType
+from aiogram.exceptions import TelegramBadRequest
+from aiogram.methods import GetUserProfilePhotos
+from aiogram.test import Blueprint, BotTestEnvironment, WorldLookupError
+from aiogram.test.synthesis import SynthesisContext, annotation_accepts, synthesize
+from aiogram.test.world import World
+from aiogram.types import (
+    BufferedInputFile,
+    Chat,
+    ChatPermissions,
+    EphemeralMessageParameters,
+    InlineKeyboardButton,
+    InlineKeyboardMarkup,
+    InputChecklist,
+    InputChecklistTask,
+    InputMediaPhoto,
+    InputMediaVoiceNote,
+    InputRichBlockVoiceNote,
+    InputRichMessage,
+    LabeledPrice,
+    MessageEntity,
+    ReplyParameters,
+    RichTextBold,
+    Sticker,
+    TransactionPartnerUser,
+)
+from aiogram.types.rich_text_union import RichTextUnion
+
+KEYBOARD = InlineKeyboardMarkup(
+    inline_keyboard=[[InlineKeyboardButton(text="K", callback_data="k")]],
+)
+
+
+@pytest.fixture
+def blueprint():
+    blueprint = Blueprint()
+    alice = blueprint.add_user("Alice")
+    bob = blueprint.add_user("Bob")
+    blueprint.add_private_chat(alice)
+    blueprint.add_private_chat(bob)
+    team = blueprint.add_supergroup(
+        "Team",
+        members={alice: ChatMemberStatus.MEMBER, bob: ChatMemberStatus.MEMBER},
+    )
+    forum = blueprint.add_supergroup("Forum", members={alice: ChatMemberStatus.MEMBER})
+    blueprint.add_topic(forum, "Support")
+    blueprint.add_business_connection(alice)
+    blueprint.set_member(team, blueprint.bot, status=ChatMemberStatus.ADMINISTRATOR)
+    return blueprint
+
+
+@pytest.fixture
+def alice(blueprint):
+    return blueprint.users[0]
+
+
+@pytest.fixture
+def bob(blueprint):
+    return blueprint.users[1]
+
+
+@pytest.fixture
+def private(env, blueprint):
+    return env.chat(blueprint.chats[0])
+
+
+@pytest.fixture
+def bobs(env, blueprint):
+    return env.chat(blueprint.chats[1])
+
+
+@pytest.fixture
+def team(env, blueprint):
+    return env.chat(blueprint.chats[2])
+
+
+@pytest.fixture
+def forum(env, blueprint):
+    return env.chat(blueprint.chats[3])
+
+
+@pytest.fixture
+def topic(blueprint):
+    return blueprint.topics[0]
+
+
+@pytest.fixture
+def connection(blueprint):
+    return blueprint.business_connections[0]
+
+
+class TestMediaGroups:
+    async def test_an_album_keeps_each_items_media_and_caption(self, env, private):
+        bold = MessageEntity(type="bold", offset=0, length=3)
+        messages = await env.bot.send_media_group(
+            chat_id=private.id,
+            media=[
+                InputMediaPhoto(media="first", caption="One", caption_entities=[bold]),
+                InputMediaPhoto(media="second", caption="Two", has_spoiler=True),
+            ],
+        )
+
+        assert private.messages == messages
+        assert [message.photo[-1].file_id for message in messages] == ["first", "second"]
+        assert [message.caption for message in messages] == ["One", "Two"]
+        assert messages[0].caption_entities[0].model_dump() == bold.model_dump()
+        assert messages[1].has_media_spoiler is True
+        assert messages[0].media_group_id is not None
+        assert messages[0].media_group_id == messages[1].media_group_id
+
+    @pytest.mark.parametrize("size", [1, 11])
+    async def test_an_album_of_the_wrong_size_is_refused(self, env, private, size):
+        with pytest.raises(TelegramBadRequest, match="2-10 items"):
+            await env.bot.send_media_group(
+                chat_id=private.id,
+                media=[InputMediaPhoto(media=f"p{index}") for index in range(size)],
+            )
+
+        assert private.messages == []
+
+
+class TestReplies:
+    async def test_a_reply_to_a_missing_message_fails(self, env, private):
+        with pytest.raises(TelegramBadRequest, match="message to be replied not found"):
+            await env.bot.send_message(
+                chat_id=private.id,
+                text="answer",
+                reply_parameters=ReplyParameters(message_id=999),
+            )
+
+        assert private.messages == []
+
+    async def test_sending_without_the_reply_is_allowed_when_asked(self, env, private):
+        message = await env.bot.send_message(
+            chat_id=private.id,
+            text="answer",
+            reply_parameters=ReplyParameters(message_id=999, allow_sending_without_reply=True),
+        )
+
+        assert message.reply_to_message is None
+
+    async def test_a_reply_in_another_chat_is_looked_up_there(self, env, private, bobs):
+        target = await env.bot.send_message(chat_id=bobs.id, text="Bob's")
+        await env.bot.send_message(chat_id=private.id, text="filler")
+
+        message = await env.bot.send_message(
+            chat_id=private.id,
+            text="answer",
+            reply_parameters=ReplyParameters(message_id=target.message_id, chat_id=bobs.id),
+        )
+
+        assert message.reply_to_message is None
+
+    async def test_a_missing_reply_in_another_chat_always_fails(self, env, private, bobs):
+        with pytest.raises(TelegramBadRequest, match="message to be replied not found"):
+            await env.bot.send_message(
+                chat_id=private.id,
+                text="answer",
+                reply_parameters=ReplyParameters(
+                    message_id=999,
+                    chat_id=bobs.id,
+                    allow_sending_without_reply=True,
+                ),
+            )
+
+    async def test_a_missing_reply_in_a_topic_always_fails(self, env, forum, topic):
+        with pytest.raises(TelegramBadRequest, match="message to be replied not found"):
+            await env.bot.send_message(
+                chat_id=forum.id,
+                message_thread_id=topic.message_thread_id,
+                text="answer",
+                reply_parameters=ReplyParameters(message_id=999, allow_sending_without_reply=True),
+            )
+
+    async def test_a_missing_reply_in_an_ephemeral_message_always_fails(self, env, team, alice):
+        with pytest.raises(TelegramBadRequest, match="message to be replied not found"):
+            await env.bot.send_message(
+                chat_id=team.id,
+                text="answer",
+                ephemeral_message_parameters=EphemeralMessageParameters(
+                    receiver_user_id=alice.id,
+                ),
+                reply_parameters=ReplyParameters(message_id=999, allow_sending_without_reply=True),
+            )
+
+    async def test_a_missing_reply_on_behalf_of_a_business_is_dropped(
+        self,
+        env,
+        private,
+        connection,
+    ):
+        message = await env.bot.send_message(
+            business_connection_id=connection.id,
+            chat_id=private.id,
+            text="answer",
+            reply_parameters=ReplyParameters(message_id=999),
+        )
+
+        assert message.reply_to_message is None
+
+
+class TestCopiesAndForwards:
+    async def test_a_copy_into_a_topic_lands_in_it(self, env, forum, topic, private):
+        source = await env.bot.send_message(chat_id=private.id, text="hi")
+
+        copied = await env.bot.copy_message(
+            chat_id=forum.id,
+            from_chat_id=private.id,
+            message_id=source.message_id,
+            message_thread_id=topic.message_thread_id,
+        )
+
+        stored = forum.find_message(copied.message_id)
+        assert stored.message_thread_id == topic.message_thread_id
+        assert stored.is_topic_message is True
+
+    async def test_a_copy_out_of_a_topic_carries_no_thread(self, env, forum, topic, private):
+        source = await env.bot.send_message(
+            chat_id=forum.id,
+            message_thread_id=topic.message_thread_id,
+            text="hi",
+        )
+
+        copied = await env.bot.copy_message(
+            chat_id=private.id,
+            from_chat_id=forum.id,
+            message_id=source.message_id,
+            message_thread_id=topic.message_thread_id,
+        )
+
+        stored = private.find_message(copied.message_id)
+        assert stored.message_thread_id is None
+        assert stored.is_topic_message is None
+
+    async def test_a_forward_into_a_topic_lands_in_it(self, env, forum, topic, private):
+        source = await env.bot.send_message(chat_id=private.id, text="hi")
+
+        forwarded = await env.bot.forward_message(
+            chat_id=forum.id,
+            from_chat_id=private.id,
+            message_id=source.message_id,
+            message_thread_id=topic.message_thread_id,
+        )
+
+        assert forwarded.message_thread_id == topic.message_thread_id
+
+    async def test_a_new_caption_brings_its_own_entities(self, env, private, bobs):
+        bold = MessageEntity(type="bold", offset=6, length=5)
+        source = await env.bot.send_photo(
+            chat_id=private.id,
+            photo="photo",
+            caption="hello world",
+            caption_entities=[bold],
+        )
+
+        renamed = await env.bot.copy_message(
+            chat_id=bobs.id,
+            from_chat_id=private.id,
+            message_id=source.message_id,
+            caption="hi",
+        )
+        kept = await env.bot.copy_message(
+            chat_id=bobs.id,
+            from_chat_id=private.id,
+            message_id=source.message_id,
+        )
+
+        assert bobs.find_message(renamed.message_id).caption == "hi"
+        assert bobs.find_message(renamed.message_id).caption_entities is None
+        assert bobs.find_message(kept.message_id).caption == "hello world"
+        assert (
+            bobs.find_message(kept.message_id).caption_entities[0].model_dump()
+            == bold.model_dump()
+        )
+
+    async def test_a_copy_stores_the_requests_keyboard(self, env, private, bobs):
+        source = await env.bot.send_message(chat_id=private.id, text="hi")
+
+        copied = await env.bot.copy_message(
+            chat_id=bobs.id,
+            from_chat_id=private.id,
+            message_id=source.message_id,
+            reply_markup=KEYBOARD,
+        )
+
+        assert (
+            bobs.find_message(copied.message_id).reply_markup.model_dump() == KEYBOARD.model_dump()
+        )
+
+    async def test_copies_can_drop_their_captions(self, env, private, bobs):
+        source = await env.bot.send_photo(chat_id=private.id, photo="photo", caption="hi")
+
+        copied = await env.bot.copy_messages(
+            chat_id=bobs.id,
+            from_chat_id=private.id,
+            message_ids=[source.message_id],
+            remove_caption=True,
+        )
+
+        assert bobs.find_message(copied[0].message_id).caption is None
+
+    async def test_a_protected_message_cannot_be_forwarded(self, env, private, bobs):
+        source = await env.bot.send_message(chat_id=private.id, text="hi", protect_content=True)
+
+        with pytest.raises(TelegramBadRequest, match="can't be forwarded"):
+            await env.bot.forward_message(
+                chat_id=bobs.id,
+                from_chat_id=private.id,
+                message_id=source.message_id,
+            )
+        forwarded = await env.bot.forward_messages(
+            chat_id=bobs.id,
+            from_chat_id=private.id,
+            message_ids=[source.message_id],
+        )
+
+        assert forwarded == []
+        assert bobs.messages == []
+
+    async def test_a_service_message_cannot_be_copied_or_forwarded(self, env, team, private):
+        await env.bot.set_chat_title(chat_id=team.id, title="Renamed")
+        service = team.messages[-1]
+        text = await env.bot.send_message(chat_id=team.id, text="hi")
+
+        with pytest.raises(TelegramBadRequest, match="can't be copied"):
+            await env.bot.copy_message(
+                chat_id=private.id,
+                from_chat_id=team.id,
+                message_id=service.message_id,
+            )
+        with pytest.raises(TelegramBadRequest, match="can't be forwarded"):
+            await env.bot.forward_message(
+                chat_id=private.id,
+                from_chat_id=team.id,
+                message_id=service.message_id,
+            )
+        copied = await env.bot.copy_messages(
+            chat_id=private.id,
+            from_chat_id=team.id,
+            message_ids=[service.message_id, text.message_id],
+        )
+
+        assert len(copied) == 1
+        assert private.find_message(copied[0].message_id).text == "hi"
+
+    async def test_an_invoice_cannot_be_copied(self, env, private, bobs):
+        invoice = await env.bot.send_invoice(
+            chat_id=private.id,
+            title="Stars",
+            description="Some",
+            payload="p",
+            currency="XTR",
+            prices=[LabeledPrice(label="Stars", amount=1)],
+        )
+
+        with pytest.raises(TelegramBadRequest, match="can't be copied"):
+            await env.bot.copy_message(
+                chat_id=bobs.id,
+                from_chat_id=private.id,
+                message_id=invoice.message_id,
+            )
+
+
+class TestUnpinning:
+    async def test_unpinning_without_an_id_unpins_the_newest_pin(self, env, private):
+        first = await env.bot.send_message(chat_id=private.id, text="one")
+        second = await env.bot.send_message(chat_id=private.id, text="two")
+        await env.bot.pin_chat_message(chat_id=private.id, message_id=second.message_id)
+        await env.bot.pin_chat_message(chat_id=private.id, message_id=first.message_id)
+
+        await env.bot.unpin_chat_message(chat_id=private.id)
+
+        assert private.pinned_message_ids == [first.message_id]
+
+    async def test_unpinning_with_nothing_pinned_does_nothing(self, env, private):
+        assert await env.bot.unpin_chat_message(chat_id=private.id) is True
+        assert private.pinned_message_ids == []
+
+
+class TestEditsActOnTheirContent:
+    async def test_editing_text_on_a_photo_fails(self, env, private):
+        photo = await env.bot.send_photo(chat_id=private.id, photo="photo", caption="c")
+
+        with pytest.raises(TelegramBadRequest, match="no text in the message"):
+            await env.bot.edit_message_text(
+                chat_id=private.id,
+                message_id=photo.message_id,
+                text="now text",
+            )
+
+        assert private.messages == [photo]
+        assert private.messages[0].text is None
+
+    async def test_editing_a_caption_on_a_text_message_fails(self, env, private):
+        text = await env.bot.send_message(chat_id=private.id, text="t")
+
+        with pytest.raises(TelegramBadRequest, match="no caption in the message"):
+            await env.bot.edit_message_caption(
+                chat_id=private.id,
+                message_id=text.message_id,
+                caption="c",
+            )
+
+    async def test_ephemeral_edits_act_on_their_content(self, env, team, alice):
+        to_alice = EphemeralMessageParameters(receiver_user_id=alice.id)
+        photo = await env.bot.send_photo(
+            chat_id=team.id,
+            photo="photo",
+            ephemeral_message_parameters=to_alice,
+        )
+        text = await env.bot.send_message(
+            chat_id=team.id,
+            text="t",
+            ephemeral_message_parameters=to_alice,
+        )
+
+        with pytest.raises(TelegramBadRequest, match="no text in the message"):
+            await env.bot.edit_ephemeral_message_text(
+                chat_id=team.id,
+                receiver_user_id=alice.id,
+                ephemeral_message_id=photo.ephemeral_message_id,
+                text="now text",
+            )
+        with pytest.raises(TelegramBadRequest, match="no caption in the message"):
+            await env.bot.edit_ephemeral_message_caption(
+                chat_id=team.id,
+                receiver_user_id=alice.id,
+                ephemeral_message_id=text.ephemeral_message_id,
+                caption="c",
+            )
+
+
+class TestPolls:
+    async def test_a_quiz_keeps_its_correct_answers(self, env, private):
+        message = await env.bot.send_poll(
+            chat_id=private.id,
+            question="Q?",
+            options=["a", "b", "c"],
+            type="quiz",
+            correct_option_ids=[0, 2],
+            allows_multiple_answers=True,
+        )
+
+        assert message.poll.correct_option_ids == [0, 2]
+        assert message.poll.allows_revoting is False
+
+    async def test_a_regular_poll_allows_revoting_by_default(self, env, private):
+        message = await env.bot.send_poll(chat_id=private.id, question="Q?", options=["a", "b"])
+
+        assert message.poll.allows_revoting is True
+
+    async def test_a_quiz_without_an_answer_is_refused(self, env, private):
+        with pytest.raises(TelegramBadRequest, match="correct_option_ids"):
+            await env.bot.send_poll(
+                chat_id=private.id,
+                question="Q?",
+                options=["a", "b"],
+                type="quiz",
+            )
+
+        assert private.messages == []
+
+    async def test_stopping_a_poll_stores_its_keyboard(self, env, private):
+        message = await env.bot.send_poll(chat_id=private.id, question="Q?", options=["a", "b"])
+
+        await env.bot.stop_poll(
+            chat_id=private.id,
+            message_id=message.message_id,
+            reply_markup=KEYBOARD,
+        )
+
+        assert (
+            private.find_message(message.message_id).reply_markup.model_dump()
+            == KEYBOARD.model_dump()
+        )
+
+
+class TestForumTopics:
+    async def test_hiding_general_closes_it_and_reopening_unhides_it(self, env, forum):
+        await env.bot.hide_general_forum_topic(chat_id=forum.id)
+
+        assert forum.general_topic.is_hidden is True
+        assert forum.general_topic.is_closed is True
+
+        await env.bot.reopen_general_forum_topic(chat_id=forum.id)
+
+        assert forum.general_topic.is_hidden is False
+        assert forum.general_topic.is_closed is False
+
+    async def test_an_empty_name_keeps_the_name(self, env, forum, topic):
+        await env.bot.edit_forum_topic(
+            chat_id=forum.id,
+            message_thread_id=topic.message_thread_id,
+            name="",
+        )
+
+        assert forum.topics[topic.message_thread_id].name == "Support"
+        assert forum.messages[-1].forum_topic_edited.name is None
+
+    async def test_an_empty_emoji_id_removes_the_icon(self, env, forum, topic):
+        thread_id = topic.message_thread_id
+        await env.bot.edit_forum_topic(
+            chat_id=forum.id,
+            message_thread_id=thread_id,
+            icon_custom_emoji_id="123",
+        )
+        assert forum.topics[thread_id].icon_custom_emoji_id == "123"
+
+        await env.bot.edit_forum_topic(
+            chat_id=forum.id,
+            message_thread_id=thread_id,
+            icon_custom_emoji_id="",
+        )
+
+        assert forum.topics[thread_id].icon_custom_emoji_id is None
+        assert forum.messages[-1].forum_topic_edited.icon_custom_emoji_id == ""
+
+
+class TestBusinessDeletions:
+    async def test_equal_ids_in_another_chat_are_untouched(
+        self,
+        env,
+        private,
+        bobs,
+        connection,
+    ):
+        mine = await env.bot.send_message(
+            business_connection_id=connection.id,
+            chat_id=private.id,
+            text="mine",
+        )
+        theirs = await env.bot.send_message(
+            business_connection_id=connection.id,
+            chat_id=bobs.id,
+            text="theirs",
+        )
+        assert mine.message_id == theirs.message_id
+
+        await env.bot.delete_business_messages(
+            business_connection_id=connection.id,
+            message_ids=[mine.message_id],
+        )
+
+        assert len(private.messages) + len(bobs.messages) == 1
+
+    async def test_ids_from_different_chats_are_refused(self, env, private, bobs, connection):
+        mine = await env.bot.send_message(
+            business_connection_id=connection.id,
+            chat_id=private.id,
+            text="mine",
+        )
+        for _ in range(2):
+            await env.bot.send_message(chat_id=bobs.id, text="plain")
+        theirs = await env.bot.send_message(
+            business_connection_id=connection.id,
+            chat_id=bobs.id,
+            text="theirs",
+        )
+
+        with pytest.raises(TelegramBadRequest, match="same chat"):
+            await env.bot.delete_business_messages(
+                business_connection_id=connection.id,
+                message_ids=[mine.message_id, theirs.message_id],
+            )
+
+        assert len(private.messages) == 1
+        assert len(bobs.messages) == 3
+
+    async def test_ids_no_chat_holds_delete_nothing(self, env, private, connection):
+        assert await env.bot.delete_business_messages(
+            business_connection_id=connection.id,
+            message_ids=[999],
+        )
+
+
+class TestChecklists:
+    async def test_a_checklist_keeps_its_content(self, env, private, connection):
+        sent = await env.bot.send_checklist(
+            business_connection_id=connection.id,
+            chat_id=private.id,
+            checklist=InputChecklist(
+                title="Groceries",
+                tasks=[
+                    InputChecklistTask(id=1, text="Milk"),
+                    InputChecklistTask(id=2, text="Eggs"),
+                ],
+                others_can_add_tasks=True,
+            ),
+        )
+
+        assert sent.checklist.title == "Groceries"
+        assert [(task.id, task.text) for task in sent.checklist.tasks] == [
+            (1, "Milk"),
+            (2, "Eggs"),
+        ]
+        assert sent.checklist.others_can_add_tasks is True
+
+        edited = await env.bot.edit_message_checklist(
+            business_connection_id=connection.id,
+            chat_id=private.id,
+            message_id=sent.message_id,
+            checklist=InputChecklist(
+                title="Chores",
+                tasks=[InputChecklistTask(id=1, text="Dishes")],
+            ),
+        )
+
+        assert edited.checklist.title == "Chores"
+        assert [task.text for task in edited.checklist.tasks] == ["Dishes"]
+
+
+class TestSynthesis:
+    async def test_two_uploads_stay_apart(self, env, private):
+        first = await env.bot.send_document(
+            chat_id=private.id,
+            document=BufferedInputFile(b"first", "a.txt"),
+        )
+        second = await env.bot.send_document(
+            chat_id=private.id,
+            document=BufferedInputFile(b"second", "b.txt"),
+        )
+
+        assert first.document.file_id != second.document.file_id
+        assert first.document.file_unique_id != second.document.file_unique_id
+        downloaded = await env.bot.download(first.document, destination=io.BytesIO())
+        assert downloaded.getvalue() == b"first"
+        downloaded = await env.bot.download(second.document, destination=io.BytesIO())
+        assert downloaded.getvalue() == b"second"
+
+    async def test_a_passed_file_id_is_the_stored_one(self, env, private):
+        message = await env.bot.send_document(chat_id=private.id, document="known-id")
+        edited = await env.bot.edit_message_media(
+            chat_id=private.id,
+            message_id=(await env.bot.send_photo(chat_id=private.id, photo="a")).message_id,
+            media=InputMediaPhoto(media="other-id"),
+        )
+
+        assert message.document.file_id == "known-id"
+        assert edited.photo[-1].file_id == "other-id"
+
+    async def test_a_url_is_not_a_file_id(self, env, private):
+        message = await env.bot.send_photo(chat_id=private.id, photo="https://example.com/a")
+
+        assert message.photo[-1].file_id.startswith("file-")
+
+    async def test_a_dice_is_a_dice(self, env, alice, private):
+        for _ in range(8):
+            # Each update moves the counter synthesized values come from.
+            await env.user(alice).send("roll")
+            message = await env.bot.send_dice(chat_id=private.id)
+
+            assert message.dice.emoji == DiceEmoji.DICE
+            assert 1 <= message.dice.value <= 6
+
+    @pytest.mark.parametrize(
+        ("emoji", "faces"),
+        [
+            (DiceEmoji.DICE, 6),
+            (DiceEmoji.DART, 6),
+            (DiceEmoji.BOWLING, 6),
+            (DiceEmoji.BASKETBALL, 5),
+            (DiceEmoji.FOOTBALL, 5),
+            (DiceEmoji.SLOT_MACHINE, 64),
+        ],
+    )
+    async def test_a_dice_value_stays_in_its_emojis_range(self, env, private, emoji, faces):
+        env.world.last_update_id = 100
+        message = await env.bot.send_dice(chat_id=private.id, emoji=emoji)
+
+        assert message.dice.emoji == emoji
+        assert 1 <= message.dice.value <= faces
+
+    async def test_a_sticker_is_a_regular_sticker(self, env, private):
+        message = await env.bot.send_sticker(chat_id=private.id, sticker="sticker-id")
+
+        assert message.sticker.type in set(StickerType)
+        assert not (message.sticker.is_animated and message.sticker.is_video)
+
+    def test_an_enumerated_string_takes_a_valid_value(self):
+        chat = synthesize(Chat, SynthesisContext())
+
+        assert chat.type in set(ChatType)
+
+    def test_a_synthesized_file_numbers_itself_without_a_world(self):
+        context = SynthesisContext()
+
+        first = synthesize(Sticker, context)
+        second = synthesize(Sticker, context)
+
+        assert first.file_id != second.file_id
+
+    async def test_counts_of_empty_lists_are_zero(self, env, alice):
+        photos = await env.bot(GetUserProfilePhotos(user_id=alice.id))
+
+        assert photos.total_count == 0
+        assert photos.photos == []
+
+    async def test_a_voice_note_block_converts(self, env, private):
+        message = await env.bot.send_rich_message(
+            chat_id=private.id,
+            rich_message=InputRichMessage(
+                blocks=[InputRichBlockVoiceNote(voice_note=InputMediaVoiceNote(media="voice"))],
+            ),
+        )
+
+        assert message.rich_message.blocks[0].voice_note is not None
+
+    def test_aliases_and_annotated_types_are_looked_through(self):
+        assert annotation_accepts(RichTextUnion, RichTextBold)
+        assert not annotation_accepts(RichTextUnion, Sticker)
+
+
+class TestStarTransactions:
+    async def test_a_payment_and_its_refund(self, env, alice, private):
+        await env.user(alice).pay(total_amount=50)
+        charge = private.messages[-1].successful_payment.telegram_payment_charge_id
+        await env.bot.refund_star_payment(user_id=alice.id, telegram_payment_charge_id=charge)
+
+        payment, refund = (await env.bot.get_star_transactions()).transactions
+
+        assert (payment.id, payment.amount) == (charge, 50)
+        assert (refund.id, refund.amount) == (charge, 50)
+        assert isinstance(payment.source, TransactionPartnerUser)
+        assert payment.source.user.id == alice.id
+        assert payment.receiver is None
+        assert refund.receiver.user.id == alice.id
+        assert refund.source is None
+
+
+class TestEditableAdministrators:
+    async def test_a_member_the_bot_promoted_is_editable(self, env, team, bob):
+        await env.bot.promote_chat_member(chat_id=team.id, user_id=bob.id, can_pin_messages=True)
+
+        member = await env.bot.get_chat_member(chat_id=team.id, user_id=bob.id)
+        admins = await env.bot.get_chat_administrators(chat_id=team.id)
+
+        assert member.can_be_edited is True
+        assert [admin.can_be_edited for admin in admins if admin.user.id == bob.id] == [True]
+
+    async def test_a_declared_administrator_is_not(self, env, team, blueprint):
+        member = await env.bot.get_chat_member(chat_id=team.id, user_id=blueprint.bot.id)
+
+        assert member.status == ChatMemberStatus.ADMINISTRATOR
+        assert member.can_be_edited is False
+
+    async def test_a_demoted_member_forgets_who_promoted_them(self, env, team, bob):
+        await env.bot.promote_chat_member(chat_id=team.id, user_id=bob.id, can_pin_messages=True)
+        await env.bot.promote_chat_member(chat_id=team.id, user_id=bob.id)
+        team.member(bob.id).set_status(ChatMemberStatus.ADMINISTRATOR)
+
+        member = await env.bot.get_chat_member(chat_id=team.id, user_id=bob.id)
+
+        assert member.can_be_edited is False
+
+
+class TestDeclaredWorlds:
+    async def test_declared_permissions_follow_their_defaults(self, dp):
+        blueprint = Blueprint()
+        quiet = blueprint.add_user("Quiet")
+        team = blueprint.add_supergroup("Team")
+        blueprint.set_member(
+            team,
+            quiet,
+            permissions=ChatPermissions(can_send_messages=True, can_send_polls=True),
+        )
+        team.permissions = ChatPermissions(can_send_other_messages=True)
+        env = BotTestEnvironment(blueprint=blueprint, dispatcher=dp)
+        try:
+            member = await env.bot.get_chat_member(chat_id=team.id, user_id=quiet.id)
+            chat = await env.bot.get_chat(chat_id=team.id)
+
+            assert member.can_react_to_messages is True
+            assert chat.permissions.can_send_messages is True
+            assert chat.permissions.can_react_to_messages is True
+        finally:
+            env.dispose_sync()
+
+    def test_declared_topics_are_created_by_the_bot(self, blueprint, topic):
+        world = blueprint.build()
+
+        created = world.chat(topic.chat_id).find_message(topic.message_thread_id)
+
+        assert created.forum_topic_created.name == "Support"
+        assert created.from_user.id == blueprint.bot.id
+
+    async def test_a_declared_poll_is_stored_on_a_message(self, dp):
+        blueprint = Blueprint()
+        alice = blueprint.add_user("Alice")
+        chat = blueprint.add_private_chat(alice)
+        poll = blueprint.add_poll(
+            chat,
+            "Lunch?",
+            ["Pizza", "Sushi"],
+            is_anonymous=False,
+        )
+        env = BotTestEnvironment(blueprint=blueprint, dispatcher=dp)
+        try:
+            stored = env.chat(chat).find_message(poll.message_id)
+
+            assert stored.poll.id == poll.poll_id
+            assert stored.poll.question == "Lunch?"
+            assert stored.poll.allows_revoting is True
+            assert stored.from_user.id == blueprint.bot.id
+
+            await env.user(alice).vote(poll.poll_id, [1])
+
+            assert env.world.poll(poll.poll_id).vote_count(1) == 1
+        finally:
+            env.dispose_sync()
+
+    def test_a_declared_quiz_keeps_its_answer(self):
+        blueprint = Blueprint()
+        chat = blueprint.add_private_chat(blueprint.add_user("Alice"))
+        poll = blueprint.add_poll(
+            chat,
+            "2 + 2?",
+            ["3", "4"],
+            type="quiz",
+            correct_option_ids=[1],
+            explanation="Arithmetic",
+        )
+
+        world = blueprint.build()
+        stored = world.poll(poll.poll_id)
+
+        assert stored.correct_option_ids == [1]
+        assert stored.explanation == "Arithmetic"
+        assert stored.as_poll().correct_option_id == 1
+
+    def test_a_declared_quiz_without_an_answer_is_refused(self):
+        blueprint = Blueprint()
+        chat = blueprint.add_private_chat(blueprint.add_user("Alice"))
+
+        with pytest.raises(ValueError, match="correct_option_ids"):
+            blueprint.add_poll(chat, "2 + 2?", ["3", "4"], type="quiz")
+
+
+class TestChatRegistryRecipe:
+    async def test_the_recommended_copy_works_in_a_running_environment(self, blueprint, dp):
+        team_id = blueprint.chats[2].id
+        donor = BotTestEnvironment(blueprint=blueprint, dispatcher=dp)
+        other = BotTestEnvironment(blueprint=blueprint, dispatcher=dp)
+        try:
+            await donor.bot.send_message(chat_id=team_id, text="hi")
+            chat = donor.world.chats[team_id]
+            with pytest.raises(WorldLookupError) as refused:
+                other.world.chats[team_id] = chat
+            assert "copy.deepcopy(chat, memo)" in str(refused.value)
+
+            memo = {id(chat.world): None, id(chat.bound_bot): None}
+            clone = copy.deepcopy(chat, memo)
+            del other.world.chats[team_id]
+            other.world.chats[team_id] = clone
+
+            assert clone.world is other.world
+            assert clone.messages[-1].bot is other.bot
+            assert chat.world is donor.world
+            assert chat.messages[-1].bot is donor.bot
+        finally:
+            donor.dispose_sync()
+            other.dispose_sync()
+
+    def test_a_world_without_a_bot_registers_chats_as_they_are(self, blueprint):
+        world: World = blueprint.build()
+        chat = world.chats.pop(blueprint.chats[0].id)
+
+        world.chats[chat.id] = chat
+
+        assert chat.world is world

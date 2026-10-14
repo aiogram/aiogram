@@ -1318,7 +1318,13 @@ class UserActor:
             invoice_payload=invoice_payload,
         )
         if currency == "XTR":
-            world.stars.record(world.next_query_id(), total_amount, world.next_date(), charge_id)
+            world.stars.record(
+                world.next_query_id(),
+                total_amount,
+                world.next_date(),
+                charge_id,
+                partner_id=self.user.id,
+            )
         subscription: dict[str, Any] = {
             "is_recurring": None,
             "is_first_recurring": None,
@@ -2099,13 +2105,13 @@ class UserActor:
         # Read before the mutation and after it, off the one membership the world holds:
         # everything else it carries — a custom title, a tag, granted rights — survives a
         # join or a leave, and rebuilding the "new" side from a subset would drop it.
-        old = member.as_chat_member(user, chat.type)
+        old = member.as_chat_member(user, chat.type, self.bot_user.id)
         if mutate is None:
             member.join_or_leave(status)
         else:
             member.set_status(status)
             mutate(member)
-        new = member.as_chat_member(user, chat.type)
+        new = member.as_chat_member(user, chat.type, self.bot_user.id)
         event = ChatMemberUpdated(
             chat=chat.as_chat(),
             from_user=self.user.as_user(),

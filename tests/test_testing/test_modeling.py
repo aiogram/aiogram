@@ -193,11 +193,11 @@ class TestSending:
 
         assert answer.reply_to_message.message_id == original.message_id
 
-    async def test_reply_parameters_to_a_missing_message_are_ignored(self, env, private):
+    async def test_a_missing_reply_target_is_dropped_when_allowed(self, env, private):
         message = await env.bot.send_message(
             chat_id=private.id,
             text="answer",
-            reply_parameters=ReplyParameters(message_id=999),
+            reply_parameters=ReplyParameters(message_id=999, allow_sending_without_reply=True),
         )
 
         assert message.reply_to_message is None

@@ -378,7 +378,7 @@ class TestDeclaredRights:
         blueprint.set_member(
             team,
             quiet,
-            permissions=ChatPermissions(can_send_messages=False, can_send_polls=True),
+            permissions=ChatPermissions(can_send_messages=False, can_send_photos=True),
         )
         env = BotTestEnvironment(blueprint=blueprint, dispatcher=dp)
         try:
@@ -386,7 +386,7 @@ class TestDeclaredRights:
 
             assert member.status == ChatMemberStatus.RESTRICTED
             assert member.can_send_messages is False
-            assert member.can_send_polls is True
+            assert member.can_send_photos is True
         finally:
             env.dispose_sync()
 

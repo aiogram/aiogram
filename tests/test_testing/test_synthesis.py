@@ -59,7 +59,7 @@ class TestScalars:
     @pytest.mark.parametrize(
         ("annotation", "expected"),
         [
-            (bool, True),
+            (bool, False),
             (float, 1.0),
             (bytes, b""),
             (datetime.timedelta, datetime.timedelta(0)),
@@ -92,10 +92,10 @@ class TestUnions:
         assert synthesize(Optional[int], SynthesisContext()) == 1
 
     def test_union_picks_the_first_member(self):
-        assert synthesize(Union[bool, int], SynthesisContext()) is True
+        assert synthesize(Union[bool, int], SynthesisContext()) is False
 
     def test_pep604_union(self):
-        assert synthesize(bool | None, SynthesisContext()) is True
+        assert synthesize(bool | None, SynthesisContext()) is False
 
 
 class TestModels:
