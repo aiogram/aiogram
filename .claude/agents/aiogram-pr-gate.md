@@ -63,11 +63,11 @@ rtk git diff dev-3.x...HEAD --stat && rtk git diff dev-3.x...HEAD
 - **Unrelated refactors / reformatting** mixed into the diff.
 - **`docs/locale/**`** touched by hand (managed by `sphinx-intl`).
 
-## 3. Compatibility matrix (one `Tests` job, 20 legs)
+## 3. Compatibility matrix (one `Tests` job, many legs)
 
 - Python **3.10 – 3.15** on ubuntu/macos/windows, plus PyPy 3.11 on ubuntu and macos
-  (excluded on windows) — all in a single `Tests` job. Coverage is uploaded from the
-  18 CPython legs only; codecov's `after_n_builds: 18` waits for exactly those.
+  (excluded on windows) — all in a single `Tests` job. Coverage is uploaded from
+  all CPython legs; codecov's `after_n_builds` waits for exactly those.
 - mypy targets `python_version = 3.10` → no 3.11+ only syntax or stdlib.
 - Redis/MongoDB tests run only on Linux legs; on macOS/Windows the `--redis`/`--mongo`
   fixtures skip. A test whose assertion exists only under `--redis`/`--mongo` is
