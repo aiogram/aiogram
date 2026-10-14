@@ -932,7 +932,7 @@ def is_service_message(message: Message) -> bool:
 
 
 def _forwardable(message: Message) -> bool:
-    """Whether ``message`` is neither a service message nor protected."""
+    """Whether ``message`` is not a service message or protected."""
     return not (message.has_protected_content or is_service_message(message))
 
 
