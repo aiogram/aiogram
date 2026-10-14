@@ -259,8 +259,82 @@ class TestReplies:
 
         assert message.reply_to_message is None
 
+    async def test_the_deprecated_reply_id_still_replies(self, env, private):
+        target = await env.bot.send_message(chat_id=private.id, text="question")
+
+        message = await env.bot.send_message(
+            chat_id=private.id,
+            text="answer",
+            reply_to_message_id=target.message_id,
+        )
+
+        assert message.reply_to_message == target
+
+    async def test_the_deprecated_reply_id_to_a_missing_message_fails(self, env, private):
+        with pytest.raises(TelegramBadRequest, match="message to be replied not found"):
+            await env.bot.send_message(chat_id=private.id, text="answer", reply_to_message_id=999)
+
+        message = await env.bot.send_message(
+            chat_id=private.id,
+            text="answer",
+            reply_to_message_id=999,
+            allow_sending_without_reply=True,
+        )
+        assert message.reply_to_message is None
+
 
 class TestCopiesAndForwards:
+    async def test_a_single_copy_or_forward_of_an_album_item_stands_alone(
+        self,
+        env,
+        private,
+        bobs,
+    ):
+        album = await env.bot.send_media_group(
+            chat_id=private.id,
+            media=[InputMediaPhoto(media="one"), InputMediaPhoto(media="two")],
+        )
+
+        copied = await env.bot.copy_message(
+            chat_id=bobs.id,
+            from_chat_id=private.id,
+            message_id=album[0].message_id,
+        )
+        forwarded = await env.bot.forward_message(
+            chat_id=bobs.id,
+            from_chat_id=private.id,
+            message_id=album[1].message_id,
+        )
+
+        assert bobs.find_message(copied.message_id).media_group_id is None
+        assert bobs.find_message(forwarded.message_id).media_group_id is None
+
+    @pytest.mark.parametrize("method", ["copy_messages", "forward_messages"])
+    async def test_a_batch_keeps_an_album_together_under_a_new_id(
+        self,
+        env,
+        private,
+        bobs,
+        method,
+    ):
+        album = await env.bot.send_media_group(
+            chat_id=private.id,
+            media=[InputMediaPhoto(media="one"), InputMediaPhoto(media="two")],
+        )
+        alone = await env.bot.send_message(chat_id=private.id, text="alone")
+
+        sent = await getattr(env.bot, method)(
+            chat_id=bobs.id,
+            from_chat_id=private.id,
+            message_ids=[*(message.message_id for message in album), alone.message_id],
+        )
+
+        groups = [bobs.find_message(item.message_id).media_group_id for item in sent]
+        assert groups[0] is not None
+        assert groups[0] == groups[1]
+        assert groups[0] != album[0].media_group_id
+        assert groups[2] is None
+
     async def test_a_copy_into_a_topic_lands_in_it(self, env, forum, topic, private):
         source = await env.bot.send_message(chat_id=private.id, text="hi")
 

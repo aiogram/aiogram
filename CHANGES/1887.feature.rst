@@ -227,7 +227,9 @@ query must be answered within 10 seconds and an ephemeral command within 15.
 
 Modeled methods follow the rules the Bot API states for them. ``sendMediaGroup`` stores each
 item's media and caption under one ``media_group_id`` and takes 2-10 items; a reply to a
-message that does not exist fails unless ``allow_sending_without_reply`` allows it; copies and
+message that does not exist fails unless ``allow_sending_without_reply`` allows it, through
+``reply_parameters`` or the deprecated top-level fields; a single copy or forward leaves its
+album, while ``forwardMessages`` and ``copyMessages`` keep each album together; copies and
 forwards land in the requested topic as new messages that keep no reply, edit or protection
 from the original, copies carry the new caption, its entities, the inline keyboard and their
 own reply, and service, protected, invoice, paid media and giveaway messages are refused where

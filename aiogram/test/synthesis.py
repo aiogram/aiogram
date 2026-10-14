@@ -121,10 +121,7 @@ def annotation_accepts(annotation: Any, target: type) -> bool:
 def without_none(annotation: Any) -> Any:
     """``X`` out of ``X | None``; any other annotation as it is."""
     if get_origin(annotation) in {UnionType, Union}:
-        return next(
-            (arg for arg in get_args(annotation) if arg is not type(None)),
-            annotation,
-        )
+        return next(iter(_union_members(annotation)), annotation)
     return annotation
 
 

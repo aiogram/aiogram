@@ -634,14 +634,16 @@ API states for these methods hold too:
   not found", unless :code:`allow_sending_without_reply` is set, which the Bot API reads as
   false for a reply in another chat, in a forum topic or in an ephemeral message, and as
   true on behalf of a business account. A target in another chat is checked but not stored
-  as :code:`reply_to_message`.
+  as :code:`reply_to_message`. The deprecated :code:`reply_to_message_id` and top-level
+  :code:`allow_sending_without_reply` are read the same way, for a reply in the same chat.
 * A forward or copy lands in the :code:`message_thread_id` the request names when the
   target chat is a forum, and in no thread otherwise. A copy carries the request's new
   caption with its entities, keeps the original caption when the request names none, drops
   it for :code:`copyMessages(remove_caption=True)`, and stores the request's inline
   keyboard. Service, invoice, paid media, giveaway and giveaway winners messages cannot be
   copied, and service messages and protected content cannot be forwarded: a single call
-  fails, and a batch call skips them.
+  fails, and a batch call skips them. A single forward or copy of an album item is in no
+  album; a batch keeps each album together under a new :code:`media_group_id`.
 * :code:`unpinChatMessage` without a message id unpins the most recently sent pinned
   message only.
 * :code:`editMessageText` fails on a message with no text, rich or game content, and

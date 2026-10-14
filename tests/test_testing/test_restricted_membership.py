@@ -106,6 +106,15 @@ class TestPresenceOfRestrictedUsers:
         assert joined.new_chat_member.is_member is True
         assert joined.new_chat_member.can_send_messages is True
 
+    async def test_the_bot_leaving_keeps_its_restriction(self, env, team, alice):
+        await restrict(env, team, env.world.bot_user)
+
+        await env.bot.leave_chat(chat_id=team.id)
+
+        member = await read(env, team, env.world.bot_user)
+        assert member.status == ChatMemberStatus.RESTRICTED
+        assert member.is_member is False
+
     async def test_an_approved_join_request_keeps_the_restriction(self, env, team, bob):
         await restrict(env, team, bob, ChatPermissions(can_send_messages=True))
         await env.user(bob).in_(team).request_join()

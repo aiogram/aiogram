@@ -650,12 +650,24 @@ def _reply_target(
     an ephemeral message, and as true on behalf of a business account.
     A target in another chat is checked but not carried, since
     ``reply_to_message`` is a message of the same chat.
+
+    The deprecated top-level ``reply_to_message_id`` and
+    ``allow_sending_without_reply`` still name a reply in the same chat
+    when ``reply_parameters`` is not passed.
     """
     parameters = getattr(method, "reply_parameters", None)
-    if parameters is None or parameters.message_id is None:
+    if parameters is not None:
+        message_id = parameters.message_id
+        target_chat = parameters.chat_id
+        allow_without_reply = parameters.allow_sending_without_reply
+    else:
+        message_id = getattr(method, "reply_to_message_id", None)
+        target_chat = None
+        allow_without_reply = getattr(method, "allow_sending_without_reply", None)
+    if message_id is None:
         return None
-    where = chat if parameters.chat_id is None else resolve_chat(env, parameters.chat_id)
-    replied = where.find_message(parameters.message_id)
+    where = chat if target_chat is None else resolve_chat(env, target_chat)
+    replied = where.find_message(message_id)
     if replied is None:
         in_topic = chat.is_forum and getattr(method, "message_thread_id", None) is not None
         if getattr(method, "business_connection_id", None) is not None:
@@ -663,7 +675,7 @@ def _reply_target(
         elif where is not chat or in_topic or ephemeral:
             allowed = False
         else:
-            allowed = bool(parameters.allow_sending_without_reply)
+            allowed = bool(allow_without_reply)
         if not allowed:
             raise ApiRejection("message to be replied not found")
         return None
@@ -822,19 +834,23 @@ def _check_business_edit_window(env: BotTestEnvironment, message: Message) -> No
         raise ApiRejection("message can't be edited")
 
 
-def _edit_target(env: BotTestEnvironment, method: TelegramMethod[Any]) -> tuple[ChatState, int]:
+def _edit_target(
+    env: BotTestEnvironment,
+    method: TelegramMethod[Any],
+) -> tuple[ChatState, Message]:
+    """The chat and stored message an edit targets, or a refusal."""
     if getattr(method, "inline_message_id", None) is not None:
         msg = "inline messages are not modeled by the test environment"
         raise WorldLookupError(msg)
     chat = resolve_chat(env, getattr(method, "chat_id", None))
     message_id: int | None = getattr(method, "message_id", None)
     stored = None if message_id is None else chat.find_message(message_id)
-    if message_id is None or stored is None:
+    if stored is None:
         msg = "message to edit not found"
         raise ApiRejection(msg)
     # Every edit method is bound by the window, so it is checked here.
     _check_business_edit_window(env, stored)
-    return chat, message_id
+    return chat, stored
 
 
 # -- sending ---------------------------------------------------------------------------
@@ -969,7 +985,14 @@ def forward_one(
     message_id: int,
     thread_id: int | None = None,
     protect_content: object = None,
+    media_group_id: str | None = None,
 ) -> Message:
+    """
+    Store a forward of a message in ``target``.
+
+    A single forward stands alone, so it is in no album; a batch passes
+    the ``media_group_id`` that keeps an album's forwards together.
+    """
     original = source.find_message(message_id)
     if original is None:
         raise ApiRejection("message to forward not found")
@@ -987,9 +1010,26 @@ def forward_one(
             original,
             original.from_user or env.world.bot_user.as_user(),
         ),
-        **_thread_changes(target, thread_id),
-        **_new_message_changes(protect_content),
+        **{
+            **_thread_changes(target, thread_id),
+            **_new_message_changes(protect_content),
+            "media_group_id": media_group_id,
+        },
     )
+
+
+def _album_ids(env: BotTestEnvironment, originals: list[Message]) -> dict[str, str]:
+    """
+    A new ``media_group_id`` per album a batch forwards or copies.
+
+    ``forwardMessages`` and ``copyMessages`` keep album grouping, and
+    the new messages are an album of their own chat.
+    """
+    albums: dict[str, str] = {}
+    for original in originals:
+        if original.media_group_id is not None and original.media_group_id not in albums:
+            albums[original.media_group_id] = env.world.next_query_id()
+    return albums
 
 
 def _new_message_changes(protect_content: object) -> dict[str, Any]:
@@ -1003,7 +1043,8 @@ def _new_message_changes(protect_content: object) -> dict[str, Any]:
     the original was: ``deleteBusinessMessages`` and the business edit
     window must not reach it. Nor is it posted on behalf of the
     original's chat: a channel post's sender chat and signature stay
-    with the original, and a forward names them in its origin.
+    with the original, and a forward names them in its origin. It is
+    in no album unless a batch keeps one together under a new id.
     """
     return {
         "reply_to_message": None,
@@ -1013,6 +1054,7 @@ def _new_message_changes(protect_content: object) -> dict[str, Any]:
         "sender_business_bot": None,
         "sender_chat": None,
         "author_signature": None,
+        "media_group_id": None,
     }
 
 
@@ -1035,17 +1077,23 @@ def handle_forward_many(env: BotTestEnvironment, method: ForwardMessages) -> lis
     source = resolve_chat(env, method.from_chat_id)
     target = resolve_chat(env, method.chat_id)
     # Telegram skips what it cannot forward rather than failing the whole batch.
+    originals = [
+        original
+        for message_id in method.message_ids
+        if (original := source.find_message(message_id)) is not None and _forwardable(original)
+    ]
+    albums = _album_ids(env, originals)
     forwarded = [
         forward_one(
             env,
             source,
             target,
-            message_id,
+            original.message_id,
             method.message_thread_id,
             method.protect_content,
+            albums.get(original.media_group_id or ""),
         )
-        for message_id in method.message_ids
-        if (original := source.find_message(message_id)) is not None and _forwardable(original)
+        for original in originals
     ]
     return [MessageId(message_id=message.message_id) for message in forwarded]
 
@@ -1063,7 +1111,8 @@ def copy_one(
     Store a copy of a message in ``target``.
 
     ``changes`` are what the request replaces: a caption, an inline
-    keyboard. The rest is the original's.
+    keyboard, or the album a batch keeps together. The rest is the
+    original's.
     """
     original = source.find_message(message_id)
     if original is None:
@@ -1126,18 +1175,24 @@ def handle_copy_many(env: BotTestEnvironment, method: CopyMessages) -> list[Mess
         changes["caption"] = None
         changes["caption_entities"] = None
     # Telegram skips what it cannot copy rather than failing the batch.
+    originals = [
+        original
+        for message_id in method.message_ids
+        if (original := source.find_message(message_id)) is not None and _copyable(original)
+    ]
+    albums = _album_ids(env, originals)
     copied = [
         copy_one(
             env,
             source,
             target,
-            message_id,
+            original.message_id,
             method.message_thread_id,
             method.protect_content,
+            media_group_id=albums.get(original.media_group_id or ""),
             **changes,
         )
-        for message_id in method.message_ids
-        if (original := source.find_message(message_id)) is not None and _copyable(original)
+        for original in originals
     ]
     return [MessageId(message_id=message.message_id) for message in copied]
 
@@ -1199,16 +1254,16 @@ def _require_content(message: Message | None, fields: tuple[str, ...], kind: str
 
 @models(EditMessageText)
 def handle_edit_text(env: BotTestEnvironment, method: EditMessageText) -> Message:
-    chat, message_id = _edit_target(env, method)
-    stored = chat.require_message(message_id)
+    chat, stored = _edit_target(env, method)
+    message_id = stored.message_id
     _require_content(stored, _TEXT_FIELDS, "text")
     return chat.update_message(message_id, **edit_stamp(env), **_text_changes(env, method))
 
 
 @models(EditMessageCaption)
 def handle_edit_caption(env: BotTestEnvironment, method: EditMessageCaption) -> Message:
-    chat, message_id = _edit_target(env, method)
-    stored = chat.require_message(message_id)
+    chat, stored = _edit_target(env, method)
+    message_id = stored.message_id
     _require_content(stored, CAPTIONED_FIELDS, "caption")
     return chat.update_message(message_id, **edit_stamp(env), **_caption_changes(method))
 
@@ -1218,7 +1273,8 @@ def handle_edit_reply_markup(
     env: BotTestEnvironment,
     method: EditMessageReplyMarkup,
 ) -> Message:
-    chat, message_id = _edit_target(env, method)
+    chat, stored = _edit_target(env, method)
+    message_id = stored.message_id
     return chat.update_message(message_id, **edit_stamp(env), reply_markup=method.reply_markup)
 
 
@@ -1260,7 +1316,8 @@ def _media_changes(
 
 @models(EditMessageMedia)
 def handle_edit_media(env: BotTestEnvironment, method: EditMessageMedia) -> Message:
-    chat, message_id = _edit_target(env, method)
+    chat, stored = _edit_target(env, method)
+    message_id = stored.message_id
     return chat.update_message(message_id, **edit_stamp(env), **_media_changes(env, method))
 
 
@@ -1381,8 +1438,8 @@ def handle_edit_live_location(
     env: BotTestEnvironment,
     method: EditMessageLiveLocation,
 ) -> Message:
-    chat, message_id = _edit_target(env, method)
-    stored = chat.require_message(message_id)
+    chat, stored = _edit_target(env, method)
+    message_id = stored.message_id
     # A live location always has a period; `or 0` only narrows the type.
     current = _require_live(env, stored).live_period or 0
     now = env.world.now
@@ -1419,8 +1476,8 @@ def handle_stop_live_location(
     A location with no live period is no longer live, so a later
     ``editMessageLiveLocation`` is refused, as it is in Telegram.
     """
-    chat, message_id = _edit_target(env, method)
-    stored = chat.require_message(message_id)
+    chat, stored = _edit_target(env, method)
+    message_id = stored.message_id
     location = _require_live(env, stored)
     return chat.update_message(
         message_id,
@@ -1435,7 +1492,8 @@ def handle_edit_checklist(
     env: BotTestEnvironment,
     method: EditMessageChecklist,
 ) -> Message:
-    chat, message_id = _edit_target(env, method)
+    chat, stored = _edit_target(env, method)
+    message_id = stored.message_id
     return chat.update_message(
         message_id,
         **edit_stamp(env),
@@ -1739,7 +1797,8 @@ def handle_restrict(env: BotTestEnvironment, method: RestrictChatMember) -> bool
 @models(LeaveChat)
 def handle_leave(env: BotTestEnvironment, method: LeaveChat) -> bool:
     chat = resolve_chat(env, method.chat_id)
-    chat.member(env.world.bot_user.id).set_status(ChatMemberStatus.LEFT)
+    # Leaving is leaving however it happens: a restriction outlives it.
+    chat.member(env.world.bot_user.id).join_or_leave(ChatMemberStatus.LEFT)
     return True
 
 
@@ -2636,8 +2695,8 @@ def handle_send_poll(env: BotTestEnvironment, method: SendPoll) -> Message:
 
 @models(StopPoll)
 def handle_stop_poll(env: BotTestEnvironment, method: StopPoll) -> Poll:
-    chat, message_id = _edit_target(env, method)
-    stored = chat.require_message(message_id)
+    chat, stored = _edit_target(env, method)
+    message_id = stored.message_id
     if stored.poll is None:
         msg = "message doesn't contain a poll"
         raise ApiRejection(msg)
