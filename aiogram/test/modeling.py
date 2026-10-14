@@ -854,6 +854,20 @@ def _check_business_edit_window(env: BotTestEnvironment, message: Message) -> No
         raise ApiRejection("message can't be edited")
 
 
+def _check_editable_by_bot(env: BotTestEnvironment, chat: ChatState, message: Message) -> None:
+    """
+    Refuse an edit of a message the bot may not edit.
+
+    Outside business chats and channels, a bot edits only the messages
+    it sent itself: a user's message is not the bot's to change.
+    """
+    if message.business_connection_id is not None or chat.type == ChatType.CHANNEL:
+        return
+    sender = message.from_user
+    if sender is None or sender.id != env.world.bot_user.id:
+        raise ApiRejection("message can't be edited")
+
+
 def _edit_target(
     env: BotTestEnvironment,
     method: TelegramMethod[Any],
@@ -868,7 +882,8 @@ def _edit_target(
     if stored is None:
         msg = "message to edit not found"
         raise ApiRejection(msg)
-    # Every edit method is bound by the window, so it is checked here.
+    # Every edit method is bound by these rules, so check them here.
+    _check_editable_by_bot(env, chat, stored)
     _check_business_edit_window(env, stored)
     return chat, stored
 
@@ -945,12 +960,18 @@ def forward_origin(source: ChatState, original: Message, sender: User) -> Any:
     Every message the world stores carries a sender, so only the channel and user origins
     are reachable; the hidden-user and sender-chat origins wait for the change that makes
     anonymous senders possible.
+
+    A message that is itself a forward keeps the origin it already
+    names, and a channel post's signature moves into its origin.
     """
+    if original.forward_origin is not None:
+        return original.forward_origin
     if source.type == ChatType.CHANNEL:
         return MessageOriginChannel(
             date=original.date,
             chat=source.as_chat(),
             message_id=original.message_id,
+            author_signature=original.author_signature,
         )
     return MessageOriginUser(date=original.date, sender_user=sender)
 
@@ -1064,10 +1085,20 @@ def _new_message_changes(protect_content: object) -> dict[str, Any]:
     window must not reach it. Nor is it posted on behalf of the
     original's chat: a channel post's sender chat and signature stay
     with the original, and a forward names them in its origin. It is
-    in no album unless a batch keeps one together under a new id.
+    in no album unless a batch keeps one together under a new id. What
+    the original's sender or its reply carried, such as a quote or a
+    guest query to answer, stays with the original too.
     """
     return {
         "reply_to_message": None,
+        "external_reply": None,
+        "quote": None,
+        "reply_to_story": None,
+        "reply_to_checklist_task_id": None,
+        "reply_to_poll_option_id": None,
+        "guest_query_id": None,
+        "sender_boost_count": None,
+        "sender_tag": None,
         "edit_date": None,
         "has_protected_content": True if protect_content else None,
         "business_connection_id": None,
@@ -2152,6 +2183,10 @@ def handle_get_star_transactions(
 @models(RefundStarPayment)
 def handle_refund_star_payment(env: BotTestEnvironment, method: RefundStarPayment) -> bool:
     charge = env.world.stars.charge(method.telegram_payment_charge_id)
+    if charge.user_id != method.user_id:
+        # A charge is refunded to the user who paid it.
+        msg = f"Charge {charge.id!r} was not paid by user {method.user_id}"
+        raise ApiRejection(msg)
     if charge.is_refunded:
         msg = f"Charge {charge.id!r} has already been refunded"
         raise ApiRejection(msg)
@@ -2512,6 +2547,10 @@ def handle_set_custom_title(
         {ChatMemberStatus.CREATOR, ChatMemberStatus.ADMINISTRATOR},
         "user is not an administrator",
     )
+    if member.promoted_by is not None and member.promoted_by != env.world.bot_user.id:
+        # The title is the bot's to set only on an administrator it
+        # promoted, as for `promoteChatMember`.
+        raise ApiRejection("not enough rights to change custom title of the user")
     member.custom_title = method.custom_title
     return True
 
@@ -2525,6 +2564,10 @@ def handle_set_member_tag(env: BotTestEnvironment, method: SetChatMemberTag) -> 
         {ChatMemberStatus.MEMBER, ChatMemberStatus.RESTRICTED},
         "user is not a regular member",
     )
+    if not member.is_present:
+        # A restriction outlives leaving, but a user outside the chat
+        # is not one of its members to tag.
+        raise ApiRejection("user is not a member of the chat")
     member.tag = method.tag
     return True
 

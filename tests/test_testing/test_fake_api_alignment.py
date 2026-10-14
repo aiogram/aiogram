@@ -32,13 +32,16 @@ from aiogram.types import (
     InputRichMessage,
     LabeledPrice,
     MessageEntity,
+    MessageOriginUser,
     PaidMediaInfo,
     Poll,
     ReplyParameters,
     RichTextBold,
     Sticker,
     Story,
+    TextQuote,
     TransactionPartnerUser,
+    User,
 )
 from aiogram.types.rich_text_union import RichTextUnion
 
@@ -594,6 +597,62 @@ class TestCopiesAndForwards:
         assert forwarded.story is not None
         assert bobs.find_message(copied.message_id).story is not None
 
+    async def test_a_forward_of_a_forward_keeps_the_first_origin(self, env, alice, private, bobs):
+        origin = MessageOriginUser(
+            date=env.now,
+            sender_user=User(id=-7, is_bot=False, first_name="Carol"),
+        )
+        await env.user(alice).send("passed on", fields={"forward_origin": origin})
+
+        forwarded = await env.bot.forward_message(
+            chat_id=bobs.id,
+            from_chat_id=private.id,
+            message_id=private.messages[-1].message_id,
+        )
+
+        assert forwarded.forward_origin.sender_user.first_name == "Carol"
+
+    async def test_a_forwarded_channel_post_names_its_signature(self, dp):
+        blueprint = Blueprint()
+        alice = blueprint.add_user("Alice")
+        private_spec = blueprint.add_private_chat(alice)
+        channel_spec = blueprint.add_channel(
+            "News",
+            members={alice: ChatMemberStatus.ADMINISTRATOR},
+        )
+        env = BotTestEnvironment(blueprint=blueprint, dispatcher=dp)
+        try:
+            channel = env.chat(channel_spec)
+            await env.user(alice).in_(channel).send("post")
+            post = channel.messages[-1]
+
+            forwarded = await env.bot.forward_message(
+                chat_id=private_spec.id,
+                from_chat_id=channel.id,
+                message_id=post.message_id,
+            )
+        finally:
+            env.dispose_sync()
+
+        assert forwarded.author_signature is None
+        assert forwarded.forward_origin.author_signature == post.author_signature == "Alice"
+
+    async def test_a_copy_leaves_the_originals_quote_and_guest_query(self, env, alice, team, bobs):
+        quote = TextQuote(text="hi", position=0)
+        await env.user(alice).in_(team).guest_message("question", fields={"quote": quote})
+        source = team.messages[-1]
+        assert source.guest_query_id is not None
+
+        copied = await env.bot.copy_message(
+            chat_id=bobs.id,
+            from_chat_id=team.id,
+            message_id=source.message_id,
+        )
+
+        stored = bobs.find_message(copied.message_id)
+        assert stored.quote is None
+        assert stored.guest_query_id is None
+
     async def test_an_empty_caption_removes_the_original(self, env, private, bobs):
         source = await env.bot.send_photo(chat_id=private.id, photo="photo", caption="hi")
 
@@ -696,6 +755,19 @@ class TestUnpinning:
 
 
 class TestEditsActOnTheirContent:
+    async def test_the_bot_cannot_edit_a_users_message(self, env, alice, team):
+        await env.user(alice).in_(team).send("mine")
+        users = team.messages[-1]
+
+        with pytest.raises(TelegramBadRequest, match="can't be edited"):
+            await env.bot.edit_message_text(
+                chat_id=team.id,
+                message_id=users.message_id,
+                text="not yours",
+            )
+
+        assert team.messages[-1].text == "mine"
+
     async def test_editing_text_on_a_photo_fails(self, env, private):
         photo = await env.bot.send_photo(chat_id=private.id, photo="photo", caption="c")
 
@@ -1168,6 +1240,15 @@ class TestStarTransactions:
         assert refund.receiver.user.id == alice.id
         assert refund.source is None
 
+    async def test_a_refund_to_another_user_is_refused(self, env, alice, bob, private):
+        await env.user(alice).pay(total_amount=50)
+        charge = private.messages[-1].successful_payment.telegram_payment_charge_id
+
+        with pytest.raises(TelegramBadRequest, match="not paid by user"):
+            await env.bot.refund_star_payment(user_id=bob.id, telegram_payment_charge_id=charge)
+
+        assert env.world.stars.charge(charge).is_refunded is False
+
 
 class TestEditableAdministrators:
     async def test_a_member_the_bot_promoted_is_editable(self, env, team, bob):
@@ -1226,6 +1307,40 @@ class TestEditableAdministrators:
         assert member.status == ChatMemberStatus.ADMINISTRATOR
         assert member.can_delete_messages is True
         assert member.can_pin_messages is False
+
+    async def test_the_bot_cannot_title_someone_elses_administrator(self, env, team, alice, bob):
+        await env.user(alice).in_(team).promote(bob, can_delete_messages=True)
+
+        with pytest.raises(TelegramBadRequest, match="not enough rights"):
+            await env.bot.set_chat_administrator_custom_title(
+                chat_id=team.id, user_id=bob.id, custom_title="Boss"
+            )
+
+        assert team.member(bob.id).custom_title is None
+
+    async def test_the_bot_titles_an_administrator_it_promoted(self, env, team, bob):
+        await env.bot.promote_chat_member(chat_id=team.id, user_id=bob.id, can_pin_messages=True)
+
+        await env.bot.set_chat_administrator_custom_title(
+            chat_id=team.id, user_id=bob.id, custom_title="Boss"
+        )
+
+        assert team.member(bob.id).custom_title == "Boss"
+
+
+class TestMemberTags:
+    async def test_a_restricted_user_outside_the_chat_cannot_be_tagged(self, env, team, bob):
+        await env.user(bob).in_(team).leave()
+        await env.bot.restrict_chat_member(
+            chat_id=team.id,
+            user_id=bob.id,
+            permissions=ChatPermissions(can_send_messages=False),
+        )
+
+        with pytest.raises(TelegramBadRequest, match="not a member"):
+            await env.bot.set_chat_member_tag(chat_id=team.id, user_id=bob.id, tag="muted")
+
+        assert team.member(bob.id).tag is None
 
 
 class TestDeclaredWorlds:

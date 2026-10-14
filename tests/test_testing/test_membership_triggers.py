@@ -95,11 +95,8 @@ class TestDemote:
 
     async def test_demotion_clears_rights_and_custom_title(self, env, team, alice):
         await alice.in_(team).promote(can_pin_messages=True)
-        await env.bot.set_chat_administrator_custom_title(
-            chat_id=team.id,
-            user_id=env.world.bot_user.id,
-            custom_title="Boss",
-        )
+        # Alice promoted the bot, so the title is hers to give, not the bot's.
+        team.member(env.world.bot_user.id).custom_title = "Boss"
 
         await alice.in_(team).demote()
 

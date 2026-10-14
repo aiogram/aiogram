@@ -651,6 +651,8 @@ API states for these methods hold too:
   :code:`editEphemeralMessage*` counterparts.
 * A send stores the media's ``has_spoiler`` and ``show_caption_above_media``, and
   :code:`editMessageMedia` takes them from the new media.
+* The bot edits only its own messages, except in a channel or a business chat: editing a
+  user's message fails, as it does in Telegram.
 * Every edit sets ``edit_date`` to the world's clock, on the message returned and the one
   stored. A forward or copy of an edited message is a new message, with no ``edit_date``.
 
