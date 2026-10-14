@@ -508,6 +508,20 @@ class TestCopiesAndForwards:
             == bold.model_dump()
         )
 
+    async def test_a_copy_without_media_takes_no_caption(self, env, private, bobs):
+        source = await env.bot.send_message(chat_id=private.id, text="hello")
+
+        copied = await env.bot.copy_message(
+            chat_id=bobs.id,
+            from_chat_id=private.id,
+            message_id=source.message_id,
+            caption="ignored",
+        )
+
+        stored = bobs.find_message(copied.message_id)
+        assert stored.text == "hello"
+        assert stored.caption is None
+
     async def test_a_copy_stores_the_requests_keyboard(self, env, private, bobs):
         source = await env.bot.send_message(chat_id=private.id, text="hi")
 

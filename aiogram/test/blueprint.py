@@ -18,6 +18,7 @@ from aiogram.types import (
     Sticker,
 )
 
+from .synthesis import unique_file_id
 from .world import (
     DEFAULT_TOPIC_ICON_COLOR,
     BotProfileState,
@@ -496,7 +497,7 @@ class Blueprint:
             stickers=[
                 Sticker(
                     file_id=f"{name}-{index + 1}",
-                    file_unique_id=f"{name}-{index + 1}-unique",
+                    file_unique_id=unique_file_id(f"{name}-{index + 1}"),
                     type=sticker_type,
                     width=512,
                     height=512,

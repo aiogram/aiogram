@@ -137,6 +137,32 @@ class TestUploadedContent:
         assert again.document.file_id == first.document.file_id
         assert again.document.file_unique_id == first.document.file_unique_id
 
+    async def test_get_file_reports_the_unique_id_the_message_carries(self, files_env):
+        env, chat = files_env
+        message = await env.bot.send_document(
+            chat_id=chat.id,
+            document=BufferedInputFile(CONTENT, filename="a.txt"),
+        )
+
+        first = await env.bot.get_file(file_id=message.document.file_id)
+        again = await env.bot.get_file(file_id=message.document.file_id)
+
+        assert first.file_unique_id == message.document.file_unique_id
+        assert again.file_unique_id == first.file_unique_id
+
+    async def test_resending_a_declared_sticker_keeps_its_unique_id(self, blueprint, dp):
+        blueprint.add_sticker_set("pack_by_bot", "Pack")
+        chat = blueprint.add_private_chat(blueprint.add_user("Ann"))
+        env = BotTestEnvironment(blueprint=blueprint, dispatcher=dp)
+        try:
+            declared = (await env.bot.get_sticker_set("pack_by_bot")).stickers[0]
+
+            sent = await env.bot.send_sticker(chat_id=chat.id, sticker=declared.file_id)
+
+            assert sent.sticker.file_unique_id == declared.file_unique_id
+        finally:
+            env.dispose_sync()
+
 
 class TestMissingContentFailsLoudly:
     async def test_downloading_undeclared_content_raises(self, files_env):

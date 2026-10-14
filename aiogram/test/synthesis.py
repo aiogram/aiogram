@@ -83,17 +83,29 @@ def with_passed_file(payload: Any, uploaded: Any, context: SynthesisContext) -> 
     return items if isinstance(payload, list) else items[0]
 
 
+def unique_file_id(file_id: str) -> str:
+    """
+    The ``file_unique_id`` of the file ``file_id`` names.
+
+    It follows the id, as a file's does in Telegram, so every place
+    that names a file agrees on it: a synthesized ``file-N`` keeps the
+    ``unique-N`` it was minted with, and any other id, such as a
+    declared sticker's, has ``<file_id>-unique``.
+    """
+    if file_id.startswith(_FILE_ID_PREFIX):
+        return f"{_UNIQUE_ID_PREFIX}{file_id.removeprefix(_FILE_ID_PREFIX)}"
+    return f"{file_id}-unique"
+
+
 def _with_file_id(item: Any, file_id: str) -> Any:
     """
     The file ``item`` holding the file ``file_id`` names.
 
-    Its ``file_unique_id`` follows the id, as a file's does in Telegram:
-    the same file sent again keeps its unique id, and a synthesized
-    ``file-N`` keeps the ``unique-N`` it was minted with.
+    Its ``file_unique_id`` follows the id, see :func:`unique_file_id`:
+    the same file sent again keeps its unique id.
     """
-    number = file_id.removeprefix(_FILE_ID_PREFIX)
     return item.model_copy(
-        update={"file_id": file_id, "file_unique_id": f"{_UNIQUE_ID_PREFIX}{number}"},
+        update={"file_id": file_id, "file_unique_id": unique_file_id(file_id)},
     )
 
 
@@ -231,7 +243,7 @@ def _synthesize_model(
         while context.files is not None and f"{_FILE_ID_PREFIX}{number}" in context.files:
             number = context.next_file_number()
         values["file_id"] = f"{_FILE_ID_PREFIX}{number}"
-        values["file_unique_id"] = f"{_UNIQUE_ID_PREFIX}{number}"
+        values["file_unique_id"] = unique_file_id(values["file_id"])
     for name, info in _required_fields(model):
         if name in values:
             continue

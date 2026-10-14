@@ -275,7 +275,13 @@ from aiogram.types import (
 from .errors import ApiRejection
 from .mounting import detached_copy
 from .rich import materialize_rich_message
-from .synthesis import annotation_accepts, nonempty, synthesize, with_passed_file
+from .synthesis import (
+    annotation_accepts,
+    nonempty,
+    synthesize,
+    unique_file_id,
+    with_passed_file,
+)
 from .world import (
     DEFAULT_TOPIC_ICON_COLOR,
     ChatState,
@@ -1170,6 +1176,14 @@ def copy_one(
         raise ApiRejection("message to copy not found")
     if not _copyable(original):
         raise ApiRejection("message can't be copied")
+    if all(getattr(original, name) is None for name in CAPTIONED_FIELDS):
+        # A caption is for media: a text, sticker or poll copy takes
+        # none, whatever the request passed.
+        changes = {
+            name: value
+            for name, value in changes.items()
+            if name not in {"caption", "caption_entities", "show_caption_above_media"}
+        }
     if original.poll is not None and "poll" not in changes:
         changes = {**changes, "poll": _copied_poll(env, original.poll)}
     return target.add_derived(
@@ -1702,6 +1716,8 @@ def handle_get_file(env: BotTestEnvironment, method: GetFile) -> File:
     return synthesized.model_copy(
         update={
             "file_id": method.file_id,
+            # The same file as the one the id names everywhere else.
+            "file_unique_id": unique_file_id(method.file_id),
             "file_path": method.file_id,
             "file_size": len(content) if content is not None else synthesized.file_size,
         },
@@ -1951,7 +1967,7 @@ def _sticker_from_input(env: BotTestEnvironment, sticker: InputSticker) -> Stick
     file_id = sticker.sticker if isinstance(sticker.sticker, str) else _next_sticker_file_id(env)
     return Sticker(
         file_id=file_id,
-        file_unique_id=f"{file_id}-unique",
+        file_unique_id=unique_file_id(file_id),
         type="regular",
         width=512,
         height=512,
@@ -2034,7 +2050,13 @@ def handle_upload_sticker_file(env: BotTestEnvironment, method: UploadStickerFil
     """
     file_id = _next_sticker_file_id(env)
     synthesized: File = synthesize(File, env.synthesis_context(), name="file")
-    return synthesized.model_copy(update={"file_id": file_id, "file_path": file_id})
+    return synthesized.model_copy(
+        update={
+            "file_id": file_id,
+            "file_unique_id": unique_file_id(file_id),
+            "file_path": file_id,
+        },
+    )
 
 
 @models(GetCustomEmojiStickers)
@@ -2046,7 +2068,7 @@ def handle_get_custom_emoji_stickers(
     return [
         Sticker(
             file_id=custom_emoji_id,
-            file_unique_id=f"{custom_emoji_id}-unique",
+            file_unique_id=unique_file_id(custom_emoji_id),
             type="custom_emoji",
             width=100,
             height=100,
@@ -2075,7 +2097,7 @@ GIFT_CATALOGUE: tuple[tuple[str, int], ...] = (
 def _catalogue_sticker(gift_id: str) -> Sticker:
     return Sticker(
         file_id=f"{gift_id}-sticker",
-        file_unique_id=f"{gift_id}-unique",
+        file_unique_id=unique_file_id(f"{gift_id}-sticker"),
         type="regular",
         width=100,
         height=100,
