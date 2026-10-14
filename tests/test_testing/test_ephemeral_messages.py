@@ -494,6 +494,23 @@ class TestEphemeralCommands:
         with pytest.raises(WorldLookupError, match="different ephemeral message"):
             await env.feed(Update(update_id=99, message=message))
 
+    async def test_a_hand_fed_command_reusing_a_sent_id_is_refused(self, env, team, alice, bob):
+        await send_to(env, team, bob)
+        (sent,) = team.ephemeral_messages(bob)
+        message = Message(
+            message_id=0,
+            ephemeral_message_id=sent.ephemeral_message_id,
+            date=BASE_DATE,
+            chat=team.as_chat(),
+            from_user=env.world.user(alice.id).as_user(),
+            text="/fed",
+        )
+
+        with pytest.raises(WorldLookupError, match="different ephemeral message"):
+            await env.feed(Update(update_id=99, message=message))
+
+        assert team.received_ephemeral == {}
+
     async def test_a_hand_fed_command_without_a_sender_is_refused(self, env, team):
         message = Message(
             message_id=0,

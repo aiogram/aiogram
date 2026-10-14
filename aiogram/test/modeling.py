@@ -806,6 +806,11 @@ def normalize_until(value: Any, now: datetime.datetime) -> datetime.datetime | N
 _BUSINESS_EDIT_WINDOW = datetime.timedelta(hours=48)
 
 
+def _edited(env: BotTestEnvironment) -> dict[str, Any]:
+    """The change every edit makes: it dates the message's last edit."""
+    return {"edit_date": int(env.world.next_date().timestamp())}
+
+
 def _check_business_edit_window(env: BotTestEnvironment, message: Message) -> None:
     if (
         message.business_connection_id is not None
@@ -1172,7 +1177,7 @@ def handle_edit_text(env: BotTestEnvironment, method: EditMessageText) -> Messag
     stored = chat.require_message(message_id)
     _require_content(stored, _TEXT_FIELDS, "text")
     _check_business_edit_window(env, stored)
-    return chat.update_message(message_id, **_text_changes(env, method))
+    return chat.update_message(message_id, **_edited(env), **_text_changes(env, method))
 
 
 @models(EditMessageCaption)
@@ -1181,7 +1186,7 @@ def handle_edit_caption(env: BotTestEnvironment, method: EditMessageCaption) -> 
     stored = chat.require_message(message_id)
     _require_content(stored, CAPTIONED_FIELDS, "caption")
     _check_business_edit_window(env, stored)
-    return chat.update_message(message_id, **_caption_changes(method))
+    return chat.update_message(message_id, **_edited(env), **_caption_changes(method))
 
 
 @models(EditMessageReplyMarkup)
@@ -1191,7 +1196,7 @@ def handle_edit_reply_markup(
 ) -> Message:
     chat, message_id = _edit_target(env, method)
     _check_business_edit_window(env, chat.require_message(message_id))
-    return chat.update_message(message_id, reply_markup=method.reply_markup)
+    return chat.update_message(message_id, **_edited(env), reply_markup=method.reply_markup)
 
 
 def media_field(input_media: Any) -> str:
@@ -1232,7 +1237,7 @@ def _media_changes(
 def handle_edit_media(env: BotTestEnvironment, method: EditMessageMedia) -> Message:
     chat, message_id = _edit_target(env, method)
     _check_business_edit_window(env, chat.require_message(message_id))
-    return chat.update_message(message_id, **_media_changes(env, method))
+    return chat.update_message(message_id, **_edited(env), **_media_changes(env, method))
 
 
 # An ephemeral message is addressed by chat, receiver and ephemeral
@@ -1254,6 +1259,7 @@ def _edit_ephemeral(env: BotTestEnvironment, method: _EphemeralEdit, **changes: 
     chat.update_ephemeral_message(
         method.receiver_user_id,
         method.ephemeral_message_id,
+        **_edited(env),
         **changes,
     )
     return True
@@ -1372,6 +1378,7 @@ def handle_edit_live_location(
             raise ApiRejection(msg)
     return chat.update_message(
         message_id,
+        **_edited(env),
         location=_location(method, live_period),
         reply_markup=method.reply_markup,
     )
@@ -1393,6 +1400,7 @@ def handle_stop_live_location(
     location = _require_live(env, stored)
     return chat.update_message(
         message_id,
+        **_edited(env),
         reply_markup=method.reply_markup,
         location=location.model_copy(update={"live_period": None}),
     )
@@ -1406,6 +1414,7 @@ def handle_edit_checklist(
     chat, message_id = _edit_target(env, method)
     return chat.update_message(
         message_id,
+        **_edited(env),
         checklist=stored_checklist(method.checklist),
         reply_markup=method.reply_markup,
     )
@@ -1644,6 +1653,15 @@ def handle_promote(env: BotTestEnvironment, method: PromoteChatMember) -> bool:
     """
     chat = resolve_chat(env, method.chat_id)
     member = _not_the_owner(chat, method.user_id)
+    if (
+        member.status == ChatMemberStatus.ADMINISTRATOR
+        and member.promoted_by is not None
+        and member.promoted_by != env.world.bot_user.id
+    ):
+        # The bot may edit only the administrators it promoted, which
+        # is what ``can_be_edited`` reports; one known to be promoted
+        # by someone else is not the bot's to edit or demote.
+        raise ApiRejection("not enough rights to change the administrator's rights")
     granted = mask(ChatAdministratorRights, method, coerce=True)
     if not any(granted.values()):
         # Demotion takes away an administrator's standing only: it

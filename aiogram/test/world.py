@@ -1274,6 +1274,14 @@ class ChatState:
                 return message
         return None
 
+    def find_any_ephemeral(self, ephemeral_id: int) -> Message | None:
+        """The ephemeral message ``ephemeral_id``, sent or received."""
+        for messages in (*self.sent_ephemeral.values(), *self.received_ephemeral.values()):
+            for message in messages:
+                if message.ephemeral_message_id == ephemeral_id:
+                    return message
+        return None
+
     def find_ephemeral_command(self, ephemeral_id: int) -> Message | None:
         for messages in self.received_ephemeral.values():
             for message in messages:

@@ -232,18 +232,19 @@ forwards land in the requested topic as new messages that keep no reply, edit or
 from the original, copies carry the new caption, its entities, the inline keyboard and their
 own reply, and service, protected, invoice, paid media and giveaway messages are refused where
 the Bot API refuses them; ``unpinChatMessage`` without an id unpins only the newest pin;
-editing text or a caption fails on a message without that content; quizzes keep all their
-``correct_option_ids``, regular polls allow revoting by default and ``stopPoll`` stores its
-keyboard; hiding the General topic closes it and reopening unhides it; an empty topic name
-keeps the name; business messages are numbered per account, so ``deleteBusinessMessages`` finds
-their one chat; and checklists keep their title and tasks. Creation service messages cannot be
-deleted. Synthesized files get distinct ids and keep a file id the request passed with its
-unique id, dice carry their emoji and a value in its range, enumerated strings take valid
-values, booleans are false, rich voice note blocks convert, star transactions report the charge
-id, a positive amount and the user, and an administrator the bot promoted reports
-``can_be_edited``. A declared world matches one built through the API: declared permissions get
-the documented defaults, declared topics are created by the bot, and ``Blueprint.add_poll``
-declares a poll.
+editing text or a caption fails on a message without that content, and every edit sets
+``edit_date``; quizzes keep all their ``correct_option_ids``, regular polls allow revoting by
+default and ``stopPoll`` stores its keyboard; hiding the General topic closes it and reopening
+unhides it; an empty topic name keeps the name; business messages are numbered per account, so
+``deleteBusinessMessages`` finds their one chat; and checklists keep their title and tasks.
+Creation service messages cannot be deleted. Synthesized files get distinct ids and keep a file
+id the request passed with its unique id, dice carry their emoji and a value in its range,
+enumerated strings take valid values, booleans are false, rich voice note blocks convert, star
+transactions report the charge id, a positive amount and the user, and an administrator the bot
+promoted reports ``can_be_edited``, while one known to be promoted by someone else cannot be
+edited or demoted by the bot. A declared world matches one built through the API: declared
+permissions get the documented defaults, declared topics are created by the bot, and
+``Blueprint.add_poll`` declares a poll.
 
 Actor triggers produce only updates Telegram would deliver. ``click(..., message=m)`` presses
 the button on the stored version of ``m`` in the actor's chat and refuses a button it does

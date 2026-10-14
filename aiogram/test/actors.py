@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import dataclasses
 import datetime
 import re
 from collections.abc import Callable, Iterable, Iterator
@@ -42,7 +43,7 @@ from aiogram.types import (
 
 from .modeling import SUBSCRIPTION_PERIOD
 from .mounting import owned_or_copied
-from .synthesis import SynthesisContext, synthesize
+from .synthesis import synthesize
 from .world import (
     BusinessConnectionState,
     ChargeState,
@@ -784,11 +785,7 @@ class UserActor:
         ephemeral_id = overrides.get("ephemeral_message_id")
         if ephemeral_id is None:
             overrides["ephemeral_message_id"] = chat.allocate_ephemeral_message_id()
-        elif chat.find_ephemeral_command(ephemeral_id) is not None or any(
-            message.ephemeral_message_id == ephemeral_id
-            for messages in chat.sent_ephemeral.values()
-            for message in messages
-        ):
+        elif chat.find_any_ephemeral(ephemeral_id) is not None:
             # Refused before anything is stored, so the chat is left
             # without a second message under the same id.
             msg = (
@@ -1600,14 +1597,10 @@ class UserActor:
         The parts a test does not care about come from the same synthesizer the outbound
         side uses, so a Bot API change to any of these types needs no work here.
         """
-        world = self.environment.world
-        context = SynthesisContext(
+        context = dataclasses.replace(
+            self.environment.synthesis_context(),
             chat=self.chat.as_chat(),
             user=self.user.as_user(),
-            date=world.next_date(),
-            counter=world.last_update_id,
-            file_numbers=world.next_file_number,
-            files=world.files,
         )
         event = synthesize(event_type, context, name=event_type.__name__)
         return event.model_copy(update=overrides) if overrides else event

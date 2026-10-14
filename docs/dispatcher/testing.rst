@@ -647,6 +647,8 @@ API states for these methods hold too:
 * :code:`editMessageText` fails on a message with no text, rich or game content, and
   :code:`editMessageCaption` on a message with no media that takes a caption; so do their
   :code:`editEphemeralMessage*` counterparts.
+* Every edit sets ``edit_date`` to the world's clock, on the message returned and the one
+  stored. A forward or copy of an edited message is a new message, with no ``edit_date``.
 
 Every other Bot API method — including methods added by a future Bot API version — is
 recorded and answered with a schema-valid result built from its declared return type, so a
@@ -1972,7 +1974,9 @@ granted, and reading the member back says so.
     assert member.can_be_edited is True          # the bot promoted them
 
 ``can_be_edited`` is true for an administrator the bot promoted, and false for any other,
-a declared administrator included.
+a declared administrator included. The bot cannot edit or demote an administrator another
+user promoted: the call fails. A declared administrator has no known promoter, so the bot
+can still edit one.
 
 A promotion in which nothing comes out true — every flag ``False``, or none passed at all —
 is the demotion the Bot API documents; anything true keeps the member an administrator,

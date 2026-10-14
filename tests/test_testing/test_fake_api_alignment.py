@@ -545,6 +545,28 @@ class TestEditsActOnTheirContent:
             )
 
 
+class TestEditDates:
+    async def test_every_bot_edit_is_dated(self, env, private):
+        sent = await env.bot.send_message(chat_id=private.id, text="hi")
+        assert sent.edit_date is None
+        now = int(env.now.timestamp())
+
+        edited = await env.bot.edit_message_text(
+            chat_id=private.id, message_id=sent.message_id, text="hello"
+        )
+        marked = await env.bot.edit_message_reply_markup(
+            chat_id=private.id,
+            message_id=sent.message_id,
+            reply_markup=InlineKeyboardMarkup(
+                inline_keyboard=[[InlineKeyboardButton(text="ok", callback_data="ok")]],
+            ),
+        )
+
+        assert edited.edit_date == now
+        assert marked.edit_date == now
+        assert private.find_message(sent.message_id).edit_date == now
+
+
 class TestPolls:
     async def test_a_refused_poll_is_not_registered(self, env, private):
         with pytest.raises(TelegramBadRequest, match="message to be replied not found"):
@@ -941,6 +963,23 @@ class TestEditableAdministrators:
         member = await env.bot.get_chat_member(chat_id=team.id, user_id=bob.id)
 
         assert member.can_be_edited is False
+
+    async def test_the_bot_cannot_edit_or_demote_someone_elses_administrator(
+        self, env, team, alice, bob
+    ):
+        await env.user(alice).in_(team).promote(bob, can_delete_messages=True)
+
+        with pytest.raises(TelegramBadRequest, match="not enough rights"):
+            await env.bot.promote_chat_member(
+                chat_id=team.id, user_id=bob.id, can_pin_messages=True
+            )
+        with pytest.raises(TelegramBadRequest, match="not enough rights"):
+            await env.bot.promote_chat_member(chat_id=team.id, user_id=bob.id)
+
+        member = await env.bot.get_chat_member(chat_id=team.id, user_id=bob.id)
+        assert member.status == ChatMemberStatus.ADMINISTRATOR
+        assert member.can_delete_messages is True
+        assert member.can_pin_messages is False
 
 
 class TestDeclaredWorlds:

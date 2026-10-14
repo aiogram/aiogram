@@ -1151,7 +1151,9 @@ class BotTestEnvironment:
                         f"incoming ephemeral message is kept under its from_user"
                     )
                     raise WorldLookupError(msg)
-                known = chat.find_ephemeral_command(message.ephemeral_message_id)
+                # One counter numbers the bot's ephemeral messages and
+                # the users', so an id the bot used is taken as well.
+                known = chat.find_any_ephemeral(message.ephemeral_message_id)
                 if known is None:
                     chat.add_ephemeral_command(message)
                 elif known != message:
