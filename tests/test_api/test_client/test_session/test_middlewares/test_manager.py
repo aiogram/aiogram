@@ -4,7 +4,7 @@ from aiogram.client.session.middlewares.base import (
     NextRequestMiddlewareType,
 )
 from aiogram.client.session.middlewares.manager import RequestMiddlewareManager
-from aiogram.methods import Response, TelegramMethod
+from aiogram.methods import TelegramMethod
 from aiogram.types import TelegramObject
 
 
@@ -29,7 +29,7 @@ class TestMiddlewareManager:
                 make_request: NextRequestMiddlewareType,
                 bot: Bot,
                 method: TelegramMethod[TelegramObject],
-            ) -> Response[TelegramObject]:
+            ) -> TelegramObject:
                 return await make_request(bot, method)
 
         manager.register(MyMiddleware())
@@ -43,3 +43,24 @@ class TestMiddlewareManager:
             return timeout
 
         assert await manager.wrap_middlewares(target_call, timeout=42)(None, None) == 42
+
+    async def test_middleware_receives_decoded_result(self):
+        # Session middlewares work with the decoded Bot API result,
+        # not with the raw Response envelope (see #1723)
+        manager = RequestMiddlewareManager()
+        sentinel = object()
+
+        async def target_call(bot, method):
+            return sentinel
+
+        seen = []
+
+        @manager
+        async def middleware(make_request, bot, method):
+            result = await make_request(bot, method)
+            seen.append(result)
+            return result
+
+        wrapped = manager.wrap_middlewares(target_call)
+        assert await wrapped(None, None) is sentinel
+        assert seen == [sentinel]

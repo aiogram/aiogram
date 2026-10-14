@@ -35,7 +35,7 @@ Register using decorator
         make_request: NextRequestMiddlewareType[TelegramType],
         bot: "Bot",
         method: TelegramMethod[TelegramType],
-    ) -> Response[TelegramType]:
+    ) -> TelegramType:
         # do something with request
         return await make_request(bot, method)
 
@@ -67,7 +67,7 @@ Function based session middleware
         make_request: NextRequestMiddlewareType[TelegramType],
         bot: "Bot",
         method: TelegramMethod[TelegramType],
-    ) -> Response[TelegramType]:
+    ) -> TelegramType:
         try:
             # do something with request
             return await make_request(bot, method)
