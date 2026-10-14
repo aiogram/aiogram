@@ -674,6 +674,9 @@ class ChargeState:
     is_subscription: bool = False
     is_refunded: bool = False
     is_subscription_canceled: bool = False
+    #: The invoice the charge paid, which tells a subscription's
+    #: first payment from its renewals.
+    invoice_payload: str | None = None
 
 
 @dataclass
@@ -1018,6 +1021,12 @@ class ChatState:
         edited = derive_message(message, changes, self.bound_bot)
         self.messages[self.messages.index(message)] = edited
         return self._bind(edited)
+
+    def replace_message(self, message: Message) -> Message:
+        """Store ``message`` in place of the one with its id."""
+        stored = self.require_message(message.message_id)
+        self.messages[self.messages.index(stored)] = message
+        return self._bind(message)
 
     def add_derived(self, original: Message, **changes: Any) -> Message:
         """Store a copy of ``original`` in this chat — see :func:`derive_message`."""

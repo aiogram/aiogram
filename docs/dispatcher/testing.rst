@@ -226,6 +226,27 @@ instead of leaving the two indistinguishable:
     # a button with this callback_data exists in chat -100... ('Team') — bind the actor
     # with `.in_(...)`
 
+``click(..., message=m)`` presses the button on one message. ``m`` is looked up again in the
+actor's chat — by id, or by ephemeral id for an ephemeral message addressed to the actor —
+and the button must be on the stored version, which is the one the ``callback_query``
+carries. A copy the test kept before the bot edited the message therefore presses the
+current keyboard, and a ``callback_data`` the message does not carry, a user's own message
+or another chat's message is refused with :class:`~aiogram.test.WorldLookupError` before
+anything is dispatched.
+
+Editing
+-------
+
+``edit`` is the user editing a message they sent. It changes only what the test passes —
+``text`` when given, and the raw fields in ``fields=`` — and dates the edit with the
+world's clock through ``edit_date``. A user can edit only their own messages, so editing
+one the bot or someone else sent raises :class:`~aiogram.test.WorldLookupError`. In a
+channel a post is attributed to the channel itself, so an actor bound to the channel can
+edit the channel's posts.
+
+An ``edited_message``, ``edited_channel_post`` or ``edited_business_message`` fed by hand
+replaces the stored message with the same id, as the new version of it.
+
 Replying
 --------
 
@@ -386,6 +407,17 @@ version adds one without a trigger:
     await user.update_subscription()         # subscription
     await user.stop_message_generation()     # stopped_message_generation
 
+``update_subscription(state=...)`` takes one of the states the Bot API names for
+``BotSubscriptionUpdated``: ``active`` (the default), ``canceled`` or ``failed``; anything
+else raises :class:`~aiogram.test.WorldLookupError`. ``pay(..., is_subscription=True)`` sets
+``subscription_expiration_date`` one subscription period ahead of the world's clock, and
+``is_first_recurring`` on the user's first subscription payment for that invoice payload.
+
+``guest_message`` carries a ``guest_query_id``, unique in the world, so a handler can answer
+it with ``message.answer_guest_query(...)``. The answer is recorded rather than modeled,
+like the other Mini App handoffs. Its message is stored in the chat like any other carried
+message, and ``fields=`` overrides raw ``Message`` fields.
+
 ``stop_message_generation`` is the user tapping the stop button on a draft the bot streamed
 with ``sendMessageDraft(..., can_stop=True)``. That method only targets private chats, so the
 trigger runs in the user's own private chat with the bot and the dispatcher resolves the event
@@ -399,6 +431,9 @@ Telegram itself decides:
   produces ``edited_channel_post``. The stored post carries no ``from_user``; it is
   attributed to the channel through ``sender_chat``, with the actor's name as
   ``author_signature``.
+* ``inline_query`` sets ``chat_type`` from the binding: ``sender`` for the actor's own
+  private chat with the bot (where an unbound actor is), the chat's type otherwise.
+  ``fields=`` overrides raw ``InlineQuery`` fields, such as ``location``.
 * ``join`` and ``leave`` change *this actor's* membership and produce ``chat_member``,
   while ``add_bot`` and ``remove_bot`` change the **bot's** and produce
   ``my_chat_member``. A bot that only registers ``my_chat_member`` correctly does not see
@@ -1298,6 +1333,11 @@ leaves a test staring at a missing reply with no clue that a handler ever raised
     assert bot_env.last_route.handler and "boom" in bot_env.last_route.handler
     assert isinstance(bot_env.last_route.exception, RuntimeError)
 
+``SkipHandler`` and ``CancelHandler`` are control flow, not errors. A handler that raises
+one is not reported as the handler that ran, and the exception is not recorded as its
+error: when a skipping handler falls through to a later one, ``handler`` names the later
+one and ``exception`` stays ``None``.
+
 One thing a test does is often more than one update. A real join delivers a ``chat_member``
 transition *and* the group's own ``new_chat_members`` service message (see `Joining and
 leaving`_), and a bot that handles the first and ignores the second used to make
@@ -1665,7 +1705,9 @@ failed, with the first one's real traceback chained as its cause. This holds for
 died **before** the drain, too: those are not in ``asyncio.all_tasks()``, so the environment
 remembers every task created while it is live and inspects the finished ones as well as the
 cancelled ones. They are not counted in the number ``drain`` returns, which stays "how many
-tasks this drained":
+tasks this drained". An exception the bot already retrieved — by awaiting the task and
+catching it, or through ``asyncio.gather(..., return_exceptions=True)`` — was the bot's to
+handle, and is not reported:
 
 .. code-block:: python
 
@@ -2102,6 +2144,11 @@ anonymous poll raises and says so. Voting in a stopped poll raises too — Teleg
 does not deliver such an answer, and a silent no-op would make a test pass while asserting
 nothing.
 
+``vote`` also refuses an answer the poll would not accept: an option id the poll does not
+have, more than one option on a poll that does not allow multiple answers, and a change to
+an earlier vote on a poll that does not allow revoting. A retraction changes the vote, so
+it needs revoting too.
+
 Per-option counts are always computed from the recorded voters, so they cannot disagree
 with who voted, including after a retraction (``user.vote(poll_id, [])``).
 
@@ -2218,6 +2265,9 @@ Binding an actor to a connection makes its triggers produce business updates:
     await actor.edit(message, "corrected")      # edited_business_message
     await actor.disable_business_connection()   # business_connection
     await actor.delete_business_messages([7])   # deleted_business_messages
+
+A ``business_connection`` update names the account owner as its ``user``, whoever triggers
+it, as Telegram does.
 
 A message the bot sends on a connection is stored as sent by the **business account**,
 with the bot recorded as the sending business bot — which is what the customer sees:

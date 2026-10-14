@@ -12,7 +12,7 @@ from typing import TYPE_CHECKING, Any, NoReturn, TypeAlias, cast
 
 from aiogram.client.bot import Bot
 from aiogram.dispatcher.dispatcher import Dispatcher
-from aiogram.dispatcher.event.bases import UNHANDLED
+from aiogram.dispatcher.event.bases import UNHANDLED, CancelHandler, SkipHandler
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.methods import TelegramMethod
@@ -70,6 +70,13 @@ _CARRIED_MESSAGE_FIELDS: tuple[str, ...] = (
     "edited_channel_post",
     "business_message",
     "edited_business_message",
+    "guest_message",
+)
+
+#: The carried-message fields that hold a new version of a message
+#: the chat already stores, rather than a new message.
+_EDITED_MESSAGE_FIELDS = frozenset(
+    {"edited_message", "edited_channel_post", "edited_business_message"},
 )
 
 #: Observers the handler-naming middleware stays off.
@@ -331,6 +338,15 @@ class _HandlerMiddleware:
             record.router = getattr(data.get("event_router"), "name", None)
         try:
             return await handler(event, data)
+        except (SkipHandler, CancelHandler):
+            # Control flow, not a failure: a skipping handler did not
+            # claim the update, and a cancelling one stopped it before
+            # anything ran. Neither is the handler that ran.
+            if record is not None:
+                record.handler = None
+                record.handler_module = None
+                record.router = None
+            raise
         except BaseException as error:
             # The deepest catch wins: this is the frame the exception was raised in, while
             # the update-level middleware only sees it after every inner one had a chance
@@ -1111,6 +1127,9 @@ class BotTestEnvironment:
         the time this runs the incoming message is bound to this environment's bot, same as
         anything already stored, so comparing equal is exactly what "the same message, again"
         means, and that case stays the silent no-op it always was.
+
+        An edited message is not a collision: it is the new version
+        of the message under its id, so it replaces the stored one.
         """
         for name in _CARRIED_MESSAGE_FIELDS:
             message: Message | None = getattr(update, name, None)
@@ -1147,6 +1166,11 @@ class BotTestEnvironment:
             existing = chat.find_message(message.message_id)
             if existing is None:
                 chat.add_message(message)
+            elif name in _EDITED_MESSAGE_FIELDS:
+                # An edit is the message's new version: it takes the
+                # place of the stored one rather than colliding.
+                if existing is not message:
+                    chat.replace_message(message)
             elif existing != message:
                 msg = (
                     f"Chat {chat.id} already holds a different message under id "
@@ -1565,8 +1589,12 @@ class BotTestEnvironment:
         for task in tasks:
             if task.cancelled():
                 continue
+            # asyncio clears the flag once someone retrieves the
+            # exception, by awaiting the task or asking for it. That
+            # failure was the bot's to handle, and it did.
+            retrieved = not getattr(task, "_log_traceback", True)
             error = task.exception()
-            if error is not None:
+            if error is not None and not retrieved:
                 failures.append((task.get_name(), error))
 
     # -- call handling ----------------------------------------------------------------

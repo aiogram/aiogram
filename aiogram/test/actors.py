@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import datetime
 import re
 from collections.abc import Callable, Iterable, Iterator
 from types import SimpleNamespace
@@ -39,6 +40,7 @@ from aiogram.types import (
     Update,
 )
 
+from .modeling import SUBSCRIPTION_PERIOD
 from .mounting import owned_or_copied
 from .synthesis import SynthesisContext, synthesize
 from .world import (
@@ -47,6 +49,7 @@ from .world import (
     ChatState,
     CommunityState,
     MemberState,
+    PollState,
     QueryKind,
     TopicState,
     UserState,
@@ -418,6 +421,9 @@ _START_PAYLOAD = re.compile(r"[A-Za-z0-9_-]{1,64}")
 #: Only a plain group and a supergroup get the message a real client shows in the chat
 #: itself, so `_change_membership`'s ``service_message`` only fires there.
 _MEMBER_SERVICE_MESSAGE_CHAT_TYPES = frozenset({ChatType.GROUP, ChatType.SUPERGROUP})
+
+#: The states ``BotSubscriptionUpdated.state`` can take.
+_SUBSCRIPTION_STATES = frozenset({"active", "canceled", "failed"})
 
 
 def _rejection_message(url: str, deep_link: _DeepLink) -> str:
@@ -818,9 +824,27 @@ class UserActor:
         fields: dict[str, Any] | None = None,
         **data: Any,
     ) -> Any:
-        """Edit a message this user sent earlier."""
+        """
+        Edit a message this user sent earlier.
+
+        Only what is passed changes: ``text`` when given, and the raw
+        ``Message`` fields in ``fields``. The edit is dated with the
+        world's clock through ``edit_date``, unless ``fields`` sets it.
+
+        A user can edit only their own messages, so a message the
+        actor did not send is refused. A channel post is attributed to
+        the channel rather than to whoever published it, so an actor
+        bound to a channel can edit the channel's posts.
+        """
         _refuse_ephemeral(message, "edited")
-        changes: dict[str, Any] = {"text": text, **_detached(fields or {}, self.environment.bot)}
+        self._require_in_chat(message)
+        stored = self._require_message(message.message_id)
+        self._require_own(stored)
+        edit_date = int(self.environment.world.next_date().timestamp())
+        changes: dict[str, Any] = {"edit_date": edit_date}
+        if text is not None:
+            changes["text"] = text
+        changes.update(_detached(fields or {}, self.environment.bot))
         edited = self.chat.update_message(message.message_id, **changes)
         if self.business is not None:
             return await self._feed(
@@ -847,6 +871,13 @@ class UserActor:
 
         ``target`` is the button's ``callback_data`` or the button
         itself, from an inline keyboard or from rich content.
+
+        ``message`` names the message to press it on. It is looked up
+        again in this actor's chat, by id or, for an ephemeral message
+        addressed to the actor, by ephemeral id. The button must be on
+        the stored version, which is the one the update carries, so a
+        copy the bot has edited since cannot press a button that is
+        gone.
         """
         callback_data = (
             target.callback_data
@@ -862,7 +893,9 @@ class UserActor:
                 f"press callback_data={callback_data!r}",
                 callback_data,
             )
-        source = message if message is not None else self._find_button_message(callback_data)
+            source = self._stored_button_message(message, callback_data)
+        else:
+            source = self._find_button_message(callback_data)
         world = self.environment.world
         query = CallbackQuery(
             id=world.next_query_id(QueryKind.CALLBACK),
@@ -953,13 +986,34 @@ class UserActor:
         # chat itself.
         return await UserActor(self.environment, self.user).send(text, **data)
 
-    async def inline_query(self, query: str = "", *, offset: str = "", **data: Any) -> Any:
-        inline = InlineQuery(
-            id=self.environment.world.next_query_id(QueryKind.INLINE),
-            from_user=self.user.as_user(),
-            query=query,
-            offset=offset,
-        )
+    async def inline_query(
+        self,
+        query: str = "",
+        *,
+        offset: str = "",
+        fields: dict[str, Any] | None = None,
+        **data: Any,
+    ) -> Any:
+        """
+        Send an inline query, as this user, from the actor's chat.
+
+        ``chat_type`` is ``sender`` from the actor's own private chat
+        with the bot, which is where an unbound actor is, and the
+        chat's type otherwise. ``fields`` overrides raw
+        ``InlineQuery`` fields, such as ``location`` or a
+        ``chat_type`` the binding cannot express.
+        """
+        bound = self._chat
+        chat_type = "sender" if bound is None or bound.id == self.user.id else bound.type
+        values: dict[str, Any] = {
+            "id": self.environment.world.next_query_id(QueryKind.INLINE),
+            "from_user": self.user.as_user(),
+            "query": query,
+            "offset": offset,
+            "chat_type": chat_type,
+        }
+        values.update(_detached(fields or {}, self.environment.bot))
+        inline = InlineQuery(**values)
         return await self._feed(
             Update(update_id=self._next_update_id(), inline_query=inline),
             data,
@@ -1242,24 +1296,48 @@ class UserActor:
         The charge is recorded, so the handler can refund the id it was given rather than a
         fabricated one, and a star payment credits the bot's balance — see design decision
         D2 of `model-stars-and-gifts`.
+
+        A subscription payment carries its expiration date, one
+        subscription period from now, and ``is_first_recurring`` when
+        it is this user's first subscription payment for
+        ``invoice_payload``; a later one is a renewal.
         """
         world = self.environment.world
+        renewal = is_subscription and any(
+            charge.is_subscription
+            and charge.user_id == self.user.id
+            and charge.invoice_payload == invoice_payload
+            for charge in world.stars.charges.values()
+        )
         charge_id = f"charge-{world.next_query_id()}"
         world.stars.charges[charge_id] = ChargeState(
             id=charge_id,
             user_id=self.user.id,
             amount=total_amount,
             is_subscription=is_subscription,
+            invoice_payload=invoice_payload,
         )
         if currency == "XTR":
             world.stars.record(world.next_query_id(), total_amount, world.next_date(), charge_id)
+        subscription: dict[str, Any] = {
+            "is_recurring": None,
+            "is_first_recurring": None,
+            "subscription_expiration_date": None,
+        }
+        if is_subscription:
+            expires = world.next_date() + datetime.timedelta(seconds=SUBSCRIPTION_PERIOD)
+            subscription = {
+                "is_recurring": True,
+                "is_first_recurring": None if renewal else True,
+                "subscription_expiration_date": int(expires.timestamp()),
+            }
         payment = self._event(
             SuccessfulPayment,
             invoice_payload=invoice_payload,
             currency=currency,
             total_amount=total_amount,
             telegram_payment_charge_id=charge_id,
-            is_recurring=is_subscription or None,
+            **subscription,
         )
         return await self._service_message({"successful_payment": payment}, data)
 
@@ -1321,9 +1399,26 @@ class UserActor:
             data,
         )
 
-    async def guest_message(self, text: str | None = None, **data: Any) -> Any:
-        """A message from someone who is not a member — the bot sees it as a guest."""
-        message = self._build_message(text=text, fields=None)
+    async def guest_message(
+        self,
+        text: str | None = None,
+        *,
+        fields: dict[str, Any] | None = None,
+        **data: Any,
+    ) -> Any:
+        """
+        A message from someone who is not a member, seen as a guest.
+
+        It carries a ``guest_query_id``, unique in the world, which
+        the bot answers with ``answerGuestQuery``. Answering is
+        recorded, not modeled. ``fields`` overrides raw ``Message``
+        fields.
+        """
+        overrides = {
+            "guest_query_id": self.environment.world.next_query_id(),
+            **(fields or {}),
+        }
+        message = self._build_message(text=text, fields=overrides)
         self.chat.add_message(message)
         return await self._feed(
             Update(update_id=self._next_update_id(), guest_message=message),
@@ -1337,11 +1432,30 @@ class UserActor:
             data,
         )
 
-    async def update_subscription(self, invoice_payload: str = "payload", **data: Any) -> Any:
+    async def update_subscription(
+        self,
+        invoice_payload: str = "payload",
+        *,
+        state: str = "active",
+        **data: Any,
+    ) -> Any:
+        """
+        The user's subscription to the bot changes ``state``.
+
+        The Bot API names three states: ``canceled`` when the user
+        cancels, ``active`` when they re-enable a cancelled
+        subscription, and ``failed`` when a payment fails. Any other
+        value is refused.
+        """
+        if state not in _SUBSCRIPTION_STATES:
+            known = ", ".join(sorted(_SUBSCRIPTION_STATES))
+            msg = f"A subscription state is one of {known}, not {state!r}"
+            raise WorldLookupError(msg)
         event = self._event(
             BotSubscriptionUpdated,
             user=self.user.as_user(),
             invoice_payload=invoice_payload,
+            state=state,
         )
         return await self._feed(
             Update(update_id=self._next_update_id(), subscription=event),
@@ -1355,6 +1469,11 @@ class UserActor:
         An empty ``options`` retracts. Telegram never delivers an answer to a closed poll,
         so voting in one raises here — in the test's own code — rather than passing while
         asserting nothing (design decision D5).
+
+        The answer must be one the poll accepts: options it has, one
+        of them unless it allows multiple answers, and no change to an
+        earlier vote unless it allows revoting. Retracting changes the
+        vote, so it needs revoting too.
         """
         poll = self.environment.world.poll(poll_id)
         if poll.is_closed:
@@ -1366,6 +1485,7 @@ class UserActor:
                 f"for it; use `poll_update()` to trigger the aggregate `poll` update"
             )
             raise WorldLookupError(msg)
+        self._require_valid_vote(poll, options)
         if options:
             poll.votes[self.user.id] = list(options)
         else:
@@ -1464,6 +1584,33 @@ class UserActor:
         event = synthesize(event_type, context, name=event_type.__name__)
         return event.model_copy(update=overrides) if overrides else event
 
+    def _require_valid_vote(self, poll: PollState, options: list[int]) -> None:
+        """Refuse an answer Telegram would not deliver for ``poll``."""
+        unknown = [option for option in options if not 0 <= option < len(poll.options)]
+        if unknown:
+            msg = (
+                f"Poll {poll.id} has options 0-{len(poll.options) - 1}, so it has no "
+                f"option(s) {unknown}"
+            )
+            raise WorldLookupError(msg)
+        if len(options) > 1 and not poll.allows_multiple_answers:
+            msg = (
+                f"Poll {poll.id} does not allow multiple answers, so a vote for "
+                f"{len(options)} options cannot be cast"
+            )
+            raise WorldLookupError(msg)
+        previous = poll.votes.get(self.user.id)
+        if (
+            previous is not None
+            and sorted(previous) != sorted(options)
+            and not poll.allows_revoting
+        ):
+            msg = (
+                f"Poll {poll.id} does not allow revoting, so user {self.user.id} "
+                f"cannot change their vote {previous} to {list(options)}"
+            )
+            raise WorldLookupError(msg)
+
     def _require_business(self) -> BusinessConnectionState:
         if self.business is None:
             msg = (
@@ -1476,7 +1623,10 @@ class UserActor:
     async def _business_connection_update(self, is_enabled: bool, data: dict[str, Any]) -> Any:
         connection = self._require_business()
         connection.is_enabled = is_enabled
-        event = connection.as_business_connection(self.user.as_user())
+        # The connection names the account owner whoever toggles it:
+        # an actor bound to it may be a customer of that account.
+        owner = self.environment.world.user(connection.user_id)
+        event = connection.as_business_connection(owner.as_user())
         return await self._feed(
             Update(update_id=self._next_update_id(), business_connection=event),
             data,
@@ -1548,6 +1698,32 @@ class UserActor:
             raise WorldLookupError(msg)
         return message
 
+    def _require_own(self, message: Message) -> None:
+        """Refuse a user action on a message the user did not send."""
+        sender = message.from_user
+        if sender is not None and sender.id == self.user.id:
+            return
+        chat = self.chat
+        sender_chat = message.sender_chat
+        if (
+            chat.type == ChatType.CHANNEL
+            and sender is None
+            and sender_chat is not None
+            and sender_chat.id == chat.id
+        ):
+            return
+        if sender is not None:
+            author = f"user {sender.id}"
+        elif sender_chat is not None:
+            author = f"chat {sender_chat.id}"
+        else:
+            author = "no one"
+        msg = (
+            f"Message {message.message_id} in chat {chat.id} was sent by {author}, not by "
+            f"user {self.user.id}, and a user can edit only their own messages"
+        )
+        raise WorldLookupError(msg)
+
     @staticmethod
     def _iter_buttons(scope: Iterable[Message]) -> Iterator[tuple[Message, Button]]:
         """Walk every button of every message, for every searcher."""
@@ -1590,6 +1766,44 @@ class UserActor:
             f"Ephemeral message {message.ephemeral_message_id} is not addressed to user "
             f"{self.user.id}, so they cannot {action} on it{hint}"
         )
+        raise WorldLookupError(msg)
+
+    def _require_in_chat(self, message: Message) -> None:
+        """Refuse a message from a chat other than the actor's."""
+        chat = self.chat
+        if message.chat.id != chat.id:
+            msg = (
+                f"Message {message.message_id} is in chat {message.chat.id}, but this "
+                f"actor is bound to chat {chat.id}; bind it with `.in_(...)`"
+            )
+            raise WorldLookupError(msg)
+
+    def _stored_button_message(self, message: Message, callback_data: str) -> Message:
+        """
+        The stored version of ``message``, which must carry the button.
+
+        Telegram delivers a callback query for a button on a message as
+        the chat holds it now, so a copy the test kept is resolved
+        again, and a button missing from the stored version is refused.
+        """
+        chat = self.chat
+        self._require_in_chat(message)
+        if message.ephemeral_message_id is not None:
+            stored = chat.find_ephemeral_message(self.user.id, message.ephemeral_message_id)
+            label = f"Ephemeral message {message.ephemeral_message_id}"
+        else:
+            stored = chat.find_message(message.message_id)
+            label = f"Message {message.message_id}"
+        if stored is None:
+            msg = f"{label} does not exist in chat {chat.id}"
+            raise WorldLookupError(msg)
+        if any(button.callback_data == callback_data for button in _buttons_of(stored)):
+            return stored
+        msg = f"{label} in chat {chat.id} carries no button with callback_data={callback_data!r}"
+        if stored is not message and any(
+            button.callback_data == callback_data for button in _buttons_of(message)
+        ):
+            msg += "; the copy passed does, but the message was edited since"
         raise WorldLookupError(msg)
 
     def _find_button_message(self, callback_data: str) -> Message:

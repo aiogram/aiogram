@@ -77,7 +77,7 @@ class TestVoting:
         private,
         alice,
     ):
-        message = await send_poll(env, private)
+        message = await send_poll(env, private, allows_revoting=True)
         poll_id = message.poll.id
         poll = env.world.poll(poll_id)
         poll.votes[999] = [0]
