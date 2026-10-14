@@ -275,6 +275,13 @@ class TestDateHelpers:
         assert resolve_date(int(aware.timestamp()), BASE_DATE) == aware
         assert resolve_date(None, BASE_DATE) is None
 
+    def test_resolve_date_counts_in_whole_seconds(self):
+        # A bot computing `datetime.now() + delta` carries the
+        # fraction of a second the clock, started to the second, does not.
+        computed = BASE_DATE + HOUR + datetime.timedelta(microseconds=700_000)
+
+        assert resolve_date(computed, BASE_DATE) == BASE_DATE + HOUR
+
     @pytest.mark.parametrize(
         ("value", "forever"),
         [
@@ -309,6 +316,20 @@ class TestRestrictionsExpire:
         assert member.status == ChatMemberStatus.MEMBER
         assert member.until_date is None
         assert team.member(alice.id).permissions is None
+
+    async def test_a_mute_computed_from_the_real_clock_lifts_on_time(self, env, team, alice):
+        # `datetime.now()` runs a fraction of a second past the clock.
+        computed_now = env.now + datetime.timedelta(microseconds=700_000)
+        await env.bot.restrict_chat_member(
+            chat_id=team.id,
+            user_id=alice.id,
+            permissions=MUTED,
+            until_date=computed_now + HOUR,
+        )
+
+        await env.advance_time(HOUR)
+
+        assert (await self.read(env, team, alice)).status == ChatMemberStatus.MEMBER
 
     async def test_a_naive_end_date_is_read_as_local_time(self, env, team, alice):
         member = team.member(alice.id)
@@ -740,6 +761,25 @@ class TestBusinessEditWindow:
             message_id=message.message_id,
             text="new",
         )
+
+    async def test_a_customer_message_is_not_the_bots_to_edit(
+        self,
+        env,
+        bob,
+        private,
+        connection,
+    ):
+        # Bob writes to Alice's business account: his message is his own.
+        await env.user(bob).in_(private, business=connection).send("hello")
+        message = private.messages[-1]
+
+        with pytest.raises(TelegramBadRequest, match="can't be edited"):
+            await env.bot.edit_message_text(
+                business_connection_id=connection.id,
+                chat_id=private.id,
+                message_id=message.message_id,
+                text="new",
+            )
 
     async def test_a_bot_sent_business_message_stays_editable(self, env, private, connection):
         sent = await env.bot.send_message(

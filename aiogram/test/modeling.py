@@ -45,7 +45,7 @@ from typing import TYPE_CHECKING, Any, get_args
 
 from pydantic import BaseModel
 
-from aiogram.enums import ChatMemberStatus, ChatType, DiceEmoji
+from aiogram.enums import ChatMemberStatus, ChatType, DiceEmoji, PollType
 from aiogram.methods import (
     AddStickerToSet,
     AnswerCallbackQuery,
@@ -706,6 +706,11 @@ def _reply_changes(
 #: message is rather than what it carries.
 _EXTERNAL_REPLY_PLACE = frozenset({"origin", "chat", "message_id"})
 
+#: The ``ExternalReplyInfo`` fields that carry the content.
+_EXTERNAL_REPLY_CONTENT = tuple(
+    name for name in ExternalReplyInfo.model_fields if name not in _EXTERNAL_REPLY_PLACE
+)
+
 
 def _external_reply(
     env: BotTestEnvironment,
@@ -721,7 +726,7 @@ def _external_reply(
     """
     content = {
         name: value
-        for name in ExternalReplyInfo.model_fields.keys() - _EXTERNAL_REPLY_PLACE
+        for name in _EXTERNAL_REPLY_CONTENT
         if (value := getattr(replied, name, None)) is not None
     }
     public = where.type in {ChatType.SUPERGROUP, ChatType.CHANNEL}
@@ -842,12 +847,15 @@ def resolve_date(value: Any, now: datetime.datetime) -> datetime.datetime | None
 
     aiogram accepts a datetime, a duration from now, or a Unix time. A
     naive datetime is read as local time, the way aiogram's own
-    serializer reads it.
+    serializer reads it. The Bot API counts in whole seconds, as the
+    clock does, so a moment is taken to the second: a date the bot
+    computed as ``datetime.now() + delta`` is reached by advancing the
+    clock by ``delta``.
     """
     if isinstance(value, datetime.datetime):
-        return aware(value)
+        return aware(value).replace(microsecond=0)
     if isinstance(value, datetime.timedelta):
-        return now + value
+        return (now + value).replace(microsecond=0)
     if isinstance(value, int):
         return datetime.datetime.fromtimestamp(value, tz=datetime.timezone.utc)
     return None
@@ -898,11 +906,22 @@ def _check_editable_by_bot(env: BotTestEnvironment, chat: ChatState, message: Me
     Refuse an edit of a message the bot may not edit.
 
     Outside business chats and channels, a bot edits only the messages
-    it sent itself: a user's message is not the bot's to change.
+    it sent itself: a user's message is not the bot's to change. In a
+    business chat it edits the business account's messages, its own
+    sent on the account's behalf included, but not the customer's.
     """
-    if message.business_connection_id is not None or chat.type == ChatType.CHANNEL:
+    if chat.type == ChatType.CHANNEL:
         return
     sender = message.from_user
+    if message.business_connection_id is not None:
+        connection = env.world.business_connections.get(message.business_connection_id)
+        if (
+            connection is None
+            or message.sender_business_bot is not None
+            or (sender is not None and sender.id == connection.user_id)
+        ):
+            return
+        raise ApiRejection("message can't be edited")
     if sender is None or sender.id != env.world.bot_user.id:
         raise ApiRejection("message can't be edited")
 
@@ -945,11 +964,16 @@ def handle_send_media_group(
     Store one message per item, under one ``media_group_id``.
 
     Each message carries its item's media and caption. The Bot API
-    takes 2-10 items.
+    takes 2-10 items, and groups documents or audio files only with
+    items of the same type.
     """
     chat = resolve_chat(env, method.chat_id)
     if not _MEDIA_GROUP_SIZE[0] <= len(method.media) <= _MEDIA_GROUP_SIZE[1]:
         msg = "media group must include 2-10 items"
+        raise ApiRejection(msg)
+    kinds = {media_field(item) for item in method.media}
+    if len(kinds) > 1 and kinds & _ALBUM_KINDS.keys():
+        msg = "documents and audio files can be only grouped with messages of the same type"
         raise ApiRejection(msg)
     group_id = env.world.next_query_id()
     return [
@@ -1038,9 +1062,22 @@ def _forwardable(message: Message) -> bool:
 
 
 def _copyable(message: Message) -> bool:
-    """Whether ``message`` is none of the kinds copying refuses."""
+    """
+    Whether ``message`` is none of the kinds copying refuses.
+
+    A quiz copies only when the bot knows its correct answer, as the
+    Bot API states: one the bot sent itself, not a user's.
+    """
+    poll = message.poll
+    unknown_quiz = (
+        poll is not None
+        and poll.type == PollType.QUIZ
+        and poll.correct_option_id is None
+        and not poll.correct_option_ids
+    )
     return not (
-        is_service_message(message)
+        unknown_quiz
+        or is_service_message(message)
         or any(getattr(message, name) is not None for name in _UNCOPYABLE_FIELDS)
     )
 
@@ -1440,10 +1477,44 @@ def _media_changes(
     return changes
 
 
+#: What ``editMessageMedia`` replaces: media, or a text or rich message.
+_MEDIA_EDIT_SOURCES = (*EDITABLE_MEDIA_FIELDS, "text", "rich_message")
+
+#: The media an album item can be edited to, by what the album holds:
+#: audio and documents keep their kind, the rest take visual media.
+_ALBUM_KINDS: dict[str, frozenset[str]] = {
+    "audio": frozenset({"audio"}),
+    "document": frozenset({"document"}),
+}
+_VISUAL_ALBUM_KINDS = frozenset({"photo", "live_photo", "video"})
+
+
+def _check_media_edit(
+    stored: Message, method: EditMessageMedia | EditEphemeralMessageMedia
+) -> None:
+    """
+    Refuse an ``editMessageMedia`` the Bot API does not allow.
+
+    It edits media messages and replaces text or rich messages, and an
+    album item stays in its album's kind, as the method documents.
+    """
+    _require_content(stored, _MEDIA_EDIT_SOURCES, "media")
+    if stored.media_group_id is None:
+        return
+    allowed = next(
+        (kinds for kind, kinds in _ALBUM_KINDS.items() if getattr(stored, kind) is not None),
+        _VISUAL_ALBUM_KINDS,
+    )
+    if media_field(method.media) not in allowed:
+        msg = f"an album item can be edited only to {', '.join(sorted(allowed))}"
+        raise ApiRejection(msg)
+
+
 @models(EditMessageMedia)
 def handle_edit_media(env: BotTestEnvironment, method: EditMessageMedia) -> Message:
     chat, stored = _edit_target(env, method)
     message_id = stored.message_id
+    _check_media_edit(stored, method)
     return chat.update_message(message_id, **edit_stamp(env), **_media_changes(env, method))
 
 
@@ -1506,7 +1577,7 @@ def handle_edit_ephemeral_media(
     env: BotTestEnvironment,
     method: EditEphemeralMessageMedia,
 ) -> bool:
-    _stored_ephemeral(env, method)
+    _check_media_edit(_stored_ephemeral(env, method), method)
     return _edit_ephemeral(env, method, **_media_changes(env, method))
 
 

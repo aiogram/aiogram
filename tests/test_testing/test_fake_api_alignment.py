@@ -25,7 +25,9 @@ from aiogram.types import (
     InlineKeyboardMarkup,
     InputChecklist,
     InputChecklistTask,
+    InputMediaDocument,
     InputMediaPhoto,
+    InputMediaVideo,
     InputMediaVoiceNote,
     InputRichBlockPhoto,
     InputRichBlockVoiceNote,
@@ -35,6 +37,7 @@ from aiogram.types import (
     MessageOriginUser,
     PaidMediaInfo,
     Poll,
+    PollOption,
     ReplyParameters,
     RichTextBold,
     Sticker,
@@ -126,6 +129,15 @@ class TestMediaGroups:
         assert messages[1].has_media_spoiler is True
         assert messages[0].media_group_id is not None
         assert messages[0].media_group_id == messages[1].media_group_id
+
+    async def test_a_document_is_grouped_only_with_documents(self, env, private):
+        with pytest.raises(TelegramBadRequest, match="same type"):
+            await env.bot.send_media_group(
+                chat_id=private.id,
+                media=[InputMediaPhoto(media="photo"), InputMediaDocument(media="document")],
+            )
+
+        assert private.messages == []
 
     async def test_a_single_photo_keeps_its_spoiler_and_caption_placement(self, env, private):
         """A single send stores the flags an album item stores."""
@@ -373,6 +385,57 @@ class TestReplies:
 
 
 class TestCopiesAndForwards:
+    async def test_a_quiz_with_an_unknown_answer_cannot_be_copied(self, env, alice, team, bobs):
+        quiz = Poll(
+            id="users-quiz",
+            question="2 + 2?",
+            options=[
+                PollOption(persistent_id="0", text="4", voter_count=0),
+                PollOption(persistent_id="1", text="5", voter_count=0),
+            ],
+            total_voter_count=0,
+            is_closed=False,
+            is_anonymous=True,
+            type="quiz",
+            allows_multiple_answers=False,
+            allows_revoting=False,
+            members_only=False,
+        )
+        await env.user(alice).in_(team).send(fields={"poll": quiz})
+        users = team.messages[-1]
+
+        with pytest.raises(TelegramBadRequest, match="can't be copied"):
+            await env.bot.copy_message(
+                chat_id=bobs.id,
+                from_chat_id=team.id,
+                message_id=users.message_id,
+            )
+        assert (
+            await env.bot.copy_messages(
+                chat_id=bobs.id,
+                from_chat_id=team.id,
+                message_ids=[users.message_id],
+            )
+            == []
+        )
+
+    async def test_a_quiz_the_bot_sent_can_be_copied(self, env, team, bobs):
+        sent = await env.bot.send_poll(
+            chat_id=team.id,
+            question="2 + 2?",
+            options=["4", "5"],
+            type="quiz",
+            correct_option_ids=[0],
+        )
+
+        copied = await env.bot.copy_message(
+            chat_id=bobs.id,
+            from_chat_id=team.id,
+            message_id=sent.message_id,
+        )
+
+        assert bobs.find_message(copied.message_id).poll.correct_option_ids == [0]
+
     async def test_a_single_copy_or_forward_of_an_album_item_stands_alone(
         self,
         env,
@@ -824,6 +887,49 @@ class TestEditsActOnTheirContent:
                 caption="c",
             )
 
+    async def test_editing_media_on_a_sticker_fails(self, env, private):
+        sticker = await env.bot.send_sticker(chat_id=private.id, sticker="sticker")
+
+        with pytest.raises(TelegramBadRequest, match="no media in the message"):
+            await env.bot.edit_message_media(
+                chat_id=private.id,
+                message_id=sticker.message_id,
+                media=InputMediaPhoto(media="photo"),
+            )
+
+        assert private.messages[0].sticker is not None
+
+    async def test_a_text_message_can_take_media(self, env, private):
+        text = await env.bot.send_message(chat_id=private.id, text="t")
+
+        edited = await env.bot.edit_message_media(
+            chat_id=private.id,
+            message_id=text.message_id,
+            media=InputMediaPhoto(media="photo"),
+        )
+
+        assert (edited.text, edited.photo[-1].file_id) == (None, "photo")
+
+    async def test_an_album_item_keeps_its_albums_kind(self, env, private):
+        album = await env.bot.send_media_group(
+            chat_id=private.id,
+            media=[InputMediaPhoto(media="one"), InputMediaPhoto(media="two")],
+        )
+
+        with pytest.raises(TelegramBadRequest, match="album item"):
+            await env.bot.edit_message_media(
+                chat_id=private.id,
+                message_id=album[0].message_id,
+                media=InputMediaDocument(media="document"),
+            )
+        edited = await env.bot.edit_message_media(
+            chat_id=private.id,
+            message_id=album[0].message_id,
+            media=InputMediaVideo(media="video"),
+        )
+
+        assert edited.video is not None
+
     async def test_ephemeral_edits_act_on_their_content(self, env, team, alice):
         to_alice = EphemeralMessageParameters(receiver_user_id=alice.id)
         photo = await env.bot.send_photo(
@@ -864,6 +970,29 @@ class TestEditsActOnTheirContent:
 
         assert edited.show_caption_above_media is True
         assert private.find_message(photo.message_id).show_caption_above_media is True
+
+
+class TestEditableByTheBot:
+    async def test_the_bot_edits_a_channel_post_it_did_not_send(self, dp):
+        blueprint = Blueprint()
+        alice = blueprint.add_user("Alice")
+        news = blueprint.add_channel(
+            "News",
+            members={alice: ChatMemberStatus.CREATOR},
+            bot_status=ChatMemberStatus.ADMINISTRATOR,
+        )
+        env = BotTestEnvironment(blueprint=blueprint, dispatcher=dp)
+        try:
+            await env.user(alice).in_(news).send("draft")
+            post = env.chat(news).messages[-1]
+
+            edited = await env.bot.edit_message_text(
+                chat_id=news.id, message_id=post.message_id, text="final"
+            )
+
+            assert edited.text == "final"
+        finally:
+            await env.dispose()
 
 
 class TestEditDates:

@@ -628,7 +628,7 @@ API states for these methods hold too:
 
 * :code:`sendMediaGroup` stores one message per item, each with that item's media,
   caption and caption entities, all under one :code:`media_group_id`. Fewer than 2 or more
-  than 10 items fail.
+  than 10 items fail, and so does a document or an audio file grouped with another type.
 * A reply looks its target up in the chat :code:`reply_parameters.chat_id` names, or in
   the target chat. A target that does not exist fails the send with "message to be replied
   not found", unless :code:`allow_sending_without_reply` is set, which the Bot API reads as
@@ -642,18 +642,21 @@ API states for these methods hold too:
   caption with its entities, keeps the original caption when the request names none, drops
   it for :code:`copyMessages(remove_caption=True)`, and stores the request's inline
   keyboard. Service, invoice, paid media, giveaway and giveaway winners messages cannot be
-  copied, and service messages and protected content cannot be forwarded: a single call
+  copied, nor can a quiz whose correct answer the bot does not know, and service messages and protected content cannot be forwarded: a single call
   fails, and a batch call skips them. A single forward or copy of an album item is in no
   album; a batch keeps each album together under a new :code:`media_group_id`.
 * :code:`unpinChatMessage` without a message id unpins the most recently sent pinned
   message only.
 * :code:`editMessageText` fails on a message with no text, rich or game content, and
   :code:`editMessageCaption` on a message with no media that takes a caption; so do their
-  :code:`editEphemeralMessage*` counterparts.
+  :code:`editEphemeralMessage*` counterparts. :code:`editMessageMedia` fails on a message
+  that holds neither media nor text or rich content, and an album item can only become
+  media of its album's kind: audio, document, or a photo, live photo or video.
 * A send stores the media's ``has_spoiler`` and ``show_caption_above_media``, and
   :code:`editMessageMedia` takes them from the new media.
-* The bot edits only its own messages, except in a channel or a business chat: editing a
-  user's message fails, as it does in Telegram.
+* The bot edits only its own messages, except in a channel, and in a business chat the
+  business account's messages: editing a user's message, a business customer's included,
+  fails, as it does in Telegram.
 * Every edit sets ``edit_date`` to the world's clock, on the message returned and the one
   stored. A forward or copy of an edited message is a new message, with no ``edit_date``.
 
@@ -797,7 +800,9 @@ Time
 The world has its own clock. It starts at the real time, to the second, so a date the bot
 computes from ``datetime.now()`` lands where Telegram would see it. From then on it stands
 still: every message, event and transaction is dated with the clock's current time,
-however many updates a test feeds, until the test moves it:
+however many updates a test feeds, until the test moves it. Dates the bot passes are
+counted in whole seconds, as the Bot API counts them, so an end the bot computed as
+``datetime.now() + delta`` is reached by advancing the clock by ``delta``:
 
 .. code-block:: python
 
