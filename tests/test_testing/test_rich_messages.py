@@ -5,10 +5,8 @@ import pytest
 from pydantic import BaseModel
 from typing_extensions import TypeAliasType
 
-from aiogram.test import WorldLookupError
+from aiogram.test import WorldLookupError, rich
 from aiogram.test.rich import (
-    _convert_value,
-    _zero_value,
     counterpart,
     materialize_rich_message,
 )
@@ -417,7 +415,7 @@ class TestConversionFallbacks:
     """Branches today's schema does not reach, kept for future types."""
 
     def test_an_unset_required_model_field_is_synthesized(self):
-        location = _zero_value(Location, "location", SynthesisContext())
+        location = rich._zero_value(Location, "location", SynthesisContext())
 
         assert isinstance(location, Location)
 
@@ -427,4 +425,4 @@ class TestConversionFallbacks:
         assert list_item(int) is None
 
     def test_a_list_with_no_list_annotation_keeps_its_entries(self):
-        assert _convert_value(["a", "b"], str, "x", SynthesisContext()) == ["a", "b"]
+        assert rich._convert_value(["a", "b"], str, "x", SynthesisContext()) == ["a", "b"]

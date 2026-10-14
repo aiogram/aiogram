@@ -849,9 +849,11 @@ class TestASimulationIsNotAnExpectation:
         alice = table.chat(party.users[0].id)
         table.on(SendMessage, chat_id=alice.id + 999).raises(TelegramForbiddenError)
 
-        with table.blocked(chat_id=alice.id):
-            with pytest.raises(AssertionError, match="never matched a call") as failure:
-                table.assert_overrides_consumed()
+        with (
+            table.blocked(chat_id=alice.id),
+            pytest.raises(AssertionError, match="never matched a call") as failure,
+        ):
+            table.assert_overrides_consumed()
 
         message = str(failure.value)
         assert "1 declared override(s)" in message
