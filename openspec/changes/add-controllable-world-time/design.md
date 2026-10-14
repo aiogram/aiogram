@@ -57,10 +57,22 @@ builds on.
 
 ## Decisions
 
-### D1. Time stands still; updates no longer tick the clock
+### D1. Time starts at the real time and then stands still
 
-`World` keeps `now`, initially `BASE_DATE`, exposed as `env.now`. `next_date()` returns it
-unchanged, and only `advance_time` moves it.
+`World` keeps `now`, exposed as `env.now`. `next_date()` returns it unchanged, and only
+`advance_time` moves it.
+
+It starts at the real time, to the second, unless the test passes `clock_start` (or
+`Blueprint.build(start=...)`). A fixed start such as `BASE_DATE` was tried first and broke
+bots that compute dates from the real clock, which is most of them:
+
+- `sendPoll(close_date=datetime.now() + 5 min)` was refused as months ahead of the world;
+- `until_date=datetime.now() + 1 h` landed months ahead, and from a year after `BASE_DATE`
+  on it would silently become "forever", a test that starts failing on its own.
+
+Telegram's clock is the real one, so the world's starts there. Reproducible dates stay one
+argument away: `clock_start=BASE_DATE`. Declared topics are dated at the start, not at
+`BASE_DATE`, so a declared world is not born months old.
 
 The tick was there to make dates distinct. Nothing in the toolkit orders by date: messages
 are ordered by id, updates by update id, star transactions by list order, administrators

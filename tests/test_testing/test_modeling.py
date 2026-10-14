@@ -500,7 +500,7 @@ class TestPinning:
 class TestMembership:
     async def test_ban(self, env, team, blueprint):
         alice_id = blueprint.users[0].id
-        until = BASE_DATE + datetime.timedelta(days=1)
+        until = env.now + datetime.timedelta(days=1)
 
         await env.bot.ban_chat_member(chat_id=team.id, user_id=alice_id, until_date=until)
 
@@ -517,12 +517,12 @@ class TestMembership:
             until_date=datetime.timedelta(days=1),
         )
 
-        assert team.member(alice_id).until_date == BASE_DATE + datetime.timedelta(days=1)
+        assert team.member(alice_id).until_date == env.now + datetime.timedelta(days=1)
 
     async def test_ban_accepts_a_timestamp(self, env, team, blueprint):
         alice_id = blueprint.users[0].id
 
-        until = BASE_DATE + datetime.timedelta(days=1)
+        until = env.now + datetime.timedelta(days=1)
 
         await env.bot.ban_chat_member(
             chat_id=team.id,

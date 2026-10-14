@@ -2,11 +2,21 @@
 
 ### Requirement: The world has a clock the test controls
 
-World time SHALL stand still unless the test advances it, by seconds or a duration, never
-backwards. A date the world assigns to something happening now SHALL be the clock's time;
-dates carried from earlier things, such as a forward origin, keep theirs. Advancing SHALL
-dispatch the updates that time causes before returning, ordered by moment and then by
-scheduling order. World dates SHALL never come from the host clock.
+World time SHALL start at the real time, to the second, or at a start the test gives, and
+SHALL then stand still unless the test advances it, never backwards. A date for something
+happening now SHALL be the clock's time. Advancing SHALL dispatch the updates time causes
+before returning, ordered by moment and then by scheduling order.
+
+#### Scenario: The clock starts at the real time
+
+- **WHEN** a test builds an environment without giving a start
+- **THEN** the clock reads the real time to the second, so a date a bot computes from the
+  real clock lands where Telegram would see it
+
+#### Scenario: A pinned start makes dates reproducible
+
+- **WHEN** a test builds an environment with a fixed start
+- **THEN** the clock reads that start until the test advances it
 
 #### Scenario: Time does not move on its own
 

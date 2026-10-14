@@ -60,7 +60,7 @@ class TestFixtures:
         wait_timeout = call_fixture(plugin.bot_env_wait_timeout)
         original_storage = dispatcher.fsm.storage
 
-        generator = call_fixture(plugin.bot_env, blueprint, dispatcher, wait_timeout)
+        generator = call_fixture(plugin.bot_env, blueprint, dispatcher, wait_timeout, None)
         environment = next(generator)
         assert dispatcher.fsm.storage is not original_storage
         with pytest.raises(StopIteration):
@@ -77,7 +77,7 @@ class TestFixtures:
         wait_timeout = call_fixture(plugin.bot_env_wait_timeout)
         original_storage = dispatcher.fsm.storage
 
-        generator = call_fixture(plugin.bot_env, blueprint, dispatcher, wait_timeout)
+        generator = call_fixture(plugin.bot_env, blueprint, dispatcher, wait_timeout, None)
         environment = next(generator)
         with pytest.raises(RuntimeError, match="boom"):
             generator.throw(RuntimeError("boom"))
@@ -91,10 +91,29 @@ class TestFixtures:
         blueprint = call_fixture(plugin.bot_blueprint)
         dispatcher = call_fixture(plugin.bot_dispatcher)
 
-        generator = call_fixture(plugin.bot_env, blueprint, dispatcher, 12.5)
+        generator = call_fixture(plugin.bot_env, blueprint, dispatcher, 12.5, None)
         environment = next(generator)
         try:
             assert environment.world.default_wait_timeout == 12.5
+        finally:
+            with pytest.raises(StopIteration):
+                next(generator)
+
+    def test_clock_start_defaults_to_the_real_time(self):
+        from aiogram.test import plugin
+
+        assert call_fixture(plugin.bot_env_clock_start) is None
+
+    def test_environment_picks_up_the_clock_start_fixture(self):
+        from aiogram.test import BASE_DATE, plugin
+
+        blueprint = call_fixture(plugin.bot_blueprint)
+        dispatcher = call_fixture(plugin.bot_dispatcher)
+
+        generator = call_fixture(plugin.bot_env, blueprint, dispatcher, 5.0, BASE_DATE)
+        environment = next(generator)
+        try:
+            assert environment.now == BASE_DATE
         finally:
             with pytest.raises(StopIteration):
                 next(generator)
@@ -114,7 +133,7 @@ class TestFixtures:
         blueprint = Blueprint()
         blueprint.add_user("Lonely")
         dispatcher = Dispatcher()
-        generator = call_fixture(plugin.bot_env, blueprint, dispatcher, 5.0)
+        generator = call_fixture(plugin.bot_env, blueprint, dispatcher, 5.0, None)
         environment = next(generator)
         try:
             actor = call_fixture(plugin.bot_user, environment)
@@ -245,6 +264,37 @@ class TestPluginDiscovery:
                     assert bot_env.bot.id
                     assert bot_chat.id
                     assert bot_user.user.id
+                """,
+            ),
+        )
+
+        result = subprocess.run(
+            [sys.executable, "-m", "pytest", str(test_file), "-q", "-p", "no:cacheprovider"],
+            capture_output=True,
+            text=True,
+            cwd=tmp_path,
+            check=False,
+        )
+
+        assert result.returncode == 0, result.stdout + result.stderr
+
+    def test_clock_start_override_reaches_bot_env(self, tmp_path):
+        test_file = tmp_path / "test_generated.py"
+        test_file.write_text(
+            textwrap.dedent(
+                """
+                import pytest
+
+                from aiogram.test import BASE_DATE
+
+
+                @pytest.fixture
+                def bot_env_clock_start():
+                    return BASE_DATE
+
+
+                def test_environment_picked_up_the_override(bot_env):
+                    assert bot_env.now == BASE_DATE
                 """,
             ),
         )

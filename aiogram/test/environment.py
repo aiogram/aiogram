@@ -450,6 +450,7 @@ class BotTestEnvironment:
         dispatcher: Dispatcher | None = None,
         *,
         default_wait_timeout: float = DEFAULT_WAIT_TIMEOUT,
+        clock_start: datetime.datetime | None = None,
     ) -> None:
         """
         ``default_wait_timeout`` is how long every wait in this environment runs.
@@ -460,9 +461,15 @@ class BotTestEnvironment:
         instead of a five-second pause per timing bug, says so once here rather than on
         every call. It is stored on the world, which is how a chat reaches it; an explicit
         ``timeout=`` on a single call still wins over it.
+
+        ``clock_start`` is where the world's clock starts. By default it
+        is the real time, to the second, so dates a bot computes from
+        ``datetime.now()`` land where Telegram would see them; pass a
+        fixed moment, such as ``BASE_DATE``, for dates that are the same
+        on every run.
         """
         self.blueprint = blueprint if blueprint is not None else default_blueprint()
-        self.world = self.blueprint.build()
+        self.world = self.blueprint.build(start=clock_start)
         self.world.default_wait_timeout = default_wait_timeout
         self.session = FakeTelegramSession(self)
         self.bot = Bot(

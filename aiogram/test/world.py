@@ -58,7 +58,17 @@ BASE_DATE: datetime.datetime = datetime.datetime(
     0,
     tzinfo=datetime.timezone.utc,
 )
-"""Fixed point in time every synthesized date is derived from, so tests are reproducible."""
+"""
+A fixed moment for a world's clock to start at, for dates that are the
+same on every run: ``BotTestEnvironment(clock_start=BASE_DATE)``. By
+default a clock starts at the real time instead.
+"""
+
+
+def wall_clock() -> datetime.datetime:
+    """The real time, in UTC, to the second: where a clock starts."""
+    return datetime.datetime.now(datetime.timezone.utc).replace(microsecond=0)
+
 
 #: How the Bot API reports a restriction or ban with no end: Unix 0.
 UNTIL_FOREVER: datetime.datetime = datetime.datetime(1970, 1, 1, tzinfo=datetime.timezone.utc)
@@ -1420,7 +1430,7 @@ class World:
     last_query_id: int = 0
     #: The world's clock. It stands still unless a test moves it with
     #: :meth:`aiogram.test.BotTestEnvironment.advance_time`.
-    now: datetime.datetime = BASE_DATE
+    now: datetime.datetime = field(default_factory=wall_clock)
     #: When each pending query was issued, for the windows the Bot API
     #: gives some of them to be answered in.
     query_issued: dict[str, datetime.datetime] = field(default_factory=dict)

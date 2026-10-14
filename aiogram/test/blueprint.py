@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import copy
+import datetime
 from dataclasses import dataclass, field
 from typing import Any
 
@@ -17,7 +18,6 @@ from aiogram.types import (
 )
 
 from .world import (
-    BASE_DATE,
     DEFAULT_TOPIC_ICON_COLOR,
     BotProfileState,
     BusinessConnectionState,
@@ -30,9 +30,11 @@ from .world import (
     StickerSetState,
     UserState,
     World,
+    aware,
     create_topic,
     private_chat_shape,
     scope_key,
+    wall_clock,
 )
 
 DEFAULT_TOKEN = "42:TEST"
@@ -511,10 +513,16 @@ class Blueprint:
 
     # -- materialization --------------------------------------------------------------
 
-    def build(self) -> World:
-        """Materialize an independent world. The blueprint itself is left untouched."""
+    def build(self, start: datetime.datetime | None = None) -> World:
+        """
+        Materialize an independent world, leaving the blueprint as is.
+
+        The world's clock starts at ``start``, or at the real time, to
+        the second, when none is given.
+        """
         spec = copy.deepcopy(self)
         world = World(
+            now=aware(start) if start is not None else wall_clock(),
             bot_user=_user_state(spec.bot),
             profile=spec.profile,
             files=spec.files,
@@ -572,7 +580,7 @@ class Blueprint:
             created = create_topic(
                 world.chat(topic.chat_id),
                 name=topic.name,
-                date=BASE_DATE,
+                date=world.now,
                 icon_color=topic.icon_color,
                 icon_custom_emoji_id=topic.icon_custom_emoji_id,
             )

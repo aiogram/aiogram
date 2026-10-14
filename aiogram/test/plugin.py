@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import datetime
 from collections.abc import Iterator
 from typing import Any
 
@@ -55,16 +56,29 @@ def bot_env_wait_timeout() -> float:
 
 
 @pytest.fixture
+def bot_env_clock_start() -> datetime.datetime | None:
+    """
+    Override this fixture to start ``bot_env``'s clock at a moment.
+
+    ``None``, the default, starts it at the real time. Returning
+    ``BASE_DATE`` gives dates that are the same on every run.
+    """
+    return None
+
+
+@pytest.fixture
 def bot_env(
     bot_blueprint: Blueprint,
     bot_dispatcher: Dispatcher,
     bot_env_wait_timeout: float,
+    bot_env_clock_start: datetime.datetime | None,
 ) -> Iterator[BotTestEnvironment]:
     """An isolated fake Telegram world for exactly one test."""
     environment = BotTestEnvironment(
         blueprint=bot_blueprint,
         dispatcher=bot_dispatcher,
         default_wait_timeout=bot_env_wait_timeout,
+        clock_start=bot_env_clock_start,
     )
     try:
         yield environment

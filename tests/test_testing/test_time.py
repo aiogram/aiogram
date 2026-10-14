@@ -36,7 +36,11 @@ def world_blueprint():
 
 @pytest.fixture
 def env(world_blueprint, dp):
-    environment = BotTestEnvironment(blueprint=world_blueprint, dispatcher=dp)
+    environment = BotTestEnvironment(
+        blueprint=world_blueprint,
+        dispatcher=dp,
+        clock_start=BASE_DATE,
+    )
     try:
         yield environment
     finally:
@@ -66,6 +70,58 @@ def team(env, world_blueprint):
 @pytest.fixture
 def connection(world_blueprint):
     return world_blueprint.business_connections[0]
+
+
+class TestWhereTheClockStarts:
+    async def test_by_default_at_the_real_time(self, world_blueprint, dp):
+        before = datetime.datetime.now(datetime.timezone.utc).replace(microsecond=0)
+        environment = BotTestEnvironment(blueprint=world_blueprint, dispatcher=dp)
+        try:
+            after = datetime.datetime.now(datetime.timezone.utc)
+
+            assert before <= environment.now <= after
+            assert environment.now.microsecond == 0
+        finally:
+            await environment.dispose()
+
+    async def test_dates_a_bot_computes_from_the_real_clock_work(self, world_blueprint, dp):
+        environment = BotTestEnvironment(blueprint=world_blueprint, dispatcher=dp)
+        try:
+            team = environment.chat(world_blueprint.chats[1])
+            alice = world_blueprint.users[0]
+            in_an_hour = datetime.datetime.now(datetime.timezone.utc) + HOUR
+
+            await environment.bot.send_poll(
+                chat_id=team.id,
+                question="Lunch?",
+                options=["Yes", "No"],
+                close_date=in_an_hour,
+            )
+            await environment.bot.restrict_chat_member(
+                chat_id=team.id,
+                user_id=alice.id,
+                permissions=MUTED,
+                until_date=in_an_hour,
+            )
+            await environment.advance_time(HOUR + datetime.timedelta(seconds=1))
+
+            (poll,) = environment.world.polls.values()
+            assert poll.is_closed is True
+            assert team.member(alice.id).status == ChatMemberStatus.MEMBER
+        finally:
+            await environment.dispose()
+
+    async def test_a_naive_start_is_read_as_local_time(self, world_blueprint, dp):
+        naive = datetime.datetime.fromtimestamp(BASE_DATE.timestamp())
+        environment = BotTestEnvironment(
+            blueprint=world_blueprint,
+            dispatcher=dp,
+            clock_start=naive,
+        )
+        try:
+            assert environment.now == BASE_DATE
+        finally:
+            await environment.dispose()
 
 
 class TestTheClock:

@@ -340,7 +340,7 @@ class TestWorld:
         assert [world.next_update_id(), world.next_update_id()] == [1, 2]
         assert [world.next_query_id(), world.next_query_id()] == ["1", "2"]
         # Dates come from the clock, which updates do not move.
-        assert world.next_date() == BASE_DATE
+        assert world.next_date() == world.now
 
     def test_ensure_private_chat_creates_one_shaped_like_a_declared_chat(self):
         world = World(bot_user=UserState(id=42, is_bot=True))

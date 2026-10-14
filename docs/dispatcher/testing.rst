@@ -715,15 +715,26 @@ ephemeral, and must name a message a user sent in that chat; otherwise the call 
 Time
 ====
 
-The world has its own clock. It stands still: every message, event and transaction is
-dated with the clock's current time, however many updates a test feeds, until the test
-moves it:
+The world has its own clock. It starts at the real time, to the second, so a date the bot
+computes from ``datetime.now()`` lands where Telegram would see it. From then on it stands
+still: every message, event and transaction is dated with the clock's current time,
+however many updates a test feeds, until the test moves it:
 
 .. code-block:: python
 
     await bot_env.advance_time(60)                    # seconds
     await bot_env.advance_time(timedelta(hours=48))   # or a duration
     bot_env.now                                       # the clock's current time
+
+For dates that are the same on every run, start the clock at a fixed moment:
+``BotTestEnvironment(..., clock_start=BASE_DATE)``, or, for the ``bot_env`` fixture, override
+``bot_env_clock_start``:
+
+.. code-block:: python
+
+    @pytest.fixture
+    def bot_env_clock_start():
+        return BASE_DATE
 
 The clock never goes backwards, and one advance cannot start while another runs: a handler
 or a concurrent task that tries raises. What the passing time causes happens before
