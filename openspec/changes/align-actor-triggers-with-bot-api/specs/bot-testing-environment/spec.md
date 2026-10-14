@@ -105,3 +105,31 @@ it stays record-only.
 
 - **WHEN** a handler answers a guest message through its `guest_query_id`
 - **THEN** the answer is accepted
+
+### Requirement: Membership triggers respect standing
+
+A banned user's `join()`, `leave()` and `request_join()` SHALL fail as a setup error until
+the ban ends, and a ban SHALL drop the user's pending join request. A `join()` by an
+administrator or the owner already in the chat SHALL keep their status.
+
+#### Scenario: A banned user cannot rejoin
+
+- **WHEN** the bot bans a user and the user's actor joins
+- **THEN** the trigger fails as a setup error, and the user stays banned
+
+#### Scenario: Joining does not demote
+
+- **WHEN** an administrator's actor joins the chat
+- **THEN** the member is still an administrator with the same rights
+
+### Requirement: Ephemeral messages can be waited for
+
+A chat wait SHALL take a receiver and wait among the bot's ephemeral messages to that user,
+and a wait on the shared history that times out SHALL say when the bot sent ephemeral
+messages.
+
+#### Scenario: Waiting for an ephemeral message
+
+- **WHEN** a background task sends an ephemeral message to a user and the test waits with
+  that receiver
+- **THEN** the wait returns the message

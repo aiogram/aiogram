@@ -221,3 +221,70 @@ by the bot, and a declared poll SHALL be stored on a message in its chat.
 
 - **WHEN** a blueprint declares a poll in a chat
 - **THEN** the chat holds a message carrying that poll, and users can vote in it
+
+### Requirement: The bot edits only what Telegram lets it edit
+
+An edit method SHALL refuse, as a Telegram error, a message the bot did not send outside a
+channel or a business chat, a customer's message in a business chat, a forward, and a
+business message addressed without its connection or a plain message addressed with one.
+Every edit SHALL set `edit_date`, and the business account's 48-hour edit window SHALL bind
+every edit method.
+
+#### Scenario: A user's message cannot be edited by the bot
+
+- **WHEN** a handler edits the text of a message a user sent in a group
+- **THEN** the call raises `TelegramBadRequest`, and the message is unchanged
+
+#### Scenario: An edit is dated
+
+- **WHEN** the bot edits its own message
+- **THEN** the returned and stored message carry an `edit_date`
+
+### Requirement: Copies and forwards are new messages of their chat
+
+A copy or forward SHALL be the bot's own message: it SHALL keep no reply, edit date,
+protection, business connection, album, sender chat or sending details of the original, and
+SHALL take only the keyboard its request passes. A forward SHALL keep the first origin of a
+forwarded original. A copied poll SHALL be a poll of its own, which the bot can stop.
+
+#### Scenario: A forward of a forward names the first origin
+
+- **WHEN** the bot forwards a message a user forwarded to it
+- **THEN** the new message's `forward_origin` names the original author
+
+#### Scenario: A copied poll is separate
+
+- **WHEN** the bot copies a poll and stops the copy
+- **THEN** the original poll stays open
+
+### Requirement: Channel posts are the channel's
+
+A message the bot posts in a channel, a copy, a forward and a service message included,
+SHALL carry the channel as `sender_chat` and no `from_user`.
+
+#### Scenario: The bot posts in a channel
+
+- **WHEN** a handler sends a message to a channel
+- **THEN** the stored post has no `from_user`, and its `sender_chat` is the channel
+
+### Requirement: A pin is announced
+
+`pinChatMessage` SHALL post a `pinned_message` service message carrying the pinned message
+without its own `reply_to_message`, in the pinned message's topic, once per pin.
+
+#### Scenario: Pinning twice announces once
+
+- **WHEN** a handler pins the same message twice
+- **THEN** the chat holds one `pinned_message` service message for it
+
+### Requirement: Dates count in whole seconds
+
+A date or end date a bot passes SHALL be read in whole seconds and measured against the
+clock's whole second, so an end computed from the current time is reached by advancing the
+clock as far.
+
+#### Scenario: A one-minute restriction ends after a minute
+
+- **WHEN** a handler restricts a member until one minute from `datetime.now()`, and the test
+  advances the clock by a minute
+- **THEN** the member is no longer restricted

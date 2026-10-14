@@ -22,3 +22,7 @@
 - [x] 3.2 Fold the user-visible changes into `CHANGES/1887.feature.rst`
 - [x] 3.3 Run `make lint` and `uv run pytest tests --cov=aiogram` with `aiogram/test` at 100% coverage; verify both pass
 - [x] 3.4 Validate with `openspec validate align-actor-triggers-with-bot-api --strict`
+
+## 4. Review findings
+
+- [x] 4.1 Keep banned users out of membership triggers and join requests, keep an administrator's status on `join()`, and let chat waits take a receiver; verify each with a regression test

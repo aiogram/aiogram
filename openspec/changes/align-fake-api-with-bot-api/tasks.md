@@ -35,3 +35,7 @@
 - [x] 5.2 Fold the user-visible changes into `CHANGES/1887.feature.rst`
 - [x] 5.3 Run `make lint` and `uv run pytest tests --cov=aiogram` with `aiogram/test` at 100% coverage; verify both pass
 - [x] 5.4 Validate with `openspec validate align-fake-api-with-bot-api --strict`
+
+## 6. Review findings
+
+- [x] 6.1 Apply the rules later reviews found: what the bot may edit, copies and forwards as new messages, channel attribution, pin announcements and whole-second dates; verify each with a regression test
