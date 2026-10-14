@@ -1977,6 +1977,9 @@ def handle_ban(env: BotTestEnvironment, method: BanChatMember) -> bool:
     chat = resolve_chat(env, method.chat_id)
     member = _not_the_owner(chat, method.user_id)
     member.set_status(ChatMemberStatus.KICKED)
+    # A banned user cannot join, so a pending request of theirs goes
+    # too: approving it would otherwise lift the ban.
+    chat.join_requests.discard(method.user_id)
     # The Bot API applies `until_date` for supergroups and channels
     # only, so a ban in a basic group has no end, whatever end an
     # earlier restriction had.

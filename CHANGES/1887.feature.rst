@@ -263,16 +263,17 @@ declared topics are created by the bot, and ``Blueprint.add_poll`` declares a po
 
 Actor triggers produce only updates Telegram would deliver. ``click(..., message=m)`` presses
 the button on the stored version of ``m`` in the actor's chat and refuses a button it does not
-carry; a banned user cannot ``join`` or ``leave``; a user's ``edit`` sets ``edit_date``,
-changes only the fields passed and refuses a message the user did not send, and an edited
-message fed by hand replaces the stored one; ``vote`` refuses option ids the poll does not
-have, several options on a single-answer poll and a changed or retracted vote where revoting is
-not allowed; ``inline_query`` sets ``chat_type`` and accepts ``fields=``; ``guest_message``
-carries a ``guest_query_id`` the bot can answer; ``update_subscription(state=...)`` takes one
-of the documented states; a subscription ``pay()`` sets ``subscription_expiration_date`` and
-``is_first_recurring``; and a ``business_connection`` update names the account owner. Routing
-diagnostics no longer report a handler that raised ``SkipHandler`` as the one that ran, and
-``drain()`` no longer reports an exception the bot already retrieved.
+carry; a banned user cannot ``join``, ``leave`` or ``request_join``; a user's ``edit`` sets
+``edit_date``, changes only the fields passed and refuses a message the user did not send, and
+an edited message fed by hand replaces the stored one; ``vote`` refuses option ids the poll
+does not have, several options on a single-answer poll and a changed or retracted vote where
+revoting is not allowed; ``inline_query`` sets ``chat_type`` and accepts ``fields=``;
+``guest_message`` carries a ``guest_query_id`` the bot can answer;
+``update_subscription(state=...)`` takes one of the documented states; a subscription ``pay()``
+sets ``subscription_expiration_date`` and ``is_first_recurring``; and a ``business_connection``
+update names the account owner. Routing diagnostics no longer report a handler that raised
+``SkipHandler`` as the one that ran, and ``drain()`` no longer reports an exception the bot
+already retrieved.
 
 .. warning::
 

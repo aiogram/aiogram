@@ -1258,7 +1258,13 @@ class UserActor:
         )
 
     async def request_join(self, **data: Any) -> Any:
-        """Ask to join this chat, producing a `chat_join_request` the bot can act on."""
+        """
+        Ask to join this chat, producing a `chat_join_request` the bot can act on.
+
+        A banned user cannot ask to join, so it raises until the ban
+        ends, as `join()` does.
+        """
+        self._refuse_banned("ask to join")
         chat = self.chat
         chat.join_requests.add(self.user.id)
         event = ChatJoinRequest(

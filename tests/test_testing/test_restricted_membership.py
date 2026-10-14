@@ -224,7 +224,7 @@ class TestEndDates:
 
 
 class TestBannedUsersStayOut:
-    @pytest.mark.parametrize("action", ["join", "leave"])
+    @pytest.mark.parametrize("action", ["join", "leave", "request_join"])
     async def test_a_banned_user_cannot_lift_their_own_ban(self, env, team, alice, action):
         await env.bot.ban_chat_member(chat_id=team.id, user_id=alice.id)
 
@@ -232,6 +232,17 @@ class TestBannedUsersStayOut:
             await getattr(env.user(alice).in_(team), action)()
 
         assert team.member(alice.id).status == ChatMemberStatus.KICKED
+        assert alice.id not in team.join_requests
+
+    async def test_a_ban_drops_a_pending_join_request(self, env, team, bob):
+        await env.user(bob).in_(team).request_join()
+
+        await env.bot.ban_chat_member(chat_id=team.id, user_id=bob.id)
+
+        assert bob.id not in team.join_requests
+        with pytest.raises(TelegramBadRequest):
+            await env.bot.approve_chat_join_request(chat_id=team.id, user_id=bob.id)
+        assert team.member(bob.id).status == ChatMemberStatus.KICKED
 
     async def test_a_ban_that_ended_lets_the_user_join(self, env, team, alice):
         await env.bot.ban_chat_member(

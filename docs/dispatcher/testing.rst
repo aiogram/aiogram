@@ -2022,7 +2022,8 @@ right granted where it cannot exist is dropped rather than reported back as if i
 
 :code:`restrictChatMember` works in supergroups only, and fails elsewhere as it does in
 Telegram. A ``join()`` by an administrator or the owner already in the chat keeps their
-status, and a banned user can neither ``join()`` nor ``leave()`` until the ban ends.
+status, and a banned user can neither ``join()``, ``leave()`` nor ``request_join()`` until
+the ban ends.
 
 Permissions are stored the way the Bot API grants them, which is not always the mask the
 request passed. :code:`restrictChatMember` and :code:`setChatPermissions` both apply the
