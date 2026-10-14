@@ -1725,13 +1725,12 @@ class UserActor:
             return
         chat = self.chat
         sender_chat = message.sender_chat
-        # The world stores the bot's own channel posts under the bot as
-        # sender, while an actor's are under the channel: both are the
-        # channel's posts.
-        posted_by = sender.id if sender is not None else None
-        on_behalf_of = sender_chat.id if sender_chat is not None else None
-        if chat.type == ChatType.CHANNEL and (
-            posted_by == self.bot_user.id or (posted_by is None and on_behalf_of == chat.id)
+        # A channel post is the channel's, whoever published it.
+        if (
+            chat.type == ChatType.CHANNEL
+            and sender is None
+            and sender_chat is not None
+            and sender_chat.id == chat.id
         ):
             return
         if sender is not None:

@@ -301,6 +301,7 @@ from .world import (
     mask,
     new_poll,
     no_administrator_rights,
+    posted_by,
     scope_key,
 )
 
@@ -546,7 +547,7 @@ def build_message(
         "message_id": 0 if receiver is not None else chat.allocate_message_id(connection),
         "date": env.world.next_date(),
         "chat": chat.as_chat(),
-        "from_user": env.world.bot_user.as_user(),
+        **posted_by(chat, env.world.bot_user.as_user()),
     }
     if connection is not None:
         # Telegram sends on behalf of the business account, not the bot.
@@ -1143,7 +1144,6 @@ def forward_one(
         message_id=target.allocate_message_id(),
         chat=target.as_chat(),
         date=env.world.next_date(),
-        from_user=env.world.bot_user.as_user(),
         # Stored messages always carry a sender; the bot stands in only for typing.
         forward_origin=forward_origin(
             source,
@@ -1153,6 +1153,7 @@ def forward_one(
         **{
             **thread,
             **_new_message_changes(protect_content),
+            **posted_by(target, env.world.bot_user.as_user()),
             "media_group_id": media_group_id,
         },
     )
@@ -1292,17 +1293,33 @@ def copy_one(
         message_id=target.allocate_message_id(),
         chat=target.as_chat(),
         date=env.world.next_date(),
-        from_user=env.world.bot_user.as_user(),
         # A copy carries no trace of where it came from — that is the whole difference.
         forward_origin=None,
         **{
             **thread,
             **_new_message_changes(protect_content),
+            **posted_by(target, env.world.bot_user.as_user()),
             # A copy takes only the original's content: its keyboard is
             # the one the request passes, or none.
             "reply_markup": None,
             **changes,
         },
+    )
+
+
+def _poll_state(poll: Poll) -> PollState:
+    """The state a ``Poll`` the world does not hold describes."""
+    return PollState(
+        id=poll.id,
+        question=poll.question,
+        options=[option.text for option in poll.options],
+        is_anonymous=poll.is_anonymous,
+        type=poll.type,
+        allows_multiple_answers=poll.allows_multiple_answers,
+        allows_revoting=bool(poll.allows_revoting),
+        correct_option_ids=poll.correct_option_ids,
+        explanation=poll.explanation,
+        is_closed=poll.is_closed,
     )
 
 
@@ -1312,11 +1329,10 @@ def _copied_poll(env: BotTestEnvironment, poll: Poll) -> Poll:
 
     It has its own id and no votes yet, so stopping or voting in one
     of the two leaves the other as it was. It takes no schedule along,
-    as nothing would close the copy on it.
+    as nothing would close the copy on it. A poll the world does not
+    hold, such as one a user sent, is read off the message.
     """
-    stored = env.world.polls.get(poll.id)
-    if stored is None:
-        return poll
+    stored = env.world.polls.get(poll.id) or _poll_state(poll)
     copied = dataclasses.replace(
         stored,
         id=env.world.next_query_id(),
@@ -3131,7 +3147,7 @@ def service_message(
         "message_id": chat.allocate_message_id(),
         "date": env.world.next_date(),
         "chat": chat.as_chat(),
-        "from_user": env.world.bot_user.as_user(),
+        **posted_by(chat, env.world.bot_user.as_user()),
         **fields,
     }
     if thread_id is not None:

@@ -433,7 +433,8 @@ Telegram itself decides:
 * In a chat declared as a **channel**, ``send`` produces ``channel_post`` and ``edit``
   produces ``edited_channel_post``. The stored post carries no ``from_user``; it is
   attributed to the channel through ``sender_chat``, with the actor's name as
-  ``author_signature``.
+  ``author_signature``. What the bot posts there, copies and forwards included, is
+  attributed to the channel the same way.
 * ``inline_query`` sets ``chat_type`` from the binding: ``sender`` for the actor's own
   private chat with the bot (where an unbound actor is), the chat's type otherwise.
   ``fields=`` overrides raw ``InlineQuery`` fields, such as ``location``.

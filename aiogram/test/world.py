@@ -1985,6 +1985,18 @@ def _find_ephemeral(stores: Iterable[list[Message]], ephemeral_id: int) -> Messa
     return None
 
 
+def posted_by(chat: ChatState, sender: User) -> dict[str, Any]:
+    """
+    Who a message ``sender`` posts in ``chat`` is from.
+
+    A channel post is the channel's: Telegram names the channel as its
+    sender chat and no user.
+    """
+    if chat.type == ChatType.CHANNEL:
+        return {"from_user": None, "sender_chat": chat.as_chat()}
+    return {"from_user": sender, "sender_chat": None}
+
+
 def private_chat_shape(user: UserState | UserSpec) -> dict[str, Any]:
     """
     What a private chat between the bot and ``user`` looks like.

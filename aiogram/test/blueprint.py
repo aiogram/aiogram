@@ -36,6 +36,7 @@ from .world import (
     create_topic,
     granted_permissions,
     new_poll,
+    posted_by,
     private_chat_shape,
     quiz_problem,
     scope_key,
@@ -673,7 +674,7 @@ class Blueprint:
                     message_id=target.allocate_message_id(),
                     date=world.now,
                     chat=target.as_chat(),
-                    from_user=world.bot_user.as_user(),
+                    **posted_by(target, world.bot_user.as_user()),
                     poll=poll.as_poll(),
                 ),
             )

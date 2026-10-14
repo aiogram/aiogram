@@ -1095,6 +1095,22 @@ class TestEditableByTheBot:
         finally:
             await env.dispose()
 
+    async def test_the_bots_channel_post_is_the_channels(self, dp):
+        blueprint = Blueprint()
+        news = blueprint.add_channel("News", bot_status=ChatMemberStatus.ADMINISTRATOR)
+        env = BotTestEnvironment(blueprint=blueprint, dispatcher=dp)
+        try:
+            post = await env.bot.send_message(chat_id=news.id, text="hello")
+            copied = await env.bot.copy_message(
+                chat_id=news.id, from_chat_id=news.id, message_id=post.message_id
+            )
+
+            for message in (post, env.chat(news).find_message(copied.message_id)):
+                assert message.from_user is None
+                assert message.sender_chat.id == news.id
+        finally:
+            await env.dispose()
+
     async def test_a_business_message_is_edited_through_its_connection(
         self, env, private, connection
     ):
@@ -1170,7 +1186,7 @@ class TestPolls:
         also_stopped = await env.bot.stop_poll(chat_id=private.id, message_id=original.message_id)
         assert also_stopped.is_closed is True
 
-    async def test_a_copied_poll_the_world_never_stored_is_kept(self, env, alice, private, bobs):
+    async def test_a_copy_of_a_users_poll_is_the_bots_own(self, env, alice, private, bobs):
         poll = synthesize(Poll, SynthesisContext())
         await env.user(alice).send(fields={"poll": poll})
         sent = private.messages[-1]
@@ -1180,9 +1196,10 @@ class TestPolls:
             from_chat_id=private.id,
             message_id=sent.message_id,
         )
+        stopped = await env.bot.stop_poll(chat_id=bobs.id, message_id=copied.message_id)
 
-        stored = bobs.find_message(copied.message_id).poll
-        assert (stored.id, stored.question) == (poll.id, poll.question)
+        assert stopped.id != poll.id
+        assert (stopped.question, stopped.is_closed) == (poll.question, True)
 
     async def test_a_refused_poll_is_not_registered(self, env, private):
         with pytest.raises(TelegramBadRequest, match="message to be replied not found"):
