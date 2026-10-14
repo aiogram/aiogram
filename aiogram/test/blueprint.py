@@ -6,7 +6,7 @@ from dataclasses import dataclass, field
 from typing import Any
 
 from aiogram.client.default import DefaultBotProperties
-from aiogram.enums import ChatMemberStatus, ChatType
+from aiogram.enums import ChatMemberStatus, ChatType, PollType
 from aiogram.types import (
     BotCommand,
     BusinessBotRights,
@@ -14,6 +14,7 @@ from aiogram.types import (
     ChatPermissions,
     ChatPhoto,
     MenuButtonUnion,
+    Message,
     Sticker,
 )
 
@@ -32,6 +33,8 @@ from .world import (
     World,
     aware,
     create_topic,
+    granted_permissions,
+    new_poll,
     private_chat_shape,
     scope_key,
     wall_clock,
@@ -111,6 +114,28 @@ class TopicSpec:
 
 
 @dataclass(eq=False)
+class PollSpec:
+    """
+    Declaration of a poll the bot already sent. Compared by identity.
+
+    ``poll_id`` and ``message_id`` are filled in by
+    :meth:`Blueprint.build`, so a test can vote in the poll by its id.
+    """
+
+    chat_id: int
+    question: str
+    options: list[str]
+    type: str | None = None
+    is_anonymous: bool | None = None
+    allows_multiple_answers: bool | None = None
+    allows_revoting: bool | None = None
+    correct_option_ids: list[int] | None = None
+    explanation: str | None = None
+    poll_id: str | None = field(default=None, compare=False)
+    message_id: int | None = field(default=None, compare=False)
+
+
+@dataclass(eq=False)
 class BusinessConnectionSpec:
     """Declaration of a business account connection."""
 
@@ -160,6 +185,7 @@ class Blueprint:
         self.users: list[UserSpec] = []
         self.chats: list[ChatSpec] = []
         self.topics: list[TopicSpec] = []
+        self.polls: list[PollSpec] = []
         self.business_connections: list[BusinessConnectionSpec] = []
         self.communities: list[CommunitySpec] = []
         self.profile = BotProfileState()
@@ -357,6 +383,43 @@ class Blueprint:
         self.topics.append(topic)
         return topic
 
+    def add_poll(
+        self,
+        chat: ChatSpec,
+        question: str,
+        options: list[str],
+        *,
+        type: str | None = None,
+        is_anonymous: bool | None = None,
+        allows_multiple_answers: bool | None = None,
+        allows_revoting: bool | None = None,
+        correct_option_ids: list[int] | None = None,
+        explanation: str | None = None,
+    ) -> PollSpec:
+        """
+        Declare a poll the bot already sent into ``chat``.
+
+        It is stored as ``sendPoll`` stores one, on a message from the
+        bot, with the same defaults. A quiz needs its correct option
+        ids, as ``sendPoll`` requires.
+        """
+        if type == PollType.QUIZ and not correct_option_ids:
+            msg = "A quiz poll needs `correct_option_ids`."
+            raise ValueError(msg)
+        poll = PollSpec(
+            chat_id=chat.id,
+            question=question,
+            options=list(options),
+            type=type,
+            is_anonymous=is_anonymous,
+            allows_multiple_answers=allows_multiple_answers,
+            allows_revoting=allows_revoting,
+            correct_option_ids=correct_option_ids,
+            explanation=explanation,
+        )
+        self.polls.append(poll)
+        return poll
+
     def add_business_connection(
         self,
         owner: UserSpec,
@@ -541,7 +604,7 @@ class Blueprint:
                 first_name=chat.first_name,
                 last_name=chat.last_name,
                 description=chat.description,
-                permissions=chat.permissions,
+                permissions=_granted(chat.permissions),
                 photo=chat.photo,
                 sticker_set_name=chat.sticker_set_name,
                 invite_links=list(chat.invite_links),
@@ -552,7 +615,7 @@ class Blueprint:
                         custom_title=member.custom_title,
                         tag=member.tag,
                         rights=member.rights,
-                        permissions=member.permissions,
+                        permissions=_granted(member.permissions),
                     )
                     for member in chat.members
                 },
@@ -583,9 +646,43 @@ class Blueprint:
                 date=world.now,
                 icon_color=topic.icon_color,
                 icon_custom_emoji_id=topic.icon_custom_emoji_id,
+                from_user=world.bot_user.as_user(),
             )
             self.topics[index].message_thread_id = created.message_thread_id
+        for index, declared in enumerate(spec.polls):
+            # Stored as `sendPoll` stores one, for the same reason.
+            target = world.chat(declared.chat_id)
+            poll = new_poll(
+                world.next_query_id(),
+                declared.question,
+                declared.options,
+                poll_type=declared.type,
+                is_anonymous=declared.is_anonymous,
+                allows_multiple_answers=declared.allows_multiple_answers,
+                allows_revoting=declared.allows_revoting,
+                correct_option_ids=declared.correct_option_ids,
+                explanation=declared.explanation,
+            )
+            world.polls[poll.id] = poll
+            message = target.add_message(
+                Message(
+                    message_id=target.allocate_message_id(),
+                    date=world.now,
+                    chat=target.as_chat(),
+                    from_user=world.bot_user.as_user(),
+                    poll=poll.as_poll(),
+                ),
+            )
+            self.polls[index].poll_id = poll.id
+            self.polls[index].message_id = message.message_id
         return world
+
+
+def _granted(permissions: ChatPermissions | None) -> ChatPermissions | None:
+    """Declared permissions as the API would store the same request."""
+    if permissions is None:
+        return None
+    return granted_permissions(permissions, use_independent_chat_permissions=None)
 
 
 def _token_bot_id(token: str) -> int:

@@ -8,7 +8,12 @@ from typing import TYPE_CHECKING, Any, TypeAlias, cast
 
 from pydantic import BaseModel
 
-from aiogram.enums import ChatMemberStatus, ChatType
+from aiogram.enums import (
+    ChatMemberStatus,
+    ChatType,
+    PollType,
+    TransactionPartnerUserTransactionTypeEnum,
+)
 from aiogram.types import (
     BotCommand,
     BotCommandScopeDefault,
@@ -38,6 +43,7 @@ from aiogram.types import (
     StarTransaction,
     Sticker,
     StickerSet,
+    TransactionPartnerUser,
     User,
 )
 
@@ -190,6 +196,76 @@ def no_administrator_rights() -> ChatAdministratorRights:
     Bot API version adds is denied by both without either being edited.
     """
     return ChatAdministratorRights(**_NO_ADMIN_RIGHTS)
+
+
+#: The message kinds that ``can_send_other_messages`` and ``can_add_web_page_previews``
+#: bring with them when permissions are not set independently.
+_IMPLIED_MESSAGE_PERMISSIONS = (
+    "can_send_messages",
+    "can_send_audios",
+    "can_send_documents",
+    "can_send_photos",
+    "can_send_videos",
+    "can_send_video_notes",
+    "can_send_voice_notes",
+)
+
+#: Permission -> the permissions granting it also grants, unless the request passed
+#: ``use_independent_chat_permissions=True``. Stated by ``restrictChatMember`` and
+#: ``setChatPermissions`` in identical words, on that very parameter.
+_COUPLED_PERMISSIONS: dict[str, tuple[str, ...]] = {
+    "can_send_other_messages": _IMPLIED_MESSAGE_PERMISSIONS,
+    "can_add_web_page_previews": _IMPLIED_MESSAGE_PERMISSIONS,
+    "can_send_polls": ("can_send_messages",),
+}
+
+#: Permission -> the one it copies when the request leaves it unset. Unlike the couplings
+#: above, these hold however permissions are set:
+#: :class:`~aiogram.types.chat_permissions.ChatPermissions` states them on the fields
+#: themselves rather than on the methods, so ``use_independent_chat_permissions`` does not
+#: switch them off.
+_PERMISSION_DEFAULTS: dict[str, str] = {
+    "can_react_to_messages": "can_send_messages",
+    "can_edit_tag": "can_pin_messages",
+    "can_manage_topics": "can_pin_messages",
+}
+
+
+def granted_permissions(
+    permissions: ChatPermissions,
+    use_independent_chat_permissions: bool | None,
+) -> ChatPermissions:
+    """
+    What a permissions request actually grants, once the Bot API's couplings are applied.
+
+    ``restrictChatMember`` and ``setChatPermissions`` do not store the mask they are handed.
+    Unless the request passes ``use_independent_chat_permissions=True``, granting
+    ``can_send_other_messages`` or ``can_add_web_page_previews`` also grants every kind of
+    message — a sticker is a message, and Telegram will not let a user send one while
+    forbidding text — and granting ``can_send_polls`` grants ``can_send_messages``. A fake
+    that stored the raw mask reported a member who may send stickers but not text, a state
+    the real API cannot produce, and a bot gating itself on ``can_send_messages`` took the
+    wrong branch against it.
+
+    Independently of that switch, three permissions default to another when the request
+    leaves them unset — ``can_react_to_messages`` to ``can_send_messages``, ``can_edit_tag``
+    and ``can_manage_topics`` to ``can_pin_messages`` — because the Bot API documents those
+    defaults on the fields rather than on the methods. They are filled after the couplings,
+    so a permission a coupling granted is one they can inherit.
+
+    The result is a fresh object either way, so nothing a caller still holds is mutated, and
+    ``model_copy`` rather than a new instance keeps whatever a future Bot API version parked
+    in the request's extra fields.
+    """
+    values = mask(ChatPermissions, permissions)
+    if not use_independent_chat_permissions:
+        for source, implied in _COUPLED_PERMISSIONS.items():
+            if values[source]:
+                values.update(dict.fromkeys(implied, True))
+    for name, fallback in _PERMISSION_DEFAULTS.items():
+        if values[name] is None:
+            values[name] = values[fallback]
+    return permissions.model_copy(update=values)
 
 
 class QueryKind(str, Enum):
@@ -400,6 +476,9 @@ class MemberState:
     #: is stored apart from it. Other statuses carry presence in
     #: themselves, so this is only read while restricted.
     is_member: bool = True
+    #: Who promoted an administrator, when the world knows: the bot
+    #: may edit the rights of the administrators it promoted.
+    promoted_by: int | None = None
 
     @property
     def is_present(self) -> bool:
@@ -438,6 +517,8 @@ class MemberState:
         previous = self.status
         self.status = status
         self.is_member = was_present if status == ChatMemberStatus.RESTRICTED else True
+        if status != ChatMemberStatus.ADMINISTRATOR:
+            self.promoted_by = None
         if status != previous and status not in {
             ChatMemberStatus.RESTRICTED,
             ChatMemberStatus.KICKED,
@@ -460,7 +541,12 @@ class MemberState:
             return
         self.set_status(status)
 
-    def as_chat_member(self, user: User, chat_type: str) -> ChatMemberUnion:
+    def as_chat_member(
+        self,
+        user: User,
+        chat_type: str,
+        viewer_id: int | None = None,
+    ) -> ChatMemberUnion:
         """
         The Bot API's view of this membership in a chat of ``chat_type``.
 
@@ -468,6 +554,9 @@ class MemberState:
         ``can_post_messages`` only for channels and ``can_manage_topics`` only for
         supergroups, so a variant built without knowing where the member is cannot be
         truthful about either.
+
+        ``viewer_id`` is the bot asking: an administrator it promoted
+        reports ``can_be_edited``, and any other does not.
         """
         if self.status == ChatMemberStatus.CREATOR:
             return ChatMemberOwner(
@@ -480,7 +569,7 @@ class MemberState:
             return ChatMemberAdministrator(
                 user=user,
                 custom_title=self.custom_title,
-                can_be_edited=False,
+                can_be_edited=(self.promoted_by is not None and self.promoted_by == viewer_id),
                 **mask(ChatAdministratorRights, scoped_rights(declared, chat_type)),
             )
         if self.status == ChatMemberStatus.RESTRICTED:
@@ -684,9 +773,33 @@ class StarTransactionState:
     amount: int
     date: datetime.datetime
     charge_id: str | None = None
+    #: The user on the other side, for a payment or its refund.
+    partner_id: int | None = None
 
-    def as_star_transaction(self) -> StarTransaction:
-        return StarTransaction(id=self.id, amount=self.amount, date=self.date)
+    def as_star_transaction(self, partner: User | None = None) -> StarTransaction:
+        """
+        The transaction as the Bot API reports it.
+
+        A payment's id is its charge id, and a refund's is the
+        payment's. The amount is always positive: ``partner`` is the
+        source of an incoming transaction and the receiver of an
+        outgoing one.
+        """
+        other_side = (
+            None
+            if partner is None
+            else TransactionPartnerUser(
+                transaction_type=TransactionPartnerUserTransactionTypeEnum.INVOICE_PAYMENT,
+                user=partner,
+            )
+        )
+        return StarTransaction(
+            id=self.charge_id or self.id,
+            amount=abs(self.amount),
+            date=self.date,
+            source=other_side if self.amount > 0 else None,
+            receiver=None if self.amount > 0 else other_side,
+        )
 
 
 @dataclass
@@ -713,12 +826,14 @@ class StarLedger:
         amount: int,
         date: datetime.datetime,
         charge_id: str | None = None,
+        partner_id: int | None = None,
     ) -> StarTransactionState:
         transaction = StarTransactionState(
             id=transaction_id,
             amount=amount,
             date=date,
             charge_id=charge_id,
+            partner_id=partner_id,
         )
         self.transactions.append(transaction)
         return transaction
@@ -802,7 +917,7 @@ class PollState:
     allows_multiple_answers: bool = False
     allows_revoting: bool = False
     members_only: bool = False
-    correct_option_id: int | None = None
+    correct_option_ids: list[int] | None = None
     explanation: str | None = None
     is_closed: bool = False
     votes: dict[int, list[int]] = field(default_factory=dict)
@@ -828,14 +943,55 @@ class PollState:
             allows_multiple_answers=self.allows_multiple_answers,
             allows_revoting=self.allows_revoting,
             members_only=self.members_only,
-            correct_option_id=self.correct_option_id,
-            correct_option_ids=None
-            if self.correct_option_id is None
-            else [self.correct_option_id],
+            # The deprecated single id can only say a lone answer.
+            correct_option_id=(
+                self.correct_option_ids[0]
+                if self.correct_option_ids is not None and len(self.correct_option_ids) == 1
+                else None
+            ),
+            correct_option_ids=(
+                None if self.correct_option_ids is None else list(self.correct_option_ids)
+            ),
             explanation=self.explanation,
             open_period=self.open_period,
             close_date=self.close_date,
         )
+
+
+def new_poll(
+    poll_id: str,
+    question: str,
+    options: list[str],
+    *,
+    poll_type: str | None = None,
+    is_anonymous: bool | None = None,
+    allows_multiple_answers: bool | None = None,
+    allows_revoting: bool | None = None,
+    correct_option_ids: list[int] | None = None,
+    **settings: Any,
+) -> PollState:
+    """
+    A poll with the defaults ``sendPoll`` documents.
+
+    A poll is regular and anonymous unless the request says otherwise,
+    and allows revoting by default unless it is a quiz. A quiz needs
+    its correct option ids. ``settings`` are stored as given.
+    """
+    kind = poll_type or PollType.REGULAR
+    if kind == PollType.QUIZ and not correct_option_ids:
+        msg = "a quiz poll must have correct_option_ids"
+        raise ApiRejection(msg)
+    return PollState(
+        id=poll_id,
+        question=question,
+        options=list(options),
+        is_anonymous=True if is_anonymous is None else is_anonymous,
+        type=kind,
+        allows_multiple_answers=bool(allows_multiple_answers),
+        allows_revoting=(kind != PollType.QUIZ if allows_revoting is None else allows_revoting),
+        correct_option_ids=correct_option_ids,
+        **settings,
+    )
 
 
 @dataclass
@@ -1367,9 +1523,11 @@ class ChatRegistry(dict[int, ChatState]):
                 f"Detaching is what says which of these you meant, and every one of them "
                 f"needs it — a chat straight out of `blueprint.build()` is owned by the "
                 f"world that built it, so handing it on undetached lands right back here:\n"
-                f"  # an independent copy, leaving the donor untouched\n"
-                f"  clone = copy.deepcopy(chat)\n"
-                f"  clone.world = None\n"
+                f"  # an independent copy, leaving the donor untouched: the memo stops\n"
+                f"  # the copy at the donor's world and bot, which a running\n"
+                f"  # environment cannot copy\n"
+                f"  memo = {{id(chat.world): None, id(chat.bound_bot): None}}\n"
+                f"  clone = copy.deepcopy(chat, memo)\n"
                 f"  world.chats[{chat.id}] = clone\n"
                 f"  # or a fresh chat of the same shape, from the declaration\n"
                 f"  clone = blueprint.build().chats[{chat.id}]\n"
@@ -1382,6 +1540,11 @@ class ChatRegistry(dict[int, ChatState]):
             )
             raise WorldLookupError(msg)
         chat.world = self.world
+        # A world still being built or copied has no bot yet.
+        bot = getattr(self.world, "bound_bot", None)
+        if bot is not None:
+            # What the chat already holds becomes usable here too.
+            mount(chat.messages, bot)
         super().__setitem__(chat_id, chat)
 
     def update(self, other: _Chats = (), /) -> None:  # type: ignore[override]
@@ -1428,6 +1591,8 @@ class World:
     sticker_sets: dict[str, StickerSetState] = field(default_factory=dict)
     last_update_id: int = 0
     last_query_id: int = 0
+    #: The number of the last file the world synthesized.
+    last_file_number: int = 0
     #: The world's clock. It stands still unless a test moves it with
     #: :meth:`aiogram.test.BotTestEnvironment.advance_time`.
     now: datetime.datetime = field(default_factory=wall_clock)
@@ -1596,6 +1761,11 @@ class World:
     def next_update_id(self) -> int:
         self.last_update_id += 1
         return self.last_update_id
+
+    def next_file_number(self) -> int:
+        """Number a synthesized file, so no two files share an id."""
+        self.last_file_number += 1
+        return self.last_file_number
 
     def sticker_set(self, name: str) -> StickerSetState:
         sticker_set = self.sticker_sets.get(name)

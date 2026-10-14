@@ -180,7 +180,10 @@ than staying silent would:
 
 Passing ``rights`` or ``permissions`` implies the status that carries it
 (administrator, restricted); an explicit ``status`` wins, and declaring both for one member
-raises, since they belong to different statuses.
+raises, since they belong to different statuses. Declared permissions, a member's or a
+chat's, are stored the way :code:`restrictChatMember` and :code:`setChatPermissions` would
+store the same mask, with the couplings and defaults described in `Chat administration`_:
+a member declared allowed to send messages reads back allowed to react too.
 
 Triggering events
 =================
@@ -585,7 +588,30 @@ changes the stored one:
 
 A stored message carries the values its request actually stated, so
 :code:`send_location(latitude=48.85, longitude=2.29)` produces a message whose
-:code:`location` reports those coordinates rather than synthesized ones.
+:code:`location` reports those coordinates rather than synthesized ones. The rules the Bot
+API states for these methods hold too:
+
+* :code:`sendMediaGroup` stores one message per item, each with that item's media,
+  caption and caption entities, all under one :code:`media_group_id`. Fewer than 2 or more
+  than 10 items fail.
+* A reply looks its target up in the chat :code:`reply_parameters.chat_id` names, or in
+  the target chat. A target that does not exist fails the send with "message to be replied
+  not found", unless :code:`allow_sending_without_reply` is set, which the Bot API reads as
+  false for a reply in another chat, in a forum topic or in an ephemeral message, and as
+  true on behalf of a business account. A target in another chat is checked but not stored
+  as :code:`reply_to_message`.
+* A forward or copy lands in the :code:`message_thread_id` the request names when the
+  target chat is a forum, and in no thread otherwise. A copy carries the request's new
+  caption with its entities, keeps the original caption when the request names none, drops
+  it for :code:`copyMessages(remove_caption=True)`, and stores the request's inline
+  keyboard. Service, invoice, paid media, giveaway and giveaway winners messages cannot be
+  copied, and service messages and protected content cannot be forwarded: a single call
+  fails, and a batch call skips them.
+* :code:`unpinChatMessage` without a message id unpins the most recently sent pinned
+  message only.
+* :code:`editMessageText` fails on a message with no text, rich or game content, and
+  :code:`editMessageCaption` on a message with no media that takes a caption; so do their
+  :code:`editEphemeralMessage*` counterparts.
 
 Every other Bot API method — including methods added by a future Bot API version — is
 recorded and answered with a schema-valid result built from its declared return type, so a
@@ -601,6 +627,14 @@ handler never breaks just because a call was not configured.
     :class:`aiogram.types.photo_size.PhotoSize` with a plausible file id, and no bytes are
     ever read. Only the scalar values a request states — coordinates, durations,
     dimensions, star counts, contact details — are carried through to the stored message.
+    Every synthesized file gets an id of its own, numbered by the world (``file-1``,
+    ``unique-1``), and a file id the request passes is the id stored. A dice carries the
+    emoji it was sent with, 🎲 by default, and a value in that emoji's range. A checklist
+    is stored with the title and tasks its request stated.
+
+    Synthesized values are valid ones: a string field aiogram enumerates, such as
+    :code:`Sticker.type`, takes a value of its enum, a synthesized boolean is ``False``,
+    and a count of a synthesized list, which is empty, is ``0``.
 
 .. note::
 
@@ -863,7 +897,10 @@ subscription for an unknown charge. Declare a starting balance with
 ``blueprint.set_star_balance(1000)`` when a test should not have to earn its stars first.
 
 The balance is always computed from the recorded transactions, so it cannot disagree with
-them — the same rule poll counts and reaction counts follow.
+them — the same rule poll counts and reaction counts follow. :code:`getStarTransactions`
+reports them the way Telegram does: a payment's id is its charge id and a refund's is the
+payment's, every amount is positive, and the paying user is the payment's ``source`` and
+the refund's ``receiver``.
 
 Gifts are owned inventory. ``getAvailableGifts`` returns a small **fake but stable**
 catalogue, so ``gifts[0].id`` is the same on every run:
@@ -1886,6 +1923,10 @@ granted, and reading the member back says so.
     member = await env.bot.get_chat_member(chat_id=group.id, user_id=alice.id)
     assert member.can_pin_messages is True
     assert member.can_delete_messages is False   # never granted
+    assert member.can_be_edited is True          # the bot promoted them
+
+``can_be_edited`` is true for an administrator the bot promoted, and false for any other,
+a declared administrator included.
 
 A promotion in which nothing comes out true — every flag ``False``, or none passed at all —
 is the demotion the Bot API documents; anything true keeps the member an administrator,
@@ -2105,6 +2146,33 @@ nothing.
 Per-option counts are always computed from the recorded voters, so they cannot disagree
 with who voted, including after a retraction (``user.vote(poll_id, [])``).
 
+A poll keeps the settings the Bot API documents: a quiz stores all of its
+:code:`correct_option_ids` (falling back to the deprecated :code:`correct_option_id`), a
+quiz without them fails, and a regular poll allows revoting unless the request says
+otherwise. :code:`stopPoll` stores the inline keyboard it is given.
+
+A poll the bot sent before the test starts can be declared with
+:meth:`aiogram.test.Blueprint.add_poll`. It is stored as :code:`sendPoll` stores one, on a
+message from the bot, and the returned handle carries the poll's id and the message's id
+once the world is built:
+
+.. code-block:: python
+
+    @pytest.fixture
+    def bot_blueprint():
+        blueprint = Blueprint()
+        alice = blueprint.add_user("Alice")
+        chat = blueprint.add_private_chat(alice)
+        blueprint.add_poll(chat, "Lunch?", ["Pizza", "Sushi"], is_anonymous=False)
+        return blueprint
+
+    async def test_vote(bot_env, bot_blueprint):
+        lunch = bot_blueprint.polls[0]
+
+        await bot_env.user(bot_blueprint.users[0]).vote(lunch.poll_id, [1])
+
+        assert bot_env.world.poll(lunch.poll_id).vote_count(1) == 1
+
 Reactions live in the chat rather than on the message, because **the Bot API has no
 message field carrying them** — they exist only as update payloads:
 
@@ -2194,6 +2262,11 @@ Telegram — and the ``*GeneralForumTopic*`` methods act on it. Posting into a t
 does not exist raises :class:`aiogram.exceptions.TelegramBadRequest` rather than silently
 producing an untagged message.
 
+The couplings the Bot API documents apply: hiding the General topic also closes it, and
+reopening it also unhides it. :code:`editForumTopic` with an empty name keeps the current
+name, and an empty ``icon_custom_emoji_id`` removes the icon. A declared topic is created
+by the bot, as one created through :code:`createForumTopic` is.
+
 Business connections
 ====================
 
@@ -2232,7 +2305,9 @@ with the bot recorded as the sending business bot — which is what the customer
 
 ``getBusinessConnection`` answers from the declared state, and ``readBusinessMessage`` and
 ``deleteBusinessMessages`` are applied to the world; the business *account* methods stay on
-the record-and-synthesize path.
+the record-and-synthesize path. ``deleteBusinessMessages`` names no chat, and the Bot API
+requires its messages to be from one chat: it deletes from the chat holding the most of
+the ids, and fails when an id is held only by another chat.
 
 .. note::
 

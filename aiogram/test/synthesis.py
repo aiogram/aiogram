@@ -1,15 +1,18 @@
 from __future__ import annotations
 
 import datetime
+from collections.abc import Callable
 from dataclasses import dataclass
 from enum import Enum
 from functools import cache
 from types import UnionType
-from typing import Any, Literal, Union, get_args, get_origin
+from typing import Annotated, Any, Literal, Union, get_args, get_origin
 
 from pydantic import BaseModel
 from pydantic.fields import FieldInfo
+from typing_extensions import TypeAliasType
 
+import aiogram.enums as api_enums
 from aiogram.types import Chat, User
 
 from .world import BASE_DATE
@@ -27,10 +30,18 @@ class SynthesisContext:
     user: User | None = None
     date: datetime.datetime = BASE_DATE
     counter: int = 0
+    #: Numbers a synthesized file, so files stay apart across calls;
+    #: the context's own counter when there is no world to ask.
+    file_numbers: Callable[[], int] | None = None
 
     def next_int(self) -> int:
         self.counter += 1
         return self.counter
+
+    def next_file_number(self) -> int:
+        if self.file_numbers is not None:
+            return self.file_numbers()
+        return self.next_int()
 
 
 @cache
@@ -43,6 +54,10 @@ def _union_members(annotation: Any) -> tuple[Any, ...]:
 
 
 def annotation_accepts(annotation: Any, target: type) -> bool:
+    if isinstance(annotation, TypeAliasType):
+        return annotation_accepts(annotation.__value__, target)
+    if get_origin(annotation) is Annotated:
+        return annotation_accepts(get_args(annotation)[0], target)
     if isinstance(annotation, type):
         return issubclass(annotation, target)
     if get_origin(annotation) in {UnionType, Union}:
@@ -117,9 +132,11 @@ def synthesize(
     if issubclass(annotation, Enum):
         return next(iter(annotation)).value
     if issubclass(annotation, bool):
-        return True
+        # The absent-flag reading every optional Bot API flag has.
+        return False
     if issubclass(annotation, int):
-        return context.next_int()
+        # Synthesized lists are empty, so whatever they count is zero.
+        return 0 if name.endswith("_count") else context.next_int()
     if issubclass(annotation, float):
         return float(context.next_int())
     if issubclass(annotation, datetime.datetime):
@@ -127,7 +144,8 @@ def synthesize(
     if issubclass(annotation, datetime.timedelta):
         return datetime.timedelta(0)
     if issubclass(annotation, str):
-        return name
+        enumerated = _enumerated(stack[-1], name) if stack else None
+        return name if enumerated is None else enumerated
     if issubclass(annotation, bytes):
         return b""
     if issubclass(annotation, BaseModel):
@@ -156,7 +174,13 @@ def _synthesize_model(
         raise SynthesisError(msg)
 
     values: dict[str, Any] = {}
+    if {"file_id", "file_unique_id"} <= model.model_fields.keys():
+        number = context.next_file_number()
+        values["file_id"] = f"file-{number}"
+        values["file_unique_id"] = f"unique-{number}"
     for name, info in _required_fields(model):
+        if name in values:
+            continue
         seeded = _seed(name, info, context)
         if seeded is not None:
             values[name] = seeded
@@ -169,6 +193,21 @@ def _synthesize_model(
             stack=(*stack, model),
         )
     return model(**values)
+
+
+def _enumerated(model: type, name: str) -> str | None:
+    """
+    The first value aiogram enumerates for ``model.name``, if any.
+
+    aiogram names such an enum after the model and the field, as
+    ``StickerType`` for ``Sticker.type``, so the values follow the
+    Bot API with no list kept here.
+    """
+    camel = "".join(part.capitalize() for part in name.split("_"))
+    enum = getattr(api_enums, f"{model.__name__}{camel}", None)
+    if isinstance(enum, type) and issubclass(enum, Enum):
+        return str(next(iter(enum)).value)
+    return None
 
 
 def _seed(name: str, info: FieldInfo, context: SynthesisContext) -> Any:
@@ -186,4 +225,7 @@ def _seed(name: str, info: FieldInfo, context: SynthesisContext) -> Any:
 
 def synthesize_result(returning: Any, context: SynthesisContext) -> Any:
     """Build a result for a method's ``__returning__`` annotation."""
+    if returning is bool:
+        # A method returning a boolean returns True on success.
+        return True
     return synthesize(returning, context)
