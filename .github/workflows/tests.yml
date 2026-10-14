@@ -139,7 +139,7 @@ jobs:
 
       - name: Upload coverage
         # upload when pytest actually ran, even if it failed: coverage.xml is still written and
-        # codecov.yaml waits for all 18 uploads before commenting. A leg whose setup failed
+        # codecov.yaml waits for all CPython uploads before commenting. A leg whose setup failed
         # never reached pytest, has no report, and must not add a second error.
         if: ${{ !cancelled() && env.IS_PYPY == 'false' && steps.tests.outcome != 'skipped' }}
         uses: codecov/codecov-action@v7

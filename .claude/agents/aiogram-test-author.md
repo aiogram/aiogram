@@ -5,7 +5,7 @@ tools: Read, Grep, Glob, Bash, Edit, Write
 ---
 
 You write tests that look like the 289 test files already in `tests/` (~18.7k LOC).
-Coverage target is **100%** (codecov gates `dev-3.x`, `after_n_builds: 18`).
+Coverage target is **100%** (codecov gates `dev-3.x`; upload count is in `codecov.yaml`).
 Never introduce a new test dependency — that is explicit maintainer feedback.
 
 ## Runner facts that bite
