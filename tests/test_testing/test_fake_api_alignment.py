@@ -27,6 +27,7 @@ from aiogram.types import (
     InputChecklistTask,
     InputMediaPhoto,
     InputMediaVoiceNote,
+    InputRichBlockPhoto,
     InputRichBlockVoiceNote,
     InputRichMessage,
     LabeledPrice,
@@ -405,6 +406,61 @@ class TestCopiesAndForwards:
                 message_id=invoice.message_id,
             )
 
+    async def test_a_copy_or_forward_is_a_new_message(self, env, private, bobs):
+        first = await env.bot.send_message(chat_id=private.id, text="first")
+        source = await env.bot.send_message(
+            chat_id=private.id,
+            text="second",
+            reply_parameters=ReplyParameters(message_id=first.message_id),
+            protect_content=True,
+        )
+        await env.bot.edit_message_text(
+            chat_id=private.id, message_id=source.message_id, text="edited"
+        )
+        unprotected = private.find_message(source.message_id).model_copy(
+            update={"has_protected_content": None},
+        )
+        private.replace_message(unprotected)
+
+        copied = await env.bot.copy_message(
+            chat_id=bobs.id,
+            from_chat_id=private.id,
+            message_id=source.message_id,
+        )
+        forwarded = await env.bot.forward_message(
+            chat_id=bobs.id,
+            from_chat_id=private.id,
+            message_id=source.message_id,
+            protect_content=True,
+        )
+
+        copy = bobs.find_message(copied.message_id)
+        assert copy.reply_to_message is None
+        assert copy.edit_date is None
+        assert copy.has_protected_content is None
+        assert forwarded.reply_to_message is None
+        assert forwarded.has_protected_content is True
+
+    async def test_a_copy_replies_in_its_own_chat(self, env, private, bobs):
+        target = await env.bot.send_message(chat_id=bobs.id, text="target")
+        source = await env.bot.send_message(chat_id=private.id, text="hi")
+
+        copied = await env.bot.copy_message(
+            chat_id=bobs.id,
+            from_chat_id=private.id,
+            message_id=source.message_id,
+            reply_parameters=ReplyParameters(message_id=target.message_id),
+        )
+
+        assert bobs.find_message(copied.message_id).reply_to_message == target
+        with pytest.raises(TelegramBadRequest, match="not found"):
+            await env.bot.copy_message(
+                chat_id=bobs.id,
+                from_chat_id=private.id,
+                message_id=source.message_id,
+                reply_parameters=ReplyParameters(message_id=999),
+            )
+
 
 class TestUnpinning:
     async def test_unpinning_without_an_id_unpins_the_newest_pin(self, env, private):
@@ -493,6 +549,16 @@ class TestPolls:
         message = await env.bot.send_poll(chat_id=private.id, question="Q?", options=["a", "b"])
 
         assert message.poll.allows_revoting is True
+
+    async def test_a_correct_option_must_be_an_option(self, env, private):
+        with pytest.raises(TelegramBadRequest, match=r"\[5\] are not options"):
+            await env.bot.send_poll(
+                chat_id=private.id,
+                question="Q?",
+                options=["a", "b"],
+                type="quiz",
+                correct_option_ids=[5],
+            )
 
     async def test_a_quiz_without_an_answer_is_refused(self, env, private):
         with pytest.raises(TelegramBadRequest, match="correct_option_ids"):
@@ -770,7 +836,23 @@ class TestSynthesis:
             ),
         )
 
-        assert message.rich_message.blocks[0].voice_note is not None
+        assert message.rich_message.blocks[0].voice_note.file_id == "voice"
+
+    async def test_a_rich_block_keeps_its_upload(self, env, private):
+        message = await env.bot.send_rich_message(
+            chat_id=private.id,
+            rich_message=InputRichMessage(
+                blocks=[
+                    InputRichBlockPhoto(
+                        photo=InputMediaPhoto(media=BufferedInputFile(b"pixels", "a.png")),
+                    ),
+                ],
+            ),
+        )
+
+        (size,) = message.rich_message.blocks[0].photo
+        downloaded = await env.bot.download(size, destination=io.BytesIO())
+        assert downloaded.getvalue() == b"pixels"
 
     def test_aliases_and_annotated_types_are_looked_through(self):
         assert annotation_accepts(RichTextUnion, RichTextBold)
@@ -810,6 +892,14 @@ class TestEditableAdministrators:
 
         member = await env.bot.get_chat_member(chat_id=team.id, user_id=bob.id)
 
+        assert member.can_be_edited is False
+
+    async def test_editing_someone_elses_administrator_keeps_it_so(self, env, team, bob):
+        team.member(bob.id).set_status(ChatMemberStatus.ADMINISTRATOR)
+
+        await env.bot.promote_chat_member(chat_id=team.id, user_id=bob.id, can_pin_messages=True)
+
+        member = await env.bot.get_chat_member(chat_id=team.id, user_id=bob.id)
         assert member.can_be_edited is False
 
     async def test_a_declared_administrator_is_not(self, env, team, blueprint):
@@ -908,6 +998,8 @@ class TestDeclaredWorlds:
 
         with pytest.raises(ValueError, match="correct_option_ids"):
             blueprint.add_poll(chat, "2 + 2?", ["3", "4"], type="quiz")
+        with pytest.raises(ValueError, match="not options"):
+            blueprint.add_poll(chat, "2 + 2?", ["3", "4"], type="quiz", correct_option_ids=[2])
 
 
 class TestChatRegistryRecipe:

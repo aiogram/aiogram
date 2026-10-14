@@ -227,7 +227,6 @@ from aiogram.types import (
     BotDescription,
     BotName,
     BotShortDescription,
-    BufferedInputFile,
     BusinessConnection,
     ChatAdministratorRights,
     ChatFullInfo,
@@ -272,7 +271,7 @@ from aiogram.types import (
 from .errors import ApiRejection
 from .mounting import detached_copy
 from .rich import materialize_rich_message
-from .synthesis import annotation_accepts, nonempty, synthesize
+from .synthesis import annotation_accepts, nonempty, synthesize, with_passed_file
 from .world import (
     DEFAULT_TOPIC_ICON_COLOR,
     ChatState,
@@ -678,18 +677,6 @@ _DICE_FACES: dict[str, int] = {
 }
 
 
-def _passed_file_id(uploaded: Any) -> str | None:
-    """
-    The file id a request passed as its media, if it passed one.
-
-    A string is a file id, or an HTTP URL Telegram downloads, which
-    gets an id of its own.
-    """
-    if isinstance(uploaded, str) and not uploaded.startswith(("http://", "https://")):
-        return uploaded
-    return None
-
-
 def stored_content(
     env: BotTestEnvironment,
     request: BaseModel,
@@ -702,10 +689,8 @@ def stored_content(
     Rich content and checklists convert from what the request stated.
     Anything else is synthesized with the request's own values carried
     over, a dice folded into its emoji's range, and a file given the
-    id the request passed or a fresh one. An upload that carried its
-    bytes registers them under that id; only
-    :class:`~aiogram.types.input_file.BufferedInputFile` is read, since
-    a test environment must not touch the disk or the network.
+    id the request passed or a fresh one, as
+    :func:`~aiogram.test.synthesis.with_passed_file` describes.
     """
     if isinstance(uploaded, InputRichMessage):
         return materialize_rich_message(uploaded, env.synthesis_context())
@@ -722,18 +707,7 @@ def stored_content(
     if isinstance(payload, Dice):
         faces = _DICE_FACES.get(payload.emoji, 6)
         return payload.model_copy(update={"value": (payload.value - 1) % faces + 1})
-    file_id = _passed_file_id(uploaded)
-    items = payload if isinstance(payload, list) else [payload]
-    if file_id is not None:
-        items = [
-            item.model_copy(update={"file_id": file_id}) if hasattr(item, "file_id") else item
-            for item in items
-        ]
-    elif isinstance(uploaded, BufferedInputFile):
-        for item in items:
-            if hasattr(item, "file_id"):
-                env.world.files[item.file_id] = uploaded.data
-    return items if isinstance(payload, list) else items[0]
+    return with_passed_file(payload, uploaded, env.synthesis_context())
 
 
 def stored_checklist(checklist: InputChecklist) -> Checklist:
@@ -966,6 +940,7 @@ def forward_one(
     target: ChatState,
     message_id: int,
     thread_id: int | None = None,
+    protect_content: object = None,
 ) -> Message:
     original = source.find_message(message_id)
     if original is None:
@@ -985,14 +960,37 @@ def forward_one(
             original.from_user or env.world.bot_user.as_user(),
         ),
         **_thread_changes(target, thread_id),
+        **_new_message_changes(protect_content),
     )
+
+
+def _new_message_changes(protect_content: object) -> dict[str, Any]:
+    """
+    What a forward or copy does not take from the original.
+
+    It is a new message of its own chat: not edited, protected only
+    when the request asks, and replying to nothing in the original's
+    chat, since ``reply_to_message`` is a message of the same chat.
+    """
+    return {
+        "reply_to_message": None,
+        "edit_date": None,
+        "has_protected_content": True if protect_content else None,
+    }
 
 
 @models(ForwardMessage)
 def handle_forward(env: BotTestEnvironment, method: ForwardMessage) -> Message:
     source = resolve_chat(env, method.from_chat_id)
     target = resolve_chat(env, method.chat_id)
-    return forward_one(env, source, target, method.message_id, method.message_thread_id)
+    return forward_one(
+        env,
+        source,
+        target,
+        method.message_id,
+        method.message_thread_id,
+        method.protect_content,
+    )
 
 
 @models(ForwardMessages)
@@ -1001,7 +999,14 @@ def handle_forward_many(env: BotTestEnvironment, method: ForwardMessages) -> lis
     target = resolve_chat(env, method.chat_id)
     # Telegram skips what it cannot forward rather than failing the whole batch.
     forwarded = [
-        forward_one(env, source, target, message_id, method.message_thread_id)
+        forward_one(
+            env,
+            source,
+            target,
+            message_id,
+            method.message_thread_id,
+            method.protect_content,
+        )
         for message_id in method.message_ids
         if (original := source.find_message(message_id)) is not None and _forwardable(original)
     ]
@@ -1035,8 +1040,11 @@ def copy_one(
         from_user=env.world.bot_user.as_user(),
         # A copy carries no trace of where it came from — that is the whole difference.
         forward_origin=None,
-        **_thread_changes(target, thread_id),
-        **changes,
+        **{
+            **_thread_changes(target, thread_id),
+            **_new_message_changes(None),
+            **changes,
+        },
     )
 
 
@@ -1058,6 +1066,8 @@ def handle_copy(env: BotTestEnvironment, method: CopyMessage) -> MessageId:
         changes["show_caption_above_media"] = method.show_caption_above_media
     if isinstance(method.reply_markup, InlineKeyboardMarkup):
         changes["reply_markup"] = method.reply_markup
+    changes.update(_new_message_changes(method.protect_content))
+    changes["reply_to_message"] = _reply_target(env, method, target, ephemeral=False)
     copied = copy_one(
         env,
         source,
@@ -1073,7 +1083,7 @@ def handle_copy(env: BotTestEnvironment, method: CopyMessage) -> MessageId:
 def handle_copy_many(env: BotTestEnvironment, method: CopyMessages) -> list[MessageId]:
     source = resolve_chat(env, method.from_chat_id)
     target = resolve_chat(env, method.chat_id)
-    changes: dict[str, Any] = {}
+    changes = _new_message_changes(method.protect_content)
     if method.remove_caption:
         changes["caption"] = None
         changes["caption_entities"] = None
@@ -1604,9 +1614,13 @@ def handle_promote(env: BotTestEnvironment, method: PromoteChatMember) -> bool:
         member.rights = None
         member.custom_title = None
         return True
+    was_administrator = member.status == ChatMemberStatus.ADMINISTRATOR
     member.set_status(ChatMemberStatus.ADMINISTRATOR)
     member.rights = ChatAdministratorRights(**granted)
-    member.promoted_by = env.world.bot_user.id
+    if not was_administrator:
+        # Editing an administrator's rights does not make the bot the
+        # one who promoted them, so ``can_be_edited`` stays truthful.
+        member.promoted_by = env.world.bot_user.id
     return True
 
 

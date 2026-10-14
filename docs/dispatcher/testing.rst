@@ -690,8 +690,8 @@ Rich messages
 A rich message sent as blocks is stored with those blocks, in the shape Telegram returns
 them: an :class:`aiogram.types.input_rich_block_paragraph.InputRichBlockParagraph` becomes
 a :class:`aiogram.types.rich_block_paragraph.RichBlockParagraph` carrying the same text,
-and so on for every block type, nested ones included. Media inside a block is synthesized
-the same way as for :code:`sendPhoto`. A field Telegram fills in on its side, such as a list
+and so on for every block type, nested ones included. Media inside a block is stored the
+same way as for :code:`sendPhoto`, keeping a file id or upload the request passed. A field Telegram fills in on its side, such as a list
 item's label or a map's size when the request leaves it out, is stored as a zero value,
 because Telegram does not document what it picks. :code:`editMessageText` replaces the
 content: rich content replaces text and text replaces rich content.

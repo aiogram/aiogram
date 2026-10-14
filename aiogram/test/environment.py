@@ -1707,6 +1707,7 @@ class BotTestEnvironment:
             date=self.world.next_date(),
             counter=self.world.last_update_id,
             file_numbers=self.world.next_file_number,
+            files=self.world.files,
         )
 
     def fail(

@@ -1816,16 +1816,18 @@ class UserActor:
 
     def _stored_button_message(self, message: Message, callback_data: str) -> Message:
         """The stored ``message``, which must carry the button."""
+
+        def carries(candidate: Message) -> bool:
+            return any(button.callback_data == callback_data for button in _buttons_of(candidate))
+
         stored = self._stored_version(message)
-        if any(button.callback_data == callback_data for button in _buttons_of(stored)):
+        if carries(stored):
             return stored
         msg = (
             f"{_label(message)} in chat {self.chat.id} carries no button with "
             f"callback_data={callback_data!r}"
         )
-        if stored is not message and any(
-            button.callback_data == callback_data for button in _buttons_of(message)
-        ):
+        if stored is not message and carries(message):
             msg += "; the copy passed does, but the message was edited since"
         raise WorldLookupError(msg)
 

@@ -36,6 +36,7 @@ from .world import (
     granted_permissions,
     new_poll,
     private_chat_shape,
+    quiz_problem,
     scope_key,
     wall_clock,
 )
@@ -403,9 +404,9 @@ class Blueprint:
         bot, with the same defaults. A quiz needs its correct option
         ids, as ``sendPoll`` requires.
         """
-        if type == PollType.QUIZ and not correct_option_ids:
-            msg = "A quiz poll needs `correct_option_ids`."
-            raise ValueError(msg)
+        problem = quiz_problem(type, list(options), correct_option_ids)
+        if problem is not None:
+            raise ValueError(problem)
         poll = PollSpec(
             chat_id=chat.id,
             question=question,

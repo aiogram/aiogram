@@ -23,6 +23,7 @@ from .synthesis import (
     list_item,
     nonempty,
     synthesize,
+    with_passed_file,
 )
 
 _INPUT_PREFIX = "Input"
@@ -93,7 +94,8 @@ def _convert_value(
         entry_type = annotation if item is None else item
         return [_convert_value(entry, entry_type, name, context) for entry in raw]
     if _is_media(raw, annotation):
-        return nonempty(annotation, context, name=name)
+        stored = nonempty(annotation, context, name=name)
+        return with_passed_file(stored, getattr(raw, "media", None), context)
     if isinstance(raw, BaseModel) and counterpart(type(raw)) is not None:
         return _convert_model(raw, context)
     return raw

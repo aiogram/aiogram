@@ -13,7 +13,7 @@ from pydantic.fields import FieldInfo
 from typing_extensions import TypeAliasType
 
 import aiogram.enums as api_enums
-from aiogram.types import Chat, User
+from aiogram.types import BufferedInputFile, Chat, User
 
 from .world import BASE_DATE
 
@@ -33,6 +33,8 @@ class SynthesisContext:
     #: Numbers a synthesized file, so files stay apart across calls;
     #: the context's own counter when there is no world to ask.
     file_numbers: Callable[[], int] | None = None
+    #: The world's file store, which uploads register their bytes in.
+    files: dict[str, bytes] | None = None
 
     def next_int(self) -> int:
         self.counter += 1
@@ -42,6 +44,41 @@ class SynthesisContext:
         if self.file_numbers is not None:
             return self.file_numbers()
         return self.next_int()
+
+
+def passed_file_id(uploaded: Any) -> str | None:
+    """
+    The file id a request passed as its media, if it passed one.
+
+    A string is a file id, or an HTTP URL Telegram downloads, which
+    gets an id of its own.
+    """
+    if isinstance(uploaded, str) and not uploaded.startswith(("http://", "https://")):
+        return uploaded
+    return None
+
+
+def with_passed_file(payload: Any, uploaded: Any, context: SynthesisContext) -> Any:
+    """
+    ``payload``, holding the file the request passed as ``uploaded``.
+
+    A passed file id replaces the synthesized one. The bytes of a
+    :class:`~aiogram.types.input_file.BufferedInputFile` are stored
+    under the synthesized id; no other upload is read, since a test
+    environment must not touch the disk or the network.
+    """
+    items = payload if isinstance(payload, list) else [payload]
+    file_id = passed_file_id(uploaded)
+    if file_id is not None:
+        items = [
+            item.model_copy(update={"file_id": file_id}) if hasattr(item, "file_id") else item
+            for item in items
+        ]
+    elif isinstance(uploaded, BufferedInputFile) and context.files is not None:
+        for item in items:
+            if hasattr(item, "file_id"):
+                context.files[item.file_id] = uploaded.data
+    return items if isinstance(payload, list) else items[0]
 
 
 @cache

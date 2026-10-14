@@ -964,6 +964,20 @@ class PollState:
         )
 
 
+def quiz_problem(
+    poll_type: str | None,
+    options: list[str],
+    correct_option_ids: list[int] | None,
+) -> str | None:
+    """What makes a poll's correct option ids invalid, if anything."""
+    if poll_type == PollType.QUIZ and not correct_option_ids:
+        return "a quiz poll must have correct_option_ids"
+    wrong = [i for i in correct_option_ids or [] if not 0 <= i < len(options)]
+    if wrong:
+        return f"correct_option_ids {wrong} are not options of a {len(options)}-option poll"
+    return None
+
+
 def new_poll(
     poll_id: str,
     question: str,
@@ -981,12 +995,13 @@ def new_poll(
 
     A poll is regular and anonymous unless the request says otherwise,
     and allows revoting by default unless it is a quiz. A quiz needs
-    its correct option ids. ``settings`` are stored as given.
+    its correct option ids, each one of its options. ``settings`` are
+    stored as given.
     """
     kind = poll_type or PollType.REGULAR
-    if kind == PollType.QUIZ and not correct_option_ids:
-        msg = "a quiz poll must have correct_option_ids"
-        raise ApiRejection(msg)
+    problem = quiz_problem(kind, options, correct_option_ids)
+    if problem is not None:
+        raise ApiRejection(problem)
     return PollState(
         id=poll_id,
         question=question,
