@@ -3,6 +3,7 @@ import pytest
 from aiogram.enums import ChatMemberStatus
 from aiogram.exceptions import TelegramBadRequest
 from aiogram.test import Blueprint, BotTestEnvironment, WorldLookupError
+from aiogram.test.errors import WaitTimeoutError
 from aiogram.test.world import BASE_DATE
 from aiogram.types import (
     BufferedInputFile,
@@ -661,3 +662,29 @@ class TestStoreGuards:
             team.add_ephemeral_command(
                 Message(message_id=0, date=BASE_DATE, chat=team.as_chat()),
             )
+
+
+class TestWaitingForEphemeralMessages:
+    async def test_the_receivers_view_is_waited_on(self, env, team, alice):
+        await send_to(env, team, alice, text="first")
+        await send_to(env, team, alice, text="second")
+
+        newest = await team.wait_for_message(receiver=alice, timeout=0.05)
+        first = await team.wait_for_message(
+            lambda m: m.text == "first", receiver=alice, timeout=0.05
+        )
+
+        assert newest.text == "second"
+        assert first.text == "first"
+
+    async def test_the_shared_wait_points_to_them(self, env, team, alice):
+        await send_to(env, team, alice, text="psst")
+
+        with pytest.raises(WaitTimeoutError, match="receiver=<user>"):
+            await team.wait_for_message(lambda m: m.text == "psst", timeout=0.05)
+
+    async def test_another_receivers_view_times_out(self, env, team, alice, bob):
+        await send_to(env, team, alice, text="psst")
+
+        with pytest.raises(WaitTimeoutError, match="as seen by user"):
+            await team.wait_for_message(receiver=bob, timeout=0.05)

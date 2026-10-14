@@ -478,6 +478,18 @@ class TestScheduledPolls:
 
         env.assert_handled_by("on_text")
 
+    async def test_a_forward_closes_with_its_original(self, env, team):
+        sent = await self.send(env, team, open_period=60)
+        forwarded = await env.bot.forward_message(
+            chat_id=team.id,
+            from_chat_id=team.id,
+            message_id=sent.message_id,
+        )
+
+        await env.advance_time(60)
+
+        assert team.find_message(forwarded.message_id).poll.is_closed is True
+
     async def test_a_deleted_poll_message_does_not_close(self, env, team):
         updates = []
         env.dispatcher.poll.register(updates.append)

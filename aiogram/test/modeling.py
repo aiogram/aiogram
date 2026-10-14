@@ -2874,9 +2874,29 @@ def _poll_close(env: BotTestEnvironment, method: SendPoll) -> datetime.datetime 
     return moment
 
 
-def _close_poll(chat: ChatState, message_id: int, poll: PollState, **changes: Any) -> Poll:
+def _close_poll(
+    env: BotTestEnvironment,
+    poll: PollState,
+    origin: tuple[ChatState, int] | None = None,
+    **changes: Any,
+) -> Poll:
+    """
+    Close ``poll`` and show it closed on every message that carries it.
+
+    A forward carries the same poll as its original, so it closes with
+    it. ``changes``, such as a new keyboard, apply to the message
+    ``origin`` names, the one the poll was sent in, and to no other.
+    """
     poll.is_closed = True
-    chat.update_message(message_id, poll=poll.as_poll(), **changes)
+    for holder in env.world.chats.values():
+        carriers = [
+            message.message_id
+            for message in holder.messages
+            if message.poll is not None and message.poll.id == poll.id
+        ]
+        for message_id in carriers:
+            own = origin is not None and holder is origin[0] and message_id == origin[1]
+            holder.update_message(message_id, poll=poll.as_poll(), **(changes if own else {}))
     return poll.as_poll()
 
 
@@ -2921,9 +2941,9 @@ def handle_send_poll(env: BotTestEnvironment, method: SendPoll) -> Message:
             if chat.find_message(message_id) is None:
                 # Its message is gone, but the poll still closes on
                 # schedule, so no answer counts after its close date.
-                poll.is_closed = True
+                _close_poll(env, poll)
                 return
-            closed = _close_poll(chat, message_id, poll)
+            closed = _close_poll(env, poll, (chat, message_id))
             await env.feed(Update(update_id=env.world.next_update_id(), poll=closed))
 
         env.schedule(close_at, close)
@@ -2932,17 +2952,26 @@ def handle_send_poll(env: BotTestEnvironment, method: SendPoll) -> Message:
 
 @models(StopPoll)
 def handle_stop_poll(env: BotTestEnvironment, method: StopPoll) -> Poll:
+    """
+    Stop a poll through the original message that carries it.
+
+    ``stopPoll`` names "the original message with the poll", so a
+    forward of it, which carries the same poll, is refused.
+    """
     chat, stored = _edit_target(env, method)
     message_id = stored.message_id
     if stored.poll is None:
         msg = "message doesn't contain a poll"
+        raise ApiRejection(msg)
+    if stored.forward_origin is not None:
+        msg = "message with poll to stop not found"
         raise ApiRejection(msg)
     poll = env.world.poll(stored.poll.id)
     if poll.is_closed:
         msg = "poll has already been closed"
         raise ApiRejection(msg)
     # The keyboard is the one the request passes, or none.
-    return _close_poll(chat, message_id, poll, reply_markup=method.reply_markup)
+    return _close_poll(env, poll, (chat, message_id), reply_markup=method.reply_markup)
 
 
 # -- reactions -------------------------------------------------------------------------

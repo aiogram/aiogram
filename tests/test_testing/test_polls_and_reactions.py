@@ -157,6 +157,32 @@ class TestStoppingPolls:
         with pytest.raises(TelegramBadRequest, match="message to edit not found"):
             await env.bot.stop_poll(chat_id=private.id, message_id=999)
 
+    async def test_a_forward_shows_the_poll_closed_too(self, env, private):
+        """A forward carries the same poll, so it closes with the original."""
+        message = await send_poll(env, private)
+        forwarded = await env.bot.forward_message(
+            chat_id=private.id,
+            from_chat_id=private.id,
+            message_id=message.message_id,
+        )
+
+        await env.bot.stop_poll(chat_id=private.id, message_id=message.message_id)
+
+        assert private.find_message(forwarded.message_id).poll.is_closed is True
+
+    async def test_stopping_through_a_forward_fails(self, env, private):
+        """``stopPoll`` names the original message with the poll."""
+        message = await send_poll(env, private)
+        forwarded = await env.bot.forward_message(
+            chat_id=private.id,
+            from_chat_id=private.id,
+            message_id=message.message_id,
+        )
+
+        with pytest.raises(TelegramBadRequest, match="poll to stop not found"):
+            await env.bot.stop_poll(chat_id=private.id, message_id=forwarded.message_id)
+        assert env.world.poll(message.poll.id).is_closed is False
+
 
 class TestBotReactions:
     async def test_the_bot_reacts_to_a_message(self, env, private):

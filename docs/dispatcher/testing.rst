@@ -744,8 +744,8 @@ An ephemeral message is shown to one user of a group. Sending one with
 ``ephemeral_message_parameters``, or with the deprecated ``receiver_user_id``, returns it in
 Telegram's shape: ``message_id`` 0, an
 ``ephemeral_message_id``, and the receiver as ``receiver_user``. It is not part of the
-chat's shared history, so ``chat.messages`` and :code:`wait_for_message` do not see it;
-read it back per receiver:
+chat's shared history, so ``chat.messages`` and a plain :code:`wait_for_message` do not see
+it; read it back per receiver, or wait for one with ``receiver=``:
 
 .. code-block:: python
 
@@ -756,6 +756,10 @@ read it back per receiver:
     )
 
     (message,) = chat.ephemeral_messages(alice)
+    message = await chat.wait_for_message(lambda m: m.text.startswith("Only"), receiver=alice)
+
+A wait on the shared history that times out says when the bot sent ephemeral messages
+instead.
 
 Only the receiver can press its buttons: another member's :code:`click()` fails and names
 whom the message is for. :code:`editEphemeralMessageText`, :code:`...Caption`,

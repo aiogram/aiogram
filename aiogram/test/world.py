@@ -355,9 +355,19 @@ def newest_match(
                 continue
             if not matched:
                 continue
-        if newest is None or message.message_id > newest.message_id:
+        if newest is None or _sent_order(message) > _sent_order(newest):
             newest = message
     return newest
+
+
+def _sent_order(message: Message) -> tuple[int, int]:
+    """
+    Where ``message`` falls among those of one view, by its ids.
+
+    Ephemeral messages all have ``message_id`` 0, and are ordered by
+    their ephemeral ids instead.
+    """
+    return message.message_id, message.ephemeral_message_id or 0
 
 
 async def _wait_for_message(
@@ -369,6 +379,7 @@ async def _wait_for_message(
     where: str,
     timeout: float,
     interval: float,
+    hint: Callable[[], str] | None = None,
 ) -> Message:
     """
     The polling core behind :meth:`ChatState.wait_for_message` and its topic-scoped twin.
@@ -409,9 +420,10 @@ async def _wait_for_message(
                 f" The predicate raised on {len(raised)} of them, which counted as no "
                 f"match: {details}."
             )
+        more = "" if hint is None else hint()
         return (
             f"Timed out after {timeout}s waiting for {wanted} in {where}. "
-            f"{_describe_messages(view(), noun)}{problems}"
+            f"{_describe_messages(view(), noun)}{problems}{more}"
         )
 
     return cast(
@@ -1332,6 +1344,7 @@ class ChatState:
         *,
         timeout: float | None = None,
         interval: float = 0.01,
+        receiver: UserState | UserSpec | int | None = None,
     ) -> Message:
         """
         Wait until a message matching ``predicate`` is in this chat, and return it.
@@ -1369,16 +1382,45 @@ class ChatState:
         predicate raised and on which message, so a predicate that is simply buggy still
         fails visibly and with its real cause.
 
+        An ephemeral message is not in the chat's shared history: only
+        its receiver sees it. Pass ``receiver`` to wait among the bot's
+        ephemeral messages to that user instead::
+
+            await group.wait_for_message(receiver=alice)
+
         :raises aiogram.test.errors.WaitTimeoutError: if no such message ever appeared.
         """
+        wait = self.default_wait_timeout if timeout is None else timeout
+        if receiver is not None:
+            receiver_id = _user_id(receiver)
+            return await _wait_for_message(
+                lambda: self.ephemeral_messages(receiver_id),
+                predicate,
+                description,
+                noun="ephemeral view",
+                where=f"{self.label}, as seen by user {receiver_id}",
+                timeout=wait,
+                interval=interval,
+            )
         return await _wait_for_message(
             lambda: self.messages,
             predicate,
             description,
             noun="chat",
             where=self.label,
-            timeout=self.default_wait_timeout if timeout is None else timeout,
+            timeout=wait,
             interval=interval,
+            hint=self._ephemeral_hint,
+        )
+
+    def _ephemeral_hint(self) -> str:
+        """A timeout's pointer to ephemeral messages, if any."""
+        receivers = sorted(user for user, sent in self.sent_ephemeral.items() if sent)
+        if not receivers:
+            return ""
+        return (
+            f" The bot also sent ephemeral messages to users {receivers}, which are "
+            f"not in the shared history; wait for one with receiver=<user>."
         )
 
     def describe_messages(self) -> str:
