@@ -1124,6 +1124,13 @@ class BotTestEnvironment:
                 # Every ephemeral message has message_id 0, so it
                 # is kept apart from the shared history, by its
                 # ephemeral id.
+                if message.from_user is None:
+                    msg = (
+                        f"Ephemeral message {message.ephemeral_message_id} fed into chat "
+                        f"{chat.id} names no sender, so it cannot be registered: an "
+                        f"incoming ephemeral message is kept under its from_user"
+                    )
+                    raise WorldLookupError(msg)
                 known = chat.find_ephemeral_command(message.ephemeral_message_id)
                 if known is None:
                     chat.add_ephemeral_command(message)

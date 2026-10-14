@@ -768,8 +768,21 @@ class UserActor:
         # Check the reply first, so a refused one uses up no id.
         requested = self._with_reply_to(fields, reply_to) or {}
         overrides = {"message_id": 0, **requested}
-        if overrides.get("ephemeral_message_id") is None:
+        ephemeral_id = overrides.get("ephemeral_message_id")
+        if ephemeral_id is None:
             overrides["ephemeral_message_id"] = chat.allocate_ephemeral_message_id()
+        elif chat.find_ephemeral_command(ephemeral_id) is not None or any(
+            message.ephemeral_message_id == ephemeral_id
+            for messages in chat.sent_ephemeral.values()
+            for message in messages
+        ):
+            # Refused before anything is stored, so the chat is left
+            # without a second message under the same id.
+            msg = (
+                f"Chat {chat.id} already holds an ephemeral message under ephemeral id "
+                f"{ephemeral_id}; leave ephemeral_message_id out to have one allocated"
+            )
+            raise WorldLookupError(msg)
         message = self._build_message(text=text, fields=overrides)
         chat.add_ephemeral_command(message)
         return await self._feed(
@@ -1565,8 +1578,14 @@ class UserActor:
             receiver is not None and receiver.id == self.user.id
         ):
             return
-        # Only a refusal names the receiver, so only it scans.
-        hint = "" if callback_data is None else self._receiver_hint(callback_data)
+        # The message names its own receiver: scanning for the button
+        # could find another receiver's message with the same data.
+        hint = ""
+        if callback_data is not None and receiver is not None:
+            hint = (
+                f"; it is addressed to user {receiver.id} ({receiver.first_name!r}) "
+                "— click as that user"
+            )
         msg = (
             f"Ephemeral message {message.ephemeral_message_id} is not addressed to user "
             f"{self.user.id}, so they cannot {action} on it{hint}"

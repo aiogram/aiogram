@@ -226,6 +226,20 @@ class TestEphemeralClicks:
         with pytest.raises(WorldLookupError, match="is not addressed to user"):
             await env.user(bob).in_(team).click("ok", message=sent)
 
+    async def test_a_refusal_names_the_passed_messages_own_receiver(
+        self, env, team, world_blueprint, alice, bob
+    ):
+        carol = world_blueprint.users[2]
+        await send_to(env, team, carol, reply_markup=keyboard())
+        await send_to(env, team, bob, reply_markup=keyboard())
+        (for_bob,) = team.ephemeral_messages(bob)
+
+        with pytest.raises(WorldLookupError) as failure:
+            await env.user(alice).in_(team).click("ok", message=for_bob)
+
+        assert f"addressed to user {bob.id}" in str(failure.value)
+        assert str(carol.id) not in str(failure.value)
+
     async def test_passing_ones_own_message_works(self, env, team, alice):
         seen = []
         env.dispatcher.callback_query.register(lambda query: seen.append(query.data))
@@ -455,6 +469,20 @@ class TestEphemeralCommands:
         with pytest.raises(WorldLookupError, match="different ephemeral message"):
             await env.feed(Update(update_id=99, message=message))
 
+    async def test_a_hand_fed_command_without_a_sender_is_refused(self, env, team):
+        message = Message(
+            message_id=0,
+            ephemeral_message_id=7,
+            date=BASE_DATE,
+            chat=team.as_chat(),
+            text="/fed",
+        )
+
+        with pytest.raises(WorldLookupError, match="names no sender"):
+            await env.feed(Update(update_id=1, message=message))
+
+        assert team.received_ephemeral == {}
+
     async def test_a_fields_override_is_registered_too(self, env, team, alice):
         await (
             env.user(alice)
@@ -467,6 +495,21 @@ class TestEphemeralCommands:
 
         assert [m.text for m in team.ephemeral_commands(alice)] == ["/raw"]
         assert all(m.message_id != 0 for m in team.messages)
+
+    async def test_a_fields_override_reusing_an_id_is_refused_before_storing(
+        self, env, team, alice, bob
+    ):
+        await send_to(env, team, bob)
+        (sent,) = team.ephemeral_messages(bob)
+        actor = env.user(alice).in_(team)
+        await actor.send("/own", ephemeral=True)
+        (own,) = team.ephemeral_commands(alice)
+
+        for taken in (own.ephemeral_message_id, sent.ephemeral_message_id):
+            with pytest.raises(WorldLookupError, match="already holds an ephemeral message"):
+                await actor.send("/again", fields={"ephemeral_message_id": taken})
+
+        assert [m.text for m in team.ephemeral_commands(alice)] == ["/own"]
 
     async def test_outside_a_group_is_a_setup_error(self, env, private, alice):
         with pytest.raises(WorldLookupError, match="groups and supergroups only"):
