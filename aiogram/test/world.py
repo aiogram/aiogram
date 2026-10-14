@@ -536,9 +536,15 @@ class MemberState:
         Join (``MEMBER``) or leave (``LEFT``), or move to ``status``.
 
         A restriction outlives leaving and rejoining, however the user
-        gets in, so for a restricted user only presence moves. Any other
-        move is :meth:`set_status`.
+        gets in, so for a restricted user only presence moves. Joining
+        does not demote an administrator or the owner already in the
+        chat. Any other move is :meth:`set_status`.
         """
+        if status == ChatMemberStatus.MEMBER and self.status in {
+            ChatMemberStatus.ADMINISTRATOR,
+            ChatMemberStatus.CREATOR,
+        }:
+            return
         if self.status == ChatMemberStatus.RESTRICTED and status in {
             ChatMemberStatus.MEMBER,
             ChatMemberStatus.LEFT,

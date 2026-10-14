@@ -244,6 +244,25 @@ class TestReplies:
 
         assert message.reply_to_message is None
 
+    async def test_a_reply_chain_does_not_nest(self, env, private):
+        first = await env.bot.send_message(chat_id=private.id, text="first")
+        second = await env.bot.send_message(
+            chat_id=private.id,
+            text="second",
+            reply_parameters=ReplyParameters(message_id=first.message_id),
+        )
+
+        third = await env.bot.send_message(
+            chat_id=private.id,
+            text="third",
+            reply_parameters=ReplyParameters(message_id=second.message_id),
+        )
+
+        assert third.reply_to_message.message_id == second.message_id
+        assert third.reply_to_message.reply_to_message is None
+        # The stored message itself keeps its own reply.
+        assert private.find_message(second.message_id).reply_to_message is not None
+
     async def test_a_reply_in_another_chat_is_looked_up_there(self, env, private, bobs):
         target = await env.bot.send_message(chat_id=bobs.id, text="Bob's")
         await env.bot.send_message(chat_id=private.id, text="filler")
@@ -385,6 +404,36 @@ class TestReplies:
 
 
 class TestCopiesAndForwards:
+    @pytest.mark.parametrize("move", ["forward", "copy"])
+    async def test_how_the_original_was_sent_stays_with_it(self, env, alice, team, bobs, move):
+        await (
+            env.user(alice)
+            .in_(team)
+            .send(
+                "post",
+                fields={
+                    "is_automatic_forward": True,
+                    "is_from_offline": True,
+                    "paid_star_count": 5,
+                },
+            )
+        )
+        original = team.messages[-1]
+
+        if move == "forward":
+            sent = await env.bot.forward_message(
+                chat_id=bobs.id, from_chat_id=team.id, message_id=original.message_id
+            )
+        else:
+            sent = await env.bot.copy_message(
+                chat_id=bobs.id, from_chat_id=team.id, message_id=original.message_id
+            )
+        moved = bobs.find_message(sent.message_id)
+
+        assert moved.is_automatic_forward is None
+        assert moved.is_from_offline is None
+        assert moved.paid_star_count is None
+
     async def test_a_quiz_with_an_unknown_answer_cannot_be_copied(self, env, alice, team, bobs):
         quiz = Poll(
             id="users-quiz",
@@ -994,6 +1043,41 @@ class TestEditableByTheBot:
         finally:
             await env.dispose()
 
+    async def test_a_business_message_is_edited_through_its_connection(
+        self, env, private, connection
+    ):
+        sent = await env.bot.send_message(
+            chat_id=private.id, text="hi", business_connection_id=connection.id
+        )
+
+        with pytest.raises(TelegramBadRequest, match="message to edit not found"):
+            await env.bot.edit_message_text(
+                chat_id=private.id, message_id=sent.message_id, text="no connection"
+            )
+        edited = await env.bot.edit_message_text(
+            chat_id=private.id,
+            message_id=sent.message_id,
+            text="through it",
+            business_connection_id=connection.id,
+        )
+
+        assert edited.text == "through it"
+
+    async def test_only_a_business_message_is_edited_through_a_connection(
+        self, env, private, connection
+    ):
+        sent = await env.bot.send_message(chat_id=private.id, text="hi")
+
+        with pytest.raises(TelegramBadRequest, match="message to edit not found"):
+            await env.bot.edit_message_text(
+                chat_id=private.id,
+                message_id=sent.message_id,
+                text="via the account",
+                business_connection_id=connection.id,
+            )
+
+        assert private.find_message(sent.message_id).text == "hi"
+
 
 class TestEditDates:
     async def test_every_bot_edit_is_dated(self, env, private):
@@ -1259,6 +1343,23 @@ class TestChecklists:
 
         assert edited.checklist.title == "Chores"
         assert [task.text for task in edited.checklist.tasks] == ["Dishes"]
+
+    async def test_only_a_checklist_takes_a_checklist_edit(self, env, private, connection):
+        sent = await env.bot.send_message(
+            business_connection_id=connection.id, chat_id=private.id, text="plain"
+        )
+
+        with pytest.raises(TelegramBadRequest, match="no checklist"):
+            await env.bot.edit_message_checklist(
+                business_connection_id=connection.id,
+                chat_id=private.id,
+                message_id=sent.message_id,
+                checklist=InputChecklist(title="T", tasks=[InputChecklistTask(id=1, text="a")]),
+            )
+
+        stored = private.find_message(sent.message_id)
+        assert stored.checklist is None
+        assert stored.text == "plain"
 
 
 class TestSynthesis:

@@ -2013,6 +2013,10 @@ here: ``can_post_messages`` and ``can_edit_messages`` are reported only in chann
 supergroups — everywhere else they come back ``None``, exactly as from the real API. A
 right granted where it cannot exist is dropped rather than reported back as if it did.
 
+:code:`restrictChatMember` works in supergroups only, and fails elsewhere as it does in
+Telegram. A ``join()`` by an administrator or the owner already in the chat keeps their
+status.
+
 Permissions are stored the way the Bot API grants them, which is not always the mask the
 request passed. :code:`restrictChatMember` and :code:`setChatPermissions` both apply the
 couplings they document: unless the call passes ``use_independent_chat_permissions=True``,

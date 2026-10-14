@@ -698,6 +698,10 @@ def _reply_changes(
             raise ApiRejection("message to be replied not found")
         return {}
     if where is chat:
+        if replied.reply_to_message is not None:
+            # The replied message carries no further reply_to_message,
+            # as the Bot API states, so a reply chain does not nest.
+            replied = replied.model_copy(update={"reply_to_message": None})
         return {"reply_to_message": replied}
     return {"external_reply": _external_reply(env, where, replied)}
 
@@ -937,7 +941,12 @@ def _edit_target(
     chat = resolve_chat(env, getattr(method, "chat_id", None))
     message_id: int | None = getattr(method, "message_id", None)
     stored = None if message_id is None else chat.find_message(message_id)
-    if stored is None:
+    if stored is None or getattr(method, "business_connection_id", None) != (
+        stored.business_connection_id
+    ):
+        # A business message is edited through its connection, and only
+        # a business message is: the bot's own chat and the business
+        # chat are different places to Telegram.
         msg = "message to edit not found"
         raise ApiRejection(msg)
     # Every edit method is bound by these rules, so check them here.
@@ -1182,6 +1191,11 @@ def _new_message_changes(protect_content: object) -> dict[str, Any]:
         "sender_chat": None,
         "author_signature": None,
         "media_group_id": None,
+        # How the original was sent, not how the bot sends this one.
+        "is_automatic_forward": None,
+        "is_from_offline": None,
+        "is_paid_post": None,
+        "paid_star_count": None,
     }
 
 
@@ -1691,6 +1705,7 @@ def handle_edit_checklist(
 ) -> Message:
     chat, stored = _edit_target(env, method)
     message_id = stored.message_id
+    _require_content(stored, ("checklist",), "checklist")
     return chat.update_message(
         message_id,
         **edit_stamp(env),
@@ -1975,8 +1990,13 @@ def handle_restrict(env: BotTestEnvironment, method: RestrictChatMember) -> bool
     Granting every permission lifts a restriction, as the Bot API
     documents: the user becomes a member if present and left otherwise.
     On a user who is not restricted, that is a no-op.
+
+    Restricting is for supergroups only, as the method states.
     """
     chat = resolve_chat(env, method.chat_id)
+    if chat.type != ChatType.SUPERGROUP:
+        msg = "method is available only for supergroups"
+        raise ApiRejection(msg)
     member = _not_the_owner(chat, method.user_id)
     granted = granted_permissions(
         method.permissions,

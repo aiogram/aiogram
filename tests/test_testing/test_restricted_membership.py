@@ -127,6 +127,14 @@ class TestPresenceOfRestrictedUsers:
         assert member.can_send_messages is True
 
 
+class TestSupergroupsOnly:
+    async def test_a_basic_group_member_cannot_be_restricted(self, env, club, alice):
+        with pytest.raises(TelegramBadRequest, match="only for supergroups"):
+            await restrict(env, club, alice)
+
+        assert club.member(alice.id).status == ChatMemberStatus.MEMBER
+
+
 class TestLiftingARestriction:
     async def test_lifting_a_present_member(self, env, team, alice):
         await restrict(env, team, alice, until_date=LATER)
@@ -189,7 +197,10 @@ class TestEndDates:
         assert (await read(env, club, alice)).until_date == UNTIL_FOREVER
 
     async def test_a_basic_group_ban_drops_an_earlier_restrictions_end(self, env, club, alice):
-        await restrict(env, club, alice, until_date=datetime.timedelta(hours=1))
+        # restrictChatMember is for supergroups, so the end date is set by hand.
+        member = club.member(alice.id)
+        member.set_status(ChatMemberStatus.RESTRICTED)
+        member.until_date = env.now + datetime.timedelta(hours=1)
         await env.bot.ban_chat_member(chat_id=club.id, user_id=alice.id)
         await env.advance_time(datetime.timedelta(hours=2))
 
@@ -226,6 +237,17 @@ class TestDemotingOnlyAdministrators:
             await env.user(alice).in_(team).demote(subject=bob)
 
         assert team.member(bob.id).status == ChatMemberStatus.LEFT
+
+
+class TestJoiningKeepsStanding:
+    async def test_joining_does_not_demote_an_administrator(self, env, team, alice):
+        await env.bot.promote_chat_member(chat_id=team.id, user_id=alice.id, can_pin_messages=True)
+
+        await env.user(alice).in_(team).join()
+
+        member = await read(env, team, alice)
+        assert member.status == ChatMemberStatus.ADMINISTRATOR
+        assert member.can_pin_messages is True
 
 
 class TestUnbanning:

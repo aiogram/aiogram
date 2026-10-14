@@ -481,7 +481,8 @@ class TestBotMembership:
         await actor.join()
 
         assert mine == ["member", "left"]
-        assert others == ["member"]
+        # Alice is an administrator, and joining does not demote her.
+        assert others == ["administrator"]
 
     async def test_removing_the_bot_updates_the_membership_state(self, env, team, alice):
         actor = alice.in_(team)
