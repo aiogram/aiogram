@@ -1,0 +1,1 @@
+Refreshed the dependency bounds: pydantic 2.14, redis-py 8.x (``redis`` extra), pymongo 4.19 (``mongo`` extra) and aiohttp-socks 0.12 (``proxy`` extra) are now accepted, and the ``docs`` extra moved to Sphinx 9, furo 2025 and towncrier 26.
