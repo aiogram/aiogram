@@ -3,15 +3,12 @@ import sys
 
 import pytest
 from pydantic import BaseModel
-from pydantic.version import VERSION as PYDANTIC_VERSION
 
 import aiogram.methods as methods_module
 import aiogram.types as types_module
 from aiogram.methods import SendMessage
 from aiogram.methods.base import Response
 from aiogram.types import Message
-
-PYDANTIC_VERSION_INFO = tuple(map(int, PYDANTIC_VERSION.split(".")[:2]))
 
 MESSAGE_DATA = {
     "message_id": 42,
@@ -81,10 +78,6 @@ class TestLazyModelBuild:
 
         assert method.reply_parameters.message_id == 41
 
-    @pytest.mark.skipif(
-        PYDANTIC_VERSION_INFO < (2, 6),
-        reason="pydantic<2.6 requires eager model rebuild on import",
-    )
     def test_models_are_not_built_on_import(self):
         # Building every model schema on import costs seconds of startup time,
         # so schemas must stay deferred until the model is actually used.
