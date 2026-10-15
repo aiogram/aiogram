@@ -1,8 +1,6 @@
 import sys
 from typing import Literal, Optional, Union
 
-from pydantic.version import VERSION as _PYDANTIC_VERSION_STR
-
 from .accepted_gift_types import AcceptedGiftTypes
 from .affiliate_info import AffiliateInfo
 from .animation import Animation
@@ -900,8 +898,6 @@ from .sent_guest_message import SentGuestMessage
 from .user_profile_audios import UserProfileAudios
 from .video_quality import VideoQuality
 
-_PYDANTIC_VERSION = tuple(map(int, _PYDANTIC_VERSION_STR.split(".")[:2]))
-
 # Load typing forward refs for every TelegramObject
 _types_namespace = {
     "List": list,
@@ -925,18 +921,9 @@ for _module_name in _entity_modules:
     for _name, _value in _types_namespace.items():
         _module_ns.setdefault(_name, _value)
 
-# pydantic<2.6 does not resolve nested models through their own module globals
-if _PYDANTIC_VERSION < (2, 6):  # pragma: no cover
-    for _name in __all__:
-        _value = globals()[_name]
-        if hasattr(_value, "model_rebuild"):
-            _value.model_rebuild(_types_namespace=_types_namespace)
-
 del _entity_modules
 del _module_name
 del _module_ns
 del _name
 del _value
 del _types_namespace
-del _PYDANTIC_VERSION
-del _PYDANTIC_VERSION_STR
