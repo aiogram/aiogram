@@ -4076,22 +4076,23 @@ SHALL close, reopen and delete it without the right. Otherwise the trigger SHALL
 - **THEN** `WorldLookupError` names `can_manage_topics` and how to grant it, and no topic or
   message is added
 
-### Requirement: A group has the default permissions Telegram gives a new one
+### Requirement: A group grants its members every permission by default
 
-A group or a supergroup SHALL have, unless its declaration gives others, the permissions
-Telegram gives a new one: every kind of message and reaction, and inviting users, allowed,
-and changing the chat's info, pinning messages, creating topics and editing one's tag denied.
-`getChat` SHALL report them, and the checks of what the bot may send as a plain or a
-restricted member SHALL read the same value. A private chat and a channel SHALL have none.
-`add_group` and `add_supergroup` SHALL accept `permissions=` to declare others, and
+A group or a supergroup SHALL have, unless its declaration gives others, every member
+permission granted. Telegram does not publish what a new group allows, so this SHALL be
+documented as the toolkit's convention, with `permissions=` as the way to model a stricter
+group. `getChat` SHALL report them, and the checks of what the bot may send as a plain or a
+restricted member SHALL read the same value; they SHALL NOT grant the bot an
+administrator's right. A private chat and a channel SHALL have none. `add_group` and
+`add_supergroup` SHALL accept `permissions=` to declare others, and
 `default_chat_permissions()` SHALL return the default as a new object that the Bot API's
 couplings leave unchanged.
 
 #### Scenario: A new supergroup
 
 - **WHEN** a test declares a supergroup and calls `getChat` on it
-- **THEN** `permissions` is the default, and the bot as a plain member sends text, polls and
-  dice into it
+- **THEN** `permissions` grants every permission, and the bot as a plain member sends text,
+  polls and dice into it
 
 #### Scenario: Declared permissions replace the default
 

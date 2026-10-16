@@ -99,7 +99,7 @@ class ChatSpec:
     first_name: str | None = None
     last_name: str | None = None
     description: str | None = None
-    #: What members may do. ``None`` is Telegram's defaults in a group or
+    #: What members may do. ``None`` is every permission in a group or
     #: a supergroup, see :func:`~aiogram.test.default_chat_permissions`,
     #: and nothing in a private chat or a channel.
     permissions: ChatPermissions | None = None
@@ -242,8 +242,9 @@ class Blueprint:
         """
         Declare a basic group.
 
-        ``permissions`` are what its members may do. Without them the group
-        has Telegram's defaults, :func:`~aiogram.test.default_chat_permissions`.
+        ``permissions`` are what its members may do. Without them
+        the group grants every permission, see
+        :func:`~aiogram.test.default_chat_permissions`.
         """
         return self._add_group_like(
             chat_type=ChatType.GROUP,
@@ -269,7 +270,7 @@ class Blueprint:
 
         ``is_forum`` turns its topics on before any is declared, as for
         a forum whose topics the bot creates itself. ``permissions`` are
-        what its members may do; without them it has Telegram's defaults,
+        what its members may do; without them it grants every one,
         :func:`~aiogram.test.default_chat_permissions`.
         """
         chat = self._add_group_like(
@@ -693,8 +694,8 @@ def _chat_permissions(chat: ChatSpec) -> ChatPermissions | None:
     """
     What a declared chat lets its members do.
 
-    A group or a supergroup that declares nothing has Telegram's
-    defaults, and a private chat or a channel has no permissions
+    A group or a supergroup that declares nothing grants every
+    permission, and a private chat or a channel has no permissions
     to report.
     """
     if chat.permissions is None and chat.type in {ChatType.GROUP, ChatType.SUPERGROUP}:

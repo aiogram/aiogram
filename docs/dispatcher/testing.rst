@@ -185,13 +185,13 @@ chat's, are stored the way :code:`restrictChatMember` and :code:`setChatPermissi
 store the same mask, with the couplings and defaults described in `Chat administration`_:
 a member declared allowed to send messages reads back allowed to react too.
 
-A group or a supergroup has the permissions Telegram gives a new one, because that is what
-:code:`getChat` reports for it until someone changes them: its members may send every kind of
-message, react and invite users, and may not change the chat's info, pin messages, create
-topics or edit their own tag. Telegram's documentation does not list these defaults; they are
-the ones its clients show for a new group and its servers report to bots. A private chat and a
-channel have no permissions to report. Declare others with ``permissions=``, building from the
-defaults when only one differs:
+A group or a supergroup grants its members every permission by default, and that is what
+:code:`getChat` reports for it until someone changes them: they may send every kind of
+message, react, invite users, change the chat's info, pin messages, create topics and edit
+their own tag. Telegram does not publish what a new group allows, so this is the toolkit's
+convention, not a documented default; it restricts nothing a test did not ask for. A private
+chat and a channel have no permissions to report. Model a stricter group with
+``permissions=``, building from the defaults when only one differs:
 
 .. code-block:: python
 

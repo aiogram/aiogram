@@ -3,8 +3,16 @@ import pytest
 from aiogram import F
 from aiogram.enums import ChatMemberStatus
 from aiogram.exceptions import TelegramBadRequest
-from aiogram.test import Blueprint, BotTestEnvironment, WorldLookupError, administrator_rights
+from aiogram.test import (
+    Blueprint,
+    BotTestEnvironment,
+    WorldLookupError,
+    administrator_rights,
+    default_chat_permissions,
+)
 from aiogram.types import ChatPermissions, Message
+
+NO_TOPICS = default_chat_permissions().model_copy(update={"can_manage_topics": False})
 
 
 @pytest.fixture
@@ -24,6 +32,8 @@ def forum(dp):
         },
         is_forum=True,
         bot_status=ChatMemberStatus.ADMINISTRATOR,
+        # A stricter group than the default: members open no topics.
+        permissions=NO_TOPICS,
     )
     blueprint.set_member(chat, limited, rights=administrator_rights(can_manage_topics=False))
     topic = blueprint.add_topic(chat, "Game")
@@ -330,7 +340,10 @@ class TestWhoMay:
         blueprint = Blueprint()
         member = blueprint.add_user("Member")
         chat = blueprint.add_supergroup(
-            "Team", members={member: ChatMemberStatus.MEMBER}, is_forum=True
+            "Team",
+            members={member: ChatMemberStatus.MEMBER},
+            is_forum=True,
+            permissions=NO_TOPICS,
         )
         env = BotTestEnvironment(blueprint=blueprint, dispatcher=dp, enforce_bot_rights=False)
         try:

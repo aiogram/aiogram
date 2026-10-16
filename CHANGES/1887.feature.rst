@@ -322,12 +322,12 @@ feeds nothing, as Telegram posts no message for it. The user has to hold
 permission, or to be the topic's creator, or the trigger raises ``WorldLookupError`` naming
 the right.
 
-A group or a supergroup has the permissions Telegram gives a new one instead of none:
-members may send every kind of message, react and invite users, and may not change the chat's
-info, pin messages, create topics or edit their own tag. ``getChat`` reports them, the checks
-of what a plain member can send read them, and ``add_group(..., permissions=...)`` and
-``add_supergroup(..., permissions=...)`` declare others, starting from
-``default_chat_permissions()``.
+A group or a supergroup reports permissions instead of none: by default every member
+permission, granted. Telegram does not publish what a new group allows, so this is the
+toolkit's convention, one that restricts nothing a test did not ask for. ``getChat`` reports
+them, the checks of what a plain member can send read them, and ``add_group(...,
+permissions=...)`` and ``add_supergroup(..., permissions=...)`` model a stricter group,
+starting from ``default_chat_permissions()``.
 
 A running environment can gain users and chats, which only the blueprint could declare:
 ``env.add_user()``, ``env.add_private_chat()``, ``env.add_group()``, ``env.add_supergroup()`` and

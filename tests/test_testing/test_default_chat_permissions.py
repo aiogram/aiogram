@@ -6,8 +6,6 @@ from aiogram.test import Blueprint, BotTestEnvironment, ChatSpec, default_chat_p
 from aiogram.test.world import granted_permissions
 from aiogram.types import ChatPermissions
 
-DENIED = {"can_change_info", "can_pin_messages", "can_manage_topics", "can_edit_tag"}
-
 
 @pytest.fixture
 def make(dp):
@@ -27,13 +25,11 @@ def make(dp):
 
 
 class TestTheDefault:
-    def test_most_rights_are_granted_and_the_admin_ones_are_not(self):
+    def test_every_member_permission_is_granted(self):
         permissions = default_chat_permissions()
 
         values = {name: getattr(permissions, name) for name in ChatPermissions.model_fields}
-        assert {name for name, value in values.items() if not value} == DENIED
-        assert all(value is True for name, value in values.items() if name not in DENIED)
-        assert permissions.can_invite_users is True
+        assert set(values.values()) == {True}
 
     def test_it_is_what_the_api_would_store(self):
         permissions = default_chat_permissions()
@@ -145,7 +141,7 @@ class TestTheSameValueIsEnforced:
         with pytest.raises(TelegramBadRequest, match="not enough rights to send polls"):
             await env.bot.send_poll(chat_id=chat.id, question="q", options=["a", "b"])
 
-    async def test_restricting_with_the_defaults_is_stored_as_is(self, make):
+    async def test_restricting_with_the_defaults_restricts_nothing(self, make):
         env, specs = make(chat=lambda b: b.add_supergroup("Chat", bot_status="administrator"))
         chat = env.chat(specs["chat"])
         alice = next(iter(env.world.users.values()))
@@ -155,4 +151,6 @@ class TestTheSameValueIsEnforced:
             permissions=default_chat_permissions(),
         )
 
-        assert chat.member(alice.id).permissions == default_chat_permissions()
+        # Granting every permission lifts a restriction: none is made.
+        assert chat.member(alice.id).status != ChatMemberStatus.RESTRICTED
+        assert chat.member(alice.id).permissions is None

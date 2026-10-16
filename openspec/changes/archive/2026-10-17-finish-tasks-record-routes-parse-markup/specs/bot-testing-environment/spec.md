@@ -221,3 +221,33 @@ SHALL NOT for one the bot retrieved, however late. A disposed environment SHALL 
 
 - **WHEN** the bot awaits a task that failed, and catches the exception, at any later time
 - **THEN** neither `wait_for_tasks()` nor `drain()` reports it
+
+## RENAMED Requirements
+
+- FROM: `### Requirement: A group has the default permissions Telegram gives a new one`
+- TO: `### Requirement: A group grants its members every permission by default`
+
+## MODIFIED Requirements
+
+### Requirement: A group grants its members every permission by default
+
+A group or a supergroup SHALL have, unless its declaration gives others, every member
+permission granted. Telegram does not publish what a new group allows, so this SHALL be
+documented as the toolkit's convention, with `permissions=` as the way to model a stricter
+group. `getChat` SHALL report them, and the checks of what the bot may send as a plain or a
+restricted member SHALL read the same value; they SHALL NOT grant the bot an
+administrator's right. A private chat and a channel SHALL have none. `add_group` and
+`add_supergroup` SHALL accept `permissions=` to declare others, and
+`default_chat_permissions()` SHALL return the default as a new object that the Bot API's
+couplings leave unchanged.
+
+#### Scenario: A new supergroup
+
+- **WHEN** a test declares a supergroup and calls `getChat` on it
+- **THEN** `permissions` grants every permission, and the bot as a plain member sends text,
+  polls and dice into it
+
+#### Scenario: Declared permissions replace the default
+
+- **WHEN** a supergroup is declared with `permissions=` that deny polls
+- **THEN** `getChat` reports them and the bot's `sendPoll` is refused as a plain member
