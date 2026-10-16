@@ -1255,10 +1255,19 @@ class ChatState:
             username=self.username,
             first_name=self.first_name,
             last_name=self.last_name,
-            # The Bot API reports topics of a supergroup only; a
-            # private chat's are its own business.
-            is_forum=(self.is_forum and self.type == ChatType.SUPERGROUP) or None,
+            is_forum=self.reported_forum,
         )
+
+    @property
+    def reported_forum(self) -> bool | None:
+        """
+        ``is_forum`` as the Bot API reports it: for a supergroup only.
+
+        A private chat with topics keeps them in :attr:`is_forum`, but
+        the Bot API server renders the field for supergroups alone
+        (``JsonChat`` in Client.cpp), so every result says ``None``.
+        """
+        return (self.is_forum and self.type == ChatType.SUPERGROUP) or None
 
     def allocate_message_id(
         self,

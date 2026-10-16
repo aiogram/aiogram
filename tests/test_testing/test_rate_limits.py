@@ -306,3 +306,51 @@ def test_the_counted_methods_are_the_modeled_sends():
     assert frozenset(SENDING_METHODS) == RATE_LIMITED_METHODS
     assert {SendMessage, SendMediaGroup, CopyMessages} <= RATE_LIMITED_METHODS
     assert SetChatTitle not in RATE_LIMITED_METHODS
+
+
+class TestARefusedSendTakesNothing:
+    @pytest.fixture
+    async def flooded(self, make_env):
+        env, blueprint, _threads = make_env(RateLimits())
+        target = chat_id(blueprint, PRIVATE)
+        album = await env.bot.send_media_group(
+            chat_id=target,
+            media=[InputMediaPhoto(media="a"), InputMediaPhoto(media="b")],
+        )
+        await env.advance_time(60)
+        await env.bot.send_message(chat_id=target, text="one")
+        return env, target, [message.message_id for message in album]
+
+    @pytest.mark.parametrize(
+        "send",
+        [
+            lambda bot, target, _ids: bot.send_poll(
+                chat_id=target,
+                question="?",
+                options=["a", "b"],
+            ),
+            lambda bot, target, _ids: bot.send_media_group(
+                chat_id=target,
+                media=[InputMediaPhoto(media="a"), InputMediaPhoto(media="b")],
+            ),
+            lambda bot, target, ids: bot.forward_messages(
+                chat_id=target,
+                from_chat_id=target,
+                message_ids=ids,
+            ),
+            lambda bot, target, ids: bot.copy_messages(
+                chat_id=target,
+                from_chat_id=target,
+                message_ids=ids,
+            ),
+        ],
+        ids=["poll", "media_group", "forward_album", "copy_album"],
+    )
+    async def test_no_id_is_used_up(self, flooded, send):
+        env, target, ids = flooded
+        before = (env.world.last_query_id, dict(env.world.polls))
+
+        with pytest.raises(TelegramRetryAfter):
+            await send(env.bot, target, ids)
+
+        assert (env.world.last_query_id, dict(env.world.polls)) == before

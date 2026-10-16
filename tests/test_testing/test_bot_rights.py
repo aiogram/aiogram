@@ -11,6 +11,7 @@ from aiogram.types import (
     InputMediaDocument,
     InputMediaPhoto,
     InputPaidMediaPhoto,
+    ReplyParameters,
 )
 
 ADMIN = ChatMemberStatus.ADMINISTRATOR
@@ -841,3 +842,35 @@ class TestRightsBeforeTheTopic:
                 chat_id=chat.id,
                 message_thread_id=999,
             )
+
+
+class TestStandingComesFirst:
+    async def test_a_copy_with_a_missing_reply_is_forbidden(self, world):
+        env, chat, alice = world(status=ChatMemberStatus.KICKED)
+        private = env.chat(alice.user.id)
+        sent = await env.bot.send_message(chat_id=private.id, text="x")
+
+        with pytest.raises(TelegramForbiddenError, match="kicked"):
+            await env.bot.copy_message(
+                chat_id=chat.id,
+                from_chat_id=private.id,
+                message_id=sent.message_id,
+                reply_parameters=ReplyParameters(message_id=999),
+            )
+
+    async def test_a_forward_into_an_unknown_thread_names_the_thread(self, dp):
+        blueprint = Blueprint()
+        alice = blueprint.add_user("Alice")
+        private = blueprint.add_private_chat(alice)
+        chat = blueprint.add_supergroup("Forum", is_forum=True)
+        env = BotTestEnvironment(blueprint=blueprint, dispatcher=dp)
+        try:
+            with pytest.raises(TelegramBadRequest, match="message thread not found"):
+                await env.bot.forward_message(
+                    chat_id=chat.id,
+                    from_chat_id=private.id,
+                    message_id=999,
+                    message_thread_id=99,
+                )
+        finally:
+            env.dispose_sync()

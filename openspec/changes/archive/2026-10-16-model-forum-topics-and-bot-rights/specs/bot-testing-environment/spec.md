@@ -382,14 +382,15 @@ Without `rate_limits` nothing SHALL be limited.
 ### Requirement: Topic refusals use Telegram's wording
 
 A send, copy or forward the bot makes into a thread the chat does not have SHALL fail with
-`message thread not found`, whether the chat never had it or `deleteForumTopic` removed it,
-as the Bot API server looks the topic up first. So SHALL one into thread 1 of a forum
-supergroup, the General topic's id. A forum method naming a topic `deleteForumTopic` removed
-SHALL fail with `TOPIC_DELETED`, and one naming a thread the chat never had with
-`message thread not found`. Message 1 of a supergroup or a channel SHALL be reserved for
-the chat's creation, so no topic SHALL be numbered 1. A topic a test or an actor names that
-the chat lacks, or an actor bound to a topic deleted since, SHALL be a setup error that
-names the topic, never a Telegram error.
+`message thread not found`, whether the chat never had it or `deleteForumTopic` removed it, as
+the Bot API server looks the topic up first, after the bot's standing and before the message
+replied to. So SHALL one into thread 1 of a forum supergroup, the General topic's id. A forum
+method naming a topic `deleteForumTopic` removed SHALL fail with `TOPIC_DELETED`, and one naming
+a thread the chat never had with `message thread not found`; both are the server's answers,
+which its open source does not spell out. Message 1 of a supergroup or a channel SHALL be
+reserved for the chat's creation, so no topic SHALL be numbered 1. A topic a test or an actor
+names that the chat lacks, or an actor bound to a topic deleted since, SHALL be a setup error
+that names the topic, never a Telegram error.
 
 #### Scenario: Posting into an unknown thread
 
@@ -460,9 +461,10 @@ creating, editing, closing, reopening and deleting a topic, unpinning all of a t
 messages, and the General-topic variants. Each SHALL emit the matching service message
 into the chat where Telegram would; closing and reopening the General topic SHALL emit
 `forum_topic_closed` and `forum_topic_reopened` with no thread id. A private chat SHALL take
-creating, editing and deleting a topic and unpinning its messages, and its topic messages
-SHALL carry their thread id; closing a topic there, and the General-topic methods, SHALL
-fail with `the chat is not a supergroup forum`.
+creating, editing and deleting a topic, renaming the General topic and unpinning a topic's
+messages, and its topic messages SHALL carry their thread id; closing, reopening and hiding
+there SHALL fail with `the chat is not a supergroup forum`. No call SHALL report a private
+chat's `is_forum`.
 
 #### Scenario: Creating a topic
 

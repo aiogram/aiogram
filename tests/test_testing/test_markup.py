@@ -13,13 +13,14 @@ import datetime
 import pytest
 
 from aiogram.client.default import DefaultBotProperties
-from aiogram.enums import ParseMode
-from aiogram.exceptions import TelegramBadRequest
-from aiogram.methods import AnswerInlineQuery, SendMessage
-from aiogram.test import ApiRejection, BotTestEnvironment
+from aiogram.enums import ChatMemberStatus, ParseMode
+from aiogram.exceptions import TelegramBadRequest, TelegramForbiddenError
+from aiogram.methods import AnswerInlineQuery, GiftPremiumSubscription, SendGift, SendMessage
+from aiogram.test import ApiRejection, Blueprint, BotTestEnvironment
 from aiogram.test.markup import apply_parse_modes, parse_entities
 from aiogram.types import (
     BufferedInputFile,
+    EphemeralMessageParameters,
     InlineQueryResultArticle,
     InputMediaPhoto,
     InputPollOption,
@@ -833,3 +834,100 @@ class TestEmptyTexts:
 
         assert sent.caption is None
         assert private.messages[-1].photo is not None
+
+
+class TestOptionalTexts:
+    @pytest.mark.parametrize(
+        "method",
+        [
+            SendGift(gift_id="g", user_id=1, text="<b> </b>", text_parse_mode="HTML"),
+            GiftPremiumSubscription(
+                user_id=1,
+                month_count=3,
+                star_count=1000,
+                text="<i></i>",
+                text_parse_mode="HTML",
+            ),
+        ],
+    )
+    def test_one_that_parses_to_nothing_is_cleared(self, method):
+        parsed_method = apply_parse_modes(method, lambda user_id: None)
+
+        assert parsed_method.text is None
+        assert parsed_method.text_parse_mode is None
+
+    def test_an_inline_results_text_is_refused(self):
+        method = AnswerInlineQuery(
+            inline_query_id="q",
+            results=[
+                InlineQueryResultArticle(
+                    id="a",
+                    title="A",
+                    input_message_content=InputTextMessageContent(
+                        message_text="<b> </b>",
+                        parse_mode="HTML",
+                    ),
+                ),
+            ],
+        )
+
+        with pytest.raises(ApiRejection, match="text must be non-empty"):
+            apply_parse_modes(method, lambda user_id: None)
+
+
+class TestTheOrderOfTheRefusals:
+    @pytest.fixture
+    def kicked(self, dp):
+        blueprint = Blueprint()
+        chat = blueprint.add_supergroup("Team", bot_status=ChatMemberStatus.KICKED)
+        env = BotTestEnvironment(blueprint=blueprint, dispatcher=dp)
+        try:
+            yield env, env.chat(chat)
+        finally:
+            env.dispose_sync()
+
+    async def test_a_kicked_bot_hears_about_the_chat_before_a_blank_text(self, kicked):
+        env, chat = kicked
+
+        with pytest.raises(TelegramForbiddenError, match="kicked"):
+            await env.bot.send_message(chat.id, "<b> </b>", parse_mode="HTML")
+
+    async def test_an_empty_text_is_refused_before_the_chat(self, kicked):
+        env, chat = kicked
+
+        with pytest.raises(TelegramBadRequest, match="message text is empty"):
+            await env.bot.send_message(chat.id, "")
+
+    async def test_the_thread_comes_before_a_blank_text(self, dp):
+        blueprint = Blueprint()
+        chat = blueprint.add_supergroup("Forum", is_forum=True)
+        env = BotTestEnvironment(blueprint=blueprint, dispatcher=dp)
+        try:
+            with pytest.raises(TelegramBadRequest, match="message thread not found"):
+                await env.bot.send_message(chat.id, "  ", message_thread_id=99)
+        finally:
+            env.dispose_sync()
+
+    async def test_a_blank_ephemeral_edit_is_refused(self, dp):
+        blueprint = Blueprint()
+        alice = blueprint.add_user("Alice")
+        chat = blueprint.add_supergroup("Team", members={alice: ChatMemberStatus.MEMBER})
+        env = BotTestEnvironment(blueprint=blueprint, dispatcher=dp)
+        try:
+            sent = await env.bot.send_message(
+                chat.id,
+                "x",
+                ephemeral_message_parameters=EphemeralMessageParameters(
+                    receiver_user_id=alice.id,
+                ),
+            )
+
+            with pytest.raises(TelegramBadRequest, match="text must be non-empty"):
+                await env.bot.edit_ephemeral_message_text(
+                    chat_id=chat.id,
+                    receiver_user_id=alice.id,
+                    ephemeral_message_id=sent.ephemeral_message_id,
+                    text=" ",
+                )
+        finally:
+            env.dispose_sync()

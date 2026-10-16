@@ -276,6 +276,7 @@ from aiogram.types import (
 )
 
 from .errors import ApiRejection
+from .markup import refuse_blank_text
 from .mounting import detached_copy
 from .rich import materialize_rich_message
 from .synthesis import (
@@ -1096,6 +1097,7 @@ def build_message(
     # An unknown thread id must fail rather than silently produce an
     # untagged message.
     topic = posting_topic(env, chat, thread_id)
+    refuse_blank_text(method)
     receiver = _ephemeral_receiver(env, method, chat)
     if receiver is None and content is None:
         # An ephemeral message is exempt, as TDLib exempts it; a media
@@ -1578,7 +1580,7 @@ def handle_send_media_group(
     items of the same type.
     """
     chat = resolve_chat(env, method.chat_id)
-    require_standing(env, chat)
+    # The server reads the items before it looks at the chat.
     if not _MEDIA_GROUP_SIZE[0] <= len(method.media) <= _MEDIA_GROUP_SIZE[1]:
         msg = "media group must include 2-10 items"
         raise ApiRejection(msg)
@@ -1586,16 +1588,20 @@ def handle_send_media_group(
     if len(kinds) > 1 and kinds & _ALBUM_KINDS.keys():
         msg = "documents and audio files can be only grouped with messages of the same type"
         raise ApiRejection(msg)
+    require_standing(env, chat)
+    posting_topic(env, chat, method.message_thread_id)
     for kind in sorted(kinds):
         require_send_permission(env, chat, kind)
-    group_id = env.world.next_query_id()
+    group: list[str] = []
+
+    def content(item: Any) -> dict[str, Any]:
+        # Allocated once the album was let through, on its first item.
+        if not group:
+            group.append(env.world.next_query_id())
+        return _media_group_item(env, item, group[0])
+
     return [
-        build_message(
-            env,
-            method,
-            chat,
-            content=functools.partial(_media_group_item, env, item, group_id),
-        )
+        build_message(env, method, chat, content=functools.partial(content, item))
         for item in method.media
     ]
 
@@ -1738,15 +1744,16 @@ def forward_one(
     A single forward stands alone, so it is in no album; a batch passes
     the ``media_group_id`` that keeps an album's forwards together.
     """
+    # The server checks the chat and the thread, then TDLib the rest;
+    # all before an id is allocated, so a refused forward uses none.
     require_standing(env, target)
+    thread = _thread_changes(env, target, thread_id)
     original = source.find_message(message_id)
     if original is None:
         raise ApiRejection("message to forward not found")
     if not _forwardable(original):
         raise ApiRejection("message can't be forwarded")
     require_send_permission(env, target, content_kind(original), forwarded=True)
-    # Checked before an id is allocated, so a refused forward uses none.
-    thread = _thread_changes(env, target, thread_id)
     env.admit_send(target)
     return target.add_derived(
         original,
@@ -1851,8 +1858,13 @@ def handle_forward_many(env: BotTestEnvironment, method: ForwardMessages) -> lis
     ]
     # Checked for the whole batch first, so a refusal stores nothing.
     require_standing(env, target)
+    posting_topic(env, target, method.message_thread_id)
     for original in originals:
         require_send_permission(env, target, content_kind(original), forwarded=True)
+    if originals:
+        # Every check passed, so the batch is let through before its
+        # albums take ids.
+        env.admit_send(target)
     albums = _album_ids(env, originals)
     forwarded = [
         forward_one(
@@ -1886,6 +1898,7 @@ def copy_one(
     original's.
     """
     require_standing(env, target)
+    thread = _thread_changes(env, target, thread_id)
     original = source.find_message(message_id)
     if original is None:
         raise ApiRejection("message to copy not found")
@@ -1902,7 +1915,6 @@ def copy_one(
         }
     # Checked before an id or a poll is allocated, so a refused copy
     # uses neither.
-    thread = _thread_changes(env, target, thread_id)
     env.admit_send(target)
     if original.poll is not None and "poll" not in changes:
         changes = {**changes, "poll": _copied_poll(env, original.poll)}
@@ -1999,6 +2011,10 @@ def handle_copy(env: BotTestEnvironment, method: CopyMessage) -> MessageId:
         changes["show_caption_above_media"] = method.show_caption_above_media
     if isinstance(method.reply_markup, InlineKeyboardMarkup):
         changes["reply_markup"] = method.reply_markup
+    # The chat and the thread before the message replied to, as the
+    # server checks them first.
+    require_standing(env, target)
+    posting_topic(env, target, method.message_thread_id)
     changes.update(_reply_changes(env, method, target, ephemeral=False))
     copied = copy_one(
         env,
@@ -2030,8 +2046,13 @@ def handle_copy_many(env: BotTestEnvironment, method: CopyMessages) -> list[Mess
     ]
     # Checked for the whole batch first, so a refusal stores nothing.
     require_standing(env, target)
+    posting_topic(env, target, method.message_thread_id)
     for original in originals:
         require_send_permission(env, target, content_kind(original), forwarded=True)
+    if originals:
+        # Every check passed, so the batch is let through before its
+        # albums take ids.
+        env.admit_send(target)
     albums = _album_ids(env, originals)
     copied = [
         copy_one(
@@ -2108,6 +2129,8 @@ def _require_content(message: Message | None, fields: tuple[str, ...], kind: str
 def handle_edit_text(env: BotTestEnvironment, method: EditMessageText) -> Message:
     chat, stored = _edit_target(env, method)
     message_id = stored.message_id
+    # The message is found first; its new text is TDLib's to check.
+    refuse_blank_text(method)
     _require_content(stored, _TEXT_FIELDS, "text")
     return chat.update_message(message_id, **edit_stamp(env), **_text_changes(env, method))
 
@@ -2248,7 +2271,9 @@ def _stored_ephemeral(env: BotTestEnvironment, method: _EphemeralEdit) -> Messag
 
 @models(EditEphemeralMessageText)
 def handle_edit_ephemeral_text(env: BotTestEnvironment, method: EditEphemeralMessageText) -> bool:
-    _require_content(_stored_ephemeral(env, method), _TEXT_FIELDS, "text")
+    stored = _stored_ephemeral(env, method)
+    refuse_blank_text(method)
+    _require_content(stored, _TEXT_FIELDS, "text")
     return _edit_ephemeral(env, method, **_text_changes(env, method))
 
 
@@ -2776,7 +2801,7 @@ def handle_get_chat(env: BotTestEnvironment, method: GetChat) -> ChatFullInfo:
             "username": chat.username,
             "first_name": chat.first_name,
             "last_name": chat.last_name,
-            "is_forum": chat.is_forum or None,
+            "is_forum": chat.reported_forum,
             "description": chat.description,
             "permissions": detached_copy(chat.permissions),
             "photo": detached_copy(chat.photo),
@@ -3639,8 +3664,9 @@ def handle_send_poll(env: BotTestEnvironment, method: SendPoll) -> Message:
     """
     chat = resolve_chat(env, method.chat_id)
     close_at = _poll_close(env, method)
+    # Checked now, numbered once the send went through.
     poll = new_poll(
-        env.world.next_query_id(),
+        "",
         method.question,
         [option if isinstance(option, str) else option.text for option in method.options],
         poll_type=method.type,
@@ -3657,6 +3683,7 @@ def handle_send_poll(env: BotTestEnvironment, method: SendPoll) -> Message:
     message = build_message(env, method, chat)
     # Registered once the send went through, so a refused one leaves no
     # poll behind to vote in.
+    poll.id = env.world.next_query_id()
     env.world.polls[poll.id] = poll
     if close_at is not None and not poll.is_closed:
         message_id = message.message_id
@@ -3853,9 +3880,10 @@ def service_message(
 
 
 #: The forum methods a private chat takes too: TDLib lets a bot
-#: create, edit and delete the topics of its private chats
-#: (ForumTopicManager.cpp, ``is_forum`` with ``allow_bots``), while
-#: closing and the General topic methods are a supergroup's.
+#: create, edit and delete the topics of its private chats, the
+#: General topic's name included (ForumTopicManager.cpp,
+#: ``is_forum`` with ``allow_bots``), while closing, reopening and
+#: hiding are a supergroup's.
 #: Unpinning a topic's messages is let through as well; that TDLib
 #: allows it there is not checked.
 _PRIVATE_TOPIC_METHODS: frozenset[type[TelegramMethod[Any]]] = frozenset(
@@ -4082,7 +4110,9 @@ def handle_edit_general_forum_topic(
     env: BotTestEnvironment,
     method: EditGeneralForumTopic,
 ) -> bool:
-    chat = forum_chat(env, method.chat_id)
+    # Allowed in a private chat as well: neither the server nor TDLib
+    # checks the type (Client.cpp, ForumTopicManager.cpp).
+    chat = forum_chat(env, method.chat_id, private=True)
     chat.general_topic.name = method.name
     return True
 

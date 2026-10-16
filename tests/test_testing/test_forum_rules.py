@@ -670,3 +670,18 @@ class TestPrivateChatTopics:
             match="Bad Request: the chat is not a supergroup forum$",
         ):
             await call(env.bot, chat.id)
+
+    async def test_get_chat_never_reports_it_a_forum(self, private):
+        env, chat = private
+        await env.bot.create_forum_topic(chat_id=chat.id, name="Ideas")
+
+        info = await env.bot.get_chat(chat_id=chat.id)
+
+        assert info.is_forum is None
+        assert chat.is_forum is True
+
+    async def test_the_general_topic_is_renamed_there(self, private):
+        env, chat = private
+
+        assert await env.bot.edit_general_forum_topic(chat_id=chat.id, name="Home")
+        assert chat.general_topic.name == "Home"

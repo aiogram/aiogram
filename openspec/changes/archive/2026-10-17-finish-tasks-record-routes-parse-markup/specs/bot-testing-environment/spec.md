@@ -327,9 +327,10 @@ TDLib cannot read SHALL be no number, never a failure of the toolkit. A parsed t
 trimmed at its end, and of leading spaces and newlines up to its first entity. A parse mode
 on a non-empty text SHALL win over explicit entities, which SHALL stand only without a parse
 mode or with `none`. An unknown parse mode SHALL fail with `unsupported parse_mode`. A
-message text that is empty SHALL fail with `message text is empty`, and one that is blank,
-as sent or once parsed, with `text must be non-empty`; a caption that parses to nothing
-SHALL be cleared. The call log SHALL keep the call as the bot made it.
+message text that is empty SHALL fail with `message text is empty` before the chat is
+checked, and one that is blank, as sent or once parsed, with `text must be non-empty`
+after the chat and the thread are checked; a caption or another optional text that parses
+to nothing SHALL be cleared. The call log SHALL keep the call as the bot made it.
 
 #### Scenario: A bold word
 
@@ -352,6 +353,16 @@ SHALL be cleared. The call log SHALL keep the call as the bot made it.
 - **WHEN** a handler sends `<b> </b>` with `parse_mode="HTML"`
 - **THEN** the call raises `TelegramBadRequest` with `text must be non-empty`, and nothing
   is stored
+
+#### Scenario: A gift's text that parses to nothing
+
+- **WHEN** a handler sends a gift whose `text` is `<b> </b>` with `text_parse_mode="HTML"`
+- **THEN** the gift is sent with no text
+
+#### Scenario: A kicked bot sends a blank text
+
+- **WHEN** the bot was kicked from a supergroup and sends `<b> </b>` there
+- **THEN** the call raises `TelegramForbiddenError`, not the blank text's refusal
 
 #### Scenario: Leading whitespace
 

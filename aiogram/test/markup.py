@@ -1171,10 +1171,13 @@ def bot_command_entities(text: str | None) -> list[MessageEntity]:
 
 
 #: The fields whose text a message cannot do without.
-_MESSAGE_TEXT_FIELDS = frozenset({"text", "message_text"})
-
 #: The methods whose ``text`` is a message's whole text.
 _TEXT_METHODS = (SendMessage, EditMessageText, EditEphemeralMessageText)
+
+
+def _message_text(model: Any, field: str) -> bool:
+    """Whether ``model``'s ``field`` is a text a send refuses blank."""
+    return field == "text" and isinstance(model, _TEXT_METHODS)
 
 
 def _blank(text: str) -> bool:
@@ -1192,19 +1195,28 @@ def _blank(text: str) -> bool:
 
 def refuse_empty_text(method: Any) -> None:
     """
-    Refuse a text message whose text is empty or blank.
+    Refuse a text message whose text is empty, as sent.
 
-    An empty one is the Bot API server's ``message text is empty``;
-    a blank one TDLib trims to nothing and refuses with ``text must
-    be non-empty``. A caption is not refused: TDLib clears it.
+    The Bot API server's ``message text is empty``, which it answers
+    before it looks at the chat (``get_input_message_text`` in
+    Client.cpp). A blank text is TDLib's to refuse, later: see
+    :func:`refuse_blank_text`.
+    """
+    if isinstance(method, _TEXT_METHODS) and method.text == "":
+        raise ApiRejection("message text is empty")
+
+
+def refuse_blank_text(method: Any) -> None:
+    """
+    Refuse a text message whose text is blank, once parsed.
+
+    TDLib trims it to nothing and answers ``text must be non-empty``
+    from inside the send, so a modeled send calls this after its
+    chat and thread checks. Other content in place of a text, and a
+    caption, which TDLib clears instead, are not refused.
     """
     text = method.text if isinstance(method, _TEXT_METHODS) else None
-    if text is None:
-        # Not a text message, or one carrying other content instead.
-        return
-    if not text:
-        raise ApiRejection("message text is empty")
-    if _blank(text):
+    if text is not None and _blank(text):
         raise ApiRejection("text must be non-empty")
 
 
@@ -1244,10 +1256,17 @@ def apply_parse_modes(value: Any, find_user: UserLookup) -> Any:
         if not text or str(mode).lower() in {"", "none"}:
             continue
         plain, entities = parse_entities(text, str(mode), find_user)
-        if not plain and text_field in _MESSAGE_TEXT_FIELDS:
+        if not plain and text_field == "message_text":
+            # An inline result's text: no chat to check first.
             raise ApiRejection("text must be non-empty")
-        # A caption that parses to nothing is cleared, as TDLib
-        # clears it.
-        changes[text_field] = None if not plain and text_field == "caption" else plain
+        if not plain and _message_text(value, text_field):
+            # Kept empty, for the send to refuse in its turn.
+            changes[text_field] = plain
+        elif not plain and not type(value).model_fields[text_field].is_required():
+            # An optional text that parses to nothing is cleared, as
+            # TDLib clears an empty caption or gift text.
+            changes[text_field] = None
+        else:
+            changes[text_field] = plain
         changes[entities_field] = entities or None
     return value.model_copy(update=changes) if changes else value

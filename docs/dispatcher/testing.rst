@@ -847,11 +847,12 @@ except that one with nothing but whitespace is refused as below.
 
 A message text that is empty, or that is nothing but whitespace
 before or after parsing, is refused: ``Bad Request: message text is
-empty`` for an empty one, as the Bot API server answers it, and
-``Bad Request: text must be non-empty`` for a blank one, as TDLib
-does once it has trimmed it. That holds for :code:`sendMessage` and
-the text edits. A caption that parses to nothing is cleared instead,
-as TDLib clears it.
+empty`` for an empty one, as the Bot API server answers it before it
+looks at the chat, and ``Bad Request: text must be non-empty`` for a
+blank one, as TDLib does once it has trimmed it, after the chat and
+the thread are checked. That holds for :code:`sendMessage` and the
+text edits. A caption, or another optional text such as a gift's,
+that parses to nothing is cleared instead, as TDLib clears it.
 
 Rich messages
 -------------
@@ -2924,12 +2925,13 @@ sends; an explicit reply keeps its own target, and the General topic has no root
 
 ``topic.root_message`` returns the root from a test.
 
-A bot's private chats have topics too. :code:`createForumTopic`, :code:`editForumTopic` and
-:code:`deleteForumTopic` work in one, and a message sent with its thread id carries it and is
-a topic message, but replies to nothing: the Bot API server gives only a supergroup's topic
-an implicit reply. A send into a thread the private chat lacks fails with ``message thread
-not found``, and closing a topic or any General topic method fails with ``Bad Request: the
-chat is not a supergroup forum``. ``chat.is_forum`` is reported for supergroups only. The
+A bot's private chats have topics too. :code:`createForumTopic`, :code:`editForumTopic`,
+:code:`deleteForumTopic` and :code:`editGeneralForumTopic` work in one, and a message sent with
+its thread id carries it and is a topic message, but replies to nothing: the Bot API server
+gives only a supergroup's topic an implicit reply. A send into a thread the private chat lacks
+fails with ``message thread not found``, and closing, reopening or hiding a topic fails with
+``Bad Request: the chat is not a supergroup forum``. ``is_forum`` is reported for supergroups
+only, by every call that returns a chat. The
 bot's own topic mode is not modeled: every private chat takes topics.
 
 A closed topic takes messages only from someone who may manage topics. A send, copy or
