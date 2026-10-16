@@ -480,7 +480,11 @@ class TestForumToggle:
 
     async def test_a_supergroup_can_be_declared_a_forum_without_topics(self, dp):
         blueprint = Blueprint()
-        chat = blueprint.add_supergroup("Team", is_forum=True)
+        chat = blueprint.add_supergroup(
+            "Team",
+            is_forum=True,
+            bot_status=ChatMemberStatus.ADMINISTRATOR,
+        )
         env = BotTestEnvironment(blueprint=blueprint, dispatcher=dp)
         try:
             state = env.chat(chat)

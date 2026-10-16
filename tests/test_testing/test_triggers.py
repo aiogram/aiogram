@@ -198,7 +198,7 @@ class TestJoinRequests:
         """A group and a user who is deliberately *not* a member of it."""
         blueprint = Blueprint()
         outsider = blueprint.add_user("Outsider")
-        blueprint.add_supergroup("Club")
+        blueprint.add_supergroup("Club", bot_status=ChatMemberStatus.ADMINISTRATOR)
         environment = BotTestEnvironment(blueprint=blueprint, dispatcher=dp)
         try:
             yield environment, environment.user(outsider), environment.chat(blueprint.chats[0])

@@ -643,6 +643,7 @@ class TestStoredMessagesAreUsable:
     async def test_a_topic_creation_message_is_bound(self, env, team):
         # Topics are created in a forum only.
         team.is_forum = True
+        team.member(env.world.bot_user.id).set_status(ChatMemberStatus.ADMINISTRATOR)
         await env.bot.create_forum_topic(chat_id=team.id, name="Support")
 
         service = team.messages[-1]

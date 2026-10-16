@@ -40,7 +40,8 @@ import dataclasses
 import datetime
 import functools
 import re
-from collections.abc import Callable
+from collections.abc import Callable, Mapping
+from http import HTTPStatus
 from typing import TYPE_CHECKING, Any, get_args
 
 from pydantic import BaseModel
@@ -285,6 +286,7 @@ from .synthesis import (
     with_passed_file,
 )
 from .world import (
+    CHAT_TYPE_SCOPED_RIGHTS,
     DEFAULT_TOPIC_ICON_COLOR,
     UNTIL_FOREVER,
     BusinessConnectionState,
@@ -473,16 +475,22 @@ def resolve_chat(env: BotTestEnvironment, chat_id: Any) -> ChatState:
     ``env.on(SendMessage).raises(TelegramBadRequest, "Bad Request: chat not found")``
     produces the rejection without pretending the world is short of a chat.
     """
+    chat = known_chat(env, chat_id)
+    if chat is None:
+        raise WorldLookupError(_undeclared_chat_message(env, chat_id))
+    return chat
+
+
+def known_chat(env: BotTestEnvironment, chat_id: Any) -> ChatState | None:
+    """The chat ``chat_id`` names, or ``None`` if the world has none."""
     if isinstance(chat_id, int):
-        chat = env.world.chats.get(chat_id)
-        if chat is not None:
-            return chat
+        return env.world.chats.get(chat_id)
     if isinstance(chat_id, str):
         wanted = chat_id.lstrip("@")
         for chat in env.world.chats.values():
             if chat.username == wanted:
                 return chat
-    raise WorldLookupError(_undeclared_chat_message(env, chat_id))
+    return None
 
 
 def _undeclared_chat_message(env: BotTestEnvironment, chat_id: Any) -> str:
@@ -524,19 +532,41 @@ def _chat_label(chat: ChatState) -> str:
     return ""
 
 
-# -- the bot's own rights --------------------------------------------------------------
+# -- the bot's own rights -----------------------------------------
 #
-# Each refusal below is Telegram's wording, so it cannot carry a hint.
-# The fix for every one of them is to declare the bot's standing:
-# ``bot_status=`` on ``Blueprint.add_group`` and its siblings, or
+# What the bot may do in a group, a supergroup or a channel is one
+# table, BOT_RIGHTS: method type -> rule. handle_call consults it
+# once, after parse modes and before the handler, so adding a method
+# is adding a row. Only what depends on the call's content stays in
+# the handlers: what a message carries (require_send_permission) and
+# whose message is deleted (bot_may_delete).
+#
+# Each refusal is Telegram's wording, so it cannot carry a hint. The
+# fix is to declare the bot's standing: ``bot_status=`` on
+# ``Blueprint.add_group`` and its siblings, or
 # ``Blueprint.set_member(chat, blueprint.bot, rights=...)`` for one
 # right. ``BotTestEnvironment(enforce_bot_rights=False)`` turns the
 # checks off. The texts are TDLib's, which the Bot API server relays
-# with the first letter lowercased (td/telegram/DialogManager.cpp,
-# DialogParticipantManager.cpp and MessageContent.cpp).
+# with the first letter lowercased: td/telegram/DialogManager.cpp,
+# ChatManager.cpp, DialogInviteLinkManager.cpp,
+# DialogParticipantManager.cpp, ForumTopicManager.cpp and
+# MessageContent.cpp.
 
 
 _ADMINISTRATOR_STATUSES = frozenset({ChatMemberStatus.CREATOR, ChatMemberStatus.ADMINISTRATOR})
+
+#: The chat types the bot needs rights in.
+_GROUP_LIKE = frozenset({ChatType.GROUP, ChatType.SUPERGROUP, ChatType.CHANNEL})
+
+#: What an administrator declared without rights holds, built once.
+_ORDINARY_RIGHTS = administrator_rights()
+
+#: How the Bot API server names a chat type in a 403.
+_CHAT_NOUNS: dict[str, str] = {
+    ChatType.GROUP: "group",
+    ChatType.SUPERGROUP: "supergroup",
+    ChatType.CHANNEL: "channel",
+}
 
 
 def _member_of(chat: ChatState, user_id: int) -> MemberState | None:
@@ -556,8 +586,8 @@ def holds_right(chat: ChatState, user_id: int, right: str) -> bool:
     Whether ``user_id`` holds the administrator ``right`` in ``chat``.
 
     The owner holds every right. An administrator holds what its
-    rights grant, read as :func:`scoped_rights` reports them for the
-    chat's type, so a right the type does not have is not held. No
+    rights grant, unless the right does not exist in the chat's type,
+    as :data:`~aiogram.test.world.CHAT_TYPE_SCOPED_RIGHTS` says. No
     one else holds any.
     """
     member = _member_of(chat, user_id)
@@ -565,8 +595,11 @@ def holds_right(chat: ChatState, user_id: int, right: str) -> bool:
         return False
     if member.status == ChatMemberStatus.CREATOR:
         return True
-    declared = member.rights if member.rights is not None else administrator_rights()
-    return bool(getattr(scoped_rights(declared, chat.type), right))
+    scope = CHAT_TYPE_SCOPED_RIGHTS.get(right)
+    if scope is not None and chat.type not in scope:
+        return False
+    declared = member.rights if member.rights is not None else _ORDINARY_RIGHTS
+    return bool(getattr(declared, right))
 
 
 def bot_has_right(env: BotTestEnvironment, chat: ChatState, right: str) -> bool:
@@ -579,95 +612,274 @@ def bot_has_right(env: BotTestEnvironment, chat: ChatState, right: str) -> bool:
     return not env.enforce_bot_rights or holds_right(chat, env.world.bot_user.id, right)
 
 
-def require_bot_right(
-    env: BotTestEnvironment,
-    chat: ChatState,
-    right: str,
-    refusal: str,
-) -> None:
+def require_standing(env: BotTestEnvironment, chat: ChatState) -> None:
     """
-    Refuse a call with ``refusal`` unless the bot holds ``right``.
+    Refuse a call into a chat the bot was removed from or left.
 
-    A private chat needs no right. The fix for a test that meant the
-    bot to hold it is ``Blueprint.set_member(chat, blueprint.bot,
-    rights=administrator_rights(...))`` or ``bot_status=``.
+    The Bot API server answers it with a 403 before anything else
+    (``check_chat_access`` in telegram-bot-api's Client.cpp). A bot
+    whose membership is not declared at all counts as a member.
     """
-    if chat.type != ChatType.PRIVATE and not bot_has_right(env, chat, right):
-        raise ApiRejection(refusal)
+    if chat.type == ChatType.PRIVATE or not env.enforce_bot_rights:
+        return
+    member = _bot_member(env, chat)
+    if member is None or member.is_present:
+        return
+    noun = _CHAT_NOUNS[chat.type]
+    if member.status == ChatMemberStatus.KICKED:
+        text = f"bot was kicked from the {noun} chat"
+    else:
+        text = f"bot is not a member of the {noun} chat"
+    raise ApiRejection(text, error_code=HTTPStatus.FORBIDDEN)
 
 
-def require_pin_right(env: BotTestEnvironment, chat: ChatState) -> None:
+#: What runs before a rule looks at the bot's rights. It may refuse,
+#: as Telegram refuses some calls earlier, and returns True to let
+#: the call through without the right.
+Precheck = Callable[["BotTestEnvironment", ChatState, Any], bool]
+
+
+@dataclasses.dataclass(frozen=True)
+class RightRule:
     """
-    Refuse pinning or unpinning unless the bot may manage pins.
+    The administrator right one kind of call takes.
 
-    That is ``can_pin_messages`` in a group or a supergroup and
-    ``can_edit_messages`` in a channel, as ``pinChatMessage`` states.
+    ``right`` names it, or is a function of the chat's type naming
+    it. ``refusal`` is Telegram's text without it, and ``refusals``
+    the text a chat type gets instead. The rule holds in
+    ``chat_types`` only, and ``before`` runs first, see
+    :data:`Precheck`.
     """
-    right = "can_edit_messages" if chat.type == ChatType.CHANNEL else "can_pin_messages"
-    require_bot_right(
-        env,
-        chat,
-        right,
-        "not enough rights to manage pinned messages in the chat",
-    )
+
+    right: str | Callable[[str], str]
+    refusal: str
+    refusals: Mapping[str, str] = dataclasses.field(default_factory=dict)
+    chat_types: frozenset[str] = _GROUP_LIKE
+    before: Precheck | None = None
+
+    def right_in(self, chat_type: str) -> str:
+        """The right a chat of ``chat_type`` takes."""
+        return self.right if isinstance(self.right, str) else self.right(chat_type)
+
+    def refusal_in(self, chat_type: str) -> str:
+        """Telegram's refusal in a chat of ``chat_type``."""
+        return self.refusals.get(chat_type, self.refusal)
 
 
-def require_restrict_right(env: BotTestEnvironment, chat: ChatState) -> None:
+def _pin_right(chat_type: str) -> str:
+    """Pins take ``can_edit_messages`` in a channel, as stated."""
+    return "can_edit_messages" if chat_type == ChatType.CHANNEL else "can_pin_messages"
+
+
+def _on_behalf_of_business(env: BotTestEnvironment, chat: ChatState, method: Any) -> bool:
+    """A business account pins its own chats; no right is needed."""
+    return getattr(method, "business_connection_id", None) is not None
+
+
+def _owner_first(env: BotTestEnvironment, chat: ChatState, method: Any) -> bool:
+    """TDLib refuses touching the owner before it reads the rights."""
+    _not_the_owner(chat, method.user_id)
+    return False
+
+
+def _unban_first(env: BotTestEnvironment, chat: ChatState, method: UnbanChatMember) -> bool:
+    """With ``only_if_banned``, a user not banned needs nothing."""
+    if method.only_if_banned and chat.member(method.user_id).status != ChatMemberStatus.KICKED:
+        return True
+    return _owner_first(env, chat, method)
+
+
+def _forum_first(env: BotTestEnvironment, chat: ChatState, method: Any) -> bool:
+    """A forum method is refused in a chat that is not one first."""
+    forum_chat(env, chat.id)
+    return False
+
+
+def _topic_first(env: BotTestEnvironment, chat: ChatState, method: Any) -> bool:
+    """The topic a method names is looked up before the rights."""
+    _topic(env, method)
+    return False
+
+
+def _opened_by_bot(env: BotTestEnvironment, chat: ChatState, method: Any) -> bool:
     """
-    Refuse a ban, unban or restriction without ``can_restrict_members``.
+    The topic is looked up, and the bot needs no right for its own.
 
-    A basic group answers with the server's ``CHAT_ADMIN_REQUIRED``,
-    since TDLib has no check of its own there.
+    TDLib lets the creator of a topic edit, close, reopen and delete
+    it without the right (ForumTopicManager.cpp, ``is_outgoing``).
     """
-    refusal = (
-        "CHAT_ADMIN_REQUIRED"
-        if chat.type == ChatType.GROUP
-        else "not enough rights to restrict/unrestrict chat member"
-    )
-    require_bot_right(env, chat, "can_restrict_members", refusal)
+    _chat, topic = _topic(env, method)
+    return topic.creator_id == env.world.bot_user.id
 
 
-def require_promote_right(env: BotTestEnvironment, chat: ChatState) -> None:
-    """Refuse promoting or demoting without ``can_promote_members``."""
-    refusal = (
-        "need owner rights in the group chat"
-        if chat.type == ChatType.GROUP
-        else "not enough rights"
-    )
-    require_bot_right(env, chat, "can_promote_members", refusal)
+_PINNING = RightRule(
+    right=_pin_right,
+    refusal="not enough rights to manage pinned messages in the chat",
+    before=_on_behalf_of_business,
+)
+_RESTRICTING = RightRule(
+    right="can_restrict_members",
+    # TDLib has no check of its own in a basic group, so the server's
+    # error comes back.
+    refusal="not enough rights to restrict/unrestrict chat member",
+    refusals={ChatType.GROUP: "CHAT_ADMIN_REQUIRED"},
+    before=_owner_first,
+)
+_INVITING = RightRule(
+    right="can_invite_users",
+    refusal="not enough rights to manage chat invite link",
+)
+_JOIN_REQUESTS = RightRule(
+    right="can_invite_users",
+    refusal="not enough rights to manage chat join requests",
+)
+_CHAT_PHOTO = RightRule(
+    right="can_change_info",
+    refusal="not enough rights to change chat photo",
+)
+_SUPERGROUP = frozenset({ChatType.SUPERGROUP})
+_TOGGLING_TOPICS = RightRule(
+    right="can_manage_topics",
+    refusal="not enough rights to close or open the topic",
+    chat_types=_SUPERGROUP,
+    before=_opened_by_bot,
+)
+_TOGGLING_GENERAL = RightRule(
+    right="can_manage_topics",
+    refusal="not enough rights to close or open the topic",
+    chat_types=_SUPERGROUP,
+    before=_forum_first,
+)
+
+#: Method type -> the right the bot needs to call it in a group, a
+#: supergroup or a channel. See the comment above.
+BOT_RIGHTS: dict[type[TelegramMethod[Any]], RightRule] = {
+    PinChatMessage: _PINNING,
+    UnpinChatMessage: _PINNING,
+    UnpinAllChatMessages: _PINNING,
+    UnpinAllForumTopicMessages: dataclasses.replace(_PINNING, before=_topic_first),
+    UnpinAllGeneralForumTopicMessages: dataclasses.replace(_PINNING, before=_forum_first),
+    BanChatMember: _RESTRICTING,
+    UnbanChatMember: dataclasses.replace(_RESTRICTING, before=_unban_first),
+    # Restricting is for supergroups only; the handler refuses the rest.
+    RestrictChatMember: dataclasses.replace(_RESTRICTING, chat_types=_SUPERGROUP),
+    PromoteChatMember: RightRule(
+        right="can_promote_members",
+        refusal="not enough rights",
+        refusals={ChatType.GROUP: "need owner rights in the group chat"},
+        before=_owner_first,
+    ),
+    SetChatTitle: RightRule(
+        right="can_change_info",
+        refusal="not enough rights to change chat title",
+    ),
+    SetChatDescription: RightRule(
+        right="can_change_info",
+        refusal="not enough rights to set chat description",
+    ),
+    SetChatPhoto: _CHAT_PHOTO,
+    DeleteChatPhoto: _CHAT_PHOTO,
+    CreateChatInviteLink: _INVITING,
+    CreateChatSubscriptionInviteLink: _INVITING,
+    EditChatInviteLink: _INVITING,
+    EditChatSubscriptionInviteLink: _INVITING,
+    RevokeChatInviteLink: _INVITING,
+    ExportChatInviteLink: _INVITING,
+    ApproveChatJoinRequest: _JOIN_REQUESTS,
+    DeclineChatJoinRequest: _JOIN_REQUESTS,
+    CreateForumTopic: RightRule(
+        right="can_manage_topics",
+        refusal="not enough rights to create a topic",
+        chat_types=_SUPERGROUP,
+        before=_forum_first,
+    ),
+    EditForumTopic: RightRule(
+        right="can_manage_topics",
+        refusal="not enough rights to edit the topic",
+        chat_types=_SUPERGROUP,
+        before=_opened_by_bot,
+    ),
+    EditGeneralForumTopic: RightRule(
+        right="can_manage_topics",
+        refusal="not enough rights to edit the topic",
+        chat_types=_SUPERGROUP,
+        before=_forum_first,
+    ),
+    CloseForumTopic: _TOGGLING_TOPICS,
+    ReopenForumTopic: _TOGGLING_TOPICS,
+    CloseGeneralForumTopic: _TOGGLING_GENERAL,
+    ReopenGeneralForumTopic: _TOGGLING_GENERAL,
+    HideGeneralForumTopic: _TOGGLING_GENERAL,
+    UnhideGeneralForumTopic: _TOGGLING_GENERAL,
+    DeleteForumTopic: RightRule(
+        right="can_delete_messages",
+        refusal="not enough rights to delete the topic",
+        chat_types=_SUPERGROUP,
+        before=_opened_by_bot,
+    ),
+}
 
 
-#: Message content field -> the permission sending it takes, and how
+def check_bot_rights(env: BotTestEnvironment, method: TelegramMethod[Any]) -> None:
+    """
+    Refuse a call the bot's standing in its chat does not allow.
+
+    Looks the method up in :data:`BOT_RIGHTS`. A chat the world does
+    not have is left to the handler, which says how to declare it,
+    and a method with no handler is still checked.
+    """
+    rule = BOT_RIGHTS.get(type(method))
+    if rule is None or not env.enforce_bot_rights:
+        return
+    chat = known_chat(env, getattr(method, "chat_id", None))
+    if chat is None or chat.type == ChatType.PRIVATE:
+        return
+    require_standing(env, chat)
+    if chat.type not in rule.chat_types:
+        return
+    if rule.before is not None and rule.before(env, chat, method):
+        return
+    if not holds_right(chat, env.world.bot_user.id, rule.right_in(chat.type)):
+        raise ApiRejection(rule.refusal_in(chat.type))
+
+
+#: Message content field -> the permissions sending it takes, and how
 #: Telegram's refusal names it. A field not listed is a text message.
-_SEND_PERMISSIONS: dict[str, tuple[str, str]] = {
-    "animation": ("can_send_other_messages", "animations"),
-    "audio": ("can_send_audios", "music"),
-    "checklist": ("can_send_polls", "checklists"),
-    "contact": ("can_send_messages", "contacts"),
-    "dice": ("can_send_other_messages", "dice"),
-    "document": ("can_send_documents", "documents"),
-    "game": ("can_send_other_messages", "games"),
-    "invoice": ("can_send_messages", "invoice messages"),
-    "live_photo": ("can_send_photos", "photos"),
-    "location": ("can_send_messages", "locations"),
-    "paid_media": ("can_send_photos", "paid media"),
-    "photo": ("can_send_photos", "photos"),
-    "poll": ("can_send_polls", "polls"),
-    "rich_message": ("can_send_messages", "the rich message"),
-    "sticker": ("can_send_other_messages", "stickers"),
-    "venue": ("can_send_messages", "venues"),
-    "video": ("can_send_videos", "videos"),
-    "video_note": ("can_send_video_notes", "video notes"),
-    "voice": ("can_send_voice_notes", "voice notes"),
+_SEND_PERMISSIONS: dict[str, tuple[tuple[str, ...], str]] = {
+    "animation": (("can_send_other_messages",), "animations"),
+    "audio": (("can_send_audios",), "music"),
+    "checklist": (("can_send_polls",), "checklists"),
+    "contact": (("can_send_messages",), "contacts"),
+    "dice": (("can_send_other_messages",), "dice"),
+    "document": (("can_send_documents",), "documents"),
+    "game": (("can_send_other_messages",), "games"),
+    "invoice": (("can_send_messages",), "invoice messages"),
+    "live_photo": (("can_send_photos",), "photos"),
+    "live_location": (("can_send_messages",), "live locations"),
+    "location": (("can_send_messages",), "locations"),
+    # Checked when forwarded or copied only: a bot's own send of
+    # paid media takes no permission in TDLib.
+    "paid_media": (("can_send_photos", "can_send_videos"), "paid media"),
+    "photo": (("can_send_photos",), "photos"),
+    "poll": (("can_send_polls",), "polls"),
+    "rich_message": (("can_send_messages",), "the rich message"),
+    "sticker": (("can_send_other_messages",), "stickers"),
+    "venue": (("can_send_messages",), "venues"),
+    "video": (("can_send_videos",), "videos"),
+    "video_note": (("can_send_video_notes",), "video notes"),
+    "voice": (("can_send_voice_notes",), "voice notes"),
 }
 
 
 def content_kind(message: Message) -> str:
     """The :data:`_SEND_PERMISSIONS` key of what ``message`` carries."""
-    return next(
+    kind = next(
         (name for name in _SEND_PERMISSIONS if getattr(message, name, None) is not None),
         "text",
     )
+    if kind == "location" and message.location and message.location.live_period:
+        return "live_location"
+    return kind
 
 
 def _permitted(permissions: ChatPermissions | None, name: str, *, unset: bool) -> bool:
@@ -677,15 +889,51 @@ def _permitted(permissions: ChatPermissions | None, name: str, *, unset: bool) -
     return bool(getattr(permissions, name, None))
 
 
-def require_send_permission(env: BotTestEnvironment, chat: ChatState, kind: str) -> None:
+def member_may(chat: ChatState, member: MemberState | None, permission: str) -> bool:
+    """
+    Whether a member who is no administrator has ``permission``.
+
+    What the chat's permissions allow, narrowed by the member's own
+    restriction. Chat permissions never set allow everything; a
+    restriction allows only what it granted.
+    """
+    allowed = _permitted(chat.permissions, permission, unset=True)
+    if member is not None and member.status == ChatMemberStatus.RESTRICTED:
+        allowed = allowed and _permitted(member.permissions, permission, unset=False)
+    return allowed
+
+
+def may_create_topics(chat: ChatState, user_id: int) -> bool:
+    """
+    Whether ``user_id``, a user and not the bot, may open a topic.
+
+    TDLib's ``can_create_topics``: the ``can_manage_topics`` right, or
+    the chat permission of that name, which binds administrators who
+    are not bots as much as members (DialogParticipant.cpp,
+    ``apply_restrictions``). A restricted member needs it granted.
+    """
+    if holds_right(chat, user_id, "can_manage_topics"):
+        return True
+    member = _member_of(chat, user_id)
+    return (
+        member is not None and member.is_present and member_may(chat, member, "can_manage_topics")
+    )
+
+
+def require_send_permission(
+    env: BotTestEnvironment,
+    chat: ChatState,
+    kind: str,
+    *,
+    forwarded: bool = False,
+) -> None:
     """
     Refuse a message of ``kind`` the bot may not send into ``chat``.
 
     The owner and administrators send anything in a group, and in a
     channel only they may post at all, with ``can_post_messages``.
-    Anyone else sends what the chat's permissions allow, narrowed by
-    the bot's own restriction. Chat permissions never set allow
-    everything; a restriction allows only what it granted. Declare
+    Anyone else sends what :func:`member_may` allows. Paid media is
+    checked only when ``forwarded``, as TDLib checks it. Declare
     ``bot_status=`` or ``Blueprint.set_member(chat, blueprint.bot,
     rights=...)`` for an administrator, or grant the permission on
     the chat's declared ``permissions``.
@@ -699,11 +947,10 @@ def require_send_permission(env: BotTestEnvironment, chat: ChatState, kind: str)
     member = _bot_member(env, chat)
     if member is not None and member.status in _ADMINISTRATOR_STATUSES:
         return
-    permission, noun = _SEND_PERMISSIONS.get(kind, ("can_send_messages", "text messages"))
-    allowed = _permitted(chat.permissions, permission, unset=True)
-    if member is not None and member.status == ChatMemberStatus.RESTRICTED:
-        allowed = allowed and _permitted(member.permissions, permission, unset=False)
-    if not allowed:
+    if kind == "paid_media" and not forwarded:
+        return
+    permissions, noun = _SEND_PERMISSIONS.get(kind, (("can_send_messages",), "text messages"))
+    if not all(member_may(chat, member, permission) for permission in permissions):
         raise ApiRejection(f"not enough rights to send {noun} to the chat")
 
 
@@ -748,15 +995,18 @@ def posting_topic(
     The topic a message the bot sends lands in, once it may post there.
 
     ``None`` outside a forum. A thread the forum does not have fails
-    as :meth:`ChatState.api_topic` says, and a closed topic, or a
-    closed or hidden General topic, takes messages only from someone
-    who may manage topics: ``TOPIC_CLOSED`` otherwise.
+    as :meth:`ChatState.api_topic` says. A closed topic, or a closed
+    or hidden General topic, takes messages only from someone who may
+    manage topics or from the topic's creator: ``TOPIC_CLOSED``
+    otherwise. That text is the server's, which neither TDLib nor the
+    Bot API server spells out.
     """
     if not chat.is_forum:
         return None
     topic = chat.api_topic(thread_id)
     closed = topic.is_closed or (topic.is_general and topic.is_hidden)
-    if closed and not bot_has_right(env, chat, "can_manage_topics"):
+    opened = topic.creator_id is not None and topic.creator_id == env.world.bot_user.id
+    if closed and not opened and not bot_has_right(env, chat, "can_manage_topics"):
         raise ApiRejection("TOPIC_CLOSED")
     return topic
 
@@ -778,14 +1028,14 @@ def build_message(
     no file number.
     """
     thread_id = getattr(method, "message_thread_id", None)
+    require_standing(env, chat)
     # An unknown thread id must fail rather than silently produce an untagged message.
     topic = posting_topic(env, chat, thread_id)
     receiver = _ephemeral_receiver(env, method, chat)
     if receiver is None and content is None:
         # An ephemeral message is exempt, as TDLib exempts it; a media
         # group checks its items itself.
-        kind = media_field or ("poll" if isinstance(method, SendPoll) else "text")
-        require_send_permission(env, chat, kind)
+        require_send_permission(env, chat, _sent_kind(method, media_field))
     reply = _reply_changes(env, method, chat, ephemeral=receiver is not None)
     connection_id = getattr(method, "business_connection_id", None)
     connection = None if connection_id is None else env.world.business_connection(connection_id)
@@ -838,6 +1088,15 @@ def build_message(
         return chat.add_ephemeral_message(Message(**values))
     message = Message(**values)
     return chat.add_message(message)
+
+
+def _sent_kind(method: TelegramMethod[Any], media_field: str | None) -> str:
+    """The :data:`_SEND_PERMISSIONS` key of what a send carries."""
+    if isinstance(method, SendPoll):
+        return "poll"
+    if isinstance(method, SendLocation) and method.live_period:
+        return "live_location"
+    return media_field or "text"
 
 
 def _on_behalf_of(env: BotTestEnvironment, connection: BusinessConnectionState) -> dict[str, Any]:
@@ -1252,6 +1511,7 @@ def handle_send_media_group(
     items of the same type.
     """
     chat = resolve_chat(env, method.chat_id)
+    require_standing(env, chat)
     if not _MEDIA_GROUP_SIZE[0] <= len(method.media) <= _MEDIA_GROUP_SIZE[1]:
         msg = "media group must include 2-10 items"
         raise ApiRejection(msg)
@@ -1411,12 +1671,13 @@ def forward_one(
     A single forward stands alone, so it is in no album; a batch passes
     the ``media_group_id`` that keeps an album's forwards together.
     """
+    require_standing(env, target)
     original = source.find_message(message_id)
     if original is None:
         raise ApiRejection("message to forward not found")
     if not _forwardable(original):
         raise ApiRejection("message can't be forwarded")
-    require_send_permission(env, target, content_kind(original))
+    require_send_permission(env, target, content_kind(original), forwarded=True)
     # Checked before an id is allocated, so a refused forward uses none.
     thread = _thread_changes(env, target, thread_id)
     return target.add_derived(
@@ -1521,8 +1782,9 @@ def handle_forward_many(env: BotTestEnvironment, method: ForwardMessages) -> lis
         if (original := source.find_message(message_id)) is not None and _forwardable(original)
     ]
     # Checked for the whole batch first, so a refusal stores nothing.
+    require_standing(env, target)
     for original in originals:
-        require_send_permission(env, target, content_kind(original))
+        require_send_permission(env, target, content_kind(original), forwarded=True)
     albums = _album_ids(env, originals)
     forwarded = [
         forward_one(
@@ -1555,12 +1817,13 @@ def copy_one(
     keyboard, or the album a batch keeps together. The rest is the
     original's.
     """
+    require_standing(env, target)
     original = source.find_message(message_id)
     if original is None:
         raise ApiRejection("message to copy not found")
     if not _copyable(original):
         raise ApiRejection("message can't be copied")
-    require_send_permission(env, target, content_kind(original))
+    require_send_permission(env, target, content_kind(original), forwarded=True)
     if all(getattr(original, name) is None for name in CAPTIONED_FIELDS):
         # A caption is for media: a text, sticker or poll copy takes
         # none, whatever the request passed.
@@ -1697,8 +1960,9 @@ def handle_copy_many(env: BotTestEnvironment, method: CopyMessages) -> list[Mess
         if (original := source.find_message(message_id)) is not None and _copyable(original)
     ]
     # Checked for the whole batch first, so a refusal stores nothing.
+    require_standing(env, target)
     for original in originals:
-        require_send_permission(env, target, content_kind(original))
+        require_send_permission(env, target, content_kind(original), forwarded=True)
     albums = _album_ids(env, originals)
     copied = [
         copy_one(
@@ -2128,8 +2392,6 @@ def handle_pin(env: BotTestEnvironment, method: PinChatMessage) -> bool:
     pinned is not announced again.
     """
     chat = resolve_chat(env, method.chat_id)
-    if method.business_connection_id is None:
-        require_pin_right(env, chat)
     pinned = None if method.message_id is None else chat.find_message(method.message_id)
     if pinned is None:
         raise ApiRejection("message to pin not found")
@@ -2160,8 +2422,6 @@ def handle_unpin(env: BotTestEnvironment, method: UnpinChatMessage) -> bool:
     Messages sent in the same second are told apart by id.
     """
     chat = resolve_chat(env, method.chat_id)
-    if method.business_connection_id is None:
-        require_pin_right(env, chat)
     if method.message_id is None:
         pinned = [
             message
@@ -2179,7 +2439,6 @@ def handle_unpin(env: BotTestEnvironment, method: UnpinChatMessage) -> bool:
 @models(UnpinAllChatMessages)
 def handle_unpin_all(env: BotTestEnvironment, method: UnpinAllChatMessages) -> bool:
     chat = resolve_chat(env, method.chat_id)
-    require_pin_right(env, chat)
     chat.pinned_message_ids.clear()
     return True
 
@@ -2260,7 +2519,6 @@ def _not_the_owner(chat: ChatState, user_id: int) -> MemberState:
 def handle_ban(env: BotTestEnvironment, method: BanChatMember) -> bool:
     chat = resolve_chat(env, method.chat_id)
     member = _not_the_owner(chat, method.user_id)
-    require_restrict_right(env, chat)
     member.set_status(ChatMemberStatus.KICKED)
     # A banned user cannot join, so a pending request of theirs goes
     # too: approving it would otherwise lift the ban.
@@ -2290,7 +2548,6 @@ def handle_unban(env: BotTestEnvironment, method: UnbanChatMember) -> bool:
     # Removing a present member is the default, and the owner cannot
     # be removed, the same as for a ban.
     _not_the_owner(chat, method.user_id)
-    require_restrict_right(env, chat)
     member.set_status(ChatMemberStatus.LEFT)
     return True
 
@@ -2328,7 +2585,6 @@ def handle_promote(env: BotTestEnvironment, method: PromoteChatMember) -> bool:
     """
     chat = resolve_chat(env, method.chat_id)
     member = _not_the_owner(chat, method.user_id)
-    require_promote_right(env, chat)
     if (
         member.status == ChatMemberStatus.ADMINISTRATOR
         and member.promoted_by is not None
@@ -2378,7 +2634,6 @@ def handle_restrict(env: BotTestEnvironment, method: RestrictChatMember) -> bool
         msg = "method is available only for supergroups"
         raise ApiRejection(msg)
     member = _not_the_owner(chat, method.user_id)
-    require_restrict_right(env, chat)
     granted = granted_permissions(
         method.permissions,
         method.use_independent_chat_permissions,
@@ -3534,6 +3789,7 @@ def handle_create_forum_topic(env: BotTestEnvironment, method: CreateForumTopic)
         icon_color=method.icon_color or DEFAULT_TOPIC_ICON_COLOR,
         icon_custom_emoji_id=method.icon_custom_emoji_id,
         from_user=env.world.bot_user.as_user(),
+        creator_id=env.world.bot_user.id,
     )
     return topic.as_forum_topic()
 
@@ -3684,7 +3940,6 @@ def handle_unpin_all_forum_topic_messages(
     method: UnpinAllForumTopicMessages,
 ) -> bool:
     chat, topic = _topic(env, method)
-    require_pin_right(env, chat)
     pinned = {message.message_id for message in topic.messages}
     chat.pinned_message_ids = [item for item in chat.pinned_message_ids if item not in pinned]
     return True
@@ -3742,7 +3997,6 @@ def handle_unpin_all_general_forum_topic_messages(
     method: UnpinAllGeneralForumTopicMessages,
 ) -> bool:
     chat = forum_chat(env, method.chat_id)
-    require_pin_right(env, chat)
     pinned = {message.message_id for message in chat.general_topic.messages}
     chat.pinned_message_ids = [item for item in chat.pinned_message_ids if item not in pinned]
     return True

@@ -3,9 +3,16 @@ import datetime
 import pytest
 
 from aiogram import Dispatcher
+from aiogram.enums import ChatMemberStatus
 from aiogram.exceptions import TelegramBadRequest
 from aiogram.test import Blueprint, BotTestEnvironment, WorldLookupError
 from aiogram.test.modeling import SUBSCRIPTION_PERIOD
+
+
+@pytest.fixture
+def blueprint(blueprint, moderated):
+    """The bot manages the links of every chat here."""
+    return moderated(blueprint)
 
 
 def active_primaries(chat):
@@ -221,7 +228,7 @@ class TestDeclaredLinks:
     @pytest.fixture
     def declared(self, dp):
         blueprint = Blueprint()
-        chat = blueprint.add_supergroup("Team")
+        chat = blueprint.add_supergroup("Team", bot_status=ChatMemberStatus.ADMINISTRATOR)
         link = blueprint.add_invite_link(chat, name="Declared", member_limit=2)
         environment = BotTestEnvironment(blueprint=blueprint, dispatcher=dp)
         try:
@@ -252,7 +259,7 @@ class TestDeclaredLinks:
 
     async def test_links_are_isolated_between_environments(self, dp):
         blueprint = Blueprint()
-        chat = blueprint.add_supergroup("Team")
+        chat = blueprint.add_supergroup("Team", bot_status=ChatMemberStatus.ADMINISTRATOR)
         link = blueprint.add_invite_link(chat, name="Declared")
 
         first = BotTestEnvironment(blueprint=blueprint, dispatcher=dp)

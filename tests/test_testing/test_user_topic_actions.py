@@ -4,7 +4,7 @@ from aiogram import F
 from aiogram.enums import ChatMemberStatus
 from aiogram.exceptions import TelegramBadRequest
 from aiogram.test import Blueprint, BotTestEnvironment, WorldLookupError, administrator_rights
-from aiogram.types import Message
+from aiogram.types import ChatPermissions, Message
 
 
 @pytest.fixture
@@ -23,6 +23,7 @@ def forum(dp):
             member: ChatMemberStatus.MEMBER,
         },
         is_forum=True,
+        bot_status=ChatMemberStatus.ADMINISTRATOR,
     )
     blueprint.set_member(chat, limited, rights=administrator_rights(can_manage_topics=False))
     topic = blueprint.add_topic(chat, "Game")
@@ -279,6 +280,8 @@ class TestWhoMay:
     async def test_a_closed_topic_takes_the_owners_message_afterwards(self, forum):
         env, chat, thread_id = forum["env"], forum["chat"], forum["thread_id"]
         await forum["owner"].close_topic(thread_id)
+        # A bot that may manage topics would post anyway.
+        chat.member(env.world.bot_user.id).set_status(ChatMemberStatus.MEMBER)
 
         with pytest.raises(TelegramBadRequest, match="TOPIC_CLOSED"):
             await env.bot.send_message(chat_id=chat.id, text="x", message_thread_id=thread_id)
@@ -331,3 +334,44 @@ class TestWhoMay:
                 await env.user(member).in_(chat).create_topic("New")
         finally:
             env.dispose_sync()
+
+
+class TestTheChatPermission:
+    """``can_manage_topics`` on the chat lets members open topics."""
+
+    GRANTED = ChatPermissions(can_send_messages=True, can_manage_topics=True)
+
+    @pytest.mark.parametrize("who", ["member", "limited"])
+    async def test_it_lets_a_user_create_a_topic(self, forum, who):
+        forum["chat"].permissions = self.GRANTED
+
+        topic = await forum[who].create_topic("Ideas")
+
+        assert topic.creator_id == forum[who].user.id
+
+    async def test_a_restriction_takes_it_away(self, forum):
+        chat = forum["chat"]
+        chat.permissions = self.GRANTED
+        restricted = chat.member(forum["member"].user.id)
+        restricted.set_status(ChatMemberStatus.RESTRICTED)
+        restricted.permissions = ChatPermissions(can_send_messages=True)
+
+        with pytest.raises(WorldLookupError, match="grant it on the chat's `permissions`"):
+            await forum["member"].create_topic("Ideas")
+
+    async def test_it_does_not_let_them_close_another_topic(self, forum):
+        forum["chat"].permissions = self.GRANTED
+
+        with pytest.raises(WorldLookupError, match="can_manage_topics"):
+            await forum["member"].close_topic(forum["thread_id"])
+
+    async def test_the_creator_manages_their_own_topic(self, forum):
+        forum["chat"].permissions = self.GRANTED
+        member = forum["member"]
+        topic = await member.create_topic("Ideas")
+
+        await member.close_topic(topic)
+        await member.reopen_topic(topic)
+        await member.delete_topic(topic)
+
+        assert topic.message_thread_id not in forum["chat"].topics

@@ -2,6 +2,7 @@ import pytest
 
 from aiogram import Bot
 from aiogram.client.default import DefaultBotProperties
+from aiogram.enums import ChatMemberStatus
 from aiogram.methods import GetChatAdministrators, GetMe, SendMessage, SetChatPermissions
 from aiogram.test import BotTestEnvironment, FakeTelegramSession
 from aiogram.test.errors import NoFileContentError
@@ -303,6 +304,7 @@ class TestTheWorldOwnsWhatItStores:
 
     async def test_a_service_message_nobody_returned_is_bound(self, env, team):
         """`setChatTitle` posts a service message the result never carries."""
+        team.member(env.world.bot_user.id).set_status(ChatMemberStatus.ADMINISTRATOR)
         await env.bot.set_chat_title(chat_id=team.id, title="Renamed")
 
         service = team.messages[-1]

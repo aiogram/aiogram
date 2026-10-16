@@ -50,6 +50,7 @@ from .modeling import (
     edit_stamp,
     hide_general,
     holds_right,
+    may_create_topics,
     reopen_general,
     reopen_topic,
     unhide_general,
@@ -1291,13 +1292,15 @@ class UserActor:
         returns the new :class:`~aiogram.test.world.TopicState`, to bind an
         actor to or close later; the handler's result is not returned.
 
-        The chat has to be a forum and the user the owner or an
-        administrator with ``can_manage_topics``. Neither holding is
+        The chat has to be a forum, and the user has to hold
+        ``can_manage_topics``: as an administrator's right, or as the
+        chat's permission of that name, which members have unless the
+        chat or their restriction takes it away. Neither holding is
         something Telegram would let a client work around, so a test that
         lacks one has set the world up wrongly, and gets
         :class:`~aiogram.test.WorldLookupError`.
         """
-        chat = self._require_topic_manager()
+        chat = self._require_topic_manager(creating=True)
         topic = create_topic(
             chat,
             name=name,
@@ -1305,6 +1308,7 @@ class UserActor:
             icon_color=icon_color or DEFAULT_TOPIC_ICON_COLOR,
             icon_custom_emoji_id=icon_custom_emoji_id,
             from_user=self.user.as_user(),
+            creator_id=self.user.id,
         )
         assert topic.root_message is not None
         await self._feed_message(topic.root_message, data)
@@ -1323,8 +1327,7 @@ class UserActor:
         message, from this user, is stored and fed. See :meth:`create_topic`
         for who may and what happens when nobody does.
         """
-        chat = self._require_topic_manager()
-        target = self._require_regular_topic(chat, topic, "close_general_topic")
+        chat, target = self._managed_topic(topic, "close_general_topic")
         return await self._feed_message(
             close_topic(self.environment, chat, target, by=self.user.as_user()), data
         )
@@ -1338,8 +1341,7 @@ class UserActor:
 
         See :meth:`close_topic`.
         """
-        chat = self._require_topic_manager()
-        target = self._require_regular_topic(chat, topic, "reopen_general_topic")
+        chat, target = self._managed_topic(topic, "reopen_general_topic")
         return await self._feed_message(
             reopen_topic(self.environment, chat, target, by=self.user.as_user()),
             data,
@@ -1354,8 +1356,8 @@ class UserActor:
         the thread fails with ``TOPIC_DELETED``. The General topic cannot be
         deleted.
         """
-        chat = self._require_topic_manager()
-        delete_topic(chat, self._require_regular_topic(chat, topic, None))
+        chat, target = self._managed_topic(topic, None)
+        delete_topic(chat, target)
 
     async def hide_general_topic(self, **data: Any) -> Any:
         """
@@ -1390,8 +1392,35 @@ class UserActor:
         """Reopen the General topic, which unhides it; nothing is fed."""
         reopen_general(self._require_topic_manager())
 
-    def _require_topic_manager(self) -> ChatState:
-        """The forum this actor manages the topics of, or a setup error."""
+    def _managed_topic(
+        self,
+        topic: TopicSpec | TopicState | int | None,
+        general_trigger: str | None,
+    ) -> tuple[ChatState, TopicState]:
+        """The forum and the topic this actor closes or deletes."""
+        self._require_topic_manager(opened=True)
+        chat = self.chat
+        target = self._require_regular_topic(chat, topic, general_trigger)
+        if target.creator_id != self.user.id:
+            # The creator of a topic manages it without the right, as
+            # TDLib's ``is_outgoing`` check lets it.
+            self._require_topic_manager()
+        return chat, target
+
+    def _require_topic_manager(
+        self,
+        *,
+        creating: bool = False,
+        opened: bool = False,
+    ) -> ChatState:
+        """
+        The forum this actor manages the topics of, or a setup error.
+
+        ``creating`` asks whether the actor may open a topic, which a
+        chat permission allows too; see :func:`may_create_topics`.
+        ``opened`` checks only that the chat is a forum, for a topic
+        the actor may have opened itself.
+        """
         chat = self.chat
         if not chat.is_forum:
             msg = (
@@ -1400,7 +1429,14 @@ class UserActor:
                 f"`owner.set_topics(True)`"
             )
             raise WorldLookupError(msg)
-        if not holds_right(chat, self.user.id, "can_manage_topics"):
+        if opened:
+            return chat
+        allowed = (
+            may_create_topics(chat, self.user.id)
+            if creating
+            else holds_right(chat, self.user.id, "can_manage_topics")
+        )
+        if not allowed:
             status = ChatMemberStatus(chat.member(self.user.id).status).value
             msg = (
                 f"User {self.user.id} cannot manage the topics of chat {chat.id}: it takes "
@@ -1409,6 +1445,7 @@ class UserActor:
                 f"with `blueprint.set_member(chat, user, rights=administrator_rights())`, "
                 f"`members={{user: ChatMemberStatus.CREATOR}}`, or `promote(user, "
                 f"can_manage_topics=True)`"
+                + (", or grant it on the chat's `permissions`" if creating else "")
             )
             raise WorldLookupError(msg)
         return chat

@@ -2492,7 +2492,9 @@ The bot's own rights
 --------------------
 
 The bot's own calls are checked against its standing in the chat, as Telegram checks them,
-and refused with Telegram's own wording. A private chat needs no right:
+and refused with Telegram's own wording. A private chat needs no right. The rules are one
+table, :data:`aiogram.test.modeling.BOT_RIGHTS`, from method to the right it takes, consulted
+once per call before the method is modeled:
 
 .. list-table::
     :header-rows: 1
@@ -2511,6 +2513,31 @@ and refused with Telegram's own wording. A private chat needs no right:
     * - :code:`promoteChatMember`
       - ``can_promote_members``
       - ``not enough rights``; ``need owner rights in the group chat`` in a basic group
+    * - :code:`setChatTitle`, :code:`setChatDescription`, :code:`setChatPhoto`,
+        :code:`deleteChatPhoto`
+      - ``can_change_info``
+      - ``not enough rights to change chat title``, ``... to set chat description``,
+        ``... to change chat photo``
+    * - the invite link methods; :code:`approveChatJoinRequest`,
+        :code:`declineChatJoinRequest`
+      - ``can_invite_users``
+      - ``not enough rights to manage chat invite link``; ``... to manage chat join
+        requests``
+    * - :code:`createForumTopic`
+      - ``can_manage_topics``
+      - ``not enough rights to create a topic``
+    * - :code:`editForumTopic`, :code:`closeForumTopic`, :code:`reopenForumTopic`
+      - ``can_manage_topics``, unless the bot created the topic
+      - ``not enough rights to edit the topic``; ``... to close or open the topic``
+    * - :code:`deleteForumTopic`
+      - ``can_delete_messages``, unless the bot created the topic
+      - ``not enough rights to delete the topic``
+    * - the General topic methods but unpinning
+      - ``can_manage_topics``, with no exemption
+      - ``not enough rights to edit the topic``; ``... to close or open the topic``
+    * - a send into a closed topic
+      - ``can_manage_topics``, unless the bot created the topic
+      - ``TOPIC_CLOSED``
     * - :code:`deleteMessage` of someone else's message
       - in a basic group, any administrator; in a supergroup or a channel,
         ``can_delete_messages`` (in a channel, ``can_post_messages`` deletes the bot's
@@ -2520,14 +2547,27 @@ and refused with Telegram's own wording. A private chat needs no right:
       - the chat's permission for that kind of message, narrowed by the bot's own
         restriction
       - ``not enough rights to send text messages to the chat``, ``... photos ...``, and
-        so on per kind
+        so on per kind; ``... live locations ...`` for a live location. Paid media is
+        checked only when forwarded or copied, and then takes both ``can_send_photos``
+        and ``can_send_videos``, as TDLib checks it
     * - a send, copy or forward into a channel
       - ``can_post_messages``
       - ``need administrator rights in the channel chat``
 
+A bot the chat removed or that left it is answered with a 403 before any of these, as the
+Bot API server answers it: :class:`~aiogram.exceptions.TelegramForbiddenError` with
+``Forbidden: bot was kicked from the group chat`` (``... the supergroup chat``, ``... the
+channel chat``), or ``Forbidden: bot is not a member of the group chat`` and so on for a bot
+that left. That holds for its sends and for every call in the table. A chat in which the
+bot's membership is not declared at all counts it as a member.
+
 The owner holds every right, and an administrator declared without rights holds the
-ordinary ones, which do not include ``can_promote_members``. The wording is TDLib's, which
-the Bot API server passes on. :code:`deleteMessages` skips what the bot may not delete, as
+ordinary ones, which do not include ``can_promote_members``. The chat's permissions never
+grant the bot an administrator's right: TDLib takes ``can_change_info``,
+``can_invite_users``, ``can_pin_messages`` and ``can_manage_topics`` away from a bot that is
+not an administrator, whatever the chat allows its members. The wording is TDLib's, which
+the Bot API server passes on with its first letter lowercased; ``TOPIC_CLOSED`` and
+``CHAT_ADMIN_REQUIRED`` are the server's own. :code:`deleteMessages` skips what the bot may not delete, as
 it skips other messages it cannot delete. An ephemeral message is not checked.
 
 A refusal cannot say how to fix the test, since its text is Telegram's. The fix is always
@@ -2543,9 +2583,9 @@ to declare what the bot was meant to hold:
         rights=administrator_rights(can_promote_members=True),
     )
 
-Not checked: the rights to change chat settings and to manage topics, granting a right the
-bot does not hold itself, and a bot that has left the chat. What users do through actors is
-never checked either. The test decides what users do.
+Not checked: the rights to change the chat's permissions and sticker set, and granting a
+right the bot does not hold itself. What users do through actors is never checked either.
+The test decides what users do.
 
 A suite written against the permissive fake can turn the checks off while it migrates:
 
@@ -2885,8 +2925,11 @@ the Bot API has no type for one; the bot finds out when a call into the thread f
 ``TOPIC_DELETED``. Closing and reopening the General topic feed nothing either: no service
 message is modeled for them, as with the bot methods.
 
-The user has to be the owner or an administrator with ``can_manage_topics``, in a chat that
-is a forum. Otherwise the trigger raises :class:`~aiogram.test.WorldLookupError`, like the
+The user has to hold ``can_manage_topics``, in a chat that is a forum: as the owner, as an
+administrator granted the right, or, to create a topic, through the chat's permission of
+that name, which binds administrators who are not bots as much as members. The creator of a
+topic closes, reopens and deletes it without the right, as TDLib lets them. Otherwise the
+trigger raises :class:`~aiogram.test.WorldLookupError`, like the
 promote guards: the test arranges the world, and arranging what Telegram forbids is a mistake
 in the test rather than an outcome to model. The message names the right and how to grant it:
 

@@ -18,7 +18,7 @@ from aiogram.types import ForumTopic
 def forum_blueprint():
     blueprint = Blueprint()
     alice = blueprint.add_user("Alice")
-    chat = blueprint.add_supergroup("Team")
+    chat = blueprint.add_supergroup("Team", bot_status=ChatMemberStatus.ADMINISTRATOR)
     blueprint.add_topic(chat, "Support")
     blueprint.add_topic(chat, "Random")
     blueprint.add_private_chat(alice)

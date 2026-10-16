@@ -13,6 +13,12 @@ from aiogram.test import (
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
 
+@pytest.fixture
+def blueprint(blueprint, moderated):
+    """The bot administers the group, as its topic calls need."""
+    return moderated(blueprint)
+
+
 async def flip_later(flag: dict, delay: float = 0.02) -> None:
     await asyncio.sleep(delay)
     flag["ready"] = True

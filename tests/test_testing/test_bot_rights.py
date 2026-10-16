@@ -1,9 +1,17 @@
 import pytest
 
 from aiogram.enums import ChatMemberStatus, ChatType
-from aiogram.exceptions import TelegramBadRequest
+from aiogram.exceptions import TelegramBadRequest, TelegramForbiddenError
 from aiogram.test import Blueprint, BotTestEnvironment, administrator_rights
-from aiogram.types import ChatPermissions, InputMediaDocument, InputMediaPhoto
+from aiogram.test.modeling import BOT_RIGHTS, holds_right
+from aiogram.types import (
+    BufferedInputFile,
+    ChatAdministratorRights,
+    ChatPermissions,
+    InputMediaDocument,
+    InputMediaPhoto,
+    InputPaidMediaPhoto,
+)
 
 ADMIN = ChatMemberStatus.ADMINISTRATOR
 NO_TEXT = ChatPermissions(can_send_messages=False, can_send_photos=True)
@@ -448,3 +456,315 @@ class TestOptingOut:
             assert state.messages[-1].text == "x"
         finally:
             env.dispose_sync()
+
+
+_PHOTO = "not enough rights to change chat photo"
+_LINKS = "not enough rights to manage chat invite link"
+_REQUESTS = "not enough rights to manage chat join requests"
+
+
+class TestTheRightsTable:
+    """Every call the table names is refused in TDLib's words."""
+
+    CALLS = [
+        ("set_chat_title", {"title": "T"}, "not enough rights to change chat title"),
+        (
+            "set_chat_description",
+            {"description": "D"},
+            "not enough rights to set chat description",
+        ),
+        ("delete_chat_photo", {}, _PHOTO),
+        ("set_chat_photo", {"photo": BufferedInputFile(b"x", "p.jpg")}, _PHOTO),
+        ("create_chat_invite_link", {}, _LINKS),
+        ("export_chat_invite_link", {}, _LINKS),
+        ("approve_chat_join_request", {"user_id": 1000}, _REQUESTS),
+        ("decline_chat_join_request", {"user_id": 1000}, _REQUESTS),
+    ]
+
+    @pytest.mark.parametrize(("name", "kwargs", "refusal"), CALLS)
+    @pytest.mark.parametrize("chat_type", [ChatType.GROUP, ChatType.SUPERGROUP])
+    async def test_a_member_bot_is_refused(self, world, name, kwargs, refusal, chat_type):
+        env, chat, _alice = world(chat_type)
+
+        with pytest.raises(TelegramBadRequest, match=f"Bad Request: {refusal}$"):
+            await getattr(env.bot, name)(chat_id=chat.id, **kwargs)
+
+    async def test_the_right_lets_the_call_through(self, world):
+        env, chat, _alice = world(rights=administrator_rights(can_invite_users=False))
+
+        assert await env.bot.set_chat_title(chat_id=chat.id, title="T")
+        with pytest.raises(TelegramBadRequest, match="manage chat invite link"):
+            await env.bot.create_chat_invite_link(chat_id=chat.id)
+
+    async def test_a_record_only_call_into_an_undeclared_chat_is_not_checked(self, world):
+        env, _chat, _alice = world()
+
+        photo = BufferedInputFile(b"x", "p.jpg")
+        assert await env.bot.set_chat_photo(chat_id=-1, photo=photo) is True
+
+    def test_every_rule_names_a_right_the_bot_api_knows(self):
+        for method_type, rule in BOT_RIGHTS.items():
+            for chat_type in rule.chat_types:
+                assert rule.right_in(chat_type) in ChatAdministratorRights.model_fields, (
+                    method_type
+                )
+
+
+@pytest.fixture
+def forum(dp):
+    """A forum with a declared topic and one the bot opens."""
+    environments = []
+
+    async def build(*, rights=None):
+        blueprint = Blueprint()
+        chat = blueprint.add_supergroup("Forum", is_forum=True)
+        declared = blueprint.add_topic(chat, "Declared")
+        if rights is not None:
+            blueprint.set_member(chat, blueprint.bot, rights=rights)
+        environment = BotTestEnvironment(blueprint=blueprint, dispatcher=dp)
+        environments.append(environment)
+        state = environment.chat(chat)
+        # Opened while the bot may, so it is the bot's own.
+        owner = state.member(environment.world.bot_user.id)
+        status, owner.status = owner.status, ChatMemberStatus.CREATOR
+        opened = await environment.bot.create_forum_topic(chat_id=chat.id, name="Own")
+        owner.status = status
+        return environment, state, declared.message_thread_id, opened.message_thread_id
+
+    yield build
+    for environment in environments:
+        environment.dispose_sync()
+
+
+class TestForumRights:
+    TOPIC_CALLS = [
+        ("edit_forum_topic", {"name": "N"}, "not enough rights to edit the topic"),
+        ("close_forum_topic", {}, "not enough rights to close or open the topic"),
+        ("reopen_forum_topic", {}, "not enough rights to close or open the topic"),
+        ("delete_forum_topic", {}, "not enough rights to delete the topic"),
+    ]
+    GENERAL_CALLS = [
+        ("edit_general_forum_topic", {"name": "N"}, "not enough rights to edit the topic"),
+        ("close_general_forum_topic", {}, "close or open the topic"),
+        ("reopen_general_forum_topic", {}, "close or open the topic"),
+        ("hide_general_forum_topic", {}, "close or open the topic"),
+        ("unhide_general_forum_topic", {}, "close or open the topic"),
+    ]
+
+    async def test_creating_takes_the_right(self, forum):
+        env, chat, _declared, _own = await forum()
+
+        with pytest.raises(
+            TelegramBadRequest,
+            match="Bad Request: not enough rights to create a topic$",
+        ):
+            await env.bot.create_forum_topic(chat_id=chat.id, name="New")
+
+    async def test_a_chat_that_is_not_a_forum_is_refused_first(self, world):
+        env, chat, _alice = world()
+
+        with pytest.raises(TelegramBadRequest, match="the chat is not a forum"):
+            await env.bot.create_forum_topic(chat_id=chat.id, name="New")
+
+    @pytest.mark.parametrize(("name", "kwargs", "refusal"), TOPIC_CALLS)
+    async def test_a_topic_of_someone_else_takes_the_right(self, forum, name, kwargs, refusal):
+        env, chat, declared, _own = await forum()
+
+        with pytest.raises(TelegramBadRequest, match=f"Bad Request: {refusal}$"):
+            await getattr(env.bot, name)(
+                chat_id=chat.id,
+                message_thread_id=declared,
+                **kwargs,
+            )
+
+    @pytest.mark.parametrize(("name", "kwargs", "_refusal"), TOPIC_CALLS)
+    async def test_the_bots_own_topic_takes_no_right(self, forum, name, kwargs, _refusal):
+        env, chat, _declared, own = await forum()
+
+        assert await getattr(env.bot, name)(chat_id=chat.id, message_thread_id=own, **kwargs)
+
+    @pytest.mark.parametrize(("name", "kwargs", "refusal"), GENERAL_CALLS)
+    async def test_the_general_topic_always_takes_the_right(self, forum, name, kwargs, refusal):
+        env, chat, _declared, _own = await forum()
+
+        with pytest.raises(TelegramBadRequest, match=refusal):
+            await getattr(env.bot, name)(chat_id=chat.id, **kwargs)
+
+    async def test_deleting_takes_the_right_to_delete_messages(self, forum):
+        env, chat, declared, _own = await forum(
+            rights=administrator_rights(can_delete_messages=False),
+        )
+
+        assert await env.bot.close_forum_topic(chat_id=chat.id, message_thread_id=declared)
+        with pytest.raises(TelegramBadRequest, match="delete the topic"):
+            await env.bot.delete_forum_topic(chat_id=chat.id, message_thread_id=declared)
+
+    async def test_the_bot_posts_into_its_own_closed_topic(self, forum):
+        env, chat, declared, own = await forum()
+        chat.topic(own).is_closed = True
+        chat.topic(declared).is_closed = True
+
+        await env.bot.send_message(chat_id=chat.id, text="x", message_thread_id=own)
+        with pytest.raises(TelegramBadRequest, match="TOPIC_CLOSED"):
+            await env.bot.send_message(chat_id=chat.id, text="x", message_thread_id=declared)
+
+
+class TestStanding:
+    """A bot that is not in the chat is answered with a 403."""
+
+    @pytest.mark.parametrize(
+        ("chat_type", "status", "refusal"),
+        [
+            (ChatType.GROUP, ChatMemberStatus.KICKED, "bot was kicked from the group chat"),
+            (ChatType.GROUP, ChatMemberStatus.LEFT, "bot is not a member of the group chat"),
+            (
+                ChatType.SUPERGROUP,
+                ChatMemberStatus.KICKED,
+                "bot was kicked from the supergroup chat",
+            ),
+            (
+                ChatType.SUPERGROUP,
+                ChatMemberStatus.LEFT,
+                "bot is not a member of the supergroup chat",
+            ),
+            (ChatType.CHANNEL, ChatMemberStatus.KICKED, "bot was kicked from the channel chat"),
+            (ChatType.CHANNEL, ChatMemberStatus.LEFT, "bot is not a member of the channel chat"),
+        ],
+    )
+    async def test_a_send_is_forbidden(self, world, chat_type, status, refusal):
+        env, chat, _alice = world(chat_type, status=status)
+
+        with pytest.raises(TelegramForbiddenError, match=f"Forbidden: {refusal}$"):
+            await env.bot.send_message(chat_id=chat.id, text="x")
+
+        assert chat.messages == []
+
+    async def test_an_administrative_call_is_forbidden_too(self, world):
+        env, chat, _alice = world(status=ChatMemberStatus.KICKED)
+
+        with pytest.raises(TelegramForbiddenError, match="kicked from the supergroup"):
+            await env.bot.set_chat_title(chat_id=chat.id, title="T")
+
+    @pytest.mark.parametrize("move", ["copy_message", "forward_message"])
+    async def test_a_move_into_the_chat_is_forbidden(self, world, move):
+        env, chat, alice = world(status=ChatMemberStatus.LEFT)
+        private = env.chat(alice.user.id)
+        sent = await env.bot.send_message(chat_id=private.id, text="x")
+
+        with pytest.raises(TelegramForbiddenError, match="not a member"):
+            await getattr(env.bot, move)(
+                chat_id=chat.id,
+                from_chat_id=private.id,
+                message_id=sent.message_id,
+            )
+
+    @pytest.mark.parametrize("move", ["copy_messages", "forward_messages"])
+    async def test_a_batch_into_the_chat_is_forbidden(self, world, move):
+        env, chat, alice = world(status=ChatMemberStatus.LEFT)
+        private = env.chat(alice.user.id)
+        sent = await env.bot.send_message(chat_id=private.id, text="x")
+
+        with pytest.raises(TelegramForbiddenError, match="not a member"):
+            await getattr(env.bot, move)(
+                chat_id=chat.id,
+                from_chat_id=private.id,
+                message_ids=[sent.message_id],
+            )
+
+    async def test_a_media_group_is_forbidden(self, world):
+        env, chat, _alice = world(status=ChatMemberStatus.KICKED)
+
+        with pytest.raises(TelegramForbiddenError, match="kicked"):
+            await env.bot.send_media_group(
+                chat_id=chat.id,
+                media=[InputMediaPhoto(media="a"), InputMediaPhoto(media="b")],
+            )
+
+    async def test_a_bot_that_left_on_its_own_is_not_a_member(self, world):
+        env, chat, _alice = world()
+        await env.bot.leave_chat(chat_id=chat.id)
+
+        with pytest.raises(TelegramForbiddenError, match="not a member of the supergroup"):
+            await env.bot.send_message(chat_id=chat.id, text="x")
+
+    async def test_opting_out_lets_it_send(self, world):
+        env, chat, _alice = world(status=ChatMemberStatus.KICKED, enforce_bot_rights=False)
+
+        await env.bot.send_message(chat_id=chat.id, text="x")
+
+        assert chat.messages[-1].text == "x"
+
+
+class TestContentRules:
+    async def test_a_live_location_has_its_own_refusal(self, world):
+        env, chat, _alice = world(chat_permissions=NO_TEXT)
+
+        with pytest.raises(
+            TelegramBadRequest,
+            match="Bad Request: not enough rights to send live locations to the chat$",
+        ):
+            await env.bot.send_location(
+                chat_id=chat.id,
+                latitude=1.0,
+                longitude=2.0,
+                live_period=60,
+            )
+        with pytest.raises(TelegramBadRequest, match="send locations to the chat"):
+            await env.bot.send_location(chat_id=chat.id, latitude=1.0, longitude=2.0)
+
+    async def test_a_bot_sends_paid_media_without_the_permissions(self, world):
+        env, chat, _alice = world(chat_permissions=NO_PHOTOS)
+
+        await env.bot.send_paid_media(
+            chat_id=chat.id,
+            star_count=1,
+            media=[InputPaidMediaPhoto(media="a")],
+        )
+
+        assert chat.messages[-1].paid_media is not None
+
+    @pytest.mark.parametrize("missing", ["can_send_photos", "can_send_videos"])
+    async def test_forwarded_paid_media_takes_photos_and_videos(self, world, missing):
+        everything = {"can_send_messages": True, "can_send_photos": True, "can_send_videos": True}
+        env, chat, alice = world(
+            chat_permissions=ChatPermissions(**{**everything, missing: False})
+        )
+        private = env.chat(alice.user.id)
+        paid = await env.bot.send_paid_media(
+            chat_id=private.id,
+            star_count=1,
+            media=[InputPaidMediaPhoto(media="a")],
+        )
+
+        with pytest.raises(TelegramBadRequest, match="send paid media to the chat"):
+            await env.bot.forward_message(
+                chat_id=chat.id,
+                from_chat_id=private.id,
+                message_id=paid.message_id,
+            )
+
+    async def test_a_forwarded_live_location_is_named_as_one(self, world):
+        env, chat, alice = world(chat_permissions=NO_TEXT)
+        private = env.chat(alice.user.id)
+        live = await env.bot.send_location(
+            chat_id=private.id,
+            latitude=1.0,
+            longitude=2.0,
+            live_period=60,
+        )
+
+        with pytest.raises(TelegramBadRequest, match="send live locations"):
+            await env.bot.forward_message(
+                chat_id=chat.id,
+                from_chat_id=private.id,
+                message_id=live.message_id,
+            )
+
+
+class TestHoldsRight:
+    def test_a_right_the_chat_type_lacks_is_not_held(self, world):
+        env, chat, _alice = world(ChatType.CHANNEL, status=ADMIN)
+        bot_id = env.world.bot_user.id
+
+        assert holds_right(chat, bot_id, "can_edit_messages") is True
+        assert holds_right(chat, bot_id, "can_pin_messages") is False

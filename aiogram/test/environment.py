@@ -44,7 +44,7 @@ from .errors import (
 )
 from .flood import RATE_LIMITED_METHODS, FloodControl, RateLimits
 from .markup import apply_parse_modes
-from .modeling import find_handler, resolve_chat
+from .modeling import check_bot_rights, find_handler, resolve_chat
 from .mounting import bindables, detached_copy
 from .overrides import (
     BLOCKED_BY_USER,
@@ -2244,6 +2244,10 @@ class BotTestEnvironment:
             retry_after=retry_after,
         )
 
+    def _refuse(self, method: TelegramMethod[Any], error: ApiRejection) -> NoReturn:
+        """Answer a call with the refusal the world raised."""
+        self.fail(method, error.prefixed, error.error_code, error.retry_after)
+
     def rate_clock(self) -> float:
         """
         Seconds on the clock the flood limits are read against.
@@ -2315,13 +2319,14 @@ class BotTestEnvironment:
             return outcome.apply(resolved, bot)
 
         handler = find_handler(resolved)
-        if handler is not None:
-            # Telegram parses before anything else looks at the text,
-            # and the world stores what parsing leaves.
-            try:
+        try:
+            if handler is not None:
+                # Telegram parses before anything else looks at the
+                # text, and the world stores what parsing leaves.
                 resolved = apply_parse_modes(resolved, self._find_user)
-            except ApiRejection as error:
-                self.fail(resolved, f"Bad Request: {error}")
+            check_bot_rights(self, resolved)
+        except ApiRejection as error:
+            self._refuse(resolved, error)
 
         flooded = self._flood_target(resolved)
         if flooded is not None and self._flood is not None:
@@ -2338,7 +2343,7 @@ class BotTestEnvironment:
             try:
                 result = handler(self, resolved)
             except ApiRejection as error:
-                self.fail(resolved, f"Bad Request: {error}")
+                self._refuse(resolved, error)
             if flooded is not None and self._flood is not None:
                 # Counted once it went through: a refused send is no
                 # message in the chat.

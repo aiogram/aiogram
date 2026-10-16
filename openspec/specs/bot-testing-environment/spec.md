@@ -3715,17 +3715,23 @@ error that lists the chat's topics, never a Telegram error.
 
 A message the bot sends, copies or forwards into a closed topic, or into the General topic
 while it is closed or hidden, SHALL fail with `TOPIC_CLOSED` unless the bot is the chat's
-owner or an administrator holding `can_manage_topics`. A refused message SHALL use no
-message id. User actors SHALL NOT be refused.
+owner, an administrator holding `can_manage_topics`, or the topic's creator. A refused
+message SHALL use no message id. User actors SHALL NOT be refused.
 
 #### Scenario: A member bot posts into a closed topic
 
-- **WHEN** the bot, a plain member, sends a message into a closed topic
+- **WHEN** the bot, a plain member, sends a message into a closed topic someone else
+  created
 - **THEN** the call raises `TelegramBadRequest` with `TOPIC_CLOSED`
 
 #### Scenario: An administrator managing topics posts into it
 
 - **WHEN** the bot holds `can_manage_topics` and sends into a closed topic
+- **THEN** the message is stored in that topic
+
+#### Scenario: The bot posts into its own closed topic
+
+- **WHEN** the bot, a plain member, sends into a closed topic it created
 - **THEN** the message is stored in that topic
 
 #### Scenario: A hidden General topic
@@ -3763,14 +3769,24 @@ root.
 
 Unless the environment is built with `enforce_bot_rights=False`, a call the bot makes into
 a group, a supergroup or a channel SHALL fail with Telegram's wording when the bot's
-standing there does not allow it. Pinning and unpinning SHALL take `can_pin_messages`, or
-`can_edit_messages` in a channel. Banning, unbanning and restricting SHALL take
-`can_restrict_members`, and promoting `can_promote_members`. Deleting someone else's message
-SHALL take administrator status in a basic group and `can_delete_messages` elsewhere. A
-send, copy or forward by a bot that is not an administrator SHALL take the chat's permission
-for that kind of message, narrowed by the bot's own restriction, and posting into a channel
-SHALL take `can_post_messages`. The owner SHALL hold every right. Private chats and user
-actors SHALL NOT be checked. With `enforce_bot_rights=False`, the bot SHALL hold every right.
+standing there does not allow it. The rules SHALL be one table from method type to the
+right it takes, consulted once per call. Pinning and unpinning SHALL take
+`can_pin_messages`, or `can_edit_messages` in a channel. Banning, unbanning and restricting
+SHALL take `can_restrict_members`, and promoting `can_promote_members`. Changing the chat's
+title, description or photo SHALL take `can_change_info`, and managing invite links and
+join requests `can_invite_users`. Creating a topic SHALL take `can_manage_topics`, and so
+SHALL editing, closing and reopening a topic the bot did not create and every General topic
+method but unpinning; deleting a topic the bot did not create SHALL take
+`can_delete_messages`. Deleting someone else's message SHALL take administrator status in
+a basic group and `can_delete_messages` elsewhere. A send, copy or forward by a bot that is
+not an administrator SHALL take the chat's permission for that kind of message, narrowed by
+the bot's own restriction; a live location SHALL be refused as one, and paid media SHALL be
+checked only when forwarded or copied, taking both `can_send_photos` and `can_send_videos`.
+Posting into a channel SHALL take `can_post_messages`. The owner SHALL hold every right, and
+the chat's permissions SHALL NOT grant the bot an administrator's right. A bot that was
+removed from the chat or left it SHALL be refused every such call and every send with
+`TelegramForbiddenError` and the Bot API server's text. Private chats and user actors SHALL
+NOT be checked. With `enforce_bot_rights=False`, the bot SHALL hold every right.
 
 #### Scenario: A member bot pins
 
@@ -3784,12 +3800,30 @@ actors SHALL NOT be checked. With `enforce_bot_rights=False`, the bot SHALL hold
 - **THEN** the call raises `TelegramBadRequest` with
   `not enough rights to restrict/unrestrict chat member`, and the user stays
 
+#### Scenario: A member bot renames the chat
+
+- **WHEN** the bot, a plain member of a group, sets the chat's title
+- **THEN** the call raises `TelegramBadRequest` with
+  `not enough rights to change chat title`
+
+#### Scenario: The bot closes its own topic
+
+- **WHEN** the bot, a plain member of a forum, closes a topic it created
+- **THEN** the topic closes, while closing a topic someone else created raises
+  `TelegramBadRequest` with `not enough rights to close or open the topic`
+
 #### Scenario: A member bot sends into a silenced chat
 
 - **WHEN** the chat's permissions forbid text and the bot, a plain member, sends text
 - **THEN** the call raises `TelegramBadRequest` with
   `not enough rights to send text messages to the chat`, while a user actor's message in
   the same chat is still delivered
+
+#### Scenario: A kicked bot sends
+
+- **WHEN** the bot's status in a supergroup is kicked and it sends a message there
+- **THEN** the call raises `TelegramForbiddenError` with
+  `Forbidden: bot was kicked from the supergroup chat`, and nothing is stored
 
 #### Scenario: Opting out
 
@@ -3959,10 +3993,12 @@ for it, from that user: `forum_topic_created`, `forum_topic_closed`, `forum_topi
 `general_forum_topic_hidden` or `general_forum_topic_unhidden`. Deleting a topic, and closing
 or reopening the General topic, SHALL feed nothing, as no service message is modeled for them.
 A topic SHALL be named as a declaration, a state or a thread id, and default to the topic the
-actor is bound to. The actor SHALL be the owner or an administrator holding
-`can_manage_topics` in a chat that is a forum, whatever `enforce_bot_rights` says; otherwise
-the trigger SHALL raise `WorldLookupError` naming the right and how to grant it, and change
-nothing.
+actor is bound to. The actor SHALL hold `can_manage_topics` in a chat that is a forum,
+whatever `enforce_bot_rights` says: as the owner or an administrator granted it, or, to
+create a topic, as the chat's permission of that name, which SHALL bind administrators as
+much as members and SHALL be narrowed by the actor's own restriction. The creator of a topic
+SHALL close, reopen and delete it without the right. Otherwise the trigger SHALL raise
+`WorldLookupError` naming the right and how to grant it, and change nothing.
 
 #### Scenario: The owner closes a topic
 
@@ -3976,9 +4012,15 @@ nothing.
 - **THEN** the topic and its messages are gone, nothing is fed, and a later bot call into the
   thread fails with `TOPIC_DELETED`
 
+#### Scenario: A member the chat lets create topics
+
+- **WHEN** the chat's permissions grant `can_manage_topics` and a plain member creates a topic
+- **THEN** the topic exists with that member as its creator, who may then close, reopen and
+  delete it
+
 #### Scenario: A member without the right
 
-- **WHEN** a plain member creates a topic
+- **WHEN** a plain member creates a topic in a chat whose permissions deny `can_manage_topics`
 - **THEN** `WorldLookupError` names `can_manage_topics` and how to grant it, and no topic or
   message is added
 

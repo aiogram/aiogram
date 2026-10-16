@@ -19,6 +19,10 @@ SILENCED = ChatPermissions(can_send_messages=False, can_send_other_messages=Fals
 
 
 class TestChatMetadata:
+    @pytest.fixture
+    def blueprint(self, blueprint, moderated):
+        return moderated(blueprint)
+
     async def test_renaming_is_visible_to_get_chat(self, env, team):
         await env.bot.set_chat_title(chat_id=team.id, title="Renamed")
 
@@ -73,7 +77,7 @@ class TestChatPhoto:
     @pytest.fixture
     def photographed(self, dp):
         blueprint = Blueprint()
-        chat = blueprint.add_supergroup("Team")
+        chat = blueprint.add_supergroup("Team", bot_status=ChatMemberStatus.ADMINISTRATOR)
         chat.photo = ChatPhoto(
             small_file_id="s",
             small_file_unique_id="su",
@@ -100,6 +104,10 @@ class TestChatPhoto:
 
 
 class TestServiceMessages:
+    @pytest.fixture
+    def blueprint(self, blueprint, moderated):
+        return moderated(blueprint)
+
     async def test_a_rename_posts_a_service_message(self, env, team):
         await env.bot.set_chat_title(chat_id=team.id, title="Renamed")
 

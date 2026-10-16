@@ -64,7 +64,11 @@ def blueprint():
         "Team",
         members={alice: ChatMemberStatus.MEMBER, bob: ChatMemberStatus.MEMBER},
     )
-    forum = blueprint.add_supergroup("Forum", members={alice: ChatMemberStatus.MEMBER})
+    forum = blueprint.add_supergroup(
+        "Forum",
+        members={alice: ChatMemberStatus.MEMBER},
+        bot_status=ChatMemberStatus.ADMINISTRATOR,
+    )
     blueprint.add_topic(forum, "Support")
     blueprint.add_business_connection(alice)
     # An administrator that may promote, since some tests have it do so.

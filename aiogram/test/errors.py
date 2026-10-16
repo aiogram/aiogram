@@ -30,7 +30,38 @@ class ApiRejection(Exception):
 
     The message is Telegram's own wording, without the ``Bad Request:`` prefix that
     ``handle_call`` adds, so a test can assert on the string a real bot would see.
+
+    ``error_code`` is the HTTP status the refusal comes back with:
+    400 by default, 403 for a bot that is not in the chat, 429 for a
+    flood. ``handle_call`` names it by the prefix the Bot API gives
+    it, and a 429 carries ``retry_after``.
     """
+
+    def __init__(
+        self,
+        description: str,
+        *,
+        error_code: int = HTTPStatus.BAD_REQUEST,
+        retry_after: int | None = None,
+    ) -> None:
+        super().__init__(description)
+        self.description = description
+        self.error_code = error_code
+        self.retry_after = retry_after
+
+    @property
+    def prefixed(self) -> str:
+        """The description as the Bot API server sends it."""
+        prefix = _ERROR_PREFIXES.get(self.error_code, "Bad Request")
+        return f"{prefix}: {self.description}"
+
+
+#: The prefix the Bot API server puts before a refusal's text.
+_ERROR_PREFIXES: dict[int, str] = {
+    HTTPStatus.BAD_REQUEST: "Bad Request",
+    HTTPStatus.FORBIDDEN: "Forbidden",
+    HTTPStatus.TOO_MANY_REQUESTS: "Too Many Requests",
+}
 
 
 class NoFileContentError(LookupError):
