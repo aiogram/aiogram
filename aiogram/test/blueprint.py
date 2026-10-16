@@ -618,7 +618,7 @@ class Blueprint:
         spec = copy.deepcopy(self)
         world = World(
             now=aware(start) if start is not None else wall_clock(),
-            bot_user=_user_state(spec.bot),
+            bot_user=user_state(spec.bot),
             profile=spec.profile,
             files=spec.files,
             stars=StarLedger(opening_balance=spec.star_balance),
@@ -626,33 +626,9 @@ class Blueprint:
             sticker_sets={item.name: item for item in spec.sticker_sets},
         )
         for user in spec.users:
-            world.users[user.id] = _user_state(user)
+            world.users[user.id] = user_state(user)
         for chat in spec.chats:
-            world.chats[chat.id] = ChatState(
-                id=chat.id,
-                type=chat.type,
-                title=chat.title,
-                username=chat.username,
-                first_name=chat.first_name,
-                last_name=chat.last_name,
-                description=chat.description,
-                permissions=_chat_permissions(chat),
-                photo=chat.photo,
-                sticker_set_name=chat.sticker_set_name,
-                invite_links=list(chat.invite_links),
-                is_forum=chat.is_forum,
-                members={
-                    member.user_id: MemberState(
-                        user_id=member.user_id,
-                        status=member.status,
-                        custom_title=member.custom_title,
-                        tag=member.tag,
-                        rights=member.rights,
-                        permissions=_granted(member.permissions),
-                    )
-                    for member in chat.members
-                },
-            )
+            world.chats[chat.id] = chat_state(chat)
         for community in spec.communities:
             world.communities[community.id] = CommunityState(
                 id=community.id,
@@ -738,7 +714,43 @@ def _token_bot_id(token: str) -> int:
     return int(head) if head.isdigit() else FALLBACK_BOT_ID
 
 
-def _user_state(spec: UserSpec) -> UserState:
+def chat_state(spec: ChatSpec) -> ChatState:
+    """
+    The state a declared chat starts as.
+
+    The one place a chat declaration is turned into a chat, for
+    :meth:`Blueprint.build` and for the chats a running environment
+    adds, so a chat added late is shaped exactly like a declared one.
+    """
+    return ChatState(
+        id=spec.id,
+        type=spec.type,
+        title=spec.title,
+        username=spec.username,
+        first_name=spec.first_name,
+        last_name=spec.last_name,
+        description=spec.description,
+        permissions=_chat_permissions(spec),
+        photo=spec.photo,
+        sticker_set_name=spec.sticker_set_name,
+        invite_links=list(spec.invite_links),
+        is_forum=spec.is_forum,
+        members={
+            member.user_id: MemberState(
+                user_id=member.user_id,
+                status=member.status,
+                custom_title=member.custom_title,
+                tag=member.tag,
+                rights=member.rights,
+                permissions=_granted(member.permissions),
+            )
+            for member in spec.members
+        },
+    )
+
+
+def user_state(spec: UserSpec) -> UserState:
+    """The state a declared user starts as; see :func:`chat_state`."""
     return UserState(
         id=spec.id,
         is_bot=spec.is_bot,

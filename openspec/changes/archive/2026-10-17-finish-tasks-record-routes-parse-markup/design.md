@@ -98,3 +98,18 @@ a tag denied.
 **Assumption.** Telegram's documentation does not list these defaults. They are what its
 clients show for a new group and what `getChat` returns for one, as far as is known, and
 the toolkit says so in its docs.
+
+### D6. Additions are the blueprint's builders over a scratch blueprint
+
+`Blueprint.build` was split: `chat_state()` and `user_state()` turn a declaration into
+state, and `build` calls them. `BotTestEnvironment.add_*` declare on a scratch `Blueprint`
+for the same bot, so the builders' defaults, the bot's membership and the permissions
+default are the blueprint's, then turn the declaration into state with the same two
+functions and register it. The environment's own blueprint is shared by tests at any scope,
+so it is never written to.
+
+Ids come from the blueprint's formulas, counting the world's users and chats, and skip
+what is taken. Members are named by spec, actor or id and turned into declarations of the
+world's users; the bot maps to the blueprint's own `bot`, so `bot_status=` and an entry for
+it still conflict. A user the world lacks raises. Topics are left out: an owner's
+`create_topic()` makes them, and `is_forum=True` turns them on.

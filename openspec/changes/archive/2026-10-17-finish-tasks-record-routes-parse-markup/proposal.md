@@ -13,6 +13,8 @@ test cannot see what its bot does:
 - **Groups have no permissions.** `getChat` for a group reports `permissions=None` where
   Telegram always reports the chat's defaults, and the bot's checks read a missing value as
   "everything is allowed".
+- **A world cannot grow.** Users and chats exist from the blueprint alone, so a test with a
+  late arrival or a second group declares them for every test that shares the blueprint.
 - **Fast sleeps cost real drivers.** The documented way to skip a bot's long sleeps is
   `looptime`, which moves the loop's clock, and a real database driver's deadlines run on
   that clock and expire mid-query.
@@ -34,6 +36,9 @@ test cannot see what its bot does:
 
 - A group or a supergroup has the permissions Telegram gives a new one, which a blueprint can
   override with `permissions=`; `default_chat_permissions()` returns them.
+
+- `BotTestEnvironment.add_user()`, `add_private_chat()`, `add_group()`, `add_supergroup()` and
+  `add_channel()` add to a running world with the blueprint's own builders.
 
 Observable behavior change, toward the Bot API: a text sent with a parse mode is stored
 parsed, broken markup or an unknown parse mode now fails the call, and `getChat` reports a

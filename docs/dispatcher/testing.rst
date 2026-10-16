@@ -204,6 +204,40 @@ The bot's checks of what a plain member can send read this very value, and
 :code:`setChatPermissions` replaces it; ``permissions`` declares the whole mask, as that
 method does, so a permission left out reads back unset and counts as denied.
 
+Adding to a running world
+-------------------------
+
+Only the blueprint can declare users and chats before the environment exists, but a test that
+needs a late arrival — someone who shows up halfway through the story, a second group for the
+bot to be added to — can add them to the running one. These are the blueprint's own builders,
+so what they make is shaped exactly like a declared user or chat, and they return the
+handles ``env.user(...)`` and ``env.chat(...)`` return elsewhere: an actor for a user and the
+chat's state for a chat.
+
+.. code-block:: python
+
+    async def test_a_newcomer_joins_the_game(bot_env):
+        newcomer = bot_env.add_user("Newcomer", username="newcomer")
+        lobby = bot_env.add_supergroup(
+            "Lobby",
+            members={newcomer: ChatMemberStatus.MEMBER},
+            bot_status=ChatMemberStatus.ADMINISTRATOR,
+        )
+
+        await newcomer.in_(lobby).send("/join")
+
+        assert lobby.messages[-1].text == "Welcome, Newcomer!"
+
+``add_user``, ``add_private_chat``, ``add_group``, ``add_supergroup`` and ``add_channel`` take
+what the blueprint's methods of the same name take, with ``members`` naming any user of the
+world, declared or added, by spec, by actor or by id. The id is the next free one unless
+given, and one already taken raises :class:`ValueError`. A user of the world is a member only
+if the world has them: an unknown id raises :class:`~aiogram.test.WorldLookupError` naming
+``add_user``. The blueprint the environment was built from is not changed, so a blueprint
+shared by many tests stays as declared. Topics are not added this way; a supergroup's owner
+creates them with ``create_topic()``, and ``is_forum=True`` turns them on.
+
+
 Triggering events
 =================
 

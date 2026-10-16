@@ -319,6 +319,13 @@ of what a plain member can send read them, and ``add_group(..., permissions=...)
 ``add_supergroup(..., permissions=...)`` declare others, starting from
 ``default_chat_permissions()``.
 
+A running environment can gain users and chats, which only the blueprint could declare:
+``env.add_user()``, ``env.add_private_chat()``, ``env.add_group()``, ``env.add_supergroup()`` and
+``env.add_channel()`` take what the blueprint's methods of the same name take, are built by the
+same code so their shape is identical, and return the actor or the chat state that
+``env.user()`` and ``env.chat()`` return. The blueprint the environment was built from is left
+alone.
+
 The bot's own calls are checked against its rights, as Telegram checks them, with Telegram's
 wording: pinning and unpinning take ``can_pin_messages`` (``can_edit_messages`` in a
 channel), banning, unbanning and restricting take ``can_restrict_members``, promoting takes
