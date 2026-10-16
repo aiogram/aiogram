@@ -2540,13 +2540,27 @@ once per call before the method is modeled:
         and the topic and General variants of unpinning all
       - ``can_pin_messages``; in a channel, ``can_edit_messages``
       - ``not enough rights to manage pinned messages in the chat``
-    * - :code:`banChatMember`, :code:`unbanChatMember`, :code:`restrictChatMember`
+    * - :code:`banChatMember`, :code:`unbanChatMember`, :code:`restrictChatMember`,
+        :code:`banChatSenderChat`, :code:`unbanChatSenderChat`
       - ``can_restrict_members``
       - ``not enough rights to restrict/unrestrict chat member``; ``CHAT_ADMIN_REQUIRED``
-        in a basic group
+        for a ban in a basic group
     * - :code:`promoteChatMember`
       - ``can_promote_members``
-      - ``not enough rights``; ``need owner rights in the group chat`` in a basic group
+      - ``not enough rights``
+    * - :code:`setChatPermissions`
+      - ``can_restrict_members``
+      - ``not enough rights to change chat permissions``
+    * - :code:`setChatStickerSet`, :code:`deleteChatStickerSet`
+      - ``can_change_info``
+      - ``not enough rights to change supergroup sticker set``
+    * - :code:`setChatMemberTag`
+      - ``can_manage_tags``
+      - ``CHAT_ADMIN_REQUIRED``, the server's usual answer: TDLib leaves this check to the
+        server, whose text is not in its open source
+    * - :code:`approveSuggestedPost`, :code:`declineSuggestedPost`
+      - ``can_post_messages`` in the channel
+      - ``message can't be used in the method``
     * - :code:`setChatTitle`, :code:`setChatDescription`, :code:`setChatPhoto`,
         :code:`deleteChatPhoto`
       - ``can_change_info``
@@ -2617,9 +2631,18 @@ to declare what the bot was meant to hold:
         rights=administrator_rights(can_promote_members=True),
     )
 
-Not checked: the rights to change the chat's permissions and sticker set, and granting a
-right the bot does not hold itself. What users do through actors is never checked either.
-The test decides what users do.
+Some refusals come before the rights. :code:`unbanChatMember` and :code:`promoteChatMember`
+in a basic group fail with ``Bad Request: method is available only in supergroup and channel
+chats``, as the Bot API server refuses them, whatever the bot holds. In a supergroup or a
+channel TDLib refuses touching the owner with ``can't remove chat owner`` first; in a basic
+group the server decides, and the toolkit answers a ban of the owner with
+``CHAT_ADMIN_REQUIRED``, its usual answer, which is not in the open source. A topic method
+checks the rights before the topic: TDLib sends a call about a topic it does not know on to
+the server, so a bot with the right gets the topic's refusal, and one without gets the
+rights'.
+
+Not checked: granting a right the bot does not hold itself. What users do through actors is
+never checked either. The test decides what users do.
 
 A suite written against the permissive fake can turn the checks off while it migrates:
 

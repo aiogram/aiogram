@@ -194,26 +194,31 @@ nothing.
 
 ### Requirement: The bot's own calls are checked against its rights
 
-Unless the environment is built with `enforce_bot_rights=False`, a call the bot makes into
-a group, a supergroup or a channel SHALL fail with Telegram's wording when the bot's
-standing there does not allow it. The rules SHALL be one table from method type to the
-right it takes, consulted once per call. Pinning and unpinning SHALL take
+Unless the environment is built with `enforce_bot_rights=False`, a call the bot makes into a
+group, a supergroup or a channel SHALL fail with Telegram's wording when the bot's standing
+there does not allow it. The rules SHALL be one table from method type to the right it takes,
+consulted once per call, for recorded-only methods too. Pinning and unpinning SHALL take
 `can_pin_messages`, or `can_edit_messages` in a channel. Banning, unbanning and restricting
-SHALL take `can_restrict_members`, and promoting `can_promote_members`. Changing the chat's
-title, description or photo SHALL take `can_change_info`, and managing invite links and
-join requests `can_invite_users`. Creating a topic SHALL take `can_manage_topics`, and so
-SHALL editing, closing and reopening a topic the bot did not create and every General topic
-method but unpinning; deleting a topic the bot did not create SHALL take
-`can_delete_messages`. Deleting someone else's message SHALL take administrator status in
-a basic group and `can_delete_messages` elsewhere. A send, copy or forward by a bot that is
-not an administrator SHALL take the chat's permission for that kind of message, narrowed by
-the bot's own restriction; a live location SHALL be refused as one, and paid media SHALL be
-checked only when forwarded or copied, taking both `can_send_photos` and `can_send_videos`.
-Posting into a channel SHALL take `can_post_messages`. The owner SHALL hold every right, and
-the chat's permissions SHALL NOT grant the bot an administrator's right. A bot that was
-removed from the chat or left it SHALL be refused every such call and every send with
-`TelegramForbiddenError` and the Bot API server's text. Private chats and user actors SHALL
-NOT be checked. With `enforce_bot_rights=False`, the bot SHALL hold every right.
+members and sender chats, and changing the chat's permissions, SHALL take
+`can_restrict_members`, and promoting `can_promote_members`; unbanning and promoting in a basic
+group SHALL fail with `method is available only in supergroup and channel chats` before any
+right is read. Touching the owner SHALL fail with `can't remove chat owner` before the rights in
+a supergroup or a channel. Changing the chat's title, description, photo or sticker set SHALL
+take `can_change_info`, setting a member's tag `can_manage_tags`, approving and declining
+suggested posts `can_post_messages`, and managing invite links and join requests
+`can_invite_users`. A topic method SHALL check the rights before it looks the topic up. Creating
+a topic SHALL take `can_manage_topics`, and so SHALL editing, closing and reopening a topic the
+bot did not create and every General topic method but unpinning; deleting a topic the bot did
+not create SHALL take `can_delete_messages`. Deleting someone else's message SHALL take
+administrator status in a basic group and `can_delete_messages` elsewhere. A send, copy or
+forward by a bot that is not an administrator SHALL take the chat's permission for that kind of
+message, narrowed by the bot's own restriction; a live location SHALL be refused as one, and
+paid media SHALL be checked only when forwarded or copied, taking both `can_send_photos` and
+`can_send_videos`. Posting into a channel SHALL take `can_post_messages`. The owner SHALL hold
+every right, and the chat's permissions SHALL NOT grant the bot an administrator's right. A bot
+that was removed from the chat or left it SHALL be refused every such call and every send with
+`TelegramForbiddenError` and the Bot API server's text. Private chats and user actors SHALL NOT
+be checked. With `enforce_bot_rights=False`, the bot SHALL hold every right.
 
 #### Scenario: A member bot pins
 
@@ -232,6 +237,18 @@ NOT be checked. With `enforce_bot_rights=False`, the bot SHALL hold every right.
 - **WHEN** the bot, a plain member of a group, sets the chat's title
 - **THEN** the call raises `TelegramBadRequest` with
   `not enough rights to change chat title`
+
+#### Scenario: A member bot changes the chat's permissions
+
+- **WHEN** the bot, a plain member of a supergroup, sets the chat's permissions
+- **THEN** the call raises `TelegramBadRequest` with
+  `not enough rights to change chat permissions`, and the permissions stay
+
+#### Scenario: Promoting in a basic group
+
+- **WHEN** the bot, an administrator of a basic group, promotes a member
+- **THEN** the call raises `TelegramBadRequest` with
+  `method is available only in supergroup and channel chats`
 
 #### Scenario: The bot closes its own topic
 

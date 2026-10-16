@@ -354,8 +354,11 @@ The bot's own calls are checked against its rights, as Telegram checks them, wit
 wording: pinning and unpinning take ``can_pin_messages`` (``can_edit_messages`` in a
 channel), banning, unbanning and restricting take ``can_restrict_members``, promoting takes
 ``can_promote_members``, deleting someone else's message takes ``can_delete_messages`` (any
-administrator in a basic group), changing the chat's title, description or photo takes
-``can_change_info``, managing invite links and join requests takes ``can_invite_users``,
+administrator in a basic group), changing the chat's title, description, photo or sticker set
+takes ``can_change_info``, changing its permissions takes ``can_restrict_members``, as do
+banning and unbanning sender chats, setting a member's tag takes ``can_manage_tags``,
+approving and declining suggested posts take ``can_post_messages``, managing invite links and
+join requests takes ``can_invite_users``,
 creating a topic takes ``can_manage_topics``, and so do editing, closing and reopening a topic
 the bot did not create, deleting one takes ``can_delete_messages``, and a bot that is not an
 administrator sends only what the chat's permissions and its own restriction allow (paid media

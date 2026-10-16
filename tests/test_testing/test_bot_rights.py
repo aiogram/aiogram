@@ -192,15 +192,16 @@ class TestModeration:
                 can_pin_messages=True,
             )
 
-    async def test_a_basic_group_answers_owner_rights(self, world):
-        env, chat, alice = world(ChatType.GROUP, status=ADMIN)
+    @pytest.mark.parametrize("name", ["promote_chat_member", "unban_chat_member"])
+    @pytest.mark.parametrize("enforce", [True, False])
+    async def test_a_basic_group_takes_neither_at_all(self, world, name, enforce):
+        env, chat, alice = world(ChatType.GROUP, status=ADMIN, enforce_bot_rights=enforce)
 
-        with pytest.raises(TelegramBadRequest, match="need owner rights in the group chat"):
-            await env.bot.promote_chat_member(
-                chat_id=chat.id,
-                user_id=alice.user.id,
-                can_pin_messages=True,
-            )
+        with pytest.raises(
+            TelegramBadRequest,
+            match="Bad Request: method is available only in supergroup and channel chats$",
+        ):
+            await getattr(env.bot, name)(chat_id=chat.id, user_id=alice.user.id)
 
     async def test_an_administrator_that_may_promote_promotes(self, world):
         env, chat, alice = world(rights=administrator_rights(can_promote_members=True))
@@ -768,3 +769,75 @@ class TestHoldsRight:
 
         assert holds_right(chat, bot_id, "can_edit_messages") is True
         assert holds_right(chat, bot_id, "can_pin_messages") is False
+
+
+class TestMoreRows:
+    SUPERGROUP_CALLS = [
+        (
+            "set_chat_permissions",
+            {"permissions": ChatPermissions(can_send_messages=True)},
+            "not enough rights to change chat permissions",
+        ),
+        (
+            "set_chat_sticker_set",
+            {"sticker_set_name": "pack"},
+            "not enough rights to change supergroup sticker set",
+        ),
+        ("delete_chat_sticker_set", {}, "not enough rights to change supergroup sticker set"),
+        (
+            "ban_chat_sender_chat",
+            {"sender_chat_id": -100},
+            "not enough rights to restrict/unrestrict chat member",
+        ),
+        ("unban_chat_sender_chat", {"sender_chat_id": -100}, "restrict/unrestrict"),
+        ("set_chat_member_tag", {"user_id": 1000, "tag": "VIP"}, "CHAT_ADMIN_REQUIRED"),
+    ]
+
+    @pytest.mark.parametrize(("name", "kwargs", "refusal"), SUPERGROUP_CALLS)
+    async def test_a_member_bot_is_refused(self, world, name, kwargs, refusal):
+        env, chat, _alice = world()
+
+        with pytest.raises(TelegramBadRequest, match=f"Bad Request: .*{refusal}"):
+            await getattr(env.bot, name)(chat_id=chat.id, **kwargs)
+
+    @pytest.mark.parametrize("name", ["approve_suggested_post", "decline_suggested_post"])
+    async def test_a_suggested_post_takes_the_right_to_post(self, world, name):
+        env, chat, _alice = world(
+            ChatType.CHANNEL,
+            rights=administrator_rights(can_post_messages=False),
+        )
+
+        with pytest.raises(TelegramBadRequest, match="message can't be used in the method$"):
+            await getattr(env.bot, name)(chat_id=chat.id, message_id=1)
+
+    async def test_banning_a_basic_groups_owner_is_left_to_the_server(self, dp):
+        blueprint = Blueprint()
+        owner = blueprint.add_user("Owner")
+        chat = blueprint.add_group(
+            "G",
+            members={owner: ChatMemberStatus.CREATOR},
+            bot_status=ADMIN,
+        )
+        env = BotTestEnvironment(blueprint=blueprint, dispatcher=dp)
+        try:
+            with pytest.raises(TelegramBadRequest, match="Bad Request: CHAT_ADMIN_REQUIRED$"):
+                await env.bot.ban_chat_member(chat_id=chat.id, user_id=owner.id)
+        finally:
+            env.dispose_sync()
+
+
+class TestRightsBeforeTheTopic:
+    async def test_an_unknown_topic_goes_on_to_the_server(self, forum):
+        env, chat, _declared, _own = await forum()
+
+        with pytest.raises(TelegramBadRequest, match="message thread not found"):
+            await env.bot.close_forum_topic(chat_id=chat.id, message_thread_id=999)
+
+    async def test_unpinning_an_unknown_topic_is_refused_for_the_rights(self, forum):
+        env, chat, _declared, _own = await forum()
+
+        with pytest.raises(TelegramBadRequest, match="manage pinned messages"):
+            await env.bot.unpin_all_forum_topic_messages(
+                chat_id=chat.id,
+                message_thread_id=999,
+            )

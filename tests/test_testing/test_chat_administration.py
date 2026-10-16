@@ -239,7 +239,11 @@ class TestMemberAnnotations:
     async def test_member_tag_round_trips(self, dp):
         blueprint = Blueprint()
         member = blueprint.add_user("Member")
-        team = blueprint.add_supergroup("Team", members={member: ChatMemberStatus.MEMBER})
+        team = blueprint.add_supergroup(
+            "Team",
+            members={member: ChatMemberStatus.MEMBER},
+            bot_status=ChatMemberStatus.ADMINISTRATOR,
+        )
         env = BotTestEnvironment(blueprint=blueprint, dispatcher=dp)
         try:
             await env.bot.set_chat_member_tag(chat_id=team.id, user_id=member.id, tag="VIP")

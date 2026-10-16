@@ -690,8 +690,14 @@ def _on_behalf_of_business(env: BotTestEnvironment, chat: ChatState, method: Any
 
 
 def _owner_first(env: BotTestEnvironment, chat: ChatState, method: Any) -> bool:
-    """TDLib refuses touching the owner before it reads the rights."""
-    _not_the_owner(chat, method.user_id)
+    """
+    TDLib refuses touching the owner before it reads the rights.
+
+    Only in a supergroup or a channel; in a basic group the server
+    decides, see :func:`_not_the_owner`.
+    """
+    if chat.type != ChatType.GROUP:
+        _not_the_owner(chat, method.user_id)
     return False
 
 
@@ -708,21 +714,19 @@ def _forum_first(env: BotTestEnvironment, chat: ChatState, method: Any) -> bool:
     return False
 
 
-def _topic_first(env: BotTestEnvironment, chat: ChatState, method: Any) -> bool:
-    """The topic a method names is looked up before the rights."""
-    _topic(env, method)
-    return False
-
-
 def _opened_by_bot(env: BotTestEnvironment, chat: ChatState, method: Any) -> bool:
     """
-    The topic is looked up, and the bot needs no right for its own.
+    Whether the bot needs no right for the topic, as its creator.
 
-    TDLib lets the creator of a topic edit, close, reopen and delete
-    it without the right (ForumTopicManager.cpp, ``is_outgoing``).
+    TDLib checks the rights first, and lets the creator of a topic
+    edit, close, reopen and delete it without them
+    (ForumTopicManager.cpp, ``is_outgoing``). A topic it does not
+    know goes on to the server unchecked, so the handler's refusal
+    for an unknown topic answers it.
     """
-    _chat, topic = _topic(env, method)
-    return topic.creator_id == env.world.bot_user.id
+    forum_chat(env, chat.id)
+    topic = chat.topics.get(getattr(method, "message_thread_id", None) or 0)
+    return topic is None or topic.creator_id == env.world.bot_user.id
 
 
 _PINNING = RightRule(
@@ -737,6 +741,28 @@ _RESTRICTING = RightRule(
     refusal="not enough rights to restrict/unrestrict chat member",
     refusals={ChatType.GROUP: "CHAT_ADMIN_REQUIRED"},
     before=_owner_first,
+)
+#: Where the Bot API server takes unbanning and promoting at all
+#: (Client.cpp, ``process_unban_chat_member_query`` and
+#: ``process_promote_chat_member_query``); the handler refuses the
+#: rest, after the standing check.
+_SUPERGROUP_OR_CHANNEL = frozenset({ChatType.SUPERGROUP, ChatType.CHANNEL})
+_STICKER_SET = RightRule(
+    right="can_change_info",
+    refusal="not enough rights to change supergroup sticker set",
+)
+_SENDER_CHAT_BANS = RightRule(
+    right="can_restrict_members",
+    refusal="not enough rights to restrict/unrestrict chat member",
+    chat_types=_SUPERGROUP_OR_CHANNEL,
+)
+_SUGGESTED_POSTS = RightRule(
+    right="can_post_messages",
+    # TDLib's text when the right is missing (MessagesManager.cpp,
+    # ``process_suggested_post``). The toolkit has no channel direct
+    # messages chat, so the right is read off the chat named.
+    refusal="message can't be used in the method",
+    chat_types=frozenset({ChatType.CHANNEL}),
 )
 _INVITING = RightRule(
     right="can_invite_users",
@@ -770,18 +796,40 @@ BOT_RIGHTS: dict[type[TelegramMethod[Any]], RightRule] = {
     PinChatMessage: _PINNING,
     UnpinChatMessage: _PINNING,
     UnpinAllChatMessages: _PINNING,
-    UnpinAllForumTopicMessages: dataclasses.replace(_PINNING, before=_topic_first),
+    # The rights first; the topic is the handler's to look up.
+    UnpinAllForumTopicMessages: dataclasses.replace(_PINNING, before=_forum_first),
     UnpinAllGeneralForumTopicMessages: dataclasses.replace(_PINNING, before=_forum_first),
     BanChatMember: _RESTRICTING,
-    UnbanChatMember: dataclasses.replace(_RESTRICTING, before=_unban_first),
+    UnbanChatMember: RightRule(
+        right="can_restrict_members",
+        refusal="not enough rights to restrict/unrestrict chat member",
+        chat_types=_SUPERGROUP_OR_CHANNEL,
+        before=_unban_first,
+    ),
     # Restricting is for supergroups only; the handler refuses the rest.
     RestrictChatMember: dataclasses.replace(_RESTRICTING, chat_types=_SUPERGROUP),
     PromoteChatMember: RightRule(
         right="can_promote_members",
         refusal="not enough rights",
-        refusals={ChatType.GROUP: "need owner rights in the group chat"},
+        chat_types=_SUPERGROUP_OR_CHANNEL,
         before=_owner_first,
     ),
+    SetChatPermissions: RightRule(
+        right="can_restrict_members",
+        refusal="not enough rights to change chat permissions",
+    ),
+    SetChatStickerSet: _STICKER_SET,
+    DeleteChatStickerSet: _STICKER_SET,
+    BanChatSenderChat: _SENDER_CHAT_BANS,
+    UnbanChatSenderChat: _SENDER_CHAT_BANS,
+    SetChatMemberTag: RightRule(
+        right="can_manage_tags",
+        # TDLib leaves the check to the server, whose answer is not
+        # in the open source; this is its usual one.
+        refusal="CHAT_ADMIN_REQUIRED",
+    ),
+    ApproveSuggestedPost: _SUGGESTED_POSTS,
+    DeclineSuggestedPost: _SUGGESTED_POSTS,
     SetChatTitle: RightRule(
         right="can_change_info",
         refusal="not enough rights to change chat title",
@@ -2532,7 +2580,13 @@ def _not_the_owner(chat: ChatState, user_id: int) -> MemberState:
     """
     member = chat.member(user_id)
     if member.status == ChatMemberStatus.CREATOR:
-        raise ApiRejection("can't remove chat owner")
+        # TDLib's text, from its supergroup and channel path. In a basic
+        # group the server decides, and its answer is not in the open
+        # source; the toolkit gives its usual one.
+        refusal = (
+            "CHAT_ADMIN_REQUIRED" if chat.type == ChatType.GROUP else "can't remove chat owner"
+        )
+        raise ApiRejection(refusal)
     return member
 
 
@@ -2553,6 +2607,19 @@ def handle_ban(env: BotTestEnvironment, method: BanChatMember) -> bool:
     return True
 
 
+def _supergroup_or_channel(env: BotTestEnvironment, chat_id: Any) -> ChatState:
+    """
+    The chat a call names, refused unless a supergroup or a channel.
+
+    As the Bot API server refuses unbanning and promoting elsewhere
+    (Client.cpp, ``process_unban_chat_member_query``).
+    """
+    chat = resolve_chat(env, chat_id)
+    if chat.type not in _SUPERGROUP_OR_CHANNEL:
+        raise ApiRejection("method is available only in supergroup and channel chats")
+    return chat
+
+
 @models(UnbanChatMember)
 def handle_unban(env: BotTestEnvironment, method: UnbanChatMember) -> bool:
     """
@@ -2562,7 +2629,7 @@ def handle_unban(env: BotTestEnvironment, method: UnbanChatMember) -> bool:
     call always ends with the user absent. ``only_if_banned`` limits it
     to a banned user, leaving anyone else as they are.
     """
-    chat = resolve_chat(env, method.chat_id)
+    chat = _supergroup_or_channel(env, method.chat_id)
     member = chat.member(method.user_id)
     if method.only_if_banned and member.status != ChatMemberStatus.KICKED:
         return True
@@ -2604,7 +2671,7 @@ def handle_promote(env: BotTestEnvironment, method: PromoteChatMember) -> bool:
 
     The chat's owner is neither promotable nor demotable — see :func:`_not_the_owner`.
     """
-    chat = resolve_chat(env, method.chat_id)
+    chat = _supergroup_or_channel(env, method.chat_id)
     member = _not_the_owner(chat, method.user_id)
     if (
         member.status == ChatMemberStatus.ADMINISTRATOR
