@@ -273,7 +273,11 @@ class TestUserEdits:
     async def test_a_channel_actor_can_edit_the_bots_post(self, dp):
         blueprint = Blueprint()
         alice = blueprint.add_user("Alice")
-        news = blueprint.add_channel("News", members={alice: ChatMemberStatus.CREATOR})
+        news = blueprint.add_channel(
+            "News",
+            members={alice: ChatMemberStatus.CREATOR},
+            bot_status=ChatMemberStatus.ADMINISTRATOR,
+        )
         environment = BotTestEnvironment(blueprint=blueprint, dispatcher=dp)
         try:
             seen = []

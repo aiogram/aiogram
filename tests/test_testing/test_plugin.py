@@ -60,7 +60,7 @@ class TestFixtures:
         wait_timeout = call_fixture(plugin.bot_env_wait_timeout)
         original_storage = dispatcher.fsm.storage
 
-        generator = call_fixture(plugin.bot_env, blueprint, dispatcher, wait_timeout, None)
+        generator = call_fixture(plugin.bot_env, blueprint, dispatcher, wait_timeout, None, True)
         environment = next(generator)
         assert dispatcher.fsm.storage is not original_storage
         with pytest.raises(StopIteration):
@@ -77,7 +77,7 @@ class TestFixtures:
         wait_timeout = call_fixture(plugin.bot_env_wait_timeout)
         original_storage = dispatcher.fsm.storage
 
-        generator = call_fixture(plugin.bot_env, blueprint, dispatcher, wait_timeout, None)
+        generator = call_fixture(plugin.bot_env, blueprint, dispatcher, wait_timeout, None, True)
         environment = next(generator)
         with pytest.raises(RuntimeError, match="boom"):
             generator.throw(RuntimeError("boom"))
@@ -91,7 +91,7 @@ class TestFixtures:
         blueprint = call_fixture(plugin.bot_blueprint)
         dispatcher = call_fixture(plugin.bot_dispatcher)
 
-        generator = call_fixture(plugin.bot_env, blueprint, dispatcher, 12.5, None)
+        generator = call_fixture(plugin.bot_env, blueprint, dispatcher, 12.5, None, True)
         environment = next(generator)
         try:
             assert environment.world.default_wait_timeout == 12.5
@@ -104,13 +104,32 @@ class TestFixtures:
 
         assert call_fixture(plugin.bot_env_clock_start) is None
 
+    def test_bot_rights_are_enforced_by_default(self):
+        from aiogram.test import plugin
+
+        assert call_fixture(plugin.bot_env_enforce_bot_rights) is True
+
+    def test_environment_picks_up_the_enforce_bot_rights_fixture(self):
+        from aiogram.test import plugin
+
+        blueprint = call_fixture(plugin.bot_blueprint)
+        dispatcher = call_fixture(plugin.bot_dispatcher)
+
+        generator = call_fixture(plugin.bot_env, blueprint, dispatcher, 5.0, None, False)
+        environment = next(generator)
+        try:
+            assert environment.enforce_bot_rights is False
+        finally:
+            with pytest.raises(StopIteration):
+                next(generator)
+
     def test_environment_picks_up_the_clock_start_fixture(self):
         from aiogram.test import BASE_DATE, plugin
 
         blueprint = call_fixture(plugin.bot_blueprint)
         dispatcher = call_fixture(plugin.bot_dispatcher)
 
-        generator = call_fixture(plugin.bot_env, blueprint, dispatcher, 5.0, BASE_DATE)
+        generator = call_fixture(plugin.bot_env, blueprint, dispatcher, 5.0, BASE_DATE, True)
         environment = next(generator)
         try:
             assert environment.now == BASE_DATE
@@ -133,7 +152,7 @@ class TestFixtures:
         blueprint = Blueprint()
         blueprint.add_user("Lonely")
         dispatcher = Dispatcher()
-        generator = call_fixture(plugin.bot_env, blueprint, dispatcher, 5.0, None)
+        generator = call_fixture(plugin.bot_env, blueprint, dispatcher, 5.0, None, True)
         environment = next(generator)
         try:
             actor = call_fixture(plugin.bot_user, environment)

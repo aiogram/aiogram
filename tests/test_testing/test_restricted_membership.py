@@ -13,13 +13,14 @@ LATER = datetime.datetime(2030, 1, 1, tzinfo=datetime.timezone.utc)
 
 
 @pytest.fixture
-def world_blueprint():
+def world_blueprint(moderated):
     blueprint = Blueprint()
     alice = blueprint.add_user("Alice")
     blueprint.add_user("Bob")
     blueprint.add_supergroup("Team", members={alice: ChatMemberStatus.MEMBER})
     blueprint.add_group("Club", members={alice: ChatMemberStatus.MEMBER})
-    return blueprint
+    # The bot moderates both chats; that is what this module tests.
+    return moderated(blueprint)
 
 
 @pytest.fixture

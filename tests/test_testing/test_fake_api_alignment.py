@@ -12,7 +12,7 @@ import pytest
 from aiogram.enums import ChatMemberStatus, ChatType, DiceEmoji, StickerType
 from aiogram.exceptions import TelegramBadRequest
 from aiogram.methods import GetUserProfilePhotos
-from aiogram.test import Blueprint, BotTestEnvironment, WorldLookupError
+from aiogram.test import Blueprint, BotTestEnvironment, WorldLookupError, administrator_rights
 from aiogram.test.synthesis import SynthesisContext, annotation_accepts, synthesize
 from aiogram.test.world import World
 from aiogram.types import (
@@ -67,7 +67,12 @@ def blueprint():
     forum = blueprint.add_supergroup("Forum", members={alice: ChatMemberStatus.MEMBER})
     blueprint.add_topic(forum, "Support")
     blueprint.add_business_connection(alice)
-    blueprint.set_member(team, blueprint.bot, status=ChatMemberStatus.ADMINISTRATOR)
+    # An administrator that may promote, since some tests have it do so.
+    blueprint.set_member(
+        team,
+        blueprint.bot,
+        rights=administrator_rights(can_promote_members=True),
+    )
     return blueprint
 
 
@@ -972,6 +977,8 @@ class TestPinning:
         assert service.pinned_message.reply_to_message is None
 
     async def test_a_pin_in_a_topic_is_announced_there(self, env, forum, topic):
+        # Pinning takes the right to pin.
+        forum.member(env.world.bot_user.id).set_status(ChatMemberStatus.ADMINISTRATOR)
         sent = await env.bot.send_message(
             chat_id=forum.id,
             message_thread_id=topic.message_thread_id,

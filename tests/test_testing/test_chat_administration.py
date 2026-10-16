@@ -133,6 +133,10 @@ class TestServiceMessages:
 
 
 class TestMembershipReads:
+    @pytest.fixture
+    def blueprint(self, blueprint, moderated):
+        return moderated(blueprint)
+
     async def test_promoting_changes_the_administrator_list(self, env, team, alice):
         await env.bot.promote_chat_member(
             chat_id=team.id,
@@ -195,6 +199,10 @@ class TestMembershipReads:
 
 
 class TestMemberAnnotations:
+    @pytest.fixture
+    def blueprint(self, blueprint, moderated):
+        return moderated(blueprint)
+
     async def test_custom_title_round_trips(self, env, team, alice):
         await env.bot.set_chat_administrator_custom_title(
             chat_id=team.id,
@@ -431,6 +439,12 @@ class TestRightsFollowTheChatType:
             members={alice: ChatMemberStatus.ADMINISTRATOR},
         )
         channel = blueprint.add_channel("News", members={alice: ChatMemberStatus.ADMINISTRATOR})
+        # Promoting takes the right to promote.
+        blueprint.set_member(
+            supergroup,
+            blueprint.bot,
+            rights=administrator_rights(can_promote_members=True),
+        )
         environment = BotTestEnvironment(blueprint=blueprint, dispatcher=dp)
         try:
             yield environment, supergroup, channel, alice
@@ -474,6 +488,10 @@ class TestRightsFollowTheChatType:
 
 
 class TestPromoteAndRestrictPersist:
+    @pytest.fixture
+    def blueprint(self, blueprint, moderated):
+        return moderated(blueprint)
+
     @pytest.fixture
     def owned(self):
         """A supergroup with a declared owner, plus the environment it lives in."""
@@ -767,6 +785,10 @@ class TestPermissionCoupling:
     hand it.
     """
 
+    @pytest.fixture
+    def blueprint(self, blueprint, moderated):
+        return moderated(blueprint)
+
     @pytest.mark.parametrize(
         "granted",
         ["can_send_other_messages", "can_add_web_page_previews"],
@@ -875,15 +897,34 @@ class TestPermissionCoupling:
         assert team.member(alice.user.id).permissions is not permissions
 
 
-class TestPermissionsAreNotEnforced:
-    async def test_a_silenced_chat_still_accepts_messages(self, env, team, alice):
-        """The fake models the shape of administration, not its policy."""
+class TestPermissionsBindTheBotOnly:
+    @pytest.fixture
+    def blueprint(self, blueprint, moderated):
+        return moderated(blueprint)
+
+    async def test_a_silenced_chat_refuses_a_member_bot_but_not_an_actor(self, dp):
+        """The bot's calls are checked; what a user does is the test's to decide."""
+        blueprint = Blueprint()
+        alice = blueprint.add_user("Alice")
+        team = blueprint.add_supergroup("Team", members={alice: ChatMemberStatus.MEMBER})
+        team.permissions = SILENCED
+        env = BotTestEnvironment(blueprint=blueprint, dispatcher=dp)
+        try:
+            chat = env.chat(team)
+            with pytest.raises(TelegramBadRequest, match="not enough rights to send text"):
+                await env.bot.send_message(chat_id=team.id, text="refused")
+            await env.user(alice).in_(team).send("still sent")
+
+            assert [message.text for message in chat.messages] == ["still sent"]
+        finally:
+            env.dispose_sync()
+
+    async def test_a_silenced_chat_accepts_an_administrator_bot(self, env, team):
         await env.bot.set_chat_permissions(chat_id=team.id, permissions=SILENCED)
 
         await env.bot.send_message(chat_id=team.id, text="still sent")
-        await alice.in_(team).send("so is this")
 
-        assert [message.text for message in team.messages] == ["still sent", "so is this"]
+        assert team.messages[-1].text == "still sent"
 
     async def test_a_restricted_member_can_still_send(self, env, team, alice):
         await env.bot.restrict_chat_member(

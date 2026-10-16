@@ -1,5 +1,6 @@
 import pytest
 
+from aiogram.enums import ChatMemberStatus
 from aiogram.exceptions import TelegramBadRequest
 from aiogram.methods import GetForumTopicIconStickers
 from aiogram.test import ApiRejection, Blueprint, BotTestEnvironment
@@ -276,6 +277,8 @@ class TestForumMethods:
             alice.in_(forum, topic=999)
 
     async def test_unpin_all_topic_messages(self, forum_env, forum, support):
+        # Unpinning takes the right to pin.
+        forum.member(forum_env.world.bot_user.id).set_status(ChatMemberStatus.ADMINISTRATOR)
         message = await forum_env.bot.send_message(
             chat_id=forum.id,
             text="inside",
@@ -322,6 +325,8 @@ class TestGeneralForumMethods:
         assert forum.messages[-1].general_forum_topic_unhidden is not None
 
     async def test_unpin_all_general_messages(self, forum_env, forum, support):
+        # Unpinning takes the right to pin.
+        forum.member(forum_env.world.bot_user.id).set_status(ChatMemberStatus.ADMINISTRATOR)
         general = await forum_env.bot.send_message(chat_id=forum.id, text="general")
         inside = await forum_env.bot.send_message(
             chat_id=forum.id,

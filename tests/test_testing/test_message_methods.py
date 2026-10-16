@@ -2,6 +2,7 @@ from typing import get_args
 
 import pytest
 
+from aiogram.enums import ChatMemberStatus
 from aiogram.exceptions import TelegramBadRequest
 from aiogram.methods import EditMessageMedia, SendChatAction
 from aiogram.test import Blueprint, BotTestEnvironment, WorldLookupError
@@ -518,7 +519,8 @@ class TestSeededAnswers:
 class TestForwardingFromAChannel:
     async def test_a_channel_forward_carries_a_channel_origin(self, dp):
         blueprint = Blueprint()
-        channel = blueprint.add_channel("News")
+        # Posting into a channel takes an administrator.
+        channel = blueprint.add_channel("News", bot_status=ChatMemberStatus.ADMINISTRATOR)
         group = blueprint.add_supergroup("Team")
         env = BotTestEnvironment(blueprint=blueprint, dispatcher=dp)
         try:

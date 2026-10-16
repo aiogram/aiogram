@@ -498,6 +498,10 @@ class TestPinning:
 
 
 class TestMembership:
+    @pytest.fixture
+    def blueprint(self, blueprint, moderated):
+        return moderated(blueprint)
+
     async def test_ban(self, env, team, blueprint):
         alice_id = blueprint.users[0].id
         until = env.now + datetime.timedelta(days=1)
@@ -579,17 +583,19 @@ class TestMembership:
         member = await env.bot.get_chat_member(chat_id=team.id, user_id=alice_id)
         assert isinstance(member, ChatMemberBanned)
 
-    async def test_get_chat_member_for_the_bot(self, env, team):
-        member = await env.bot.get_chat_member(chat_id=team.id, user_id=env.blueprint.bot.id)
-
-        assert isinstance(member, ChatMemberMember)
-
     async def test_get_chat(self, env, team):
         chat = await env.bot.get_chat(chat_id=team.id)
 
         assert chat.id == team.id
         assert chat.title == "Team"
         assert chat.type == team.type
+
+
+class TestTheBotsOwnMembership:
+    async def test_get_chat_member_for_the_bot(self, env, team):
+        member = await env.bot.get_chat_member(chat_id=team.id, user_id=env.blueprint.bot.id)
+
+        assert isinstance(member, ChatMemberMember)
 
 
 class TestFallback:

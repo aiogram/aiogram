@@ -132,7 +132,12 @@ def party():
     players = [blueprint.add_user(name) for name in ("Alice", "Bob", "Carol")]
     for player in players:
         blueprint.add_private_chat(player)
-    blueprint.add_supergroup("Table", members=dict.fromkeys(players, ChatMemberStatus.MEMBER))
+    # The bot runs the game, so it administers the table: it pins.
+    blueprint.add_supergroup(
+        "Table",
+        members=dict.fromkeys(players, ChatMemberStatus.MEMBER),
+        bot_status=ChatMemberStatus.ADMINISTRATOR,
+    )
     return blueprint
 
 

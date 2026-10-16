@@ -12,3 +12,6 @@ own code can observe:
 - **Topic messages have no root.** In Telegram a topic message that replies to nothing
   else carries the topic's `forum_topic_created` message as `reply_to_message`. Bots read
   the topic's name from it, and here it was `None`.
+- **The bot holds every right.** A bot declared as a plain member pins, deletes others'
+  messages, bans, restricts and promotes, and sends what the chat's permissions forbid.
+  Telegram refuses each of those, so a bot's "I lack the right" branch went untested.

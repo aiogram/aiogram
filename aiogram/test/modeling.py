@@ -524,6 +524,28 @@ def _chat_label(chat: ChatState) -> str:
     return ""
 
 
+# -- the bot's own rights --------------------------------------------------------------
+#
+# Each refusal below is Telegram's wording, so it cannot carry a hint.
+# The fix for every one of them is to declare the bot's standing:
+# ``bot_status=`` on ``Blueprint.add_group`` and its siblings, or
+# ``Blueprint.set_member(chat, blueprint.bot, rights=...)`` for one
+# right. ``BotTestEnvironment(enforce_bot_rights=False)`` turns the
+# checks off. The texts are TDLib's, which the Bot API server relays
+# with the first letter lowercased (td/telegram/DialogManager.cpp,
+# DialogParticipantManager.cpp and MessageContent.cpp).
+
+
+_ADMINISTRATOR_STATUSES = frozenset({ChatMemberStatus.CREATOR, ChatMemberStatus.ADMINISTRATOR})
+
+
+def _bot_member(env: BotTestEnvironment, chat: ChatState) -> MemberState | None:
+    """The bot's settled membership of ``chat``, if it has one."""
+    if env.world.bot_user.id not in chat.members:
+        return None
+    return chat.member(env.world.bot_user.id)
+
+
 def bot_has_right(env: BotTestEnvironment, chat: ChatState, right: str) -> bool:
     """
     Whether the bot holds the administrator ``right`` in ``chat``.
@@ -531,18 +553,178 @@ def bot_has_right(env: BotTestEnvironment, chat: ChatState, right: str) -> bool:
     The owner holds every right. An administrator holds what its
     rights grant, read as :func:`scoped_rights` reports them for the
     chat's type, so a right the type does not have is not held. No
-    one else holds any.
+    one else holds any. With ``enforce_bot_rights`` off, every right
+    is held.
     """
-    member = chat.members.get(env.world.bot_user.id)
-    if member is None:
+    if not env.enforce_bot_rights:
+        return True
+    member = _bot_member(env, chat)
+    if member is None or member.status not in _ADMINISTRATOR_STATUSES:
         return False
-    member = chat.member(member.user_id)
     if member.status == ChatMemberStatus.CREATOR:
         return True
-    if member.status != ChatMemberStatus.ADMINISTRATOR:
-        return False
     declared = member.rights if member.rights is not None else administrator_rights()
     return bool(getattr(scoped_rights(declared, chat.type), right))
+
+
+def require_bot_right(
+    env: BotTestEnvironment,
+    chat: ChatState,
+    right: str,
+    refusal: str,
+) -> None:
+    """
+    Refuse a call with ``refusal`` unless the bot holds ``right``.
+
+    A private chat needs no right. The fix for a test that meant the
+    bot to hold it is ``Blueprint.set_member(chat, blueprint.bot,
+    rights=administrator_rights(...))`` or ``bot_status=``.
+    """
+    if chat.type != ChatType.PRIVATE and not bot_has_right(env, chat, right):
+        raise ApiRejection(refusal)
+
+
+def require_pin_right(env: BotTestEnvironment, chat: ChatState) -> None:
+    """
+    Refuse pinning or unpinning unless the bot may manage pins.
+
+    That is ``can_pin_messages`` in a group or a supergroup and
+    ``can_edit_messages`` in a channel, as ``pinChatMessage`` states.
+    """
+    right = "can_edit_messages" if chat.type == ChatType.CHANNEL else "can_pin_messages"
+    require_bot_right(
+        env,
+        chat,
+        right,
+        "not enough rights to manage pinned messages in the chat",
+    )
+
+
+def require_restrict_right(env: BotTestEnvironment, chat: ChatState) -> None:
+    """
+    Refuse a ban, unban or restriction without ``can_restrict_members``.
+
+    A basic group answers with the server's ``CHAT_ADMIN_REQUIRED``,
+    since TDLib has no check of its own there.
+    """
+    refusal = (
+        "CHAT_ADMIN_REQUIRED"
+        if chat.type == ChatType.GROUP
+        else "not enough rights to restrict/unrestrict chat member"
+    )
+    require_bot_right(env, chat, "can_restrict_members", refusal)
+
+
+def require_promote_right(env: BotTestEnvironment, chat: ChatState) -> None:
+    """Refuse promoting or demoting without ``can_promote_members``."""
+    refusal = (
+        "need owner rights in the group chat"
+        if chat.type == ChatType.GROUP
+        else "not enough rights"
+    )
+    require_bot_right(env, chat, "can_promote_members", refusal)
+
+
+#: Message content field -> the permission sending it takes, and how
+#: Telegram's refusal names it. A field not listed is a text message.
+_SEND_PERMISSIONS: dict[str, tuple[str, str]] = {
+    "animation": ("can_send_other_messages", "animations"),
+    "audio": ("can_send_audios", "music"),
+    "checklist": ("can_send_polls", "checklists"),
+    "contact": ("can_send_messages", "contacts"),
+    "dice": ("can_send_other_messages", "dice"),
+    "document": ("can_send_documents", "documents"),
+    "game": ("can_send_other_messages", "games"),
+    "invoice": ("can_send_messages", "invoice messages"),
+    "live_photo": ("can_send_photos", "photos"),
+    "location": ("can_send_messages", "locations"),
+    "paid_media": ("can_send_photos", "paid media"),
+    "photo": ("can_send_photos", "photos"),
+    "poll": ("can_send_polls", "polls"),
+    "rich_message": ("can_send_messages", "the rich message"),
+    "sticker": ("can_send_other_messages", "stickers"),
+    "venue": ("can_send_messages", "venues"),
+    "video": ("can_send_videos", "videos"),
+    "video_note": ("can_send_video_notes", "video notes"),
+    "voice": ("can_send_voice_notes", "voice notes"),
+}
+
+
+def content_kind(message: Message) -> str:
+    """The :data:`_SEND_PERMISSIONS` key of what ``message`` carries."""
+    return next(
+        (name for name in _SEND_PERMISSIONS if getattr(message, name, None) is not None),
+        "text",
+    )
+
+
+def _permitted(permissions: ChatPermissions | None, name: str, *, unset: bool) -> bool:
+    """Whether ``permissions`` grant ``name``; ``unset`` if None."""
+    if permissions is None:
+        return unset
+    return bool(getattr(permissions, name, None))
+
+
+def require_send_permission(env: BotTestEnvironment, chat: ChatState, kind: str) -> None:
+    """
+    Refuse a message of ``kind`` the bot may not send into ``chat``.
+
+    The owner and administrators send anything in a group, and in a
+    channel only they may post at all, with ``can_post_messages``.
+    Anyone else sends what the chat's permissions allow, narrowed by
+    the bot's own restriction. Chat permissions never set allow
+    everything; a restriction allows only what it granted. Declare
+    ``bot_status=`` or ``Blueprint.set_member(chat, blueprint.bot,
+    rights=...)`` for an administrator, or grant the permission on
+    the chat's declared ``permissions``.
+    """
+    if chat.type == ChatType.PRIVATE or not env.enforce_bot_rights:
+        return
+    if chat.type == ChatType.CHANNEL:
+        if not bot_has_right(env, chat, "can_post_messages"):
+            raise ApiRejection("need administrator rights in the channel chat")
+        return
+    member = _bot_member(env, chat)
+    if member is not None and member.status in _ADMINISTRATOR_STATUSES:
+        return
+    permission, noun = _SEND_PERMISSIONS.get(kind, ("can_send_messages", "text messages"))
+    allowed = _permitted(chat.permissions, permission, unset=True)
+    if member is not None and member.status == ChatMemberStatus.RESTRICTED:
+        allowed = allowed and _permitted(member.permissions, permission, unset=False)
+    if not allowed:
+        raise ApiRejection(f"not enough rights to send {noun} to the chat")
+
+
+def bot_may_delete(env: BotTestEnvironment, chat: ChatState, message: Message) -> bool:
+    """
+    Whether the bot's standing lets it delete ``message``.
+
+    Its own messages are always its to delete outside channels. In a
+    basic group any administrator deletes the others', and in a
+    supergroup one holding ``can_delete_messages``. In a channel that
+    right deletes any post, and ``can_post_messages`` the bot's own,
+    as ``deleteMessage`` states. A post with no signature is read as
+    the bot's, since only an actor signs one here.
+    """
+    if chat.type == ChatType.PRIVATE or not env.enforce_bot_rights:
+        return True
+    sender = message.from_user
+    if chat.type == ChatType.CHANNEL:
+        sender_chat = message.sender_chat
+        own = (
+            sender_chat is not None
+            and sender_chat.id == chat.id
+            and message.author_signature is None
+        )
+        return bot_has_right(env, chat, "can_delete_messages") or (
+            own and bot_has_right(env, chat, "can_post_messages")
+        )
+    if sender is not None and sender.id == env.world.bot_user.id:
+        return True
+    if chat.type == ChatType.GROUP:
+        member = _bot_member(env, chat)
+        return member is not None and member.status in _ADMINISTRATOR_STATUSES
+    return bot_has_right(env, chat, "can_delete_messages")
 
 
 def posting_topic(
@@ -587,6 +769,11 @@ def build_message(
     # An unknown thread id must fail rather than silently produce an untagged message.
     topic = posting_topic(env, chat, thread_id)
     receiver = _ephemeral_receiver(env, method, chat)
+    if receiver is None and content is None:
+        # An ephemeral message is exempt, as TDLib exempts it; a media
+        # group checks its items itself.
+        kind = media_field or ("poll" if isinstance(method, SendPoll) else "text")
+        require_send_permission(env, chat, kind)
     reply = _reply_changes(env, method, chat, ephemeral=receiver is not None)
     connection_id = getattr(method, "business_connection_id", None)
     connection = None if connection_id is None else env.world.business_connection(connection_id)
@@ -1055,6 +1242,8 @@ def handle_send_media_group(
     if len(kinds) > 1 and kinds & _ALBUM_KINDS.keys():
         msg = "documents and audio files can be only grouped with messages of the same type"
         raise ApiRejection(msg)
+    for kind in sorted(kinds):
+        require_send_permission(env, chat, kind)
     group_id = env.world.next_query_id()
     return [
         build_message(
@@ -1210,6 +1399,7 @@ def forward_one(
         raise ApiRejection("message to forward not found")
     if not _forwardable(original):
         raise ApiRejection("message can't be forwarded")
+    require_send_permission(env, target, content_kind(original))
     # Checked before an id is allocated, so a refused forward uses none.
     thread = _thread_changes(env, target, thread_id)
     return target.add_derived(
@@ -1313,6 +1503,9 @@ def handle_forward_many(env: BotTestEnvironment, method: ForwardMessages) -> lis
         for message_id in method.message_ids
         if (original := source.find_message(message_id)) is not None and _forwardable(original)
     ]
+    # Checked for the whole batch first, so a refusal stores nothing.
+    for original in originals:
+        require_send_permission(env, target, content_kind(original))
     albums = _album_ids(env, originals)
     forwarded = [
         forward_one(
@@ -1350,6 +1543,7 @@ def copy_one(
         raise ApiRejection("message to copy not found")
     if not _copyable(original):
         raise ApiRejection("message can't be copied")
+    require_send_permission(env, target, content_kind(original))
     if all(getattr(original, name) is None for name in CAPTIONED_FIELDS):
         # A caption is for media: a text, sticker or poll copy takes
         # none, whatever the request passed.
@@ -1485,6 +1679,9 @@ def handle_copy_many(env: BotTestEnvironment, method: CopyMessages) -> list[Mess
         for message_id in method.message_ids
         if (original := source.find_message(message_id)) is not None and _copyable(original)
     ]
+    # Checked for the whole batch first, so a refusal stores nothing.
+    for original in originals:
+        require_send_permission(env, target, content_kind(original))
     albums = _album_ids(env, originals)
     copied = [
         copy_one(
@@ -1877,7 +2074,7 @@ def handle_delete(env: BotTestEnvironment, method: DeleteMessage) -> bool:
     message = chat.find_message(method.message_id)
     if message is None:
         raise ApiRejection("message to delete not found")
-    if not _deletable(env, chat, message):
+    if not (_deletable(env, chat, message) and bot_may_delete(env, chat, message)):
         raise ApiRejection("message can't be deleted")
     chat.delete_message(method.message_id)
     return True
@@ -1895,7 +2092,11 @@ def handle_delete_many(env: BotTestEnvironment, method: DeleteMessages) -> bool:
     chat = resolve_chat(env, method.chat_id)
     for message_id in method.message_ids:
         message = chat.find_message(message_id)
-        if message is not None and _deletable(env, chat, message):
+        if (
+            message is not None
+            and _deletable(env, chat, message)
+            and bot_may_delete(env, chat, message)
+        ):
             chat.delete_message(message_id)
     return True
 
@@ -1910,6 +2111,8 @@ def handle_pin(env: BotTestEnvironment, method: PinChatMessage) -> bool:
     pinned is not announced again.
     """
     chat = resolve_chat(env, method.chat_id)
+    if method.business_connection_id is None:
+        require_pin_right(env, chat)
     pinned = None if method.message_id is None else chat.find_message(method.message_id)
     if pinned is None:
         raise ApiRejection("message to pin not found")
@@ -1940,6 +2143,8 @@ def handle_unpin(env: BotTestEnvironment, method: UnpinChatMessage) -> bool:
     Messages sent in the same second are told apart by id.
     """
     chat = resolve_chat(env, method.chat_id)
+    if method.business_connection_id is None:
+        require_pin_right(env, chat)
     if method.message_id is None:
         pinned = [
             message
@@ -1956,7 +2161,9 @@ def handle_unpin(env: BotTestEnvironment, method: UnpinChatMessage) -> bool:
 
 @models(UnpinAllChatMessages)
 def handle_unpin_all(env: BotTestEnvironment, method: UnpinAllChatMessages) -> bool:
-    resolve_chat(env, method.chat_id).pinned_message_ids.clear()
+    chat = resolve_chat(env, method.chat_id)
+    require_pin_right(env, chat)
+    chat.pinned_message_ids.clear()
     return True
 
 
@@ -2036,6 +2243,7 @@ def _not_the_owner(chat: ChatState, user_id: int) -> MemberState:
 def handle_ban(env: BotTestEnvironment, method: BanChatMember) -> bool:
     chat = resolve_chat(env, method.chat_id)
     member = _not_the_owner(chat, method.user_id)
+    require_restrict_right(env, chat)
     member.set_status(ChatMemberStatus.KICKED)
     # A banned user cannot join, so a pending request of theirs goes
     # too: approving it would otherwise lift the ban.
@@ -2065,6 +2273,7 @@ def handle_unban(env: BotTestEnvironment, method: UnbanChatMember) -> bool:
     # Removing a present member is the default, and the owner cannot
     # be removed, the same as for a ban.
     _not_the_owner(chat, method.user_id)
+    require_restrict_right(env, chat)
     member.set_status(ChatMemberStatus.LEFT)
     return True
 
@@ -2102,6 +2311,7 @@ def handle_promote(env: BotTestEnvironment, method: PromoteChatMember) -> bool:
     """
     chat = resolve_chat(env, method.chat_id)
     member = _not_the_owner(chat, method.user_id)
+    require_promote_right(env, chat)
     if (
         member.status == ChatMemberStatus.ADMINISTRATOR
         and member.promoted_by is not None
@@ -2151,6 +2361,7 @@ def handle_restrict(env: BotTestEnvironment, method: RestrictChatMember) -> bool
         msg = "method is available only for supergroups"
         raise ApiRejection(msg)
     member = _not_the_owner(chat, method.user_id)
+    require_restrict_right(env, chat)
     granted = granted_permissions(
         method.permissions,
         method.use_independent_chat_permissions,
@@ -3359,6 +3570,7 @@ def handle_unpin_all_forum_topic_messages(
     method: UnpinAllForumTopicMessages,
 ) -> bool:
     chat, topic = _topic(env, method)
+    require_pin_right(env, chat)
     pinned = {message.message_id for message in topic.messages}
     chat.pinned_message_ids = [item for item in chat.pinned_message_ids if item not in pinned]
     return True
@@ -3425,6 +3637,7 @@ def handle_unpin_all_general_forum_topic_messages(
     method: UnpinAllGeneralForumTopicMessages,
 ) -> bool:
     chat = resolve_chat(env, method.chat_id)
+    require_pin_right(env, chat)
     pinned = {message.message_id for message in chat.general_topic.messages}
     chat.pinned_message_ids = [item for item in chat.pinned_message_ids if item not in pinned]
     return True

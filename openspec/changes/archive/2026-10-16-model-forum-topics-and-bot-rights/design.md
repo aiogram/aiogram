@@ -34,3 +34,20 @@ message whose reply is external, so an `external_reply` gets the root too. It is
 in `build_message`, in the copy and forward path after the fields a move clears and
 before the request's own reply, in `service_message`, and in the actor's
 `_build_message` before `fields`, so an explicit reply wins.
+
+### D4. The bot's rights are checked where each call is modeled
+
+Each handler calls one of `require_pin_right`, `require_restrict_right`,
+`require_promote_right`, `require_send_permission` and `bot_may_delete`, after the
+checks that came before it: the owner guard comes first, as in TDLib. The texts are
+TDLib's (`DialogManager::can_pin_messages`, `DialogParticipantManager`,
+`MessageContent.cpp`), lowercased at the first letter as the Bot API server relays them.
+Since the text is Telegram's, the fix is named in the docstrings and the docs instead.
+
+The policy is on by default. `BotTestEnvironment(enforce_bot_rights=False)`, and the
+`bot_env_enforce_bot_rights` fixture, turn it off for a suite that is migrating; then
+`bot_has_right` answers true, so closed topics take the bot's messages too.
+
+Not checked: chat settings and topic management rights, granting a right the bot lacks,
+a bot that has left, and user actors. A media group or a batch move is checked whole
+before anything is stored; `deleteMessages` skips what it may not delete.

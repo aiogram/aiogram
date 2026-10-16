@@ -979,8 +979,8 @@ gift somebody already has.
 .. note::
 
     Three deliberate limits. Business bot rights (``can_convert_gifts_to_stars`` and
-    friends) are **not** enforced, consistent with the toolkit enforcing no rights
-    anywhere. Telegram's star economics — commission, payouts, the settlement hold — are
+    friends) are **not** enforced; only the bot's rights in a chat are, as
+    described under "The bot's own rights". Telegram's star economics — commission, payouts, the settlement hold — are
     not modeled; the ledger only counts stars in and out. And **affordability is not
     checked**: sending a gift you cannot pay for drives the balance negative rather than
     failing, because a negative balance is visible to a test while a silent rejection is
@@ -2086,16 +2086,73 @@ Member annotations are not interchangeable, and the Bot API's own types say why:
 :code:`setChatMemberTag` applies to a regular member. Calling either on the wrong kind of
 member raises rather than writing an annotation that would vanish on conversion.
 
-.. warning::
+The bot's own rights
+--------------------
 
-    **Permissions are stored but never enforced.** Setting restrictive
-    :class:`aiogram.types.chat_permissions.ChatPermissions`, or restricting a member, does
-    not make a later ``sendMessage`` fail — the toolkit models the shape of administration,
-    not its policy. A test that needs the rejection declares it:
+The bot's own calls are checked against its standing in the chat, as Telegram checks them,
+and refused with Telegram's own wording. A private chat needs no right:
 
-    .. code-block:: python
+.. list-table::
+    :header-rows: 1
 
-        env.on(SendMessage).raises(TelegramBadRequest(method=..., message="Bad Request: ..."))
+    * - Call
+      - What the bot needs
+      - Refusal (after ``Bad Request:``)
+    * - :code:`pinChatMessage`, :code:`unpinChatMessage`, :code:`unpinAllChatMessages`,
+        and the topic and General variants of unpinning all
+      - ``can_pin_messages``; in a channel, ``can_edit_messages``
+      - ``not enough rights to manage pinned messages in the chat``
+    * - :code:`banChatMember`, :code:`unbanChatMember`, :code:`restrictChatMember`
+      - ``can_restrict_members``
+      - ``not enough rights to restrict/unrestrict chat member``; ``CHAT_ADMIN_REQUIRED``
+        in a basic group
+    * - :code:`promoteChatMember`
+      - ``can_promote_members``
+      - ``not enough rights``; ``need owner rights in the group chat`` in a basic group
+    * - :code:`deleteMessage` of someone else's message
+      - in a basic group, any administrator; in a supergroup or a channel,
+        ``can_delete_messages`` (in a channel, ``can_post_messages`` deletes the bot's
+        own posts)
+      - ``message can't be deleted``
+    * - a send, copy or forward, as a plain or restricted member
+      - the chat's permission for that kind of message, narrowed by the bot's own
+        restriction
+      - ``not enough rights to send text messages to the chat``, ``... photos ...``, and
+        so on per kind
+    * - a send, copy or forward into a channel
+      - ``can_post_messages``
+      - ``need administrator rights in the channel chat``
+
+The owner holds every right, and an administrator declared without rights holds the
+ordinary ones, which do not include ``can_promote_members``. The wording is TDLib's, which
+the Bot API server passes on. :code:`deleteMessages` skips what the bot may not delete, as
+it skips other messages it cannot delete. An ephemeral message is not checked.
+
+A refusal cannot say how to fix the test, since its text is Telegram's. The fix is always
+to declare what the bot was meant to hold:
+
+.. code-block:: python
+
+    team = blueprint.add_supergroup("Team", bot_status=ChatMemberStatus.ADMINISTRATOR)
+    # or exactly the rights it has
+    blueprint.set_member(
+        team,
+        blueprint.bot,
+        rights=administrator_rights(can_promote_members=True),
+    )
+
+Not checked: the rights to change chat settings and to manage topics, granting a right the
+bot does not hold itself, and a bot that has left the chat. What users do through actors is
+never checked either. The test decides what users do.
+
+A suite written against the permissive fake can turn the checks off while it migrates:
+
+.. code-block:: python
+
+    env = BotTestEnvironment(blueprint=blueprint, enforce_bot_rights=False)
+
+With that, the bot holds every right it needs, closed topics included. For the ``bot_env``
+fixture, override ``bot_env_enforce_bot_rights`` to return ``False``.
 
 Invite links
 ============
@@ -2606,6 +2663,10 @@ Fixtures
 ``bot_env``
     The isolated environment for one test — owns the bot, the world, the call log and
     the overrides.
+
+``bot_env_enforce_bot_rights``
+    Whether ``bot_env`` checks the bot's own calls against its rights. ``True`` by
+    default; override it to return ``False`` while migrating.
 
 ``bot_chat``
     The first chat declared by the blueprint.

@@ -468,6 +468,7 @@ class BotTestEnvironment:
         *,
         default_wait_timeout: float = DEFAULT_WAIT_TIMEOUT,
         clock_start: datetime.datetime | None = None,
+        enforce_bot_rights: bool = True,
     ) -> None:
         """
         ``default_wait_timeout`` is how long every wait in this environment runs.
@@ -484,7 +485,16 @@ class BotTestEnvironment:
         ``datetime.now()`` land where Telegram would see them; pass a
         fixed moment, such as ``BASE_DATE``, for dates that are the same
         on every run.
+
+        ``enforce_bot_rights`` refuses the bot's own calls that its
+        standing in a chat does not allow, as Telegram does: pinning
+        without ``can_pin_messages``, banning without
+        ``can_restrict_members``, sending what the chat's permissions
+        forbid. Pass ``False`` while migrating a suite written against
+        the permissive fake; then the bot holds every right it needs.
         """
+        #: Whether the bot's calls are checked against its rights.
+        self.enforce_bot_rights = enforce_bot_rights
         self.blueprint = blueprint if blueprint is not None else default_blueprint()
         self.world = self.blueprint.build(start=clock_start)
         self.world.default_wait_timeout = default_wait_timeout

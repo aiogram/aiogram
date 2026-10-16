@@ -1,9 +1,10 @@
 import pytest
 
 from aiogram import Dispatcher
+from aiogram.enums import ChatMemberStatus
 from aiogram.exceptions import TelegramBadRequest
 from aiogram.methods import AnswerPreCheckoutQuery, AnswerShippingQuery
-from aiogram.test import Blueprint, BotTestEnvironment, WorldLookupError
+from aiogram.test import Blueprint, BotTestEnvironment, WorldLookupError, administrator_rights
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, Update
 
 #: How to drive each update variant: the actor to use, and what to call on it.
@@ -497,6 +498,10 @@ class TestBotMembership:
         seen = []
         env.dispatcher.chat_member.register(seen.append)
         actor = alice.in_(team)
+        # Promoting takes the right to promote.
+        bot = team.member(env.world.bot_user.id)
+        bot.set_status(ChatMemberStatus.ADMINISTRATOR)
+        bot.rights = administrator_rights(can_promote_members=True)
         await env.bot.promote_chat_member(
             chat_id=team.id,
             user_id=alice.user.id,

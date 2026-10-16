@@ -2378,18 +2378,6 @@ rather than only in production.
 - **WHEN** a handler bans the owner and then promotes them
 - **THEN** the first call already fails, so the owner's standing is never lost
 
-### Requirement: Permissions are stored but not enforced
-
-The environment SHALL store chat permissions and member restrictions without enforcing
-them: a call that Telegram would reject for want of a right SHALL still succeed in the
-fake. The toolkit models the shape of administration, not its policy.
-
-#### Scenario: Restricted sending still succeeds
-
-- **WHEN** a chat's permissions forbid sending messages and a handler sends one anyway
-- **THEN** the message is appended to the chat as usual, and a test that needs the
-  rejection declares it with an override
-
 ### Requirement: Invite links are chat state
 
 The environment SHALL store a chat's invite links, each carrying its URL, creator, name,
@@ -3770,3 +3758,40 @@ root.
 
 - **WHEN** the bot sends a message into the General topic of a forum
 - **THEN** the stored message replies to nothing
+
+### Requirement: The bot's own calls are checked against its rights
+
+Unless the environment is built with `enforce_bot_rights=False`, a call the bot makes into
+a group, a supergroup or a channel SHALL fail with Telegram's wording when the bot's
+standing there does not allow it. Pinning and unpinning SHALL take `can_pin_messages`, or
+`can_edit_messages` in a channel. Banning, unbanning and restricting SHALL take
+`can_restrict_members`, and promoting `can_promote_members`. Deleting someone else's message
+SHALL take administrator status in a basic group and `can_delete_messages` elsewhere. A
+send, copy or forward by a bot that is not an administrator SHALL take the chat's permission
+for that kind of message, narrowed by the bot's own restriction, and posting into a channel
+SHALL take `can_post_messages`. The owner SHALL hold every right. Private chats and user
+actors SHALL NOT be checked. With `enforce_bot_rights=False`, the bot SHALL hold every right.
+
+#### Scenario: A member bot pins
+
+- **WHEN** the bot, a plain member of a supergroup, pins a message
+- **THEN** the call raises `TelegramBadRequest` with
+  `not enough rights to manage pinned messages in the chat`
+
+#### Scenario: A member bot bans
+
+- **WHEN** the bot, a plain member of a supergroup, bans a user
+- **THEN** the call raises `TelegramBadRequest` with
+  `not enough rights to restrict/unrestrict chat member`, and the user stays
+
+#### Scenario: A member bot sends into a silenced chat
+
+- **WHEN** the chat's permissions forbid text and the bot, a plain member, sends text
+- **THEN** the call raises `TelegramBadRequest` with
+  `not enough rights to send text messages to the chat`, while a user actor's message in
+  the same chat is still delivered
+
+#### Scenario: Opting out
+
+- **WHEN** the environment is built with `enforce_bot_rights=False`
+- **THEN** the same bot pins, bans and sends as if it held every right

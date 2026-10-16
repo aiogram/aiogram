@@ -67,11 +67,24 @@ def bot_env_clock_start() -> datetime.datetime | None:
 
 
 @pytest.fixture
+def bot_env_enforce_bot_rights() -> bool:
+    """
+    Override this fixture to stop checking the bot's rights.
+
+    ``True``, the default, refuses the bot's calls its standing in a
+    chat does not allow. Return ``False`` while migrating a suite
+    written against the permissive fake.
+    """
+    return True
+
+
+@pytest.fixture
 def bot_env(
     bot_blueprint: Blueprint,
     bot_dispatcher: Dispatcher,
     bot_env_wait_timeout: float,
     bot_env_clock_start: datetime.datetime | None,
+    bot_env_enforce_bot_rights: bool,
 ) -> Iterator[BotTestEnvironment]:
     """An isolated fake Telegram world for exactly one test."""
     environment = BotTestEnvironment(
@@ -79,6 +92,7 @@ def bot_env(
         dispatcher=bot_dispatcher,
         default_wait_timeout=bot_env_wait_timeout,
         clock_start=bot_env_clock_start,
+        enforce_bot_rights=bot_env_enforce_bot_rights,
     )
     try:
         yield environment

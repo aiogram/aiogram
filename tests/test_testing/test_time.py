@@ -23,7 +23,7 @@ MUTED = ChatPermissions(can_send_messages=False)
 
 
 @pytest.fixture
-def world_blueprint():
+def world_blueprint(moderated):
     blueprint = Blueprint()
     alice = blueprint.add_user("Alice")
     bob = blueprint.add_user("Bob")
@@ -33,7 +33,8 @@ def world_blueprint():
         members={alice: ChatMemberStatus.MEMBER, bob: ChatMemberStatus.MEMBER},
     )
     blueprint.add_business_connection(alice)
-    return blueprint
+    # Mutes and bans are the bot's to give, so it moderates Team.
+    return moderated(blueprint)
 
 
 @pytest.fixture

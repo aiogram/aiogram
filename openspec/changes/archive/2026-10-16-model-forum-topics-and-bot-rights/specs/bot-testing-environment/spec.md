@@ -69,3 +69,51 @@ root.
 
 - **WHEN** the bot sends a message into the General topic of a forum
 - **THEN** the stored message replies to nothing
+
+### Requirement: The bot's own calls are checked against its rights
+
+Unless the environment is built with `enforce_bot_rights=False`, a call the bot makes into
+a group, a supergroup or a channel SHALL fail with Telegram's wording when the bot's
+standing there does not allow it. Pinning and unpinning SHALL take `can_pin_messages`, or
+`can_edit_messages` in a channel. Banning, unbanning and restricting SHALL take
+`can_restrict_members`, and promoting `can_promote_members`. Deleting someone else's message
+SHALL take administrator status in a basic group and `can_delete_messages` elsewhere. A
+send, copy or forward by a bot that is not an administrator SHALL take the chat's permission
+for that kind of message, narrowed by the bot's own restriction, and posting into a channel
+SHALL take `can_post_messages`. The owner SHALL hold every right. Private chats and user
+actors SHALL NOT be checked. With `enforce_bot_rights=False`, the bot SHALL hold every right.
+
+#### Scenario: A member bot pins
+
+- **WHEN** the bot, a plain member of a supergroup, pins a message
+- **THEN** the call raises `TelegramBadRequest` with
+  `not enough rights to manage pinned messages in the chat`
+
+#### Scenario: A member bot bans
+
+- **WHEN** the bot, a plain member of a supergroup, bans a user
+- **THEN** the call raises `TelegramBadRequest` with
+  `not enough rights to restrict/unrestrict chat member`, and the user stays
+
+#### Scenario: A member bot sends into a silenced chat
+
+- **WHEN** the chat's permissions forbid text and the bot, a plain member, sends text
+- **THEN** the call raises `TelegramBadRequest` with
+  `not enough rights to send text messages to the chat`, while a user actor's message in
+  the same chat is still delivered
+
+#### Scenario: Opting out
+
+- **WHEN** the environment is built with `enforce_bot_rights=False`
+- **THEN** the same bot pins, bans and sends as if it held every right
+
+## REMOVED Requirements
+
+### Requirement: Permissions are stored but not enforced
+
+**Reason**: The bot's own calls are now checked against its rights; see "The bot's own
+calls are checked against its rights". User actors are still not checked.
+
+**Migration**: Declare the bot's standing with `bot_status=` or
+`Blueprint.set_member(chat, blueprint.bot, rights=...)`, or build the environment with
+`enforce_bot_rights=False` while migrating.
