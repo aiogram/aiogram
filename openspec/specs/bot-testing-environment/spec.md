@@ -3936,3 +3936,16 @@ The call log SHALL keep the call as the bot made it.
 
 - **WHEN** a handler passes both `entities` and `parse_mode="HTML"`
 - **THEN** the stored entities are the parsed ones
+
+### Requirement: The documentation shows fast sleeps that keep the loop's clock real
+
+The documentation SHALL show how a suite that keeps real database drivers speeds up a bot's
+own sleeps without replacing the event loop's clock, SHALL say why `looptime` and such
+drivers clash, and SHALL say that the toolkit has no time control mode of its own. The code
+it shows SHALL run as written.
+
+#### Scenario: The recipe as written
+
+- **WHEN** the recipe's code blocks are written into a project and its tests run
+- **THEN** they pass, the fifteen-second pause takes under a second, and `asyncio.sleep`
+  and the loop's clock are untouched

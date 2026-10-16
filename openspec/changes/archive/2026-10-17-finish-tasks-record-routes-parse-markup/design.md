@@ -74,3 +74,12 @@ aiogram's own renderers are the test oracle: text and entities rendered by
 that against Telegram's grammar and are left out of it: HTML `pre` with a language, written
 as a `language=` attribute instead of `class="language-..."`, and the MarkdownV2 custom
 emoji link, written with `emoji_id=` instead of `id=`.
+
+### D4. Fast sleeps are a recipe, not a mode
+
+A time control mode would have to decide which timers are the bot's and which are a
+driver's, and nothing in asyncio tells them apart. Until that is designed, the docs show
+the seam that needs no such decision: the application's own pause helper, replaced in the
+tests by one that sleeps a thousandth as long, with `asyncio.sleep` and the loop's clock
+left alone. `test_sleep_scaling_recipe.py` reads the recipe's code blocks out of
+`testing.rst`, writes them into a project and runs it, so the recipe cannot drift.

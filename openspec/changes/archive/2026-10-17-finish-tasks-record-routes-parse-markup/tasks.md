@@ -11,3 +11,11 @@
 ## 3. Parse modes
 
 - [x] 3.1 Port TDLib's HTML, MarkdownV2 and Markdown parsers and apply them to every modeled call with the server's entities rule (design D3); verify every tag and mark, UTF-16 offsets, each error's wording, nested items, the default parse mode, and a round trip through aiogram's renderers
+
+## 4. Fast sleeps
+
+- [x] 4.1 Document scaling the application's own sleep helper, and why `looptime` and real drivers clash (design D4); verify the documented code runs as written, fast, with the loop's clock real
+
+## 5. Integration
+
+- [x] 5.1 Run `make lint`, `uv run pytest tests` with `aiogram/test` at 100% coverage, and the docs build; verify all pass with no new warnings for `testing.rst`

@@ -1892,6 +1892,110 @@ than a second or so.
     land inside one; against a slow or remote one it is a live hazard, so mark a test
     ``looptime`` only once its database calls are mocked, faked, or genuinely local.
 
+Speeding up the bot's own sleeps
+--------------------------------
+
+``looptime`` and a real database driver do not mix, for the reason
+the note above gives: ``looptime`` replaces the event loop's clock,
+and a driver's deadlines are timers on that same clock. While the
+loop waits for a real socket it has nothing else to run, so
+``looptime`` jumps the clock to the next timer, which is as likely
+the driver's 30-second timeout as the game's 15-second night. The
+query that needed two real milliseconds fails with a timeout the
+driver would never have hit. The toolkit has no time control mode of
+its own yet, so a suite that keeps its real drivers speeds up the
+bot's sleeps instead, and leaves the loop's clock alone.
+
+That works when the game's pauses go through code of its own, which
+a test can replace. A helper every pause calls is the simplest such
+seam:
+
+.. code-block:: python
+
+    # game/clock.py
+    import asyncio
+
+
+    async def pause(seconds: float) -> None:
+        """Every pause of the game goes through here."""
+        await asyncio.sleep(seconds)
+
+.. code-block:: python
+
+    # game/engine.py
+    import asyncio
+
+    from aiogram import Bot, F, Router
+
+    from game import clock
+
+    router = Router()
+
+
+    @router.message(F.text == "/start")
+    async def start_night(message, bot: Bot) -> None:
+        asyncio.create_task(run_night(bot, message.chat.id))
+
+
+    async def run_night(bot: Bot, chat_id: int) -> None:
+        await clock.pause(15)
+        await bot.send_message(chat_id=chat_id, text="Night falls.")
+
+The tests then scale that one helper down, here a thousandfold:
+
+.. code-block:: python
+
+    # tests/conftest.py
+    import asyncio
+
+    import pytest
+
+    from aiogram import Dispatcher
+    from aiogram.test import detach_router
+    from game import clock, engine
+
+    real_sleep = asyncio.sleep
+
+
+    @pytest.fixture(autouse=True)
+    def fast_game_clock(monkeypatch):
+        async def pause(seconds: float) -> None:
+            await real_sleep(seconds / 1000)
+
+        monkeypatch.setattr(clock, "pause", pause)
+
+
+    @pytest.fixture
+    def bot_dispatcher():
+        dispatcher = Dispatcher()
+        dispatcher.include_router(detach_router(engine.router))
+        return dispatcher
+
+.. code-block:: python
+
+    # tests/test_night.py
+    async def test_night_falls(bot_env, bot_user, bot_chat):
+        await bot_user.send("/start")
+
+        message = await bot_chat.wait_for_message(lambda m: m.text == "Night falls.")
+
+        assert message.text == "Night falls."
+
+The fifteen-second night now takes fifteen real milliseconds, while
+the driver's timeouts, the waits' own timeouts and the flood limits
+keep real time, and the world's clock still moves only when
+``advance_time()`` moves it. Scaling rather
+than skipping keeps the pauses in their order, so a night still ends
+before a longer day does, and each pause still yields to the loop.
+
+Patch the name the call site looks up. ``clock.pause(...)`` reads
+``pause`` off the module each time, so replacing it there is enough.
+A module that did ``from game.clock import pause`` holds its own
+reference, and it is that module's ``pause`` to replace. Never patch
+``asyncio.sleep`` itself: drivers and the toolkit's own waits sleep
+through it too, and a driver's retry backoff turned into a busy loop
+is the failure this recipe exists to avoid.
+
 Waiting for background tasks to finish
 ======================================
 

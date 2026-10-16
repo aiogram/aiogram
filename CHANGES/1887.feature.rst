@@ -196,6 +196,10 @@ own — is waited for with ``await env.wait_for_tasks()``, which waits until eve
 ``drain()`` would have cancelled is done, including the ones spawned while it waits, cancels
 nothing, raises a task's own failure as :class:`aiogram.test.BackgroundTaskError` (the base of
 ``DrainedTaskError``), and on timeout names each task still running and the coroutine it runs.
+A bot whose own sleeps make tests slow, but whose real database drivers rule out ``looptime``
+— which moves the clock their deadlines run on — has a documented recipe instead: scale the
+application's own sleep helper in the tests and leave the event loop's clock real. The toolkit
+has no time control mode of its own yet.
 
 A text or caption sent with a ``parse_mode`` — passed to the call or the bot's default — is
 stored as Telegram stores it, as plain text and entities with UTF-16 offsets, rather than with
