@@ -15,33 +15,14 @@ from dataclasses import dataclass, field
 from typing import Any
 
 from aiogram.enums import ChatType
-from aiogram.methods import (
-    CopyMessage,
-    CopyMessages,
-    ForwardMessage,
-    ForwardMessages,
-    SendMediaGroup,
-    SendMessage,
-    SendPoll,
-    TelegramMethod,
-)
+from aiogram.methods import TelegramMethod
 
-from .modeling import MEDIA_FIELDS
+from .modeling import SENDING_METHODS
 
 #: The methods a rate limit counts: each call puts one message, or
-#: one album or batch, into a chat.
-RATE_LIMITED_METHODS: frozenset[type[TelegramMethod[Any]]] = frozenset(
-    {
-        SendMessage,
-        SendPoll,
-        SendMediaGroup,
-        ForwardMessage,
-        ForwardMessages,
-        CopyMessage,
-        CopyMessages,
-        *MEDIA_FIELDS,
-    },
-)
+#: one album or batch, into a chat. Read off the modeling registry,
+#: so a send method modeled later is counted with no edit here.
+RATE_LIMITED_METHODS: frozenset[type[TelegramMethod[Any]]] = frozenset(SENDING_METHODS)
 
 
 @dataclass(frozen=True)

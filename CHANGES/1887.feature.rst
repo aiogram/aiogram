@@ -292,15 +292,23 @@ update names the account owner. Routing diagnostics no longer report a handler t
 ``SkipHandler`` as the one that ran, and ``drain()`` no longer reports an exception the bot
 already retrieved.
 
-Forum topics answer in Telegram's words. A call into a thread the chat never had fails with
-``message thread not found``, and one into a topic ``deleteForumTopic`` removed with
-``TOPIC_DELETED``, while a topic a test or an actor names but the chat lacks is a setup gap
-that raises :class:`aiogram.test.WorldLookupError` listing the topics the chat does have.
+Forum topics answer in Telegram's words. A send, copy or forward into a thread the chat does
+not have fails with ``message thread not found``, deleted or never there, as does one into
+thread 1, the General topic's id, which no topic gets since message 1 of a supergroup or a
+channel is reserved for the chat's creation. A forum method naming a deleted topic fails
+with ``TOPIC_DELETED``. A topic a test or an actor names but the chat lacks, or one an actor
+was bound to before it was deleted, is a setup gap that raises
+:class:`aiogram.test.WorldLookupError` naming it.
 A closed topic, and the General topic while closed or hidden, refuses the bot's sends, copies
 and forwards with ``TOPIC_CLOSED`` unless the bot is the owner or an administrator holding
 ``can_manage_topics``. A message in a topic that replies to nothing else, the bot's or an
 actor's, carries the topic's ``forum_topic_created`` message as its ``reply_to_message``, so a
-handler reads the topic's name where it does in production; the General topic has none.
+handler reads the topic's name where it does in production; the General topic has none, and
+neither does a private chat's topic. A replied message carries no reply of its own, an
+actor's reply as the bot's. A bot's private chats take ``createForumTopic``,
+``editForumTopic`` and ``deleteForumTopic`` and keep a topic's thread id on its messages.
+Closing and reopening the General topic post ``forum_topic_closed`` and
+``forum_topic_reopened``, for the bot and for an actor.
 A supergroup's owner can turn topics off and on again with ``set_topics(...)``, which keeps
 the topics for when they come back, and ``add_supergroup(..., is_forum=True)`` declares a forum
 with none yet. The forum methods refuse a chat that is not a forum, and a send with a thread
@@ -378,7 +386,9 @@ Flood control can be tested two ways. The documentation shows the override that 
 ``BotTestEnvironment(rate_limits=RateLimits())``, off by default, models Telegram's guidance
 per chat — about one message a second, and 20 a minute in a group, shared by its topics —
 refusing a send over it with a 429 whose ``retry_after`` is when the next one goes through,
-read off the event loop's clock so ``looptime`` and ``advance_time()`` both move it.
+read off the event loop's clock so ``looptime`` and ``advance_time()`` both move it. A send
+Telegram refuses for another reason first, such as the bot's rights or an unknown thread,
+gets that refusal in a flooded chat too.
 
 .. warning::
 

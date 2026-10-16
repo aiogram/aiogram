@@ -570,7 +570,6 @@ class TestCopiesAndForwards:
             chat_id=private.id,
             from_chat_id=forum.id,
             message_id=source.message_id,
-            message_thread_id=topic.message_thread_id,
         )
 
         stored = private.find_message(copied.message_id)

@@ -81,6 +81,15 @@ UNTIL_FOREVER: datetime.datetime = datetime.datetime(1970, 1, 1, tzinfo=datetime
 
 DEFAULT_TOPIC_ICON_COLOR = 0x6FB9F0
 GENERAL_TOPIC_NAME = "General"
+#: The thread id the Bot API server gives a forum's General topic
+#: (``GENERAL_FORUM_TOPIC_ID`` in telegram-bot-api's Client.h).
+GENERAL_FORUM_TOPIC_ID = 1
+#: The chat types whose message 1 is the chat's creation, which
+#: TDLib will not let anyone reply to (MessagesManager.cpp,
+#: ``can_reply_to_message``). In a forum it is the General topic's
+#: root, so no other topic can be numbered 1. Basic groups number
+#: messages per user, so nothing is reserved there.
+_RESERVED_FIRST_MESSAGE = frozenset({ChatType.SUPERGROUP, ChatType.CHANNEL})
 #: How much of a message's text a failure message shows before cutting it off.
 MESSAGE_PREVIEW_LIMIT = 60
 
@@ -720,9 +729,13 @@ class TopicState:
         The topic's root, unless the message already replies to a
         message of its chat. A reply in another chat is no such reply,
         so it gets the root too, as the Bot API server reports it.
+        Only a supergroup's topic gives one: the server's
+        ``get_implicit_reply_to_message_id`` gives a private chat's
+        topic none.
         """
         root = self.root_message
-        if root is None or values.get("reply_to_message") is not None:
+        private = self.chat is not None and self.chat.type == ChatType.PRIVATE
+        if root is None or private or values.get("reply_to_message") is not None:
             return {}
         return {"reply_to_message": root}
 
@@ -1213,6 +1226,9 @@ class ChatState:
 
     def __post_init__(self) -> None:
         self.general_topic.chat = self
+        if self.type in _RESERVED_FIRST_MESSAGE and self.last_message_id == 0:
+            # Message 1 is the chat's creation, which is not stored.
+            self.last_message_id = 1
 
     @property
     def bound_bot(self) -> Bot | None:
@@ -1254,7 +1270,9 @@ class ChatState:
             username=self.username,
             first_name=self.first_name,
             last_name=self.last_name,
-            is_forum=self.is_forum or None,
+            # The Bot API reports topics of a supergroup only; a
+            # private chat's are its own business.
+            is_forum=(self.is_forum and self.type == ChatType.SUPERGROUP) or None,
         )
 
     def allocate_message_id(
@@ -1604,19 +1622,33 @@ class ChatState:
             raise WorldLookupError(self._missing_topic_message(message_thread_id))
         return topic
 
-    def api_topic(self, message_thread_id: int | None) -> TopicState:
+    def api_topic(
+        self,
+        message_thread_id: int | None,
+        *,
+        sending: bool = False,
+    ) -> TopicState:
         """
         The topic a Bot API call names, refused in Telegram's words.
 
-        A deleted topic answers ``TOPIC_DELETED``, and any other
-        unknown id ``message thread not found``.
+        A message ``sending`` into a thread the chat does not have is
+        refused with ``message thread not found``, deleted or not: the
+        Bot API server looks the topic up first and answers its own
+        default (``check_message_topic`` in Client.cpp). So is one
+        into thread 1 of a forum supergroup, the General topic, which
+        a send names by passing no thread. A forum method naming a
+        deleted topic answers ``TOPIC_DELETED``, which is Telegram's
+        server error name; neither TDLib nor the Bot API server
+        spells it out. Any other unknown id answers ``message thread
+        not found``.
         """
         if message_thread_id is None:
             return self.general_topic
+        general = self.type == ChatType.SUPERGROUP and message_thread_id == GENERAL_FORUM_TOPIC_ID
         topic = self.topics.get(message_thread_id)
-        if topic is not None:
+        if topic is not None and not (sending and general):
             return topic
-        if message_thread_id in self.deleted_topic_ids:
+        if message_thread_id in self.deleted_topic_ids and not sending:
             raise ApiRejection("TOPIC_DELETED")
         raise ApiRejection("message thread not found")
 
@@ -2133,8 +2165,9 @@ def resolve_topic(chat: ChatState, topic: TopicSpec | TopicState | int) -> Topic
 
     A topic can be addressed by any of the three, and every caller that accepts one accepts
     all three; an unknown thread id fails here rather than producing an untagged message.
+    A state is checked too, so a topic deleted since fails as one.
     """
-    if isinstance(topic, TopicState):
+    if isinstance(topic, TopicState) and topic.is_general:
         return topic
     thread_id = topic if isinstance(topic, int) else topic.message_thread_id
     return chat.topic(thread_id)

@@ -209,7 +209,7 @@ class TestDeleteTopic:
         assert thread_id not in chat.topics
         assert all(m.message_thread_id != thread_id for m in chat.messages)
         assert seen == []
-        with pytest.raises(TelegramBadRequest, match="TOPIC_DELETED"):
+        with pytest.raises(TelegramBadRequest, match="message thread not found"):
             await env.bot.send_message(chat_id=chat.id, text="x", message_thread_id=thread_id)
 
     async def test_it_posts_no_service_message(self, forum):
@@ -249,19 +249,23 @@ class TestGeneralTopic:
         assert chat.messages[-1].general_forum_topic_unhidden is not None
         assert seen == [chat.messages[-1]]
 
-    async def test_closing_and_reopening_feed_nothing(self, forum, seen):
+    async def test_closing_and_reopening_feed_their_messages(self, forum, seen):
         general = forum["chat"].general_topic
-        before = len(forum["chat"].messages)
+        owner = forum["owner"]
 
-        assert await forum["owner"].close_general_topic() is None
+        await owner.close_general_topic()
         assert general.is_closed
-        await forum["owner"].hide_general_topic()
-        seen.clear()
-        assert await forum["owner"].reopen_general_topic() is None
+        await owner.hide_general_topic()
+        await owner.reopen_general_topic()
 
         assert not general.is_closed and not general.is_hidden
-        assert seen == []
-        assert len(forum["chat"].messages) == before + 1
+        closed, hidden, reopened = seen
+        assert closed.forum_topic_closed is not None
+        assert hidden.general_forum_topic_hidden is not None
+        # One message says it reopened, unhidden as well.
+        assert reopened.forum_topic_reopened is not None
+        assert {m.from_user.id for m in seen} == {owner.user.id}
+        assert {m.message_thread_id for m in seen} == {None}
 
     async def test_it_matches_what_the_bot_methods_do(self, forum):
         env, chat = forum["env"], forum["chat"]

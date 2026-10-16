@@ -339,6 +339,11 @@ same thing spelled as what it reads like:
 
     assert bot_chat.messages[-1].reply_to_message is question
 
+The stored ``reply_to_message`` is the replied message itself, unless that one replies to
+something too, as every message in a forum topic does: then it is a copy without its own
+``reply_to_message``, since the Bot API never nests one, and the bot's sends store it the
+same way. Compare such a reply by ``message_id``.
+
 Neither trigger returns the ``Message`` it sent — reach for ``actor.chat.messages[-1]``
 right after the call, most of all when the next step replies to what was just sent:
 
@@ -1489,7 +1494,11 @@ a forum's topics. A send, copy or forward over a limit fails as Telegram answers
 error 429, ``Too Many Requests: retry after N`` and a ``TelegramRetryAfter`` whose
 ``retry_after`` is the truth: once that many seconds have passed, the next send goes
 through. A media group or a batch of forwards counts once, and a send that fails for another
-reason is not counted. An override answers before the limits are read. The FAQ also allows
+reason is not counted. The limits are read after every check Telegram makes before sending
+— the bot's rights, the thread, the message replied to — so a send those refuse answers with
+their 400 even in a flooded chat, and a send the limits refuse changes nothing. Which calls
+count is read off the modeled sends, ``aiogram.test.flood.RATE_LIMITED_METHODS``. An override
+answers before the limits are read. The FAQ also allows
 short bursts above one a second; the model does not.
 
 The seconds are read off the event loop's clock, so a loop driven by ``looptime`` moves
@@ -2839,10 +2848,16 @@ topic all mutate the world and emit the service message Telegram would post:
     assert chat.topic(topic.message_thread_id).is_closed
 
 The General topic is `chat.general_topic` — its messages carry no thread id, matching
-Telegram — and the ``*GeneralForumTopic*`` methods act on it. A call into a thread id that
-does not exist fails with Telegram's own wording rather than silently producing an untagged
-message: ``Bad Request: message thread not found`` for an id the chat never had, and
-``Bad Request: TOPIC_DELETED`` for a topic :code:`deleteForumTopic` removed. Looking a topic
+Telegram — and the ``*GeneralForumTopic*`` methods act on it. Its thread id is 1, which the
+Bot API server reserves: message 1 of a supergroup or a channel is the chat's creation, so
+those chats number their messages from 2 and no topic is ever numbered 1, and a send with
+``message_thread_id=1`` into a forum fails as the server fails it. A call into a thread id
+that does not exist fails with Telegram's own wording rather than silently producing an
+untagged message. A send, copy or forward gets ``Bad Request: message thread not found``,
+for a topic :code:`deleteForumTopic` removed as for one the chat never had, since the server
+looks the topic up first. A forum method naming a deleted topic gets ``Bad Request:
+TOPIC_DELETED``, which is Telegram's server error and not spelled out in its open source.
+Looking a topic
 up from the test itself — ``chat.topic(999)``, or an actor bound with
 ``.in_(chat, topic=999)`` — is a setup gap instead, and raises
 :class:`aiogram.test.WorldLookupError` naming the topics the chat does have.
@@ -2860,6 +2875,14 @@ sends; an explicit reply keeps its own target, and the General topic has no root
         await message.answer(message.reply_to_message.forum_topic_created.name)
 
 ``topic.root_message`` returns the root from a test.
+
+A bot's private chats have topics too. :code:`createForumTopic`, :code:`editForumTopic` and
+:code:`deleteForumTopic` work in one, and a message sent with its thread id carries it and is
+a topic message, but replies to nothing: the Bot API server gives only a supergroup's topic
+an implicit reply. A send into a thread the private chat lacks fails with ``message thread
+not found``, and closing a topic or any General topic method fails with ``Bad Request: the
+chat is not a supergroup forum``. ``chat.is_forum`` is reported for supergroups only. The
+bot's own topic mode is not modeled: every private chat takes topics.
 
 A closed topic takes messages only from someone who may manage topics. A send, copy or
 forward the bot makes into one fails with ``Bad Request: TOPIC_CLOSED`` unless the bot is
@@ -2913,17 +2936,21 @@ feeds the service message Telegram posts, from that user:
 
     await owner.hide_general_topic()          # general_forum_topic_hidden
     await owner.unhide_general_topic()        # general_forum_topic_unhidden
-    await owner.close_general_topic()         # nothing is fed
-    await owner.reopen_general_topic()        # nothing is fed
+    await owner.close_general_topic()         # forum_topic_closed
+    await owner.reopen_general_topic()        # forum_topic_reopened
 
 ``create_topic()`` returns the new :class:`~aiogram.test.world.TopicState`, to pass on or bind
 an actor to. The others take a topic as a declaration, a state or a thread id, and default to
 the topic the actor is bound to, so ``owner.in_(team, topic=topic).close_topic()`` works too.
 Extra keyword arguments are dispatcher data, as in every other trigger. Deleting a topic
 removes its messages and feeds nothing, because Telegram posts no service message for it and
-the Bot API has no type for one; the bot finds out when a call into the thread fails with
-``TOPIC_DELETED``. Closing and reopening the General topic feed nothing either: no service
-message is modeled for them, as with the bot methods.
+the Bot API has no type for one; the bot finds out when a send into the thread fails with
+``message thread not found``. Closing and reopening the General topic post
+``forum_topic_closed`` and ``forum_topic_reopened`` with no thread id, as the bot methods do:
+Telegram edits the General topic the way it edits any other. Reopening it unhides it too, and
+one ``forum_topic_reopened`` says both. An actor bound to a topic deleted since cannot send
+there or act on it: that raises :class:`~aiogram.test.WorldLookupError` naming the deleted
+topic.
 
 The user has to hold ``can_manage_topics``, in a chat that is a forum: as the owner, as an
 administrator granted the right, or, to create a topic, through the chat's permission of

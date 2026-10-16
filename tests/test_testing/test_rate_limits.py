@@ -4,10 +4,11 @@ import pytest
 
 from aiogram.enums import ChatMemberStatus
 from aiogram.exceptions import TelegramBadRequest, TelegramRetryAfter
-from aiogram.methods import SendMessage
+from aiogram.methods import CopyMessages, SendMediaGroup, SendMessage, SetChatTitle
 from aiogram.test import Blueprint, BotTestEnvironment, RateLimit, RateLimits
-from aiogram.test.flood import FloodControl
-from aiogram.types import InputMediaPhoto
+from aiogram.test.flood import RATE_LIMITED_METHODS, FloodControl
+from aiogram.test.modeling import SENDING_METHODS
+from aiogram.types import ChatPermissions, InputMediaPhoto, ReplyParameters
 
 
 @pytest.fixture
@@ -238,3 +239,70 @@ class TestRecipe:
 
         assert raised.value.retry_after == 5
         assert env.chat(target).messages[-1].text == "x"
+
+
+class TestLocalChecksComeFirst:
+    """A call Telegram refuses locally is refused so when flooded."""
+
+    @pytest.fixture
+    async def flooded(self, make_env):
+        env, blueprint, threads = make_env(RateLimits())
+        target = chat_id(blueprint, TEAM)
+        await env.bot.send_message(chat_id=target, text="one")
+        with pytest.raises(TelegramRetryAfter):
+            await env.bot.send_message(chat_id=target, text="two")
+        return env, env.chat(target), threads
+
+    async def test_an_unknown_thread_answers_400(self, flooded):
+        env, chat, _threads = flooded
+
+        with pytest.raises(TelegramBadRequest, match="message thread not found"):
+            await env.bot.send_message(chat_id=chat.id, text="x", message_thread_id=999)
+
+    async def test_a_missing_reply_answers_400(self, flooded):
+        env, chat, _threads = flooded
+
+        with pytest.raises(TelegramBadRequest, match="message to be replied not found"):
+            await env.bot.send_message(
+                chat_id=chat.id,
+                text="x",
+                reply_parameters=ReplyParameters(message_id=999),
+            )
+
+    async def test_missing_rights_answer_400(self, flooded):
+        env, chat, _threads = flooded
+        chat.member(env.world.bot_user.id).set_status(ChatMemberStatus.MEMBER)
+        chat.permissions = ChatPermissions(can_send_messages=False)
+
+        with pytest.raises(TelegramBadRequest, match="send text messages"):
+            await env.bot.send_message(chat_id=chat.id, text="x")
+
+    async def test_a_valid_send_is_still_flooded(self, flooded):
+        env, chat, _threads = flooded
+        before = list(chat.messages)
+
+        with pytest.raises(TelegramRetryAfter):
+            await env.bot.send_message(chat_id=chat.id, text="x")
+
+        assert chat.messages == before
+
+    async def test_a_flooded_copy_of_a_poll_registers_no_poll(self, make_env):
+        env, blueprint, _threads = make_env(RateLimits())
+        target = chat_id(blueprint, PRIVATE)
+        poll = await env.bot.send_poll(chat_id=target, question="?", options=["a", "b"])
+        polls = dict(env.world.polls)
+
+        with pytest.raises(TelegramRetryAfter):
+            await env.bot.copy_message(
+                chat_id=target,
+                from_chat_id=target,
+                message_id=poll.message_id,
+            )
+
+        assert env.world.polls == polls
+
+
+def test_the_counted_methods_are_the_modeled_sends():
+    assert frozenset(SENDING_METHODS) == RATE_LIMITED_METHODS
+    assert {SendMessage, SendMediaGroup, CopyMessages} <= RATE_LIMITED_METHODS
+    assert SetChatTitle not in RATE_LIMITED_METHODS

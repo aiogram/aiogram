@@ -1562,7 +1562,11 @@ topic's name, icon and open/closed state.
 The forum management methods SHALL be applied to the world instead of being synthesized:
 creating, editing, closing, reopening and deleting a topic, unpinning all of a topic's
 messages, and the General-topic variants. Each SHALL emit the matching service message
-into the chat where Telegram would.
+into the chat where Telegram would; closing and reopening the General topic SHALL emit
+`forum_topic_closed` and `forum_topic_reopened` with no thread id. A private chat SHALL take
+creating, editing and deleting a topic and unpinning its messages, and its topic messages
+SHALL carry their thread id; closing a topic there, and the General-topic methods, SHALL
+fail with `the chat is not a supergroup forum`.
 
 #### Scenario: Creating a topic
 
@@ -1576,6 +1580,11 @@ into the chat where Telegram would.
 - **THEN** the topic's state follows, and `forum_topic_closed` and `forum_topic_reopened`
   service messages are appended in order
 
+#### Scenario: Closing the General topic
+
+- **WHEN** a handler closes the General topic
+- **THEN** it is closed, and a `forum_topic_closed` message with no thread id is appended
+
 #### Scenario: Editing a topic
 
 - **WHEN** a handler edits a topic's name or icon
@@ -1586,7 +1595,13 @@ into the chat where Telegram would.
 
 - **WHEN** a handler deletes a topic
 - **THEN** the topic and its messages are gone from the chat, and a later attempt to post
-  into it fails with `TOPIC_DELETED`, the error Telegram returns
+  into it fails with `message thread not found`, as the Bot API server answers it
+
+#### Scenario: A topic in a private chat
+
+- **WHEN** a handler creates a topic in a private chat and sends into it
+- **THEN** the message carries the topic's thread id, is a topic message, and replies to
+  nothing
 
 ### Requirement: Actors can be bound to a topic
 
@@ -3691,10 +3706,15 @@ messages.
 
 ### Requirement: Topic refusals use Telegram's wording
 
-A Bot API call naming a thread the forum never had SHALL fail with
-`message thread not found`, and one naming a topic `deleteForumTopic` removed SHALL fail
-with `TOPIC_DELETED`. A topic a test or an actor names that the chat lacks SHALL be a setup
-error that lists the chat's topics, never a Telegram error.
+A send, copy or forward the bot makes into a thread the chat does not have SHALL fail with
+`message thread not found`, whether the chat never had it or `deleteForumTopic` removed it,
+as the Bot API server looks the topic up first. So SHALL one into thread 1 of a forum
+supergroup, the General topic's id. A forum method naming a topic `deleteForumTopic` removed
+SHALL fail with `TOPIC_DELETED`, and one naming a thread the chat never had with
+`message thread not found`. Message 1 of a supergroup or a channel SHALL be reserved for
+the chat's creation, so no topic SHALL be numbered 1. A topic a test or an actor names that
+the chat lacks, or an actor bound to a topic deleted since, SHALL be a setup error that
+names the topic, never a Telegram error.
 
 #### Scenario: Posting into an unknown thread
 
@@ -3704,12 +3724,27 @@ error that lists the chat's topics, never a Telegram error.
 #### Scenario: Posting into a deleted topic
 
 - **WHEN** a handler deletes a topic and then posts into it
+- **THEN** the call raises `TelegramBadRequest` with `message thread not found`
+
+#### Scenario: Closing a deleted topic
+
+- **WHEN** a handler deletes a topic and then closes it
 - **THEN** the call raises `TelegramBadRequest` with `TOPIC_DELETED`
+
+#### Scenario: Posting into thread 1
+
+- **WHEN** a handler sends a message with thread id 1 into a forum
+- **THEN** the call raises `TelegramBadRequest` with `message thread not found`
 
 #### Scenario: A test names an unknown topic
 
 - **WHEN** a test binds an actor to a thread id the chat does not have
 - **THEN** it raises `WorldLookupError` naming the topics the chat has
+
+#### Scenario: An actor bound to a deleted topic
+
+- **WHEN** an actor bound to a topic sends after the topic was deleted
+- **THEN** it raises `WorldLookupError` saying the topic was deleted
 
 ### Requirement: A closed topic refuses those who cannot manage topics
 
@@ -3742,12 +3777,13 @@ message SHALL use no message id. User actors SHALL NOT be refused.
 
 ### Requirement: A topic message replies to the topic's root
 
-A message stored in a forum topic other than General that replies to no message of its
-chat SHALL carry the topic's `forum_topic_created` service message as its
+A message stored in a supergroup's forum topic other than General that replies to no
+message of its chat SHALL carry the topic's `forum_topic_created` service message as its
 `reply_to_message`, and SHALL be marked as a topic message. This SHALL hold for the bot's
 sends, copies, forwards and topic service messages and for messages a user actor sends. An
 explicit reply SHALL keep its own target, and a reply in another chat SHALL still carry the
-root.
+root. A replied message SHALL carry no `reply_to_message` of its own, for an actor's reply
+as for the bot's. A private chat's topic SHALL give no implicit reply.
 
 #### Scenario: A handler reads the topic name
 
@@ -3759,6 +3795,12 @@ root.
 
 - **WHEN** the bot replies to a message inside a topic
 - **THEN** the stored message replies to that message, not to the root
+
+#### Scenario: An actor replies inside a topic
+
+- **WHEN** an actor replies to a message in a topic, which replies to the root itself
+- **THEN** the stored reply's `reply_to_message` is that message, carrying no reply of its
+  own
 
 #### Scenario: The General topic has no root
 
@@ -3861,15 +3903,23 @@ An environment built with `rate_limits` SHALL refuse a message-producing call in
 that is over a limit with error 429, `Too Many Requests: retry after N`, and a
 `TelegramRetryAfter` whose `retry_after` is the whole seconds until a send into that chat is
 allowed. The default limits SHALL be one message per second in any chat and 20 per minute
-in a group or supergroup, counted for the whole chat across its topics. A call SHALL be
-counted once it succeeds, a media group or batch once. The limits SHALL be read off the
-event loop's clock plus the time `advance_time` moved. Without `rate_limits` nothing SHALL be
-limited.
+in a group or supergroup, counted for the whole chat across its topics. The limits SHALL be
+read only after the checks Telegram makes before sending, so a call refused for the bot's
+rights, its thread or the message it replies to SHALL fail with that refusal, and a refused
+call SHALL change nothing. The counted methods SHALL be the modeled sends, read off the
+modeling registry. A call SHALL be counted once it succeeds, a media group or batch once.
+The limits SHALL be read off the event loop's clock plus the time `advance_time` moved.
+Without `rate_limits` nothing SHALL be limited.
 
 #### Scenario: Two messages in one second
 
 - **WHEN** limits are on and the bot sends two messages into a chat at the same moment
 - **THEN** the second raises `TelegramRetryAfter` with `retry_after` 1, and is not stored
+
+#### Scenario: A refusal Telegram makes first
+
+- **WHEN** the chat is over its limit and the bot sends into a thread it does not have
+- **THEN** the call raises `TelegramBadRequest` with `message thread not found`
 
 #### Scenario: Waiting out the refusal
 
@@ -3990,8 +4040,10 @@ A user actor SHALL be able to create a topic, close, reopen and delete one, hide
 the General topic, and close and reopen it. Each SHALL change the world as the matching bot
 method does, by the same code, and SHALL store and feed the service message Telegram posts
 for it, from that user: `forum_topic_created`, `forum_topic_closed`, `forum_topic_reopened`,
-`general_forum_topic_hidden` or `general_forum_topic_unhidden`. Deleting a topic, and closing
-or reopening the General topic, SHALL feed nothing, as no service message is modeled for them.
+`general_forum_topic_hidden` or `general_forum_topic_unhidden`, and `forum_topic_closed` or
+`forum_topic_reopened` for the General topic. Deleting a topic SHALL feed nothing, as
+Telegram posts no message for it. A topic deleted since an actor was bound to it SHALL be a
+setup error, never a Telegram error.
 A topic SHALL be named as a declaration, a state or a thread id, and default to the topic the
 actor is bound to. The actor SHALL hold `can_manage_topics` in a chat that is a forum,
 whatever `enforce_bot_rights` says: as the owner or an administrator granted it, or, to
@@ -4010,7 +4062,7 @@ SHALL close, reopen and delete it without the right. Otherwise the trigger SHALL
 
 - **WHEN** an administrator with `can_manage_topics` deletes a topic
 - **THEN** the topic and its messages are gone, nothing is fed, and a later bot call into the
-  thread fails with `TOPIC_DELETED`
+  thread fails with `message thread not found`
 
 #### Scenario: A member the chat lets create topics
 

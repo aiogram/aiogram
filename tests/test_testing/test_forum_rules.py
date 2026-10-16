@@ -322,7 +322,12 @@ class TestTopicRoot:
 
         await alice.reply(first, "second")
 
-        assert chat.messages[-1].reply_to_message is first
+        # `first` replies to the root, and a nested reply carries no
+        # reply of its own, so it is a copy without one.
+        replied = chat.messages[-1].reply_to_message
+        assert replied.message_id == first.message_id
+        assert replied.reply_to_message is None
+        assert first.reply_to_message is chat.topic(thread_id).root_message
 
     async def test_an_actor_message_in_general_replies_to_nothing(self, make_env):
         env, chat, _thread_id = make_env()
@@ -500,3 +505,168 @@ class TestForumToggle:
     async def test_a_plain_supergroup_has_no_topics_to_create(self, env, team):
         with pytest.raises(TelegramBadRequest, match="the chat is not a forum"):
             await env.bot.create_forum_topic(chat_id=team.id, name="New")
+
+
+class TestTheGeneralTopicIsThreadOne:
+    """Message 1 of a supergroup is its creation, the General root."""
+
+    async def test_no_topic_is_numbered_one(self, make_env):
+        env, chat, thread_id = make_env(bot_status=ChatMemberStatus.ADMINISTRATOR)
+
+        created = await env.bot.create_forum_topic(chat_id=chat.id, name="More")
+
+        assert thread_id == 2
+        assert created.message_thread_id == 3
+
+    def test_a_supergroup_and_a_channel_start_after_it(self, dp):
+        blueprint = Blueprint()
+        group = blueprint.add_group("Group")
+        supergroup = blueprint.add_supergroup("Supergroup")
+        channel = blueprint.add_channel("Channel")
+        env = BotTestEnvironment(blueprint=blueprint, dispatcher=dp)
+        try:
+            assert env.chat(group).allocate_message_id() == 1
+            assert env.chat(supergroup).allocate_message_id() == 2
+            assert env.chat(channel).allocate_message_id() == 2
+        finally:
+            env.dispose_sync()
+
+    async def test_a_send_into_thread_one_is_refused(self, make_env):
+        env, chat, _thread_id = make_env(bot_status=ChatMemberStatus.ADMINISTRATOR)
+        before = chat.last_message_id
+
+        with pytest.raises(TelegramBadRequest, match="Bad Request: message thread not found$"):
+            await env.bot.send_message(chat_id=chat.id, text="x", message_thread_id=1)
+
+        assert chat.last_message_id == before
+
+    async def test_a_supergroup_that_is_no_forum_ignores_it(self, dp):
+        blueprint = Blueprint()
+        chat = blueprint.add_supergroup("Plain", bot_status=ChatMemberStatus.ADMINISTRATOR)
+        env = BotTestEnvironment(blueprint=blueprint, dispatcher=dp)
+        try:
+            sent = await env.bot.send_message(chat_id=chat.id, text="x", message_thread_id=1)
+
+            assert sent.message_thread_id is None
+            assert sent.reply_to_message is None
+        finally:
+            env.dispose_sync()
+
+
+class TestTheGeneralTopicsMessages:
+    async def test_closing_and_reopening_it_post_service_messages(self, make_env):
+        env, chat, _thread_id = make_env(bot_status=ChatMemberStatus.ADMINISTRATOR)
+
+        await env.bot.close_general_forum_topic(chat_id=chat.id)
+        closed = chat.messages[-1]
+        await env.bot.reopen_general_forum_topic(chat_id=chat.id)
+        reopened = chat.messages[-1]
+
+        assert closed.forum_topic_closed is not None
+        assert reopened.forum_topic_reopened is not None
+        assert closed.message_thread_id is reopened.message_thread_id is None
+        assert closed.reply_to_message is None
+
+
+class TestADeletedTopicsActor:
+    async def test_sending_is_a_setup_error(self, make_env):
+        env, chat, thread_id = make_env(bot_status=ChatMemberStatus.ADMINISTRATOR)
+        alice = env.user(env.blueprint.users[0]).in_(chat, topic=thread_id)
+        await env.bot.delete_forum_topic(chat_id=chat.id, message_thread_id=thread_id)
+
+        with pytest.raises(WorldLookupError, match=f"Topic {thread_id} was deleted"):
+            await alice.send("hello")
+
+    async def test_closing_it_is_a_setup_error(self, dp):
+        blueprint = Blueprint()
+        owner = blueprint.add_user("Owner")
+        chat = blueprint.add_supergroup("Team", members={owner: ChatMemberStatus.CREATOR})
+        topic = blueprint.add_topic(chat, "Game")
+        env = BotTestEnvironment(blueprint=blueprint, dispatcher=dp)
+        try:
+            actor = env.user(owner).in_(chat, topic=topic)
+            state = env.chat(chat).topic(topic.message_thread_id)
+            await actor.delete_topic()
+
+            with pytest.raises(WorldLookupError, match="was deleted"):
+                await actor.close_topic()
+            with pytest.raises(WorldLookupError, match="was deleted"):
+                await env.user(owner).in_(chat).close_topic(state)
+        finally:
+            env.dispose_sync()
+
+
+class TestPrivateChatTopics:
+    """A bot's private chats have topics of their own."""
+
+    @pytest.fixture
+    def private(self, dp):
+        blueprint = Blueprint()
+        alice = blueprint.add_user("Alice")
+        chat = blueprint.add_private_chat(alice)
+        env = BotTestEnvironment(blueprint=blueprint, dispatcher=dp)
+        try:
+            yield env, env.chat(chat)
+        finally:
+            env.dispose_sync()
+
+    async def test_the_bot_creates_edits_and_deletes_one(self, private):
+        env, chat = private
+
+        topic = await env.bot.create_forum_topic(chat_id=chat.id, name="Ideas")
+        thread_id = topic.message_thread_id
+        assert await env.bot.edit_forum_topic(
+            chat_id=chat.id,
+            message_thread_id=thread_id,
+            name="Plans",
+        )
+        assert chat.topic(thread_id).name == "Plans"
+        assert await env.bot.delete_forum_topic(chat_id=chat.id, message_thread_id=thread_id)
+        assert thread_id not in chat.topics
+
+    async def test_a_message_in_one_is_tagged_and_replies_to_nothing(self, private):
+        env, chat = private
+        topic = await env.bot.create_forum_topic(chat_id=chat.id, name="Ideas")
+
+        sent = await env.bot.send_message(
+            chat_id=chat.id,
+            text="x",
+            message_thread_id=topic.message_thread_id,
+        )
+
+        assert sent.message_thread_id == topic.message_thread_id
+        assert sent.is_topic_message is True
+        assert sent.reply_to_message is None
+        assert sent.chat.is_forum is None
+
+    async def test_an_actor_in_one_replies_to_nothing(self, private):
+        env, chat = private
+        topic = await env.bot.create_forum_topic(chat_id=chat.id, name="Ideas")
+        alice = env.user(chat.id).in_(chat, topic=topic.message_thread_id)
+
+        await alice.send("hi")
+
+        assert chat.messages[-1].message_thread_id == topic.message_thread_id
+        assert chat.messages[-1].reply_to_message is None
+
+    async def test_an_unknown_thread_is_refused(self, private):
+        env, chat = private
+
+        with pytest.raises(TelegramBadRequest, match="message thread not found"):
+            await env.bot.send_message(chat_id=chat.id, text="x", message_thread_id=7)
+
+    @pytest.mark.parametrize(
+        "call",
+        [
+            lambda bot, chat_id: bot.close_forum_topic(chat_id=chat_id, message_thread_id=2),
+            lambda bot, chat_id: bot.hide_general_forum_topic(chat_id=chat_id),
+        ],
+    )
+    async def test_closing_is_a_supergroups(self, private, call):
+        env, chat = private
+
+        with pytest.raises(
+            TelegramBadRequest,
+            match="Bad Request: the chat is not a supergroup forum$",
+        ):
+            await call(env.bot, chat.id)

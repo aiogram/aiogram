@@ -319,6 +319,12 @@ MethodHandler = Callable[["BotTestEnvironment", Any], Any]
 
 REGISTRY: dict[type[TelegramMethod[Any]], MethodHandler] = {}
 
+#: The methods whose handlers put a message, an album or a batch into
+#: a chat, as ``models(..., sends=True)`` registers them. Those are
+#: the calls the flood limits count; see
+#: :meth:`~aiogram.test.BotTestEnvironment.admit_send`.
+SENDING_METHODS: set[type[TelegramMethod[Any]]] = set()
+
 #: Method class -> the ``Message`` field the resulting message carries.
 MEDIA_FIELDS: dict[type[TelegramMethod[Any]], str] = {
     SendPhoto: "photo",
@@ -437,10 +443,17 @@ _COPIED_FIELDS = (
 )
 
 
-def models(*method_types: type[TelegramMethod[Any]]) -> Callable[[MethodHandler], MethodHandler]:
+def models(
+    *method_types: type[TelegramMethod[Any]],
+    sends: bool = False,
+) -> Callable[[MethodHandler], MethodHandler]:
+    """Register a handler; ``sends`` marks it as one that posts."""
+
     def decorator(handler: MethodHandler) -> MethodHandler:
         for method_type in method_types:
             REGISTRY[method_type] = handler
+            if sends:
+                SENDING_METHODS.add(method_type)
         return handler
 
     return decorator
@@ -994,16 +1007,19 @@ def posting_topic(
     """
     The topic a message the bot sends lands in, once it may post there.
 
-    ``None`` outside a forum. A thread the forum does not have fails
-    as :meth:`ChatState.api_topic` says. A closed topic, or a closed
-    or hidden General topic, takes messages only from someone who may
-    manage topics or from the topic's creator: ``TOPIC_CLOSED``
-    otherwise. That text is the server's, which neither TDLib nor the
-    Bot API server spells out.
+    ``None`` outside a forum and a private chat's topics. A thread
+    the chat does not have fails as :meth:`ChatState.api_topic`
+    says. A closed topic, or a closed or hidden General topic, takes
+    messages only from someone who may manage topics or from the
+    topic's creator: ``TOPIC_CLOSED`` otherwise. That text is the
+    server's, which neither TDLib nor the Bot API server spells out.
     """
+    if chat.type == ChatType.PRIVATE:
+        # The server looks up any thread a private chat is sent.
+        return None if thread_id is None else chat.api_topic(thread_id, sending=True)
     if not chat.is_forum:
         return None
-    topic = chat.api_topic(thread_id)
+    topic = chat.api_topic(thread_id, sending=True)
     closed = topic.is_closed or (topic.is_general and topic.is_hidden)
     opened = topic.creator_id is not None and topic.creator_id == env.world.bot_user.id
     if closed and not opened and not bot_has_right(env, chat, "can_manage_topics"):
@@ -1039,6 +1055,8 @@ def build_message(
     reply = _reply_changes(env, method, chat, ephemeral=receiver is not None)
     connection_id = getattr(method, "business_connection_id", None)
     connection = None if connection_id is None else env.world.business_connection(connection_id)
+    # Every check Telegram makes locally passed; nothing is changed yet.
+    env.admit_send(chat)
     values: dict[str, Any] = {
         "message_id": 0 if receiver is not None else chat.allocate_message_id(connection),
         "date": env.world.next_date(),
@@ -1065,7 +1083,7 @@ def build_message(
     elif chat.type != ChatType.PRIVATE:
         # The Bot API server passes no topic for a group that is not a
         # forum, so the thread id is dropped there. A private chat's
-        # topics are not modeled, so its thread id is kept as passed.
+        # thread was looked up above, so it is kept.
         values.pop("message_thread_id", None)
 
     values.update(reply)
@@ -1492,13 +1510,13 @@ def _edit_target(
 # -- sending ---------------------------------------------------------------------------
 
 
-@models(SendMessage, *MEDIA_FIELDS)
+@models(SendMessage, *MEDIA_FIELDS, sends=True)
 def handle_send(env: BotTestEnvironment, method: TelegramMethod[Any]) -> Message:
     chat = resolve_chat(env, method.chat_id)  # type: ignore[attr-defined]
     return build_message(env, method, chat, MEDIA_FIELDS.get(type(method)))
 
 
-@models(SendMediaGroup)
+@models(SendMediaGroup, sends=True)
 def handle_send_media_group(
     env: BotTestEnvironment,
     method: SendMediaGroup,
@@ -1680,6 +1698,7 @@ def forward_one(
     require_send_permission(env, target, content_kind(original), forwarded=True)
     # Checked before an id is allocated, so a refused forward uses none.
     thread = _thread_changes(env, target, thread_id)
+    env.admit_send(target)
     return target.add_derived(
         original,
         message_id=target.allocate_message_id(),
@@ -1757,7 +1776,7 @@ def _new_message_changes(protect_content: object) -> dict[str, Any]:
     }
 
 
-@models(ForwardMessage)
+@models(ForwardMessage, sends=True)
 def handle_forward(env: BotTestEnvironment, method: ForwardMessage) -> Message:
     source = resolve_chat(env, method.from_chat_id)
     target = resolve_chat(env, method.chat_id)
@@ -1771,7 +1790,7 @@ def handle_forward(env: BotTestEnvironment, method: ForwardMessage) -> Message:
     )
 
 
-@models(ForwardMessages)
+@models(ForwardMessages, sends=True)
 def handle_forward_many(env: BotTestEnvironment, method: ForwardMessages) -> list[MessageId]:
     source = resolve_chat(env, method.from_chat_id)
     target = resolve_chat(env, method.chat_id)
@@ -1835,6 +1854,7 @@ def copy_one(
     # Checked before an id or a poll is allocated, so a refused copy
     # uses neither.
     thread = _thread_changes(env, target, thread_id)
+    env.admit_send(target)
     if original.poll is not None and "poll" not in changes:
         changes = {**changes, "poll": _copied_poll(env, original.poll)}
     return target.add_derived(
@@ -1912,7 +1932,7 @@ def _copied_poll(env: BotTestEnvironment, poll: Poll) -> Poll:
     return copied.as_poll()
 
 
-@models(CopyMessage)
+@models(CopyMessage, sends=True)
 def handle_copy(env: BotTestEnvironment, method: CopyMessage) -> MessageId:
     """
     Copy one message, with what the request replaces.
@@ -1943,7 +1963,7 @@ def handle_copy(env: BotTestEnvironment, method: CopyMessage) -> MessageId:
     return MessageId(message_id=copied.message_id)
 
 
-@models(CopyMessages)
+@models(CopyMessages, sends=True)
 def handle_copy_many(env: BotTestEnvironment, method: CopyMessages) -> list[MessageId]:
     source = resolve_chat(env, method.from_chat_id)
     target = resolve_chat(env, method.chat_id)
@@ -3540,7 +3560,7 @@ def _close_poll(
     return poll.as_poll()
 
 
-@models(SendPoll)
+@models(SendPoll, sends=True)
 def handle_send_poll(env: BotTestEnvironment, method: SendPoll) -> Message:
     """
     Store a poll with the defaults the Bot API documents.
@@ -3757,31 +3777,51 @@ def service_message(
     if thread_id is not None:
         values["message_thread_id"] = thread_id
         values["is_topic_message"] = True
-        values.update(chat.api_topic(thread_id).root_reply(values))
+        # The caller checked the topic, so a gap here is the toolkit's.
+        values.update(chat.topic(thread_id).root_reply(values))
     return chat.add_message(Message(**values))
 
 
-def forum_chat(env: BotTestEnvironment, chat_id: Any) -> ChatState:
+#: The forum methods a private chat takes too: TDLib lets a bot
+#: create, edit and delete the topics of its private chats
+#: (ForumTopicManager.cpp, ``is_forum`` with ``allow_bots``), while
+#: closing and the General topic methods are a supergroup's.
+#: Unpinning a topic's messages is let through as well; that TDLib
+#: allows it there is not checked.
+_PRIVATE_TOPIC_METHODS: frozenset[type[TelegramMethod[Any]]] = frozenset(
+    {CreateForumTopic, EditForumTopic, DeleteForumTopic, UnpinAllForumTopicMessages},
+)
+
+
+def forum_chat(env: BotTestEnvironment, chat_id: Any, *, private: bool = False) -> ChatState:
     """
     The chat a forum method names, refused unless it is a forum.
 
     A supergroup whose owner turned topics off keeps them, so it is
-    refused by its state rather than by having none.
+    refused by its state rather than by having none. A private chat
+    is one with ``private``, and refused in TDLib's words otherwise.
+    The bot's topic mode in private chats is not modeled: every
+    private chat takes topics.
     """
     chat = resolve_chat(env, chat_id)
+    if chat.type == ChatType.PRIVATE:
+        if not private:
+            raise ApiRejection("the chat is not a supergroup forum")
+        return chat
     if not chat.is_forum:
         raise ApiRejection("the chat is not a forum")
     return chat
 
 
 def _topic(env: BotTestEnvironment, method: TelegramMethod[Any]) -> tuple[ChatState, TopicState]:
-    chat = forum_chat(env, method.chat_id)  # type: ignore[attr-defined]
+    chat_id = method.chat_id  # type: ignore[attr-defined]
+    chat = forum_chat(env, chat_id, private=type(method) in _PRIVATE_TOPIC_METHODS)
     return chat, chat.api_topic(getattr(method, "message_thread_id", None))
 
 
 @models(CreateForumTopic)
 def handle_create_forum_topic(env: BotTestEnvironment, method: CreateForumTopic) -> ForumTopic:
-    chat = forum_chat(env, method.chat_id)
+    chat = forum_chat(env, method.chat_id, private=True)
     topic = create_topic(
         chat,
         name=method.name,
@@ -3902,15 +3942,37 @@ def unhide_general(
     )
 
 
-def close_general(chat: ChatState) -> None:
-    """Close the General topic. No service message is modeled for it."""
+def close_general(
+    env: BotTestEnvironment,
+    chat: ChatState,
+    *,
+    by: User | None = None,
+) -> Message:
+    """
+    Close the General topic, and post ``forum_topic_closed``.
+
+    It goes through ``messages.editForumTopic`` as any topic does
+    (ForumTopicManager.cpp), so the service message is the same.
+    """
     chat.general_topic.is_closed = True
+    return service_message(env, chat, {"forum_topic_closed": ForumTopicClosed()}, sender=by)
 
 
-def reopen_general(chat: ChatState) -> None:
-    """Reopen the General topic, which unhides it. Posts nothing."""
+def reopen_general(
+    env: BotTestEnvironment,
+    chat: ChatState,
+    *,
+    by: User | None = None,
+) -> Message:
+    """
+    Reopen the General topic, which unhides it too.
+
+    One ``forum_topic_reopened`` says both, as TDLib reports the edit
+    that reopens and unhides it (ForumTopicEditedData.cpp).
+    """
     chat.general_topic.is_closed = False
     chat.general_topic.is_hidden = False
+    return service_message(env, chat, {"forum_topic_reopened": ForumTopicReopened()}, sender=by)
 
 
 @models(CloseForumTopic)
@@ -3960,7 +4022,7 @@ def handle_close_general_forum_topic(
     env: BotTestEnvironment,
     method: CloseGeneralForumTopic,
 ) -> bool:
-    close_general(forum_chat(env, method.chat_id))
+    close_general(env, forum_chat(env, method.chat_id))
     return True
 
 
@@ -3969,7 +4031,7 @@ def handle_reopen_general_forum_topic(
     env: BotTestEnvironment,
     method: ReopenGeneralForumTopic,
 ) -> bool:
-    reopen_general(forum_chat(env, method.chat_id))
+    reopen_general(env, forum_chat(env, method.chat_id))
     return True
 
 

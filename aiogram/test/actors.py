@@ -1379,18 +1379,27 @@ class UserActor:
             data,
         )
 
-    async def close_general_topic(self) -> None:
+    async def close_general_topic(self, **data: Any) -> Any:
         """
         Close the General topic, as a user who may manage topics.
 
-        Like :code:`closeGeneralForumTopic`, it posts no service message, so
-        nothing is fed.
+        Like :code:`closeGeneralForumTopic`, it posts a
+        ``forum_topic_closed`` message, from this user, which is stored
+        and fed.
         """
-        close_general(self._require_topic_manager())
+        chat = self._require_topic_manager()
+        return await self._feed_message(
+            close_general(self.environment, chat, by=self.user.as_user()),
+            data,
+        )
 
-    async def reopen_general_topic(self) -> None:
-        """Reopen the General topic, which unhides it; nothing is fed."""
-        reopen_general(self._require_topic_manager())
+    async def reopen_general_topic(self, **data: Any) -> Any:
+        """Reopen and unhide the General topic, feeding the message."""
+        chat = self._require_topic_manager()
+        return await self._feed_message(
+            reopen_general(self.environment, chat, by=self.user.as_user()),
+            data,
+        )
 
     def _managed_topic(
         self,
@@ -1955,6 +1964,10 @@ class UserActor:
             values["author_signature"] = self.user.first_name
         if text is not None:
             values["text"] = text
+        if self.topic is not None:
+            # A topic deleted since the actor was bound is no place to
+            # post: this raises WorldLookupError naming it.
+            resolve_topic(chat, self.topic)
         # With topics off, a client posts into the one flat chat.
         if self.topic is not None and not self.topic.is_general and chat.is_forum:
             values["message_thread_id"] = self.topic.message_thread_id
@@ -1986,11 +1999,18 @@ class UserActor:
         ``reply_to_message`` a caller builds by hand from ``chat.messages``. Resolving it
         here rather than leaving the caller to look it up is the whole point of the
         keyword.
+
+        A replied message that replies to something itself, such as a
+        topic's root, is the one exception: a copy without its own
+        ``reply_to_message``, since the Bot API never nests one, as the
+        bot's sends store it.
         """
         if reply_to is None:
             return fields
         message = reply_to if isinstance(reply_to, Message) else self._require_message(reply_to)
         _refuse_ephemeral(message, "replied to")
+        if message.reply_to_message is not None:
+            message = message.model_copy(update={"reply_to_message": None})
         return {"reply_to_message": message, **(fields or {})}
 
     def _require_message(self, message_id: int) -> Message:

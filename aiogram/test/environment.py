@@ -42,7 +42,7 @@ from .errors import (
     WaitTimeoutError,
     raise_api_error,
 )
-from .flood import RATE_LIMITED_METHODS, FloodControl, RateLimits
+from .flood import FloodControl, RateLimits
 from .markup import apply_parse_modes
 from .modeling import check_bot_rights, find_handler, resolve_chat
 from .mounting import bindables, detached_copy
@@ -564,6 +564,8 @@ class BotTestEnvironment:
         #: The flood limits in force, or ``None`` when there are none.
         self.rate_limits = rate_limits
         self._flood = FloodControl(rate_limits) if rate_limits is not None else None
+        #: The send this call was let through with, see `admit_send`.
+        self._admitted: tuple[FloodControl, ChatState] | None = None
         self.blueprint = blueprint if blueprint is not None else default_blueprint()
         self.world = self.blueprint.build(start=clock_start)
         self.world.default_wait_timeout = default_wait_timeout
@@ -2266,11 +2268,27 @@ class BotTestEnvironment:
         user = self.world.users.get(user_id)
         return None if user is None else user.as_user()
 
-    def _flood_target(self, method: TelegramMethod[Any]) -> ChatState | None:
-        """The chat a rate-limited call sends into, if limits are on."""
-        if self._flood is None or type(method) not in RATE_LIMITED_METHODS:
-            return None
-        return resolve_chat(self, method.chat_id)  # type: ignore[attr-defined]
+    def admit_send(self, chat: ChatState) -> None:
+        """
+        Let a send into ``chat`` past the flood limits, or refuse it.
+
+        A modeled send calls this once Telegram's local checks have
+        passed and before it changes the world, so a call they refuse
+        answers with their 400 rather than a 429, and a call refused
+        here leaves nothing behind. An album or a batch is admitted
+        once. With no ``rate_limits``, everything is admitted.
+        """
+        flood = self._flood
+        if flood is None or self._admitted is not None:
+            return
+        wait = flood.retry_after(chat.id, chat.type, self.rate_clock())
+        if wait is not None:
+            raise ApiRejection(
+                f"retry after {wait}",
+                error_code=HTTPStatus.TOO_MANY_REQUESTS,
+                retry_after=wait,
+            )
+        self._admitted = (flood, chat)
 
     async def handle_call(
         self,
@@ -2328,26 +2346,20 @@ class BotTestEnvironment:
         except ApiRejection as error:
             self._refuse(resolved, error)
 
-        flooded = self._flood_target(resolved)
-        if flooded is not None and self._flood is not None:
-            wait = self._flood.retry_after(flooded.id, flooded.type, self.rate_clock())
-            if wait is not None:
-                self.fail(
-                    resolved,
-                    f"Too Many Requests: retry after {wait}",
-                    error_code=HTTPStatus.TOO_MANY_REQUESTS,
-                    retry_after=wait,
-                )
-
         if handler is not None:
+            # The handler runs to its end without awaiting, so no other
+            # call can admit a send in between.
+            self._admitted = None
             try:
                 result = handler(self, resolved)
             except ApiRejection as error:
                 self._refuse(resolved, error)
-            if flooded is not None and self._flood is not None:
+            admitted, self._admitted = self._admitted, None
+            if admitted is not None:
                 # Counted once it went through: a refused send is no
                 # message in the chat.
-                self._flood.record(flooded.id, flooded.type, self.rate_clock())
+                flood, chat = admitted
+                flood.record(chat.id, chat.type, self.rate_clock())
             return result
 
         return synthesize_result(resolved.__returning__, self.synthesis_context())

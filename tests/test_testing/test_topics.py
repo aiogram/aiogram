@@ -233,7 +233,9 @@ class TestForumMethods:
             message_thread_id=support.message_thread_id,
         )
 
-        with pytest.raises(TelegramBadRequest, match="Bad Request: TOPIC_DELETED$"):
+        # The server looks the topic up, and answers a deleted one as
+        # it answers one it never had.
+        with pytest.raises(TelegramBadRequest, match="Bad Request: message thread not found$"):
             await forum_env.bot.send_message(
                 chat_id=forum.id,
                 text="x",
@@ -255,12 +257,12 @@ class TestForumMethods:
         with pytest.raises(TelegramBadRequest, match="TOPIC_DELETED"):
             await forum_env.bot.close_forum_topic(chat_id=forum.id, message_thread_id=thread_id)
 
-    async def test_moving_into_a_deleted_topic_fails_as_deleted(self, forum_env, forum, support):
+    async def test_moving_into_a_deleted_topic_fails_as_unknown(self, forum_env, forum, support):
         thread_id = support.message_thread_id
         source = await forum_env.bot.send_message(chat_id=forum.id, text="x")
         await forum_env.bot.delete_forum_topic(chat_id=forum.id, message_thread_id=thread_id)
 
-        with pytest.raises(TelegramBadRequest, match="TOPIC_DELETED"):
+        with pytest.raises(TelegramBadRequest, match="message thread not found$"):
             await forum_env.bot.copy_message(
                 chat_id=forum.id,
                 from_chat_id=forum.id,
