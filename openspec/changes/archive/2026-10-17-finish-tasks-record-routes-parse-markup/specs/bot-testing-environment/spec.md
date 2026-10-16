@@ -25,3 +25,35 @@ running. It SHALL return how many tasks it waited for.
 
 - **WHEN** a bot's task raised an exception nobody retrieved
 - **THEN** the wait raises `BackgroundTaskError` with that exception as its cause
+
+### Requirement: Every route of a test is kept and can be checked
+
+An environment SHALL keep the route record of every update it routed for its whole life,
+readable as `route_history`. `assert_updates_handled()` SHALL fail on every trigger none of
+whose updates was handled and on every update that raised, even if an error handler
+swallowed it, listing each with its description, except for a trigger the test passed to
+`expect_unhandled()`. `expect_unhandled()` SHALL apply to the trigger `routes` reports,
+SHALL fail if that trigger has nothing the check would flag, and SHALL return what it would
+flag. With the `bot_env_assert_updates_handled` fixture returning true, the plugin SHALL run
+the check after each test that passed, failing that test.
+
+#### Scenario: An update in the middle of a game went nowhere
+
+- **WHEN** a test feeds a handled update, an unhandled one, and a handled one
+- **THEN** `route_history` holds all three, and `assert_updates_handled()` fails naming the
+  unhandled one
+
+#### Scenario: A join whose service message nobody claims
+
+- **WHEN** a trigger feeds a handled update and an unhandled one
+- **THEN** `assert_updates_handled()` passes
+
+#### Scenario: An update the test meant the bot to ignore
+
+- **WHEN** a test calls `expect_unhandled()` after an unhandled trigger
+- **THEN** `assert_updates_handled()` passes
+
+#### Scenario: The plugin checks a passing test
+
+- **WHEN** the fixture flag is on and a passing test left an update unhandled
+- **THEN** that test fails, and a test that called `expect_unhandled()` passes

@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import datetime
-from collections.abc import Iterator
+from collections.abc import Generator, Iterator
 from typing import Any
 
 import pytest
@@ -21,9 +21,11 @@ __all__ = (
     "bot_chat",
     "bot_dispatcher",
     "bot_env",
+    "bot_env_assert_updates_handled",
     "bot_env_wait_timeout",
     "bot_user",
     "pytest_assertrepr_compare",
+    "pytest_runtest_call",
 )
 
 
@@ -91,6 +93,20 @@ def bot_env_rate_limits() -> RateLimits | None:
 
 
 @pytest.fixture
+def bot_env_assert_updates_handled() -> bool:
+    """
+    Override this fixture to check every update after each test.
+
+    ``False``, the default, checks nothing. With ``True``, a test
+    that passes then fails if an update it fed went unhandled or
+    raised, as
+    :meth:`~aiogram.test.BotTestEnvironment.assert_updates_handled`
+    says, unless the test called ``expect_unhandled()`` for it.
+    """
+    return False
+
+
+@pytest.fixture
 def bot_env(
     bot_blueprint: Blueprint,
     bot_dispatcher: Dispatcher,
@@ -98,6 +114,7 @@ def bot_env(
     bot_env_clock_start: datetime.datetime | None,
     bot_env_enforce_bot_rights: bool,
     bot_env_rate_limits: RateLimits | None,
+    bot_env_assert_updates_handled: bool,
 ) -> Iterator[BotTestEnvironment]:
     """An isolated fake Telegram world for exactly one test."""
     environment = BotTestEnvironment(
@@ -127,6 +144,26 @@ def bot_user(bot_env: BotTestEnvironment) -> Any:
     if bot_env.blueprint.chats:
         return actor.in_(bot_env.blueprint.chats[0].id)
     return actor
+
+
+@pytest.hookimpl(wrapper=True)
+def pytest_runtest_call(item: pytest.Item) -> Generator[None, object, object]:
+    """
+    Check ``bot_env``'s updates once a test passed, if it asks to.
+
+    In the call phase rather than at teardown, so the check fails
+    the test itself; a test that already failed is not checked.
+    """
+    result = yield
+    funcargs = getattr(item, "funcargs", {})
+    environment = funcargs.get("bot_env")
+    if funcargs.get("bot_env_assert_updates_handled") and isinstance(
+        environment,
+        BotTestEnvironment,
+    ):
+        __tracebackhide__ = True
+        environment.assert_updates_handled()
+    return result
 
 
 def pytest_assertrepr_compare(op: str, left: object, right: object) -> list[str] | None:

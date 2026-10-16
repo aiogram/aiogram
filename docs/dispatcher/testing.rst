@@ -1522,6 +1522,55 @@ branch, give each branch a block of its own and read inside it:
 
     await asyncio.gather(deal(alice), deal(bob))
 
+Every update of the test
+------------------------
+
+``routes`` answers for the last trigger only, while a game played
+end to end feeds hundreds of updates, and the one that went nowhere
+is rarely the last. :attr:`~aiogram.test.BotTestEnvironment.route_history`
+keeps every record for the environment's whole life, grouped by
+trigger in the order the triggers began.
+
+:meth:`~aiogram.test.BotTestEnvironment.assert_updates_handled` turns
+that into a check. It fails on a trigger none of whose updates was
+handled, and on any update that raised, even one the bot's error
+handler swallowed, and lists each of them as ``describe()`` renders
+it. It
+reasons per trigger like ``assert_handled_by``: ``member.join()``
+whose service message nobody claims was handled, since its
+``chat_member`` update was.
+
+A test that means an update to go unhandled says so right after the
+trigger with :meth:`~aiogram.test.BotTestEnvironment.expect_unhandled`,
+which leaves that trigger out of the check. It also asserts that the
+trigger did go unhandled or raise, naming where it went otherwise,
+and returns those updates' records, so a failure the test expects
+can be checked too:
+
+.. code-block:: python
+
+    await stranger.send("hello")       # the bot ignores strangers
+    bot_env.expect_unhandled()
+
+    with pytest.raises(KeyError):
+        await bot_user.send("/vote nobody")
+    [record] = bot_env.expect_unhandled()
+    assert isinstance(record.exception, KeyError)
+
+    bot_env.assert_updates_handled()
+
+The check is opt-in. Call it at the end of a test, or override the
+``bot_env_assert_updates_handled`` fixture to return ``True``, and the
+plugin runs it after every test that passed, failing the test itself
+rather than its teardown. A test that already failed is not checked
+again:
+
+.. code-block:: python
+
+    @pytest.fixture
+    def bot_env_assert_updates_handled():
+        return True
+
 Finite state machine
 ====================
 
@@ -2786,6 +2835,10 @@ Fixtures
 ``bot_env_enforce_bot_rights``
     Whether ``bot_env`` checks the bot's own calls against its rights. ``True`` by
     default; override it to return ``False`` while migrating.
+
+``bot_env_assert_updates_handled``
+    Whether every passing test then checks ``bot_env``'s updates with
+    ``assert_updates_handled()``. ``False`` by default.
 
 ``bot_env_rate_limits``
     The flood limits ``bot_env`` models. ``None`` by default; override it to return

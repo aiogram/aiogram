@@ -61,7 +61,7 @@ class TestFixtures:
         original_storage = dispatcher.fsm.storage
 
         generator = call_fixture(
-            plugin.bot_env, blueprint, dispatcher, wait_timeout, None, True, None
+            plugin.bot_env, blueprint, dispatcher, wait_timeout, None, True, None, False
         )
         environment = next(generator)
         assert dispatcher.fsm.storage is not original_storage
@@ -80,7 +80,7 @@ class TestFixtures:
         original_storage = dispatcher.fsm.storage
 
         generator = call_fixture(
-            plugin.bot_env, blueprint, dispatcher, wait_timeout, None, True, None
+            plugin.bot_env, blueprint, dispatcher, wait_timeout, None, True, None, False
         )
         environment = next(generator)
         with pytest.raises(RuntimeError, match="boom"):
@@ -95,7 +95,9 @@ class TestFixtures:
         blueprint = call_fixture(plugin.bot_blueprint)
         dispatcher = call_fixture(plugin.bot_dispatcher)
 
-        generator = call_fixture(plugin.bot_env, blueprint, dispatcher, 12.5, None, True, None)
+        generator = call_fixture(
+            plugin.bot_env, blueprint, dispatcher, 12.5, None, True, None, False
+        )
         environment = next(generator)
         try:
             assert environment.world.default_wait_timeout == 12.5
@@ -119,7 +121,9 @@ class TestFixtures:
         blueprint = call_fixture(plugin.bot_blueprint)
         dispatcher = call_fixture(plugin.bot_dispatcher)
 
-        generator = call_fixture(plugin.bot_env, blueprint, dispatcher, 5.0, None, False, None)
+        generator = call_fixture(
+            plugin.bot_env, blueprint, dispatcher, 5.0, None, False, None, False
+        )
         environment = next(generator)
         try:
             assert environment.enforce_bot_rights is False
@@ -139,7 +143,9 @@ class TestFixtures:
         dispatcher = call_fixture(plugin.bot_dispatcher)
         limits = RateLimits()
 
-        generator = call_fixture(plugin.bot_env, blueprint, dispatcher, 5.0, None, True, limits)
+        generator = call_fixture(
+            plugin.bot_env, blueprint, dispatcher, 5.0, None, True, limits, False
+        )
         environment = next(generator)
         try:
             assert environment.rate_limits is limits
@@ -153,7 +159,9 @@ class TestFixtures:
         blueprint = call_fixture(plugin.bot_blueprint)
         dispatcher = call_fixture(plugin.bot_dispatcher)
 
-        generator = call_fixture(plugin.bot_env, blueprint, dispatcher, 5.0, BASE_DATE, True, None)
+        generator = call_fixture(
+            plugin.bot_env, blueprint, dispatcher, 5.0, BASE_DATE, True, None, False
+        )
         environment = next(generator)
         try:
             assert environment.now == BASE_DATE
@@ -176,7 +184,9 @@ class TestFixtures:
         blueprint = Blueprint()
         blueprint.add_user("Lonely")
         dispatcher = Dispatcher()
-        generator = call_fixture(plugin.bot_env, blueprint, dispatcher, 5.0, None, True, None)
+        generator = call_fixture(
+            plugin.bot_env, blueprint, dispatcher, 5.0, None, True, None, False
+        )
         environment = next(generator)
         try:
             actor = call_fixture(plugin.bot_user, environment)

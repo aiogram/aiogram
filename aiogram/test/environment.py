@@ -263,6 +263,22 @@ class _TriggerFrame:
     records: list[RouteRecord] = field(default_factory=list)
     #: Set when the block that opened this frame ends; see the class docstring.
     closed: bool = False
+    #: Set by :meth:`BotTestEnvironment.expect_unhandled`: the test
+    #: meant this trigger to go unhandled or fail.
+    expected_unhandled: bool = False
+
+    def unhandled(self) -> list[RouteRecord]:
+        """
+        What :meth:`BotTestEnvironment.assert_updates_handled` flags.
+
+        Every record of a trigger none of whose updates was handled,
+        else only the records that raised: a trigger is one thing the
+        test did, and ``member.join()`` whose service message nobody
+        claims was still handled.
+        """
+        if not any(record.handled for record in self.records):
+            return list(self.records)
+        return [record for record in self.records if record.exception is not None]
 
 
 #: Something passing time causes, run by `advance_time`.
@@ -565,6 +581,9 @@ class BotTestEnvironment:
         # open scope is neither a counter nor a list on this object. What *is* on this
         # object is the last scope that finished, which is what the readers report.
         self._last_trigger: _TriggerFrame | None = None
+        # Every trigger of this environment's life, in the order they
+        # began; see `route_history`.
+        self._trigger_history: list[_TriggerFrame] = []
         self._route_middleware = _RouteMiddleware(self)
         self._handler_middleware = _HandlerMiddleware(self)
         self._instrument_routing()
@@ -659,7 +678,9 @@ class BotTestEnvironment:
             # through `feed` — `dispatcher.feed_update(env.bot, update)` called directly is
             # the way that happens. It is still one thing that happened, so it becomes a
             # finished scope of its own rather than being dropped.
-            self._last_trigger = _TriggerFrame(environment=self, records=[record], closed=True)
+            frame = _TriggerFrame(environment=self, records=[record], closed=True)
+            self._trigger_history.append(frame)
+            self._last_trigger = frame
         else:
             frame.records.append(record)
 
@@ -684,6 +705,7 @@ class BotTestEnvironment:
 
     def _push_scope(self) -> tuple[_TriggerFrame, contextvars.Token[tuple[_TriggerFrame, ...]]]:
         frame = _TriggerFrame(environment=self)
+        self._trigger_history.append(frame)
         return frame, _TRIGGER_SCOPES.set((*_TRIGGER_SCOPES.get(), frame))
 
     def _pop_scope(
@@ -837,6 +859,7 @@ class BotTestEnvironment:
         a :meth:`trigger` block it is that block's records so far; read outside one, the
         records of the trigger that completed most recently. See :meth:`trigger` for what
         delimits a scope and for what "most recently" means under :func:`asyncio.gather`.
+        :attr:`route_history` keeps every trigger's records instead.
         """
         scope = self._scope()
         return list(scope.records) if scope is not None else []
@@ -920,6 +943,87 @@ class BotTestEnvironment:
         msg = (
             f"Expected the last trigger to be handled by {name!r}, but its "
             f"{len(records)} update(s) went here:\n{went}"
+        )
+        raise AssertionError(msg)
+
+    @property
+    def route_history(self) -> list[RouteRecord]:
+        """
+        Every update this environment routed, for its whole life.
+
+        :attr:`routes` answers for the last trigger only; this keeps
+        them all, grouped by trigger in the order the triggers began,
+        so a test can look back at a game's worth of updates. Each
+        record is the one :attr:`routes` reported.
+        """
+        return [record for frame in self._trigger_history for record in frame.records]
+
+    def expect_unhandled(self) -> list[RouteRecord]:
+        """
+        Say the last trigger was meant to go unhandled, or to fail.
+
+        :meth:`assert_updates_handled` then leaves it out. Call it
+        after a trigger the bot is meant to ignore, or one whose
+        handler is meant to raise, and it returns the updates that
+        went unhandled or raised so the test can check them::
+
+            await stranger.send("hello")
+            bot_env.expect_unhandled()
+
+            await bot_user.send("/crash")
+            [record] = bot_env.expect_unhandled()
+            assert isinstance(record.exception, KeyError)
+
+        It reads the trigger :attr:`routes` reads, and fails if that
+        trigger was handled without an error, naming where it went.
+        """
+        scope = self._scope()
+        records = list(scope.records) if scope is not None else []
+        if scope is None or not records:
+            msg = (
+                "Expected the last trigger to go unhandled, but no update "
+                "has been routed through this environment yet."
+            )
+            raise AssertionError(msg)
+        unhandled = scope.unhandled()
+        if not unhandled:
+            went = "\n".join(record.describe() for record in records)
+            msg = (
+                f"Expected the last trigger to go unhandled, but its "
+                f"{len(records)} update(s) were handled:\n{went}"
+            )
+            raise AssertionError(msg)
+        scope.expected_unhandled = True
+        return unhandled
+
+    def assert_updates_handled(self) -> None:
+        """
+        Assert that no trigger of this environment went unhandled.
+
+        Checks :attr:`route_history`: a trigger fails it when none of
+        its updates was handled, or when any of them raised, even if
+        the bot's error handler swallowed it. A trigger the test
+        passed to :meth:`expect_unhandled` is left out. The failure
+        lists each update with :meth:`RouteRecord.describe`.
+
+        Opt-in, like :meth:`assert_overrides_consumed`: call it at the
+        end of a test, or have the plugin call it after every passing
+        test with the ``bot_env_assert_updates_handled`` fixture.
+        """
+        flagged = [
+            record
+            for frame in self._trigger_history
+            if not frame.expected_unhandled
+            for record in frame.unhandled()
+        ]
+        if not flagged:
+            return
+        went = "\n".join(record.describe() for record in flagged)
+        msg = (
+            f"{len(flagged)} update(s) fed to this environment went "
+            f"unhandled or raised:\n{went}\n"
+            f"Call `env.expect_unhandled()` after a trigger the bot is "
+            f"meant to ignore, or one meant to fail."
         )
         raise AssertionError(msg)
 

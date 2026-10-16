@@ -306,6 +306,14 @@ the permissive fake declares the bot's standing with ``bot_status=`` or
 ``BotTestEnvironment(enforce_bot_rights=False)`` — or overrides the
 ``bot_env_enforce_bot_rights`` fixture — while it migrates.
 
+:attr:`aiogram.test.BotTestEnvironment.route_history` keeps every update's route for the
+whole test rather than the last trigger's, and ``assert_updates_handled()`` fails listing each
+trigger none of whose updates was handled and each update that raised, even one an error
+handler swallowed. A test that means an update to go unhandled, or to fail, says so with
+``expect_unhandled()`` right after the trigger, which also returns those records. The check is
+opt-in, by calling it or with the ``bot_env_assert_updates_handled`` fixture, which runs it
+after every passing test.
+
 Flood control can be tested two ways. The documentation shows the override that declares one
 ``TelegramRetryAfter``, built whole with its method and ``retry_after``. And
 ``BotTestEnvironment(rate_limits=RateLimits())``, off by default, models Telegram's guidance
