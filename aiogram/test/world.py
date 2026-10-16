@@ -1133,6 +1133,9 @@ class ChatState:
     invite_links: list[InviteLinkState] = field(default_factory=list)
     is_forum: bool = False
     topics: dict[int, TopicState] = field(default_factory=dict)
+    #: Thread ids of the topics ``deleteForumTopic`` removed, so a
+    #: later call into one is refused as Telegram refuses it.
+    deleted_topic_ids: set[int] = field(default_factory=set)
     community_id: int | None = None
     general_topic: TopicState = field(
         default_factory=lambda: TopicState(message_thread_id=None, is_general=True),
@@ -1521,13 +1524,54 @@ class ChatState:
         ]
 
     def topic(self, message_thread_id: int | None) -> TopicState:
+        """
+        The topic ``message_thread_id`` names, for a test or an actor.
+
+        An unknown id is a gap in the test, so it raises
+        :class:`WorldLookupError` naming the topics there are. A call
+        the bot makes goes through :meth:`api_topic` instead.
+        """
         if message_thread_id is None:
             return self.general_topic
         topic = self.topics.get(message_thread_id)
         if topic is None:
-            msg = f"Topic {message_thread_id} does not exist in chat {self.id}"
-            raise ApiRejection(msg)
+            raise WorldLookupError(self._missing_topic_message(message_thread_id))
         return topic
+
+    def api_topic(self, message_thread_id: int | None) -> TopicState:
+        """
+        The topic a Bot API call names, refused in Telegram's words.
+
+        A deleted topic answers ``TOPIC_DELETED``, and any other
+        unknown id ``message thread not found``.
+        """
+        if message_thread_id is None:
+            return self.general_topic
+        topic = self.topics.get(message_thread_id)
+        if topic is not None:
+            return topic
+        if message_thread_id in self.deleted_topic_ids:
+            raise ApiRejection("TOPIC_DELETED")
+        raise ApiRejection("message thread not found")
+
+    def _missing_topic_message(self, message_thread_id: int) -> str:
+        """Say which topics this chat has, and how to add one."""
+        if message_thread_id in self.deleted_topic_ids:
+            why = "was deleted by deleteForumTopic"
+        else:
+            why = "does not exist"
+        if self.topics:
+            names = ", ".join(
+                f"#{topic.message_thread_id} {topic.name!r}" for topic in self.topics.values()
+            )
+            known = f"Its topics: {names}."
+        else:
+            known = "It has no topics."
+        return (
+            f"Topic {message_thread_id} {why} in chat {self.id}. {known} "
+            f"Declare one with `blueprint.add_topic(chat, name)`, or "
+            f"pass `None` for the General topic."
+        )
 
     def member(self, user_id: int) -> MemberState:
         member = self.members.get(user_id)

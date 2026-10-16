@@ -541,7 +541,7 @@ def build_message(
     thread_id = getattr(method, "message_thread_id", None)
     if thread_id is not None and chat.is_forum:
         # An unknown thread id must fail rather than silently produce an untagged message.
-        chat.topic(thread_id)
+        chat.api_topic(thread_id)
     receiver = _ephemeral_receiver(env, method, chat)
     reply = _reply_changes(env, method, chat, ephemeral=receiver is not None)
     connection_id = getattr(method, "business_connection_id", None)
@@ -1132,7 +1132,7 @@ def _thread_changes(target: ChatState, thread_id: int | None) -> dict[str, Any]:
     """
     if thread_id is None or not target.is_forum:
         return {"message_thread_id": None, "is_topic_message": None}
-    target.topic(thread_id)
+    target.api_topic(thread_id)
     return {"message_thread_id": thread_id, "is_topic_message": True}
 
 
@@ -3219,7 +3219,7 @@ def service_message(
 
 def _topic(env: BotTestEnvironment, method: TelegramMethod[Any]) -> tuple[ChatState, TopicState]:
     chat = resolve_chat(env, method.chat_id)  # type: ignore[attr-defined]
-    return chat, chat.topic(getattr(method, "message_thread_id", None))
+    return chat, chat.api_topic(getattr(method, "message_thread_id", None))
 
 
 @models(CreateForumTopic)
@@ -3291,6 +3291,7 @@ def handle_delete_forum_topic(env: BotTestEnvironment, method: DeleteForumTopic)
         chat.delete_message(message.message_id)
     if topic.message_thread_id is not None:
         del chat.topics[topic.message_thread_id]
+        chat.deleted_topic_ids.add(topic.message_thread_id)
     return True
 
 

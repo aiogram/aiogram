@@ -275,6 +275,11 @@ update names the account owner. Routing diagnostics no longer report a handler t
 ``SkipHandler`` as the one that ran, and ``drain()`` no longer reports an exception the bot
 already retrieved.
 
+Forum topics answer in Telegram's words. A call into a thread the chat never had fails with
+``message thread not found``, and one into a topic ``deleteForumTopic`` removed with
+``TOPIC_DELETED``, while a topic a test or an actor names but the chat lacks is a setup gap
+that raises :class:`aiogram.test.WorldLookupError` listing the topics the chat does have.
+
 .. warning::
 
     This is a **proof of concept**. The module name, the fixtures, the blueprint and actor

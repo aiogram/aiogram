@@ -86,8 +86,27 @@ class TestTopicWorldState:
         assert forum.general_topic.is_general
 
     def test_unknown_topic_lookup(self, forum):
-        with pytest.raises(ApiRejection, match="does not exist"):
+        with pytest.raises(WorldLookupError, match="Topic 999 does not exist") as raised:
             forum.topic(999)
+
+        assert "'Support'" in str(raised.value)
+        assert "blueprint.add_topic" in str(raised.value)
+
+    def test_a_deleted_topic_lookup_says_it_was_deleted(self, forum, support):
+        forum.topics.pop(support.message_thread_id)
+        forum.deleted_topic_ids.add(support.message_thread_id)
+
+        with pytest.raises(WorldLookupError, match="was deleted by deleteForumTopic"):
+            forum.topic(support.message_thread_id)
+
+    def test_an_unknown_topic_of_a_chat_without_topics(self):
+        with pytest.raises(WorldLookupError, match="It has no topics"):
+            ChatState(id=-100).topic(5)
+
+    def test_the_api_lookup_answers_in_telegrams_words(self, forum):
+        with pytest.raises(ApiRejection, match="^message thread not found$"):
+            forum.api_topic(999)
+        assert forum.api_topic(None) is forum.general_topic
 
     def test_general_topic_is_not_a_forum_topic(self, forum):
         with pytest.raises(WorldLookupError, match="not represented as a ForumTopic"):
@@ -213,7 +232,7 @@ class TestForumMethods:
             message_thread_id=support.message_thread_id,
         )
 
-        with pytest.raises(TelegramBadRequest, match="does not exist"):
+        with pytest.raises(TelegramBadRequest, match="Bad Request: TOPIC_DELETED$"):
             await forum_env.bot.send_message(
                 chat_id=forum.id,
                 text="x",
@@ -221,12 +240,40 @@ class TestForumMethods:
             )
 
     async def test_posting_into_an_unknown_topic_fails(self, forum_env, forum):
-        with pytest.raises(TelegramBadRequest, match="does not exist"):
+        with pytest.raises(TelegramBadRequest, match="Bad Request: message thread not found$"):
             await forum_env.bot.send_message(chat_id=forum.id, text="x", message_thread_id=999)
 
     async def test_acting_on_an_unknown_topic_fails(self, forum_env, forum):
-        with pytest.raises(TelegramBadRequest, match="does not exist"):
+        with pytest.raises(TelegramBadRequest, match="message thread not found"):
             await forum_env.bot.close_forum_topic(chat_id=forum.id, message_thread_id=999)
+
+    async def test_acting_on_a_deleted_topic_fails_as_deleted(self, forum_env, forum, support):
+        thread_id = support.message_thread_id
+        await forum_env.bot.delete_forum_topic(chat_id=forum.id, message_thread_id=thread_id)
+
+        with pytest.raises(TelegramBadRequest, match="TOPIC_DELETED"):
+            await forum_env.bot.close_forum_topic(chat_id=forum.id, message_thread_id=thread_id)
+
+    async def test_moving_into_a_deleted_topic_fails_as_deleted(self, forum_env, forum, support):
+        thread_id = support.message_thread_id
+        source = await forum_env.bot.send_message(chat_id=forum.id, text="x")
+        await forum_env.bot.delete_forum_topic(chat_id=forum.id, message_thread_id=thread_id)
+
+        with pytest.raises(TelegramBadRequest, match="TOPIC_DELETED"):
+            await forum_env.bot.copy_message(
+                chat_id=forum.id,
+                from_chat_id=forum.id,
+                message_id=source.message_id,
+                message_thread_id=thread_id,
+            )
+
+    async def test_an_actor_in_an_unknown_topic_is_a_setup_gap(
+        self, forum_env, forum, forum_blueprint
+    ):
+        alice = forum_env.user(forum_blueprint.users[0])
+
+        with pytest.raises(WorldLookupError, match="Topic 999 does not exist"):
+            alice.in_(forum, topic=999)
 
     async def test_unpin_all_topic_messages(self, forum_env, forum, support):
         message = await forum_env.bot.send_message(

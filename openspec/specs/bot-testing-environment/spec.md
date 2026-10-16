@@ -1586,7 +1586,7 @@ into the chat where Telegram would.
 
 - **WHEN** a handler deletes a topic
 - **THEN** the topic and its messages are gone from the chat, and a later attempt to post
-  into it fails with the error Telegram would return
+  into it fails with `TOPIC_DELETED`, the error Telegram returns
 
 ### Requirement: Actors can be bound to a topic
 
@@ -3700,3 +3700,25 @@ messages.
 - **WHEN** a background task sends an ephemeral message to a user and the test waits with
   that receiver
 - **THEN** the wait returns the message
+
+### Requirement: Topic refusals use Telegram's wording
+
+A Bot API call naming a thread the forum never had SHALL fail with
+`message thread not found`, and one naming a topic `deleteForumTopic` removed SHALL fail
+with `TOPIC_DELETED`. A topic a test or an actor names that the chat lacks SHALL be a setup
+error that lists the chat's topics, never a Telegram error.
+
+#### Scenario: Posting into an unknown thread
+
+- **WHEN** a handler sends a message with a thread id the forum never had
+- **THEN** the call raises `TelegramBadRequest` with `message thread not found`
+
+#### Scenario: Posting into a deleted topic
+
+- **WHEN** a handler deletes a topic and then posts into it
+- **THEN** the call raises `TelegramBadRequest` with `TOPIC_DELETED`
+
+#### Scenario: A test names an unknown topic
+
+- **WHEN** a test binds an actor to a thread id the chat does not have
+- **THEN** it raises `WorldLookupError` naming the topics the chat has

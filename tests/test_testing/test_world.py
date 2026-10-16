@@ -830,5 +830,5 @@ class TestResolveTopic:
     def test_an_unknown_thread_id_fails(self, forum):
         chat, _spec = forum
 
-        with pytest.raises(ApiRejection, match="Topic 999 does not exist"):
+        with pytest.raises(WorldLookupError, match="Topic 999 does not exist"):
             resolve_topic(chat, 999)

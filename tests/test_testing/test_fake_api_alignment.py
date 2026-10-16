@@ -587,7 +587,7 @@ class TestCopiesAndForwards:
         source = await env.bot.send_message(chat_id=private.id, text="hi")
         before = forum.last_message_id
 
-        with pytest.raises(TelegramBadRequest, match="does not exist"):
+        with pytest.raises(TelegramBadRequest, match="message thread not found"):
             await getattr(env.bot, method)(
                 chat_id=forum.id,
                 from_chat_id=private.id,

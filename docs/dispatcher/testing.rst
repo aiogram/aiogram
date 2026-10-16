@@ -1130,10 +1130,13 @@ starving the world of a chat:
 The same goes for the few things the fake genuinely cannot model, such as editing a message
 by ``inline_message_id``: those raise loudly rather than pretending Telegram refused.
 
-Reaching into the world directly — ``chat.topic(999)``, ``chat.require_message(999)`` — is
-outside any call, so there is nothing to convert the refusal into: those raise
+Reaching into the world directly — ``chat.require_message(999)`` — is outside any call,
+so there is nothing to convert the refusal into: it raises
 :class:`aiogram.test.ApiRejection`, the type the environment turns into a Bad Request when
-the bot is the one asking.
+the bot is the one asking. ``chat.topic(999)`` is the exception: a topic the test names is
+part of its setup, so an unknown one raises :class:`aiogram.test.WorldLookupError` and
+lists the topics there are, while the bot's own calls go through ``chat.api_topic()`` and
+answer in Telegram's words.
 
 Overriding results and simulating failures
 ==========================================
@@ -2337,9 +2340,13 @@ topic all mutate the world and emit the service message Telegram would post:
     assert chat.topic(topic.message_thread_id).is_closed
 
 The General topic is `chat.general_topic` — its messages carry no thread id, matching
-Telegram — and the ``*GeneralForumTopic*`` methods act on it. Posting into a thread id that
-does not exist raises :class:`aiogram.exceptions.TelegramBadRequest` rather than silently
-producing an untagged message.
+Telegram — and the ``*GeneralForumTopic*`` methods act on it. A call into a thread id that
+does not exist fails with Telegram's own wording rather than silently producing an untagged
+message: ``Bad Request: message thread not found`` for an id the chat never had, and
+``Bad Request: TOPIC_DELETED`` for a topic :code:`deleteForumTopic` removed. Looking a topic
+up from the test itself — ``chat.topic(999)``, or an actor bound with
+``.in_(chat, topic=999)`` — is a setup gap instead, and raises
+:class:`aiogram.test.WorldLookupError` naming the topics the chat does have.
 
 The couplings the Bot API documents apply: hiding the General topic also closes it, and
 reopening it also unhides it. :code:`editForumTopic` with an empty name keeps the current
