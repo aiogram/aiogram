@@ -800,6 +800,11 @@ def build_message(
         values["has_protected_content"] = True
     if thread_id is not None and chat.is_forum:
         values["is_topic_message"] = True
+    elif chat.type != ChatType.PRIVATE:
+        # The Bot API server passes no topic for a group that is not a
+        # forum, so the thread id is dropped there. A private chat's
+        # topics are not modeled, so its thread id is kept as passed.
+        values.pop("message_thread_id", None)
 
     values.update(reply)
     if topic is not None:
@@ -3486,14 +3491,27 @@ def service_message(
     return chat.add_message(Message(**values))
 
 
+def forum_chat(env: BotTestEnvironment, chat_id: Any) -> ChatState:
+    """
+    The chat a forum method names, refused unless it is a forum.
+
+    A supergroup whose owner turned topics off keeps them, so it is
+    refused by its state rather than by having none.
+    """
+    chat = resolve_chat(env, chat_id)
+    if not chat.is_forum:
+        raise ApiRejection("the chat is not a forum")
+    return chat
+
+
 def _topic(env: BotTestEnvironment, method: TelegramMethod[Any]) -> tuple[ChatState, TopicState]:
-    chat = resolve_chat(env, method.chat_id)  # type: ignore[attr-defined]
+    chat = forum_chat(env, method.chat_id)  # type: ignore[attr-defined]
     return chat, chat.api_topic(getattr(method, "message_thread_id", None))
 
 
 @models(CreateForumTopic)
 def handle_create_forum_topic(env: BotTestEnvironment, method: CreateForumTopic) -> ForumTopic:
-    chat = resolve_chat(env, method.chat_id)
+    chat = forum_chat(env, method.chat_id)
     topic = create_topic(
         chat,
         name=method.name,
@@ -3581,7 +3599,7 @@ def handle_edit_general_forum_topic(
     env: BotTestEnvironment,
     method: EditGeneralForumTopic,
 ) -> bool:
-    chat = resolve_chat(env, method.chat_id)
+    chat = forum_chat(env, method.chat_id)
     chat.general_topic.name = method.name
     return True
 
@@ -3591,7 +3609,7 @@ def handle_close_general_forum_topic(
     env: BotTestEnvironment,
     method: CloseGeneralForumTopic,
 ) -> bool:
-    resolve_chat(env, method.chat_id).general_topic.is_closed = True
+    forum_chat(env, method.chat_id).general_topic.is_closed = True
     return True
 
 
@@ -3600,7 +3618,7 @@ def handle_reopen_general_forum_topic(
     env: BotTestEnvironment,
     method: ReopenGeneralForumTopic,
 ) -> bool:
-    general = resolve_chat(env, method.chat_id).general_topic
+    general = forum_chat(env, method.chat_id).general_topic
     # Reopening the General topic unhides it too.
     general.is_closed = False
     general.is_hidden = False
@@ -3612,7 +3630,7 @@ def handle_hide_general_forum_topic(
     env: BotTestEnvironment,
     method: HideGeneralForumTopic,
 ) -> bool:
-    chat = resolve_chat(env, method.chat_id)
+    chat = forum_chat(env, method.chat_id)
     chat.general_topic.is_hidden = True
     # Hiding the General topic closes it too.
     chat.general_topic.is_closed = True
@@ -3625,7 +3643,7 @@ def handle_unhide_general_forum_topic(
     env: BotTestEnvironment,
     method: UnhideGeneralForumTopic,
 ) -> bool:
-    chat = resolve_chat(env, method.chat_id)
+    chat = forum_chat(env, method.chat_id)
     chat.general_topic.is_hidden = False
     service_message(env, chat, {"general_forum_topic_unhidden": GeneralForumTopicUnhidden()})
     return True
@@ -3636,7 +3654,7 @@ def handle_unpin_all_general_forum_topic_messages(
     env: BotTestEnvironment,
     method: UnpinAllGeneralForumTopicMessages,
 ) -> bool:
-    chat = resolve_chat(env, method.chat_id)
+    chat = forum_chat(env, method.chat_id)
     require_pin_right(env, chat)
     pinned = {message.message_id for message in chat.general_topic.messages}
     chat.pinned_message_ids = [item for item in chat.pinned_message_ids if item not in pinned]

@@ -15,3 +15,6 @@ own code can observe:
 - **The bot holds every right.** A bot declared as a plain member pins, deletes others'
   messages, bans, restricts and promotes, and sends what the chat's permissions forbid.
   Telegram refuses each of those, so a bot's "I lack the right" branch went untested.
+- **Forum mode only turns on.** `is_forum` becomes true when a topic is declared or
+  created and never goes back. A game bot that copes with an owner turning topics off had
+  nothing to test against.

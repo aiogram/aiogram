@@ -51,3 +51,18 @@ The policy is on by default. `BotTestEnvironment(enforce_bot_rights=False)`, and
 Not checked: chat settings and topic management rights, granting a right the bot lacks,
 a bot that has left, and user actors. A media group or a batch move is checked whole
 before anything is stored; `deleteMessages` skips what it may not delete.
+
+### D5. Turning topics off keeps them
+
+`UserActor.set_topics(enabled)` flips `ChatState.is_forum` and nothing else, so the
+topics are there when it comes back. Only the owner may, as TDLib's
+`toggle_channel_is_forum` checks. Neither TDLib nor the Bot API has a message for the
+switch, so no update is fed. The forum methods go through `forum_chat()`, which answers
+`the chat is not a forum` as TDLib's `ForumTopicManager::is_forum` does; `createForumTopic`
+no longer turns a plain supergroup into a forum, and `add_supergroup(is_forum=True)`
+declares one with no topics.
+
+**Assumption.** Telegram does not document a send with a stale `message_thread_id` once
+topics are off. The Bot API server's `check_chat_access` passes no topic for a chat that
+is neither a forum nor a private chat, so the toolkit stores the message untagged, and an
+actor bound to a topic posts untagged too.

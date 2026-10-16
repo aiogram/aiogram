@@ -107,6 +107,31 @@ actors SHALL NOT be checked. With `enforce_bot_rights=False`, the bot SHALL hold
 - **WHEN** the environment is built with `enforce_bot_rights=False`
 - **THEN** the same bot pins, bans and sends as if it held every right
 
+### Requirement: The owner can turn a forum's topics off and on
+
+A user actor who owns a supergroup SHALL be able to turn its topics off and on. No update
+SHALL be delivered for it. Turning topics off SHALL keep them, and turning them on again
+SHALL restore them as they were. While topics are off, the forum methods SHALL fail with
+`the chat is not a forum`, and a message the bot sends with a thread id SHALL be stored
+without one, which is an assumption the Bot API does not document. A blueprint SHALL be
+able to declare a supergroup a forum before it has any topic. Anyone but the owner, or a
+chat other than a supergroup, SHALL be a setup error.
+
+#### Scenario: A stale thread id after topics are off
+
+- **WHEN** the owner turns topics off and the bot sends into a former topic's thread id
+- **THEN** the message is stored in the chat with no thread id, not as a topic message
+
+#### Scenario: Turning topics on again
+
+- **WHEN** the owner turns topics back on
+- **THEN** the former topics exist again, and a message sent into one is tagged with it
+
+#### Scenario: Someone else tries
+
+- **WHEN** a member who is not the owner turns topics off
+- **THEN** the trigger raises `WorldLookupError`, and the chat is still a forum
+
 ## REMOVED Requirements
 
 ### Requirement: Permissions are stored but not enforced

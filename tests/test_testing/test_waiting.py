@@ -403,6 +403,8 @@ class TestDescriptionIsPositional:
         assert "waiting for the dawn announcement" in str(exc_info.value)
 
     async def test_a_topic_wait_describes_itself_too(self, env, team):
+        # Topics are created in a forum only.
+        team.is_forum = True
         topic = await env.bot.create_forum_topic(chat_id=team.id, name="Support")
         support = env.chat(team.id).topic(topic.message_thread_id)
 
@@ -714,6 +716,8 @@ class TestTheWaitFamilySpeaksOneVocabulary:
 
     async def test_watch_accepts_a_topic_declaration(self, quick, blueprint, dp):
         chat = quick.chat(blueprint.chats[1].id)
+        # Topics are created in a forum only.
+        chat.is_forum = True
         created = await quick.bot.create_forum_topic(chat_id=chat.id, name="Support")
         topic = quick.topic(chat.id, created.message_thread_id)
         await quick.bot.send_message(
@@ -797,6 +801,8 @@ class TestTheWaitFamilySpeaksOneVocabulary:
 
     async def test_wait_for_message_in_accepts_a_topic(self, quick, blueprint):
         chat = quick.chat(blueprint.chats[1].id)
+        # Topics are created in a forum only.
+        chat.is_forum = True
         created = await quick.bot.create_forum_topic(chat_id=chat.id, name="Support")
         topic = quick.topic(chat.id, created.message_thread_id)
         await quick.bot.send_message(

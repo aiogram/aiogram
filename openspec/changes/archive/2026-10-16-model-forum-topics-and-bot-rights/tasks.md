@@ -16,3 +16,7 @@
 
 - [x] 4.1 Check pinning, moderation, deleting and sending against the bot's rights, with an opt-out on the environment and the plugin (design D4); verify every row of the matrix and the opt-out
 - [x] 4.2 Update the existing tests that relied on the permissive fake by declaring the bot's standing; verify no assertion is weakened
+
+## 5. Forum toggle
+
+- [x] 5.1 Add `set_topics()` for the owner, `add_supergroup(is_forum=)`, and refuse the forum methods in a chat that is not a forum (design D5); verify off, on again, a stale thread id, a bound actor and the refusals

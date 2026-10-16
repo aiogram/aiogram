@@ -3,7 +3,7 @@ import pytest
 from aiogram import Router
 from aiogram.enums import ChatMemberStatus
 from aiogram.exceptions import TelegramBadRequest
-from aiogram.test import Blueprint, BotTestEnvironment, administrator_rights
+from aiogram.test import Blueprint, BotTestEnvironment, WorldLookupError, administrator_rights
 from aiogram.types import InputMediaPhoto, Message, ReplyParameters
 
 
@@ -346,3 +346,153 @@ class TestTopicRoot:
 
         assert chat.messages[-1].text == "in Game"
         assert chat.messages[-1].message_thread_id == thread_id
+
+
+@pytest.fixture
+def owned_forum(dp):
+    blueprint = Blueprint()
+    owner = blueprint.add_user("Owner")
+    alice = blueprint.add_user("Alice")
+    chat = blueprint.add_supergroup(
+        "Team",
+        members={owner: ChatMemberStatus.CREATOR, alice: ChatMemberStatus.MEMBER},
+    )
+    topic = blueprint.add_topic(chat, "Game")
+    environment = BotTestEnvironment(blueprint=blueprint, dispatcher=dp)
+    try:
+        yield (
+            environment,
+            environment.chat(chat),
+            topic.message_thread_id,
+            environment.user(owner).in_(chat),
+            environment.user(alice),
+        )
+    finally:
+        environment.dispose_sync()
+
+
+class TestForumToggle:
+    async def test_the_owner_turns_topics_off(self, owned_forum):
+        env, chat, thread_id, owner, _alice = owned_forum
+
+        assert await owner.set_topics(False) is None
+
+        assert chat.is_forum is False
+        assert chat.as_chat().is_forum is None
+        assert thread_id in chat.topics
+
+    async def test_no_update_is_delivered(self, owned_forum, dp):
+        env, chat, _thread_id, owner, _alice = owned_forum
+        seen = []
+        dp.message.register(seen.append)
+        before = len(chat.messages)
+
+        await owner.set_topics(False)
+
+        assert seen == []
+        assert len(chat.messages) == before
+
+    async def test_a_stale_thread_id_lands_in_the_chat_untagged(self, owned_forum):
+        env, chat, thread_id, owner, _alice = owned_forum
+        await owner.set_topics(False)
+
+        sent = await env.bot.send_message(chat_id=chat.id, text="x", message_thread_id=thread_id)
+
+        assert sent.message_thread_id is None
+        assert sent.is_topic_message is None
+        assert sent.reply_to_message is None
+        assert sent.chat.is_forum is None
+
+    async def test_a_closed_topic_does_not_refuse_once_topics_are_off(self, owned_forum):
+        env, chat, thread_id, owner, _alice = owned_forum
+        chat.topic(thread_id).is_closed = True
+        await owner.set_topics(False)
+
+        sent = await env.bot.send_message(chat_id=chat.id, text="x", message_thread_id=thread_id)
+
+        assert sent.message_thread_id is None
+
+    async def test_a_move_with_a_stale_thread_id_lands_untagged(self, owned_forum):
+        env, chat, thread_id, owner, _alice = owned_forum
+        await owner.set_topics(False)
+        sent = await env.bot.send_message(chat_id=chat.id, text="s")
+
+        await env.bot.copy_message(
+            chat_id=chat.id,
+            from_chat_id=chat.id,
+            message_id=sent.message_id,
+            message_thread_id=thread_id,
+        )
+
+        assert chat.messages[-1].message_thread_id is None
+
+    async def test_an_actor_bound_to_a_topic_posts_untagged(self, owned_forum):
+        env, chat, thread_id, owner, alice = owned_forum
+        member = alice.in_(chat, topic=thread_id)
+        await owner.set_topics(False)
+
+        await member.send("hello")
+
+        assert chat.messages[-1].message_thread_id is None
+        assert chat.messages[-1].reply_to_message is None
+
+    @pytest.mark.parametrize(
+        ("name", "kwargs"),
+        [
+            ("create_forum_topic", {"name": "New"}),
+            ("close_forum_topic", {"message_thread_id": "thread"}),
+            ("delete_forum_topic", {"message_thread_id": "thread"}),
+            ("close_general_forum_topic", {}),
+            ("hide_general_forum_topic", {}),
+        ],
+    )
+    async def test_forum_methods_refuse_a_chat_with_topics_off(self, owned_forum, name, kwargs):
+        env, chat, thread_id, owner, _alice = owned_forum
+        await owner.set_topics(False)
+        kwargs = {key: thread_id if value == "thread" else value for key, value in kwargs.items()}
+
+        with pytest.raises(TelegramBadRequest, match="Bad Request: the chat is not a forum$"):
+            await getattr(env.bot, name)(chat_id=chat.id, **kwargs)
+
+    async def test_turning_topics_on_again_restores_them(self, owned_forum):
+        env, chat, thread_id, owner, _alice = owned_forum
+        await owner.set_topics(False)
+
+        await owner.set_topics(True)
+        sent = await env.bot.send_message(chat_id=chat.id, text="x", message_thread_id=thread_id)
+
+        assert chat.is_forum is True
+        assert chat.topic(thread_id).name == "Game"
+        assert sent.message_thread_id == thread_id
+        assert sent.reply_to_message is chat.topic(thread_id).root_message
+
+    async def test_only_the_owner_can_turn_topics_off(self, owned_forum):
+        _env, chat, _thread_id, _owner, alice = owned_forum
+
+        with pytest.raises(WorldLookupError, match="Only the owner of chat"):
+            await alice.in_(chat).set_topics(False)
+
+        assert chat.is_forum is True
+
+    async def test_topics_exist_in_supergroups_only(self, env, alice):
+        with pytest.raises(WorldLookupError, match="supergroups only"):
+            await alice.set_topics(True)
+
+    async def test_a_supergroup_can_be_declared_a_forum_without_topics(self, dp):
+        blueprint = Blueprint()
+        chat = blueprint.add_supergroup("Team", is_forum=True)
+        env = BotTestEnvironment(blueprint=blueprint, dispatcher=dp)
+        try:
+            state = env.chat(chat)
+            assert state.is_forum is True
+            assert state.topics == {}
+
+            created = await env.bot.create_forum_topic(chat_id=chat.id, name="New")
+
+            assert created.message_thread_id in state.topics
+        finally:
+            env.dispose_sync()
+
+    async def test_a_plain_supergroup_has_no_topics_to_create(self, env, team):
+        with pytest.raises(TelegramBadRequest, match="the chat is not a forum"):
+            await env.bot.create_forum_topic(chat_id=team.id, name="New")

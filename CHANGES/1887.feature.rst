@@ -284,6 +284,10 @@ and forwards with ``TOPIC_CLOSED`` unless the bot is the owner or an administrat
 ``can_manage_topics``. A message in a topic that replies to nothing else, the bot's or an
 actor's, carries the topic's ``forum_topic_created`` message as its ``reply_to_message``, so a
 handler reads the topic's name where it does in production; the General topic has none.
+A supergroup's owner can turn topics off and on again with ``set_topics(...)``, which keeps
+the topics for when they come back, and ``add_supergroup(..., is_forum=True)`` declares a forum
+with none yet. The forum methods refuse a chat that is not a forum, and a send with a thread
+id into one lands untagged, as the Bot API server passes no topic there.
 
 The bot's own calls are checked against its rights, as Telegram checks them, with Telegram's
 wording: pinning and unpinning take ``can_pin_messages`` (``can_edit_messages`` in a

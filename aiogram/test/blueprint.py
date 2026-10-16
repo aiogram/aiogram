@@ -103,6 +103,8 @@ class ChatSpec:
     sticker_set_name: str | None = None
     invite_links: list[InviteLinkState] = field(default_factory=list)
     members: list[MemberSpec] = field(default_factory=list)
+    #: Whether topics are on. Declaring a topic turns them on too.
+    is_forum: bool = False
 
 
 @dataclass(eq=False)
@@ -247,14 +249,23 @@ class Blueprint:
         members: dict[UserSpec, str] | None = None,
         id: int | None = None,
         bot_status: str | None = None,
+        is_forum: bool = False,
     ) -> ChatSpec:
-        return self._add_group_like(
+        """
+        Declare a supergroup.
+
+        ``is_forum`` turns its topics on before any is declared, as for
+        a forum whose topics the bot creates itself.
+        """
+        chat = self._add_group_like(
             chat_type=ChatType.SUPERGROUP,
             title=title,
             members=members,
             chat_id=id if id is not None else FIRST_SUPERGROUP_ID - len(self.chats),
             bot_status=bot_status,
         )
+        chat.is_forum = is_forum
+        return chat
 
     def add_channel(
         self,
@@ -611,6 +622,7 @@ class Blueprint:
                 photo=chat.photo,
                 sticker_set_name=chat.sticker_set_name,
                 invite_links=list(chat.invite_links),
+                is_forum=chat.is_forum,
                 members={
                     member.user_id: MemberState(
                         user_id=member.user_id,

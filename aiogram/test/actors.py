@@ -1227,6 +1227,36 @@ class UserActor:
             data,
         )
 
+    async def set_topics(self, enabled: bool) -> None:
+        """
+        Turn the topics of this supergroup on or off, as its owner.
+
+        Only the owner may, as TDLib checks, and only in a supergroup.
+        Telegram delivers no update and no service message for it, so
+        the bot learns of it from ``chat.is_forum`` on what comes next.
+
+        Turning topics off keeps them, as a client does: turning them
+        on again brings back every topic as it was. While they are off,
+        a message the bot sends with a ``message_thread_id`` lands in
+        the chat untagged, since the Bot API server passes no topic for
+        a supergroup that is not a forum. Telegram does not document
+        that, so it is an assumption read from the server's source.
+        """
+        chat = self.chat
+        if chat.type != ChatType.SUPERGROUP:
+            msg = (
+                f"Topics can be turned on in supergroups only, and chat {chat.id} is a {chat.type}"
+            )
+            raise WorldLookupError(msg)
+        if chat.member(self.user.id).status != ChatMemberStatus.CREATOR:
+            msg = (
+                f"Only the owner of chat {chat.id} can turn its topics on or off, and user "
+                f"{self.user.id} is not; declare them with "
+                f"`members={{user: ChatMemberStatus.CREATOR}}`"
+            )
+            raise WorldLookupError(msg)
+        chat.is_forum = enabled
+
     async def add_chat_to_community(
         self,
         community: CommunitySpec | CommunityState | int,
@@ -1708,7 +1738,8 @@ class UserActor:
             values["author_signature"] = self.user.first_name
         if text is not None:
             values["text"] = text
-        if self.topic is not None and not self.topic.is_general:
+        # With topics off, a client posts into the one flat chat.
+        if self.topic is not None and not self.topic.is_general and chat.is_forum:
             values["message_thread_id"] = self.topic.message_thread_id
             values["is_topic_message"] = True
             # An explicit reply in `fields` replaces the root below.

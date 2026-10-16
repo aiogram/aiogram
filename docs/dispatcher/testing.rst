@@ -2433,6 +2433,29 @@ topic while it is closed or hidden. Declare the bot's standing to take the other
 The rule is applied to the bot's own calls only. A user actor is not refused: a real client
 would not offer the input field, and the test is the one deciding what users do.
 
+A supergroup's owner can turn its topics off and on again. ``add_supergroup(...,
+is_forum=True)`` declares a forum before any topic exists, for a bot that creates its own:
+
+.. code-block:: python
+
+    owner = bot_env.user(owner_spec).in_(team)
+
+    await owner.set_topics(False)   # chat.is_forum is now False
+    await owner.set_topics(True)    # every topic is back as it was
+
+Only the owner may, and only in a supergroup; anyone else is a setup error. Telegram delivers
+no update and no service message for the switch, and aiogram has no type for one, so the
+bot learns of it from ``chat.is_forum`` on what arrives next. While topics are off, the
+forum methods fail with ``Bad Request: the chat is not a forum``, and a bound actor posts
+into the one flat chat.
+
+.. note::
+
+    **An assumption.** Telegram does not document what a send with a stale
+    ``message_thread_id`` does once topics are off. The toolkit follows the Bot API server's
+    source, which passes no topic for a group that is not a forum: the message lands in the
+    chat with no thread id, as a message that is not a topic message.
+
 The couplings the Bot API documents apply: hiding the General topic also closes it, and
 reopening it also unhides it. :code:`editForumTopic` with an empty name keeps the current
 name, and an empty ``icon_custom_emoji_id`` removes the icon. A declared topic is created
