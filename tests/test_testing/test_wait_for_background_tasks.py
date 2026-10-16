@@ -84,7 +84,7 @@ class TestWaitForTasks:
             outsider.cancel()
 
     async def test_a_wait_from_a_child_task_does_not_wait_for_the_test(self, env, alice):
-        """The test's own task awaits the child, so waiting for it would hang."""
+        """The test's task awaits the child, so a wait on it hangs."""
         await alice.send("hi")
         task = asyncio.create_task(asyncio.sleep(0.01))
 
@@ -197,7 +197,7 @@ class TestWaitForTasks:
             await environment.dispose()
 
     async def test_drain_from_a_child_task_spares_the_test(self, env, alice):
-        """The task that first ran the environment is never the bot's."""
+        """The test's task awaits the drain, so it is spared."""
         await alice.send("hi")
         leaked = asyncio.create_task(asyncio.sleep(3600))
         await asyncio.sleep(0)

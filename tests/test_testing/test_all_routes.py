@@ -91,7 +91,7 @@ class TestAssertUpdatesHandled:
             env.assert_updates_handled()
 
     async def test_a_trigger_with_one_handled_update_passes(self, env, game, alice):
-        """A join's service message nobody claims: the join was handled."""
+        """A join's message nobody claims: the join was handled."""
         with env.trigger():
             await alice.send("/start")
             await alice.send("service")

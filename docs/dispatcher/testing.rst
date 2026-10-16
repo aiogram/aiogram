@@ -748,9 +748,11 @@ handler never breaks just because a call was not configured.
 
 .. note::
 
-    The fake models the *shape* of Telegram, not its policy. Rate limits, permission
-    matrices and media processing are not simulated. The time limits the Bot API
-    documents are, against the world's own clock; see `Time`_.
+    The fake models the *shape* of Telegram, and of its policy only what is stated. The
+    bot's own rights are checked (see `The bot's own rights`_), flood limits are modeled
+    on request (see `Flood control`_), and the time limits the Bot API documents are
+    enforced against the world's own clock (see `Time`_). Media processing is not
+    simulated.
 
     In particular, media *content* is synthesized: sending a photo stores a
     :class:`aiogram.types.photo_size.PhotoSize` with a plausible file id, and no bytes are
@@ -3194,7 +3196,7 @@ API reference
 =============
 
 .. automodule:: aiogram.test
-    :members: Blueprint, BotTestEnvironment, UserActor, CallLog, RouteRecord, RateLimits, RateLimit, build_environment, default_blueprint, detach_router, administrator_rights
+    :members: Blueprint, BotTestEnvironment, UserActor, CallLog, RouteRecord, RateLimits, RateLimit, build_environment, default_blueprint, detach_router, administrator_rights, default_chat_permissions
     :member-order: bysource
     :undoc-members: False
 
@@ -3203,7 +3205,7 @@ API reference
     :member-order: bysource
 
 .. autoclass:: aiogram.test.world.TopicState
-    :members: messages, wait_for_message
+    :members: messages, root_message, creator_id, wait_for_message
     :member-order: bysource
 
 .. autoclass:: aiogram.test.world.MemberState

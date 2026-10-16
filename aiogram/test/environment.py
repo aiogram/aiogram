@@ -1180,7 +1180,7 @@ class BotTestEnvironment:
         community_id = community if isinstance(community, int) else community.id
         return self.world.community(community_id)
 
-    # -- additions -------------------------------------------------------
+    # -- additions -----------------------------------------------------
     #
     # A blueprint declares the world before it exists; these add to
     # it while it runs. They are the blueprint's own builders over

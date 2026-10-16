@@ -1045,7 +1045,8 @@ def build_message(
     """
     thread_id = getattr(method, "message_thread_id", None)
     require_standing(env, chat)
-    # An unknown thread id must fail rather than silently produce an untagged message.
+    # An unknown thread id must fail rather than silently produce an
+    # untagged message.
     topic = posting_topic(env, chat, thread_id)
     receiver = _ephemeral_receiver(env, method, chat)
     if receiver is None and content is None:
@@ -3247,8 +3248,10 @@ def handle_set_chat_description(env: BotTestEnvironment, method: SetChatDescript
 @models(SetChatPermissions)
 def handle_set_chat_permissions(env: BotTestEnvironment, method: SetChatPermissions) -> bool:
     """
-    Stored, never enforced: the fake models the shape of administration, not its policy.
+    Store the chat's permissions, which the bot's sends then obey.
 
+    The checks of what a member may send read this value, see
+    :func:`require_send_permission`, and so do a user's topic rights.
     What is stored is what the request grants rather than the mask it passed — the same
     couplings ``restrictChatMember`` applies, documented on this method in identical words;
     see :func:`granted_permissions`. It is a fresh object for the reason

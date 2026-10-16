@@ -192,7 +192,7 @@ def _error(message: str) -> ApiRejection:
     return ApiRejection(f"can't parse entities: {message}")
 
 
-# -- links ----------------------------------------------------------------------------
+# -- links -------------------------------------------------------------
 
 
 def _link_user_id(url: str) -> int | None:
@@ -362,7 +362,7 @@ def _link_entity(
     return _Entity("TextUrl", offset, length, argument=checked)
 
 
-# -- HTML -----------------------------------------------------------------------------
+# -- HTML --------------------------------------------------------------
 
 
 def _decode_html_entity(text: _Text, pos: int) -> tuple[int, int]:
@@ -611,7 +611,7 @@ def _close_html_tag(
         entities.append(_Entity(kind, offset, length))
 
 
-# -- MarkdownV2 -----------------------------------------------------------------------
+# -- MarkdownV2 --------------------------------------------------------
 
 
 @dataclass
@@ -835,7 +835,7 @@ def _v2_close(
     return i
 
 
-# -- Markdown -------------------------------------------------------------------------
+# -- Markdown ----------------------------------------------------------
 
 
 def _parse_markdown(source: str) -> tuple[bytes, list[_Entity]]:
@@ -914,7 +914,7 @@ def _markdown_link(
     return _link_entity(start, length, text.slice(i + 2, close)), close
 
 
-# -- after parsing --------------------------------------------------------------------
+# -- after parsing -----------------------------------------------------
 
 
 def _remove_carriage_returns(text: str, entities: list[_Entity]) -> str:
@@ -1045,7 +1045,7 @@ def parse_entities(
     return plain, [entity for entity in converted if entity is not None]
 
 
-# -- methods --------------------------------------------------------------------------
+# -- methods -----------------------------------------------------------
 
 
 def _formatted_fields(model: TelegramObject | TelegramMethod[Any]) -> list[tuple[str, str, str]]:
@@ -1150,9 +1150,9 @@ def bot_command_entities(text: str | None) -> list[MessageEntity]:
 
     Telegram finds the commands in a message itself: ``/start``, and
     ``/start@my_bot`` with the bot's username, wherever they stand as
-    :func:`_command_ranges` says, not only at the start. Offsets and lengths
-    are in UTF-16 code units. Mentions, hashtags and links get entities
-    too, which this does not add.
+    :func:`_command_ranges` says, not only at the start. Offsets and
+    lengths are in UTF-16 code units. Mentions, hashtags and links get
+    entities too, which this does not add.
     """
     if not text:
         return []

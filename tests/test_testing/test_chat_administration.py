@@ -911,7 +911,7 @@ class TestPermissionsBindTheBotOnly:
         return moderated(blueprint)
 
     async def test_a_silenced_chat_refuses_a_member_bot_but_not_an_actor(self, dp):
-        """The bot's calls are checked; what a user does is the test's to decide."""
+        """The bot's calls are checked; users do what the test says."""
         blueprint = Blueprint()
         alice = blueprint.add_user("Alice")
         team = blueprint.add_supergroup("Team", members={alice: ChatMemberStatus.MEMBER})

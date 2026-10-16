@@ -198,8 +198,9 @@ nothing, raises a task's own failure as :class:`aiogram.test.BackgroundTaskError
 ``DrainedTaskError``), and on timeout names each task still running and the coroutine it runs.
 A bot whose own sleeps make tests slow, but whose real database drivers rule out ``looptime``
 — which moves the clock their deadlines run on — has a documented recipe instead: scale the
-application's own sleep helper in the tests and leave the event loop's clock real. The toolkit
-has no time control mode of its own yet.
+application's own sleep helper in the tests and leave the event loop's clock real.
+``advance_time()`` moves only the world's clock, which drivers never read, so it does not help
+there; ``looptime`` is the tool that moves the loop's clock, the one drivers' deadlines use.
 
 A text or caption sent with a ``parse_mode`` — passed to the call or the bot's default — is
 stored as Telegram stores it, as plain text and entities with UTF-16 offsets, rather than with
@@ -397,6 +398,23 @@ refusing a send over it with a 429 whose ``retry_after`` is when the next one go
 read off the event loop's clock so ``looptime`` and ``advance_time()`` both move it. A send
 Telegram refuses for another reason first, such as the bot's rights or an unknown thread,
 gets that refusal in a flooded chat too.
+
+Migrating a suite written against the earlier toolkit:
+
+- ``createForumTopic`` no longer turns a supergroup into a forum. Declare one with
+  ``add_supergroup(..., is_forum=True)``, or have its owner call ``set_topics(True)``.
+- A message in a forum topic now carries the topic's root as its ``reply_to_message``, as
+  Telegram delivers it, so ``if message.reply_to_message:`` no longer tells a reply from a
+  plain message inside a topic. Compare ``message.reply_to_message.message_id`` with
+  ``message.message_thread_id``, or check ``forum_topic_created`` on it.
+- A text an actor sends carries ``bot_command`` entities. A test that needs none passes
+  ``fields={"entities": None}``.
+- The bot's calls are checked against its rights and its membership. Declare its standing
+  with ``bot_status=`` or ``Blueprint.set_member(chat, blueprint.bot, rights=...)``, or opt
+  out with ``BotTestEnvironment(enforce_bot_rights=False)`` or by overriding the
+  ``bot_env_enforce_bot_rights`` fixture.
+- Supergroups and channels number their messages from 2, as message 1 is the chat's
+  creation; a test that asserted a first message id of 1 there expects 2.
 
 .. warning::
 

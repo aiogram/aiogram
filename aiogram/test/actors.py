@@ -1286,18 +1286,19 @@ class UserActor:
         """
         Create a topic in this forum, as a user who may manage topics.
 
-        What :code:`createForumTopic` does for the bot, done by this user: the
-        topic exists, and the ``forum_topic_created`` service message that
-        opens it, from this user, is stored and fed to the dispatcher. It
-        returns the new :class:`~aiogram.test.world.TopicState`, to bind an
-        actor to or close later; the handler's result is not returned.
+        What :code:`createForumTopic` does for the bot, done by this
+        user: the topic exists, and the ``forum_topic_created`` service
+        message that opens it, from this user, is stored and fed to the
+        dispatcher. It returns the new
+        :class:`~aiogram.test.world.TopicState`, to bind an actor to or
+        close later; the handler's result is not returned.
 
         The chat has to be a forum, and the user has to hold
         ``can_manage_topics``: as an administrator's right, or as the
         chat's permission of that name, which members have unless the
         chat or their restriction takes it away. Neither holding is
-        something Telegram would let a client work around, so a test that
-        lacks one has set the world up wrongly, and gets
+        something Telegram would let a client work around, so a test
+        that lacks one has set the world up wrongly, and gets
         :class:`~aiogram.test.WorldLookupError`.
         """
         chat = self._require_topic_manager(creating=True)
@@ -1322,10 +1323,11 @@ class UserActor:
         """
         Close a topic, as a user who may manage topics.
 
-        ``topic`` is the one to close and defaults to the topic this actor
-        is bound to. The topic closes, and the ``forum_topic_closed`` service
-        message, from this user, is stored and fed. See :meth:`create_topic`
-        for who may and what happens when nobody does.
+        ``topic`` is the one to close and defaults to the topic this
+        actor is bound to. The topic closes, and the
+        ``forum_topic_closed`` service message, from this user, is
+        stored and fed. See :meth:`create_topic` for who may and what
+        happens when nobody does.
         """
         chat, target = self._managed_topic(topic, "close_general_topic")
         return await self._feed_message(
@@ -1349,12 +1351,13 @@ class UserActor:
 
     async def delete_topic(self, topic: TopicSpec | TopicState | int | None = None) -> None:
         """
-        Delete a topic with all its messages, as a user who may manage topics.
+        Delete a topic with all its messages, as a user who may manage
+        topics.
 
-        Telegram posts no service message for it and the Bot API has no type
-        for one, so nothing is fed: the bot learns of it only when a call into
-        the thread fails with ``TOPIC_DELETED``. The General topic cannot be
-        deleted.
+        Telegram posts no service message for it and the Bot API has no
+        type for one, so nothing is fed: the bot learns of it only when
+        a call into the thread fails with ``message thread not found``.
+        The General topic cannot be deleted.
         """
         chat, target = self._managed_topic(topic, None)
         delete_topic(chat, target)
@@ -1363,8 +1366,8 @@ class UserActor:
         """
         Hide the General topic, which closes it, as a manager.
 
-        The ``general_forum_topic_hidden`` service message, from this user, is
-        stored and fed.
+        The ``general_forum_topic_hidden`` service message, from this
+        user, is stored and fed.
         """
         chat = self._require_topic_manager()
         return await self._feed_message(
@@ -1480,7 +1483,7 @@ class UserActor:
         return target
 
     async def _feed_message(self, message: Message, data: dict[str, Any]) -> Any:
-        """Feed an already stored message as an update from this chat."""
+        """Feed a message already stored as an update from this chat."""
         return await self._feed(Update(update_id=self._next_update_id(), message=message), data)
 
     async def add_chat_to_community(
