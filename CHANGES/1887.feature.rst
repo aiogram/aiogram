@@ -191,6 +191,11 @@ ones too. It is opt-in rather than automatic, since
 the pytest fixture's teardown is synchronous and cannot await a cancellation, and cancelling
 tasks a test never mentioned as an invisible side effect of a fixture going out of scope
 would turn a stopped scheduler into a mystery.
+Work that should finish rather than be cancelled — a results broadcast sent from a task of its
+own — is waited for with ``await env.wait_for_tasks()``, which waits until every task
+``drain()`` would have cancelled is done, including the ones spawned while it waits, cancels
+nothing, raises a task's own failure as :class:`aiogram.test.BackgroundTaskError` (the base of
+``DrainedTaskError``), and on timeout names each task still running and the coroutine it runs.
 
 A rich message sent as blocks is stored with those blocks in the shape Telegram returns, nested
 blocks and media included, instead of as an empty rich message; ``editMessageText`` replaces

@@ -24,7 +24,13 @@ from .blueprint import (
 )
 from .calls import CallLog, NoSuchCallError
 from .environment import BotTestEnvironment, RouteRecord, build_environment
-from .errors import ApiRejection, DrainedTaskError, NoFileContentError, WaitTimeoutError
+from .errors import (
+    ApiRejection,
+    BackgroundTaskError,
+    DrainedTaskError,
+    NoFileContentError,
+    WaitTimeoutError,
+)
 from .flood import RateLimit, RateLimits
 from .overrides import (
     ADDRESSING_FIELDS,
@@ -62,6 +68,7 @@ __all__ = (
     "BLOCKED_METHODS",
     "DELIVERY_METHODS",
     "ApiRejection",
+    "BackgroundTaskError",
     "Blueprint",
     "BotProfileState",
     "BotTestEnvironment",

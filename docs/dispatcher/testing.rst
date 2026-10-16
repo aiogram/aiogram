@@ -1783,6 +1783,45 @@ than a second or so.
     land inside one; against a slow or remote one it is a live hazard, so mark a test
     ``looptime`` only once its database calls are mocked, faked, or genuinely local.
 
+Waiting for background tasks to finish
+======================================
+
+``drain()`` below cancels what a test left running, which is wrong
+for work that should finish: a game bot that announces its results
+from a task of its own would be stopped halfway, and the players
+after the first would get nothing. ``await bot_env.wait_for_tasks()``
+waits instead, until every task ``drain()`` would have cancelled is
+done, and returns how many it waited for. Nothing is cancelled:
+
+.. code-block:: python
+
+    async def test_everyone_gets_the_results(bot_env, bot_user):
+        await bot_user.send("/end_game")   # broadcasts from a task
+
+        await bot_env.wait_for_tasks()
+
+        for player in players:
+            assert bot_env.chat(player).messages[-1].text.startswith("Results")
+
+The tasks are the same ones ``drain()`` counts: created after this
+environment first fed an update or answered a call, minus those
+already running then, and never the task that made that first
+entry, which is normally the test's own. A task spawned while the
+wait runs is waited for too, so the wait returns only once none is
+left. A loop the bot runs for the whole game never ends, so it is
+not one to wait for: ``wait_for()`` the state it should reach and
+``drain()`` it at the end.
+
+A task that ended with an exception nobody retrieved is raised as
+:class:`aiogram.test.BackgroundTaskError`, with the first one chained
+as its cause, as ``drain()`` raises its
+:class:`~aiogram.test.DrainedTaskError` subclass. If tasks are still
+running at ``timeout``, which defaults to the environment's
+``default_wait_timeout``, :class:`~aiogram.test.WaitTimeoutError`
+names each of them and the coroutine it runs, and leaves them
+running. The deadline is read off the event loop's clock, so under
+``looptime`` it is virtual time, like every other wait's.
+
 Cleaning up background tasks
 =============================
 
@@ -2724,6 +2763,8 @@ API reference
 .. autoclass:: aiogram.test.ApiRejection
 
 .. autoclass:: aiogram.test.WaitTimeoutError
+
+.. autoclass:: aiogram.test.BackgroundTaskError
 
 .. autoclass:: aiogram.test.DrainedTaskError
 

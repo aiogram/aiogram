@@ -30,7 +30,13 @@ from .blueprint import (
 )
 from .calls import CallLog
 from .defaults import resolve_defaults
-from .errors import ApiRejection, DrainedTaskError, WaitTimeoutError, raise_api_error
+from .errors import (
+    ApiRejection,
+    BackgroundTaskError,
+    DrainedTaskError,
+    WaitTimeoutError,
+    raise_api_error,
+)
 from .flood import RATE_LIMITED_METHODS, FloodControl, RateLimits
 from .modeling import find_handler, resolve_chat
 from .mounting import bindables, detached_copy
@@ -441,6 +447,24 @@ def _describe_failures(failures: list[tuple[str, BaseException]]) -> str:
     )
 
 
+def _describe_task_failures(failures: list[tuple[str, BaseException]]) -> str:
+    """How :meth:`BotTestEnvironment.wait_for_tasks` names failures."""
+    listing = "\n".join(f"  {name}: {type(error).__name__}: {error}" for name, error in failures)
+    return (
+        f"{len(failures)} background task(s) ended with an exception:\n{listing}\n"
+        f"The first one is chained as the cause of this error."
+    )
+
+
+def _describe_task(task: asyncio.Task[Any]) -> str:
+    """A task's name and the coroutine it runs, for a timeout."""
+    coro = task.get_coro()
+    name = getattr(coro, "__qualname__", None)
+    if not isinstance(name, str):  # pragma: no cover - eager tasks only
+        name = repr(coro)
+    return f"{task.get_name()} ({name})"
+
+
 def _event_type_of(update: Update | None) -> str | None:
     """The update's event field name, or ``None`` when this aiogram cannot tell."""
     if update is None:  # pragma: no cover - the update observer only ever sees updates
@@ -546,6 +570,9 @@ class BotTestEnvironment:
         self._instrument_routing()
         self._protected_tasks = set(_running_tasks())
         self._protection_extended = False
+        #: The task that made the first asynchronous entry, normally
+        #: the test's own; never counted as the bot's.
+        self._entry_task: asyncio.Task[Any] | None = None
         # Every task created while this environment was live, so `drain` can also report a
         # task that already *finished* — `asyncio.all_tasks()` only ever answers with the
         # unfinished ones. See `_track_spawned_tasks`.
@@ -589,6 +616,7 @@ class BotTestEnvironment:
         self._uninstrument_routing()
         self._untrack_spawned_tasks()
         self._spawned_tasks.clear()
+        self._entry_task = None
         # Due actions close over this environment, which nothing
         # advances any more.
         self._due.clear()
@@ -1573,12 +1601,7 @@ class BotTestEnvironment:
             # environment never ran, so it owns nothing — and "everything unprotected"
             # would here mean "every task in the loop". See the docstring.
             return 0
-        current = asyncio.current_task()
-        mine = {
-            task
-            for task in (*asyncio.all_tasks(), *self._spawned_tasks)
-            if task is not current and task not in self._protected_tasks
-        }
+        mine = self._own_tasks()
         pending = {task for task in mine if not task.done()}
         failures: list[tuple[str, BaseException]] = []
         # Tasks that finished on their own before the drain. `asyncio.all_tasks()` does not
@@ -1608,6 +1631,100 @@ class BotTestEnvironment:
         if failures:
             raise DrainedTaskError(_describe_failures(failures)) from failures[0][1]
         return len(pending)
+
+    async def wait_for_tasks(self, timeout: float | None = None) -> int:
+        """
+        Wait until the bot's background tasks are done, cancelling none.
+
+        :meth:`drain` stops what a test left running, and that is
+        wrong for work that should finish: a results broadcast
+        cancelled halfway leaves half the players without one. This
+        waits for the same tasks ``drain()`` would cancel, those
+        created since this environment first ran, and returns how
+        many it waited for::
+
+            await bot_user.send("/end_game")
+            await bot_env.wait_for_tasks()
+            assert all(chat.messages for chat in player_chats)
+
+        A task spawned while waiting is waited for too, so it returns
+        once none is left. A task that ended with an exception nobody
+        retrieved is raised as
+        :class:`~aiogram.test.BackgroundTaskError`, the first chained
+        as its cause. ``timeout`` defaults to this
+        environment's ``default_wait_timeout``, and the deadline is
+        read off the event loop's clock.
+
+        :raises aiogram.test.errors.WaitTimeoutError: if tasks are
+            still running at the deadline, naming each and its
+            coroutine. They are left running.
+        :raises aiogram.test.errors.BackgroundTaskError: if a task
+            ended with an exception of its own.
+        """
+        if timeout is None:
+            timeout = self.world.default_wait_timeout
+        if not (self._protection_extended or self._protected_tasks):
+            # Never ran, so it owns nothing; see `drain`.
+            return 0
+        loop = asyncio.get_running_loop()
+        deadline = loop.time() + timeout
+        waited: set[asyncio.Task[Any]] = set()
+        while True:
+            pending = {task for task in self._own_tasks() if not task.done()}
+            if not pending:
+                break
+            waited |= pending
+            remaining = deadline - loop.time()
+            if remaining <= 0:
+                self._task_timeout(timeout, pending)
+            await asyncio.wait(pending, timeout=remaining)
+        failures: list[tuple[str, BaseException]] = []
+        self._collect_failures(self._own_tasks(), failures)
+        if failures:
+            msg = _describe_task_failures(failures)
+            raise BackgroundTaskError(msg) from failures[0][1]
+        return len(waited)
+
+    def _task_timeout(
+        self,
+        timeout: float,
+        pending: set[asyncio.Task[Any]],
+    ) -> NoReturn:
+        """Fail :meth:`wait_for_tasks`, naming what still runs."""
+        names = "\n".join(sorted(f"  {_describe_task(task)}" for task in pending))
+        msg = (
+            f"Timed out after {timeout}s waiting for the bot's background "
+            f"tasks; {len(pending)} still running:\n{names}\n"
+            f"Nothing was cancelled. A task meant to run for the whole "
+            f"test is not one to wait for: wait_for() the state it "
+            f"should reach, and drain() it at the end."
+        )
+        failures: list[tuple[str, BaseException]] = []
+        self._collect_failures(
+            [task for task in self._own_tasks() if task.done()],
+            failures,
+        )
+        if failures:
+            msg += f"\n{_describe_task_failures(failures)}"
+            raise WaitTimeoutError(msg) from failures[0][1]
+        raise WaitTimeoutError(msg)
+
+    def _own_tasks(self) -> set[asyncio.Task[Any]]:
+        """
+        The tasks this environment counts as the bot's.
+
+        Created since its first asynchronous entry, minus those alive
+        then, the caller, and the task that made that entry: a test
+        waiting from a child task must not wait for itself.
+        """
+        current = asyncio.current_task()
+        return {
+            task
+            for task in (*asyncio.all_tasks(), *self._spawned_tasks)
+            if task is not current
+            and task is not self._entry_task
+            and task not in self._protected_tasks
+        }
 
     @staticmethod
     def _collect_failures(
@@ -1648,6 +1765,7 @@ class BotTestEnvironment:
             return
         self._protection_extended = True
         current = asyncio.current_task()
+        self._entry_task = current
         self._protected_tasks |= {task for task in _running_tasks() if task is not current}
         self._track_spawned_tasks()
 
