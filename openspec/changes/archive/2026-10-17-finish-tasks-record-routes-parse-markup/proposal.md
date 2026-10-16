@@ -15,6 +15,8 @@ test cannot see what its bot does:
   "everything is allowed".
 - **A world cannot grow.** Users and chats exist from the blueprint alone, so a test with a
   late arrival or a second group declares them for every test that shares the blueprint.
+- **Commands carry no entity.** A client marks `/cmd` and `/cmd@bot` as `bot_command`
+  entities, an actor's text carried none, and a router keying on entities missed them.
 - **Fast sleeps cost real drivers.** The documented way to skip a bot's long sleeps is
   `looptime`, which moves the loop's clock, and a real database driver's deadlines run on
   that clock and expire mid-query.
@@ -40,9 +42,12 @@ test cannot see what its bot does:
 - `BotTestEnvironment.add_user()`, `add_private_chat()`, `add_group()`, `add_supergroup()` and
   `add_channel()` add to a running world with the blueprint's own builders.
 
+- An actor's text and caption carry the `bot_command` entities Telegram attaches, found by
+  TDLib's rule, and an edit marks its new text.
+
 Observable behavior change, toward the Bot API: a text sent with a parse mode is stored
-parsed, broken markup or an unknown parse mode now fails the call, and `getChat` reports a
-group's permissions.
+parsed, broken markup or an unknown parse mode now fails the call, `getChat` reports a
+group's permissions, and an actor's text carries `bot_command` entities.
 
 ## Capabilities
 

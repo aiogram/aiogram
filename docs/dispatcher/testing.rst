@@ -255,6 +255,25 @@ as handler dependencies:
     await bot_user.join()                              # chat_member
     await bot_user.leave()                             # chat_member
 
+A text the actor sends carries the ``bot_command`` entities a real client attaches to it, so
+a router keying on ``message.entities`` finds a command where it does in production:
+
+.. code-block:: python
+
+    await bot_user.send("please /start@my_bot now")
+    entity = bot_chat.messages[-1].entities[0]
+    assert (entity.type, entity.offset, entity.length) == ("bot_command", 7, 13)
+
+The rule is Telegram's, not "a word starting with a slash". A command is a slash, then one to
+64 ASCII letters, digits or underscores, then optionally ``@`` and a username of three to 32.
+The slash opens the text or follows anything but a letter, a digit, ``_``, ``/``, ``<`` or
+``>``, so ``(/start)`` and ``wait,/start`` count and ``a/start`` and ``//start`` do not. The
+next character may not be one of those either, so ``/start/x`` is no command, and nor is the
+``/cmd`` of ``/cmd@ab``, whose username is too short. Offsets and lengths are in UTF-16 code
+units, as in the Bot API. Captions are marked the same way, and an edit marks the new
+text afresh. Entities passed in ``fields=``, even an empty list, are never replaced. Mentions,
+hashtags and links get entities in Telegram too, and are not added here.
+
 ``click`` resolves the button from a message the bot actually sent, so a renamed
 ``callback_data`` breaks the test instead of silently passing:
 

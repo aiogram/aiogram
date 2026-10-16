@@ -4030,3 +4030,29 @@ The blueprint the environment was built from SHALL NOT change.
 
 - **WHEN** two environments are built from one blueprint and one adds a user and a chat
 - **THEN** the blueprint and the other environment are unchanged
+
+### Requirement: A text an actor sends carries its bot commands
+
+A text, and a caption, that a user actor sends or edits SHALL carry the `bot_command`
+entities Telegram attaches, with UTF-16 offsets, unless the test passes `entities` or
+`caption_entities` itself, even empty. A command SHALL be a slash at the start of the text or
+after a character that is not a letter, a number, `_`, `/`, `<` or `>`, then one to 64 ASCII
+letters, digits or underscores, then optionally `@` and three to 32 of them, and SHALL not be
+followed by a letter, a number, `_`, `/`, `<` or `>`. A command that breaks a rule SHALL have
+no entity, and neither SHALL the command before an `@name` that does. Messages the bot sends
+SHALL not change.
+
+#### Scenario: A command in the middle of a text
+
+- **WHEN** an actor sends `hi /start@my_bot now`
+- **THEN** the message carries one `bot_command` entity at offset 3 with length 13
+
+#### Scenario: Not a command
+
+- **WHEN** an actor sends `a/start`, `//start` or `/start/more`
+- **THEN** the message carries no entity
+
+#### Scenario: Entities passed by the test
+
+- **WHEN** an actor sends `/start` with `fields={"entities": []}`
+- **THEN** the message carries exactly the entities passed

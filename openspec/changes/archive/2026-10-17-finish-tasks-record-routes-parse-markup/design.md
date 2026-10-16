@@ -113,3 +113,25 @@ what is taken. Members are named by spec, actor or id and turned into declaratio
 world's users; the bot maps to the blueprint's own `bot`, so `bot_status=` and an entry for
 it still conflict. A user the world lacks raises. Topics are left out: an owner's
 `create_topic()` makes them, and `is_forum=True` turns them on.
+
+### D7. Commands are found by TDLib's matcher, for actors only
+
+`bot_command_entities()` in `markup.py` ports `match_bot_commands` of TDLib's
+`MessageEntity.cpp`, which a client runs on the text it sends (`find_entities`). The rule is
+not "after whitespace": the slash needs only a start of text or a previous character that is
+not a word character (a letter or number, or `_`) nor `/`, `<` or `>`; the command is one to
+64 ASCII word characters; an `@username` of three to 32 may follow; and the next character
+may not be a word character, `/`, `<` or `>`. A match that fails any check is dropped, the
+command before a bad `@username` with it, and the scan goes on from where it stopped.
+Outside ASCII, a word character is a Unicode letter or number, which stands for TDLib's own
+category table.
+
+TDLib skips commands only for a user's text in a private chat with someone who is not a
+bot, and the toolkit's private chats are the bot's, so every chat kind gets them. Only
+commands are added: TDLib marks mentions, hashtags, links and more, and a test that needs
+one passes it in `fields=`. Offsets are UTF-16 units, as `fix_entity_offsets` computes them.
+
+`_build_message` marks `text` and `caption` after `fields` are applied, so a text passed in
+`fields` is marked and an explicit `entities` or `caption_entities`, even `[]`, stands. An
+edit with new text replaces the old entities, with `None` when there is no command. The
+bot's own sends are untouched: the Bot API server does not mark them.

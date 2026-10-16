@@ -326,6 +326,13 @@ same code so their shape is identical, and return the actor or the chat state th
 ``env.user()`` and ``env.chat()`` return. The blueprint the environment was built from is left
 alone.
 
+A text an actor sends, and a caption, carries the ``bot_command`` entities a client attaches
+to ``/cmd`` and ``/cmd@bot``, found as Telegram finds them: a slash at the start or after
+anything but a letter, a digit, ``_``, ``/``, ``<`` or ``>``, one to 64 ASCII word characters,
+optionally ``@`` and three to 32 more, and none of those after it, with UTF-16 offsets. A
+router keying on ``message.entities`` now sees commands, an edit marks its new text, and
+entities passed in ``fields=`` are never replaced.
+
 The bot's own calls are checked against its rights, as Telegram checks them, with Telegram's
 wording: pinning and unpinning take ``can_pin_messages`` (``can_edit_messages`` in a
 channel), banning, unbanning and restricting take ``can_restrict_members``, promoting takes

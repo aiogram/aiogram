@@ -41,6 +41,7 @@ from aiogram.types import (
     Update,
 )
 
+from .markup import bot_command_entities
 from .modeling import (
     SUBSCRIPTION_PERIOD,
     close_general,
@@ -868,6 +869,9 @@ class UserActor:
         changes: dict[str, Any] = edit_stamp(self.environment)
         if text is not None:
             changes["text"] = text
+            if "entities" not in (fields or {}):
+                # The commands of the new text replace those of the old.
+                changes["entities"] = bot_command_entities(text) or None
         changes.update(_detached(fields or {}, self.environment.bot))
         edited = self.chat.update_message(message.message_id, **changes)
         if self.business is not None:
@@ -1923,6 +1927,12 @@ class UserActor:
         if self.business is not None:
             values["business_connection_id"] = self.business.id
         values.update(_detached(fields or {}, self.environment.bot))
+        # A client marks the commands in a text, unless the test did.
+        for text_field, entities_field in (("text", "entities"), ("caption", "caption_entities")):
+            if entities_field not in (fields or {}):
+                entities = bot_command_entities(values.get(text_field))
+                if entities:
+                    values[entities_field] = entities
         return Message(**values)
 
     def _with_reply_to(

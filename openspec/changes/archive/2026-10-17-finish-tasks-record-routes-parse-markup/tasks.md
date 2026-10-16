@@ -24,6 +24,10 @@
 
 - [x] 6.1 Add users and chats to a running environment through the blueprint's builders (design D6); verify the shapes against declared ones, members by spec, actor and id, ids and collisions, and a shared blueprint left alone
 
-## 7. Integration
+## 7. Bot commands
 
-- [x] 7.1 Run `make lint`, `uv run pytest tests` with `aiogram/test` at 100% coverage, and the docs build; verify all pass with no new warnings for `testing.rst`
+- [x] 7.1 Mark the commands in an actor's text and caption as TDLib's matcher does, without overriding explicit entities (design D7); verify the rule's every branch, UTF-16 offsets, edits, captions, every chat kind, and that the bot's sends are untouched
+
+## 8. Integration
+
+- [x] 8.1 Run `make lint`, `uv run pytest tests` with `aiogram/test` at 100% coverage, and the docs build; verify all pass with no new warnings for `testing.rst`

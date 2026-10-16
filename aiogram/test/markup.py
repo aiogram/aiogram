@@ -27,6 +27,7 @@ or commands are not detected.
 from __future__ import annotations
 
 import string
+import unicodedata
 from collections.abc import Callable
 from dataclasses import dataclass, field
 from enum import Enum
@@ -38,7 +39,7 @@ from aiogram.types import MessageEntity, TelegramObject, User
 
 from .errors import ApiRejection
 
-__all__ = ("UserLookup", "apply_parse_modes", "parse_entities")
+__all__ = ("UserLookup", "apply_parse_modes", "bot_command_entities", "parse_entities")
 
 #: Finds the user a ``tg://user?id=`` link mentions, or ``None``.
 UserLookup = Callable[[int], User | None]
@@ -1036,6 +1037,98 @@ def _formatted_fields(model: TelegramObject | TelegramMethod[Any]) -> list[tuple
         entities = f"{text}_entities" if f"{text}_entities" in names else "entities"
         triples.append((name, text, entities))
     return triples
+
+
+# -- bot commands --------------------------------------------------
+
+#: What, besides a word character, may not precede a command's
+#: slash or follow the command.
+_COMMAND_NEIGHBOURS = "/<>"
+#: The longest command and the username lengths TDLib accepts.
+_COMMAND_LENGTH = range(1, 65)
+_USERNAME_LENGTH = range(3, 33)
+
+
+def _is_word_character(char: str) -> bool:
+    """TDLib's ``is_word_character``: a letter, a number or ``_``."""
+    return char == "_" or unicodedata.category(char)[0] in "LN"
+
+
+def _is_ascii_word(char: str) -> bool:
+    """TDLib's ``is_alpha_digit_or_underscore``."""
+    return char == "_" or (char.isascii() and char.isalnum())
+
+
+def _command_ranges(text: str) -> list[tuple[int, int]]:
+    """
+    The code point ranges of the commands in ``text``.
+
+    As TDLib's ``match_bot_commands`` finds them. A slash starts one
+    at the start of the text or after anything but a word character,
+    ``/``, ``<`` or ``>``. One to 64 ASCII letters, digits or
+    underscores follow, then optionally ``@`` and three to 32 of them
+    for the bot. The next character may not be a word character,
+    ``/``, ``<`` or ``>``. A command that breaks a rule is no
+    command, and neither is the ``/cmd`` before an ``@name`` that
+    does.
+    """
+    found: list[tuple[int, int]] = []
+    size = len(text)
+    index = 0
+    while (index := text.find("/", index)) != -1:
+        if index and (
+            _is_word_character(text[index - 1]) or text[index - 1] in _COMMAND_NEIGHBOURS
+        ):
+            index += 1
+            continue
+        index += 1
+        begin = index
+        while index < size and _is_ascii_word(text[index]):
+            index += 1
+        end = index
+        if end - begin not in _COMMAND_LENGTH:
+            continue
+        if index < size and text[index] == "@":
+            index += 1
+            username = index
+            while index < size and _is_ascii_word(text[index]):
+                index += 1
+            if index - username not in _USERNAME_LENGTH:
+                continue
+            end = index
+        if index < size and (
+            _is_word_character(text[index]) or text[index] in _COMMAND_NEIGHBOURS
+        ):
+            continue
+        found.append((begin - 1, end))
+    return found
+
+
+def _utf16_length(text: str) -> int:
+    """The length of ``text`` in UTF-16 code units."""
+    return sum(2 if ord(char) > _BMP_LAST else 1 for char in text)
+
+
+def bot_command_entities(text: str | None) -> list[MessageEntity]:
+    """
+    The ``bot_command`` entities a client attaches to ``text``.
+
+    Telegram finds the commands in a message itself: ``/start``, and
+    ``/start@my_bot`` with the bot's username, wherever they stand as
+    :func:`_command_ranges` says, not only at the start. Offsets and lengths
+    are in UTF-16 code units. Mentions, hashtags and links get entities
+    too, which this does not add.
+    """
+    if not text:
+        return []
+    return [
+        MessageEntity(
+            type=MessageEntityType.BOT_COMMAND,
+            offset=_utf16_length(text[:begin]),
+            length=_utf16_length(text[begin:end]),
+        )
+        for begin, end in _command_ranges(text)
+    ]
 
 
 def apply_parse_modes(value: Any, find_user: UserLookup) -> Any:
