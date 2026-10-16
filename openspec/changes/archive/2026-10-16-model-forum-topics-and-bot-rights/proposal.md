@@ -9,3 +9,6 @@ own code can observe:
   branches never ran.
 - **Closed topics are open.** A bot that is a plain member posts into a closed topic, and
   into a closed or hidden General topic. Telegram answers `TOPIC_CLOSED`.
+- **Topic messages have no root.** In Telegram a topic message that replies to nothing
+  else carries the topic's `forum_topic_created` message as `reply_to_message`. Bots read
+  the topic's name from it, and here it was `None`.

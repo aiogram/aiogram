@@ -25,3 +25,12 @@ between them produce every message a method with `message_thread_id` stores. It 
 the topic through `api_topic()` and refuses a closed one. The right is read by
 `bot_has_right()`, from the bot's stored membership: the owner holds every right, an
 administrator what `scoped_rights()` reports for the chat's type, anyone else nothing.
+
+### D3. The root is filled in where a topic message is built
+
+`TopicState.root_reply()` returns the root as `reply_to_message` unless the message
+already replies to one of its chat. The Bot API server falls back to the root for a
+message whose reply is external, so an `external_reply` gets the root too. It is applied
+in `build_message`, in the copy and forward path after the fields a move clears and
+before the request's own reply, in `service_message`, and in the actor's
+`_build_message` before `fields`, so an explicit reply wins.

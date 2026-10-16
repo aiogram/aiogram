@@ -661,6 +661,32 @@ class TopicState:
         ]
 
     @property
+    def root_message(self) -> Message | None:
+        """
+        The ``forum_topic_created`` message that opened this topic.
+
+        Telegram makes it the ``reply_to_message`` of every message in
+        the topic that replies to nothing else, and bots read the
+        topic's name from it. The General topic has none.
+        """
+        if self.is_general or self.chat is None or self.message_thread_id is None:
+            return None
+        return self.chat.find_message(self.message_thread_id)
+
+    def root_reply(self, values: Mapping[str, Any]) -> dict[str, Any]:
+        """
+        The ``reply_to_message`` a message with ``values`` gets here.
+
+        The topic's root, unless the message already replies to a
+        message of its chat. A reply in another chat is no such reply,
+        so it gets the root too, as the Bot API server reports it.
+        """
+        root = self.root_message
+        if root is None or values.get("reply_to_message") is not None:
+            return {}
+        return {"reply_to_message": root}
+
+    @property
     def label(self) -> str:
         """How a failure message names this topic."""
         # A topic is always registered on a chat; a hand-built one still names itself.

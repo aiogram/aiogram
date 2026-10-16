@@ -1711,6 +1711,8 @@ class UserActor:
         if self.topic is not None and not self.topic.is_general:
             values["message_thread_id"] = self.topic.message_thread_id
             values["is_topic_message"] = True
+            # An explicit reply in `fields` replaces the root below.
+            values.update(self.topic.root_reply({}))
         if self.business is not None:
             values["business_connection_id"] = self.business.id
         values.update(_detached(fields or {}, self.environment.bot))

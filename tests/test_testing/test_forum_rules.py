@@ -1,9 +1,10 @@
 import pytest
 
+from aiogram import Router
 from aiogram.enums import ChatMemberStatus
 from aiogram.exceptions import TelegramBadRequest
 from aiogram.test import Blueprint, BotTestEnvironment, administrator_rights
-from aiogram.types import InputMediaPhoto
+from aiogram.types import InputMediaPhoto, Message, ReplyParameters
 
 
 def forum_world(bot_status=None, rights=None):
@@ -208,3 +209,140 @@ class TestClosedGeneralTopic:
         await env.bot.send_message(chat_id=team.id, text="x")
 
         assert team.messages[-1].text == "x"
+
+
+class TestTopicRoot:
+    async def test_a_bot_message_in_a_topic_replies_to_its_root(self, make_env):
+        env, chat, thread_id = make_env()
+
+        sent = await env.bot.send_message(chat_id=chat.id, text="x", message_thread_id=thread_id)
+
+        root = chat.topic(thread_id).root_message
+        assert sent.is_topic_message is True
+        assert sent.reply_to_message is root
+        assert root.forum_topic_created.name == "Game"
+        assert root.reply_to_message is None
+
+    async def test_a_bot_message_in_general_replies_to_nothing(self, make_env):
+        env, chat, _thread_id = make_env()
+
+        sent = await env.bot.send_message(chat_id=chat.id, text="x")
+
+        assert sent.reply_to_message is None
+        assert chat.general_topic.root_message is None
+
+    async def test_an_explicit_reply_wins_over_the_root(self, make_env):
+        env, chat, thread_id = make_env()
+        first = await env.bot.send_message(chat_id=chat.id, text="a", message_thread_id=thread_id)
+
+        second = await env.bot.send_message(
+            chat_id=chat.id,
+            text="b",
+            message_thread_id=thread_id,
+            reply_parameters=ReplyParameters(message_id=first.message_id),
+        )
+
+        assert second.reply_to_message.message_id == first.message_id
+
+    async def test_a_reply_in_another_chat_still_gets_the_root(self, make_env):
+        env, chat, thread_id = make_env()
+        private = env.chat(env.blueprint.chats[1])
+        elsewhere = await env.bot.send_message(chat_id=private.id, text="elsewhere")
+
+        sent = await env.bot.send_message(
+            chat_id=chat.id,
+            text="x",
+            message_thread_id=thread_id,
+            reply_parameters=ReplyParameters(chat_id=private.id, message_id=elsewhere.message_id),
+        )
+
+        assert sent.external_reply is not None
+        assert sent.reply_to_message is chat.topic(thread_id).root_message
+
+    @pytest.mark.parametrize("move", ["copy_message", "forward_message"])
+    async def test_a_move_into_a_topic_replies_to_its_root(self, make_env, move):
+        env, chat, thread_id = make_env()
+        sent = await env.bot.send_message(chat_id=chat.id, text="s")
+
+        await getattr(env.bot, move)(
+            chat_id=chat.id,
+            from_chat_id=chat.id,
+            message_id=sent.message_id,
+            message_thread_id=thread_id,
+        )
+
+        assert chat.messages[-1].reply_to_message is chat.topic(thread_id).root_message
+
+    async def test_a_copy_with_its_own_reply_keeps_it(self, make_env):
+        env, chat, thread_id = make_env()
+        target = await env.bot.send_message(chat_id=chat.id, text="t", message_thread_id=thread_id)
+        sent = await env.bot.send_message(chat_id=chat.id, text="s")
+
+        await env.bot.copy_message(
+            chat_id=chat.id,
+            from_chat_id=chat.id,
+            message_id=sent.message_id,
+            message_thread_id=thread_id,
+            reply_parameters=ReplyParameters(message_id=target.message_id),
+        )
+
+        assert chat.messages[-1].reply_to_message.message_id == target.message_id
+
+    async def test_a_move_out_of_a_topic_replies_to_nothing(self, make_env):
+        env, chat, thread_id = make_env()
+        sent = await env.bot.send_message(chat_id=chat.id, text="s", message_thread_id=thread_id)
+
+        await env.bot.forward_message(
+            chat_id=chat.id, from_chat_id=chat.id, message_id=sent.message_id
+        )
+
+        assert chat.messages[-1].reply_to_message is None
+
+    async def test_a_topic_service_message_replies_to_the_root(self, make_env):
+        env, chat, thread_id = make_env(bot_status=ChatMemberStatus.ADMINISTRATOR)
+
+        await env.bot.close_forum_topic(chat_id=chat.id, message_thread_id=thread_id)
+
+        assert chat.messages[-1].forum_topic_closed is not None
+        assert chat.messages[-1].reply_to_message is chat.topic(thread_id).root_message
+
+    async def test_an_actor_message_in_a_topic_replies_to_its_root(self, make_env):
+        env, chat, thread_id = make_env()
+        alice = env.user(env.blueprint.users[0]).in_(chat, topic=thread_id)
+
+        await alice.send("hello")
+
+        assert chat.messages[-1].reply_to_message is chat.topic(thread_id).root_message
+
+    async def test_an_actor_reply_in_a_topic_keeps_its_target(self, make_env):
+        env, chat, thread_id = make_env()
+        alice = env.user(env.blueprint.users[0]).in_(chat, topic=thread_id)
+        await alice.send("first")
+        first = chat.messages[-1]
+
+        await alice.reply(first, "second")
+
+        assert chat.messages[-1].reply_to_message is first
+
+    async def test_an_actor_message_in_general_replies_to_nothing(self, make_env):
+        env, chat, _thread_id = make_env()
+        alice = env.user(env.blueprint.users[0]).in_(chat, topic=chat.general_topic)
+
+        await alice.send("hello")
+
+        assert chat.messages[-1].reply_to_message is None
+
+    async def test_a_handler_reads_the_topic_name_from_the_root(self, make_env, dp):
+        router = Router()
+
+        @router.message()
+        async def name_the_topic(message: Message) -> None:
+            await message.answer(f"in {message.reply_to_message.forum_topic_created.name}")
+
+        dp.include_router(router)
+        env, chat, thread_id = make_env()
+
+        await env.user(env.blueprint.users[0]).in_(chat, topic=thread_id).send("hi")
+
+        assert chat.messages[-1].text == "in Game"
+        assert chat.messages[-1].message_thread_id == thread_id

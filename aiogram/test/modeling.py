@@ -585,7 +585,7 @@ def build_message(
     """
     thread_id = getattr(method, "message_thread_id", None)
     # An unknown thread id must fail rather than silently produce an untagged message.
-    posting_topic(env, chat, thread_id)
+    topic = posting_topic(env, chat, thread_id)
     receiver = _ephemeral_receiver(env, method, chat)
     reply = _reply_changes(env, method, chat, ephemeral=receiver is not None)
     connection_id = getattr(method, "business_connection_id", None)
@@ -615,6 +615,8 @@ def build_message(
         values["is_topic_message"] = True
 
     values.update(reply)
+    if topic is not None:
+        values.update(topic.root_reply(values))
 
     if media_field is not None:
         values[media_field] = stored_content(
@@ -1178,10 +1180,14 @@ def _thread_changes(
     That is the thread the request names, in a forum, and no thread
     otherwise: the original's thread belongs to its own chat.
     """
-    posting_topic(env, target, thread_id)
-    if thread_id is None or not target.is_forum:
+    topic = posting_topic(env, target, thread_id)
+    if topic is None or topic.is_general:
         return {"message_thread_id": None, "is_topic_message": None}
-    return {"message_thread_id": thread_id, "is_topic_message": True}
+    return {
+        "message_thread_id": thread_id,
+        "is_topic_message": True,
+        **topic.root_reply({}),
+    }
 
 
 def forward_one(
@@ -1219,8 +1225,9 @@ def forward_one(
             original.from_user or env.world.bot_user.as_user(),
         ),
         **{
-            **thread,
             **_new_message_changes(protect_content),
+            # After them: a topic's root is the reply a move gets.
+            **thread,
             **posted_by(target, env.world.bot_user.as_user()),
             "media_group_id": media_group_id,
         },
@@ -1364,8 +1371,10 @@ def copy_one(
         # A copy carries no trace of where it came from — that is the whole difference.
         forward_origin=None,
         **{
-            **thread,
             **_new_message_changes(protect_content),
+            # After them, and before the request's own reply, which
+            # wins over a topic's root.
+            **thread,
             **posted_by(target, env.world.bot_user.as_user()),
             # A copy takes only the original's content: its keyboard is
             # the one the request passes, or none.
@@ -3262,6 +3271,7 @@ def service_message(
     if thread_id is not None:
         values["message_thread_id"] = thread_id
         values["is_topic_message"] = True
+        values.update(chat.api_topic(thread_id).root_reply(values))
     return chat.add_message(Message(**values))
 
 

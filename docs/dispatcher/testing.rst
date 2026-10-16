@@ -2348,6 +2348,20 @@ up from the test itself — ``chat.topic(999)``, or an actor bound with
 ``.in_(chat, topic=999)`` — is a setup gap instead, and raises
 :class:`aiogram.test.WorldLookupError` naming the topics the chat does have.
 
+Every message in a topic that replies to nothing else carries the topic's root — the
+``forum_topic_created`` service message that opened it — as its ``reply_to_message``, as
+Telegram delivers it, so a handler can read the topic's name from there. That holds for the
+bot's sends, copies, forwards and topic service messages and for messages a bound actor
+sends; an explicit reply keeps its own target, and the General topic has no root:
+
+.. code-block:: python
+
+    @router.message()
+    async def where_am_i(message: Message):
+        await message.answer(message.reply_to_message.forum_topic_created.name)
+
+``topic.root_message`` returns the root from a test.
+
 A closed topic takes messages only from someone who may manage topics. A send, copy or
 forward the bot makes into one fails with ``Bad Request: TOPIC_CLOSED`` unless the bot is
 the owner or an administrator holding ``can_manage_topics``; the same goes for the General
