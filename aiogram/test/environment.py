@@ -5,6 +5,7 @@ import contextlib
 import contextvars
 import datetime
 import heapq
+import weakref
 from collections.abc import Awaitable, Callable, Container, Iterable, Iterator, Mapping
 from dataclasses import dataclass, field
 from http import HTTPStatus
@@ -454,6 +455,12 @@ def _unretrieved(task: asyncio.Task[Any]) -> bool:
     return bool(getattr(task, "_log_traceback", True))
 
 
+def _awaits(task: asyncio.Task[Any], target: asyncio.Task[Any]) -> bool:
+    """Whether ``task`` is suspended on ``target`` or a gather of it."""
+    waiter = getattr(task, "_fut_waiter", None)
+    return waiter is target or target in getattr(waiter, "_children", ())
+
+
 def _running_tasks() -> frozenset[asyncio.Task[Any]]:
     """
     Every task alive right now, or nothing at all outside a running loop.
@@ -609,17 +616,19 @@ class BotTestEnvironment:
         self._instrument_routing()
         self._protected_tasks = set(_running_tasks())
         self._protection_extended = False
-        #: The task that made the first asynchronous entry, normally
-        #: the test's own; never counted as the bot's.
-        self._entry_task: asyncio.Task[Any] | None = None
-        # Every task created while this environment was live and still
-        # running, and the finished ones that failed without anyone
-        # retrieving why, so `drain` can also report a task that
-        # already *finished*: `asyncio.all_tasks()` only answers with
-        # the unfinished ones. A task that ended any other way is
-        # forgotten as it ends. See `_track_spawned_tasks`.
-        self._spawned_tasks: set[asyncio.Task[Any]] = set()
+        # The finished tasks that failed without anyone retrieving
+        # why, so `drain` can also report a task that already ended:
+        # `asyncio.all_tasks()` answers with the unfinished ones only.
+        # See `_track_spawned_tasks`.
         self._failed_tasks: set[asyncio.Task[Any]] = set()
+        # Every task created while this environment tracks them ->
+        # the task that created it, held weakly. A task that has just
+        # ended is still here before its done callback runs, which
+        # `all_tasks()` no longer lists. See `_track_spawned_tasks`.
+        self._spawned: weakref.WeakKeyDictionary[
+            asyncio.Task[Any],
+            asyncio.Task[Any] | None,
+        ] = weakref.WeakKeyDictionary()
         self._tracking_loop: asyncio.AbstractEventLoop | None = None
         self._installed_task_factory: Any = None
         self._previous_task_factory: Any = None
@@ -658,9 +667,8 @@ class BotTestEnvironment:
         self.dispatcher.workflow_data.update(self._original_workflow_data)
         self._uninstrument_routing()
         self._untrack_spawned_tasks()
-        self._spawned_tasks.clear()
         self._failed_tasks.clear()
-        self._entry_task = None
+        self._spawned.clear()
         # Due actions close over this environment, which nothing
         # advances any more.
         self._due.clear()
@@ -1899,7 +1907,14 @@ class BotTestEnvironment:
         at this environment's **first asynchronous entry point** — the first :meth:`feed` or
         :meth:`handle_call`, the earliest moment a loop is guaranteed to exist and still
         before the bot under test can have spawned anything. Everything alive at that
-        instant is spared.
+        instant is spared, but the task making the entry, which may be
+        a worker the bot started.
+
+        **Never the caller, nor a task waiting on it.** A drain called
+        from a child task must not cancel the test's task that awaits
+        that child. A task waits on another when it awaits it,
+        directly or through ``gather``, or created it, which covers a
+        ``TaskGroup`` and ``asyncio.wait``.
 
         The bluntness that remains is worth stating plainly: a task the *bot* creates from
         a fixture, before the first update is fed, is spared too, and a task created by
@@ -1991,7 +2006,9 @@ class BotTestEnvironment:
         once none is left. A task that ended with an exception nobody
         retrieved is raised as
         :class:`~aiogram.test.BackgroundTaskError`, the first chained
-        as its cause. ``timeout`` defaults to this
+        as its cause. The caller and every task waiting on it are
+        never waited for, as :meth:`drain` spares them. ``timeout``
+        defaults to this
         environment's ``default_wait_timeout``, and the deadline is
         read off the event loop's clock.
 
@@ -2054,19 +2071,46 @@ class BotTestEnvironment:
         """
         The tasks this environment counts as the bot's.
 
-        Created since its first asynchronous entry, minus those alive
-        then, the caller, and the task that made that entry: a test
-        waiting from a child task must not wait for itself.
+        Those alive now or failed unseen, minus those alive at its
+        first asynchronous entry and those :meth:`_spared_tasks` names.
+        """
+        self._release_retrieved_failures()
+        candidates = {
+            *asyncio.all_tasks(),
+            *list(self._spawned),
+            *self._failed_tasks,
+        } - self._protected_tasks
+        return candidates - self._spared_tasks(candidates)
+
+    def _spared_tasks(self, candidates: set[asyncio.Task[Any]]) -> set[asyncio.Task[Any]]:
+        """
+        The caller and every task waiting on it: never the bot's.
+
+        ``drain()`` or ``wait_for_tasks()`` called from a child task
+        must not cancel or wait for the test's task that awaits that
+        child, or for itself. A task waits on another when it awaits
+        it, directly or through ``gather``, as asyncio's
+        ``_fut_waiter`` shows, or created it, which covers a
+        ``TaskGroup`` and ``asyncio.wait``, which await a future of
+        their own. Both are followed until nothing new is found. A
+        task the bot made first call, such as a worker started with
+        ``create_task``, waits on nothing and is the bot's.
         """
         current = asyncio.current_task()
-        self._release_retrieved_failures()
-        return {
-            task
-            for task in (*asyncio.all_tasks(), *self._spawned_tasks, *self._failed_tasks)
-            if task is not current
-            and task is not self._entry_task
-            and task not in self._protected_tasks
-        }
+        if current is None:  # pragma: no cover - always in a task
+            return set()
+        spared = {current}
+        frontier = [current]
+        while frontier:
+            task = frontier.pop()
+            waiting = {other for other in candidates if _awaits(other, task)}
+            creator = self._spawned.get(task)
+            if creator is not None:
+                waiting.add(creator)
+            for other in waiting - spared:
+                spared.add(other)
+                frontier.append(other)
+        return spared
 
     @staticmethod
     def _collect_failures(
@@ -2107,7 +2151,9 @@ class BotTestEnvironment:
             return
         self._protection_extended = True
         current = asyncio.current_task()
-        self._entry_task = current
+        # The task making this entry is not spared: it may be a worker
+        # the bot started. The test's own task is spared as the
+        # caller, or as waiting on it; see `_spared_tasks`.
         self._protected_tasks |= {task for task in _running_tasks() if task is not current}
         self._track_spawned_tasks()
 
@@ -2123,12 +2169,14 @@ class BotTestEnvironment:
         The previous factory is called rather than replaced, so an eager task factory or a
         framework's own stays in force and this only observes.
 
-        A task is held by a **strong** reference while it runs, and a
-        failed one until someone retrieves its exception or
-        :meth:`drain` and :meth:`wait_for_tasks` report it: collected
-        earlier it would take the exception with it, and asyncio would
-        print the never-retrieved warning this exists to prevent.
-        Every other task is forgotten as it ends, see
+        A task and who created it are noted weakly: asyncio holds a
+        running one, and a just-ended one until its done callback has
+        run, so neither is lost. A failed one is held by
+        a **strong** reference until someone retrieves its exception
+        or :meth:`drain` and :meth:`wait_for_tasks` report it:
+        collected earlier it would take the exception with it, and
+        asyncio would print the never-retrieved warning this exists
+        to prevent. Every other task is let go as it ends, see
         :meth:`_forget_task`, so a long run does not grow with the
         tasks it has spawned.
 
@@ -2140,12 +2188,13 @@ class BotTestEnvironment:
         previous: Any = loop.get_task_factory()
 
         def factory(loop: Any, coro: Any, **kwargs: Any) -> Any:
+            creator = asyncio.current_task(loop)
             task: Any = (
                 asyncio.Task(coro, loop=loop, **kwargs)
                 if previous is None
                 else previous(loop, coro, **kwargs)
             )
-            self._remember_task(cast("asyncio.Task[Any]", task))
+            self._remember_task(cast("asyncio.Task[Any]", task), creator)
             return task
 
         self._tracking_loop = loop
@@ -2153,20 +2202,29 @@ class BotTestEnvironment:
         self._installed_task_factory = factory
         loop.set_task_factory(factory)
 
-    def _remember_task(self, task: asyncio.Task[Any]) -> None:
-        """Hold ``task`` while it runs; a disposed environment holds nothing."""
+    def _remember_task(
+        self,
+        task: asyncio.Task[Any],
+        creator: asyncio.Task[Any] | None,
+    ) -> None:
+        """Note ``task`` and its creator, and watch it end."""
         if self._disposed:
             return
-        self._spawned_tasks.add(task)
+        self._spawned[task] = creator
         task.add_done_callback(self._forget_task)
 
     def _release_retrieved_failures(self) -> None:
-        """Whoever retrieved a kept task's exception has taken it over."""
+        """
+        Whoever retrieved a kept task's exception has taken it over.
+
+        Swept when the tasks are counted rather than as each one
+        ends, so many failures cost one pass each count.
+        """
         self._failed_tasks = {kept for kept in self._failed_tasks if _unretrieved(kept)}
 
     def _forget_task(self, task: asyncio.Task[Any]) -> None:
         """
-        Let go of a task that ended, keeping only an unretrieved failure.
+        Keep a task that ended only if it failed unseen.
 
         A task that succeeded or was cancelled has nothing to report.
         One that failed is kept until its exception is retrieved. The
@@ -2177,8 +2235,6 @@ class BotTestEnvironment:
         more than a record would and, unlike one, can still say
         whether the bot retrieved it.
         """
-        self._spawned_tasks.discard(task)
-        self._release_retrieved_failures()
         if not self._disposed and not task.cancelled() and _unretrieved(task):
             self._failed_tasks.add(task)
 

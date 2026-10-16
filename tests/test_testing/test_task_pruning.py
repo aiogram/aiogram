@@ -18,13 +18,17 @@ async def started(env, alice):
 
 def held(env):
     """
-    Everything the environment keeps hold of, besides the test's own task.
+    Every task the environment holds strongly, besides the test's own.
 
-    A failure the bot retrieved is let go at the next sweep, which any task ending, a drain
-    or a wait makes, so the sweep is made here for a test that asks in between.
+    It notes the tasks it tracks weakly, so what it holds is the
+    failures nobody retrieved and the creators of the tasks still
+    alive. A failure the bot retrieved is let go at the next sweep,
+    which a drain or a wait makes, so the sweep is made here for a
+    test that asks in between.
     """
     env._release_retrieved_failures()
-    return (env._spawned_tasks | env._failed_tasks) - {asyncio.current_task()}
+    creators = {creator for creator in env._spawned.values() if creator is not None}
+    return (env._failed_tasks | creators) - {asyncio.current_task()}
 
 
 async def ticks(count=3):
@@ -63,7 +67,7 @@ class TestFinishedTasksAreLetGo:
     async def test_a_cancelled_task_is_not_held(self, started):
         task = asyncio.create_task(asyncio.sleep(3600))
         await ticks()
-        assert task in held(started)
+        assert task in started._own_tasks()
 
         task.cancel()
         await ticks()
@@ -74,7 +78,7 @@ class TestFinishedTasksAreLetGo:
         tasks = [asyncio.create_task(asyncio.sleep(3600)) for _ in range(5)]
         await ticks()
 
-        assert set(tasks) <= held(started)
+        assert set(tasks) <= started._own_tasks()
         assert await started.drain() == 5
         await ticks()
         assert held(started) == set()
@@ -184,7 +188,8 @@ class TestADisposedEnvironmentHoldsNothing:
 
         try:
             assert held(outer) == set()
-            assert {failing, sleeping} <= held(inner)
+            assert not {failing, sleeping} & set(outer._spawned)
+            assert {failing, sleeping} <= set(inner._spawned)
         finally:
             sleeping.cancel()
             with pytest.raises(KeyError):

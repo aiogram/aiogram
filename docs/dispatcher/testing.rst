@@ -2117,10 +2117,16 @@ done, and returns how many it waited for. Nothing is cancelled:
         for player in players:
             assert bot_env.chat(player).messages[-1].text.startswith("Results")
 
-The tasks are the same ones ``drain()`` counts: created after this
-environment first fed an update or answered a call, minus those
-already running then, and never the task that made that first
-entry, which is normally the test's own. A task spawned while the
+The tasks are the same ones ``drain()`` counts: those alive or
+failed unseen, minus those already running when this environment
+first fed an update or answered a call, and minus the caller and
+every task waiting on it. A task waits on another when it awaits
+it, directly or through ``gather``, or created it, which covers a
+``TaskGroup`` and ``asyncio.wait``. So a ``wait_for_tasks()`` or a
+``drain()`` called from a child task never waits for or cancels the
+test's task that awaits that child, nor itself, while a worker the
+test started with ``create_task`` is the bot's even when its call
+was the environment's first. A task spawned while the
 wait runs is waited for too, so the wait returns only once none is
 left. A loop the bot runs for the whole game never ends, so it is
 not one to wait for: ``wait_for()`` the state it should reach and
@@ -2160,6 +2166,9 @@ built with no event loop running at all, and the snapshot taken at construction 
 protection is extended again at this environment's **first asynchronous entry point** — the
 first ``feed`` or the first intercepted Bot API call — which is the earliest moment a loop is
 guaranteed to exist and still before the bot under test can have spawned anything of its own.
+The task making that entry is not spared by it, since it may be a worker the bot started; the
+test's own task is spared as the caller, or as a task waiting on the caller, as described
+under `Waiting for background tasks to finish`_.
 That is what spares a session-scoped fixture's own background worker: it is already running
 by the time this environment does anything asynchronous, so it is protected exactly like a
 task that predates construction, and the first test in a session to call ``drain()`` does not
@@ -2176,8 +2185,8 @@ a night timer that died with a ``KeyError`` would look exactly like one cancelle
 a failure is re-raised as :class:`aiogram.test.DrainedTaskError`, naming every task that
 failed, with the first one's real traceback chained as its cause. This holds for a task that
 died **before** the drain, too: those are not in ``asyncio.all_tasks()``, so the environment
-holds every task created while it is live and, when one fails, keeps it until its exception is
-retrieved or reported, and inspects those as well as the cancelled ones. They are not counted
+notes every task created while it is live, weakly, and when one fails keeps it until its
+exception is retrieved or reported, and inspects those as well as the cancelled ones. They are not counted
 in the number ``drain`` returns, which stays "how many tasks this drained". A task that
 succeeded or was cancelled is forgotten as soon as it ends, so a long test that spawns
 thousands of tasks does not hold on to them; only a failure nobody has looked at is kept. An

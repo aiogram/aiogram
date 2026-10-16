@@ -251,3 +251,67 @@ couplings leave unchanged.
 
 - **WHEN** a supergroup is declared with `permissions=` that deny polls
 - **THEN** `getChat` reports them and the bot's `sendPoll` is refused as a plain member
+
+### Requirement: The bot's background tasks can be waited for
+
+`wait_for_tasks()` SHALL wait, cancelling nothing, until every task the environment counts
+as the bot's is done: those alive or failed unseen, other than those alive at its first
+asynchronous entry, the caller, and every task waiting on the caller, by awaiting it,
+directly or through `gather`, or by having created it. A task that made the environment's
+first call SHALL count as the bot's. `drain()` SHALL count the same tasks. A task created
+while waiting SHALL be waited for too. A task that ended with an exception nobody retrieved
+SHALL be raised as `BackgroundTaskError`, the base of `DrainedTaskError`, with the first
+chained as its cause. At the timeout, which defaults to the environment's wait timeout, it
+SHALL raise `WaitTimeoutError` naming each task still running and its coroutine, and leave
+them running. It SHALL return how many tasks it waited for.
+
+#### Scenario: A results broadcast
+
+- **WHEN** a handler broadcasts from a task and the test waits for the bot's tasks
+- **THEN** every message of the broadcast is stored, and the task was not cancelled
+
+#### Scenario: A worker that touched the environment first
+
+- **WHEN** the test starts a worker that calls the bot first and then sleeps, and drains
+- **THEN** the worker is cancelled and counted
+
+#### Scenario: A drain from a child task
+
+- **WHEN** the test awaits a child task that drains
+- **THEN** the test's task is neither cancelled nor waited for
+
+#### Scenario: A task that never ends
+
+- **WHEN** the bot's task is still running at the timeout
+- **THEN** `WaitTimeoutError` names it and its coroutine, and it keeps running
+
+#### Scenario: A task that failed
+
+- **WHEN** a bot's task raised an exception nobody retrieved
+- **THEN** the wait raises `BackgroundTaskError` with that exception as its cause
+
+### Requirement: Finished tasks are not held for the life of the environment
+
+The environment SHALL note the tasks it tracks weakly, and SHALL keep no task that succeeded
+or was cancelled once it ends. A task that failed SHALL be kept until its exception is
+retrieved, by the bot or by a report, so that `wait_for_tasks()` and `drain()` still raise
+`BackgroundTaskError` and `DrainedTaskError` for a failure nobody retrieved, and SHALL NOT
+for one the bot retrieved, however late. Retrieved failures SHALL be let go when the tasks
+are next counted rather than each time a task ends. A disposed environment SHALL hold no
+task.
+
+#### Scenario: Many short tasks
+
+- **WHEN** the bot spawns two hundred tasks that each finish
+- **THEN** the environment holds none of them, and none is kept alive by it
+
+#### Scenario: A failure among them
+
+- **WHEN** one of many finished tasks failed and nobody retrieved why
+- **THEN** `wait_for_tasks()` raises `BackgroundTaskError` naming it, with its exception as the
+  cause, and afterwards the environment holds nothing
+
+#### Scenario: A failure the bot handled
+
+- **WHEN** the bot awaits a task that failed, and catches the exception, at any later time
+- **THEN** neither `wait_for_tasks()` nor `drain()` reports it

@@ -380,7 +380,9 @@ Telegram exception.
 The environment no longer holds every task the bot spawned until it is disposed of: a task that
 succeeds or is cancelled is forgotten as it ends, so a long run does not grow with the tasks it
 spawned, and one that fails is kept until its exception is retrieved — by the bot, or by
-``wait_for_tasks()`` or ``drain()``, which still report it.
+``wait_for_tasks()`` or ``drain()``, which still report it. Both count a worker the test
+started even when its call was the environment's first, and never wait for or cancel the
+caller or a task waiting on it, such as the test's task awaiting the child that drains.
 Flood control can be tested two ways. The documentation shows the override that declares one
 ``TelegramRetryAfter``, built whole with its method and ``retry_after``. And
 ``BotTestEnvironment(rate_limits=RateLimits())``, off by default, models Telegram's guidance

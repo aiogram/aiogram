@@ -206,3 +206,56 @@ class TestWaitForTasks:
 
         assert drained == 1
         assert leaked.cancelled()
+
+
+class TestWhichTasksAreTheBots:
+    """A worker is the bot's, even one that made the first call."""
+
+    async def test_a_worker_that_made_the_first_call_is_drained(self, env):
+        started = asyncio.Event()
+
+        async def worker():
+            await env.bot.get_me()
+            started.set()
+            await asyncio.sleep(3600)
+
+        task = asyncio.create_task(worker())
+        await started.wait()
+
+        assert await env.drain() == 1
+        assert task.cancelled()
+
+    async def test_a_worker_that_made_the_first_call_is_waited_for(self, env):
+        async def worker():
+            await env.bot.get_me()
+            await asyncio.sleep(0.01)
+
+        task = asyncio.create_task(worker())
+        await asyncio.sleep(0)
+
+        assert await env.wait_for_tasks(timeout=1.0) == 1
+        assert task.done()
+
+    async def test_a_drain_from_a_task_the_test_waits_on_spares_the_test(self, env, alice):
+        await alice.send("hi")
+        leaked = asyncio.create_task(asyncio.sleep(3600))
+        child = asyncio.create_task(env.drain())
+
+        # asyncio.wait awaits a future of its own, not the child.
+        done, _pending = await asyncio.wait({child})
+
+        assert done == {child}
+        assert child.result() == 1
+        assert leaked.cancelled()
+
+    async def test_a_drain_from_a_worker_spares_the_worker_and_the_test(self, env):
+        async def worker():
+            await env.bot.get_me()
+            leaked = asyncio.create_task(asyncio.sleep(3600))
+            await asyncio.sleep(0)
+            return await env.drain(), leaked
+
+        drained, leaked = await asyncio.create_task(worker())
+
+        assert drained == 1
+        assert leaked.cancelled()
