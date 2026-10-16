@@ -7,3 +7,7 @@
 ## 2. Route history
 
 - [x] 2.1 Keep every trigger frame, add `route_history`, `assert_updates_handled()`, `expect_unhandled()` and the `bot_env_assert_updates_handled` fixture (design D2); verify the per-trigger rule, a swallowed error, the escape, and the plugin failing a passing test only
+
+## 3. Parse modes
+
+- [x] 3.1 Port TDLib's HTML, MarkdownV2 and Markdown parsers and apply them to every modeled call with the server's entities rule (design D3); verify every tag and mark, UTF-16 offsets, each error's wording, nested items, the default parse mode, and a round trip through aiogram's renderers

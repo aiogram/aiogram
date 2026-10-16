@@ -700,6 +700,66 @@ returns ``True``, :code:`getFile` echoes the ``file_id`` it was asked for so a d
 path can be correlated, :code:`createInvoiceLink` returns a unique link, and
 :code:`getUserPersonalChatMessages` reads from that user's private chat.
 
+Formatted text
+--------------
+
+A text or caption sent with a ``parse_mode`` is stored the way
+Telegram stores it: as plain text with entities, offsets counted in
+UTF-16 units. The bot's default from ``DefaultBotProperties`` counts
+the same as one passed to the call. So a test reads what a player
+reads, and ``html_text`` gives the markup back:
+
+.. code-block:: python
+
+    await bot.send_message(chat_id, "<b>Night</b> falls", parse_mode="HTML")
+
+    message = bot_chat.messages[-1]
+    assert message.text == "Night falls"
+    assert message.entities[0].type == "bold"
+    assert message.html_text == "<b>Night</b> falls"
+
+``HTML``, ``MarkdownV2`` and the legacy ``Markdown`` are parsed by
+ports of TDLib's own parsers, which the Bot API server runs: nested
+tags, ``<a href>`` and ``tg://user?id=`` mentions of declared users,
+``<code>``, ``<pre><code class="language-x">``, ``<tg-spoiler>``,
+``<blockquote expandable>``, ``<tg-emoji>``, ``<tg-time>``, and every
+MarkdownV2 escaping rule. Markup Telegram cannot parse fails the call
+in Telegram's words, so an escaping bug fails the test instead of
+showing a player a stray ``<``:
+
+.. code-block:: python
+
+    await bot.send_message(chat_id, f"Score: {a} < {b}", parse_mode="HTML")
+    # TelegramBadRequest: Telegram server says - Bad Request: can't parse
+    # entities: Unsupported start tag "" at byte offset 9
+
+The wording is TDLib's, from ``td/telegram/MessageEntity.cpp``, with
+the prefix its ``parseTextEntities`` adds and the first letter
+lowercased as the Bot API server relays it. The byte offset counts
+UTF-8 bytes of the text sent. A parse mode the Bot API does not know
+fails with ``unsupported parse_mode``.
+
+Explicit ``entities`` (or ``caption_entities``) with a parse mode
+follow the Bot API server's ``get_formatted_text``: a parse mode on a
+non-empty text is applied and the explicit entities are ignored. Only
+with no parse mode, or ``parse_mode="none"``, are they stored as
+given. This is the case to watch for with a bot-wide default: an
+explicit entities list then needs ``parse_mode=None`` on the call.
+
+Every modeled method is parsed, including what it carries: the items
+of a media group, a poll's question and options, an inline query's
+message contents. What parsing leaves is stored where the world
+already stores it; a poll keeps its plain question and options but
+not their entities. The call log keeps the call as the bot made it,
+parse mode and markup included, and an override answers before
+anything is parsed.
+
+After parsing, the toolkit does less than Telegram: ``\r`` and
+trailing whitespace are removed and entities nested in ``code`` or
+``pre`` are dropped, but leading whitespace stays and links,
+mentions or commands in the text are not detected. A text sent
+without a parse mode is stored exactly as sent.
+
 Rich messages
 -------------
 

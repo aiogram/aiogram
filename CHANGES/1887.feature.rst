@@ -197,6 +197,14 @@ own — is waited for with ``await env.wait_for_tasks()``, which waits until eve
 nothing, raises a task's own failure as :class:`aiogram.test.BackgroundTaskError` (the base of
 ``DrainedTaskError``), and on timeout names each task still running and the coroutine it runs.
 
+A text or caption sent with a ``parse_mode`` — passed to the call or the bot's default — is
+stored as Telegram stores it, as plain text and entities with UTF-16 offsets, rather than with
+its markup: ``HTML``, ``MarkdownV2`` and legacy ``Markdown`` are parsed by ports of TDLib's own
+parsers, so nested tags, links and mentions, pre with a language, spoilers, expandable
+quotes, custom emoji and MarkdownV2's escaping all come out as Telegram's would, and markup
+Telegram cannot parse fails the call with its own ``Bad Request: can't parse entities: ...``.
+A parse mode wins over explicit ``entities``, as on the Bot API server.
+
 A rich message sent as blocks is stored with those blocks in the shape Telegram returns, nested
 blocks and media included, instead of as an empty rich message; ``editMessageText`` replaces
 text with rich content and back, and ``click()`` and ``follow_deep_link()`` reach buttons

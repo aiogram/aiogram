@@ -3904,3 +3904,35 @@ the check after each test that passed, failing that test.
 
 - **WHEN** the fixture flag is on and a passing test left an update unhandled
 - **THEN** that test fails, and a test that called `expect_unhandled()` passes
+
+### Requirement: Parse modes are applied as the Bot API applies them
+
+Every modeled call SHALL apply each parse mode it carries, its own or the bot's default,
+to the text it formats, nested items included, and the world SHALL store the plain text with
+the entities, offsets in UTF-16 code units. `HTML`, `MarkdownV2` and `Markdown` SHALL be
+parsed as TDLib parses them. Markup that cannot be parsed SHALL fail the call with
+`Bad Request: can't parse entities: ` and TDLib's description, and store nothing. A parse
+mode on a non-empty text SHALL win over explicit entities, which SHALL stand only without a
+parse mode or with `none`. An unknown parse mode SHALL fail with `unsupported parse_mode`.
+The call log SHALL keep the call as the bot made it.
+
+#### Scenario: A bold word
+
+- **WHEN** a handler sends `<b>Night</b> falls` with `parse_mode="HTML"`
+- **THEN** the chat stores `Night falls` with a bold entity at offset 0, length 5
+
+#### Scenario: An unescaped less-than sign
+
+- **WHEN** a handler sends `Score: 3 < 5` with `parse_mode="HTML"`
+- **THEN** the call raises `TelegramBadRequest` with `Bad Request: can't parse entities:
+  Unsupported start tag "" at byte offset 9`, and nothing is stored
+
+#### Scenario: The bot's default parse mode
+
+- **WHEN** the bot's default parse mode is `MarkdownV2` and a handler sends `*Day*`
+- **THEN** the chat stores `Day` with a bold entity
+
+#### Scenario: Entities and a parse mode together
+
+- **WHEN** a handler passes both `entities` and `parse_mode="HTML"`
+- **THEN** the stored entities are the parsed ones

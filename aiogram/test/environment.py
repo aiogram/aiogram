@@ -16,7 +16,7 @@ from aiogram.dispatcher.event.bases import UNHANDLED, SkipHandler
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.methods import TelegramMethod
-from aiogram.types import Message, TelegramObject, Update
+from aiogram.types import Message, TelegramObject, Update, User
 
 from .actors import UserActor
 from .blueprint import (
@@ -38,6 +38,7 @@ from .errors import (
     raise_api_error,
 )
 from .flood import RATE_LIMITED_METHODS, FloodControl, RateLimits
+from .markup import apply_parse_modes
 from .modeling import find_handler, resolve_chat
 from .mounting import bindables, detached_copy
 from .overrides import (
@@ -1985,6 +1986,13 @@ class BotTestEnvironment:
         moved = (self.world.now - self._clock_origin).total_seconds()
         return asyncio.get_running_loop().time() + moved
 
+    def _find_user(self, user_id: int) -> User | None:
+        """The user a ``tg://user?id=`` link in the bot's text names."""
+        if user_id == self.world.bot_user.id:
+            return self.world.bot_user.as_user()
+        user = self.world.users.get(user_id)
+        return None if user is None else user.as_user()
+
     def _flood_target(self, method: TelegramMethod[Any]) -> ChatState | None:
         """The chat a rate-limited call sends into, if limits are on."""
         if self._flood is None or type(method) not in RATE_LIMITED_METHODS:
@@ -2017,6 +2025,10 @@ class BotTestEnvironment:
         first half exactly when it matters most, since the refusal path is the one where
         "did we even try, and try at whom?" is the question.
 
+        A modeled method's parse modes are applied first, as the Bot API
+        server parses before anything else reads the text; see
+        :mod:`aiogram.test.markup`.
+
         A modeled rejection comes back as the :class:`~aiogram.exceptions.TelegramBadRequest`
         Telegram would have answered with. A :class:`~aiogram.test.WorldLookupError`
         deliberately does **not**: a gap in the test's own setup must fail the test rather
@@ -2033,6 +2045,15 @@ class BotTestEnvironment:
             # session's `mount` prunes at its root instead of walking it again.
             return outcome.apply(resolved, bot)
 
+        handler = find_handler(resolved)
+        if handler is not None:
+            # Telegram parses before anything else looks at the text,
+            # and the world stores what parsing leaves.
+            try:
+                resolved = apply_parse_modes(resolved, self._find_user)
+            except ApiRejection as error:
+                self.fail(resolved, f"Bad Request: {error}")
+
         flooded = self._flood_target(resolved)
         if flooded is not None and self._flood is not None:
             wait = self._flood.retry_after(flooded.id, flooded.type, self.rate_clock())
@@ -2044,7 +2065,6 @@ class BotTestEnvironment:
                     retry_after=wait,
                 )
 
-        handler = find_handler(resolved)
         if handler is not None:
             try:
                 result = handler(self, resolved)

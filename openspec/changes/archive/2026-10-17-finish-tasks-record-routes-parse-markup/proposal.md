@@ -7,6 +7,9 @@ test cannot see what its bot does:
   broadcast sent from a task of its own is stopped halfway, and nothing waits for it to end.
 - **Routes are forgotten.** `routes` and `last_route` report the last trigger only, so an
   update that went nowhere in the middle of a game is gone by the end of the test.
+- **Markup is stored raw.** A text sent with `parse_mode` keeps its tags, so a world message
+  reads `<b>Night</b>` and a bot that forgets to escape a `<` passes, while Telegram refuses
+  the send.
 
 ## What Changes
 
@@ -16,6 +19,12 @@ test cannot see what its bot does:
 - `route_history` keeps every route record; `assert_updates_handled()`, opt-in by call or by
   the `bot_env_assert_updates_handled` fixture, fails on what went unhandled or raised, and
   `expect_unhandled()` marks a trigger that was meant to.
+- Every modeled call applies its parse modes, resolved with the bot's default, as the Bot API
+  server does: ports of TDLib's HTML, MarkdownV2 and Markdown parsers produce plain text and
+  entities, and broken markup fails with Telegram's `can't parse entities` description.
+
+Observable behavior change, toward the Bot API: a text sent with a parse mode is stored
+parsed, and broken markup or an unknown parse mode now fails the call.
 
 ## Capabilities
 
@@ -29,8 +38,10 @@ None.
 
 ## Impact
 
-- **Code**: `aiogram/test/environment.py`, `errors.py`, `plugin.py`, `__init__.py`.
-- **Tests**: `tests/test_testing/test_wait_for_tasks.py`, `test_route_history.py`.
-- **Docs**: the background task and routing diagnostics sections of
+- **Code**: `aiogram/test/environment.py`, `errors.py`, `plugin.py`, `__init__.py`, and the new
+  `markup.py`.
+- **Tests**: `tests/test_testing/test_wait_for_tasks.py`, `test_route_history.py`,
+  `test_markup.py`.
+- **Docs**: the background task, routing diagnostics and formatted text sections of
   `docs/dispatcher/testing.rst`.
 - **Changelog**: folded into `CHANGES/1887.feature.rst`.
