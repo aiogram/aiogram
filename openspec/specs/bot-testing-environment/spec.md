@@ -3949,3 +3949,35 @@ it shows SHALL run as written.
 - **WHEN** the recipe's code blocks are written into a project and its tests run
 - **THEN** they pass, the fifteen-second pause takes under a second, and `asyncio.sleep`
   and the loop's clock are untouched
+
+### Requirement: A user actor can manage the topics of a forum
+
+A user actor SHALL be able to create a topic, close, reopen and delete one, hide and unhide
+the General topic, and close and reopen it. Each SHALL change the world as the matching bot
+method does, by the same code, and SHALL store and feed the service message Telegram posts
+for it, from that user: `forum_topic_created`, `forum_topic_closed`, `forum_topic_reopened`,
+`general_forum_topic_hidden` or `general_forum_topic_unhidden`. Deleting a topic, and closing
+or reopening the General topic, SHALL feed nothing, as no service message is modeled for them.
+A topic SHALL be named as a declaration, a state or a thread id, and default to the topic the
+actor is bound to. The actor SHALL be the owner or an administrator holding
+`can_manage_topics` in a chat that is a forum, whatever `enforce_bot_rights` says; otherwise
+the trigger SHALL raise `WorldLookupError` naming the right and how to grant it, and change
+nothing.
+
+#### Scenario: The owner closes a topic
+
+- **WHEN** the owner of a forum closes one of its topics
+- **THEN** the topic is closed and a `forum_topic_closed` message from the owner, in the
+  topic and replying to its root, is stored and handled by the dispatcher
+
+#### Scenario: Deleting a topic
+
+- **WHEN** an administrator with `can_manage_topics` deletes a topic
+- **THEN** the topic and its messages are gone, nothing is fed, and a later bot call into the
+  thread fails with `TOPIC_DELETED`
+
+#### Scenario: A member without the right
+
+- **WHEN** a plain member creates a topic
+- **THEN** `WorldLookupError` names `can_manage_topics` and how to grant it, and no topic or
+  message is added

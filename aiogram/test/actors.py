@@ -41,10 +41,22 @@ from aiogram.types import (
     Update,
 )
 
-from .modeling import SUBSCRIPTION_PERIOD, edit_stamp
+from .modeling import (
+    SUBSCRIPTION_PERIOD,
+    close_general,
+    close_topic,
+    delete_topic,
+    edit_stamp,
+    hide_general,
+    holds_right,
+    reopen_general,
+    reopen_topic,
+    unhide_general,
+)
 from .mounting import owned_or_copied
 from .synthesis import synthesize
 from .world import (
+    DEFAULT_TOPIC_ICON_COLOR,
     BusinessConnectionState,
     ChargeState,
     ChatState,
@@ -55,6 +67,7 @@ from .world import (
     TopicState,
     UserState,
     WorldLookupError,
+    create_topic,
     mask,
     posted_by,
     resolve_topic,
@@ -1256,6 +1269,169 @@ class UserActor:
             )
             raise WorldLookupError(msg)
         chat.is_forum = enabled
+
+    async def create_topic(
+        self,
+        name: str,
+        *,
+        icon_color: int | None = None,
+        icon_custom_emoji_id: str | None = None,
+        **data: Any,
+    ) -> TopicState:
+        """
+        Create a topic in this forum, as a user who may manage topics.
+
+        What :code:`createForumTopic` does for the bot, done by this user: the
+        topic exists, and the ``forum_topic_created`` service message that
+        opens it, from this user, is stored and fed to the dispatcher. It
+        returns the new :class:`~aiogram.test.world.TopicState`, to bind an
+        actor to or close later; the handler's result is not returned.
+
+        The chat has to be a forum and the user the owner or an
+        administrator with ``can_manage_topics``. Neither holding is
+        something Telegram would let a client work around, so a test that
+        lacks one has set the world up wrongly, and gets
+        :class:`~aiogram.test.WorldLookupError`.
+        """
+        chat = self._require_topic_manager()
+        topic = create_topic(
+            chat,
+            name=name,
+            date=self.environment.world.next_date(),
+            icon_color=icon_color or DEFAULT_TOPIC_ICON_COLOR,
+            icon_custom_emoji_id=icon_custom_emoji_id,
+            from_user=self.user.as_user(),
+        )
+        assert topic.root_message is not None
+        await self._feed_message(topic.root_message, data)
+        return topic
+
+    async def close_topic(
+        self,
+        topic: TopicSpec | TopicState | int | None = None,
+        **data: Any,
+    ) -> Any:
+        """
+        Close a topic, as a user who may manage topics.
+
+        ``topic`` is the one to close and defaults to the topic this actor
+        is bound to. The topic closes, and the ``forum_topic_closed`` service
+        message, from this user, is stored and fed. See :meth:`create_topic`
+        for who may and what happens when nobody does.
+        """
+        chat = self._require_topic_manager()
+        target = self._require_regular_topic(chat, topic, "close_general_topic")
+        return await self._feed_message(
+            close_topic(self.environment, chat, target, by=self.user.as_user()), data
+        )
+
+    async def reopen_topic(
+        self,
+        topic: TopicSpec | TopicState | int | None = None,
+        **data: Any,
+    ) -> Any:
+        """Reopen a topic, feeding ``forum_topic_reopened``.
+
+        See :meth:`close_topic`.
+        """
+        chat = self._require_topic_manager()
+        target = self._require_regular_topic(chat, topic, "reopen_general_topic")
+        return await self._feed_message(
+            reopen_topic(self.environment, chat, target, by=self.user.as_user()),
+            data,
+        )
+
+    async def delete_topic(self, topic: TopicSpec | TopicState | int | None = None) -> None:
+        """
+        Delete a topic with all its messages, as a user who may manage topics.
+
+        Telegram posts no service message for it and the Bot API has no type
+        for one, so nothing is fed: the bot learns of it only when a call into
+        the thread fails with ``TOPIC_DELETED``. The General topic cannot be
+        deleted.
+        """
+        chat = self._require_topic_manager()
+        delete_topic(chat, self._require_regular_topic(chat, topic, None))
+
+    async def hide_general_topic(self, **data: Any) -> Any:
+        """
+        Hide the General topic, which closes it, as a manager.
+
+        The ``general_forum_topic_hidden`` service message, from this user, is
+        stored and fed.
+        """
+        chat = self._require_topic_manager()
+        return await self._feed_message(
+            hide_general(self.environment, chat, by=self.user.as_user()), data
+        )
+
+    async def unhide_general_topic(self, **data: Any) -> Any:
+        """Unhide the General topic, feeding its service message."""
+        chat = self._require_topic_manager()
+        return await self._feed_message(
+            unhide_general(self.environment, chat, by=self.user.as_user()),
+            data,
+        )
+
+    async def close_general_topic(self) -> None:
+        """
+        Close the General topic, as a user who may manage topics.
+
+        Like :code:`closeGeneralForumTopic`, it posts no service message, so
+        nothing is fed.
+        """
+        close_general(self._require_topic_manager())
+
+    async def reopen_general_topic(self) -> None:
+        """Reopen the General topic, which unhides it; nothing is fed."""
+        reopen_general(self._require_topic_manager())
+
+    def _require_topic_manager(self) -> ChatState:
+        """The forum this actor manages the topics of, or a setup error."""
+        chat = self.chat
+        if not chat.is_forum:
+            msg = (
+                f"Chat {chat.id} is not a forum, so it has no topics to manage; declare it "
+                f"with `add_supergroup(..., is_forum=True)` or turn topics on with "
+                f"`owner.set_topics(True)`"
+            )
+            raise WorldLookupError(msg)
+        if not holds_right(chat, self.user.id, "can_manage_topics"):
+            status = ChatMemberStatus(chat.member(self.user.id).status).value
+            msg = (
+                f"User {self.user.id} cannot manage the topics of chat {chat.id}: it takes "
+                f"`can_manage_topics`, and their status is {status}. A trigger arranges the "
+                f"world and does not refuse as Telegram would, so give them the right "
+                f"with `blueprint.set_member(chat, user, rights=administrator_rights())`, "
+                f"`members={{user: ChatMemberStatus.CREATOR}}`, or `promote(user, "
+                f"can_manage_topics=True)`"
+            )
+            raise WorldLookupError(msg)
+        return chat
+
+    def _require_regular_topic(
+        self,
+        chat: ChatState,
+        topic: TopicSpec | TopicState | int | None,
+        general_trigger: str | None,
+    ) -> TopicState:
+        """The topic to act on: the one passed, else the bound one."""
+        target = self.topic if topic is None else resolve_topic(chat, topic)
+        if target is None:
+            msg = (
+                "No topic to act on: pass one, or bind this actor to one with "
+                "`.in_(chat, topic=...)`"
+            )
+            raise WorldLookupError(msg)
+        if target.is_general:
+            via = f"; `{general_trigger}()` is the General topic's" if general_trigger else ""
+            msg = f"The General topic of chat {chat.id} cannot be handled as a regular topic{via}"
+            raise WorldLookupError(msg)
+        return target
+
+    async def _feed_message(self, message: Message, data: dict[str, Any]) -> Any:
+        """Feed an already stored message as an update from this chat."""
+        return await self._feed(Update(update_id=self._next_update_id(), message=message), data)
 
     async def add_chat_to_community(
         self,

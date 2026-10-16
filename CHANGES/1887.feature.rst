@@ -305,6 +305,12 @@ A supergroup's owner can turn topics off and on again with ``set_topics(...)``, 
 the topics for when they come back, and ``add_supergroup(..., is_forum=True)`` declares a forum
 with none yet. The forum methods refuse a chat that is not a forum, and a send with a thread
 id into one lands untagged, as the Bot API server passes no topic there.
+A user manages topics through the actor — ``create_topic()``, ``close_topic()``,
+``reopen_topic()``, ``delete_topic()``, ``hide_general_topic()``, ``unhide_general_topic()``,
+``close_general_topic()`` and ``reopen_general_topic()`` — which change the world as the matching
+bot methods do and feed the service message Telegram posts, from that user. Deleting a topic
+feeds nothing, as Telegram posts no message for it. The user has to be the owner or hold
+``can_manage_topics``, or the trigger raises ``WorldLookupError`` naming the right.
 
 The bot's own calls are checked against its rights, as Telegram checks them, with Telegram's
 wording: pinning and unpinning take ``can_pin_messages`` (``can_edit_messages`` in a

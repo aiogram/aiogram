@@ -2763,6 +2763,49 @@ into the one flat chat.
     source, which passes no topic for a group that is not a forum: the message lands in the
     chat with no thread id, as a message that is not a topic message.
 
+A user manages topics through the actor, so a test no longer edits the world and posts the
+service message by hand. Each trigger does what the matching bot method does to the world and
+feeds the service message Telegram posts, from that user:
+
+.. code-block:: python
+
+    owner = bot_env.user(owner_spec).in_(team)
+
+    topic = await owner.create_topic("Bugs")  # forum_topic_created
+    await owner.close_topic(topic)            # forum_topic_closed
+    await owner.reopen_topic(topic)           # forum_topic_reopened
+    await owner.delete_topic(topic)           # nothing is fed
+
+    await owner.hide_general_topic()          # general_forum_topic_hidden
+    await owner.unhide_general_topic()        # general_forum_topic_unhidden
+    await owner.close_general_topic()         # nothing is fed
+    await owner.reopen_general_topic()        # nothing is fed
+
+``create_topic()`` returns the new :class:`~aiogram.test.world.TopicState`, to pass on or bind
+an actor to. The others take a topic as a declaration, a state or a thread id, and default to
+the topic the actor is bound to, so ``owner.in_(team, topic=topic).close_topic()`` works too.
+Extra keyword arguments are dispatcher data, as in every other trigger. Deleting a topic
+removes its messages and feeds nothing, because Telegram posts no service message for it and
+the Bot API has no type for one; the bot finds out when a call into the thread fails with
+``TOPIC_DELETED``. Closing and reopening the General topic feed nothing either: no service
+message is modeled for them, as with the bot methods.
+
+The user has to be the owner or an administrator with ``can_manage_topics``, in a chat that
+is a forum. Otherwise the trigger raises :class:`~aiogram.test.WorldLookupError`, like the
+promote guards: the test arranges the world, and arranging what Telegram forbids is a mistake
+in the test rather than an outcome to model. The message names the right and how to grant it:
+
+.. code-block:: python
+
+    await member.in_(team).create_topic("Bugs")
+    # WorldLookupError: User 1003 cannot manage the topics of chat -1001000000000: it takes
+    # `can_manage_topics`, and their status is member. ... give them the right with
+    # `blueprint.set_member(chat, user, rights=administrator_rights())`, ...
+
+The rule holds with ``enforce_bot_rights=False`` too, which loosens the bot's checks only.
+A member whom the chat's permissions let manage topics is not modeled as holding the right;
+promote them.
+
 The couplings the Bot API documents apply: hiding the General topic also closes it, and
 reopening it also unhides it. :code:`editForumTopic` with an empty name keeps the current
 name, and an empty ``icon_custom_emoji_id`` removes the icon. A declared topic is created

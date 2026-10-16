@@ -539,32 +539,44 @@ def _chat_label(chat: ChatState) -> str:
 _ADMINISTRATOR_STATUSES = frozenset({ChatMemberStatus.CREATOR, ChatMemberStatus.ADMINISTRATOR})
 
 
+def _member_of(chat: ChatState, user_id: int) -> MemberState | None:
+    """The settled membership of ``user_id`` in ``chat``, if any."""
+    if user_id not in chat.members:
+        return None
+    return chat.member(user_id)
+
+
 def _bot_member(env: BotTestEnvironment, chat: ChatState) -> MemberState | None:
     """The bot's settled membership of ``chat``, if it has one."""
-    if env.world.bot_user.id not in chat.members:
-        return None
-    return chat.member(env.world.bot_user.id)
+    return _member_of(chat, env.world.bot_user.id)
 
 
-def bot_has_right(env: BotTestEnvironment, chat: ChatState, right: str) -> bool:
+def holds_right(chat: ChatState, user_id: int, right: str) -> bool:
     """
-    Whether the bot holds the administrator ``right`` in ``chat``.
+    Whether ``user_id`` holds the administrator ``right`` in ``chat``.
 
     The owner holds every right. An administrator holds what its
     rights grant, read as :func:`scoped_rights` reports them for the
     chat's type, so a right the type does not have is not held. No
-    one else holds any. With ``enforce_bot_rights`` off, every right
-    is held.
+    one else holds any.
     """
-    if not env.enforce_bot_rights:
-        return True
-    member = _bot_member(env, chat)
+    member = _member_of(chat, user_id)
     if member is None or member.status not in _ADMINISTRATOR_STATUSES:
         return False
     if member.status == ChatMemberStatus.CREATOR:
         return True
     declared = member.rights if member.rights is not None else administrator_rights()
     return bool(getattr(scoped_rights(declared, chat.type), right))
+
+
+def bot_has_right(env: BotTestEnvironment, chat: ChatState, right: str) -> bool:
+    """
+    Whether the bot holds the administrator ``right`` in ``chat``.
+
+    See :func:`holds_right`. With ``enforce_bot_rights`` off, every
+    right is held.
+    """
+    return not env.enforce_bot_rights or holds_right(chat, env.world.bot_user.id, right)
 
 
 def require_bot_right(
@@ -3470,18 +3482,21 @@ def service_message(
     fields: dict[str, Any],
     thread_id: int | None = None,
     connection: BusinessConnectionState | None = None,
+    *,
+    sender: User | None = None,
 ) -> Message:
     """
     Emit a service message the way Telegram posts one for an administrative action.
 
     One posted on behalf of a business account is numbered by its
-    ``connection`` too, as every business message is.
+    ``connection`` too, as every business message is. It is from the
+    ``sender``, the bot unless a user actor took the action.
     """
     values: dict[str, Any] = {
         "message_id": chat.allocate_message_id(connection),
         "date": env.world.next_date(),
         "chat": chat.as_chat(),
-        **posted_by(chat, env.world.bot_user.as_user()),
+        **posted_by(chat, sender or env.world.bot_user.as_user()),
         **fields,
     }
     if thread_id is not None:
@@ -3550,35 +3565,116 @@ def handle_edit_forum_topic(env: BotTestEnvironment, method: EditForumTopic) -> 
     return True
 
 
+def close_topic(
+    env: BotTestEnvironment,
+    chat: ChatState,
+    topic: TopicState,
+    *,
+    by: User | None = None,
+) -> Message:
+    """Close ``topic``, and post the service message that says so."""
+    topic.is_closed = True
+    return service_message(
+        env,
+        chat,
+        {"forum_topic_closed": ForumTopicClosed()},
+        topic.message_thread_id,
+        sender=by,
+    )
+
+
+def reopen_topic(
+    env: BotTestEnvironment,
+    chat: ChatState,
+    topic: TopicState,
+    *,
+    by: User | None = None,
+) -> Message:
+    """Reopen ``topic``, and post the service message that says so."""
+    topic.is_closed = False
+    return service_message(
+        env,
+        chat,
+        {"forum_topic_reopened": ForumTopicReopened()},
+        topic.message_thread_id,
+        sender=by,
+    )
+
+
+def delete_topic(chat: ChatState, topic: TopicState) -> None:
+    """
+    Delete ``topic`` with every message in it.
+
+    Telegram posts no service message for it, and the Bot API has no
+    type for one. The thread id is remembered as deleted.
+    """
+    for message in list(topic.messages):
+        chat.delete_message(message.message_id)
+    if topic.message_thread_id is not None:
+        del chat.topics[topic.message_thread_id]
+        chat.deleted_topic_ids.add(topic.message_thread_id)
+
+
+def hide_general(
+    env: BotTestEnvironment,
+    chat: ChatState,
+    *,
+    by: User | None = None,
+) -> Message:
+    """Hide the General topic, which closes it, and post a message."""
+    chat.general_topic.is_hidden = True
+    # Hiding the General topic closes it too.
+    chat.general_topic.is_closed = True
+    return service_message(
+        env, chat, {"general_forum_topic_hidden": GeneralForumTopicHidden()}, sender=by
+    )
+
+
+def unhide_general(
+    env: BotTestEnvironment,
+    chat: ChatState,
+    *,
+    by: User | None = None,
+) -> Message:
+    """Unhide the General topic, and post the service message."""
+    chat.general_topic.is_hidden = False
+    return service_message(
+        env,
+        chat,
+        {"general_forum_topic_unhidden": GeneralForumTopicUnhidden()},
+        sender=by,
+    )
+
+
+def close_general(chat: ChatState) -> None:
+    """Close the General topic. No service message is modeled for it."""
+    chat.general_topic.is_closed = True
+
+
+def reopen_general(chat: ChatState) -> None:
+    """Reopen the General topic, which unhides it. Posts nothing."""
+    chat.general_topic.is_closed = False
+    chat.general_topic.is_hidden = False
+
+
 @models(CloseForumTopic)
 def handle_close_forum_topic(env: BotTestEnvironment, method: CloseForumTopic) -> bool:
     chat, topic = _topic(env, method)
-    topic.is_closed = True
-    service_message(env, chat, {"forum_topic_closed": ForumTopicClosed()}, topic.message_thread_id)
+    close_topic(env, chat, topic)
     return True
 
 
 @models(ReopenForumTopic)
 def handle_reopen_forum_topic(env: BotTestEnvironment, method: ReopenForumTopic) -> bool:
     chat, topic = _topic(env, method)
-    topic.is_closed = False
-    service_message(
-        env,
-        chat,
-        {"forum_topic_reopened": ForumTopicReopened()},
-        topic.message_thread_id,
-    )
+    reopen_topic(env, chat, topic)
     return True
 
 
 @models(DeleteForumTopic)
 def handle_delete_forum_topic(env: BotTestEnvironment, method: DeleteForumTopic) -> bool:
     chat, topic = _topic(env, method)
-    for message in list(topic.messages):
-        chat.delete_message(message.message_id)
-    if topic.message_thread_id is not None:
-        del chat.topics[topic.message_thread_id]
-        chat.deleted_topic_ids.add(topic.message_thread_id)
+    delete_topic(chat, topic)
     return True
 
 
@@ -3609,7 +3705,7 @@ def handle_close_general_forum_topic(
     env: BotTestEnvironment,
     method: CloseGeneralForumTopic,
 ) -> bool:
-    forum_chat(env, method.chat_id).general_topic.is_closed = True
+    close_general(forum_chat(env, method.chat_id))
     return True
 
 
@@ -3618,10 +3714,7 @@ def handle_reopen_general_forum_topic(
     env: BotTestEnvironment,
     method: ReopenGeneralForumTopic,
 ) -> bool:
-    general = forum_chat(env, method.chat_id).general_topic
-    # Reopening the General topic unhides it too.
-    general.is_closed = False
-    general.is_hidden = False
+    reopen_general(forum_chat(env, method.chat_id))
     return True
 
 
@@ -3630,11 +3723,7 @@ def handle_hide_general_forum_topic(
     env: BotTestEnvironment,
     method: HideGeneralForumTopic,
 ) -> bool:
-    chat = forum_chat(env, method.chat_id)
-    chat.general_topic.is_hidden = True
-    # Hiding the General topic closes it too.
-    chat.general_topic.is_closed = True
-    service_message(env, chat, {"general_forum_topic_hidden": GeneralForumTopicHidden()})
+    hide_general(env, forum_chat(env, method.chat_id))
     return True
 
 
@@ -3643,9 +3732,7 @@ def handle_unhide_general_forum_topic(
     env: BotTestEnvironment,
     method: UnhideGeneralForumTopic,
 ) -> bool:
-    chat = forum_chat(env, method.chat_id)
-    chat.general_topic.is_hidden = False
-    service_message(env, chat, {"general_forum_topic_unhidden": GeneralForumTopicUnhidden()})
+    unhide_general(env, forum_chat(env, method.chat_id))
     return True
 
 

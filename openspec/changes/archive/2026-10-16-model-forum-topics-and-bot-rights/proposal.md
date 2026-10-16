@@ -18,6 +18,8 @@ own code can observe:
 - **Forum mode only turns on.** `is_forum` becomes true when a topic is declared or
   created and never goes back. A game bot that copes with an owner turning topics off had
   nothing to test against.
+- **Users cannot manage topics.** A test that has a user create or close a topic edits the
+  world and posts the service message by hand, and can get either wrong.
 - **Flood control is untestable.** Nothing in the fake ever answers 429, and declaring
   a `TelegramRetryAfter` takes a constructor call nobody documented.
 
@@ -33,6 +35,8 @@ own code can observe:
   `enforce_bot_rights=False` to opt out.
 - `UserActor.set_topics()` turns a forum off and on, and `add_supergroup(is_forum=True)`
   declares one with no topics.
+- User actors create, close, reopen and delete topics and hide, unhide, close and reopen
+  the General topic, with the service messages Telegram posts, if they may manage topics.
 - A documented `TelegramRetryAfter` override, and opt-in per-chat `RateLimits`.
 
 Observable behavior changes, all toward the Bot API: topic error texts, refusals of the
@@ -47,7 +51,7 @@ None.
 
 ### Modified Capabilities
 
-- `bot-testing-environment`: gains six requirements and loses "Permissions are stored
+- `bot-testing-environment`: gains seven requirements and loses "Permissions are stored
   but not enforced", which the bot's rights check replaces.
 
 ## Impact

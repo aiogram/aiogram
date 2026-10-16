@@ -25,6 +25,10 @@
 
 - [x] 6.1 Document the `TelegramRetryAfter` override, and add opt-in `RateLimits` read off the loop's clock (design D6); verify both limits, the retry being truthful, topics sharing the group limit, and the plugin fixture
 
-## 7. Integration
+## 7. User topic actions
 
-- [x] 7.1 Run `make lint`, `uv run pytest tests` with `aiogram/test` at 100% coverage, and the docs build; verify all pass with no new warnings for `testing.rst`
+- [x] 7.1 Add topic triggers to `UserActor` over the handlers' own code, guarded by `can_manage_topics` (design D7); verify each trigger's world change and service message, the topic named three ways, delete and General feeding nothing, and every refusal
+
+## 8. Integration
+
+- [x] 8.1 Run `make lint`, `uv run pytest tests` with `aiogram/test` at 100% coverage, and the docs build; verify all pass with no new warnings for `testing.rst`

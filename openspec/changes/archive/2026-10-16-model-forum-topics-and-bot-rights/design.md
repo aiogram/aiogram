@@ -77,3 +77,26 @@ and records the send once the handler succeeds. The clock is `loop.time()` plus 
 `advance_time` moved the world, so both ways of waiting count. `raise_api_error` gained
 `retry_after`, which goes into the response's `parameters`, so `check_response` raises
 the real `TelegramRetryAfter`.
+
+### D7. User topic actions reuse the bot's code paths
+
+The handlers of `closeForumTopic`, `reopenForumTopic`, `deleteForumTopic` and the General
+topic methods were split into plain functions in `modeling.py` (`close_topic`,
+`reopen_topic`, `delete_topic`, `hide_general`, `unhide_general`, `close_general`,
+`reopen_general`), which the handlers and the `UserActor` triggers both call. A topic is
+created by `create_topic()` in `world.py`, as before. Only the sender of the service
+message differs: `service_message()` takes a `sender`, the bot by default. The actor
+stores the message through that path, so it is tagged with the topic and replies to its
+root, and feeds the stored message.
+
+Deleting a topic posts nothing. Telegram deletes the topic's messages, and neither the Bot
+API nor aiogram has a type for a deleted topic, so there is no update to feed. Closing and
+reopening the General topic follow their handlers and feed nothing either. Telegram's own
+service message for them is not documented, so none is invented.
+
+The actor must be the owner or an administrator holding `can_manage_topics`
+(`holds_right()`, which `bot_has_right()` now calls too), in a forum. Otherwise
+`WorldLookupError`, as for the promote guards: a trigger arranges the world, so the
+refusal is a setup mistake. The guard ignores `enforce_bot_rights`, which is about the
+bot. A member whom the chat's permissions let manage topics is not modeled as holding the
+right.
