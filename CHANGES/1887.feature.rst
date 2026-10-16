@@ -358,6 +358,10 @@ built from the method and the message alone, raises a ``TypeError`` at the decla
 instance to build instead, rather than failing in the middle of the bot's call; so does
 ``TelegramMigrateToChat``, a class of your own that needs more, or anything that is not a
 Telegram exception.
+The environment no longer holds every task the bot spawned until it is disposed of: a task that
+succeeds or is cancelled is forgotten as it ends, so a long run does not grow with the tasks it
+spawned, and one that fails is kept until its exception is retrieved — by the bot, or by
+``wait_for_tasks()`` or ``drain()``, which still report it.
 Flood control can be tested two ways. The documentation shows the override that declares one
 ``TelegramRetryAfter``, built whole with its method and ``retry_after``. And
 ``BotTestEnvironment(rate_limits=RateLimits())``, off by default, models Telegram's guidance

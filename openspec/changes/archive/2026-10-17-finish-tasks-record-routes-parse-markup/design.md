@@ -146,3 +146,23 @@ as before, since the documentation and many suites use them. The example comes f
 table for `TelegramRetryAfter` and `TelegramMigrateToChat`, and is generated from the
 missing names for any other class. `env.blocked()` registers its own outcomes and is not
 checked.
+
+### D9. Hold running tasks and unretrieved failures, nothing else
+
+The task factory's wrapper adds a done-callback to each task. It drops the task from the
+set of running ones, and keeps it in a second set only when asyncio's `_log_traceback`
+flag says it failed and nobody has retrieved the exception. Anything else a task can end
+with has nothing to report. `_own_tasks()`, which `drain()` and `wait_for_tasks()` read,
+unions both sets with `asyncio.all_tasks()`, and a kept task whose exception has since
+been retrieved is released at the next sweep: when a task ends, or a drain or a wait runs.
+
+A record of the failure, with the task let go, was considered and rejected. The flag is the
+only way to tell a failure the bot handled from one nobody saw, it can be cleared long after
+the task ended, and the callback runs before the bot's own `await task` has had a turn. A
+record made when the task ended would report a failure the bot caught a moment later, or
+else would have to guess at it. The traceback is held either way, so keeping the task costs
+no more than a record, and the memory that grows is only the failures nobody looked at.
+
+A done task is still in the running set until its callback runs, one loop turn later, so a
+drain in that gap sees it. A disposed environment tracks nothing, which also stops the
+factory it leaves in the chain under a later environment from collecting tasks.

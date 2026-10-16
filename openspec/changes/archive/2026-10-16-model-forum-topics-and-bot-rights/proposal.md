@@ -58,8 +58,8 @@ None.
 
 - **Code**: `aiogram/test/world.py`, `modeling.py`, `actors.py`, `blueprint.py`,
   `environment.py`, `errors.py`, `plugin.py`, and the new `flood.py`.
-- **Tests**: `tests/test_testing/` gains `test_forum_rules.py`, `test_bot_rights.py`
-  and `test_rate_limits.py`. 84 existing tests now declare the bot's standing.
+- **Tests**: `tests/test_testing/` gains `test_forum_rules.py`, `test_bot_rights.py`,
+  `test_rate_limits.py` and `test_user_topic_actions.py`. 84 existing tests now declare the bot's standing.
 - **Docs**: the forum topics, chat administration and overrides sections of
   `docs/dispatcher/testing.rst`.
 - **Changelog**: folded into `CHANGES/1887.feature.rst`.

@@ -32,6 +32,10 @@
 
 - [x] 8.1 Refuse a class `raises()` cannot build, when declared, with the instance to pass (design D8); verify the two Telegram classes, a class of your own, a usable class, and values that are no exception
 
-## 9. Integration
+## 9. Pruned tasks
 
-- [x] 9.1 Run `make lint`, `uv run pytest tests` with `aiogram/test` at 100% coverage, and the docs build; verify all pass with no new warnings for `testing.rst`
+- [x] 9.1 Forget a task when it ends, keeping only an unretrieved failure, in the task factory's callback (design D9); verify two hundred short tasks held and pinned by nothing, cancelled tasks, a failure among many, a failure retrieved early and late, and a disposed environment
+
+## 10. Integration
+
+- [x] 10.1 Run `make lint`, `uv run pytest tests` with `aiogram/test` at 100% coverage, and the docs build; verify all pass with no new warnings for `testing.rst`

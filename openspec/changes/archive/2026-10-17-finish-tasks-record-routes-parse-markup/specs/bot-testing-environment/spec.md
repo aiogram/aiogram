@@ -197,3 +197,27 @@ still be accepted.
 
 - **WHEN** a test declares `raises(TelegramForbiddenError, "Forbidden: x")`
 - **THEN** the call fails with that exception and message
+
+### Requirement: Finished tasks are not held for the life of the environment
+
+The environment SHALL hold a task it tracked only while the task runs, and SHALL forget a task
+that succeeded or was cancelled when it ends. A task that failed SHALL be kept until its
+exception is retrieved, by the bot or by a report, so that `wait_for_tasks()` and `drain()`
+still raise `BackgroundTaskError` and `DrainedTaskError` for a failure nobody retrieved, and
+SHALL NOT for one the bot retrieved, however late. A disposed environment SHALL hold no task.
+
+#### Scenario: Many short tasks
+
+- **WHEN** the bot spawns two hundred tasks that each finish
+- **THEN** the environment holds none of them, and none is kept alive by it
+
+#### Scenario: A failure among them
+
+- **WHEN** one of many finished tasks failed and nobody retrieved why
+- **THEN** `wait_for_tasks()` raises `BackgroundTaskError` naming it, with its exception as the
+  cause, and afterwards the environment holds nothing
+
+#### Scenario: A failure the bot handled
+
+- **WHEN** the bot awaits a task that failed, and catches the exception, at any later time
+- **THEN** neither `wait_for_tasks()` nor `drain()` reports it

@@ -19,6 +19,8 @@ test cannot see what its bot does:
   entities, an actor's text carried none, and a router keying on entities missed them.
 - **A class that cannot be raised fails late.** `raises(TelegramRetryAfter)` is accepted and
   then fails with a `TypeError` from the middle of the bot's call.
+- **Every task is kept to the end.** The environment holds each task the bot spawned until
+  it is disposed of, so a long run grows with every task it has ever spawned.
 - **Fast sleeps cost real drivers.** The documented way to skip a bot's long sleeps is
   `looptime`, which moves the loop's clock, and a real database driver's deadlines run on
   that clock and expire mid-query.
@@ -50,6 +52,10 @@ test cannot see what its bot does:
 - `raises()` refuses, when declared, a class it cannot build from the method and the message,
   and shows the instance to pass.
 
+- The environment forgets a task that succeeds or is cancelled when it ends, and keeps a
+  failed one until its exception is retrieved, so `wait_for_tasks()` and `drain()` still
+  report it.
+
 Observable behavior change, toward the Bot API: a text sent with a parse mode is stored
 parsed, broken markup or an unknown parse mode now fails the call, `getChat` reports a
 group's permissions, and an actor's text carries `bot_command` entities.
@@ -66,10 +72,12 @@ None.
 
 ## Impact
 
-- **Code**: `aiogram/test/environment.py`, `errors.py`, `plugin.py`, `__init__.py`, and the new
-  `markup.py`.
+- **Code**: `aiogram/test/environment.py`, `errors.py`, `plugin.py`, `__init__.py`,
+  `blueprint.py`, `world.py`, `actors.py`, `overrides.py`, and the new `markup.py`.
 - **Tests**: `tests/test_testing/test_wait_for_tasks.py`, `test_route_history.py`,
-  `test_markup.py`, `test_sleep_scaling_recipe.py`.
-- **Docs**: the background task, routing diagnostics and formatted text sections of
-  `docs/dispatcher/testing.rst`.
+  `test_markup.py`, `test_sleep_scaling_recipe.py`, `test_default_chat_permissions.py`,
+  `test_runtime_additions.py`, `test_bot_command_entities.py`, `test_raises_validation.py`
+  and `test_task_pruning.py`.
+- **Docs**: the declaring, triggering, overrides, background task, routing diagnostics and
+  formatted text sections of `docs/dispatcher/testing.rst`.
 - **Changelog**: folded into `CHANGES/1887.feature.rst`.

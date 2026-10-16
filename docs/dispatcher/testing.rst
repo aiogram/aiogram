@@ -2167,9 +2167,12 @@ a night timer that died with a ``KeyError`` would look exactly like one cancelle
 a failure is re-raised as :class:`aiogram.test.DrainedTaskError`, naming every task that
 failed, with the first one's real traceback chained as its cause. This holds for a task that
 died **before** the drain, too: those are not in ``asyncio.all_tasks()``, so the environment
-remembers every task created while it is live and inspects the finished ones as well as the
-cancelled ones. They are not counted in the number ``drain`` returns, which stays "how many
-tasks this drained". An exception the bot already retrieved — by awaiting the task and
+holds every task created while it is live and, when one fails, keeps it until its exception is
+retrieved or reported, and inspects those as well as the cancelled ones. They are not counted
+in the number ``drain`` returns, which stays "how many tasks this drained". A task that
+succeeded or was cancelled is forgotten as soon as it ends, so a long test that spawns
+thousands of tasks does not hold on to them; only a failure nobody has looked at is kept. An
+exception the bot already retrieved — by awaiting the task and
 catching it, or through ``asyncio.gather(..., return_exceptions=True)`` — was the bot's to
 handle, and is not reported:
 

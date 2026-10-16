@@ -442,6 +442,18 @@ def _require_distinct_views(views: tuple[MessageView, ...]) -> None:
         seen[key] = view
 
 
+def _unretrieved(task: asyncio.Task[Any]) -> bool:
+    """
+    Whether ``task`` failed and nobody has retrieved why.
+
+    asyncio sets a flag when a task ends with an exception and clears
+    it when anyone asks for that exception, which is also what stops
+    it complaining about the task later. Where the flag is missing,
+    the task is kept as if it had failed.
+    """
+    return bool(getattr(task, "_log_traceback", True))
+
+
 def _running_tasks() -> frozenset[asyncio.Task[Any]]:
     """
     Every task alive right now, or nothing at all outside a running loop.
@@ -598,10 +610,14 @@ class BotTestEnvironment:
         #: The task that made the first asynchronous entry, normally
         #: the test's own; never counted as the bot's.
         self._entry_task: asyncio.Task[Any] | None = None
-        # Every task created while this environment was live, so `drain` can also report a
-        # task that already *finished* — `asyncio.all_tasks()` only ever answers with the
-        # unfinished ones. See `_track_spawned_tasks`.
+        # Every task created while this environment was live and still
+        # running, and the finished ones that failed without anyone
+        # retrieving why, so `drain` can also report a task that
+        # already *finished*: `asyncio.all_tasks()` only answers with
+        # the unfinished ones. A task that ended any other way is
+        # forgotten as it ends. See `_track_spawned_tasks`.
         self._spawned_tasks: set[asyncio.Task[Any]] = set()
+        self._failed_tasks: set[asyncio.Task[Any]] = set()
         self._tracking_loop: asyncio.AbstractEventLoop | None = None
         self._installed_task_factory: Any = None
         self._previous_task_factory: Any = None
@@ -641,6 +657,7 @@ class BotTestEnvironment:
         self._uninstrument_routing()
         self._untrack_spawned_tasks()
         self._spawned_tasks.clear()
+        self._failed_tasks.clear()
         self._entry_task = None
         # Due actions close over this environment, which nothing
         # advances any more.
@@ -1857,6 +1874,11 @@ class BotTestEnvironment:
         cancelled (they are over) and do not count towards the returned number, which stays
         "how many tasks this drained".
 
+        Such a task is not held forever. One that succeeded or was
+        cancelled is forgotten as it ends, so a long run does not grow
+        with the tasks it spawned, and one that failed is kept until its
+        exception is retrieved, by the bot or by this report.
+
         **Called with no protection snapshot at all, it does nothing and answers ``0``.**
         That is the environment the synchronous ``bot_env`` fixture builds — no loop running
         at construction, so the creation-time snapshot is empty — on which nothing has been
@@ -1943,6 +1965,7 @@ class BotTestEnvironment:
                 msg += f"\n{_describe_failures(failures)}"
                 raise WaitTimeoutError(msg) from failures[0][1]
             raise WaitTimeoutError(msg)
+        self._release_retrieved_failures()
         if failures:
             raise DrainedTaskError(_describe_failures(failures)) from failures[0][1]
         return len(pending)
@@ -1995,6 +2018,7 @@ class BotTestEnvironment:
             await asyncio.wait(pending, timeout=remaining)
         failures: list[tuple[str, BaseException]] = []
         self._collect_failures(self._own_tasks(), failures)
+        self._release_retrieved_failures()
         if failures:
             msg = _describe_task_failures(failures)
             raise BackgroundTaskError(msg) from failures[0][1]
@@ -2033,9 +2057,10 @@ class BotTestEnvironment:
         waiting from a child task must not wait for itself.
         """
         current = asyncio.current_task()
+        self._release_retrieved_failures()
         return {
             task
-            for task in (*asyncio.all_tasks(), *self._spawned_tasks)
+            for task in (*asyncio.all_tasks(), *self._spawned_tasks, *self._failed_tasks)
             if task is not current
             and task is not self._entry_task
             and task not in self._protected_tasks
@@ -2059,7 +2084,7 @@ class BotTestEnvironment:
             # asyncio clears the flag once someone retrieves the
             # exception, by awaiting the task or asking for it. That
             # failure was the bot's to handle, and it did.
-            retrieved = not getattr(task, "_log_traceback", True)
+            retrieved = not _unretrieved(task)
             error = task.exception()
             if error is not None and not retrieved:
                 failures.append((task.get_name(), error))
@@ -2094,10 +2119,16 @@ class BotTestEnvironment:
         worth reporting.
 
         The previous factory is called rather than replaced, so an eager task factory or a
-        framework's own stays in force and this only observes. Tasks are held by a **strong**
-        reference until :meth:`_restore`: a failed task collected before the drain takes its
-        exception with it, and asyncio then prints the never-retrieved warning this exists to
-        prevent.
+        framework's own stays in force and this only observes.
+
+        A task is held by a **strong** reference while it runs, and a
+        failed one until someone retrieves its exception or
+        :meth:`drain` and :meth:`wait_for_tasks` report it: collected
+        earlier it would take the exception with it, and asyncio would
+        print the never-retrieved warning this exists to prevent.
+        Every other task is forgotten as it ends, see
+        :meth:`_forget_task`, so a long run does not grow with the
+        tasks it has spawned.
 
         Two environments alive at once nest, and restoring is by identity — an environment
         whose factory is no longer the loop's leaves it alone rather than tearing another
@@ -2105,7 +2136,6 @@ class BotTestEnvironment:
         """
         loop = asyncio.get_running_loop()
         previous: Any = loop.get_task_factory()
-        spawned = self._spawned_tasks
 
         def factory(loop: Any, coro: Any, **kwargs: Any) -> Any:
             task: Any = (
@@ -2113,13 +2143,42 @@ class BotTestEnvironment:
                 if previous is None
                 else previous(loop, coro, **kwargs)
             )
-            spawned.add(cast("asyncio.Task[Any]", task))
+            self._remember_task(cast("asyncio.Task[Any]", task))
             return task
 
         self._tracking_loop = loop
         self._previous_task_factory = previous
         self._installed_task_factory = factory
         loop.set_task_factory(factory)
+
+    def _remember_task(self, task: asyncio.Task[Any]) -> None:
+        """Hold ``task`` while it runs; a disposed environment holds nothing."""
+        if self._disposed:
+            return
+        self._spawned_tasks.add(task)
+        task.add_done_callback(self._forget_task)
+
+    def _release_retrieved_failures(self) -> None:
+        """Whoever retrieved a kept task's exception has taken it over."""
+        self._failed_tasks = {kept for kept in self._failed_tasks if _unretrieved(kept)}
+
+    def _forget_task(self, task: asyncio.Task[Any]) -> None:
+        """
+        Let go of a task that ended, keeping only an unretrieved failure.
+
+        A task that succeeded or was cancelled has nothing to report.
+        One that failed is kept until its exception is retrieved. The
+        flag asyncio clears on retrieval is the only way to tell a
+        failure the bot handled, by awaiting the task, from one nobody
+        saw, and it can be cleared long after the task ended. The
+        traceback is held either way, so keeping the task costs no
+        more than a record would and, unlike one, can still say
+        whether the bot retrieved it.
+        """
+        self._spawned_tasks.discard(task)
+        self._release_retrieved_failures()
+        if not self._disposed and not task.cancelled() and _unretrieved(task):
+            self._failed_tasks.add(task)
 
     def _untrack_spawned_tasks(self) -> None:
         loop = self._tracking_loop
