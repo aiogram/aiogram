@@ -207,7 +207,11 @@ its markup: ``HTML``, ``MarkdownV2`` and legacy ``Markdown`` are parsed by ports
 parsers, so nested tags, links and mentions, pre with a language, spoilers, expandable
 quotes, custom emoji and MarkdownV2's escaping all come out as Telegram's would, and markup
 Telegram cannot parse fails the call with its own ``Bad Request: can't parse entities: ...``.
-A parse mode wins over explicit ``entities``, as on the Bot API server.
+A parse mode wins over explicit ``entities``, as on the Bot API server. A parsed text is
+trimmed at both ends as TDLib trims it, a number TDLib cannot read, such as the ``--5`` of
+``tg://user?id=--5``, is no number rather than a crash, and a message text that is empty or
+nothing but whitespace is refused with ``message text is empty`` or ``text must be
+non-empty``, while a caption that parses to nothing is cleared.
 
 A rich message sent as blocks is stored with those blocks in the shape Telegram returns, nested
 blocks and media included, instead of as an empty rich message; ``editMessageText`` replaces

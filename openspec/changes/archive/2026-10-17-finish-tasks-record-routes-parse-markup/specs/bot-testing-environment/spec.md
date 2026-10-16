@@ -315,3 +315,55 @@ task.
 
 - **WHEN** the bot awaits a task that failed, and catches the exception, at any later time
 - **THEN** neither `wait_for_tasks()` nor `drain()` reports it
+
+### Requirement: Parse modes are applied as the Bot API applies them
+
+Every modeled call SHALL apply each parse mode it carries, its own or the bot's default,
+to the text it formats, nested items included, and the world SHALL store the plain text with
+the entities, offsets in UTF-16 code units. `HTML`, `MarkdownV2` and `Markdown` SHALL be
+parsed as TDLib parses them. Markup that cannot be parsed SHALL fail the call with
+`Bad Request: can't parse entities: ` and TDLib's description, and store nothing. A number
+TDLib cannot read SHALL be no number, never a failure of the toolkit. A parsed text SHALL be
+trimmed at its end, and of leading spaces and newlines up to its first entity. A parse mode
+on a non-empty text SHALL win over explicit entities, which SHALL stand only without a parse
+mode or with `none`. An unknown parse mode SHALL fail with `unsupported parse_mode`. A
+message text that is empty SHALL fail with `message text is empty`, and one that is blank,
+as sent or once parsed, with `text must be non-empty`; a caption that parses to nothing
+SHALL be cleared. The call log SHALL keep the call as the bot made it.
+
+#### Scenario: A bold word
+
+- **WHEN** a handler sends `<b>Night</b> falls` with `parse_mode="HTML"`
+- **THEN** the chat stores `Night falls` with a bold entity at offset 0, length 5
+
+#### Scenario: An unescaped less-than sign
+
+- **WHEN** a handler sends `Score: 3 < 5` with `parse_mode="HTML"`
+- **THEN** the call raises `TelegramBadRequest` with `Bad Request: can't parse entities:
+  Unsupported start tag "" at byte offset 9`, and nothing is stored
+
+#### Scenario: A malformed user id
+
+- **WHEN** a handler sends `<a href='tg://user?id=--5'>x</a>` with `parse_mode="HTML"`
+- **THEN** the chat stores `x` with a text link, and nothing raises
+
+#### Scenario: Markup that parses to nothing
+
+- **WHEN** a handler sends `<b> </b>` with `parse_mode="HTML"`
+- **THEN** the call raises `TelegramBadRequest` with `text must be non-empty`, and nothing
+  is stored
+
+#### Scenario: Leading whitespace
+
+- **WHEN** a handler sends ` <b>a</b>` with `parse_mode="HTML"`
+- **THEN** the chat stores `a` with a bold entity at offset 0
+
+#### Scenario: The bot's default parse mode
+
+- **WHEN** the bot's default parse mode is `MarkdownV2` and a handler sends `*Day*`
+- **THEN** the chat stores `Day` with a bold entity
+
+#### Scenario: Entities and a parse mode together
+
+- **WHEN** a handler passes both `entities` and `parse_mode="HTML"`
+- **THEN** the stored entities are the parsed ones

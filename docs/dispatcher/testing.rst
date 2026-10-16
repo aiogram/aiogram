@@ -831,11 +831,23 @@ not their entities. The call log keeps the call as the bot made it,
 parse mode and markup included, and an override answers before
 anything is parsed.
 
-After parsing, the toolkit does less than Telegram: ``\r`` and
-trailing whitespace are removed and entities nested in ``code`` or
-``pre`` are dropped, but leading whitespace stays and links,
-mentions or commands in the text are not detected. A text sent
-without a parse mode is stored exactly as sent.
+After parsing, ``\r`` is removed, trailing whitespace is trimmed,
+leading spaces and newlines are trimmed up to the first entity, as
+TDLib's ``fix_formatted_text`` trims them, and entities nested in
+``code`` or ``pre`` are dropped. Links, mentions and commands in the
+text are not detected. A number TDLib cannot read, such as the
+``--5`` of ``tg://user?id=--5``, is no number: the link stays a plain
+link, and a custom emoji or a Unix time with one is refused in
+TDLib's words. A text sent without a parse mode is stored as sent,
+except that one with nothing but whitespace is refused as below.
+
+A message text that is empty, or that is nothing but whitespace
+before or after parsing, is refused: ``Bad Request: message text is
+empty`` for an empty one, as the Bot API server answers it, and
+``Bad Request: text must be non-empty`` for a blank one, as TDLib
+does once it has trimmed it. That holds for :code:`sendMessage` and
+the text edits. A caption that parses to nothing is cleared instead,
+as TDLib clears it.
 
 Rich messages
 -------------

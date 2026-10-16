@@ -26,6 +26,7 @@ or commands are not detected.
 
 from __future__ import annotations
 
+import re
 import string
 import unicodedata
 from collections.abc import Callable
@@ -34,7 +35,12 @@ from enum import Enum
 from typing import Any
 
 from aiogram.enums import MessageEntityType
-from aiogram.methods import TelegramMethod
+from aiogram.methods import (
+    EditEphemeralMessageText,
+    EditMessageText,
+    SendMessage,
+    TelegramMethod,
+)
 from aiogram.types import MessageEntity, TelegramObject, User
 
 from .errors import ApiRejection
@@ -208,13 +214,23 @@ def _link_user_id(url: str) -> int | None:
 
 
 def _int64(value: str) -> int | None:
-    """TDLib's ``to_integer_safe<int64>``."""
-    if not value or not (value.isascii() and value.lstrip("-").isdigit()):
+    """
+    TDLib's ``to_integer_safe<int64>``, or None for a malformed one.
+
+    It parses and prints the number back, and anything that does not
+    round-trip is no integer: ``--5``, ``+5``, ``05``, ``-0`` and a
+    value out of range all fail (tdutils/td/utils/misc.h).
+    """
+    if _INTEGER.fullmatch(value) is None:
         return None
     number = int(value)
-    if not -(2**63) <= number < 2**63:
+    if str(number) != value or not -(2**63) <= number < 2**63:
         return None
     return number
+
+
+#: The shape ``to_integer_safe`` reads: an optional minus and digits.
+_INTEGER = re.compile(r"-?[0-9]+")
 
 
 def _check_link(url: str) -> str | None:
@@ -938,6 +954,25 @@ def _trim_end(text: str, entities: list[_Entity]) -> str:
     return trimmed
 
 
+def _trim_start(text: str, entities: list[_Entity]) -> str:
+    """
+    Drop leading spaces and newlines, as ``fix_formatted_text`` does.
+
+    Only before the first entity, which keeps its own whitespace, and
+    after the end is trimmed (MessageEntity.cpp). The entities move
+    back by what was dropped.
+    """
+    first = min((entity.offset for entity in entities if entity.length > 0), default=len(text))
+    count = 0
+    while count < min(first, len(text)) and text[count] in " \n":
+        count += 1
+    if not count:
+        return text
+    for entity in entities:
+        entity.offset = max(entity.offset - count, 0)
+    return text[count:]
+
+
 def _sorted(entities: list[_Entity]) -> list[_Entity]:
     """TDLib's order, without what may not be nested in code."""
     ordered = sorted(
@@ -1005,7 +1040,7 @@ def parse_entities(
         raise ApiRejection("unsupported parse_mode")
     data, entities = parser(text)
     plain = _remove_carriage_returns(data.decode("utf-8", errors="replace"), entities)
-    plain = _trim_end(plain, entities)
+    plain = _trim_start(_trim_end(plain, entities), entities)
     converted = (_as_message_entity(entity, find_user) for entity in _sorted(entities))
     return plain, [entity for entity in converted if entity is not None]
 
@@ -1121,14 +1156,56 @@ def bot_command_entities(text: str | None) -> list[MessageEntity]:
     """
     if not text:
         return []
-    return [
-        MessageEntity(
-            type=MessageEntityType.BOT_COMMAND,
-            offset=_utf16_length(text[:begin]),
-            length=_utf16_length(text[begin:end]),
+    found = []
+    # A running offset, so a long text is measured once.
+    position = units = 0
+    for begin, end in _command_ranges(text):
+        units += _utf16_length(text[position:begin])
+        length = _utf16_length(text[begin:end])
+        found.append(
+            MessageEntity(type=MessageEntityType.BOT_COMMAND, offset=units, length=length)
         )
-        for begin, end in _command_ranges(text)
-    ]
+        units += length
+        position = end
+    return found
+
+
+#: The fields whose text a message cannot do without.
+_MESSAGE_TEXT_FIELDS = frozenset({"text", "message_text"})
+
+#: The methods whose ``text`` is a message's whole text.
+_TEXT_METHODS = (SendMessage, EditMessageText, EditEphemeralMessageText)
+
+
+def _blank(text: str) -> bool:
+    """
+    Whether ``text`` is nothing but whitespace, as TDLib reads it.
+
+    ``clean_input_string`` turns every control character into a space
+    and drops ``\r``, and only spaces and newlines are whitespace
+    after (MessageEntity.cpp, ``remove_invalid_entities``). TDLib
+    refuses a text of zero-width characters too, which is not
+    modeled.
+    """
+    return all(ord(char) <= ord(" ") for char in text)
+
+
+def refuse_empty_text(method: Any) -> None:
+    """
+    Refuse a text message whose text is empty or blank.
+
+    An empty one is the Bot API server's ``message text is empty``;
+    a blank one TDLib trims to nothing and refuses with ``text must
+    be non-empty``. A caption is not refused: TDLib clears it.
+    """
+    text = method.text if isinstance(method, _TEXT_METHODS) else None
+    if text is None:
+        # Not a text message, or one carrying other content instead.
+        return
+    if not text:
+        raise ApiRejection("message text is empty")
+    if _blank(text):
+        raise ApiRejection("text must be non-empty")
 
 
 def apply_parse_modes(value: Any, find_user: UserLookup) -> Any:
@@ -1167,6 +1244,10 @@ def apply_parse_modes(value: Any, find_user: UserLookup) -> Any:
         if not text or str(mode).lower() in {"", "none"}:
             continue
         plain, entities = parse_entities(text, str(mode), find_user)
-        changes[text_field] = plain
+        if not plain and text_field in _MESSAGE_TEXT_FIELDS:
+            raise ApiRejection("text must be non-empty")
+        # A caption that parses to nothing is cleared, as TDLib
+        # clears it.
+        changes[text_field] = None if not plain and text_field == "caption" else plain
         changes[entities_field] = entities or None
     return value.model_copy(update=changes) if changes else value

@@ -44,7 +44,7 @@ from .errors import (
     raise_api_error,
 )
 from .flood import FloodControl, RateLimits
-from .markup import apply_parse_modes
+from .markup import apply_parse_modes, refuse_empty_text
 from .modeling import check_bot_rights, find_handler, resolve_chat
 from .mounting import bindables, detached_copy
 from .overrides import (
@@ -2397,6 +2397,7 @@ class BotTestEnvironment:
             if handler is not None:
                 # Telegram parses before anything else looks at the
                 # text, and the world stores what parsing leaves.
+                refuse_empty_text(resolved)
                 resolved = apply_parse_modes(resolved, self._find_user)
             check_bot_rights(self, resolved)
         except ApiRejection as error:

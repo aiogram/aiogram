@@ -246,3 +246,14 @@ class TestEdits:
         await alice.edit(sent, fields={"caption": "x"})
 
         assert [e.length for e in seen[-1].entities] == [4]
+
+
+def test_offsets_run_on_across_a_long_text():
+    """Each command is measured from the last, in UTF-16 units."""
+    text = " ".join(["😀 /go"] * 200)
+
+    found = spans(text)
+
+    assert len(found) == 200
+    assert found[0] == (3, 3)
+    assert found[-1] == (199 * 7 + 3, 3)

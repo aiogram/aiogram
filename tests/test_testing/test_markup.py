@@ -475,8 +475,14 @@ class TestAfterParsing:
     def test_trailing_whitespace_is_trimmed(self):
         assert parsed("<b>a </b>\n\n<i> </i>") == ("a", [entity("bold", 0, 1)])
 
-    def test_leading_whitespace_stays(self):
-        assert parsed(" <b>a</b>") == (" a", [entity("bold", 1, 1)])
+    def test_leading_whitespace_goes_up_to_the_first_entity(self):
+        assert parsed(" \n <b>a</b>") == ("a", [entity("bold", 0, 1)])
+
+    def test_leading_whitespace_inside_the_first_entity_stays(self):
+        assert parsed("<b> a</b>") == (" a", [entity("bold", 0, 2)])
+
+    def test_a_text_without_entities_is_trimmed_at_both_ends(self):
+        assert parsed("\n x \n") == ("x", [])
 
 
 ROUND_TRIPS = [
@@ -760,3 +766,70 @@ class TestThroughTheBot:
         )
 
         assert private.messages[-1].entities[0].unix_time == moment
+
+
+class TestMalformedIntegers:
+    """A number TDLib cannot read is no number, never a crash."""
+
+    @pytest.mark.parametrize("value", ["--5", "+5", "05", "-0", "5x", "", "١"])
+    def test_a_user_link_with_one_is_a_plain_link(self, value):
+        plain, entities = parsed(f"<a href='tg://user?id={value}'>x</a>")
+
+        assert plain == "x"
+        assert all(item["type"] != "text_mention" for item in entities)
+
+    def test_markdown_v2_reads_it_the_same_way(self):
+        assert parsed("[x](tg://user?id=--5)", "MarkdownV2") == (
+            "x",
+            [entity("text_link", 0, 1, url="tg://user?id=--5")],
+        )
+
+    def test_a_custom_emoji_id_is_refused(self):
+        assert refused("<tg-emoji emoji-id='--5'>x</tg-emoji>") == (
+            "can't parse entities: Invalid custom emoji identifier specified"
+        )
+
+    def test_a_unix_time_is_refused(self):
+        assert refused("<tg-time unix='--5'>x</tg-time>") == (
+            "can't parse entities: Invalid Unix time specified"
+        )
+
+
+class TestEmptyTexts:
+    @pytest.mark.parametrize(
+        ("text", "mode"),
+        [("<b> </b>", "HTML"), (" \n ", None), ("\t", None), ("*\n*", "MarkdownV2")],
+    )
+    async def test_a_blank_text_is_refused(self, env, private, text, mode):
+        before = len(private.messages)
+
+        with pytest.raises(TelegramBadRequest, match="Bad Request: text must be non-empty$"):
+            await env.bot.send_message(private.id, text, parse_mode=mode)
+
+        assert len(private.messages) == before
+
+    async def test_an_empty_text_is_refused_by_the_server(self, env, private):
+        with pytest.raises(TelegramBadRequest, match="Bad Request: message text is empty$"):
+            await env.bot.send_message(private.id, "")
+
+    async def test_an_edit_to_nothing_is_refused(self, env, private):
+        sent = await env.bot.send_message(private.id, "x")
+
+        with pytest.raises(TelegramBadRequest, match="text must be non-empty"):
+            await env.bot.edit_message_text(
+                "<i>  </i>",
+                chat_id=private.id,
+                message_id=sent.message_id,
+                parse_mode="HTML",
+            )
+
+    async def test_a_caption_that_parses_to_nothing_is_cleared(self, env, private):
+        sent = await env.bot.send_photo(
+            private.id,
+            photo="file",
+            caption="<b> </b>",
+            parse_mode="HTML",
+        )
+
+        assert sent.caption is None
+        assert private.messages[-1].photo is not None
