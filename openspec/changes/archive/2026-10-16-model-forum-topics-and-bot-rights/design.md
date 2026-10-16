@@ -17,3 +17,11 @@ chat's topics. `ChatState.api_topic()` is the one the modeled methods use. It an
 `message thread not found`, or `TOPIC_DELETED` for an id in the new
 `deleted_topic_ids` tombstone set that `deleteForumTopic` fills. Both texts are the
 Bot API server's: the first is its own check, the second Telegram's error passed through.
+
+### D2. One place decides where a bot's message lands
+
+`posting_topic()` is called by `build_message` and by the copy and forward path, which
+between them produce every message a method with `message_thread_id` stores. It resolves
+the topic through `api_topic()` and refuses a closed one. The right is read by
+`bot_has_right()`, from the bot's stored membership: the owner holds every right, an
+administrator what `scoped_rights()` reports for the chat's type, anyone else nothing.

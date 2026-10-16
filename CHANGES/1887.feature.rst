@@ -279,6 +279,9 @@ Forum topics answer in Telegram's words. A call into a thread the chat never had
 ``message thread not found``, and one into a topic ``deleteForumTopic`` removed with
 ``TOPIC_DELETED``, while a topic a test or an actor names but the chat lacks is a setup gap
 that raises :class:`aiogram.test.WorldLookupError` listing the topics the chat does have.
+A closed topic, and the General topic while closed or hidden, refuses the bot's sends, copies
+and forwards with ``TOPIC_CLOSED`` unless the bot is the owner or an administrator holding
+``can_manage_topics``.
 
 .. warning::
 

@@ -298,6 +298,7 @@ from .world import (
     TopicState,
     UserState,
     WorldLookupError,
+    administrator_rights,
     aware,
     create_topic,
     granted_permissions,
@@ -306,6 +307,7 @@ from .world import (
     no_administrator_rights,
     posted_by,
     scope_key,
+    scoped_rights,
 )
 
 if TYPE_CHECKING:
@@ -522,6 +524,49 @@ def _chat_label(chat: ChatState) -> str:
     return ""
 
 
+def bot_has_right(env: BotTestEnvironment, chat: ChatState, right: str) -> bool:
+    """
+    Whether the bot holds the administrator ``right`` in ``chat``.
+
+    The owner holds every right. An administrator holds what its
+    rights grant, read as :func:`scoped_rights` reports them for the
+    chat's type, so a right the type does not have is not held. No
+    one else holds any.
+    """
+    member = chat.members.get(env.world.bot_user.id)
+    if member is None:
+        return False
+    member = chat.member(member.user_id)
+    if member.status == ChatMemberStatus.CREATOR:
+        return True
+    if member.status != ChatMemberStatus.ADMINISTRATOR:
+        return False
+    declared = member.rights if member.rights is not None else administrator_rights()
+    return bool(getattr(scoped_rights(declared, chat.type), right))
+
+
+def posting_topic(
+    env: BotTestEnvironment,
+    chat: ChatState,
+    thread_id: int | None,
+) -> TopicState | None:
+    """
+    The topic a message the bot sends lands in, once it may post there.
+
+    ``None`` outside a forum. A thread the forum does not have fails
+    as :meth:`ChatState.api_topic` says, and a closed topic, or a
+    closed or hidden General topic, takes messages only from someone
+    who may manage topics: ``TOPIC_CLOSED`` otherwise.
+    """
+    if not chat.is_forum:
+        return None
+    topic = chat.api_topic(thread_id)
+    closed = topic.is_closed or (topic.is_general and topic.is_hidden)
+    if closed and not bot_has_right(env, chat, "can_manage_topics"):
+        raise ApiRejection("TOPIC_CLOSED")
+    return topic
+
+
 def build_message(
     env: BotTestEnvironment,
     method: TelegramMethod[Any],
@@ -539,9 +584,8 @@ def build_message(
     no file number.
     """
     thread_id = getattr(method, "message_thread_id", None)
-    if thread_id is not None and chat.is_forum:
-        # An unknown thread id must fail rather than silently produce an untagged message.
-        chat.api_topic(thread_id)
+    # An unknown thread id must fail rather than silently produce an untagged message.
+    posting_topic(env, chat, thread_id)
     receiver = _ephemeral_receiver(env, method, chat)
     reply = _reply_changes(env, method, chat, ephemeral=receiver is not None)
     connection_id = getattr(method, "business_connection_id", None)
@@ -1123,16 +1167,20 @@ def _copyable(message: Message) -> bool:
     )
 
 
-def _thread_changes(target: ChatState, thread_id: int | None) -> dict[str, Any]:
+def _thread_changes(
+    env: BotTestEnvironment,
+    target: ChatState,
+    thread_id: int | None,
+) -> dict[str, Any]:
     """
     Where a forward or copy lands within ``target``.
 
     That is the thread the request names, in a forum, and no thread
     otherwise: the original's thread belongs to its own chat.
     """
+    posting_topic(env, target, thread_id)
     if thread_id is None or not target.is_forum:
         return {"message_thread_id": None, "is_topic_message": None}
-    target.api_topic(thread_id)
     return {"message_thread_id": thread_id, "is_topic_message": True}
 
 
@@ -1157,7 +1205,7 @@ def forward_one(
     if not _forwardable(original):
         raise ApiRejection("message can't be forwarded")
     # Checked before an id is allocated, so a refused forward uses none.
-    thread = _thread_changes(target, thread_id)
+    thread = _thread_changes(env, target, thread_id)
     return target.add_derived(
         original,
         message_id=target.allocate_message_id(),
@@ -1305,7 +1353,7 @@ def copy_one(
         }
     # Checked before an id or a poll is allocated, so a refused copy
     # uses neither.
-    thread = _thread_changes(target, thread_id)
+    thread = _thread_changes(env, target, thread_id)
     if original.poll is not None and "poll" not in changes:
         changes = {**changes, "poll": _copied_poll(env, original.poll)}
     return target.add_derived(

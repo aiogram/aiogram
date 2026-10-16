@@ -2348,6 +2348,20 @@ up from the test itself — ``chat.topic(999)``, or an actor bound with
 ``.in_(chat, topic=999)`` — is a setup gap instead, and raises
 :class:`aiogram.test.WorldLookupError` naming the topics the chat does have.
 
+A closed topic takes messages only from someone who may manage topics. A send, copy or
+forward the bot makes into one fails with ``Bad Request: TOPIC_CLOSED`` unless the bot is
+the owner or an administrator holding ``can_manage_topics``; the same goes for the General
+topic while it is closed or hidden. Declare the bot's standing to take the other branch:
+
+.. code-block:: python
+
+    team = blueprint.add_supergroup("Team", bot_status=ChatMemberStatus.ADMINISTRATOR)
+    # or, for an administrator who may not post there:
+    blueprint.set_member(team, blueprint.bot, rights=administrator_rights(can_manage_topics=False))
+
+The rule is applied to the bot's own calls only. A user actor is not refused: a real client
+would not offer the input field, and the test is the one deciding what users do.
+
 The couplings the Bot API documents apply: hiding the General topic also closes it, and
 reopening it also unhides it. :code:`editForumTopic` with an empty name keeps the current
 name, and an empty ``icon_custom_emoji_id`` removes the icon. A declared topic is created
