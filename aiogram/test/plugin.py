@@ -12,6 +12,7 @@ from aiogram.types import Message, TelegramObject
 
 from .blueprint import Blueprint, default_blueprint
 from .environment import BotTestEnvironment
+from .flood import RateLimits
 from .waiting import DEFAULT_WAIT_TIMEOUT
 from .world import ChatState
 
@@ -79,12 +80,24 @@ def bot_env_enforce_bot_rights() -> bool:
 
 
 @pytest.fixture
+def bot_env_rate_limits() -> RateLimits | None:
+    """
+    Override this fixture to hold ``bot_env`` to flood limits.
+
+    ``None``, the default, models none. Return ``RateLimits()`` for
+    Telegram's guidance, or limits of your own.
+    """
+    return None
+
+
+@pytest.fixture
 def bot_env(
     bot_blueprint: Blueprint,
     bot_dispatcher: Dispatcher,
     bot_env_wait_timeout: float,
     bot_env_clock_start: datetime.datetime | None,
     bot_env_enforce_bot_rights: bool,
+    bot_env_rate_limits: RateLimits | None,
 ) -> Iterator[BotTestEnvironment]:
     """An isolated fake Telegram world for exactly one test."""
     environment = BotTestEnvironment(
@@ -93,6 +106,7 @@ def bot_env(
         default_wait_timeout=bot_env_wait_timeout,
         clock_start=bot_env_clock_start,
         enforce_bot_rights=bot_env_enforce_bot_rights,
+        rate_limits=bot_env_rate_limits,
     )
     try:
         yield environment

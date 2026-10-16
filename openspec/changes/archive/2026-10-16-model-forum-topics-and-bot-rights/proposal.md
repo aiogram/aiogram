@@ -18,3 +18,44 @@ own code can observe:
 - **Forum mode only turns on.** `is_forum` becomes true when a topic is declared or
   created and never goes back. A game bot that copes with an owner turning topics off had
   nothing to test against.
+- **Flood control is untestable.** Nothing in the fake ever answers 429, and declaring
+  a `TelegramRetryAfter` takes a constructor call nobody documented.
+
+## What Changes
+
+- Calls into an unknown or deleted topic fail as `message thread not found` and
+  `TOPIC_DELETED`; a topic the test names wrongly is a `WorldLookupError`.
+- A closed topic refuses the bot's messages with `TOPIC_CLOSED` unless it may manage
+  topics.
+- A topic message replies to the topic's `forum_topic_created` message unless it replies
+  to something else.
+- The bot's own calls are checked against its rights, on by default, with
+  `enforce_bot_rights=False` to opt out.
+- `UserActor.set_topics()` turns a forum off and on, and `add_supergroup(is_forum=True)`
+  declares one with no topics.
+- A documented `TelegramRetryAfter` override, and opt-in per-chat `RateLimits`.
+
+Observable behavior changes, all toward the Bot API: topic error texts, refusals of the
+bot's calls without the right, `reply_to_message` on topic messages, and
+`createForumTopic` in a supergroup that is not a forum. The toolkit is in alpha.
+
+## Capabilities
+
+### New Capabilities
+
+None.
+
+### Modified Capabilities
+
+- `bot-testing-environment`: gains six requirements and loses "Permissions are stored
+  but not enforced", which the bot's rights check replaces.
+
+## Impact
+
+- **Code**: `aiogram/test/world.py`, `modeling.py`, `actors.py`, `blueprint.py`,
+  `environment.py`, `errors.py`, `plugin.py`, and the new `flood.py`.
+- **Tests**: `tests/test_testing/` gains `test_forum_rules.py`, `test_bot_rights.py`
+  and `test_rate_limits.py`. 84 existing tests now declare the bot's standing.
+- **Docs**: the forum topics, chat administration and overrides sections of
+  `docs/dispatcher/testing.rst`.
+- **Changelog**: folded into `CHANGES/1887.feature.rst`.

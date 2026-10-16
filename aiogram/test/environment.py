@@ -31,7 +31,8 @@ from .blueprint import (
 from .calls import CallLog
 from .defaults import resolve_defaults
 from .errors import ApiRejection, DrainedTaskError, WaitTimeoutError, raise_api_error
-from .modeling import find_handler
+from .flood import RATE_LIMITED_METHODS, FloodControl, RateLimits
+from .modeling import find_handler, resolve_chat
 from .mounting import bindables, detached_copy
 from .overrides import (
     BLOCKED_BY_USER,
@@ -469,6 +470,7 @@ class BotTestEnvironment:
         default_wait_timeout: float = DEFAULT_WAIT_TIMEOUT,
         clock_start: datetime.datetime | None = None,
         enforce_bot_rights: bool = True,
+        rate_limits: RateLimits | None = None,
     ) -> None:
         """
         ``default_wait_timeout`` is how long every wait in this environment runs.
@@ -492,12 +494,24 @@ class BotTestEnvironment:
         ``can_restrict_members``, sending what the chat's permissions
         forbid. Pass ``False`` while migrating a suite written against
         the permissive fake; then the bot holds every right it needs.
+
+        ``rate_limits`` turns on Telegram's flood limits per chat: a
+        send over them fails with
+        :class:`~aiogram.exceptions.TelegramRetryAfter` and a
+        ``retry_after`` that is the truth. Off by default; see
+        :class:`aiogram.test.RateLimits`.
         """
         #: Whether the bot's calls are checked against its rights.
         self.enforce_bot_rights = enforce_bot_rights
+        #: The flood limits in force, or ``None`` when there are none.
+        self.rate_limits = rate_limits
+        self._flood = FloodControl(rate_limits) if rate_limits is not None else None
         self.blueprint = blueprint if blueprint is not None else default_blueprint()
         self.world = self.blueprint.build(start=clock_start)
         self.world.default_wait_timeout = default_wait_timeout
+        #: Where the world's clock started, so the rate clock can add
+        #: what `advance_time` moved it by.
+        self._clock_origin = self.world.now
         self.session = FakeTelegramSession(self)
         self.bot = Bot(
             token=self.blueprint.token,
@@ -1727,6 +1741,7 @@ class BotTestEnvironment:
         method: TelegramMethod[Any],
         description: str,
         error_code: int = HTTPStatus.BAD_REQUEST,
+        retry_after: int | None = None,
     ) -> NoReturn:
         raise_api_error(
             session=self.session,
@@ -1734,7 +1749,25 @@ class BotTestEnvironment:
             method=method,
             description=description,
             error_code=error_code,
+            retry_after=retry_after,
         )
+
+    def rate_clock(self) -> float:
+        """
+        Seconds on the clock the flood limits are read against.
+
+        The event loop's time, so a looptime loop moves it, plus how
+        far :meth:`advance_time` moved the world's clock, so waiting
+        out a ``retry_after`` either way lets the next send through.
+        """
+        moved = (self.world.now - self._clock_origin).total_seconds()
+        return asyncio.get_running_loop().time() + moved
+
+    def _flood_target(self, method: TelegramMethod[Any]) -> ChatState | None:
+        """The chat a rate-limited call sends into, if limits are on."""
+        if self._flood is None or type(method) not in RATE_LIMITED_METHODS:
+            return None
+        return resolve_chat(self, method.chat_id)  # type: ignore[attr-defined]
 
     async def handle_call(
         self,
@@ -1778,12 +1811,28 @@ class BotTestEnvironment:
             # session's `mount` prunes at its root instead of walking it again.
             return outcome.apply(resolved, bot)
 
+        flooded = self._flood_target(resolved)
+        if flooded is not None and self._flood is not None:
+            wait = self._flood.retry_after(flooded.id, flooded.type, self.rate_clock())
+            if wait is not None:
+                self.fail(
+                    resolved,
+                    f"Too Many Requests: retry after {wait}",
+                    error_code=HTTPStatus.TOO_MANY_REQUESTS,
+                    retry_after=wait,
+                )
+
         handler = find_handler(resolved)
         if handler is not None:
             try:
-                return handler(self, resolved)
+                result = handler(self, resolved)
             except ApiRejection as error:
                 self.fail(resolved, f"Bad Request: {error}")
+            if flooded is not None and self._flood is not None:
+                # Counted once it went through: a refused send is no
+                # message in the chat.
+                self._flood.record(flooded.id, flooded.type, self.rate_clock())
+            return result
 
         return synthesize_result(resolved.__returning__, self.synthesis_context())
 

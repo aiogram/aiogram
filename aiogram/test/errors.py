@@ -4,6 +4,7 @@ from http import HTTPStatus
 from typing import TYPE_CHECKING, Any, NoReturn
 
 from aiogram.methods import Response, TelegramMethod
+from aiogram.types import ResponseParameters
 
 if TYPE_CHECKING:
     from aiogram.client.bot import Bot
@@ -86,18 +87,21 @@ def raise_api_error(
     method: TelegramMethod[Any],
     description: str,
     error_code: int = HTTPStatus.BAD_REQUEST,
+    retry_after: int | None = None,
 ) -> NoReturn:
     """
     Fail a call the way the real API would.
 
     Routed through :meth:`aiogram.client.session.base.BaseSession.check_response` on
     purpose, so the exception type, its message and the error pipeline under test are
-    the production ones rather than a lookalike.
+    the production ones rather than a lookalike. ``retry_after`` goes
+    into the response's ``parameters``, as a flood refusal carries it.
     """
     response: Response[Any] = Response[method.__returning__](  # type: ignore
         ok=False,
         error_code=error_code,
         description=description,
+        parameters=None if retry_after is None else ResponseParameters(retry_after=retry_after),
     )
     session.check_response(
         bot=bot,

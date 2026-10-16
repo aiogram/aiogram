@@ -20,3 +20,11 @@
 ## 5. Forum toggle
 
 - [x] 5.1 Add `set_topics()` for the owner, `add_supergroup(is_forum=)`, and refuse the forum methods in a chat that is not a forum (design D5); verify off, on again, a stale thread id, a bound actor and the refusals
+
+## 6. Flood control
+
+- [x] 6.1 Document the `TelegramRetryAfter` override, and add opt-in `RateLimits` read off the loop's clock (design D6); verify both limits, the retry being truthful, topics sharing the group limit, and the plugin fixture
+
+## 7. Integration
+
+- [x] 7.1 Run `make lint`, `uv run pytest tests` with `aiogram/test` at 100% coverage, and the docs build; verify all pass with no new warnings for `testing.rst`

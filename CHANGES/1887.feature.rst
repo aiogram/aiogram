@@ -301,6 +301,13 @@ the permissive fake declares the bot's standing with ``bot_status=`` or
 ``BotTestEnvironment(enforce_bot_rights=False)`` — or overrides the
 ``bot_env_enforce_bot_rights`` fixture — while it migrates.
 
+Flood control can be tested two ways. The documentation shows the override that declares one
+``TelegramRetryAfter``, built whole with its method and ``retry_after``. And
+``BotTestEnvironment(rate_limits=RateLimits())``, off by default, models Telegram's guidance
+per chat — about one message a second, and 20 a minute in a group, shared by its topics —
+refusing a send over it with a 429 whose ``retry_after`` is when the next one goes through,
+read off the event loop's clock so ``looptime`` and ``advance_time()`` both move it.
+
 .. warning::
 
     This is a **proof of concept**. The module name, the fixtures, the blueprint and actor

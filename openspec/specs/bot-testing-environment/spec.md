@@ -3820,3 +3820,29 @@ chat other than a supergroup, SHALL be a setup error.
 
 - **WHEN** a member who is not the owner turns topics off
 - **THEN** the trigger raises `WorldLookupError`, and the chat is still a forum
+
+### Requirement: Flood limits can be modeled per chat
+
+An environment built with `rate_limits` SHALL refuse a message-producing call into a chat
+that is over a limit with error 429, `Too Many Requests: retry after N`, and a
+`TelegramRetryAfter` whose `retry_after` is the whole seconds until a send into that chat is
+allowed. The default limits SHALL be one message per second in any chat and 20 per minute
+in a group or supergroup, counted for the whole chat across its topics. A call SHALL be
+counted once it succeeds, a media group or batch once. The limits SHALL be read off the
+event loop's clock plus the time `advance_time` moved. Without `rate_limits` nothing SHALL be
+limited.
+
+#### Scenario: Two messages in one second
+
+- **WHEN** limits are on and the bot sends two messages into a chat at the same moment
+- **THEN** the second raises `TelegramRetryAfter` with `retry_after` 1, and is not stored
+
+#### Scenario: Waiting out the refusal
+
+- **WHEN** the test advances the time by that `retry_after`
+- **THEN** the next send into the chat goes through
+
+#### Scenario: A busy forum
+
+- **WHEN** the bot sends 20 messages within a minute into two topics of one group
+- **THEN** the 21st raises `TelegramRetryAfter`

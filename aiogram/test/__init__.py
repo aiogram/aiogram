@@ -25,6 +25,7 @@ from .blueprint import (
 from .calls import CallLog, NoSuchCallError
 from .environment import BotTestEnvironment, RouteRecord, build_environment
 from .errors import ApiRejection, DrainedTaskError, NoFileContentError, WaitTimeoutError
+from .flood import RateLimit, RateLimits
 from .overrides import (
     ADDRESSING_FIELDS,
     BLOCKED_BY_USER,
@@ -84,6 +85,8 @@ __all__ = (
     "OverrideHandle",
     "OverrideRule",
     "PollSpec",
+    "RateLimit",
+    "RateLimits",
     "RouteRecord",
     "SynthesisContext",
     "SynthesisError",

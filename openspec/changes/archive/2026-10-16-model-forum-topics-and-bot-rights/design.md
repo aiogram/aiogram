@@ -66,3 +66,14 @@ declares one with no topics.
 topics are off. The Bot API server's `check_chat_access` passes no topic for a chat that
 is neither a forum nor a private chat, so the toolkit stores the message untagged, and an
 actor bound to a topic posts untagged too.
+
+### D6. Flood limits are a sliding window per chat
+
+`FloodControl` keeps the send times of each chat and checks every limit that applies to
+the chat's type. A refusal's `retry_after` is the time until the oldest send that keeps
+the chat over a limit leaves its window, rounded up to whole seconds, so waiting exactly
+that long is enough. `handle_call` reads it after the overrides and before the handler,
+and records the send once the handler succeeds. The clock is `loop.time()` plus how far
+`advance_time` moved the world, so both ways of waiting count. `raise_api_error` gained
+`retry_after`, which goes into the response's `parameters`, so `check_response` raises
+the real `TelegramRetryAfter`.

@@ -1298,6 +1298,61 @@ with ``with``:
 Pass ``message=`` to get a different refusal than a block — ``"Forbidden: user is
 deactivated"``, for instance — through the same recipe.
 
+Flood control
+-------------
+
+To test what the bot does when Telegram tells it to slow down, declare the refusal. A
+:class:`aiogram.exceptions.TelegramRetryAfter` needs the method and ``retry_after``, so
+build it whole rather than passing the class:
+
+.. code-block:: python
+
+    from aiogram.exceptions import TelegramRetryAfter
+    from aiogram.methods import SendMessage
+
+    flood = TelegramRetryAfter(
+        method=SendMessage(chat_id=team.id, text=""),
+        message="Too Many Requests: retry after 5",
+        retry_after=5,
+    )
+    bot_env.on(SendMessage, chat_id=team.id).raises(flood, times=1)
+
+For a bot that sends a lot into one chat, ask the environment to model Telegram's limits
+instead. They are off by default:
+
+.. code-block:: python
+
+    from aiogram.test import RateLimit, RateLimits
+
+    env = BotTestEnvironment(blueprint=blueprint, rate_limits=RateLimits())
+
+    # or only the group limit, or limits of your own
+    RateLimits(per_chat=None)
+    RateLimits(per_group=RateLimit(messages=10, seconds=60))
+
+The defaults are Telegram's guidance in its
+`bot FAQ <https://core.telegram.org/bots/faq#my-bot-is-hitting-limits-how-do-i-avoid-this>`_:
+about one message per second in a chat, and at most 20 a minute in a group, shared by all of
+a forum's topics. A send, copy or forward over a limit fails as Telegram answers it, with
+error 429, ``Too Many Requests: retry after N`` and a ``TelegramRetryAfter`` whose
+``retry_after`` is the truth: once that many seconds have passed, the next send goes
+through. A media group or a batch of forwards counts once, and a send that fails for another
+reason is not counted. An override answers before the limits are read. The FAQ also allows
+short bursts above one a second; the model does not.
+
+The seconds are read off the event loop's clock, so a loop driven by ``looptime`` moves
+them, and :meth:`~aiogram.test.BotTestEnvironment.advance_time` moves them too:
+
+.. code-block:: python
+
+    try:
+        await bot.send_message(chat_id=team.id, text="next")
+    except TelegramRetryAfter as error:
+        await bot_env.advance_time(error.retry_after)   # or asyncio.sleep under looptime
+        await bot.send_message(chat_id=team.id, text="next")
+
+For the ``bot_env`` fixture, override ``bot_env_rate_limits`` to return the limits.
+
 An override that never fires
 -----------------------------
 
@@ -2636,7 +2691,7 @@ API reference
 =============
 
 .. automodule:: aiogram.test
-    :members: Blueprint, BotTestEnvironment, UserActor, CallLog, RouteRecord, build_environment, default_blueprint, detach_router, administrator_rights
+    :members: Blueprint, BotTestEnvironment, UserActor, CallLog, RouteRecord, RateLimits, RateLimit, build_environment, default_blueprint, detach_router, administrator_rights
     :member-order: bysource
     :undoc-members: False
 
@@ -2690,6 +2745,10 @@ Fixtures
 ``bot_env_enforce_bot_rights``
     Whether ``bot_env`` checks the bot's own calls against its rights. ``True`` by
     default; override it to return ``False`` while migrating.
+
+``bot_env_rate_limits``
+    The flood limits ``bot_env`` models. ``None`` by default; override it to return
+    :class:`aiogram.test.RateLimits`.
 
 ``bot_chat``
     The first chat declared by the blueprint.
