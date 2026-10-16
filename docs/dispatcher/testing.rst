@@ -230,12 +230,12 @@ chat's state for a chat.
 
 ``add_user``, ``add_private_chat``, ``add_group``, ``add_supergroup`` and ``add_channel`` take
 what the blueprint's methods of the same name take — they are those methods, run on a scratch
-blueprint, so the signatures live in one place — with ``members`` naming any user of the
-world, declared or added, by spec, by actor or by id, which a blueprint's ``members`` accept
-too. The id is the next free one unless given, counted as the blueprint counts it, and one
-already taken raises :class:`ValueError`, in a blueprint as in a running world. A user of the world is a member only
-if the world has them: an unknown id raises :class:`~aiogram.test.WorldLookupError` naming
-``add_user``. The blueprint the environment was built from is not changed, so a blueprint
+blueprint, so the signatures live in one place — with ``members`` naming any user of the world,
+declared or added, by spec, by actor or by id, which a blueprint's ``members`` accept too. The
+id is the next free one unless given, counted as the blueprint counts it, and one already taken
+raises :class:`ValueError`, in a blueprint as in a running world. A user of the world is a
+member only if the world has them: an unknown id raises :class:`~aiogram.test.WorldLookupError`
+naming ``add_user``. The blueprint the environment was built from is not changed, so a blueprint
 shared by many tests stays as declared. Topics are not added this way; a supergroup's owner
 creates them with ``create_topic()``, and ``is_forum=True`` turns them on.
 
@@ -1132,13 +1132,13 @@ gift somebody already has.
 
 .. note::
 
-    Three deliberate limits. Business bot rights (``can_convert_gifts_to_stars`` and
-    friends) are **not** enforced; only the bot's rights in a chat are, as
-    described under "The bot's own rights". Telegram's star economics — commission, payouts, the settlement hold — are
-    not modeled; the ledger only counts stars in and out. And **affordability is not
-    checked**: sending a gift you cannot pay for drives the balance negative rather than
-    failing, because a negative balance is visible to a test while a silent rejection is
-    not. Declare the rejection with an override if that is the branch under test.
+    Three deliberate limits. Business bot rights (``can_convert_gifts_to_stars`` and friends)
+    are **not** enforced; only the bot's rights in a chat are, as described under "The bot's own
+    rights". Telegram's star economics — commission, payouts, the settlement hold — are not
+    modeled; the ledger only counts stars in and out. And **affordability is not checked**:
+    sending a gift you cannot pay for drives the balance negative rather than failing, because a
+    negative balance is visible to a test while a silent rejection is not. Declare the rejection
+    with an override if that is the branch under test.
 
 Files and downloads
 ===================
@@ -2197,19 +2197,18 @@ before it ever fed an update or handled a call — owns nothing, cancels nothing
 
 A task that fails on its own, or ends with something other than the cancellation ``drain()``
 sent it, is not swallowed: retrieving its result is what stops asyncio complaining about it
-later, and discarding that result would make ``drain()`` itself the thing hiding a real bug —
-a night timer that died with a ``KeyError`` would look exactly like one cancelled on time. So
-a failure is re-raised as :class:`aiogram.test.DrainedTaskError`, naming every task that
-failed, with the first one's real traceback chained as its cause. This holds for a task that
-died **before** the drain, too: those are not in ``asyncio.all_tasks()``, so the environment
-notes every task created while it is live, weakly, and when one fails keeps it until its
-exception is retrieved or reported, and inspects those as well as the cancelled ones. They are not counted
-in the number ``drain`` returns, which stays "how many tasks this drained". A task that
-succeeded or was cancelled is forgotten as soon as it ends, so a long test that spawns
-thousands of tasks does not hold on to them; only a failure nobody has looked at is kept. An
-exception the bot already retrieved — by awaiting the task and
-catching it, or through ``asyncio.gather(..., return_exceptions=True)`` — was the bot's to
-handle, and is not reported:
+later, and discarding that result would make ``drain()`` itself the thing hiding a real bug — a
+night timer that died with a ``KeyError`` would look exactly like one cancelled on time. So a
+failure is re-raised as :class:`aiogram.test.DrainedTaskError`, naming every task that failed,
+with the first one's real traceback chained as its cause. This holds for a task that died
+**before** the drain, too: those are not in ``asyncio.all_tasks()``, so the environment notes
+every task created while it is live, weakly, and when one fails keeps it until its exception is
+retrieved or reported, and inspects those as well as the cancelled ones. They are not counted in
+the number ``drain`` returns, which stays "how many tasks this drained". A task that succeeded
+or was cancelled is forgotten as soon as it ends, so a long test that spawns thousands of tasks
+does not hold on to them; only a failure nobody has looked at is kept. An exception the bot
+already retrieved — by awaiting the task and catching it, or through
+``asyncio.gather(..., return_exceptions=True)`` — was the bot's to handle, and is not reported:
 
 .. code-block:: python
 
@@ -2610,14 +2609,14 @@ channel chat``), or ``Forbidden: bot is not a member of the group chat`` and so 
 that left. That holds for its sends and for every call in the table. A chat in which the
 bot's membership is not declared at all counts it as a member.
 
-The owner holds every right, and an administrator declared without rights holds the
-ordinary ones, which do not include ``can_promote_members``. The chat's permissions never
-grant the bot an administrator's right: TDLib takes ``can_change_info``,
-``can_invite_users``, ``can_pin_messages`` and ``can_manage_topics`` away from a bot that is
-not an administrator, whatever the chat allows its members. The wording is TDLib's, which
-the Bot API server passes on with its first letter lowercased; ``TOPIC_CLOSED`` and
-``CHAT_ADMIN_REQUIRED`` are the server's own. :code:`deleteMessages` skips what the bot may not delete, as
-it skips other messages it cannot delete. An ephemeral message is not checked.
+The owner holds every right, and an administrator declared without rights holds the ordinary
+ones, which do not include ``can_promote_members``. The chat's permissions never grant the bot
+an administrator's right: TDLib takes ``can_change_info``, ``can_invite_users``,
+``can_pin_messages`` and ``can_manage_topics`` away from a bot that is not an administrator,
+whatever the chat allows its members. The wording is TDLib's, which the Bot API server passes on
+with its first letter lowercased; ``TOPIC_CLOSED`` and ``CHAT_ADMIN_REQUIRED`` are the server's
+own. :code:`deleteMessages` skips what the bot may not delete, as it skips other messages it
+cannot delete. An ephemeral message is not checked.
 
 A refusal cannot say how to fix the test, since its text is Telegram's. The fix is always
 to declare what the bot was meant to hold:
@@ -3038,8 +3037,8 @@ in the test rather than an outcome to model. The message names the right and how
     # `blueprint.set_member(chat, user, rights=administrator_rights())`, ...
 
 The rule holds with ``enforce_bot_rights=False`` too, which loosens the bot's checks only.
-A member whom the chat's permissions let manage topics is not modeled as holding the right;
-promote them.
+A member whom the chat's permissions let create topics still needs the right to close, reopen
+or delete one they did not create.
 
 The couplings the Bot API documents apply: hiding the General topic also closes it, and
 reopening it also unhides it. :code:`editForumTopic` with an empty name keeps the current

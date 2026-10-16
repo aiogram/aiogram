@@ -3738,6 +3738,12 @@ that names the topic, never a Telegram error.
 - **WHEN** a handler sends a message with thread id 1 into a forum
 - **THEN** the call raises `TelegramBadRequest` with `message thread not found`
 
+#### Scenario: Message numbering
+
+- **WHEN** a test declares a basic group, a supergroup and a channel and each gets its first
+  message
+- **THEN** the basic group's is numbered 1, and the supergroup's and the channel's 2
+
 #### Scenario: A test names an unknown topic
 
 - **WHEN** a test binds an actor to a thread id the chat does not have
@@ -3952,16 +3958,16 @@ Without `rate_limits` nothing SHALL be limited.
 
 ### Requirement: The bot's background tasks can be waited for
 
-`wait_for_background_tasks()` SHALL wait, cancelling nothing, until every task the environment counts
-as the bot's is done: those alive or failed unseen, other than those alive at its first
-asynchronous entry, the caller, and every task waiting on the caller, by awaiting it,
-directly or through `gather`, or by having created it. A task that made the environment's
-first call SHALL count as the bot's. `drain()` SHALL count the same tasks. A task created
-while waiting SHALL be waited for too. A task that ended with an exception nobody retrieved
-SHALL be raised as `BackgroundTaskError`, the base of `DrainedTaskError`, with the first
-chained as its cause. At the timeout, which defaults to the environment's wait timeout, it
-SHALL raise `WaitTimeoutError` naming each task still running and its coroutine, and leave
-them running. It SHALL return how many tasks it waited for.
+`wait_for_background_tasks()` SHALL wait, cancelling nothing, until every task the environment
+counts as the bot's is done: those alive or failed unseen, other than those alive at its first
+asynchronous entry, the caller, and every task waiting on the caller, by awaiting it, directly
+or through `gather`, or by having created it. A task that made the environment's first call
+SHALL count as the bot's. `drain()` SHALL count the same tasks. A task created while waiting
+SHALL be waited for too. A task that ended with an exception nobody retrieved SHALL be raised as
+`BackgroundTaskError`, the base of `DrainedTaskError`, with the first chained as its cause. At
+the timeout, which defaults to the environment's wait timeout, it SHALL raise `WaitTimeoutError`
+naming each task still running and its coroutine, and leave them running. It SHALL return how
+many tasks it waited for.
 
 #### Scenario: A results broadcast
 
@@ -4191,6 +4197,11 @@ change.
 - **WHEN** a test reads the signature of `env.add_supergroup`
 - **THEN** its parameters are those of `Blueprint.add_supergroup`
 
+#### Scenario: An id already declared
+
+- **WHEN** a blueprint declares a chat with an id another of its chats has
+- **THEN** it raises `ValueError` naming the id
+
 #### Scenario: A shared blueprint
 
 - **WHEN** two environments are built from one blueprint and one adds a user and a chat
@@ -4244,13 +4255,12 @@ still be accepted.
 
 ### Requirement: Finished tasks are not held for the life of the environment
 
-The environment SHALL note the tasks it tracks weakly, and SHALL keep no task that succeeded
-or was cancelled once it ends. A task that failed SHALL be kept until its exception is
-retrieved, by the bot or by a report, so that `wait_for_background_tasks()` and `drain()` still raise
-`BackgroundTaskError` and `DrainedTaskError` for a failure nobody retrieved, and SHALL NOT
-for one the bot retrieved, however late. Retrieved failures SHALL be let go when the tasks
-are next counted rather than each time a task ends. A disposed environment SHALL hold no
-task.
+The environment SHALL note the tasks it tracks weakly, and SHALL keep no task that succeeded or
+was cancelled once it ends. A task that failed SHALL be kept until its exception is retrieved,
+by the bot or by a report, so that `wait_for_background_tasks()` and `drain()` still raise
+`BackgroundTaskError` and `DrainedTaskError` for a failure nobody retrieved, and SHALL NOT for
+one the bot retrieved, however late. Retrieved failures SHALL be let go when the tasks are next
+counted rather than each time a task ends. A disposed environment SHALL hold no task.
 
 #### Scenario: Many short tasks
 
@@ -4260,8 +4270,8 @@ task.
 #### Scenario: A failure among them
 
 - **WHEN** one of many finished tasks failed and nobody retrieved why
-- **THEN** `wait_for_background_tasks()` raises `BackgroundTaskError` naming it, with its exception as the
-  cause, and afterwards the environment holds nothing
+- **THEN** `wait_for_background_tasks()` raises `BackgroundTaskError` naming it, with its
+  exception as the cause, and afterwards the environment holds nothing
 
 #### Scenario: A failure the bot handled
 

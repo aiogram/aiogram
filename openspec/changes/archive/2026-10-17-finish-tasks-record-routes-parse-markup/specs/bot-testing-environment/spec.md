@@ -409,6 +409,11 @@ change.
 - **WHEN** a test reads the signature of `env.add_supergroup`
 - **THEN** its parameters are those of `Blueprint.add_supergroup`
 
+#### Scenario: An id already declared
+
+- **WHEN** a blueprint declares a chat with an id another of its chats has
+- **THEN** it raises `ValueError` naming the id
+
 #### Scenario: A shared blueprint
 
 - **WHEN** two environments are built from one blueprint and one adds a user and a chat

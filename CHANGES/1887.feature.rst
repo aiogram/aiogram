@@ -298,35 +298,33 @@ update names the account owner. Routing diagnostics no longer report a handler t
 ``SkipHandler`` as the one that ran, and ``drain()`` no longer reports an exception the bot
 already retrieved.
 
-Forum topics answer in Telegram's words. A send, copy or forward into a thread the chat does
-not have fails with ``message thread not found``, deleted or never there, as does one into
-thread 1, the General topic's id, which no topic gets since message 1 of a supergroup or a
-channel is reserved for the chat's creation. A forum method naming a deleted topic fails
-with ``TOPIC_DELETED``. A topic a test or an actor names but the chat lacks, or one an actor
-was bound to before it was deleted, is a setup gap that raises
-:class:`aiogram.test.WorldLookupError` naming it.
-A closed topic, and the General topic while closed or hidden, refuses the bot's sends, copies
-and forwards with ``TOPIC_CLOSED`` unless the bot is the owner or an administrator holding
-``can_manage_topics``. A message in a topic that replies to nothing else, the bot's or an
-actor's, carries the topic's ``forum_topic_created`` message as its ``reply_to_message``, so a
-handler reads the topic's name where it does in production; the General topic has none, and
-neither does a private chat's topic. A replied message carries no reply of its own, an
-actor's reply as the bot's. A bot's private chats take ``createForumTopic``,
-``editForumTopic`` and ``deleteForumTopic`` and keep a topic's thread id on its messages.
-Closing and reopening the General topic post ``forum_topic_closed`` and
-``forum_topic_reopened``, for the bot and for an actor.
-A supergroup's owner can turn topics off and on again with ``set_topics(...)``, which sets
-``chat.is_forum`` and keeps the topics for when they come back, and ``add_supergroup(..., is_forum=True)`` declares a forum
-with none yet. The forum methods refuse a chat that is not a forum, and a send with a thread
-id into one lands untagged, as the Bot API server passes no topic there.
-A user manages topics through the actor — ``create_topic()``, ``close_topic()``,
-``reopen_topic()``, ``delete_topic()``, ``hide_general_topic()``, ``unhide_general_topic()``,
-``close_general_topic()`` and ``reopen_general_topic()`` — which change the world as the matching
-bot methods do and feed the service message Telegram posts, from that user. Deleting a topic
-feeds nothing, as Telegram posts no message for it. The user has to hold
-``can_manage_topics``, as an administrator's right or, to create a topic, as the chat's
-permission, or to be the topic's creator, or the trigger raises ``WorldLookupError`` naming
-the right.
+Forum topics answer in Telegram's words. A send, copy or forward into a thread the chat does not
+have fails with ``message thread not found``, deleted or never there, as does one into thread 1,
+the General topic's id, which no topic gets since message 1 of a supergroup or a channel is
+reserved for the chat's creation. A forum method naming a deleted topic fails with
+``TOPIC_DELETED``. A topic a test or an actor names but the chat lacks, or one an actor was
+bound to before it was deleted, is a setup gap that raises
+:class:`aiogram.test.WorldLookupError` naming it. A closed topic, and the General topic while
+closed or hidden, refuses the bot's sends, copies and forwards with ``TOPIC_CLOSED`` unless the
+bot is the owner or an administrator holding ``can_manage_topics``. A message in a topic that
+replies to nothing else, the bot's or an actor's, carries the topic's ``forum_topic_created``
+message as its ``reply_to_message``, so a handler reads the topic's name where it does in
+production; the General topic has none, and neither does a private chat's topic. A replied
+message carries no reply of its own, an actor's reply as the bot's. A bot's private chats take
+``createForumTopic``, ``editForumTopic`` and ``deleteForumTopic`` and keep a topic's thread id
+on its messages. Closing and reopening the General topic post ``forum_topic_closed`` and
+``forum_topic_reopened``, for the bot and for an actor. A supergroup's owner can turn topics off
+and on again with ``set_topics(...)``, which sets ``chat.is_forum`` and keeps the topics for
+when they come back, and ``add_supergroup(..., is_forum=True)`` declares a forum with none yet.
+The forum methods refuse a chat that is not a forum, and a send with a thread id into one lands
+untagged, as the Bot API server passes no topic there. A user manages topics through the actor —
+``create_topic()``, ``close_topic()``, ``reopen_topic()``, ``delete_topic()``,
+``hide_general_topic()``, ``unhide_general_topic()``, ``close_general_topic()`` and
+``reopen_general_topic()`` — which change the world as the matching bot methods do and feed the
+service message Telegram posts, from that user. Deleting a topic feeds nothing, as Telegram
+posts no message for it. The user has to hold ``can_manage_topics``, as an administrator's right
+or, to create a topic, as the chat's permission, or to be the topic's creator, or the trigger
+raises ``WorldLookupError`` naming the right.
 
 A group or a supergroup reports permissions instead of none: by default every member
 permission, granted. Telegram does not publish what a new group allows, so this is the
@@ -336,13 +334,12 @@ permissions=...)`` and ``add_supergroup(..., permissions=...)`` model a stricter
 starting from ``default_chat_permissions()``.
 
 A running environment can gain users and chats, which only the blueprint could declare:
-``env.add_user()``, ``env.add_private_chat()``, ``env.add_group()``, ``env.add_supergroup()`` and
-``env.add_channel()`` take what the blueprint's methods of the same name take, are those
-methods run on a scratch blueprint so their shape is identical, and return the actor or the
-live chat state that ``env.user()`` and ``env.chat()`` return. A blueprint's ``members`` name
-users by declaration, actor or id as well, and a blueprint refuses a chat or user id it has
-already declared. The blueprint the environment was built from is left
-alone.
+``env.add_user()``, ``env.add_private_chat()``, ``env.add_group()``, ``env.add_supergroup()``
+and ``env.add_channel()`` take what the blueprint's methods of the same name take, are those
+methods run on a scratch blueprint so their shape is identical, and return the actor or the live
+chat state that ``env.user()`` and ``env.chat()`` return. A blueprint's ``members`` name users
+by declaration, actor or id as well, and a blueprint refuses a chat or user id it has already
+declared. The blueprint the environment was built from is left alone.
 
 A text an actor sends, and a caption, carries the ``bot_command`` entities a client attaches
 to ``/cmd`` and ``/cmd@bot``, found as Telegram finds them: a slash at the start or after
@@ -387,21 +384,20 @@ Declaring ``env.on(SendMessage).raises(TelegramRetryAfter)`` with the class, whi
 built from the method and the message alone, raises a ``TypeError`` at the declaration with the
 instance to build instead, rather than failing in the middle of the bot's call; so does
 ``TelegramMigrateToChat``, a class of your own that needs more, or anything that is not a
-Telegram exception.
-The environment no longer holds every task the bot spawned until it is disposed of: a task that
-succeeds or is cancelled is forgotten as it ends, so a long run does not grow with the tasks it
-spawned, and one that fails is kept until its exception is retrieved — by the bot, or by
-``wait_for_background_tasks()`` or ``drain()``, which still report it. Both count a worker the test
-started even when its call was the environment's first, and never wait for or cancel the
-caller or a task waiting on it, such as the test's task awaiting the child that drains.
-Flood control can be tested two ways. The documentation shows the override that declares one
-``TelegramRetryAfter``, built whole with its method and ``retry_after``. And
-``BotTestEnvironment(rate_limits=RateLimits())``, off by default, models Telegram's guidance
-per chat — about one message a second, and 20 a minute in a group, shared by its topics —
-refusing a send over it with a 429 whose ``retry_after`` is when the next one goes through,
-read off the event loop's clock so ``looptime`` and ``advance_time()`` both move it. A send
-Telegram refuses for another reason first, such as the bot's rights or an unknown thread,
-gets that refusal in a flooded chat too.
+Telegram exception. The environment no longer holds every task the bot spawned until it is
+disposed of: a task that succeeds or is cancelled is forgotten as it ends, so a long run does
+not grow with the tasks it spawned, and one that fails is kept until its exception is retrieved
+— by the bot, or by ``wait_for_background_tasks()`` or ``drain()``, which still report it. Both
+count a worker the test started even when its call was the environment's first, and never wait
+for or cancel the caller or a task waiting on it, such as the test's task awaiting the child
+that drains. Flood control can be tested two ways. The documentation shows the override that
+declares one ``TelegramRetryAfter``, built whole with its method and ``retry_after``. And
+``BotTestEnvironment(rate_limits=RateLimits())``, off by default, models Telegram's guidance per
+chat — about one message a second, and 20 a minute in a group, shared by its topics — refusing a
+send over it with a 429 whose ``retry_after`` is when the next one goes through, read off the
+event loop's clock so ``looptime`` and ``advance_time()`` both move it. A send Telegram refuses
+for another reason first, such as the bot's rights or an unknown thread, gets that refusal in a
+flooded chat too.
 
 Migrating a suite written against the earlier toolkit:
 
@@ -418,7 +414,16 @@ Migrating a suite written against the earlier toolkit:
   out with ``BotTestEnvironment(enforce_bot_rights=False)`` or by overriding the
   ``bot_env_enforce_bot_rights`` fixture.
 - Supergroups and channels number their messages from 2, as message 1 is the chat's
-  creation; a test that asserted a first message id of 1 there expects 2.
+  creation; a test that asserted a first message id of 1 there expects 2. Basic groups still
+  start at 1.
+- A private chat now checks a send's thread id: one it has no topic for fails with
+  ``message thread not found`` rather than being stored as passed.
+- A blueprint raises ``ValueError`` for a chat or user id it has already declared.
+- A group's default permissions now grant changing its info, pinning, creating topics and
+  editing one's tag too. A test that relied on members lacking them declares
+  ``permissions=`` from ``default_chat_permissions()``.
+- ``unbanChatMember`` and ``promoteChatMember`` in a basic group fail with ``method is
+  available only in supergroup and channel chats``, as on the Bot API server.
 
 .. warning::
 

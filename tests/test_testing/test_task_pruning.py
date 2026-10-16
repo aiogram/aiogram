@@ -97,7 +97,7 @@ class TestFinishedTasksAreLetGo:
 
 
 class TestAFailureIsStillReported:
-    async def test_wait_for_tasks_reports_a_failure_among_many_finished_tasks(self, started):
+    async def test_wait_for_background_tasks_reports_one_among_many(self, started):
         async def work():
             return 1
 

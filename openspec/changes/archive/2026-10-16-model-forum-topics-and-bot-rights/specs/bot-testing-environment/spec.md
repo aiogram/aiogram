@@ -412,6 +412,12 @@ that names the topic, never a Telegram error.
 - **WHEN** a handler sends a message with thread id 1 into a forum
 - **THEN** the call raises `TelegramBadRequest` with `message thread not found`
 
+#### Scenario: Message numbering
+
+- **WHEN** a test declares a basic group, a supergroup and a channel and each gets its first
+  message
+- **THEN** the basic group's is numbered 1, and the supergroup's and the channel's 2
+
 #### Scenario: A test names an unknown topic
 
 - **WHEN** a test binds an actor to a thread id the chat does not have
