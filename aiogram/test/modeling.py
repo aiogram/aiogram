@@ -1008,7 +1008,7 @@ def posting_topic(
     The topic a message the bot sends lands in, once it may post there.
 
     ``None`` outside a forum and a private chat's topics. A thread
-    the chat does not have fails as :meth:`ChatState.api_topic`
+    the chat does not have fails as :meth:`ChatState.topic_for_call`
     says. A closed topic, or a closed or hidden General topic, takes
     messages only from someone who may manage topics or from the
     topic's creator: ``TOPIC_CLOSED`` otherwise. That text is the
@@ -1016,10 +1016,10 @@ def posting_topic(
     """
     if chat.type == ChatType.PRIVATE:
         # The server looks up any thread a private chat is sent.
-        return None if thread_id is None else chat.api_topic(thread_id, sending=True)
+        return None if thread_id is None else chat.topic_for_call(thread_id, sending=True)
     if not chat.is_forum:
         return None
-    topic = chat.api_topic(thread_id, sending=True)
+    topic = chat.topic_for_call(thread_id, sending=True)
     closed = topic.is_closed or (topic.is_general and topic.is_hidden)
     opened = topic.creator_id is not None and topic.creator_id == env.world.bot_user.id
     if closed and not opened and not bot_has_right(env, chat, "can_manage_topics"):
@@ -3816,7 +3816,7 @@ def forum_chat(env: BotTestEnvironment, chat_id: Any, *, private: bool = False) 
 def _topic(env: BotTestEnvironment, method: TelegramMethod[Any]) -> tuple[ChatState, TopicState]:
     chat_id = method.chat_id  # type: ignore[attr-defined]
     chat = forum_chat(env, chat_id, private=type(method) in _PRIVATE_TOPIC_METHODS)
-    return chat, chat.api_topic(getattr(method, "message_thread_id", None))
+    return chat, chat.topic_for_call(getattr(method, "message_thread_id", None))
 
 
 @models(CreateForumTopic)

@@ -1,6 +1,6 @@
 """
-``await env.wait_for_tasks()``: wait for the bot's background work
-to finish, where ``drain()`` would cancel it.
+``await env.wait_for_background_tasks()``: wait for the bot's
+background work to finish, where ``drain()`` would cancel it.
 """
 
 import asyncio
@@ -29,14 +29,14 @@ class TestWaitForTasks:
 
         await alice.send("/results")
 
-        assert await env.wait_for_tasks() == 1
+        assert await env.wait_for_background_tasks() == 1
         assert [m.text for m in private.messages[-2:]] == ["Town wins", "Mafia: Bob"]
 
     async def test_nothing_is_cancelled(self, env, alice):
         await alice.send("hi")
         task = asyncio.create_task(asyncio.sleep(0.01))
 
-        assert await env.wait_for_tasks() == 1
+        assert await env.wait_for_background_tasks() == 1
         assert task.done()
         assert not task.cancelled()
 
@@ -55,20 +55,20 @@ class TestWaitForTasks:
 
         asyncio.create_task(parent())
 
-        assert await env.wait_for_tasks() == 2
+        assert await env.wait_for_background_tasks() == 2
         assert finished == ["parent", "child"]
 
     async def test_no_tasks_is_free(self, env, alice):
         await alice.send("hi")
 
-        assert await env.wait_for_tasks() == 0
+        assert await env.wait_for_background_tasks() == 0
 
     async def test_an_environment_that_never_ran_waits_for_nothing(self, env):
         outsider = asyncio.create_task(asyncio.sleep(3600))
         await asyncio.sleep(0)
 
         try:
-            assert await env.wait_for_tasks(timeout=0.01) == 0
+            assert await env.wait_for_background_tasks(timeout=0.01) == 0
             assert not outsider.done()
         finally:
             outsider.cancel()
@@ -79,7 +79,7 @@ class TestWaitForTasks:
         await alice.send("hi")
 
         try:
-            assert await env.wait_for_tasks(timeout=0.01) == 0
+            assert await env.wait_for_background_tasks(timeout=0.01) == 0
         finally:
             outsider.cancel()
 
@@ -88,7 +88,7 @@ class TestWaitForTasks:
         await alice.send("hi")
         task = asyncio.create_task(asyncio.sleep(0.01))
 
-        [waited] = await asyncio.gather(env.wait_for_tasks(timeout=1.0))
+        [waited] = await asyncio.gather(env.wait_for_background_tasks(timeout=1.0))
 
         assert waited == 1
         assert task.done()
@@ -104,7 +104,7 @@ class TestWaitForTasks:
         task = asyncio.create_task(explode())
 
         with pytest.raises(BackgroundTaskError, match="ended with an exception") as failure:
-            await env.wait_for_tasks()
+            await env.wait_for_background_tasks()
 
         assert not isinstance(failure.value, DrainedTaskError)
         assert task.get_name() in str(failure.value)
@@ -124,7 +124,7 @@ class TestWaitForTasks:
         await asyncio.sleep(0)
 
         with pytest.raises(BackgroundTaskError, match="ValueError: boom"):
-            await env.wait_for_tasks()
+            await env.wait_for_background_tasks()
 
     async def test_a_retrieved_failure_is_the_bots_own(self, env, alice):
         await alice.send("hi")
@@ -137,7 +137,7 @@ class TestWaitForTasks:
         with pytest.raises(ValueError, match="handled"):
             await task
 
-        assert await env.wait_for_tasks() == 0
+        assert await env.wait_for_background_tasks() == 0
 
     async def test_a_timeout_names_what_still_runs_and_cancels_nothing(self, env, alice):
         await alice.send("hi")
@@ -149,7 +149,7 @@ class TestWaitForTasks:
 
         try:
             with pytest.raises(WaitTimeoutError) as failure:
-                await env.wait_for_tasks(timeout=0.02)
+                await env.wait_for_background_tasks(timeout=0.02)
             message = str(failure.value)
             assert "1 still running" in message
             assert "night (TestWaitForTasks." in message
@@ -173,7 +173,7 @@ class TestWaitForTasks:
 
         try:
             with pytest.raises(WaitTimeoutError, match="still running") as failure:
-                await env.wait_for_tasks(timeout=0.02)
+                await env.wait_for_background_tasks(timeout=0.02)
             assert "RuntimeError: broadcast failed" in str(failure.value)
             assert isinstance(failure.value.__cause__, RuntimeError)
         finally:
@@ -190,7 +190,7 @@ class TestWaitForTasks:
             stuck = asyncio.create_task(asyncio.sleep(3600))
             try:
                 with pytest.raises(WaitTimeoutError, match="after 0.02s"):
-                    await environment.wait_for_tasks()
+                    await environment.wait_for_background_tasks()
             finally:
                 stuck.cancel()
         finally:
@@ -233,7 +233,7 @@ class TestWhichTasksAreTheBots:
         task = asyncio.create_task(worker())
         await asyncio.sleep(0)
 
-        assert await env.wait_for_tasks(timeout=1.0) == 1
+        assert await env.wait_for_background_tasks(timeout=1.0) == 1
         assert task.done()
 
     async def test_a_drain_from_a_task_the_test_waits_on_spares_the_test(self, env, alice):

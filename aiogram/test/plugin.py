@@ -101,7 +101,7 @@ def bot_env_assert_updates_handled() -> bool:
     that passes then fails if an update it fed went unhandled or
     raised, as
     :meth:`~aiogram.test.BotTestEnvironment.assert_updates_handled`
-    says, unless the test called ``expect_unhandled()`` for it.
+    says, unless the test called ``assert_unhandled()`` for it.
     """
     return False
 

@@ -3933,7 +3933,7 @@ Without `rate_limits` nothing SHALL be limited.
 
 ### Requirement: The bot's background tasks can be waited for
 
-`wait_for_tasks()` SHALL wait, cancelling nothing, until every task the environment counts
+`wait_for_background_tasks()` SHALL wait, cancelling nothing, until every task the environment counts
 as the bot's is done: those alive or failed unseen, other than those alive at its first
 asynchronous entry, the caller, and every task waiting on the caller, by awaiting it,
 directly or through `gather`, or by having created it. A task that made the environment's
@@ -3972,10 +3972,10 @@ them running. It SHALL return how many tasks it waited for.
 ### Requirement: Every route of a test is kept and can be checked
 
 An environment SHALL keep the route record of every update it routed for its whole life,
-readable as `route_history`. `assert_updates_handled()` SHALL fail on every trigger none of
+readable as `all_routes`. `assert_updates_handled()` SHALL fail on every trigger none of
 whose updates was handled and on every update that raised, even if an error handler
 swallowed it, listing each with its description, except for a trigger the test passed to
-`expect_unhandled()`. `expect_unhandled()` SHALL apply to the trigger `routes` reports,
+`assert_unhandled()`. `assert_unhandled()` SHALL apply to the trigger `routes` reports,
 SHALL fail if that trigger has nothing the check would flag, and SHALL return what it would
 flag. With the `bot_env_assert_updates_handled` fixture returning true, the plugin SHALL run
 the check after each test that passed, failing that test.
@@ -3983,7 +3983,7 @@ the check after each test that passed, failing that test.
 #### Scenario: An update in the middle of a game went nowhere
 
 - **WHEN** a test feeds a handled update, an unhandled one, and a handled one
-- **THEN** `route_history` holds all three, and `assert_updates_handled()` fails naming the
+- **THEN** `all_routes` holds all three, and `assert_updates_handled()` fails naming the
   unhandled one
 
 #### Scenario: A join whose service message nobody claims
@@ -3993,13 +3993,13 @@ the check after each test that passed, failing that test.
 
 #### Scenario: An update the test meant the bot to ignore
 
-- **WHEN** a test calls `expect_unhandled()` after an unhandled trigger
+- **WHEN** a test calls `assert_unhandled()` after an unhandled trigger
 - **THEN** `assert_updates_handled()` passes
 
 #### Scenario: The plugin checks a passing test
 
 - **WHEN** the fixture flag is on and a passing test left an update unhandled
-- **THEN** that test fails, and a test that called `expect_unhandled()` passes
+- **THEN** that test fails, and a test that called `assert_unhandled()` passes
 
 ### Requirement: Parse modes are applied as the Bot API applies them
 
@@ -4216,7 +4216,7 @@ still be accepted.
 
 The environment SHALL note the tasks it tracks weakly, and SHALL keep no task that succeeded
 or was cancelled once it ends. A task that failed SHALL be kept until its exception is
-retrieved, by the bot or by a report, so that `wait_for_tasks()` and `drain()` still raise
+retrieved, by the bot or by a report, so that `wait_for_background_tasks()` and `drain()` still raise
 `BackgroundTaskError` and `DrainedTaskError` for a failure nobody retrieved, and SHALL NOT
 for one the bot retrieved, however late. Retrieved failures SHALL be let go when the tasks
 are next counted rather than each time a task ends. A disposed environment SHALL hold no
@@ -4230,10 +4230,10 @@ task.
 #### Scenario: A failure among them
 
 - **WHEN** one of many finished tasks failed and nobody retrieved why
-- **THEN** `wait_for_tasks()` raises `BackgroundTaskError` naming it, with its exception as the
+- **THEN** `wait_for_background_tasks()` raises `BackgroundTaskError` naming it, with its exception as the
   cause, and afterwards the environment holds nothing
 
 #### Scenario: A failure the bot handled
 
 - **WHEN** the bot awaits a task that failed, and catches the exception, at any later time
-- **THEN** neither `wait_for_tasks()` nor `drain()` reports it
+- **THEN** neither `wait_for_background_tasks()` nor `drain()` reports it

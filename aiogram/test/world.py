@@ -1598,7 +1598,7 @@ class ChatState:
 
         An unknown id is a gap in the test, so it raises
         :class:`WorldLookupError` naming the topics there are. A call
-        the bot makes goes through :meth:`api_topic` instead.
+        the bot makes goes through :meth:`topic_for_call` instead.
         """
         if message_thread_id is None:
             return self.general_topic
@@ -1607,7 +1607,7 @@ class ChatState:
             raise WorldLookupError(self._missing_topic_message(message_thread_id))
         return topic
 
-    def api_topic(
+    def topic_for_call(
         self,
         message_thread_id: int | None,
         *,

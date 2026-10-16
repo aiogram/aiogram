@@ -97,11 +97,11 @@ class BackgroundTaskError(AssertionError):
     """
     Raised when one of the bot's own background tasks failed.
 
-    :meth:`aiogram.test.BotTestEnvironment.wait_for_tasks` raises it
-    for a task that ended with an exception nobody retrieved, and
-    :class:`DrainedTaskError` is the same failure as ``drain()`` finds
-    it, so ``pytest.raises(BackgroundTaskError)`` catches both. The
-    first failure is chained as ``__cause__``.
+    :meth:`~aiogram.test.BotTestEnvironment.wait_for_background_tasks`
+    raises it for a task that ended with an exception nobody retrieved,
+    and :class:`DrainedTaskError` is the same failure as ``drain()``
+    finds it, so ``pytest.raises(BackgroundTaskError)`` catches both.
+    The first failure is chained as ``__cause__``.
     """
 
 

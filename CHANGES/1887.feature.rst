@@ -192,7 +192,7 @@ the pytest fixture's teardown is synchronous and cannot await a cancellation, an
 tasks a test never mentioned as an invisible side effect of a fixture going out of scope
 would turn a stopped scheduler into a mystery.
 Work that should finish rather than be cancelled — a results broadcast sent from a task of its
-own — is waited for with ``await env.wait_for_tasks()``, which waits until every task
+own — is waited for with ``await env.wait_for_background_tasks()``, which waits until every task
 ``drain()`` would have cancelled is done, including the ones spawned while it waits, cancels
 nothing, raises a task's own failure as :class:`aiogram.test.BackgroundTaskError` (the base of
 ``DrainedTaskError``), and on timeout names each task still running and the coroutine it runs.
@@ -313,8 +313,8 @@ actor's reply as the bot's. A bot's private chats take ``createForumTopic``,
 ``editForumTopic`` and ``deleteForumTopic`` and keep a topic's thread id on its messages.
 Closing and reopening the General topic post ``forum_topic_closed`` and
 ``forum_topic_reopened``, for the bot and for an actor.
-A supergroup's owner can turn topics off and on again with ``set_topics(...)``, which keeps
-the topics for when they come back, and ``add_supergroup(..., is_forum=True)`` declares a forum
+A supergroup's owner can turn topics off and on again with ``set_topics(...)``, which sets
+``chat.is_forum`` and keeps the topics for when they come back, and ``add_supergroup(..., is_forum=True)`` declares a forum
 with none yet. The forum methods refuse a chat that is not a forum, and a send with a thread
 id into one lands untagged, as the Bot API server passes no topic there.
 A user manages topics through the actor — ``create_topic()``, ``close_topic()``,
@@ -370,11 +370,11 @@ the permissive fake declares the bot's standing with ``bot_status=`` or
 ``BotTestEnvironment(enforce_bot_rights=False)`` — or overrides the
 ``bot_env_enforce_bot_rights`` fixture — while it migrates.
 
-:attr:`aiogram.test.BotTestEnvironment.route_history` keeps every update's route for the
+:attr:`aiogram.test.BotTestEnvironment.all_routes` keeps every update's route for the
 whole test rather than the last trigger's, and ``assert_updates_handled()`` fails listing each
 trigger none of whose updates was handled and each update that raised, even one an error
 handler swallowed. A test that means an update to go unhandled, or to fail, says so with
-``expect_unhandled()`` right after the trigger, which also returns those records. The check is
+``assert_unhandled()`` right after the trigger, which also returns those records. The check is
 opt-in, by calling it or with the ``bot_env_assert_updates_handled`` fixture, which runs it
 after every passing test.
 
@@ -386,7 +386,7 @@ Telegram exception.
 The environment no longer holds every task the bot spawned until it is disposed of: a task that
 succeeds or is cancelled is forgotten as it ends, so a long run does not grow with the tasks it
 spawned, and one that fails is kept until its exception is retrieved — by the bot, or by
-``wait_for_tasks()`` or ``drain()``, which still report it. Both count a worker the test
+``wait_for_background_tasks()`` or ``drain()``, which still report it. Both count a worker the test
 started even when its call was the environment's first, and never wait for or cancel the
 caller or a task waiting on it, such as the test's task awaiting the child that drains.
 Flood control can be tested two ways. The documentation shows the override that declares one

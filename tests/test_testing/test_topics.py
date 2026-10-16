@@ -106,8 +106,8 @@ class TestTopicWorldState:
 
     def test_the_api_lookup_answers_in_telegrams_words(self, forum):
         with pytest.raises(ApiRejection, match="^message thread not found$"):
-            forum.api_topic(999)
-        assert forum.api_topic(None) is forum.general_topic
+            forum.topic_for_call(999)
+        assert forum.topic_for_call(None) is forum.general_topic
 
     def test_general_topic_is_not_a_forum_topic(self, forum):
         with pytest.raises(WorldLookupError, match="not represented as a ForumTopic"):

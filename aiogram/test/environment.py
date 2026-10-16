@@ -280,7 +280,7 @@ class _TriggerFrame:
     records: list[RouteRecord] = field(default_factory=list)
     #: Set when the block that opened this frame ends; see the class docstring.
     closed: bool = False
-    #: Set by :meth:`BotTestEnvironment.expect_unhandled`: the test
+    #: Set by :meth:`BotTestEnvironment.assert_unhandled`: the test
     #: meant this trigger to go unhandled or fail.
     expected_unhandled: bool = False
 
@@ -543,7 +543,7 @@ def _describe_failures(failures: list[tuple[str, BaseException]]) -> str:
 
 
 def _describe_task_failures(failures: list[tuple[str, BaseException]]) -> str:
-    """How :meth:`BotTestEnvironment.wait_for_tasks` names failures."""
+    """How ``wait_for_background_tasks()`` names the failures."""
     listing = "\n".join(f"  {name}: {type(error).__name__}: {error}" for name, error in failures)
     return (
         f"{len(failures)} background task(s) ended with an exception:\n{listing}\n"
@@ -663,7 +663,7 @@ class BotTestEnvironment:
         # object is the last scope that finished, which is what the readers report.
         self._last_trigger: _TriggerFrame | None = None
         # Every trigger of this environment's life, in the order they
-        # began; see `route_history`.
+        # began; see `all_routes`.
         self._trigger_history: list[_TriggerFrame] = []
         self._route_middleware = _RouteMiddleware(self)
         self._handler_middleware = _HandlerMiddleware(self)
@@ -939,14 +939,15 @@ class BotTestEnvironment:
     @property
     def routes(self) -> list[RouteRecord]:
         """
-        Every update of the trigger in scope, in the order the records were completed.
+        The routes of the last trigger only, in the order they ended.
 
-        A short history rather than the whole session: the question a failing test asks is
+        Every update of the trigger in scope. A short history rather
+        than the whole session: the question a failing test asks is
         "where did *that* go", and one action's worth of updates is the answer. Read inside
         a :meth:`trigger` block it is that block's records so far; read outside one, the
         records of the trigger that completed most recently. See :meth:`trigger` for what
         delimits a scope and for what "most recently" means under :func:`asyncio.gather`.
-        :attr:`route_history` keeps every trigger's records instead.
+        :attr:`all_routes` keeps every trigger's records instead.
         """
         scope = self._scope()
         return list(scope.records) if scope is not None else []
@@ -1034,18 +1035,19 @@ class BotTestEnvironment:
         raise AssertionError(msg)
 
     @property
-    def route_history(self) -> list[RouteRecord]:
+    def all_routes(self) -> list[RouteRecord]:
         """
-        Every update this environment routed, for its whole life.
+        The routes of the whole test, every trigger's, in order.
 
-        :attr:`routes` answers for the last trigger only; this keeps
-        them all, grouped by trigger in the order the triggers began,
-        so a test can look back at a game's worth of updates. Each
-        record is the one :attr:`routes` reported.
+        Every update this environment routed. :attr:`routes` answers for
+        the last trigger only; this keeps them all, grouped by trigger
+        in the order the triggers began, so a test can look back at a
+        game's worth of updates. Each record is the one :attr:`routes`
+        reported.
         """
         return [record for frame in self._trigger_history for record in frame.records]
 
-    def expect_unhandled(self) -> list[RouteRecord]:
+    def assert_unhandled(self) -> list[RouteRecord]:
         """
         Say the last trigger was meant to go unhandled, or to fail.
 
@@ -1055,10 +1057,10 @@ class BotTestEnvironment:
         went unhandled or raised so the test can check them::
 
             await stranger.send("hello")
-            bot_env.expect_unhandled()
+            bot_env.assert_unhandled()
 
             await bot_user.send("/crash")
-            [record] = bot_env.expect_unhandled()
+            [record] = bot_env.assert_unhandled()
             assert isinstance(record.exception, KeyError)
 
         It reads the trigger :attr:`routes` reads, and fails if that
@@ -1087,10 +1089,10 @@ class BotTestEnvironment:
         """
         Assert that no trigger of this environment went unhandled.
 
-        Checks :attr:`route_history`: a trigger fails it when none of
+        Checks :attr:`all_routes`: a trigger fails it when none of
         its updates was handled, or when any of them raised, even if
         the bot's error handler swallowed it. A trigger the test
-        passed to :meth:`expect_unhandled` is left out. The failure
+        passed to :meth:`assert_unhandled` is left out. The failure
         lists each update with :meth:`RouteRecord.describe`.
 
         Opt-in, like :meth:`assert_overrides_consumed`: call it at the
@@ -1109,7 +1111,7 @@ class BotTestEnvironment:
         msg = (
             f"{len(flagged)} update(s) fed to this environment went "
             f"unhandled or raised:\n{went}\n"
-            f"Call `env.expect_unhandled()` after a trigger the bot is "
+            f"Call `env.assert_unhandled()` after a trigger the bot is "
             f"meant to ignore, or one meant to fail."
         )
         raise AssertionError(msg)
@@ -1953,7 +1955,7 @@ class BotTestEnvironment:
             raise DrainedTaskError(_describe_failures(failures)) from failures[0][1]
         return len(pending)
 
-    async def wait_for_tasks(self, timeout: float | None = None) -> int:
+    async def wait_for_background_tasks(self, timeout: float | None = None) -> int:
         """
         Wait until the bot's background tasks are done, cancelling none.
 
@@ -1965,7 +1967,7 @@ class BotTestEnvironment:
         many it waited for::
 
             await bot_user.send("/end_game")
-            await bot_env.wait_for_tasks()
+            await bot_env.wait_for_background_tasks()
             assert all(chat.messages for chat in player_chats)
 
         A task spawned while waiting is waited for too, so it returns
@@ -2014,7 +2016,7 @@ class BotTestEnvironment:
         timeout: float,
         pending: set[asyncio.Task[Any]],
     ) -> NoReturn:
-        """Fail :meth:`wait_for_tasks`, naming what still runs."""
+        """Fail the wait for background tasks, naming what runs."""
         names = "\n".join(sorted(f"  {_describe_task(task)}" for task in pending))
         msg = (
             f"Timed out after {timeout}s waiting for the bot's background "
@@ -2052,15 +2054,15 @@ class BotTestEnvironment:
         """
         The caller and every task waiting on it: never the bot's.
 
-        ``drain()`` or ``wait_for_tasks()`` called from a child task
-        must not cancel or wait for the test's task that awaits that
-        child, or for itself. A task waits on another when it awaits
-        it, directly or through ``gather``, as asyncio's
+        ``drain()`` or ``wait_for_background_tasks()`` called from a
+        child task must not cancel or wait for the test's task that
+        awaits that child, or for itself. A task waits on another when
+        it awaits it, directly or through ``gather``, as asyncio's
         ``_fut_waiter`` shows, or created it, which covers a
         ``TaskGroup`` and ``asyncio.wait``, which await a future of
         their own. Both are followed until nothing new is found. A
-        task the bot made first call, such as a worker started with
-        ``create_task``, waits on nothing and is the bot's.
+        worker started with ``create_task`` waits on nothing, so it is
+        the bot's, even when its call was the environment's first.
         """
         current = asyncio.current_task()
         if current is None:  # pragma: no cover - always in a task
@@ -2137,14 +2139,13 @@ class BotTestEnvironment:
 
         A task and who created it are noted weakly: asyncio holds a
         running one, and a just-ended one until its done callback has
-        run, so neither is lost. A failed one is held by
-        a **strong** reference until someone retrieves its exception
-        or :meth:`drain` and :meth:`wait_for_tasks` report it:
-        collected earlier it would take the exception with it, and
-        asyncio would print the never-retrieved warning this exists
-        to prevent. Every other task is let go as it ends, see
-        :meth:`_forget_task`, so a long run does not grow with the
-        tasks it has spawned.
+        run, so neither is lost. A failed one is held by a **strong**
+        reference until someone retrieves its exception or :meth:`drain`
+        and :meth:`wait_for_background_tasks` report it: collected
+        earlier it would take the exception with it, and asyncio would
+        print the never-retrieved warning this exists to prevent. Every
+        other task is let go as it ends, see :meth:`_forget_task`, so a
+        long run does not grow with the tasks it has spawned.
 
         Two environments alive at once nest, and restoring is by identity — an environment
         whose factory is no longer the loop's leaves it alone rather than tearing another

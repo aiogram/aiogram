@@ -91,7 +91,7 @@ class TestFinishedTasksAreLetGo:
         quick = asyncio.create_task(asyncio.sleep(0))
         await quick
 
-        assert await started.wait_for_tasks() == 4
+        assert await started.wait_for_background_tasks() == 4
         assert all(task.done() for task in tasks)
         assert held(started) == set()
 
@@ -110,7 +110,7 @@ class TestAFailureIsStillReported:
 
         assert held(started) == {failing}
         with pytest.raises(BackgroundTaskError, match="night timer") as failure:
-            await started.wait_for_tasks()
+            await started.wait_for_background_tasks()
 
         assert isinstance(failure.value.__cause__, KeyError)
         await ticks()
@@ -134,7 +134,7 @@ class TestAFailureIsStillReported:
         await ticks()
 
         assert held(started) == set()
-        assert await started.wait_for_tasks() == 0
+        assert await started.wait_for_background_tasks() == 0
         assert await started.drain() == 0
 
     async def test_a_failure_retrieved_late_is_not_reported(self, started):
@@ -145,7 +145,7 @@ class TestAFailureIsStillReported:
         with pytest.raises(KeyError):
             await failing
 
-        assert await started.wait_for_tasks() == 0
+        assert await started.wait_for_background_tasks() == 0
         assert await started.drain() == 0
         assert held(started) == set()
 
@@ -158,7 +158,7 @@ class TestAFailureIsStillReported:
         await ticks()
         gc.collect()
 
-        assert await started.wait_for_tasks() == 0
+        assert await started.wait_for_background_tasks() == 0
         assert held(started) == set()
 
     async def test_a_failure_during_a_wait_is_kept_for_the_report(self, started):
@@ -169,7 +169,7 @@ class TestAFailureIsStillReported:
         asyncio.create_task(late())
 
         with pytest.raises(BackgroundTaskError, match="late"):
-            await started.wait_for_tasks()
+            await started.wait_for_background_tasks()
 
 
 class TestADisposedEnvironmentHoldsNothing:

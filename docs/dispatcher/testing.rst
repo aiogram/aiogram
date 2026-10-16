@@ -1286,7 +1286,7 @@ so there is nothing to convert the refusal into: it raises
 :class:`aiogram.test.ApiRejection`, the type the environment turns into a Bad Request when
 the bot is the one asking. ``chat.topic(999)`` is the exception: a topic the test names is
 part of its setup, so an unknown one raises :class:`aiogram.test.WorldLookupError` and
-lists the topics there are, while the bot's own calls go through ``chat.api_topic()`` and
+lists the topics there are, while the bot's own calls go through ``chat.topic_for_call()`` and
 answer in Telegram's words.
 
 Overriding results and simulating failures
@@ -1702,7 +1702,7 @@ Every update of the test
 
 ``routes`` answers for the last trigger only, while a game played
 end to end feeds hundreds of updates, and the one that went nowhere
-is rarely the last. :attr:`~aiogram.test.BotTestEnvironment.route_history`
+is rarely the last. :attr:`~aiogram.test.BotTestEnvironment.all_routes`
 keeps every record for the environment's whole life, grouped by
 trigger in the order the triggers began.
 
@@ -1716,7 +1716,7 @@ whose service message nobody claims was handled, since its
 ``chat_member`` update was.
 
 A test that means an update to go unhandled says so right after the
-trigger with :meth:`~aiogram.test.BotTestEnvironment.expect_unhandled`,
+trigger with :meth:`~aiogram.test.BotTestEnvironment.assert_unhandled`,
 which leaves that trigger out of the check. It also asserts that the
 trigger did go unhandled or raise, naming where it went otherwise,
 and returns those updates' records, so a failure the test expects
@@ -1725,11 +1725,11 @@ can be checked too:
 .. code-block:: python
 
     await stranger.send("hello")       # the bot ignores strangers
-    bot_env.expect_unhandled()
+    bot_env.assert_unhandled()
 
     with pytest.raises(KeyError):
         await bot_user.send("/vote nobody")
-    [record] = bot_env.expect_unhandled()
+    [record] = bot_env.assert_unhandled()
     assert isinstance(record.exception, KeyError)
 
     bot_env.assert_updates_handled()
@@ -2117,7 +2117,7 @@ Waiting for background tasks to finish
 ``drain()`` below cancels what a test left running, which is wrong
 for work that should finish: a game bot that announces its results
 from a task of its own would be stopped halfway, and the players
-after the first would get nothing. ``await bot_env.wait_for_tasks()``
+after the first would get nothing. ``await bot_env.wait_for_background_tasks()``
 waits instead, until every task ``drain()`` would have cancelled is
 done, and returns how many it waited for. Nothing is cancelled:
 
@@ -2126,7 +2126,7 @@ done, and returns how many it waited for. Nothing is cancelled:
     async def test_everyone_gets_the_results(bot_env, bot_user):
         await bot_user.send("/end_game")   # broadcasts from a task
 
-        await bot_env.wait_for_tasks()
+        await bot_env.wait_for_background_tasks()
 
         for player in players:
             assert bot_env.chat(player).messages[-1].text.startswith("Results")
@@ -2136,7 +2136,7 @@ failed unseen, minus those already running when this environment
 first fed an update or answered a call, and minus the caller and
 every task waiting on it. A task waits on another when it awaits
 it, directly or through ``gather``, or created it, which covers a
-``TaskGroup`` and ``asyncio.wait``. So a ``wait_for_tasks()`` or a
+``TaskGroup`` and ``asyncio.wait``. So a ``wait_for_background_tasks()`` or a
 ``drain()`` called from a child task never waits for or cancels the
 test's task that awaits that child, nor itself, while a worker the
 test started with ``create_task`` is the bot's even when its call
@@ -2929,7 +2929,7 @@ is_forum=True)`` declares a forum before any topic exists, for a bot that create
     owner = bot_env.user(owner_spec).in_(team)
 
     await owner.set_topics(False)   # chat.is_forum is now False
-    await owner.set_topics(True)    # every topic is back as it was
+    await owner.set_topics(True)    # chat.is_forum is True, every topic back as it was
 
 Only the owner may, and only in a supergroup; anyone else is a setup error. Telegram delivers
 no update and no service message for the switch, and aiogram has no type for one, so the
@@ -2961,6 +2961,26 @@ feeds the service message Telegram posts, from that user:
     await owner.unhide_general_topic()        # general_forum_topic_unhidden
     await owner.close_general_topic()         # forum_topic_closed
     await owner.reopen_general_topic()        # forum_topic_reopened
+
+Each trigger is what a client does through the Bot API method of the same name:
+
+.. list-table::
+    :header-rows: 1
+
+    * - Actor action
+      - Bot API method
+    * - ``create_topic()``
+      - :code:`createForumTopic`
+    * - ``close_topic()``, ``reopen_topic()``
+      - :code:`closeForumTopic`, :code:`reopenForumTopic`
+    * - ``delete_topic()``
+      - :code:`deleteForumTopic`
+    * - ``hide_general_topic()``, ``unhide_general_topic()``
+      - :code:`hideGeneralForumTopic`, :code:`unhideGeneralForumTopic`
+    * - ``close_general_topic()``, ``reopen_general_topic()``
+      - :code:`closeGeneralForumTopic`, :code:`reopenGeneralForumTopic`
+    * - ``set_topics(True)``, ``set_topics(False)``
+      - none; the Bot API has no method for it, and ``chat.is_forum`` follows
 
 ``create_topic()`` returns the new :class:`~aiogram.test.world.TopicState`, to pass on or bind
 an actor to. The others take a topic as a declaration, a state or a thread id, and default to

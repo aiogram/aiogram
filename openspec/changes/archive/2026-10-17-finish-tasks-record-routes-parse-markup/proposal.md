@@ -81,3 +81,19 @@ None.
 - **Docs**: the declaring, triggering, overrides, background task, routing diagnostics and
   formatted text sections of `docs/dispatcher/testing.rst`.
 - **Changelog**: folded into `CHANGES/1887.feature.rst`.
+
+## Renamed after archiving
+
+This change is kept as it was written. The owner renamed four of its names afterwards; the
+main spec, the code and the docs use the new ones:
+
+| Written here | Now |
+|---|---|
+| `BotTestEnvironment.expect_unhandled()` | `assert_unhandled()` |
+| `BotTestEnvironment.wait_for_tasks()` | `wait_for_background_tasks()` |
+| `BotTestEnvironment.route_history` | `all_routes` |
+| `ChatState.api_topic()` | `topic_for_call()` |
+
+The `bot_env_assert_updates_handled` fixture keeps its name. The test modules
+`test_wait_for_tasks.py` and `test_route_history.py` are now `test_wait_for_background_tasks.py`
+and `test_all_routes.py`.

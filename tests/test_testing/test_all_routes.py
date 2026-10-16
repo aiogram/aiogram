@@ -1,5 +1,5 @@
 """
-``env.route_history`` and ``env.assert_updates_handled()``: where
+``env.all_routes`` and ``env.assert_updates_handled()``: where
 every update of a test went, not only the last trigger's.
 """
 
@@ -34,7 +34,7 @@ class TestRouteHistory:
         await alice.send("hello")
         await alice.send("/start")
 
-        history = env.route_history
+        history = env.all_routes
         assert [record.handled for record in history] == [True, False, True]
         assert env.routes == [history[-1]]
 
@@ -44,7 +44,7 @@ class TestRouteHistory:
             await alice.send("/start")
             await alice.send("second")
 
-        assert [record.handled for record in env.route_history] == [False, True, False]
+        assert [record.handled for record in env.all_routes] == [False, True, False]
 
     async def test_an_update_fed_to_the_dispatcher_directly_is_kept(self, env, game, alice):
         await alice.send("/start")
@@ -52,10 +52,10 @@ class TestRouteHistory:
 
         await env.dispatcher.feed_update(env.bot, update)
 
-        assert [record.update_id for record in env.route_history][-1] == 99
+        assert [record.update_id for record in env.all_routes][-1] == 99
 
     def test_it_is_empty_before_anything_is_fed(self, env):
-        assert env.route_history == []
+        assert env.all_routes == []
 
 
 class TestAssertUpdatesHandled:
@@ -78,7 +78,7 @@ class TestAssertUpdatesHandled:
         message = str(failure.value)
         assert message.startswith("1 update(s) fed to this environment went unhandled")
         assert "(message) was NOT handled" in message
-        assert "expect_unhandled()" in message
+        assert "assert_unhandled()" in message
 
     async def test_an_update_whose_error_was_swallowed_fails_it(self, env, game, alice):
         @game.errors()
@@ -112,7 +112,7 @@ class TestExpectUnhandled:
     async def test_an_ignored_update_is_accounted_for(self, env, game, alice):
         await alice.send("hello")
 
-        [record] = env.expect_unhandled()
+        [record] = env.assert_unhandled()
 
         assert record.handled is False
         env.assert_updates_handled()
@@ -121,7 +121,7 @@ class TestExpectUnhandled:
         with pytest.raises(KeyError):
             await alice.send("/crash")
 
-        [record] = env.expect_unhandled()
+        [record] = env.assert_unhandled()
 
         assert isinstance(record.exception, KeyError)
         env.assert_updates_handled()
@@ -129,7 +129,7 @@ class TestExpectUnhandled:
     async def test_only_the_last_trigger_is_accounted_for(self, env, game, alice):
         await alice.send("hello")
         await alice.send("again")
-        env.expect_unhandled()
+        env.assert_unhandled()
 
         with pytest.raises(AssertionError, match="1 update"):
             env.assert_updates_handled()
@@ -138,18 +138,18 @@ class TestExpectUnhandled:
         await alice.send("/start")
 
         with pytest.raises(AssertionError, match="were handled") as failure:
-            env.expect_unhandled()
+            env.assert_unhandled()
 
         assert "on_start" in str(failure.value)
 
     def test_nothing_routed_is_an_error(self, env):
         with pytest.raises(AssertionError, match="no update has been routed"):
-            env.expect_unhandled()
+            env.assert_unhandled()
 
     async def test_inside_a_trigger_it_accounts_for_that_trigger(self, env, game, alice):
         with env.trigger():
             await alice.send("hello")
-            env.expect_unhandled()
+            env.assert_unhandled()
             await alice.send("again")
 
         env.assert_updates_handled()
@@ -224,7 +224,7 @@ class TestPluginCheck:
 
                 async def test_meant_it(bot_env, bot_user):
                     await bot_user.send("hello")
-                    bot_env.expect_unhandled()
+                    bot_env.assert_unhandled()
                 """,
             ),
         )
