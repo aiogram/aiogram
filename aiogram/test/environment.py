@@ -4,12 +4,23 @@ import asyncio
 import contextlib
 import contextvars
 import datetime
+import functools
 import heapq
+import inspect
 import weakref
-from collections.abc import Awaitable, Callable, Container, Iterable, Iterator, Mapping
+from collections.abc import Awaitable, Callable, Iterable, Iterator, Mapping
 from dataclasses import dataclass, field
 from http import HTTPStatus
-from typing import TYPE_CHECKING, Any, NoReturn, TypeAlias, cast
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Concatenate,
+    NoReturn,
+    ParamSpec,
+    TypeAlias,
+    TypeVar,
+    cast,
+)
 
 from aiogram.client.bot import Bot
 from aiogram.dispatcher.dispatcher import Dispatcher
@@ -21,17 +32,16 @@ from aiogram.types import ChatPermissions, Message, TelegramObject, Update, User
 
 from .actors import UserActor
 from .blueprint import (
-    FIRST_GROUP_ID,
-    FIRST_SUPERGROUP_ID,
-    FIRST_USER_ID,
     Blueprint,
     BusinessConnectionSpec,
     ChatSpec,
     CommunitySpec,
     TopicSpec,
+    UserRef,
     UserSpec,
     chat_state,
     default_blueprint,
+    user_ref_id,
     user_state,
 )
 from .calls import CallLog
@@ -453,6 +463,50 @@ def _unretrieved(task: asyncio.Task[Any]) -> bool:
     the task is kept as if it had failed.
     """
     return bool(getattr(task, "_log_traceback", True))
+
+
+_Declared = TypeVar("_Declared", UserSpec, ChatSpec)
+_Admitted = TypeVar("_Admitted")
+_Options = ParamSpec("_Options")
+
+
+def _declares(
+    declare: Callable[Concatenate[Blueprint, _Options], _Declared],
+) -> Callable[
+    [Callable[[BotTestEnvironment, _Declared], _Admitted]],
+    Callable[Concatenate[BotTestEnvironment, _Options], _Admitted],
+]:
+    """
+    Make an environment method take what a blueprint method takes.
+
+    The decorated method receives what ``declare`` declared on a
+    scratch blueprint and puts it into the world, so the signature
+    lives on the blueprint alone. ``members`` are checked against the
+    world first.
+    """
+
+    def decorate(
+        admit: Callable[[BotTestEnvironment, _Declared], _Admitted],
+    ) -> Callable[Concatenate[BotTestEnvironment, _Options], _Admitted]:
+        @functools.wraps(admit)
+        def method(
+            self: BotTestEnvironment,
+            /,
+            *args: _Options.args,
+            **kwargs: _Options.kwargs,
+        ) -> _Admitted:
+            options = cast("dict[str, Any]", kwargs)
+            if options.get("members") is not None:
+                options["members"] = self._declared_members(options["members"])
+            return admit(self, declare(self._scratch(), *args, **kwargs))
+
+        returned = inspect.signature(admit).return_annotation
+        signature = inspect.signature(declare).replace(return_annotation=returned)
+        # What help() and the API reference show.
+        method.__dict__["__signature__"] = signature
+        return method
+
+    return decorate
 
 
 def _awaits(task: asyncio.Task[Any], target: asyncio.Task[Any]) -> bool:
@@ -1132,38 +1186,15 @@ class BotTestEnvironment:
     # declared user or chat is, and the blueprint the environment
     # was built from, which a suite may share, is left alone.
 
-    def add_user(
-        self,
-        first_name: str = "User",
-        *,
-        last_name: str | None = None,
-        username: str | None = None,
-        language_code: str | None = None,
-        id: int | None = None,
-    ) -> UserActor:
+    @_declares(Blueprint.add_user)
+    def add_user(self, spec: UserSpec) -> UserActor:
         """
-        Add a user to the running world.
+        Add a user to the running world, as the actor for them.
 
-        Declared as :meth:`Blueprint.add_user` declares one. Returns
-        the actor ``env.user(...)`` would return for them. The id is
-        the next free one unless given; one already taken raises
-        :class:`ValueError`.
+        Declared as :meth:`Blueprint.add_user` declares one, and the
+        same as ``env.user(...)`` returns. The id is the next free one
+        unless given; one already taken raises :class:`ValueError`.
         """
-        taken = {*self.world.users, self.world.bot_user.id}
-        user_id = self._new_id(
-            id,
-            FIRST_USER_ID + len(self.world.users),
-            1,
-            taken,
-            "User",
-        )
-        spec = self._scratch().add_user(
-            first_name,
-            last_name=last_name,
-            username=username,
-            language_code=language_code,
-            id=user_id,
-        )
         self.world.users[spec.id] = user_state(spec)
         return self.user(spec.id)
 
@@ -1185,118 +1216,54 @@ class BotTestEnvironment:
             raise ValueError(msg)
         return self._admit_chat(scratch.add_private_chat(declared))
 
-    def add_group(
-        self,
-        title: str = "Group",
-        *,
-        members: Mapping[UserSpec | UserActor | int, str] | None = None,
-        id: int | None = None,
-        bot_status: str | None = None,
-        permissions: ChatPermissions | None = None,
-    ) -> ChatState:
+    @_declares(Blueprint.add_group)
+    def add_group(self, spec: ChatSpec) -> ChatState:
         """
-        Add a basic group to the running world.
+        Add a basic group to the running world, as its live ChatState.
 
-        Declared as :meth:`Blueprint.add_group` declares one.
-        ``members`` name users of this world, declared or added, by
-        spec, actor or id. Returns the chat's state, as
+        Declared as :meth:`Blueprint.add_group` declares one, which
+        returns a declaration instead. ``members`` name users of this
+        world, declared or added, by spec, actor or id. Returns what
         ``env.chat(...)`` does.
         """
-        scratch = self._scratch()
-        return self._admit_chat(
-            scratch.add_group(
-                title,
-                members=self._declared_members(members),
-                id=self._new_chat_id(id, FIRST_GROUP_ID),
-                bot_status=bot_status,
-                permissions=permissions,
-            ),
-        )
+        return self._admit_chat(spec)
 
-    def add_supergroup(
-        self,
-        title: str = "Supergroup",
-        *,
-        members: Mapping[UserSpec | UserActor | int, str] | None = None,
-        id: int | None = None,
-        bot_status: str | None = None,
-        is_forum: bool = False,
-        permissions: ChatPermissions | None = None,
-    ) -> ChatState:
+    @_declares(Blueprint.add_supergroup)
+    def add_supergroup(self, spec: ChatSpec) -> ChatState:
         """
-        Add a supergroup, as :meth:`Blueprint.add_supergroup` does.
+        Add a supergroup to the running world, as its live ChatState.
 
-        See :meth:`add_group`.
+        As :meth:`Blueprint.add_supergroup` declares one; see
+        :meth:`add_group`.
         """
-        scratch = self._scratch()
-        return self._admit_chat(
-            scratch.add_supergroup(
-                title,
-                members=self._declared_members(members),
-                id=self._new_chat_id(id, FIRST_SUPERGROUP_ID),
-                bot_status=bot_status,
-                is_forum=is_forum,
-                permissions=permissions,
-            ),
-        )
+        return self._admit_chat(spec)
 
-    def add_channel(
-        self,
-        title: str = "Channel",
-        *,
-        members: Mapping[UserSpec | UserActor | int, str] | None = None,
-        id: int | None = None,
-        bot_status: str | None = None,
-    ) -> ChatState:
+    @_declares(Blueprint.add_channel)
+    def add_channel(self, spec: ChatSpec) -> ChatState:
         """
-        Add a channel, as :meth:`Blueprint.add_channel` does.
+        Add a channel to the running world, as its live ChatState.
 
-        See :meth:`add_group`.
+        As :meth:`Blueprint.add_channel` declares one; see
+        :meth:`add_group`.
         """
-        scratch = self._scratch()
-        return self._admit_chat(
-            scratch.add_channel(
-                title,
-                members=self._declared_members(members),
-                id=self._new_chat_id(id, FIRST_SUPERGROUP_ID),
-                bot_status=bot_status,
-            ),
-        )
+        return self._admit_chat(spec)
 
     def _scratch(self) -> Blueprint:
-        """An empty blueprint for the same bot, to declare with."""
+        """
+        An empty blueprint for the same bot, to declare with.
+
+        It knows the ids this world has taken, so what it declares is
+        numbered as the next user or chat of this world.
+        """
         scratch = Blueprint(token=self.blueprint.token)
         scratch.bot = self.blueprint.bot
+        scratch.taken_user_ids = set(self.world.users)
+        scratch.taken_chat_ids = set(self.world.chats)
         return scratch
 
-    def _new_chat_id(self, explicit: int | None, first: int) -> int:
-        return self._new_id(explicit, first - len(self.world.chats), -1, self.world.chats, "Chat")
-
-    @staticmethod
-    def _new_id(
-        explicit: int | None,
-        first: int,
-        step: int,
-        taken: Container[int],
-        kind: str,
-    ) -> int:
-        """The id asked for, or the first free one counting from ``first``."""
-        if explicit is not None:
-            if explicit in taken:
-                msg = f"{kind} {explicit} already exists in this world"
-                raise ValueError(msg)
-            return explicit
-        candidate = first
-        while candidate in taken:
-            candidate += step
-        return candidate
-
-    def _declared_user(self, user: UserSpec | UserActor | int) -> UserSpec:
+    def _declared_user(self, user: UserRef) -> UserSpec:
         """A declaration of a user of this world, however named."""
-        if isinstance(user, UserActor):
-            user_id = user.user.id
-        else:
-            user_id = user if isinstance(user, int) else user.id
+        user_id = user_ref_id(user)
         if user_id == self.world.bot_user.id:
             return self.blueprint.bot
         known = self.world.users.get(user_id)
@@ -1317,10 +1284,9 @@ class BotTestEnvironment:
 
     def _declared_members(
         self,
-        members: Mapping[UserSpec | UserActor | int, str] | None,
-    ) -> dict[UserSpec, str] | None:
-        if members is None:
-            return None
+        members: Mapping[UserRef, str],
+    ) -> dict[UserRef, str]:
+        """The members, each checked to be a user of this world."""
         return {self._declared_user(user): status for user, status in members.items()}
 
     def _admit_chat(self, spec: ChatSpec) -> ChatState:

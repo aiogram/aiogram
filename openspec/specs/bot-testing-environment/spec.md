@@ -4135,11 +4135,14 @@ couplings leave unchanged.
 
 A running environment SHALL be able to add a user, a private chat, a group, a supergroup and a
 channel, with members, taking what the blueprint's methods of the same name take. They SHALL
-be built by the same code as declared ones, so the shape is identical, and SHALL return the
-handle `env.user()` or `env.chat()` returns. The id SHALL be the next free one unless given,
-and an id already taken SHALL raise `ValueError`. Members SHALL be named by spec, by actor or
-by id, and a user the world does not have SHALL raise `WorldLookupError` naming `add_user`.
-The blueprint the environment was built from SHALL NOT change.
+be those blueprint methods run on a scratch blueprint, so the signatures and the shape are
+the same, and SHALL return the handle `env.user()` or `env.chat()` returns, a chat's live
+state. The id SHALL be the next free one unless given, allocated by the one function the
+blueprint uses with the ids the world has taken, and an id already taken SHALL raise
+`ValueError`, in a blueprint as in a running world. Members SHALL be named by spec, by actor
+or by id, in a blueprint as well, and a user the world does not have SHALL raise
+`WorldLookupError` naming `add_user`. The blueprint the environment was built from SHALL NOT
+change.
 
 #### Scenario: A newcomer joins a new group
 
@@ -4152,6 +4155,11 @@ The blueprint the environment was built from SHALL NOT change.
 - **WHEN** a supergroup is added with an id and the same one is declared in a blueprint with
   that id
 - **THEN** the two chats are equal
+
+#### Scenario: The same signature
+
+- **WHEN** a test reads the signature of `env.add_supergroup`
+- **THEN** its parameters are those of `Blueprint.add_supergroup`
 
 #### Scenario: A shared blueprint
 

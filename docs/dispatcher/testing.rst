@@ -229,9 +229,11 @@ chat's state for a chat.
         assert lobby.messages[-1].text == "Welcome, Newcomer!"
 
 ``add_user``, ``add_private_chat``, ``add_group``, ``add_supergroup`` and ``add_channel`` take
-what the blueprint's methods of the same name take, with ``members`` naming any user of the
-world, declared or added, by spec, by actor or by id. The id is the next free one unless
-given, and one already taken raises :class:`ValueError`. A user of the world is a member only
+what the blueprint's methods of the same name take — they are those methods, run on a scratch
+blueprint, so the signatures live in one place — with ``members`` naming any user of the
+world, declared or added, by spec, by actor or by id, which a blueprint's ``members`` accept
+too. The id is the next free one unless given, counted as the blueprint counts it, and one
+already taken raises :class:`ValueError`, in a blueprint as in a running world. A user of the world is a member only
 if the world has them: an unknown id raises :class:`~aiogram.test.WorldLookupError` naming
 ``add_user``. The blueprint the environment was built from is not changed, so a blueprint
 shared by many tests stays as declared. Topics are not added this way; a supergroup's owner

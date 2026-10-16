@@ -2,8 +2,9 @@ from __future__ import annotations
 
 import copy
 import datetime
+from collections.abc import Collection, Mapping
 from dataclasses import dataclass, field
-from typing import Any
+from typing import Any, Protocol, TypeAlias
 
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ChatMemberStatus, ChatType
@@ -50,6 +51,56 @@ FIRST_USER_ID = 1000
 FIRST_GROUP_ID = -1000
 FIRST_SUPERGROUP_ID = -1001000000000
 FIRST_COMMUNITY_ID = 5000
+
+
+def free_id(
+    explicit: int | None,
+    first: int,
+    step: int,
+    taken: Collection[int],
+    kind: str,
+) -> int:
+    """
+    The id asked for, or the first free one counting from ``first``.
+
+    The one allocation a blueprint and a running environment share,
+    each passing the ids it has taken. An ``explicit`` id already
+    taken raises :class:`ValueError`.
+    """
+    if explicit is not None:
+        if explicit in taken:
+            msg = f"{kind} {explicit} already exists in this world"
+            raise ValueError(msg)
+        return explicit
+    candidate = first
+    while candidate in taken:
+        candidate += step
+    return candidate
+
+
+class _Identified(Protocol):
+    @property
+    def id(self) -> int: ...
+
+
+class _Acting(Protocol):
+    """A user actor, as a member is named by one."""
+
+    @property
+    def user(self) -> _Identified: ...
+
+
+#: How a member is named: by declaration, by actor or by id.
+UserRef: TypeAlias = "UserSpec | _Acting | int"
+
+
+def user_ref_id(user: UserRef) -> int:
+    """The id of the user ``user`` names."""
+    if isinstance(user, int):
+        return user
+    if isinstance(user, UserSpec):
+        return user.id
+    return user.user.id
 
 
 @dataclass(eq=False)
@@ -193,6 +244,10 @@ class Blueprint:
         )
         self.users: list[UserSpec] = []
         self.chats: list[ChatSpec] = []
+        #: Ids a running environment has taken already, so a blueprint
+        #: it declares with allocates around them.
+        self.taken_user_ids: set[int] = set()
+        self.taken_chat_ids: set[int] = set()
         self.topics: list[TopicSpec] = []
         self.polls: list[PollSpec] = []
         self.business_connections: list[BusinessConnectionSpec] = []
@@ -214,8 +269,15 @@ class Blueprint:
         language_code: str | None = None,
         id: int | None = None,
     ) -> UserSpec:
+        taken = {*self.taken_user_ids, *(user.id for user in self.users), self.bot.id}
         user = UserSpec(
-            id=id if id is not None else FIRST_USER_ID + len(self.users),
+            id=free_id(
+                id,
+                FIRST_USER_ID + len(self.users) + len(self.taken_user_ids),
+                1,
+                taken,
+                "User",
+            ),
             first_name=first_name,
             last_name=last_name,
             username=username,
@@ -234,7 +296,7 @@ class Blueprint:
         self,
         title: str = "Group",
         *,
-        members: dict[UserSpec, str] | None = None,
+        members: Mapping[UserRef, str] | None = None,
         id: int | None = None,
         bot_status: str | None = None,
         permissions: ChatPermissions | None = None,
@@ -250,7 +312,7 @@ class Blueprint:
             chat_type=ChatType.GROUP,
             title=title,
             members=members,
-            chat_id=id if id is not None else FIRST_GROUP_ID - len(self.chats),
+            chat_id=self._chat_id(id, FIRST_GROUP_ID),
             bot_status=bot_status,
             permissions=permissions,
         )
@@ -259,7 +321,7 @@ class Blueprint:
         self,
         title: str = "Supergroup",
         *,
-        members: dict[UserSpec, str] | None = None,
+        members: Mapping[UserRef, str] | None = None,
         id: int | None = None,
         bot_status: str | None = None,
         is_forum: bool = False,
@@ -277,7 +339,7 @@ class Blueprint:
             chat_type=ChatType.SUPERGROUP,
             title=title,
             members=members,
-            chat_id=id if id is not None else FIRST_SUPERGROUP_ID - len(self.chats),
+            chat_id=self._chat_id(id, FIRST_SUPERGROUP_ID),
             bot_status=bot_status,
             permissions=permissions,
         )
@@ -288,7 +350,7 @@ class Blueprint:
         self,
         title: str = "Channel",
         *,
-        members: dict[UserSpec, str] | None = None,
+        members: Mapping[UserRef, str] | None = None,
         id: int | None = None,
         bot_status: str | None = None,
     ) -> ChatSpec:
@@ -296,21 +358,26 @@ class Blueprint:
             chat_type=ChatType.CHANNEL,
             title=title,
             members=members,
-            chat_id=id if id is not None else FIRST_SUPERGROUP_ID - len(self.chats),
+            chat_id=self._chat_id(id, FIRST_SUPERGROUP_ID),
             bot_status=bot_status,
         )
+
+    def _chat_id(self, explicit: int | None, first: int) -> int:
+        """A new chat's id, counting down from ``first``."""
+        taken = {*self.taken_chat_ids, *(chat.id for chat in self.chats)}
+        return free_id(explicit, first - len(taken), -1, taken, "Chat")
 
     def _add_group_like(
         self,
         chat_type: str,
         title: str,
-        members: dict[UserSpec, str] | None,
+        members: Mapping[UserRef, str] | None,
         chat_id: int,
         bot_status: str | None = None,
         permissions: ChatPermissions | None = None,
     ) -> ChatSpec:
-        members = members or {}
-        bot_membership = members.get(self.bot)
+        statuses = {user_ref_id(user): status for user, status in (members or {}).items()}
+        bot_membership = statuses.get(self.bot.id)
         # `bot_status` and a `members[blueprint.bot]` entry are two ways of saying the
         # same thing; accepting both silently would let one shadow the other, so passing
         # `bot_status` (any value, including MEMBER) alongside an explicit entry is
@@ -327,7 +394,7 @@ class Blueprint:
             title=title,
             permissions=permissions,
             members=[
-                MemberSpec(user_id=user.id, status=status) for user, status in members.items()
+                MemberSpec(user_id=user_id, status=status) for user_id, status in statuses.items()
             ],
         )
         # Almost every group bot's first move is checking its own rights, so the bot is

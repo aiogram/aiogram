@@ -367,3 +367,38 @@ SHALL be cleared. The call log SHALL keep the call as the bot made it.
 
 - **WHEN** a handler passes both `entities` and `parse_mode="HTML"`
 - **THEN** the stored entities are the parsed ones
+
+### Requirement: Users and chats can be added to a running environment
+
+A running environment SHALL be able to add a user, a private chat, a group, a supergroup and a
+channel, with members, taking what the blueprint's methods of the same name take. They SHALL
+be those blueprint methods run on a scratch blueprint, so the signatures and the shape are
+the same, and SHALL return the handle `env.user()` or `env.chat()` returns, a chat's live
+state. The id SHALL be the next free one unless given, allocated by the one function the
+blueprint uses with the ids the world has taken, and an id already taken SHALL raise
+`ValueError`, in a blueprint as in a running world. Members SHALL be named by spec, by actor
+or by id, in a blueprint as well, and a user the world does not have SHALL raise
+`WorldLookupError` naming `add_user`. The blueprint the environment was built from SHALL NOT
+change.
+
+#### Scenario: A newcomer joins a new group
+
+- **WHEN** a test adds a user and a supergroup with that user as a member, and the user sends
+  a message into it
+- **THEN** the dispatcher handles the message as it handles one in a declared chat
+
+#### Scenario: A chat equals a declared one
+
+- **WHEN** a supergroup is added with an id and the same one is declared in a blueprint with
+  that id
+- **THEN** the two chats are equal
+
+#### Scenario: The same signature
+
+- **WHEN** a test reads the signature of `env.add_supergroup`
+- **THEN** its parameters are those of `Blueprint.add_supergroup`
+
+#### Scenario: A shared blueprint
+
+- **WHEN** two environments are built from one blueprint and one adds a user and a chat
+- **THEN** the blueprint and the other environment are unchanged

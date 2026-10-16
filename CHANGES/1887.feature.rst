@@ -335,9 +335,11 @@ starting from ``default_chat_permissions()``.
 
 A running environment can gain users and chats, which only the blueprint could declare:
 ``env.add_user()``, ``env.add_private_chat()``, ``env.add_group()``, ``env.add_supergroup()`` and
-``env.add_channel()`` take what the blueprint's methods of the same name take, are built by the
-same code so their shape is identical, and return the actor or the chat state that
-``env.user()`` and ``env.chat()`` return. The blueprint the environment was built from is left
+``env.add_channel()`` take what the blueprint's methods of the same name take, are those
+methods run on a scratch blueprint so their shape is identical, and return the actor or the
+live chat state that ``env.user()`` and ``env.chat()`` return. A blueprint's ``members`` name
+users by declaration, actor or id as well, and a blueprint refuses a chat or user id it has
+already declared. The blueprint the environment was built from is left
 alone.
 
 A text an actor sends, and a caption, carries the ``bot_command`` entities a client attaches

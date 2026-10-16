@@ -1,3 +1,5 @@
+import inspect
+
 import pytest
 
 from aiogram.enums import ChatMemberStatus, ChatType
@@ -248,3 +250,33 @@ class TestAddPrivateChat:
 
 def blueprint_ids(blueprint):
     return [chat.id for chat in blueprint.chats]
+
+
+class TestOneDeclaration:
+    """The environment's methods take what the blueprint's take."""
+
+    @pytest.mark.parametrize("name", ["add_user", "add_group", "add_supergroup", "add_channel"])
+    def test_the_signature_is_the_blueprints(self, name):
+        declared = inspect.signature(getattr(Blueprint, name))
+        added = inspect.signature(getattr(BotTestEnvironment, name))
+
+        assert added.parameters == declared.parameters
+        assert added.return_annotation != declared.return_annotation
+
+    def test_a_blueprint_names_members_by_id(self):
+        blueprint = Blueprint()
+        alice = blueprint.add_user("Alice")
+
+        chat = blueprint.add_group("G", members={alice.id: ChatMemberStatus.ADMINISTRATOR})
+
+        assert (chat.members[0].user_id, chat.members[0].status) == (
+            alice.id,
+            ChatMemberStatus.ADMINISTRATOR,
+        )
+
+    def test_a_blueprint_refuses_an_id_it_has(self):
+        blueprint = Blueprint()
+        blueprint.add_group("G", id=-5)
+
+        with pytest.raises(ValueError, match="Chat -5 already exists"):
+            blueprint.add_supergroup("S", id=-5)
