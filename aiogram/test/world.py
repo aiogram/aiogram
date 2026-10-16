@@ -268,6 +268,42 @@ def granted_permissions(
     return permissions.model_copy(update=values)
 
 
+#: What a new group denies its members, which is all it does. Telegram
+#: lets them send and react to anything and invite users, and keeps
+#: changing the chat's info, pinning, creating topics and editing their
+#: own tag for administrators.
+_DEFAULT_DENIED_PERMISSIONS = (
+    "can_change_info",
+    "can_pin_messages",
+    "can_manage_topics",
+    "can_edit_tag",
+)
+
+
+def default_chat_permissions() -> ChatPermissions:
+    """
+    The permissions a new group or supergroup gives its members.
+
+    What ``getChat`` reports for a chat nobody has changed the
+    permissions of, and what the members of a group-like chat can do
+    until someone does: every kind of message and reaction, and
+    inviting users, are allowed, while changing the chat's info,
+    pinning messages, creating topics and editing one's own tag are
+    not. Telegram's documentation does not list them; they are the
+    defaults its clients show for a new group, and the ones its
+    servers report to bots.
+
+    It is built as :func:`granted_permissions` stores a request, so the
+    couplings and defaults the Bot API documents hold of it, and it is a
+    fresh object on every call. Declare another with
+    ``add_group(..., permissions=...)``, starting from this one with
+    ``model_copy(update=...)`` if only one permission differs.
+    """
+    values = dict.fromkeys(ChatPermissions.model_fields, True)
+    values.update(dict.fromkeys(_DEFAULT_DENIED_PERMISSIONS, False))
+    return granted_permissions(ChatPermissions(**values), None)
+
+
 class QueryKind(str, Enum):
     """Kinds of query a trigger can issue and an answer method must consume."""
 

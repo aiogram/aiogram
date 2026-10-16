@@ -10,6 +10,9 @@ test cannot see what its bot does:
 - **Markup is stored raw.** A text sent with `parse_mode` keeps its tags, so a world message
   reads `<b>Night</b>` and a bot that forgets to escape a `<` passes, while Telegram refuses
   the send.
+- **Groups have no permissions.** `getChat` for a group reports `permissions=None` where
+  Telegram always reports the chat's defaults, and the bot's checks read a missing value as
+  "everything is allowed".
 - **Fast sleeps cost real drivers.** The documented way to skip a bot's long sleeps is
   `looptime`, which moves the loop's clock, and a real database driver's deadlines run on
   that clock and expire mid-query.
@@ -29,8 +32,12 @@ test cannot see what its bot does:
 - A documented recipe scales the application's own sleep helper in tests and leaves the
   loop's clock real. A time control mode of the toolkit's own is deferred.
 
+- A group or a supergroup has the permissions Telegram gives a new one, which a blueprint can
+  override with `permissions=`; `default_chat_permissions()` returns them.
+
 Observable behavior change, toward the Bot API: a text sent with a parse mode is stored
-parsed, and broken markup or an unknown parse mode now fails the call.
+parsed, broken markup or an unknown parse mode now fails the call, and `getChat` reports a
+group's permissions.
 
 ## Capabilities
 

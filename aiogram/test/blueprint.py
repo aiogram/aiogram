@@ -34,6 +34,7 @@ from .world import (
     World,
     aware,
     create_topic,
+    default_chat_permissions,
     granted_permissions,
     new_poll,
     posted_by,
@@ -98,6 +99,9 @@ class ChatSpec:
     first_name: str | None = None
     last_name: str | None = None
     description: str | None = None
+    #: What members may do. ``None`` is Telegram's defaults in a group or
+    #: a supergroup, see :func:`~aiogram.test.default_chat_permissions`,
+    #: and nothing in a private chat or a channel.
     permissions: ChatPermissions | None = None
     photo: ChatPhoto | None = None
     sticker_set_name: str | None = None
@@ -233,13 +237,21 @@ class Blueprint:
         members: dict[UserSpec, str] | None = None,
         id: int | None = None,
         bot_status: str | None = None,
+        permissions: ChatPermissions | None = None,
     ) -> ChatSpec:
+        """
+        Declare a basic group.
+
+        ``permissions`` are what its members may do. Without them the group
+        has Telegram's defaults, :func:`~aiogram.test.default_chat_permissions`.
+        """
         return self._add_group_like(
             chat_type=ChatType.GROUP,
             title=title,
             members=members,
             chat_id=id if id is not None else FIRST_GROUP_ID - len(self.chats),
             bot_status=bot_status,
+            permissions=permissions,
         )
 
     def add_supergroup(
@@ -250,12 +262,15 @@ class Blueprint:
         id: int | None = None,
         bot_status: str | None = None,
         is_forum: bool = False,
+        permissions: ChatPermissions | None = None,
     ) -> ChatSpec:
         """
         Declare a supergroup.
 
         ``is_forum`` turns its topics on before any is declared, as for
-        a forum whose topics the bot creates itself.
+        a forum whose topics the bot creates itself. ``permissions`` are
+        what its members may do; without them it has Telegram's defaults,
+        :func:`~aiogram.test.default_chat_permissions`.
         """
         chat = self._add_group_like(
             chat_type=ChatType.SUPERGROUP,
@@ -263,6 +278,7 @@ class Blueprint:
             members=members,
             chat_id=id if id is not None else FIRST_SUPERGROUP_ID - len(self.chats),
             bot_status=bot_status,
+            permissions=permissions,
         )
         chat.is_forum = is_forum
         return chat
@@ -290,6 +306,7 @@ class Blueprint:
         members: dict[UserSpec, str] | None,
         chat_id: int,
         bot_status: str | None = None,
+        permissions: ChatPermissions | None = None,
     ) -> ChatSpec:
         members = members or {}
         bot_membership = members.get(self.bot)
@@ -307,6 +324,7 @@ class Blueprint:
             id=chat_id,
             type=chat_type,
             title=title,
+            permissions=permissions,
             members=[
                 MemberSpec(user_id=user.id, status=status) for user, status in members.items()
             ],
@@ -618,7 +636,7 @@ class Blueprint:
                 first_name=chat.first_name,
                 last_name=chat.last_name,
                 description=chat.description,
-                permissions=_granted(chat.permissions),
+                permissions=_chat_permissions(chat),
                 photo=chat.photo,
                 sticker_set_name=chat.sticker_set_name,
                 invite_links=list(chat.invite_links),
@@ -693,6 +711,19 @@ class Blueprint:
             self.polls[index].poll_id = poll.id
             self.polls[index].message_id = message.message_id
         return world
+
+
+def _chat_permissions(chat: ChatSpec) -> ChatPermissions | None:
+    """
+    What a declared chat lets its members do.
+
+    A group or a supergroup that declares nothing has Telegram's
+    defaults, and a private chat or a channel has no permissions
+    to report.
+    """
+    if chat.permissions is None and chat.type in {ChatType.GROUP, ChatType.SUPERGROUP}:
+        return default_chat_permissions()
+    return _granted(chat.permissions)
 
 
 def _granted(permissions: ChatPermissions | None) -> ChatPermissions | None:

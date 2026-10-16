@@ -185,6 +185,25 @@ chat's, are stored the way :code:`restrictChatMember` and :code:`setChatPermissi
 store the same mask, with the couplings and defaults described in `Chat administration`_:
 a member declared allowed to send messages reads back allowed to react too.
 
+A group or a supergroup has the permissions Telegram gives a new one, because that is what
+:code:`getChat` reports for it until someone changes them: its members may send every kind of
+message, react and invite users, and may not change the chat's info, pin messages, create
+topics or edit their own tag. Telegram's documentation does not list these defaults; they are
+the ones its clients show for a new group and its servers report to bots. A private chat and a
+channel have no permissions to report. Declare others with ``permissions=``, building from the
+defaults when only one differs:
+
+.. code-block:: python
+
+    from aiogram.test import default_chat_permissions
+
+    no_polls = default_chat_permissions().model_copy(update={"can_send_polls": False})
+    team = blueprint.add_supergroup("Team", permissions=no_polls)
+
+The bot's checks of what a plain member can send read this very value, and
+:code:`setChatPermissions` replaces it; ``permissions`` declares the whole mask, as that
+method does, so a permission left out reads back unset and counts as denied.
+
 Triggering events
 =================
 

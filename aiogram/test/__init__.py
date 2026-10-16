@@ -59,6 +59,7 @@ from .world import (
     World,
     WorldLookupError,
     administrator_rights,
+    default_chat_permissions,
 )
 
 __all__ = (
@@ -107,6 +108,7 @@ __all__ = (
     "WorldLookupError",
     "administrator_rights",
     "build_environment",
+    "default_chat_permissions",
     "default_blueprint",
     "detach_router",
     "synthesize",

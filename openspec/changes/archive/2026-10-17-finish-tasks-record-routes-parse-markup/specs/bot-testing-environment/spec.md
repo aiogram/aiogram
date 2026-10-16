@@ -102,3 +102,25 @@ it shows SHALL run as written.
 - **WHEN** the recipe's code blocks are written into a project and its tests run
 - **THEN** they pass, the fifteen-second pause takes under a second, and `asyncio.sleep`
   and the loop's clock are untouched
+
+### Requirement: A group has the default permissions Telegram gives a new one
+
+A group or a supergroup SHALL have, unless its declaration gives others, the permissions
+Telegram gives a new one: every kind of message and reaction, and inviting users, allowed,
+and changing the chat's info, pinning messages, creating topics and editing one's tag denied.
+`getChat` SHALL report them, and the checks of what the bot may send as a plain or a
+restricted member SHALL read the same value. A private chat and a channel SHALL have none.
+`add_group` and `add_supergroup` SHALL accept `permissions=` to declare others, and
+`default_chat_permissions()` SHALL return the default as a new object that the Bot API's
+couplings leave unchanged.
+
+#### Scenario: A new supergroup
+
+- **WHEN** a test declares a supergroup and calls `getChat` on it
+- **THEN** `permissions` is the default, and the bot as a plain member sends text, polls and
+  dice into it
+
+#### Scenario: Declared permissions replace the default
+
+- **WHEN** a supergroup is declared with `permissions=` that deny polls
+- **THEN** `getChat` reports them and the bot's `sendPoll` is refused as a plain member

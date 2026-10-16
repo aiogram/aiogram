@@ -83,3 +83,18 @@ the seam that needs no such decision: the application's own pause helper, replac
 tests by one that sleeps a thousandth as long, with `asyncio.sleep` and the loop's clock
 left alone. `test_sleep_scaling_recipe.py` reads the recipe's code blocks out of
 `testing.rst`, writes them into a project and runs it, so the recipe cannot drift.
+
+### D5. A group's permissions are Telegram's defaults, not nothing
+
+`Blueprint.build` gives a group or a supergroup `default_chat_permissions()` when its
+`ChatSpec.permissions` is `None`, and nothing to a private chat or a channel, so the
+spec's field keeps meaning "unset" and a hand-built spec gets the same. The default is
+built as `granted_permissions()` stores a request, so the couplings and defaults the Bot
+API documents hold of it; `require_send_permission` and the restricted member's narrowing
+read `ChatState.permissions` as before, which is now this value. The mask: every kind of
+message, reaction and inviting allowed; changing info, pinning, creating topics and editing
+a tag denied.
+
+**Assumption.** Telegram's documentation does not list these defaults. They are what its
+clients show for a new group and what `getChat` returns for one, as far as is known, and
+the toolkit says so in its docs.

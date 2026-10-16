@@ -16,6 +16,10 @@
 
 - [x] 4.1 Document scaling the application's own sleep helper, and why `looptime` and real drivers clash (design D4); verify the documented code runs as written, fast, with the loop's clock real
 
-## 5. Integration
+## 5. Group permissions
 
-- [x] 5.1 Run `make lint`, `uv run pytest tests` with `aiogram/test` at 100% coverage, and the docs build; verify all pass with no new warnings for `testing.rst`
+- [x] 5.1 Give a group or a supergroup Telegram's default permissions, overridable per chat, and read them everywhere the bot's sends are checked (design D5); verify the default's values, getChat, the override, a hand-built spec, private chats and channels, and the enforcement and restriction paths
+
+## 6. Integration
+
+- [x] 6.1 Run `make lint`, `uv run pytest tests` with `aiogram/test` at 100% coverage, and the docs build; verify all pass with no new warnings for `testing.rst`
