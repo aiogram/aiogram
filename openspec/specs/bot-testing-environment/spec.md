@@ -4056,3 +4056,23 @@ SHALL not change.
 
 - **WHEN** an actor sends `/start` with `fields={"entities": []}`
 - **THEN** the message carries exactly the entities passed
+
+### Requirement: Raising a Telegram exception from a class it cannot be built from is refused
+
+`raises()` SHALL accept an exception class or an instance. A class whose constructor needs
+more than the method and the message, such as `TelegramRetryAfter` and
+`TelegramMigrateToChat`, SHALL raise `TypeError` when declared, naming what it needs and
+showing the instance to build, and a value that is not a Telegram exception class or instance
+SHALL raise `TypeError` too. A class that is built from the method and the message SHALL
+still be accepted.
+
+#### Scenario: The class of an exception that needs a retry time
+
+- **WHEN** a test declares `raises(TelegramRetryAfter)`
+- **THEN** `TypeError` names `retry_after` and shows `TelegramRetryAfter(method=...,
+  message=..., retry_after=5)`, and nothing is declared
+
+#### Scenario: A usual class
+
+- **WHEN** a test declares `raises(TelegramForbiddenError, "Forbidden: x")`
+- **THEN** the call fails with that exception and message

@@ -17,6 +17,8 @@ test cannot see what its bot does:
   late arrival or a second group declares them for every test that shares the blueprint.
 - **Commands carry no entity.** A client marks `/cmd` and `/cmd@bot` as `bot_command`
   entities, an actor's text carried none, and a router keying on entities missed them.
+- **A class that cannot be raised fails late.** `raises(TelegramRetryAfter)` is accepted and
+  then fails with a `TypeError` from the middle of the bot's call.
 - **Fast sleeps cost real drivers.** The documented way to skip a bot's long sleeps is
   `looptime`, which moves the loop's clock, and a real database driver's deadlines run on
   that clock and expire mid-query.
@@ -44,6 +46,9 @@ test cannot see what its bot does:
 
 - An actor's text and caption carry the `bot_command` entities Telegram attaches, found by
   TDLib's rule, and an edit marks its new text.
+
+- `raises()` refuses, when declared, a class it cannot build from the method and the message,
+  and shows the instance to pass.
 
 Observable behavior change, toward the Bot API: a text sent with a parse mode is stored
 parsed, broken markup or an unknown parse mode now fails the call, `getChat` reports a

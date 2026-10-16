@@ -28,6 +28,10 @@
 
 - [x] 7.1 Mark the commands in an actor's text and caption as TDLib's matcher does, without overriding explicit entities (design D7); verify the rule's every branch, UTF-16 offsets, edits, captions, every chat kind, and that the bot's sends are untouched
 
-## 8. Integration
+## 8. Friendly raises
 
-- [x] 8.1 Run `make lint`, `uv run pytest tests` with `aiogram/test` at 100% coverage, and the docs build; verify all pass with no new warnings for `testing.rst`
+- [x] 8.1 Refuse a class `raises()` cannot build, when declared, with the instance to pass (design D8); verify the two Telegram classes, a class of your own, a usable class, and values that are no exception
+
+## 9. Integration
+
+- [x] 9.1 Run `make lint`, `uv run pytest tests` with `aiogram/test` at 100% coverage, and the docs build; verify all pass with no new warnings for `testing.rst`

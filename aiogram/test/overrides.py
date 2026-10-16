@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import inspect
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Any, TypeAlias
 
@@ -177,6 +178,67 @@ class Outcome:
         if isinstance(self.error, TelegramAPIError):
             raise self.error
         raise self.error(method=method, message=self.message)
+
+
+#: How to build the exceptions whose constructor wants more than
+#: the method and the message, for the failure that tells a test
+#: to pass an instance.
+_CONSTRUCTED: dict[str, str] = {
+    "TelegramRetryAfter": (
+        'TelegramRetryAfter(method={method}, message="Too Many Requests: retry after 5", '
+        "retry_after=5)"
+    ),
+    "TelegramMigrateToChat": (
+        "TelegramMigrateToChat(method={method}, "
+        'message="Bad Request: group chat was upgraded to a supergroup chat", '
+        "migrate_to_chat_id=-1001234567890)"
+    ),
+}
+
+
+def require_raisable(error: object, method_type: type[TelegramMethod[Any]]) -> None:
+    """
+    Refuse what ``raises()`` could not raise, as it is declared.
+
+    Given a class, the call builds the exception from the method and
+    the message alone. Most of Telegram's exceptions take just those,
+    but ``TelegramRetryAfter`` also takes ``retry_after`` and
+    ``TelegramMigrateToChat`` ``migrate_to_chat_id``, and built from
+    the class they failed with a ``TypeError`` out of the middle of
+    the bot's call, nowhere near the line that declared it.
+    """
+    if isinstance(error, TelegramAPIError):
+        return
+    if not (isinstance(error, type) and issubclass(error, TelegramAPIError)):
+        msg = (
+            f"raises() takes a TelegramAPIError subclass or an instance of one, "
+            f"not {error!r}. The message of a class goes second: "
+            f'`raises(TelegramBadRequest, "Bad Request: chat not found")`'
+        )
+        raise TypeError(msg)
+    needed = [
+        name
+        for name, parameter in inspect.signature(error).parameters.items()
+        if parameter.default is parameter.empty
+        and parameter.kind in {parameter.POSITIONAL_OR_KEYWORD, parameter.KEYWORD_ONLY}
+        and name not in {"method", "message"}
+    ]
+    if not needed:
+        return
+    method = f"{method_type.__name__}(...)"
+    example = _CONSTRUCTED.get(error.__name__)
+    if example is None:
+        extras = ", ".join(f"{name}=..." for name in needed)
+        example = f"{error.__name__}(method={method}, message=..., {extras})"
+    else:
+        example = example.format(method=method)
+    msg = (
+        f"{error.__name__} cannot be raised from the class: its constructor also needs "
+        f"{', '.join(needed)}, and raises() has only the method and the message to give it. "
+        f"Pass an instance built whole:\n\n"
+        f"    env.on({method_type.__name__}).raises({example})"
+    )
+    raise TypeError(msg)
 
 
 def fresh_result(result: Any) -> Any:
@@ -495,6 +557,17 @@ class OverrideBuilder(OverrideHandle):
         *,
         times: int | None = None,
     ) -> OverrideBuilder:
+        """
+        Make the matched calls fail with ``error``.
+
+        A class is raised with the call's method and ``message``,
+        which suits most of Telegram's exceptions. One that needs
+        more, such as ``TelegramRetryAfter`` with its
+        ``retry_after``, is passed as an instance built whole. A
+        class that cannot be built from the two is a
+        :class:`TypeError` here, not when the bot's call fails.
+        """
+        require_raisable(error, self._method_type)
         self.register(
             self.matcher(),
             Outcome(error=error, message=message, remaining=times),

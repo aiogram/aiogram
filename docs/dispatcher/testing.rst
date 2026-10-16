@@ -1295,6 +1295,26 @@ with ``times=``, so consecutive calls can return different outcomes. Errors are 
 the framework's own :mod:`aiogram.exceptions` types, through the same code path a real
 response takes.
 
+``raises()`` takes the exception class, which it raises with the call's method and the
+message, or an instance of it. Most of Telegram's exceptions need nothing more, but
+:class:`~aiogram.exceptions.TelegramRetryAfter` also needs ``retry_after`` and
+:class:`~aiogram.exceptions.TelegramMigrateToChat` ``migrate_to_chat_id``, so those are passed
+as instances. Passing the class raises :class:`TypeError` at the line that declares it,
+with the instance to build instead:
+
+.. code-block:: python
+
+    bot_env.on(SendMessage).raises(TelegramRetryAfter)
+    # TypeError: TelegramRetryAfter cannot be raised from the class: its constructor also
+    # needs retry_after, and raises() has only the method and the message to give it. Pass
+    # an instance built whole:
+    #
+    #     env.on(SendMessage).raises(TelegramRetryAfter(method=SendMessage(...),
+    #         message="Too Many Requests: retry after 5", retry_after=5))
+
+Anything that is not a :class:`~aiogram.exceptions.TelegramAPIError` subclass or instance, such
+as the message passed in the exception's place, is refused the same way.
+
 A declared result stays the test's own: each call is answered with a fresh copy of it, the
 way a real response is parsed anew every time. So ``some_administrator`` above can be a
 module-level object shared by the whole suite — the call cannot mutate it, and it never
@@ -1435,7 +1455,7 @@ Flood control
 
 To test what the bot does when Telegram tells it to slow down, declare the refusal. A
 :class:`aiogram.exceptions.TelegramRetryAfter` needs the method and ``retry_after``, so
-build it whole rather than passing the class:
+build it whole rather than passing the class, which ``raises()`` refuses:
 
 .. code-block:: python
 

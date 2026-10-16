@@ -353,6 +353,11 @@ handler swallowed. A test that means an update to go unhandled, or to fail, says
 opt-in, by calling it or with the ``bot_env_assert_updates_handled`` fixture, which runs it
 after every passing test.
 
+Declaring ``env.on(SendMessage).raises(TelegramRetryAfter)`` with the class, which cannot be
+built from the method and the message alone, raises a ``TypeError`` at the declaration with the
+instance to build instead, rather than failing in the middle of the bot's call; so does
+``TelegramMigrateToChat``, a class of your own that needs more, or anything that is not a
+Telegram exception.
 Flood control can be tested two ways. The documentation shows the override that declares one
 ``TelegramRetryAfter``, built whole with its method and ``retry_after``. And
 ``BotTestEnvironment(rate_limits=RateLimits())``, off by default, models Telegram's guidance

@@ -135,3 +135,14 @@ one passes it in `fields=`. Offsets are UTF-16 units, as `fix_entity_offsets` co
 `fields` is marked and an explicit `entities` or `caption_entities`, even `[]`, stands. An
 edit with new text replaces the old entities, with `None` when there is no command. The
 bot's own sends are untouched: the Bot API server does not mark them.
+
+### D8. Check what `raises()` is given where it is given
+
+`require_raisable()` runs in `OverrideBuilder.raises()`. It reads the class's constructor
+with `inspect.signature` and refuses a required parameter other than `method` and
+`message`, so a subclass of a test's own is covered as well as the two Telegram classes
+that need one. Classes that the call can build, such as `TelegramBadRequest`, are accepted
+as before, since the documentation and many suites use them. The example comes from a small
+table for `TelegramRetryAfter` and `TelegramMigrateToChat`, and is generated from the
+missing names for any other class. `env.blocked()` registers its own outcomes and is not
+checked.
