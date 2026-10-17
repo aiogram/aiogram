@@ -2298,7 +2298,9 @@ class UserActor:
         if reason is None:
             return await self.environment.feed(update, **data)
         with self.environment.trigger():
-            return Withheld(update, reason)
+            # Bound like a fed one, so `answer()` works on what a test
+            # picks out of it, and its task snapshot is taken.
+            return Withheld(self.environment.adopt(update), reason)
 
     def _refuse_bot(self, action: str) -> None:
         """

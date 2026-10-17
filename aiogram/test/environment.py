@@ -1459,17 +1459,7 @@ class BotTestEnvironment:
         Whatever the case, the message the update carries ends up **registered in its chat**
         — see :meth:`_register_carried_message`.
         """
-        # One pass over the bindables instead of one to ask whose they are and another to
-        # claim them: `bound_elsewhere` and `mount` walk the same graph with the same
-        # pruning, and an update is walked on every single trigger.
-        self._protect_running_tasks()
-        nodes = list(bindables(update, prune_bound=True))
-        if any(node.bot is not None and node.bot is not self.bot for node in nodes):
-            update = detached_copy(update, bot=self.bot)
-        else:
-            for node in nodes:
-                if node.bot is None:
-                    node.as_(self.bot)
+        update = self.adopt(update)
         self._register_carried_message(update)
         # A feed that is neither inside an explicit `trigger()` block of this environment
         # nor nested in one of its handlers is a trigger of its own, so it opens a scope of
@@ -1485,6 +1475,30 @@ class BotTestEnvironment:
             return await self.dispatcher.feed_update(self.bot, update, **kwargs)
         finally:
             self._pop_scope(frame, token)
+
+    def adopt(self, update: Update) -> Update:
+        """
+        Make ``update`` this environment's, as :meth:`feed` does first.
+
+        What the update carries is bound to the bot, or copied when it
+        belongs to another environment, and the tasks already running
+        are spared from :meth:`drain`. An update a trigger withholds
+        takes the same path, so its ``callback_query.answer()`` works
+        and a test whose first trigger is withheld still has its task
+        snapshot. The copy, if any, is what comes back.
+        """
+        # One pass over the bindables instead of one to ask whose they are and another to
+        # claim them: `bound_elsewhere` and `mount` walk the same graph with the same
+        # pruning, and an update is walked on every single trigger.
+        self._protect_running_tasks()
+        nodes = list(bindables(update, prune_bound=True))
+        if any(node.bot is not None and node.bot is not self.bot for node in nodes):
+            copy: Update = detached_copy(update, bot=self.bot)
+            return copy
+        for node in nodes:
+            if node.bot is None:
+                node.as_(self.bot)
+        return update
 
     def _register_carried_message(self, update: Update) -> None:
         """

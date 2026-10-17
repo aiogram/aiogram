@@ -791,3 +791,35 @@ class TestOneCheckPerTrigger:
 
         assert chat.messages == before
         assert chat.member(alice.user.id).status == ChatMemberStatus.MEMBER
+
+
+class TestAWithheldUpdateIsBound:
+    async def test_what_it_carries_answers_the_bot(self, build, dp):
+        world = build()
+        env, chat = world["env"], world["chat"]
+        keyboard = InlineKeyboardMarkup(
+            inline_keyboard=[[InlineKeyboardButton(text="Buy", callback_data="buy")]],
+        )
+        await env.bot.send_message(chat_id=chat.id, text="Shop", reply_markup=keyboard)
+
+        withheld = await world["alice"].click("buy", deliver=False)
+
+        assert isinstance(withheld, Withheld)
+        assert withheld.update.callback_query.bot is env.bot
+        assert await withheld.update.callback_query.answer("ok") is True
+
+    async def test_it_snapshots_the_running_tasks(self, build):
+        world = build()
+        env = world["env"]
+        assert env._protection_extended is False
+
+        await world["alice"].send("unseen", deliver=False)
+
+        assert env._protection_extended is True
+
+    async def test_a_withheld_message_from_another_bot_is_bound(self, build):
+        world = build()
+
+        withheld = await world["other"].send("plain")
+
+        assert withheld.update.message.bot is world["env"].bot
