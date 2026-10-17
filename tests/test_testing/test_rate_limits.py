@@ -115,7 +115,32 @@ class TestPerChat:
         with pytest.raises(TelegramRetryAfter):
             await send(env.bot, target)
 
-    async def test_an_album_counts_once(self, make_env):
+    async def test_an_album_counts_every_message_in_it(self, make_env):
+        env, blueprint, _threads = make_env(RateLimits(per_chat=None))
+        target = chat_id(blueprint, TEAM)
+        album = [InputMediaPhoto(media="a") for _ in range(10)]
+
+        await env.bot.send_media_group(chat_id=target, media=album)
+        await env.bot.send_media_group(chat_id=target, media=album)
+
+        assert len(env._flood.sent[target]) == 20
+        with pytest.raises(TelegramRetryAfter) as raised:
+            await env.bot.send_media_group(chat_id=target, media=album)
+        assert raised.value.retry_after == 60
+        assert len(env.chat(target).messages) == 20 + 2
+
+    async def test_a_batch_counts_every_message_in_it(self, make_env):
+        env, blueprint, _threads = make_env(RateLimits(per_chat=None))
+        target = chat_id(blueprint, TEAM)
+        ids = [(await env.bot.send_message(chat_id=target, text="x")).message_id for _ in range(5)]
+        await env.advance_time(60)
+
+        await env.bot.copy_messages(chat_id=target, from_chat_id=target, message_ids=ids)
+        await env.bot.forward_messages(chat_id=target, from_chat_id=target, message_ids=ids)
+
+        assert len(env._flood.sent[target]) == 10
+
+    async def test_an_album_may_take_a_chat_over_its_limit(self, make_env):
         env, blueprint, _threads = make_env(RateLimits())
         target = chat_id(blueprint, PRIVATE)
 
@@ -125,6 +150,8 @@ class TestPerChat:
         )
 
         assert len(sent) == 2
+        with pytest.raises(TelegramRetryAfter):
+            await env.bot.send_message(chat_id=target, text="next")
 
     async def test_a_refused_send_is_not_counted(self, make_env):
         env, blueprint, _threads = make_env(RateLimits())
@@ -206,6 +233,13 @@ class TestPerGroup:
 
 
 class TestFloodControl:
+    def test_a_record_of_many_is_many_stamps(self):
+        control = FloodControl(RateLimits())
+
+        control.record(1, "private", 3.0, messages=4)
+
+        assert list(control.sent[1]) == [3.0] * 4
+
     def test_no_limit_forgets_everything(self):
         control = FloodControl(RateLimits(per_chat=None, per_group=None))
 
@@ -260,6 +294,16 @@ class TestLocalChecksComeFirst:
 
         with pytest.raises(TelegramBadRequest, match="message thread not found"):
             await env.bot.send_message(chat_id=chat.id, text="x", message_thread_id=999)
+
+    async def test_a_missing_reply_in_an_album_answers_400(self, flooded):
+        env, chat, _threads = flooded
+
+        with pytest.raises(TelegramBadRequest, match="message to be replied not found"):
+            await env.bot.send_media_group(
+                chat_id=chat.id,
+                media=[InputMediaPhoto(media="a"), InputMediaPhoto(media="b")],
+                reply_parameters=ReplyParameters(message_id=999),
+            )
 
     async def test_a_missing_reply_answers_400(self, flooded):
         env, chat, _threads = flooded

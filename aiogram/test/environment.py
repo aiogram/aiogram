@@ -649,7 +649,7 @@ class BotTestEnvironment:
         self.rate_limits = rate_limits
         self._flood = FloodControl(rate_limits) if rate_limits is not None else None
         #: The send this call was let through with, see `admit_send`.
-        self._admitted: tuple[FloodControl, ChatState] | None = None
+        self._admitted: tuple[FloodControl, ChatState, int] | None = None
         self.blueprint = blueprint if blueprint is not None else default_blueprint()
         self.world = self.blueprint.build(start=clock_start)
         self.world.default_wait_timeout = default_wait_timeout
@@ -2332,7 +2332,7 @@ class BotTestEnvironment:
         user = self.world.users.get(user_id)
         return None if user is None else user.as_user()
 
-    def admit_send(self, chat: ChatState) -> None:
+    def admit_send(self, chat: ChatState, messages: int = 1) -> None:
         """
         Let a send into ``chat`` past the flood limits, or refuse it.
 
@@ -2340,7 +2340,9 @@ class BotTestEnvironment:
         passed and before it changes the world, so a call they refuse
         answers with their 400 rather than a 429, and a call refused
         here leaves nothing behind. An album or a batch is admitted
-        once. With no ``rate_limits``, everything is admitted.
+        once, with the number of ``messages`` it puts into the chat,
+        and counts as all of them. With no ``rate_limits``, everything
+        is admitted.
         """
         flood = self._flood
         if flood is None or self._admitted is not None:
@@ -2348,7 +2350,7 @@ class BotTestEnvironment:
         wait = flood.retry_after(chat.id, chat.type, self.rate_clock())
         if wait is not None:
             raise rejections.FLOOD(retry_after=wait, seconds=wait)
-        self._admitted = (flood, chat)
+        self._admitted = (flood, chat, messages)
 
     async def handle_call(
         self,
@@ -2419,8 +2421,8 @@ class BotTestEnvironment:
             if admitted is not None:
                 # Counted once it went through: a refused send is no
                 # message in the chat.
-                flood, chat = admitted
-                flood.record(chat.id, chat.type, self.rate_clock())
+                flood, chat, messages = admitted
+                flood.record(chat.id, chat.type, self.rate_clock(), messages)
             return result
 
         return synthesize_result(resolved.__returning__, self.synthesis_context())

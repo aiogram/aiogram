@@ -1585,16 +1585,17 @@ def handle_send_media_group(
     posting_topic(env, chat, method.message_thread_id)
     for kind in sorted(kinds):
         require_send_permission(env, chat, kind)
-    group: list[str] = []
-
-    def content(item: Any) -> dict[str, Any]:
-        # Allocated once the album was let through, on its first item.
-        if not group:
-            group.append(env.world.next_query_id())
-        return _media_group_item(env, item, group[0])
-
+    # The reply is every item's, so it is checked before the flood
+    # limits, as a send checks it.
+    _reply_changes(env, method, chat, ephemeral=False)
+    # Every check passed, so the album is let through, as every message
+    # in it, before it takes an id.
+    env.admit_send(chat, len(method.media))
+    group_id = env.world.next_query_id()
     return [
-        build_message(env, method, chat, content=functools.partial(content, item))
+        build_message(
+            env, method, chat, content=functools.partial(_media_group_item, env, item, group_id)
+        )
         for item in method.media
     ]
 
@@ -1857,7 +1858,7 @@ def handle_forward_many(env: BotTestEnvironment, method: ForwardMessages) -> lis
     if originals:
         # Every check passed, so the batch is let through before its
         # albums take ids.
-        env.admit_send(target)
+        env.admit_send(target, len(originals))
     albums = _album_ids(env, originals)
     forwarded = [
         forward_one(
@@ -2045,7 +2046,7 @@ def handle_copy_many(env: BotTestEnvironment, method: CopyMessages) -> list[Mess
     if originals:
         # Every check passed, so the batch is let through before its
         # albums take ids.
-        env.admit_send(target)
+        env.admit_send(target, len(originals))
     albums = _album_ids(env, originals)
     copied = [
         copy_one(

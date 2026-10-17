@@ -19,9 +19,10 @@ from aiogram.methods import TelegramMethod
 
 from .modeling import SENDING_METHODS
 
-#: The methods a rate limit counts: each call puts one message, or
-#: one album or batch, into a chat. Read off the modeling registry,
-#: so a send method modeled later is counted with no edit here.
+#: The methods a rate limit counts: each call puts a message, an
+#: album or a batch into a chat, and counts as every message it
+#: puts there. Read off the modeling registry, so a send method
+#: modeled later is counted with no edit here.
 RATE_LIMITED_METHODS: frozenset[type[TelegramMethod[Any]]] = frozenset(SENDING_METHODS)
 
 
@@ -43,6 +44,12 @@ class RateLimits:
     group, shared by all its topics. Pass ``None`` to drop one of
     them, or a :class:`RateLimit` of your own. Telegram tolerates
     short bursts above the first; the model does not.
+
+    Every message counts, so an album of ten, or a batch of ten
+    forwards, is ten against the limits. A call is let through while
+    the chat is under a limit, and may take it over, since Telegram
+    publishes no rule for a call that does not fit; the next send then
+    waits for the window to clear.
     """
 
     #: Applies in every chat.
@@ -89,10 +96,10 @@ class FloodControl:
             return None
         return max(1, math.ceil(wait))
 
-    def record(self, chat_id: int, chat_type: str, now: float) -> None:
-        """Count a send into the chat, forgetting old ones."""
+    def record(self, chat_id: int, chat_type: str, now: float, messages: int = 1) -> None:
+        """Count ``messages`` sent into the chat, forgetting old ones."""
         stamps = self.sent.setdefault(chat_id, deque())
-        stamps.append(now)
+        stamps.extend([now] * messages)
         horizon = max(
             (limit.seconds for limit in self.limits.for_chat(chat_type)),
             default=0.0,
