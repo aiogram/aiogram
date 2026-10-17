@@ -5,9 +5,6 @@ The toolkit's refusals did not follow that: their texts read as Telegram's own, 
 the Bot API server's or TDLib's and some are the toolkit's guess, and its tests matched them
 all. A test that matches a guessed text breaks for no reason that concerns the bot.
 
-A topic method also skipped the rights check when the topic did not exist, though TDLib checks
-`can_manage_topics` or `can_delete_messages` before the topic lookup.
-
 ## What Changes
 
 - Every refusal guarantees its `error_code` and the exception type for it. The description is
@@ -18,8 +15,8 @@ A topic method also skipped the rights check when the topic did not exist, thoug
   `retry_after`.
 - `env.on(...).raises(Error)` without a message words its default under the prefix of the
   type, such as `Forbidden: test error`.
-- A topic the bot did not create, or does not exist, takes the right first, so a plain-member
-  bot closing an unknown topic is refused for lack of rights.
+- The requirement on topic rights now says what TDLib does: the rights are checked for a topic
+  it holds, and an unknown or deleted topic goes on to the topic's own refusal.
 - The toolkit's tests match a description only for a guaranteed text.
 
 ## Capabilities
@@ -30,8 +27,8 @@ None.
 
 ### Modified Capabilities
 
-- `bot-testing-environment`: gains the two requirements below, and states the rights-first
-  order of topic methods for an unknown topic.
+- `bot-testing-environment`: gains the two requirements below, and states when the
+  rights of a topic are checked.
 
 ## Impact
 

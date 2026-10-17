@@ -721,16 +721,18 @@ def _opened_by_bot(env: BotTestEnvironment, chat: ChatState, method: Any) -> boo
     """
     Whether the bot needs no right for the topic, as its creator.
 
-    TDLib checks the rights first, and lets the creator of a topic
-    edit, close, reopen and delete it without them
-    (ForumTopicManager.cpp, ``is_outgoing``). A topic it does not
-    know has no creator to excuse the bot, so the rights are checked
-    and only a bot holding them goes on to the handler's refusal for
-    an unknown topic.
+    TDLib lets the creator of a topic edit, close, reopen and delete
+    it without the right, and refuses anyone else who lacks it, but
+    only for a topic it holds (ForumTopicManager.cpp, ``is_outgoing``
+    behind ``get_topic_info``). A topic it does not hold goes on to
+    the server unchecked, so the handler's refusal answers it, a bot
+    holding the right or not. That covers a topic the bot itself
+    deleted: TDLib drops it from its cache, so the bot's own
+    exemption is gone with it and a later call meets ``TOPIC_DELETED``.
     """
     forum_chat(env, chat.id)
     topic = chat.topics.get(getattr(method, "message_thread_id", None) or 0)
-    return topic is not None and topic.creator_id == env.world.bot_user.id
+    return topic is None or topic.creator_id == env.world.bot_user.id
 
 
 _PINNING = RightRule(

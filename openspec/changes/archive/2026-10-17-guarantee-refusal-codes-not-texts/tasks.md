@@ -7,7 +7,7 @@
 
 ## 2. Topic rights
 
-- [x] 2.1 Check the rights before an unknown topic is looked up (design D4); verify a plain-member bot is refused for the right and one holding it meets `message thread not found`
+- [x] 2.1 Check the rights of a topic TDLib holds only (design D4); verify an unknown topic and a topic the bot deleted meet the topic's refusal
 
 ## 3. Tests and docs
 

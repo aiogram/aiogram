@@ -2676,9 +2676,9 @@ chats``, as the Bot API server refuses them, whatever the bot holds. In a superg
 channel TDLib refuses touching the owner with ``can't remove chat owner`` first; in a basic
 group the server decides, and the toolkit answers a ban of the owner with
 ``CHAT_ADMIN_REQUIRED``, its usual answer, which is not in the open source. A topic method
-checks the rights before the topic: TDLib sends a call about a topic it does not know on to
-the server, so a bot with the right gets the topic's refusal, and one without gets the
-rights'.
+checks the rights of a topic TDLib holds, and lets the bot's own topic through without them.
+A topic it does not hold, one that never existed or that the bot deleted, goes on to the
+server unchecked, so the call meets the topic's refusal whatever the bot holds.
 
 Not checked: granting a right the bot does not hold itself. What users do through actors is
 never checked either. The test decides what users do.

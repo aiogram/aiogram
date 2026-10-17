@@ -4491,33 +4491,34 @@ supergroup and channel chats` before any right is read. Touching the owner SHALL
 - **WHEN** the bot bans or restricts the owner of a supergroup or a channel
 - **THEN** the call fails with `can't remove chat owner`, before any right is consulted
 
-### Requirement: Topic methods check the rights before the topic is looked up
+### Requirement: Topic methods check the rights of a topic that exists
 
-A topic method SHALL check the rights before it looks the topic up. Creating a topic SHALL
-take `can_manage_topics`, and so SHALL editing, closing and reopening a topic the bot did
-not create and every General topic method but unpinning; deleting a topic the bot did not
-create SHALL take `can_delete_messages`.
+A topic method SHALL check the rights only for a topic the chat has, as TDLib does for a topic
+it holds; one that never existed, or was deleted, SHALL go on to the topic's own refusal. Creating
+a topic SHALL take `can_manage_topics`, and so SHALL editing, closing and reopening a topic the
+bot did not create and every General topic method but unpinning; deleting a topic the bot did
+not create SHALL take `can_delete_messages`.
 
 #### Scenario: The bot closes its own topic
 
 - **WHEN** the bot, a plain member of a forum, closes a topic it created
 - **THEN** the topic closes, while closing a topic someone else created raises
-  `TelegramBadRequest` with `not enough rights to close or open the topic`
+  `TelegramBadRequest`
 
 #### Scenario: Deleting a topic the bot did not create
 
 - **WHEN** a plain-member bot deletes a topic someone else created
-- **THEN** the call fails for lack of `can_delete_messages`
+- **THEN** the call fails with `TelegramBadRequest` for lack of `can_delete_messages`
 
-#### Scenario: Rights are checked before the topic is looked up
+#### Scenario: A topic that does not exist goes on to the server
 
 - **WHEN** a plain-member bot closes a topic that does not exist
-- **THEN** the call fails for lack of rights rather than for the missing topic
+- **THEN** the call fails with `message thread not found`, whatever rights the bot holds
 
-#### Scenario: A bot with the right meets the missing topic
+#### Scenario: A deleted topic loses its creator's exemption
 
-- **WHEN** a bot holding `can_manage_topics` closes a topic that does not exist
-- **THEN** the call fails with `message thread not found`
+- **WHEN** the bot deletes a topic it created and then closes it
+- **THEN** the call fails with `TOPIC_DELETED`, not for lack of the right
 
 ### Requirement: Deleting someone else's message takes administrator standing
 

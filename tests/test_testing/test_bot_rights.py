@@ -808,43 +808,32 @@ class TestMoreRows:
 
 
 class TestRightsBeforeTheTopic:
-    async def test_an_unknown_topic_goes_on_to_the_server(self, forum):
-        env, chat, _declared, _own = await forum(
-            rights=administrator_rights(can_manage_topics=True),
-        )
+    """TDLib checks the rights of a topic it holds, and no other."""
 
-        with pytest.raises(TelegramBadRequest, match="message thread not found"):
-            await env.bot.close_forum_topic(chat_id=chat.id, message_thread_id=999)
+    CALLS = [
+        ("edit_forum_topic", {"name": "N"}),
+        ("close_forum_topic", {}),
+        ("reopen_forum_topic", {}),
+        ("delete_forum_topic", {}),
+    ]
 
-    @pytest.mark.parametrize(
-        ("name", "kwargs", "right", "refusal"),
-        [
-            ("edit_forum_topic", {"name": "N"}, "can_manage_topics", refusals.EDIT_TOPIC_RIGHTS),
-            ("close_forum_topic", {}, "can_manage_topics", refusals.TOGGLE_TOPIC_RIGHTS),
-            ("reopen_forum_topic", {}, "can_manage_topics", refusals.TOGGLE_TOPIC_RIGHTS),
-            ("delete_forum_topic", {}, "can_delete_messages", refusals.DELETE_TOPIC_RIGHTS),
-        ],
-    )
-    async def test_an_unknown_topic_is_refused_for_the_rights_first(
-        self,
-        forum,
-        name,
-        kwargs,
-        right,
-        refusal,
-    ):
-        # No topic, so no creator to excuse the bot from the right.
+    @pytest.mark.parametrize(("name", "kwargs"), CALLS)
+    async def test_an_unknown_topic_goes_on_to_the_server(self, forum, name, kwargs):
+        # A plain member, who lacks the right, meets the topic's refusal.
         env, chat, _declared, _own = await forum()
-        call = getattr(env.bot, name)
 
-        with refused_with(TelegramBadRequest, refusal):
-            await call(chat_id=chat.id, message_thread_id=999, **kwargs)
+        with refused_with(TelegramBadRequest, refusals.THREAD_NOT_FOUND):
+            await getattr(env.bot, name)(chat_id=chat.id, message_thread_id=999, **kwargs)
 
-        held = administrator_rights(**{right: True})
-        env.chat(chat.id).member(env.world.bot_user.id).rights = held
-        env.chat(chat.id).member(env.world.bot_user.id).status = ChatMemberStatus.ADMINISTRATOR
-        with pytest.raises(TelegramBadRequest, match="message thread not found"):
-            await call(chat_id=chat.id, message_thread_id=999, **kwargs)
+    @pytest.mark.parametrize(("name", "kwargs"), CALLS)
+    async def test_a_topic_the_bot_deleted_is_unknown_again(self, forum, name, kwargs):
+        # The exemption of its creator goes with the topic, as TDLib's
+        # cache drops it, so the call is not refused for the right.
+        env, chat, _declared, own = await forum()
+        await env.bot.delete_forum_topic(chat_id=chat.id, message_thread_id=own)
+
+        with refused_with(TelegramBadRequest, refusals.TOPIC_DELETED):
+            await getattr(env.bot, name)(chat_id=chat.id, message_thread_id=own, **kwargs)
 
     async def test_unpinning_an_unknown_topic_is_refused_for_the_rights(self, forum):
         env, chat, _declared, _own = await forum()

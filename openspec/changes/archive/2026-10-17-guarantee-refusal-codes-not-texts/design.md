@@ -46,8 +46,12 @@ and the tests assert the type. `refusal_of()` reads a caught exception back agai
 declared texts, so a test also says which refusal of a code fired, without matching its
 wording.
 
-### D4. Rights before the topic
+### D4. Rights for a topic TDLib holds
 
-`_opened_by_bot` excused the bot from the right when the topic was unknown. An unknown topic
-has no creator to excuse it, so the bot is now checked and, holding the right, goes on to the
-handler's `message thread not found`.
+TDLib refuses a bot lacking `can_manage_topics` or `can_delete_messages` only when it holds the
+topic and the bot did not create it (`ForumTopicManager.cpp`, `get_topic_info` and
+`is_outgoing`); a topic it does not hold goes on to the server. That includes a topic the bot
+deleted, which TDLib drops from its cache, so the creator's exemption goes with the topic.
+`_opened_by_bot` keeps that: an unknown or deleted topic skips the check, and the handler
+answers `message thread not found` or `TOPIC_DELETED`. An earlier reading, that the rights come
+before any lookup, is not what the source does.
