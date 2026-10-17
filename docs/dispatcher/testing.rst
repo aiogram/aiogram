@@ -1585,13 +1585,23 @@ about one message per second in a chat, and at most 20 a minute in a group, shar
 a forum's topics. A send, copy or forward over a limit fails as Telegram answers it, with
 error 429, ``Too Many Requests: retry after N`` and a ``TelegramRetryAfter`` whose
 ``retry_after`` is the truth: once that many seconds have passed, the next send goes
-through. A media group or a batch of forwards counts once, and a send that fails for another
-reason is not counted. The limits are read after every check Telegram makes before sending
+through. Every message counts, so a media group of ten, or a batch of ten forwards, is ten
+against the limits, and a send that fails for another reason is not counted. A call is let
+through while the chat is under a limit and may take it over, so a media group of ten is
+never refused for its size, and the next send waits for the window to clear. The limits are read after every check Telegram makes before sending
 — the bot's rights, the thread, the message replied to — so a send those refuse answers with
 their 400 even in a flooded chat, and a send the limits refuse changes nothing. Which calls
 count is read off the modeled sends, ``aiogram.test.flood.RATE_LIMITED_METHODS``. An override
 answers before the limits are read. The FAQ also allows
 short bursts above one a second; the model does not.
+
+.. note::
+
+    **Assumption.** The FAQ speaks of messages and says nothing about albums, and neither the
+    Bot API server nor TDLib enforces the limits: the server passes on the 429 it gets, and
+    TDLib sends an album as one request. How Telegram's servers count an album is not
+    public, so the model counts the cautious way, every message. A bot that stays under it
+    stays under any laxer rule, and a flood is never hidden.
 
 The seconds are read off the event loop's clock, so a loop driven by ``looptime`` moves
 them, and :meth:`~aiogram.test.BotTestEnvironment.advance_time` moves them too:
@@ -3163,16 +3173,19 @@ topic still takes ``can_manage_topics``:
     result = await host_bot.send("Day 2 begins")      # stored, not delivered
     assert isinstance(result, Withheld)
 
-A bot presses no buttons, has no inline mode and votes in no poll, so ``click()``,
-``inline_query()``, ``chosen_inline_result()`` and ``vote()`` raise
-:class:`~aiogram.test.WorldLookupError` for one.
+A bot presses no buttons, has no inline mode, votes in no poll, and neither pays, buys,
+boosts nor subscribes, so ``click()``, ``inline_query()``, ``chosen_inline_result()``,
+``vote()``, ``pay()``, ``pre_checkout_query()``, ``shipping_query()``,
+``purchase_paid_media()``, ``boost()``, ``remove_boost()``, ``update_subscription()`` and
+``follow_deep_link()`` raise :class:`~aiogram.test.WorldLookupError` for one.
 
 Telegram's bots see few messages of other bots, and the toolkit follows the rule of
 `Bot-to-Bot Communication <https://core.telegram.org/bots/features#bot-to-bot-communication>`_.
 ``Blueprint(bot_to_bot_mode=...)`` and ``add_user(..., bot_to_bot_mode=...)`` declare the
 mode each bot turned on in @BotFather, off by default, and
 ``Blueprint(bot_group_privacy=False)`` turns the bot's Group Privacy off, which ``getMe``
-reports as ``can_read_all_group_messages``. In a group or a supergroup, another bot's message
+reports as ``can_read_all_group_messages``, and so does the bot's cached ``me()``, also after
+a test sets ``world.bot_group_privacy``. In a group or a supergroup, another bot's message
 or edit reaches the bot when:
 
 - either bot has the mode on, and the message names the bot in a command, such as
@@ -3232,7 +3245,9 @@ the owner or an administrator whose ``is_anonymous`` is set; anyone else, or a c
 supergroup, raises :class:`~aiogram.test.WorldLookupError`. Rights are the user's own, so
 the checks of the topic and membership triggers apply unchanged, and the bot-to-bot rule
 does not: the sender is the group. A demotion, or the right taken away, makes every later
-trigger of the binding raise. Joining and leaving are the user's own, never the group's, so
+trigger of the binding raise. The binding is checked once, as a trigger starts, so an
+administrator who demotes themself completes the demotion and announces it, and only the next
+trigger raises. Joining and leaving are the user's own, never the group's, so
 they raise for an anonymous binding.
 
 Which user an update names decides its FSM key:
@@ -3244,7 +3259,8 @@ Which user an update names decides its FSM key:
   as Telegram shows whoever pressed. ``bot_env.state(user, chat)``, or
   ``bot_env.user(user).in_(chat).state()``, reads their key.
 - A reaction or a vote names the chat as ``actor_chat`` or ``voter_chat`` and no user, as the
-  Bot API documents for an anonymous user, and is kept as the chat's.
+  Bot API documents for an anonymous user, and is kept as the chat's. A vote in a poll sent
+  to another chat raises :class:`~aiogram.test.WorldLookupError`.
 
 .. note::
 
@@ -3263,7 +3279,8 @@ Telegram never sends it, as for another bot's message above. Every actor trigger
 update takes ``deliver=False`` for that: the world still changes; only the update is
 withheld. The trigger stores what it produced exactly as usual, a service message included,
 feeds nothing to the dispatcher, and returns :class:`~aiogram.test.Withheld` instead of
-the handler's result:
+the handler's result. The update it carries is bound to the bot as a fed one is, so a test can
+call ``answer()`` on a withheld ``callback_query``:
 
 .. code-block:: python
 

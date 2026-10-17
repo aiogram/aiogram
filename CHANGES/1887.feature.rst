@@ -404,7 +404,8 @@ declares one ``TelegramRetryAfter``, built whole with its method and ``retry_aft
 ``BotTestEnvironment(rate_limits=RateLimits())``, off by default, models Telegram's guidance per
 chat — about one message a second, and 20 a minute in a group, shared by its topics — refusing a
 send over it with a 429 whose ``retry_after`` is when the next one goes through, read off the
-event loop's clock so ``looptime`` and ``advance_time()`` both move it. A send Telegram refuses
+event loop's clock so ``looptime`` and ``advance_time()`` both move it. Every message of a media
+group or a batch counts, as the FAQ speaks of messages and no source says otherwise. A send Telegram refuses
 for another reason first, such as the bot's rights or an unknown thread, gets that refusal in a
 flooded chat too.
 
@@ -412,7 +413,7 @@ Two senders that are not plain users can act. Another bot is declared with
 ``add_user(..., is_bot=True)``, and its messages and the service messages it causes carry
 ``is_bot``; a group message of it reaches the bot under test only as Telegram's Bot-to-Bot
 Communication rules allow, declared with ``bot_to_bot_mode=`` on both bots and
-``Blueprint(bot_group_privacy=...)``, which ``getMe`` reports as
+``Blueprint(bot_group_privacy=...)``, which ``getMe`` and the bot's cached ``me()`` report as
 ``can_read_all_group_messages``, and is otherwise stored while the trigger returns
 :class:`aiogram.test.Withheld`. Its service messages are delivered unless
 ``BotTestEnvironment(deliver_service_messages_from_bots=False)`` withholds them, since Telegram does
@@ -421,13 +422,15 @@ messages and service messages are from ``GroupAnonymousBot``, with the group as
 ``sender_chat``, its messages, but no service message, signed with their custom title as
 ``author_signature``, under the user's own rights; a topic it opens stays the user's.
 Its reactions and votes name the group as ``actor_chat`` and ``voter_chat``, while its clicks
-and queries stay the user's. Another bot cannot click, use inline mode or vote.
+and queries stay the user's. A vote in a poll sent to another chat raises. The binding is checked once, as a trigger starts,
+so an administrator who demotes themself completes it. Another bot cannot click, use inline
+mode, vote, pay, buy, boost, subscribe or follow a deep link.
 ``Blueprint.add_topic(..., creator=...)`` names who opened a declared topic, a user or
 ``blueprint.bot``: its ``forum_topic_created`` is from them, and the creator's exemptions
 follow, such as the bot posting into its own closed topic. A topic declared without one is
 still announced as the bot's and is no one's. Every actor trigger that feeds an update takes
 ``deliver=False``, which changes the world and stores what the trigger produced as usual,
-feeds nothing to the dispatcher and returns :class:`aiogram.test.Withheld`, so a test can
+feeds nothing to the dispatcher and returns :class:`aiogram.test.Withheld`, carrying the update bound to the bot, so a test can
 reproduce a lost update, such as a topic's closure the bot learns of only when its next send
 fails with ``TOPIC_CLOSED``.
 
