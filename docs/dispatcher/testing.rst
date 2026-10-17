@@ -530,9 +530,9 @@ Answering queries
 
 A trigger that issues a query records it as outstanding, and the matching answer method
 consumes it. Answering an id that was never issued — or answering the same query twice —
-raises :class:`aiogram.exceptions.TelegramBadRequest` with Telegram's own wording, so the
-"query is too old and response timeout expired" failure is testable (this text is on the
-list of `guaranteed texts <Refusals and error codes_>`_):
+raises :class:`aiogram.exceptions.TelegramBadRequest`, so the "query is too old and response
+timeout expired" failure is testable. Its description is a sourced one, see
+`Refusals and error codes`_:
 
 .. code-block:: python
 
@@ -847,11 +847,12 @@ TDLib's words. A text sent without a parse mode is stored as sent,
 except that one with nothing but whitespace is refused as below.
 
 A message text that is empty, or that is nothing but whitespace
-before or after parsing, is refused: ``Bad Request: message text is
-empty`` for an empty one, as the Bot API server answers it before it
-looks at the chat, and ``Bad Request: text must be non-empty`` for a
-blank one, as TDLib does once it has trimmed it, after the chat and
-the thread are checked. That holds for :code:`sendMessage` and the
+before or after parsing, is refused with a
+:class:`~aiogram.exceptions.TelegramBadRequest`: an empty one as the
+Bot API server answers it before it looks at the chat, and a blank
+one as TDLib does once it has trimmed it, after the chat and the
+thread are checked. The descriptions are sourced, ``message text is
+empty`` and ``text must be non-empty``. That holds for :code:`sendMessage` and the
 text edits. A caption, or another optional text such as a gift's,
 that parses to nothing is cleared instead, as TDLib clears it.
 
@@ -1296,41 +1297,75 @@ answer in Telegram's words.
 Refusals and error codes
 ========================
 
-The Bot API authors advise clients to rely on the error code rather than on the
-description, and the toolkit's refusals follow the same contract. Every refusal guarantees
-its ``error_code`` and the exception type :mod:`aiogram` raises for it:
+Telegram guarantees no error text. Only the ``error_code`` is contractual, and any
+description may change at any time; the Bot API authors advise clients to rely on the code for
+that reason. The toolkit follows the same contract. Every refusal keeps its ``error_code`` and
+the exception type :mod:`aiogram` raises for it:
 :class:`~aiogram.exceptions.TelegramBadRequest` for 400,
 :class:`~aiogram.exceptions.TelegramForbiddenError` for 403, and
-:class:`~aiogram.exceptions.TelegramRetryAfter` for 429, which carries ``retry_after``. Match
-a refusal by that type:
+:class:`~aiogram.exceptions.TelegramRetryAfter` for 429, which carries ``retry_after``.
+Classify a refusal by that type first:
 
 .. code-block:: python
 
-    with pytest.raises(TelegramForbiddenError):
-        await bot_env.bot.send_message(chat_id=group.id, text="hi")
+    import pytest
 
-The description is a different matter. Only the texts below are guaranteed, because they are
-Telegram's own, taken from the Bot API server or from TDLib, and bots match on them. Every
-other description is the toolkit's approximation of Telegram's wording and may change, so a
-test that matches it will break for no reason that concerns the bot:
+    from aiogram.exceptions import TelegramForbiddenError
 
-* ``bot was blocked by the user``
-* ``bot was kicked from the … chat``
-* ``bot is not a member of the … chat``
-* ``message to edit not found``
-* ``message to delete not found``
-* ``message to be replied not found``
-* ``message thread not found``
-* ``query is too old and response timeout expired or query ID is invalid``
-* ``TOPIC_CLOSED``
-* ``TOPIC_DELETED``
-* ``can't parse entities: …``
-* ``retry after …``
 
-Each refusal is declared in :mod:`aiogram.test.rejections`, marked as sourced or best-effort,
-and the texts above are the ones marked guaranteed there. To tell two refusals of one code
-apart without matching their wording, compare the declaration:
-``rejection_of(raised.value) is rejections.MESSAGE_CANT_BE_DELETED``.
+    async def test_the_bot_cannot_write_where_it_was_kicked(bot_env, group):
+        with pytest.raises(TelegramForbiddenError):
+            await bot_env.bot.send_message(chat_id=group.id, text="hi")
+
+Matching on the description is a heuristic, and needs a safe fallback for the text it does not
+recognise. The fake reproduces some descriptions verbatim so that such a heuristic can be
+tested, not because they are stable. A description is *sourced* when
+:mod:`aiogram.test.rejections` marks it so: it is copied from the Bot API server, from TDLib or
+from the MTProto error lists on core.telegram.org as they were on ``2026-10-17``
+(``rejections.SOURCES_CHECKED``), and Telegram may have reworded it since. Every other
+description approximates Telegram's wording and is the toolkit's to change.
+
+To tell two refusals of one code apart without matching their wording, compare the
+declaration, and read what it was filled in with:
+
+.. code-block:: python
+
+    from aiogram.exceptions import TelegramBadRequest
+    from aiogram.test import rejection_fields, rejection_of, rejections
+
+
+    async def test_a_poll_is_not_sent_without_the_permission(bot_env, group):
+        with pytest.raises(TelegramBadRequest) as refused:
+            await bot_env.bot.send_poll(
+                chat_id=group.id, question="?", options=["a", "b"]
+            )
+
+        assert rejection_of(refused.value) is rejections.NO_RIGHTS_TO_SEND
+        assert rejection_fields(refused.value) == {"noun": "polls"}
+
+``rejection_of()`` knows the rejection by identity, so the check holds whatever the
+description says. :data:`aiogram.test.rejections.ALL` lists every rejection by name, and
+:data:`aiogram.test.rejections.SOURCED` the ones with a source.
+
+Testing a bot's fallback
+------------------------
+
+A bot that recognises a description, such as ``bot was blocked by the user``, needs a
+fallback for the day Telegram rewords it. Pass
+``BotTestEnvironment(perturb_rejection_descriptions=True)``, or override the
+``bot_env_perturb_rejection_descriptions`` fixture, to give every refusal a different
+description. The error code and the exception type stay as they are. The description gets the
+marker ``[perturbed]`` and scrambled words, the same on every run:
+
+.. code-block:: python
+
+    @pytest.fixture
+    def bot_env_perturb_rejection_descriptions():
+        return True
+
+
+    async def test_an_unrecognised_text_is_handled_generically(bot_env, bot_user):
+        assert await bot_user.send("/delete 999") == "Could not delete it"
 
 Overriding results and simulating failures
 ==========================================
@@ -2655,8 +2690,9 @@ ones, which do not include ``can_promote_members``. The chat's permissions never
 an administrator's right: TDLib takes ``can_change_info``, ``can_invite_users``,
 ``can_pin_messages`` and ``can_manage_topics`` away from a bot that is not an administrator,
 whatever the chat allows its members. The wording is TDLib's, which the Bot API server passes on
-with its first letter lowercased; ``TOPIC_CLOSED`` and ``CHAT_ADMIN_REQUIRED`` are the server's
-own. :code:`deleteMessages` skips what the bot may not delete, as it skips other messages it
+with its first letter lowercased; ``TOPIC_CLOSED`` and ``CHAT_ADMIN_REQUIRED`` are MTProto
+errors that the server passes through, as core.telegram.org lists them.
+:code:`deleteMessages` skips what the bot may not delete, as it skips other messages it
 cannot delete. An ephemeral message is not checked.
 
 A refusal cannot say how to fix the test, since its text is Telegram's. The fix is always
@@ -2941,11 +2977,11 @@ Telegram — and the ``*GeneralForumTopic*`` methods act on it. Its thread id is
 Bot API server reserves: message 1 of a supergroup or a channel is the chat's creation, so
 those chats number their messages from 2 and no topic is ever numbered 1, and a send with
 ``message_thread_id=1`` into a forum fails as the server fails it. A call into a thread id
-that does not exist fails with Telegram's own wording rather than silently producing an
-untagged message. A send, copy or forward gets ``Bad Request: message thread not found``,
+that does not exist fails with a :class:`~aiogram.exceptions.TelegramBadRequest` rather than
+silently producing an untagged message. A send, copy or forward gets ``Bad Request: message thread not found``,
 for a topic :code:`deleteForumTopic` removed as for one the chat never had, since the server
 looks the topic up first. A forum method naming a deleted topic gets ``Bad Request:
-TOPIC_DELETED``, which is Telegram's server error and not spelled out in its open source.
+TOPIC_DELETED``, an MTProto error that core.telegram.org lists for ``messages.sendMessage``.
 Looking a topic
 up from the test itself — ``chat.topic(999)``, or an actor bound with
 ``.in_(chat, topic=999)`` — is a setup gap instead, and raises
@@ -3478,6 +3514,20 @@ API reference
 
 .. autoclass:: aiogram.test.rejections.Rejection
 
+.. autofunction:: aiogram.test.rejection_of
+
+.. autofunction:: aiogram.test.rejection_fields
+
+.. autofunction:: aiogram.test.rejections.perturb
+
+.. autodata:: aiogram.test.rejections.ALL
+    :no-value:
+
+.. autodata:: aiogram.test.rejections.SOURCED
+    :no-value:
+
+.. autodata:: aiogram.test.rejections.SOURCES_CHECKED
+
 .. autoclass:: aiogram.test.WaitTimeoutError
 
 .. autoclass:: aiogram.test.BackgroundTaskError
@@ -3506,6 +3556,10 @@ Fixtures
 ``bot_env_deliver_service_messages_from_bots``
     Whether ``bot_env`` delivers the service messages other bots cause. ``True`` by
     default; override it to return ``False`` to withhold them.
+
+``bot_env_perturb_rejection_descriptions``
+    Whether ``bot_env`` rewords every refusal's description, keeping its error code and
+    exception type. ``False`` by default; see `Refusals and error codes`_.
 
 ``bot_env_assert_updates_handled``
     Whether every passing test then checks ``bot_env``'s updates with

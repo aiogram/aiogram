@@ -296,7 +296,7 @@ class TestSending:
         env, chat, _alice = world(chat_permissions=NO_TEXT)
         before = chat.last_message_id
 
-        with refused_with(TelegramBadRequest, rejections.NO_RIGHTS_TO_SEND):
+        with refused_with(TelegramBadRequest, rejections.NO_RIGHTS_TO_SEND, noun="text messages"):
             await env.bot.send_message(chat_id=chat.id, text="x")
 
         assert chat.last_message_id == before
@@ -305,19 +305,19 @@ class TestSending:
         env, chat, _alice = world(chat_permissions=NO_PHOTOS)
 
         await env.bot.send_message(chat_id=chat.id, text="text is fine")
-        with refused_with(TelegramBadRequest, rejections.NO_RIGHTS_TO_SEND):
+        with refused_with(TelegramBadRequest, rejections.NO_RIGHTS_TO_SEND, noun="photos"):
             await env.bot.send_photo(chat_id=chat.id, photo="file")
 
     async def test_a_poll_takes_the_poll_permission(self, world):
         env, chat, _alice = world(chat_permissions=ChatPermissions(can_send_messages=True))
 
-        with refused_with(TelegramBadRequest, rejections.NO_RIGHTS_TO_SEND):
+        with refused_with(TelegramBadRequest, rejections.NO_RIGHTS_TO_SEND, noun="polls"):
             await env.bot.send_poll(chat_id=chat.id, question="?", options=["a", "b"])
 
     async def test_a_media_group_checks_its_items(self, world):
         env, chat, _alice = world(chat_permissions=NO_PHOTOS)
 
-        with refused_with(TelegramBadRequest, rejections.NO_RIGHTS_TO_SEND):
+        with refused_with(TelegramBadRequest, rejections.NO_RIGHTS_TO_SEND, noun="photos"):
             await env.bot.send_media_group(
                 chat_id=chat.id,
                 media=[InputMediaPhoto(media="a"), InputMediaPhoto(media="b")],
@@ -338,7 +338,7 @@ class TestSending:
     async def test_the_bots_own_restriction_narrows_the_chat(self, world):
         env, chat, _alice = world(permissions=NO_TEXT)
 
-        with refused_with(TelegramBadRequest, rejections.NO_RIGHTS_TO_SEND):
+        with refused_with(TelegramBadRequest, rejections.NO_RIGHTS_TO_SEND, noun="text messages"):
             await env.bot.send_message(chat_id=chat.id, text="x")
 
     async def test_a_restriction_with_no_permissions_denies_all(self, world):
@@ -346,7 +346,7 @@ class TestSending:
         bot = chat.member(env.world.bot_user.id)
         bot.set_status(ChatMemberStatus.RESTRICTED)
 
-        with refused_with(TelegramBadRequest, rejections.NO_RIGHTS_TO_SEND):
+        with refused_with(TelegramBadRequest, rejections.NO_RIGHTS_TO_SEND, noun="text messages"):
             await env.bot.send_message(chat_id=chat.id, text="x")
 
     async def test_an_administrator_ignores_the_chat_permissions(self, world):
@@ -362,7 +362,7 @@ class TestSending:
         private = env.chat(alice.user.id)
         photo = await env.bot.send_photo(chat_id=private.id, photo="file")
 
-        with refused_with(TelegramBadRequest, rejections.NO_RIGHTS_TO_SEND):
+        with refused_with(TelegramBadRequest, rejections.NO_RIGHTS_TO_SEND, noun="photos"):
             await getattr(env.bot, move)(
                 chat_id=chat.id,
                 from_chat_id=private.id,
@@ -377,7 +377,7 @@ class TestSending:
         photo = await env.bot.send_photo(chat_id=private.id, photo="file")
         before = list(chat.messages)
 
-        with refused_with(TelegramBadRequest, rejections.NO_RIGHTS_TO_SEND):
+        with refused_with(TelegramBadRequest, rejections.NO_RIGHTS_TO_SEND, noun="photos"):
             await getattr(env.bot, move)(
                 chat_id=chat.id,
                 from_chat_id=private.id,
@@ -692,14 +692,14 @@ class TestContentRules:
     async def test_a_live_location_has_its_own_refusal(self, world):
         env, chat, _alice = world(chat_permissions=NO_TEXT)
 
-        with refused_with(TelegramBadRequest, rejections.NO_RIGHTS_TO_SEND):
+        with refused_with(TelegramBadRequest, rejections.NO_RIGHTS_TO_SEND, noun="live locations"):
             await env.bot.send_location(
                 chat_id=chat.id,
                 latitude=1.0,
                 longitude=2.0,
                 live_period=60,
             )
-        with refused_with(TelegramBadRequest, rejections.NO_RIGHTS_TO_SEND):
+        with refused_with(TelegramBadRequest, rejections.NO_RIGHTS_TO_SEND, noun="locations"):
             await env.bot.send_location(chat_id=chat.id, latitude=1.0, longitude=2.0)
 
     async def test_a_bot_sends_paid_media_without_the_permissions(self, world):
@@ -726,7 +726,7 @@ class TestContentRules:
             media=[InputPaidMediaPhoto(media="a")],
         )
 
-        with refused_with(TelegramBadRequest, rejections.NO_RIGHTS_TO_SEND):
+        with refused_with(TelegramBadRequest, rejections.NO_RIGHTS_TO_SEND, noun="paid media"):
             await env.bot.forward_message(
                 chat_id=chat.id,
                 from_chat_id=private.id,
@@ -743,7 +743,7 @@ class TestContentRules:
             live_period=60,
         )
 
-        with refused_with(TelegramBadRequest, rejections.NO_RIGHTS_TO_SEND):
+        with refused_with(TelegramBadRequest, rejections.NO_RIGHTS_TO_SEND, noun="live locations"):
             await env.bot.forward_message(
                 chat_id=chat.id,
                 from_chat_id=private.id,

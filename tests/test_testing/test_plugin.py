@@ -61,7 +61,16 @@ class TestFixtures:
         original_storage = dispatcher.fsm.storage
 
         generator = call_fixture(
-            plugin.bot_env, blueprint, dispatcher, wait_timeout, None, True, None, False, True
+            plugin.bot_env,
+            blueprint,
+            dispatcher,
+            wait_timeout,
+            None,
+            True,
+            None,
+            False,
+            True,
+            False,
         )
         environment = next(generator)
         assert dispatcher.fsm.storage is not original_storage
@@ -80,7 +89,16 @@ class TestFixtures:
         original_storage = dispatcher.fsm.storage
 
         generator = call_fixture(
-            plugin.bot_env, blueprint, dispatcher, wait_timeout, None, True, None, False, True
+            plugin.bot_env,
+            blueprint,
+            dispatcher,
+            wait_timeout,
+            None,
+            True,
+            None,
+            False,
+            True,
+            False,
         )
         environment = next(generator)
         with pytest.raises(RuntimeError, match="boom"):
@@ -96,7 +114,7 @@ class TestFixtures:
         dispatcher = call_fixture(plugin.bot_dispatcher)
 
         generator = call_fixture(
-            plugin.bot_env, blueprint, dispatcher, 12.5, None, True, None, False, True
+            plugin.bot_env, blueprint, dispatcher, 12.5, None, True, None, False, True, False
         )
         environment = next(generator)
         try:
@@ -122,7 +140,7 @@ class TestFixtures:
         dispatcher = call_fixture(plugin.bot_dispatcher)
 
         generator = call_fixture(
-            plugin.bot_env, blueprint, dispatcher, 5.0, None, False, None, False, True
+            plugin.bot_env, blueprint, dispatcher, 5.0, None, False, None, False, True, False
         )
         environment = next(generator)
         try:
@@ -136,6 +154,27 @@ class TestFixtures:
 
         assert call_fixture(plugin.bot_env_deliver_service_messages_from_bots) is True
 
+    def test_rejection_descriptions_are_not_perturbed_by_default(self):
+        from aiogram.test import plugin
+
+        assert call_fixture(plugin.bot_env_perturb_rejection_descriptions) is False
+
+    def test_environment_picks_up_the_perturbation_fixture(self):
+        from aiogram.test import plugin
+
+        blueprint = call_fixture(plugin.bot_blueprint)
+        dispatcher = call_fixture(plugin.bot_dispatcher)
+
+        generator = call_fixture(
+            plugin.bot_env, blueprint, dispatcher, 5.0, None, True, None, False, True, True
+        )
+        environment = next(generator)
+        try:
+            assert environment.perturb_rejection_descriptions is True
+        finally:
+            with pytest.raises(StopIteration):
+                next(generator)
+
     def test_environment_picks_up_the_bot_service_messages_fixture(self):
         from aiogram.test import plugin
 
@@ -143,7 +182,7 @@ class TestFixtures:
         dispatcher = call_fixture(plugin.bot_dispatcher)
 
         generator = call_fixture(
-            plugin.bot_env, blueprint, dispatcher, 5.0, None, True, None, False, False
+            plugin.bot_env, blueprint, dispatcher, 5.0, None, True, None, False, False, False
         )
         environment = next(generator)
         try:
@@ -165,7 +204,7 @@ class TestFixtures:
         limits = RateLimits()
 
         generator = call_fixture(
-            plugin.bot_env, blueprint, dispatcher, 5.0, None, True, limits, False, True
+            plugin.bot_env, blueprint, dispatcher, 5.0, None, True, limits, False, True, False
         )
         environment = next(generator)
         try:
@@ -181,7 +220,7 @@ class TestFixtures:
         dispatcher = call_fixture(plugin.bot_dispatcher)
 
         generator = call_fixture(
-            plugin.bot_env, blueprint, dispatcher, 5.0, BASE_DATE, True, None, False, True
+            plugin.bot_env, blueprint, dispatcher, 5.0, BASE_DATE, True, None, False, True, False
         )
         environment = next(generator)
         try:
@@ -206,7 +245,7 @@ class TestFixtures:
         blueprint.add_user("Lonely")
         dispatcher = Dispatcher()
         generator = call_fixture(
-            plugin.bot_env, blueprint, dispatcher, 5.0, None, True, None, False, True
+            plugin.bot_env, blueprint, dispatcher, 5.0, None, True, None, False, True, False
         )
         environment = next(generator)
         try:

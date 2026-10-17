@@ -2351,10 +2351,10 @@ def handle_edit_live_location(
         live_period = current
     elif live_period != LIVE_FOREVER:
         ends = aware(stored.date) + datetime.timedelta(seconds=live_period)
-        if (current != LIVE_FOREVER and live_period > current + _DAY) or (
-            ends > now + datetime.timedelta(days=90)
-        ):
-            raise rejections.LIVE_PERIOD_RANGE()
+        if current != LIVE_FOREVER and live_period > current + _DAY:
+            raise rejections.LIVE_PERIOD_EXTENDED_TOO_FAR()
+        if ends > now + datetime.timedelta(days=90):
+            raise rejections.LIVE_PERIOD_ENDS_TOO_LATE()
     return chat.update_message(
         message_id,
         **edit_stamp(env),

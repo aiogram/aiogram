@@ -1,19 +1,18 @@
 """
 Every rejection the toolkit emits, declared once.
 
-The Bot API authors advise clients to rely on the error code rather
-than on the description. The toolkit follows that contract. Every
-rejection guarantees its ``error_code`` and the exception type
-``aiogram`` raises for it. The description is best-effort, except for
-the ones below that carry ``guaranteed=True``.
+Telegram guarantees no error text, only the ``error_code``, and the
+Bot API authors advise clients to rely on that rather than on the
+description. The toolkit follows that contract. Every rejection keeps
+its ``error_code`` and the exception type ``aiogram`` raises for it.
+The description is a heuristic aid.
 
-A description is **sourced** when the toolkit takes it from the Bot
-API server or from TDLib, and ``source`` says which. It is
-**best-effort** when ``source`` is ``None``: the wording is the
-toolkit's own approximation of Telegram's and may change. A guaranteed
-description is always sourced, and is one that bots realistically
-match on. Adding one to that set is a promise, so a description
-without a citation cannot join it.
+A description is **sourced** when it is reproduced verbatim from the
+Bot API server, from TDLib or from the MTProto method error lists on
+core.telegram.org, and ``source`` says which. The sources were read
+on :data:`SOURCES_CHECKED`, and Telegram may have changed them since.
+It is **best-effort** when ``source`` is ``None``: the wording is the
+toolkit's own approximation of Telegram's.
 
 A site that refuses a call raises ``REJECTION(**fields)``, never an
 :class:`~aiogram.test.ApiRejection` built from a literal; a test
@@ -23,9 +22,12 @@ the same text, so :func:`rejection_of` can name the one that fired.
 
 from __future__ import annotations
 
+import codecs
 import dataclasses
 import re
 import string
+import weakref
+from collections.abc import Mapping
 from http import HTTPStatus
 
 from aiogram.exceptions import TelegramAPIError
@@ -34,11 +36,18 @@ from .errors import _ERROR_PREFIXES, ApiRejection
 
 __all__ = (
     "ALL",
-    "GUARANTEED",
+    "PERTURBED_MARKER",
+    "SOURCED",
+    "SOURCES_CHECKED",
     "Rejection",
+    "perturb",
     "rejection_fields",
     "rejection_of",
 )
+
+#: The day the sourced descriptions were last compared with their
+#: sources. Telegram may reword any of them without notice.
+SOURCES_CHECKED = "2026-10-17"
 
 #: Where the Bot API server's own texts live.
 _SERVER = "telegram-bot-api Client.cpp"
@@ -50,30 +59,23 @@ _SEND_ERRORS = "Telegram API docs, messages.sendMessage errors"
 _BAN_ERRORS = "Telegram API docs, messages.deleteChatUser errors"
 
 
-@dataclasses.dataclass(frozen=True)
+@dataclasses.dataclass(frozen=True, eq=False)
 class Rejection:
     """
     One rejection: its description, its code and where it comes from.
 
     ``description`` may hold ``{fields}`` that a site fills in.
-    ``source`` names where Telegram's wording comes from, or is
-    ``None`` for the toolkit's approximation. ``guaranteed`` marks the
-    descriptions a bot may match on.
+    ``source`` names where Telegram's wording is reproduced from, or is
+    ``None`` for the toolkit's approximation.
     """
 
     description: str
     source: str | None = None
-    guaranteed: bool = False
     error_code: int = HTTPStatus.BAD_REQUEST
-
-    def __post_init__(self) -> None:
-        if self.guaranteed and self.source is None:
-            msg = f"{self.description!r} is guaranteed but cites no source"
-            raise ValueError(msg)
 
     @property
     def sourced(self) -> bool:
-        """Whether the wording comes from Telegram's own sources."""
+        """Whether the wording is reproduced from Telegram's sources."""
         return self.source is not None
 
     def format(self, **fields: object) -> str:
@@ -92,6 +94,7 @@ class Rejection:
             error_code=self.error_code,
             retry_after=retry_after,
             rejection=self,
+            fields={name: str(value) for name, value in fields.items()},
         )
 
 
@@ -104,87 +107,72 @@ def _declare(
     description: str,
     source: str | None = None,
     *,
-    guaranteed: bool = False,
     error_code: int = HTTPStatus.BAD_REQUEST,
 ) -> Rejection:
-    rejection = Rejection(description, source, guaranteed, error_code)
+    rejection = Rejection(description, source, error_code)
     ALL[name] = rejection
     return rejection
 
 
-# -- the guaranteed texts ---------------------------------------------
-# Sourced, and the ones a bot realistically matches on. The list the
-# documentation prints is this one.
+# -- sourced from the Bot API server, TDLib or the API docs ----------
 
 BOT_BLOCKED = _declare(
     "BOT_BLOCKED",
     "bot was blocked by the user",
     _SERVER,
-    guaranteed=True,
     error_code=HTTPStatus.FORBIDDEN,
 )
 BOT_KICKED = _declare(
     "BOT_KICKED",
     "bot was kicked from the {noun} chat",
     _SERVER,
-    guaranteed=True,
     error_code=HTTPStatus.FORBIDDEN,
 )
 BOT_NOT_A_MEMBER = _declare(
     "BOT_NOT_A_MEMBER",
     "bot is not a member of the {noun} chat",
     _SERVER,
-    guaranteed=True,
     error_code=HTTPStatus.FORBIDDEN,
 )
 FLOOD = _declare(
     "FLOOD",
     "retry after {seconds}",
     _SERVER,
-    guaranteed=True,
     error_code=HTTPStatus.TOO_MANY_REQUESTS,
 )
 MESSAGE_TO_EDIT_NOT_FOUND = _declare(
     "MESSAGE_TO_EDIT_NOT_FOUND",
     "message to edit not found",
     _SERVER,
-    guaranteed=True,
 )
 MESSAGE_TO_DELETE_NOT_FOUND = _declare(
     "MESSAGE_TO_DELETE_NOT_FOUND",
     "message to delete not found",
     _SERVER,
-    guaranteed=True,
 )
 MESSAGE_TO_BE_REPLIED_NOT_FOUND = _declare(
     "MESSAGE_TO_BE_REPLIED_NOT_FOUND",
     "message to be replied not found",
     _SERVER,
-    guaranteed=True,
 )
 MESSAGE_THREAD_NOT_FOUND = _declare(
     "MESSAGE_THREAD_NOT_FOUND",
     "message thread not found",
     _SERVER,
-    guaranteed=True,
 )
 QUERY_TOO_OLD = _declare(
     "QUERY_TOO_OLD",
     "query is too old and response timeout expired or query ID is invalid",
     _SERVER,
-    guaranteed=True,
 )
 CANT_PARSE_ENTITIES = _declare(
     "CANT_PARSE_ENTITIES",
     "can't parse entities: {detail}",
     _TDLIB,
-    guaranteed=True,
 )
 
-TOPIC_CLOSED = _declare("TOPIC_CLOSED", "TOPIC_CLOSED", _SEND_ERRORS, guaranteed=True)
-TOPIC_DELETED = _declare("TOPIC_DELETED", "TOPIC_DELETED", _SEND_ERRORS, guaranteed=True)
-
-# -- sourced, not guaranteed ------------------------------------------
+TOPIC_CLOSED = _declare("TOPIC_CLOSED", "TOPIC_CLOSED", _SEND_ERRORS)
+TOPIC_DELETED = _declare("TOPIC_DELETED", "TOPIC_DELETED", _SEND_ERRORS)
 
 CHAT_ADMIN_REQUIRED = _declare("CHAT_ADMIN_REQUIRED", "CHAT_ADMIN_REQUIRED", _BAN_ERRORS)
 UNSUPPORTED_PARSE_MODE = _declare("UNSUPPORTED_PARSE_MODE", "unsupported parse_mode", _SERVER)
@@ -305,9 +293,12 @@ MESSAGE_CANT_BE_COPIED = _declare("MESSAGE_CANT_BE_COPIED", "message can't be co
 MESSAGE_TO_READ_NOT_FOUND = _declare("MESSAGE_TO_READ_NOT_FOUND", "message to read not found")
 NO_CONTENT_TO_EDIT = _declare("NO_CONTENT_TO_EDIT", "there is no {kind} in the message to edit")
 ALBUM_ITEM_EDIT = _declare("ALBUM_ITEM_EDIT", "an album item can be edited only to {kinds}")
-LIVE_PERIOD_RANGE = _declare(
-    "LIVE_PERIOD_RANGE",
-    "live_period must not exceed the current one by more than a day, and must end within 90 days",
+LIVE_PERIOD_EXTENDED_TOO_FAR = _declare(
+    "LIVE_PERIOD_EXTENDED_TOO_FAR",
+    "live_period must not exceed the current one by more than a day",
+)
+LIVE_PERIOD_ENDS_TOO_LATE = _declare(
+    "LIVE_PERIOD_ENDS_TOO_LATE", "live_period must end within 90 days"
 )
 MEDIA_GROUP_SIZE = _declare("MEDIA_GROUP_SIZE", "media group must include 2-10 items")
 MEDIA_GROUP_MIXED = _declare(
@@ -390,10 +381,23 @@ INVALID_DATE_TIME_ENTITY = _declare(
     "can't parse the date and time entity: {detail}",
 )
 
-#: The rejections a bot may match on, as the documentation lists them.
-GUARANTEED: tuple[Rejection, ...] = tuple(
-    rejection for rejection in ALL.values() if rejection.guaranteed
-)
+#: The rejections whose wording is reproduced from a source.
+SOURCED: tuple[Rejection, ...] = tuple(r for r in ALL.values() if r.sourced)
+
+#: What a perturbed description starts with.
+PERTURBED_MARKER = "[perturbed] "
+
+
+def perturb(description: str) -> str:
+    """
+    A different description for the same rejection.
+
+    A recognisable marker and the words scrambled, so that no text a
+    bot matches survives, and the same on every run. A bot meets it
+    when the environment perturbs, to test its fallback for a text it
+    does not recognise.
+    """
+    return PERTURBED_MARKER + codecs.encode(description, "rot13")[::-1]
 
 
 def _pattern(rejection: Rejection) -> re.Pattern[str]:
@@ -409,28 +413,38 @@ _PATTERNS = {rejection: _pattern(rejection) for rejection in ALL.values()}
 #: What aiogram puts before the description it was given.
 _ORIGINAL = "\nOriginal description: "
 
+#: Which ApiRejection an exception was raised for.
+_ORIGINS: weakref.WeakKeyDictionary[TelegramAPIError, ApiRejection] = weakref.WeakKeyDictionary()
 
-def _description(error: TelegramAPIError | ApiRejection) -> str:
-    if isinstance(error, ApiRejection):
-        return error.description
+
+def remember(error: TelegramAPIError, origin: ApiRejection) -> None:
+    """Note the rejection ``error`` was raised for, whatever it says."""
+    _ORIGINS[error] = origin
+
+
+def _read_back(error: TelegramAPIError) -> tuple[Rejection, Mapping[str, str]] | None:
     text = error.message.rpartition(_ORIGINAL)[2]
     for prefix in _ERROR_PREFIXES.values():
         text = text.removeprefix(f"{prefix}: ")
-    return text
-
-
-def _match(
-    error: TelegramAPIError | ApiRejection,
-) -> tuple[Rejection, re.Match[str]] | None:
-    text = _description(error)
-    if isinstance(error, ApiRejection):
-        candidates = [] if error.rejection is None else [error.rejection]
-    else:
-        candidates = list(_PATTERNS)
-    for rejection in candidates:
-        if match := _PATTERNS[rejection].fullmatch(text):
-            return rejection, match
+    for rejection, pattern in _PATTERNS.items():
+        if match := pattern.fullmatch(text):
+            return rejection, match.groupdict()
     return None
+
+
+def _identify(
+    error: TelegramAPIError | ApiRejection,
+) -> tuple[Rejection, Mapping[str, str]] | None:
+    if isinstance(error, ApiRejection):
+        origin = error
+    else:
+        found = _ORIGINS.get(error)
+        if found is None:
+            return _read_back(error)
+        origin = found
+    if origin.rejection is None:
+        return None
+    return origin.rejection, origin.fields
 
 
 def rejection_of(error: TelegramAPIError | ApiRejection) -> Rejection | None:
@@ -439,12 +453,13 @@ def rejection_of(error: TelegramAPIError | ApiRejection) -> Rejection | None:
 
     A test can tell two rejections of one error code apart without
     matching their best-effort wording: ``rejection_of(raised.value)
-    is rejections.MESSAGE_CANT_BE_DELETED``. An :class:`ApiRejection`
-    answers with the one it was raised from. An exception a bot
-    catches is read back against the declared descriptions, which
-    also sees through the wording aiogram gives a flood or a migration.
+    is rejections.MESSAGE_CANT_BE_DELETED``. An exception the
+    environment raised is known by identity, so this holds when the
+    environment perturbs the descriptions too. Any other exception is
+    read back against the declared descriptions, which also sees
+    through the wording aiogram gives a flood or a migration.
     """
-    found = _match(error)
+    found = _identify(error)
     return None if found is None else found[0]
 
 
@@ -455,5 +470,5 @@ def rejection_fields(error: TelegramAPIError | ApiRejection) -> dict[str, str]:
     ``{"noun": "polls"}`` for a rejection to send polls. Empty when
     the exception names no rejection, or the rejection has no fields.
     """
-    found = _match(error)
-    return {} if found is None else found[1].groupdict()
+    found = _identify(error)
+    return {} if found is None else dict(found[1])

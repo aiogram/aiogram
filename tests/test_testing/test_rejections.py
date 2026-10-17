@@ -5,6 +5,7 @@ from pathlib import Path
 
 import pytest
 
+from aiogram.enums import ChatMemberStatus
 from aiogram.exceptions import (
     TelegramBadRequest,
     TelegramConflictError,
@@ -15,13 +16,16 @@ from aiogram.exceptions import (
     TelegramUnauthorizedError,
 )
 from aiogram.methods import SendMessage
-from aiogram.test import ApiRejection, rejections
+from aiogram.test import ApiRejection, Blueprint, BotTestEnvironment, RateLimits, rejections
 from aiogram.test.errors import raise_api_error
 from aiogram.test.overrides import default_message
 from aiogram.test.rejections import (
     ALL,
-    GUARANTEED,
+    PERTURBED_MARKER,
+    SOURCED,
+    SOURCES_CHECKED,
     Rejection,
+    perturb,
     rejection_fields,
     rejection_of,
 )
@@ -29,23 +33,6 @@ from aiogram.test.rejections import (
 from .conftest import EXCEPTION_FOR_CODE
 
 ROOT = Path(__file__).parents[2]
-
-#: The texts a bot may match on. Growing this list is a promise made to
-#: every bot, so it changes here, in the docs, and nowhere by accident.
-GUARANTEED_NAMES = {
-    "BOT_BLOCKED",
-    "BOT_KICKED",
-    "BOT_NOT_A_MEMBER",
-    "CANT_PARSE_ENTITIES",
-    "FLOOD",
-    "MESSAGE_TO_DELETE_NOT_FOUND",
-    "MESSAGE_TO_EDIT_NOT_FOUND",
-    "QUERY_TOO_OLD",
-    "MESSAGE_TO_BE_REPLIED_NOT_FOUND",
-    "MESSAGE_THREAD_NOT_FOUND",
-    "TOPIC_CLOSED",
-    "TOPIC_DELETED",
-}
 
 
 def fields_of(rejection: Rejection) -> dict[str, object]:
@@ -177,14 +164,17 @@ class TestNamingTheRejection:
 
         assert rejection_of(api) is rejections.MESSAGE_CANT_BE_DELETED
 
+    def test_an_exception_that_fits_no_declaration_names_none(self):
+        error = TelegramBadRequest(
+            method=SendMessage(chat_id=1, text="hi"), message="Bad Request: made up"
+        )
+
+        assert rejection_of(error) is None
+        assert rejection_fields(error) == {}
+
     def test_a_rejection_that_fits_no_declaration_names_none(self):
         assert rejection_of(ApiRejection("made up")) is None
         assert rejection_fields(ApiRejection("made up")) == {}
-
-    def test_a_declaration_does_not_vouch_for_other_wording(self):
-        api = ApiRejection("made up", rejection=rejections.MESSAGE_CANT_BE_DELETED)
-
-        assert rejection_of(api) is None
 
     def test_no_two_descriptions_read_alike(self):
         for name, rejection in ALL.items():
@@ -199,23 +189,25 @@ class TestNamingTheRejection:
 
 
 class TestTheRegistry:
-    def test_the_guaranteed_descriptions_are_the_listed_ones(self):
-        assert {name for name, rejection in ALL.items() if rejection.guaranteed} == (
-            GUARANTEED_NAMES
-        )
-        assert set(GUARANTEED) == {ALL[name] for name in GUARANTEED_NAMES}
+    def test_a_sourced_description_names_its_source(self):
+        sourced = [r for r in ALL.values() if r.sourced]
 
-    def test_a_guaranteed_description_cites_its_source(self):
-        for rejection in GUARANTEED:
-            assert rejection.sourced, rejection.description
-        with pytest.raises(ValueError, match="cites no source"):
-            Rejection("made up", guaranteed=True)
+        assert sourced
+        assert set(SOURCED) == set(sourced)
+        assert all(rejection.source for rejection in SOURCED)
+
+    def test_the_sources_were_read_on_a_day(self):
+        assert re.fullmatch(r"\d{4}-\d{2}-\d{2}", SOURCES_CHECKED)
+
+    def test_the_topic_errors_are_sourced_from_the_api_docs(self):
+        for rejection in (rejections.TOPIC_CLOSED, rejections.TOPIC_DELETED):
+            assert "messages.sendMessage" in rejection.source
 
     def test_a_description_that_cites_nothing_is_best_effort(self):
         approximate = [r for r in ALL.values() if not r.sourced]
 
         assert approximate
-        assert not any(rejection.guaranteed for rejection in approximate)
+        assert not set(approximate) & set(SOURCED)
 
     def test_the_names_are_module_attributes(self):
         for name, rejection in ALL.items():
@@ -242,15 +234,92 @@ class TestTheRegistry:
 
         assert not offenders, "declare these in aiogram/test/rejections.py"
 
-    def test_the_documentation_lists_exactly_the_guaranteed_descriptions(self):
+    def test_the_documentation_dates_the_sources(self):
         docs = (ROOT / "docs" / "dispatcher" / "testing.rst").read_text()
-        heading = "Refusals and error codes\n========================\n"
-        section = docs.split(heading)[1].split("\nOverriding results")[0]
-        listed = set(re.findall(r"^\* ``([^`]+)``$", section, re.M))
 
-        shown = {re.sub(r"\{[^}]*\}", "…", rejection.description) for rejection in GUARANTEED}
+        assert f"``{SOURCES_CHECKED}``" in docs
 
-        assert listed == shown
+
+class TestPerturbingTheDescriptions:
+    @pytest.fixture
+    def perturbed(self, blueprint, dp):
+        environment = BotTestEnvironment(
+            blueprint=blueprint, dispatcher=dp, perturb_rejection_descriptions=True
+        )
+        yield environment
+        environment.dispose_sync()
+
+    def test_a_perturbed_description_is_marked_and_stable(self):
+        text = perturb("bot was blocked by the user")
+
+        assert text.startswith(PERTURBED_MARKER)
+        assert "blocked" not in text
+        assert text == perturb("bot was blocked by the user")
+
+    async def test_the_type_stays_and_the_text_goes(self, dp):
+        blueprint = Blueprint()
+        chat = blueprint.add_supergroup("Kicked", bot_status=ChatMemberStatus.KICKED)
+        environment = BotTestEnvironment(
+            blueprint=blueprint, dispatcher=dp, perturb_rejection_descriptions=True
+        )
+        try:
+            with pytest.raises(TelegramForbiddenError) as raised:
+                await environment.bot.send_message(chat_id=chat.id, text="hi")
+        finally:
+            environment.dispose_sync()
+
+        assert "kicked" not in raised.value.message
+        assert raised.value.message.startswith(f"Forbidden: {PERTURBED_MARKER}")
+        assert rejection_of(raised.value) is rejections.BOT_KICKED
+        assert rejection_fields(raised.value) == {"noun": "supergroup"}
+
+    async def test_a_flood_keeps_its_wait(self, blueprint, dp):
+        environment = BotTestEnvironment(
+            blueprint=blueprint,
+            dispatcher=dp,
+            rate_limits=RateLimits(),
+            perturb_rejection_descriptions=True,
+        )
+        try:
+            chat = environment.chat(blueprint.chats[0])
+            await environment.bot.send_message(chat_id=chat.id, text="one")
+            with pytest.raises(TelegramRetryAfter) as raised:
+                await environment.bot.send_message(chat_id=chat.id, text="two")
+        finally:
+            environment.dispose_sync()
+
+        assert raised.value.retry_after >= 1
+        assert "retry after" not in raised.value.message
+        assert rejection_of(raised.value) is rejections.FLOOD
+
+    async def test_a_block_is_perturbed_too(self, perturbed, private):
+        with perturbed.blocked(chat_id=private.id):
+            with pytest.raises(TelegramForbiddenError) as raised:
+                await perturbed.bot.send_message(chat_id=private.id, text="hi")
+
+        assert "blocked" not in raised.value.message
+        assert rejection_of(raised.value) is rejections.BOT_BLOCKED
+
+    async def test_a_message_the_test_declares_is_left_alone(self, perturbed, private):
+        with perturbed.blocked(chat_id=private.id, message="Forbidden: mine"):
+            with pytest.raises(TelegramForbiddenError, match="Forbidden: mine"):
+                await perturbed.bot.send_message(chat_id=private.id, text="hi")
+
+    async def test_a_fallback_for_an_unknown_text_can_be_tested(self, perturbed, dp, blueprint):
+        @dp.message()
+        async def handler(message):
+            try:
+                await message.bot.delete_message(chat_id=message.chat.id, message_id=999)
+            except TelegramBadRequest as error:
+                if "message to delete not found" in error.message:
+                    return "recognised"
+                return "generic"
+
+        assert await perturbed.user(blueprint.users[0]).send("hi") == "generic"
+
+    async def test_the_default_keeps_the_texts(self, env, private):
+        with pytest.raises(TelegramBadRequest, match="message to delete not found"):
+            await env.bot.delete_message(chat_id=private.id, message_id=999)
 
 
 class TestRaisesWithoutAMessage:

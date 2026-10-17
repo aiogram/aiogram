@@ -628,7 +628,7 @@ class TestLiveLocations:
     async def test_extending_by_more_than_a_day_is_refused_forever_is_not(self, env, private):
         sent = await self.send(env, private, live_period=3600)
 
-        with refused_with(TelegramBadRequest, rejections.LIVE_PERIOD_RANGE):
+        with refused_with(TelegramBadRequest, rejections.LIVE_PERIOD_EXTENDED_TOO_FAR):
             await self.edit(env, private, sent, live_period=3600 + 2 * 86400)
         extended = await self.edit(env, private, sent, live_period=3600 + 86400)
         assert extended.location.live_period == 3600 + 86400
@@ -638,7 +638,7 @@ class TestLiveLocations:
     async def test_ending_beyond_ninety_days_is_refused(self, env, private):
         sent = await self.send(env, private, live_period=LIVE_FOREVER)
 
-        with refused_with(TelegramBadRequest, rejections.LIVE_PERIOD_RANGE):
+        with refused_with(TelegramBadRequest, rejections.LIVE_PERIOD_ENDS_TOO_LATE):
             await self.edit(env, private, sent, live_period=100 * 86400)
 
 

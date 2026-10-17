@@ -105,6 +105,19 @@ def bot_env_deliver_service_messages_from_bots() -> bool:
 
 
 @pytest.fixture
+def bot_env_perturb_rejection_descriptions() -> bool:
+    """
+    Override this fixture to reword every rejection's description.
+
+    ``False``, the default, words them as the toolkit knows Telegram
+    does. Return ``True`` to keep each error code and exception type
+    but give the description a marker and scrambled words, which tests
+    a bot's fallback for a text it does not recognise.
+    """
+    return False
+
+
+@pytest.fixture
 def bot_env_assert_updates_handled() -> bool:
     """
     Override this fixture to check every update after each test.
@@ -128,6 +141,7 @@ def bot_env(
     bot_env_rate_limits: RateLimits | None,
     bot_env_assert_updates_handled: bool,
     bot_env_deliver_service_messages_from_bots: bool,
+    bot_env_perturb_rejection_descriptions: bool,
 ) -> Iterator[BotTestEnvironment]:
     """An isolated fake Telegram world for exactly one test."""
     environment = BotTestEnvironment(
@@ -138,6 +152,7 @@ def bot_env(
         enforce_bot_rights=bot_env_enforce_bot_rights,
         rate_limits=bot_env_rate_limits,
         deliver_service_messages_from_bots=bot_env_deliver_service_messages_from_bots,
+        perturb_rejection_descriptions=bot_env_perturb_rejection_descriptions,
     )
     try:
         yield environment

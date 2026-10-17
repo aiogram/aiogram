@@ -81,7 +81,9 @@ class TestSubscriptionLinks:
         assert link.subscription_period == SUBSCRIPTION_PERIOD
 
     async def test_an_unsupported_period_fails(self, env, team):
-        with refused_with(TelegramBadRequest, rejections.SUBSCRIPTION_PERIOD):
+        with refused_with(
+            TelegramBadRequest, rejections.SUBSCRIPTION_PERIOD, period=SUBSCRIPTION_PERIOD
+        ):
             await env.bot.create_chat_subscription_invite_link(
                 chat_id=team.id,
                 subscription_period=60,
@@ -90,7 +92,9 @@ class TestSubscriptionLinks:
 
     async def test_a_datetime_is_not_a_period(self, env, team):
         """A period is a duration; passing an expiry date instead is a real mistake."""
-        with refused_with(TelegramBadRequest, rejections.SUBSCRIPTION_PERIOD):
+        with refused_with(
+            TelegramBadRequest, rejections.SUBSCRIPTION_PERIOD, period=SUBSCRIPTION_PERIOD
+        ):
             await env.bot.create_chat_subscription_invite_link(
                 chat_id=team.id,
                 subscription_period=datetime.datetime(2026, 6, 1, tzinfo=datetime.timezone.utc),

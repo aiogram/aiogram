@@ -1082,7 +1082,7 @@ class TestEditsActOnTheirContent:
     async def test_editing_text_on_a_photo_fails(self, env, private):
         photo = await env.bot.send_photo(chat_id=private.id, photo="photo", caption="c")
 
-        with refused_with(TelegramBadRequest, rejections.NO_CONTENT_TO_EDIT):
+        with refused_with(TelegramBadRequest, rejections.NO_CONTENT_TO_EDIT, kind="text"):
             await env.bot.edit_message_text(
                 chat_id=private.id,
                 message_id=photo.message_id,
@@ -1095,7 +1095,7 @@ class TestEditsActOnTheirContent:
     async def test_editing_a_caption_on_a_text_message_fails(self, env, private):
         text = await env.bot.send_message(chat_id=private.id, text="t")
 
-        with refused_with(TelegramBadRequest, rejections.NO_CONTENT_TO_EDIT):
+        with refused_with(TelegramBadRequest, rejections.NO_CONTENT_TO_EDIT, kind="caption"):
             await env.bot.edit_message_caption(
                 chat_id=private.id,
                 message_id=text.message_id,
@@ -1105,7 +1105,7 @@ class TestEditsActOnTheirContent:
     async def test_editing_media_on_a_sticker_fails(self, env, private):
         sticker = await env.bot.send_sticker(chat_id=private.id, sticker="sticker")
 
-        with refused_with(TelegramBadRequest, rejections.NO_CONTENT_TO_EDIT):
+        with refused_with(TelegramBadRequest, rejections.NO_CONTENT_TO_EDIT, kind="media"):
             await env.bot.edit_message_media(
                 chat_id=private.id,
                 message_id=sticker.message_id,
@@ -1131,7 +1131,9 @@ class TestEditsActOnTheirContent:
             media=[InputMediaPhoto(media="one"), InputMediaPhoto(media="two")],
         )
 
-        with refused_with(TelegramBadRequest, rejections.ALBUM_ITEM_EDIT):
+        with refused_with(
+            TelegramBadRequest, rejections.ALBUM_ITEM_EDIT, kinds="live_photo, photo, video"
+        ):
             await env.bot.edit_message_media(
                 chat_id=private.id,
                 message_id=album[0].message_id,
@@ -1158,14 +1160,14 @@ class TestEditsActOnTheirContent:
             ephemeral_message_parameters=to_alice,
         )
 
-        with refused_with(TelegramBadRequest, rejections.NO_CONTENT_TO_EDIT):
+        with refused_with(TelegramBadRequest, rejections.NO_CONTENT_TO_EDIT, kind="text"):
             await env.bot.edit_ephemeral_message_text(
                 chat_id=team.id,
                 receiver_user_id=alice.id,
                 ephemeral_message_id=photo.ephemeral_message_id,
                 text="now text",
             )
-        with refused_with(TelegramBadRequest, rejections.NO_CONTENT_TO_EDIT):
+        with refused_with(TelegramBadRequest, rejections.NO_CONTENT_TO_EDIT, kind="caption"):
             await env.bot.edit_ephemeral_message_caption(
                 chat_id=team.id,
                 receiver_user_id=alice.id,
@@ -1367,7 +1369,7 @@ class TestPolls:
         assert message.poll.allows_revoting is True
 
     async def test_a_correct_option_must_be_an_option(self, env, private):
-        with refused_with(TelegramBadRequest, rejections.QUIZ_ANSWER_RANGE):
+        with refused_with(TelegramBadRequest, rejections.QUIZ_ANSWER_RANGE, wrong="[5]"):
             await env.bot.send_poll(
                 chat_id=private.id,
                 question="Q?",
@@ -1554,7 +1556,7 @@ class TestChecklists:
             business_connection_id=connection.id, chat_id=private.id, text="plain"
         )
 
-        with refused_with(TelegramBadRequest, rejections.NO_CONTENT_TO_EDIT):
+        with refused_with(TelegramBadRequest, rejections.NO_CONTENT_TO_EDIT, kind="checklist"):
             await env.bot.edit_message_checklist(
                 business_connection_id=connection.id,
                 chat_id=private.id,

@@ -276,7 +276,7 @@ class TestLocalChecksComeFirst:
         chat.member(env.world.bot_user.id).set_status(ChatMemberStatus.MEMBER)
         chat.permissions = ChatPermissions(can_send_messages=False)
 
-        with refused_with(TelegramBadRequest, rejections.NO_RIGHTS_TO_SEND):
+        with refused_with(TelegramBadRequest, rejections.NO_RIGHTS_TO_SEND, noun="text messages"):
             await env.bot.send_message(chat_id=chat.id, text="x")
 
     async def test_a_valid_send_is_still_flooded(self, flooded):

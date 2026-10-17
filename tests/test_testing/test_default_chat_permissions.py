@@ -130,7 +130,7 @@ class TestTheSameValueIsEnforced:
         env, chat = member_bot
         chat.permissions = chat.permissions.model_copy(update={"can_send_polls": False})
 
-        with refused_with(TelegramBadRequest, rejections.NO_RIGHTS_TO_SEND):
+        with refused_with(TelegramBadRequest, rejections.NO_RIGHTS_TO_SEND, noun="polls"):
             await env.bot.send_poll(chat_id=chat.id, question="q", options=["a", "b"])
 
     async def test_the_chat_defaults_bound_a_restricted_bot_too(self, make):
@@ -146,7 +146,7 @@ class TestTheSameValueIsEnforced:
         )
 
         await env.bot.send_message(chat_id=chat.id, text="x")
-        with refused_with(TelegramBadRequest, rejections.NO_RIGHTS_TO_SEND):
+        with refused_with(TelegramBadRequest, rejections.NO_RIGHTS_TO_SEND, noun="polls"):
             await env.bot.send_poll(chat_id=chat.id, question="q", options=["a", "b"])
 
     async def test_restricting_with_the_defaults_restricts_nothing(self, make):

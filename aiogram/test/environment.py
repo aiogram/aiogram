@@ -25,6 +25,7 @@ from typing import (
 from aiogram.client.bot import Bot
 from aiogram.dispatcher.dispatcher import Dispatcher
 from aiogram.dispatcher.event.bases import UNHANDLED, SkipHandler
+from aiogram.exceptions import TelegramAPIError
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.methods import TelegramMethod
@@ -59,7 +60,6 @@ from .markup import apply_parse_modes, refuse_empty_text
 from .modeling import bot_me, check_bot_rights, find_handler
 from .mounting import bindables, detached_copy
 from .overrides import (
-    BLOCKED_BY_USER,
     OverrideBuilder,
     OverrideHandle,
     OverrideRegistry,
@@ -592,6 +592,7 @@ class BotTestEnvironment:
         enforce_bot_rights: bool = True,
         rate_limits: RateLimits | None = None,
         deliver_service_messages_from_bots: bool = True,
+        perturb_rejection_descriptions: bool = False,
     ) -> None:
         """
         ``default_wait_timeout`` is how long every wait in this environment runs.
@@ -629,7 +630,17 @@ class BotTestEnvironment:
         bots receive all service messages. Pass ``False`` to withhold
         it: it is stored all the same, and the trigger returns
         :class:`~aiogram.test.Withheld`.
+
+        ``perturb_rejection_descriptions`` rewords every rejection the
+        environment answers with. It keeps the error code and the
+        exception type, which are the contract, and gives the
+        description a marker and scrambled words, the same on every
+        run, so a test can check what a bot does with a text it does not
+        recognise. :func:`~aiogram.test.rejection_of` still names the
+        rejection.
         """
+        #: Whether rejection descriptions are replaced.
+        self.perturb_rejection_descriptions = perturb_rejection_descriptions
         #: Whether the bot's calls are checked against its rights.
         self.enforce_bot_rights = enforce_bot_rights
         #: Whether service messages other bots cause are delivered.
@@ -1341,7 +1352,7 @@ class BotTestEnvironment:
         self,
         chat_id: ChatSpec | ChatState | UserSpec | UserState | int,
         *,
-        message: str = BLOCKED_BY_USER,
+        message: str | None = None,
     ) -> OverrideHandle:
         """
         Make every call addressed at one chat fail the way a block makes it fail.
@@ -1375,7 +1386,12 @@ class BotTestEnvironment:
         both that the bot tried and that it failed — see :meth:`handle_call`.
         """
         resolved = chat_id if isinstance(chat_id, int) else chat_id.id
-        return block_chat(self.overrides, resolved, message=message)
+        return block_chat(
+            self.overrides,
+            resolved,
+            message=message,
+            perturb=self.perturb_rejection_descriptions,
+        )
 
     def state(
         self,
@@ -2284,7 +2300,19 @@ class BotTestEnvironment:
 
     def _refuse(self, method: TelegramMethod[Any], error: ApiRejection) -> NoReturn:
         """Answer a call with the refusal the world raised."""
-        self.fail(method, error.prefixed, error.error_code, error.retry_after)
+        description = error.description
+        if self.perturb_rejection_descriptions:
+            description = rejections.perturb(description)
+        try:
+            self.fail(
+                method,
+                f"{error.prefix}: {description}",
+                error.error_code,
+                error.retry_after,
+            )
+        except TelegramAPIError as raised:
+            rejections.remember(raised, error)
+            raise
 
     def rate_clock(self) -> float:
         """

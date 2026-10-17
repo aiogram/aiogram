@@ -926,7 +926,9 @@ class TestPermissionsBindTheBotOnly:
         env = BotTestEnvironment(blueprint=blueprint, dispatcher=dp)
         try:
             chat = env.chat(team)
-            with refused_with(TelegramBadRequest, rejections.NO_RIGHTS_TO_SEND):
+            with refused_with(
+                TelegramBadRequest, rejections.NO_RIGHTS_TO_SEND, noun="text messages"
+            ):
                 await env.bot.send_message(chat_id=team.id, text="refused")
             await env.user(alice).in_(team).send("still sent")
 

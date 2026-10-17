@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from collections.abc import Mapping
 from http import HTTPStatus
 from typing import TYPE_CHECKING, Any, NoReturn
 
@@ -51,6 +52,7 @@ class ApiRejection(Exception):
         error_code: int = HTTPStatus.BAD_REQUEST,
         retry_after: int | None = None,
         rejection: Rejection | None = None,
+        fields: Mapping[str, str] | None = None,
     ) -> None:
         if (retry_after is None) == (error_code == HTTPStatus.TOO_MANY_REQUESTS):
             msg = "a 429 carries retry_after, and nothing else does"
@@ -61,17 +63,24 @@ class ApiRejection(Exception):
         self.retry_after = retry_after
         #: The declaration the text came from, if it has one.
         self.rejection = rejection
+        #: What the declaration's description was filled in with.
+        self.fields = dict(fields or {})
 
     @property
-    def prefixed(self) -> str:
-        """The description as the Bot API server sends it."""
+    def prefix(self) -> str:
+        """What the Bot API server puts before the description."""
         prefix = _ERROR_PREFIXES.get(self.error_code)
         if prefix is None:
             try:
                 prefix = HTTPStatus(self.error_code).phrase
             except ValueError:
                 prefix = "Error"
-        return f"{prefix}: {self.description}"
+        return prefix
+
+    @property
+    def prefixed(self) -> str:
+        """The description as the Bot API server sends it."""
+        return f"{self.prefix}: {self.description}"
 
 
 #: The prefix the Bot API server puts before a refusal's text.

@@ -20,6 +20,7 @@ from aiogram.exceptions import (
 from aiogram.methods import TelegramMethod
 
 from . import rejections
+from .errors import ApiRejection
 from .mounting import detached_copy
 
 if TYPE_CHECKING:
@@ -159,6 +160,8 @@ class Outcome:
     error: type[TelegramAPIError] | TelegramAPIError | None = None
     message: str = "Bad Request: test error"
     remaining: int | None = None
+    #: The rejection this answer stands for, when the toolkit makes it.
+    origin: ApiRejection | None = None
 
     def consume(self) -> None:
         if self.remaining is not None:
@@ -189,7 +192,10 @@ class Outcome:
             return detached_copy(self.result, bot=bot)
         if isinstance(self.error, TelegramAPIError):
             raise self.error
-        raise self.error(method=method, message=self.message)
+        raised = self.error(method=method, message=self.message)
+        if self.origin is not None:
+            rejections.remember(raised, self.origin)
+        raise raised
 
 
 #: The prefix the Bot API gives the status of an exception class.
@@ -617,10 +623,15 @@ class OverrideBuilder(OverrideHandle):
 def block_chat(
     registry: OverrideRegistry,
     chat_id: int,
-    message: str = BLOCKED_BY_USER,
+    message: str | None = None,
+    *,
+    perturb: bool = False,
 ) -> OverrideHandle:
     """
     Make every call addressed at ``chat_id`` fail the way a block makes it fail.
+
+    With no ``message`` the answer is the rejection ``bot was blocked
+    by the user``, perturbed when ``perturb`` says so.
 
     One rule per method in :data:`BLOCKED_METHODS` per **addressing field** it has, all
     under one handle, so the whole block is lifted by a single
@@ -652,6 +663,11 @@ def block_chat(
     ``with env.blocked(alice):`` into a forty-line wall about methods nobody expected to be
     called. See :meth:`OverrideRegistry.unfired`.
     """
+    origin = None
+    if message is None:
+        origin = rejections.BOT_BLOCKED()
+        description = rejections.perturb(origin.description) if perturb else origin.description
+        message = f"{origin.prefix}: {description}"
     handle = OverrideHandle(registry)
     for method_type in BLOCKED_METHODS:
         addressing = ("chat_id", "user_id") if method_type in DELIVERY_METHODS else ("chat_id",)
@@ -660,7 +676,7 @@ def block_chat(
                 continue
             handle.register(
                 MethodMatcher(method_type=method_type, fields=((name, chat_id),)),
-                Outcome(error=TelegramForbiddenError, message=message),
+                Outcome(error=TelegramForbiddenError, message=message, origin=origin),
                 expected=False,
             )
     return handle
