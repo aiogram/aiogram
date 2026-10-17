@@ -1136,6 +1136,7 @@ class UserActor:
         in a test is what the escape hatch is for; the default stays strict, so a payload
         the bot itself built wrong is still named as the bug it is.
         """
+        self._refuse_bot("follow deep links")
         bot_username = self.bot_user.username or ""
         if isinstance(target, (InlineKeyboardButton, RichMessageButton)):
             url = target.url
@@ -1800,6 +1801,7 @@ class UserActor:
     async def shipping_query(
         self, invoice_payload: str = "payload", *, deliver: bool = True, **data: Any
     ) -> Any:
+        self._refuse_bot("ask for shipping")
         event = self._event(
             ShippingQuery,
             id=self.environment.world.next_query_id(QueryKind.SHIPPING),
@@ -1821,6 +1823,7 @@ class UserActor:
         deliver: bool = True,
         **data: Any,
     ) -> Any:
+        self._refuse_bot("confirm a checkout")
         event = self._event(
             PreCheckoutQuery,
             id=self.environment.world.next_query_id(QueryKind.PRE_CHECKOUT),
@@ -1857,6 +1860,7 @@ class UserActor:
         it is this user's first subscription payment for
         ``invoice_payload``; a later one is a renewal.
         """
+        self._refuse_bot("pay")
         world = self.environment.world
         renewal = is_subscription and any(
             charge.is_subscription
@@ -1906,6 +1910,7 @@ class UserActor:
     async def purchase_paid_media(
         self, payload: str = "payload", *, deliver: bool = True, **data: Any
     ) -> Any:
+        self._refuse_bot("buy paid media")
         event = self._event(PaidMediaPurchased, paid_media_payload=payload)
         return await self._feed(
             Update(update_id=self._next_update_id(), purchased_paid_media=event),
@@ -1915,6 +1920,7 @@ class UserActor:
 
     @_trigger
     async def boost(self, *, deliver: bool = True, **data: Any) -> Any:
+        self._refuse_bot("boost a chat")
         event = self._event(ChatBoostUpdated)
         return await self._feed(
             Update(update_id=self._next_update_id(), chat_boost=event),
@@ -1924,6 +1930,7 @@ class UserActor:
 
     @_trigger
     async def remove_boost(self, *, deliver: bool = True, **data: Any) -> Any:
+        self._refuse_bot("withdraw a boost")
         event = self._event(ChatBoostRemoved)
         return await self._feed(
             Update(update_id=self._next_update_id(), removed_chat_boost=event),
@@ -2031,6 +2038,7 @@ class UserActor:
         subscription, and ``failed`` when a payment fails. Any other
         value is refused.
         """
+        self._refuse_bot("subscribe to the bot")
         if state not in _SUBSCRIPTION_STATES:
             known = ", ".join(sorted(_SUBSCRIPTION_STATES))
             msg = f"A subscription state is one of {known}, not {state!r}"
@@ -2296,8 +2304,9 @@ class UserActor:
         """
         Refuse what only a person does.
 
-        A bot gets no buttons to press, no inline mode and no poll to
-        vote in: the Bot API gives it no method for any of them.
+        A bot gets no buttons to press, no inline mode, no poll to vote
+        in and no way to pay, buy, boost or subscribe: the Bot API
+        gives it no method for any of them.
         """
         if self.user.is_bot:
             msg = f"Bot {self.user.id} cannot {action}: only a person can"

@@ -591,6 +591,14 @@ class TestWhatABotCannotDo:
             ("inline_query", ("q",), "use inline mode"),
             ("chosen_inline_result", ("r1",), "use inline mode"),
             ("vote", ("p1", [0]), "vote in polls"),
+            ("pay", (), "pay"),
+            ("pre_checkout_query", (), "confirm a checkout"),
+            ("shipping_query", (), "ask for shipping"),
+            ("purchase_paid_media", (), "buy paid media"),
+            ("boost", (), "boost a chat"),
+            ("remove_boost", (), "withdraw a boost"),
+            ("update_subscription", (), "subscribe to the bot"),
+            ("follow_deep_link", ("https://t.me/x?start=a",), "follow deep links"),
         ],
     )
     async def test_it_is_refused(self, build, seen, trigger, args, action):
