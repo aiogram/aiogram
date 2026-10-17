@@ -91,37 +91,7 @@ and routers all execute. The trigger call SHALL return the handler's return valu
 The environment SHALL report where a fed update actually went, distinct from whatever value
 the trigger call returned: whether the dispatcher considered it handled, which handler and
 which router claimed it, and the first exception raised inside the middleware chain or the
-handler — captured where it was raised even when something further out, such as the
-framework's own error-handling middleware, goes on to swallow it. "Handled" SHALL follow the
-dispatcher's own definition — something other than "unhandled" came back — which a
-middleware that returns without calling the next one already satisfies; the winning
-handler's identity SHALL be reported separately, since it is the only field that says
-whether a handler actually ran.
-
-This diagnosis SHALL be scoped to a **trigger** rather than to a single update, because one
-thing the test did is routinely more than one update: an actor trigger that produces two
-updates from one call SHALL group both into the same scope, and the environment SHALL also
-let a test open this scope explicitly around several trigger calls of its own. A fed update
-outside any explicitly opened scope, and not itself fed from within a handler already
-routing one, SHALL open a scope of its own, so the common one-update case needs no explicit
-scope at all. The environment SHALL expose every record of the current scope, in the order
-each finished routing, and SHALL expose the single most relevant one, preferring in order:
-the newest record **carrying an exception**, else the newest **handled** record, else the
-newest record of any kind. Both SHALL be empty/absent until the first update is fed.
-
-A scope SHALL belong to the task and the environment that opened it, not to the environment
-alone: two scopes opened concurrently SHALL neither share nor discard each other's records, a
-fed update SHALL NOT join a scope opened by a different task, and a fed update SHALL NOT join
-a scope opened by a *different environment*. Outside any scope open in the current task, the
-environment SHALL report the scope that most recently finished. An update routed with no scope
-open at all — fed through the dispatcher directly rather than through the environment — SHALL
-become a finished scope of its own rather than being discarded or added to the previous one.
-
-The environment SHALL also provide an assertion spelled directly against this diagnosis,
-matched by a substring of the winning handler's qualified name, which SHALL scan **every**
-record of the current scope — not only the most relevant one — and SHALL fail naming where
-every one of them actually went, including any captured exception, rather than only stating
-that the named handler did not run.
+handler, captured where it was raised even when something further out goes on to swallow it.
 
 #### Scenario: A handled update names its handler and router
 
@@ -150,6 +120,19 @@ that the named handler did not run.
 - **THEN** the report still carries the original exception, captured at the handler that
   raised it, even though the trigger call itself returned normally
 
+#### Scenario: Handled follows the dispatcher's own definition
+
+- **WHEN** an update's result is anything other than "unhandled"
+- **THEN** the report says the update was handled, and the winning handler's identity is
+  reported separately, since it is the only field that says whether a handler actually ran
+
+### Requirement: Routing diagnostics are scoped to a trigger
+
+A diagnosis SHALL be scoped to a **trigger** rather than to a single update, because one
+thing the test did is routinely more than one update. An actor trigger that produces two
+updates from one call SHALL group both into the same scope, and the environment SHALL also
+let a test open a scope explicitly around several trigger calls of its own.
+
 #### Scenario: A trigger producing several updates is diagnosed as one scope
 
 - **WHEN** a single actor trigger delivers two updates — a membership transition and the
@@ -158,19 +141,34 @@ that the named handler did not run.
 - **THEN** both updates appear in the scope's records, and the most-relevant one names the
   update the handler actually claimed rather than whichever of the two finished routing last
 
-#### Scenario: The assertion scans the whole scope, not only the most recent update
+#### Scenario: The report resets between scopes
 
-- **WHEN** a test asserts the current scope was handled by a name that matches only one of
-  several updates fed within it
-- **THEN** the assertion succeeds by finding that record among the scope's records, and a
-  failure names every record in the scope, not only the last one
+- **WHEN** a second trigger is fed after a first one was handled
+- **THEN** the report reflects only the second trigger's scope, not anything left over from
+  the first
 
-#### Scenario: The assertion fails naming where the update actually went
+#### Scenario: A test opens a scope around several triggers
 
-- **WHEN** a test asserts the update was handled by a name that does not match the winning
-  handler
-- **THEN** the failure names the handler and router that actually claimed it, including any
-  captured exception
+- **WHEN** a test opens a scope explicitly and makes several trigger calls inside it
+- **THEN** the records of all of the updates they fed belong to that one scope
+
+#### Scenario: The common one-update case needs no explicit scope
+
+- **WHEN** an update is fed outside any explicitly opened scope and not from within a
+  handler already routing one
+- **THEN** it opens a scope of its own
+
+#### Scenario: Nothing is reported before the first update
+
+- **WHEN** no update has been fed yet
+- **THEN** the scope's records are empty and its most relevant record is absent
+
+### Requirement: Routing diagnostics expose the most relevant record
+
+The environment SHALL expose every record of the current scope, in the order each finished
+routing, and SHALL expose the single most relevant one, preferring in order the newest
+record **carrying an exception**, else the newest **handled** record, else the newest record
+of any kind.
 
 #### Scenario: A swallowed exception outranks a later update that went fine
 
@@ -179,11 +177,23 @@ that the named handler did not run.
 - **THEN** the most-relevant record is the one carrying the exception, so an assertion on
   "was this handled" reports the failure rather than the update that worked
 
-#### Scenario: The report resets between scopes
+#### Scenario: A handled record outranks an unhandled one
 
-- **WHEN** a second trigger is fed after a first one was handled
-- **THEN** the report reflects only the second trigger's scope, not anything left over from
-  the first
+- **WHEN** a scope holds a handled record and a newer record of an update nobody claimed,
+  and no record carries an exception
+- **THEN** the most relevant record is the handled one
+
+#### Scenario: Records come in the order routing finished
+
+- **WHEN** a scope holds several records
+- **THEN** they are exposed in the order each finished routing
+
+### Requirement: Routing scopes belong to their task and environment
+
+A scope SHALL belong to the task and the environment that opened it, not to the environment
+alone: two scopes opened concurrently SHALL neither share nor discard each other's records,
+and a fed update SHALL NOT join a scope opened by a different task or by a *different
+environment*.
 
 #### Scenario: Concurrent triggers keep separate scopes
 
@@ -203,17 +213,45 @@ that the named handler did not run.
 - **THEN** the second environment opens a scope of its own for it, rather than treating the
   first environment's in-flight update as a scope of its own to append to
 
+#### Scenario: Outside any scope the last finished one is reported
+
+- **WHEN** the current task has no scope open
+- **THEN** the environment reports the scope that most recently finished
+
+#### Scenario: An update routed without the environment becomes a scope of its own
+
+- **WHEN** an update is routed with no scope open at all, fed through the dispatcher
+  directly rather than through the environment
+- **THEN** it becomes a finished scope of its own, rather than being discarded or added to
+  the previous one
+
+### Requirement: The handled-by assertion scans the whole scope
+
+The environment SHALL provide an assertion spelled directly against the routing diagnosis,
+matched by a substring of the winning handler's qualified name. It SHALL scan **every**
+record of the current scope, not only the most relevant one, and SHALL fail naming where
+every one of them actually went, including any captured exception, rather than only stating
+that the named handler did not run.
+
+#### Scenario: The assertion scans the whole scope, not only the most recent update
+
+- **WHEN** a test asserts the current scope was handled by a name that matches only one of
+  several updates fed within it
+- **THEN** the assertion succeeds by finding that record among the scope's records, and a
+  failure names every record in the scope, not only the last one
+
+#### Scenario: The assertion fails naming where the update actually went
+
+- **WHEN** a test asserts the update was handled by a name that does not match the winning
+  handler
+- **THEN** the failure names the handler and router that actually claimed it, including any
+  captured exception
+
 ### Requirement: Supported event triggers
 
 The toolkit SHALL provide a trigger for **every** `Update` variant the framework defines,
-with no exemptions, so no registered handler is unreachable from a test. This includes the
-conversational kinds — sending and editing messages, sending media and captions, pressing
-an inline keyboard button, answering an inline query, and chat member transitions —
-channel posts and their edits, chosen inline results, shipping and pre-checkout queries,
-purchased paid media, chat join requests, chat boosts and their removal, guest messages,
-managed bot updates, subscription updates, and additionally poll updates, poll answers,
-message reactions and message reaction counts. Each trigger SHALL produce an update
-indistinguishable in shape from one Telegram would deliver.
+with no exemptions, so no registered handler is unreachable from a test. Each trigger SHALL
+produce an update indistinguishable in shape from one Telegram would deliver.
 
 #### Scenario: Pressing an inline keyboard button
 
@@ -253,17 +291,27 @@ indistinguishable in shape from one Telegram would deliver.
 - **THEN** a `channel_post` update is dispatched rather than a `message` update, and the
   post is stored in that chat
 
+#### Scenario: The kinds a bot usually handles have triggers
+
+- **WHEN** a test needs one of the conversational kinds — sending and editing messages,
+  sending media and captions, pressing an inline keyboard button, answering an inline query,
+  or a chat member transition
+- **THEN** a trigger produces it
+
+#### Scenario: The remaining kinds have triggers
+
+- **WHEN** a test needs channel posts and their edits, chosen inline results, shipping and
+  pre-checkout queries, purchased paid media, chat join requests, chat boosts and their
+  removal, guest messages, managed bot updates, subscription updates, poll updates, poll
+  answers, message reactions or message reaction counts
+- **THEN** a trigger produces it
+
 ### Requirement: Membership triggers post the group's own join announcement
 
-In a chat type Telegram itself shows the announcement in — a group or a supergroup — the
-join and add-bot triggers SHALL also produce the `new_chat_members` service message a real
-join or add delivers alongside the membership update, **after** the membership update,
-matching the order Telegram's own clients display the two in. This SHALL be suppressible
-per call, reverting to the previous single-update behavior. A chat type with no concept of
-being "added to" — a private chat — SHALL NOT receive this service message regardless of
-the setting, and a trigger that changes membership away rather than into a chat SHALL be
-unaffected either way. The trigger's own return value SHALL stay the membership update's
-handler result regardless of whether the service message was produced.
+In a group or a supergroup, the join and add-bot triggers SHALL also produce the
+`new_chat_members` service message a real join or add delivers, **after** the membership
+update, and this SHALL be suppressible per call, reverting to the previous single-update
+behavior. A private chat SHALL NOT receive this service message regardless of the setting.
 
 #### Scenario: Adding the bot to a group also posts the announcement
 
@@ -292,23 +340,24 @@ handler result regardless of whether the service message was produced.
 - **WHEN** a user actor leaves a group, or removes the bot from one
 - **THEN** no `new_chat_members` message is produced
 
+#### Scenario: A trigger that changes membership away is unaffected either way
+
+- **WHEN** a trigger changes membership away from a chat rather than into it
+- **THEN** its behavior is the same with or without the announcement setting
+
+#### Scenario: The trigger returns the membership update's result
+
+- **WHEN** a join or add-bot trigger produces the service message as well
+- **THEN** the trigger's return value is still the membership update's handler result, as it
+  is when no service message was produced
+
 ### Requirement: Actors can promote and demote chat members
 
 Beyond the raw `promoteChatMember` call, an actor SHALL be able to promote or demote a
-member directly, defaulting to promoting or demoting the bot itself — the case almost
-every group bot test needs first — and otherwise accepting a declared user, a resolved
-state, or a bare id as the subject. Promoting SHALL grant exactly the rights named and no
-others, following the same whole-mask rule as the underlying call, but SHALL still promote
-even when **no** right is named, unlike a bare call in which naming no right reads as a
-demotion — there is no way through this trigger to "explicitly grant nothing." A right that
-is not a field of the rights model SHALL be rejected immediately, naming the fields that do
-exist, rather than being silently granted to nobody. Demoting SHALL drop the subject to a
-plain member and clear both the granted rights and the custom title, while leaving the
-subject's tag untouched. Both SHALL refuse to act on the chat's owner as a setup error
-rather than as a modeled API rejection, since a trigger arranges the world directly and asks
-nothing of the intercepted call path. Both SHALL accept dispatcher data through a
-keyword-only parameter distinct from the rights, so that naming a right and passing
-dispatcher data are never in conflict with each other on either trigger.
+member directly, defaulting to the bot itself and otherwise accepting a declared user, a
+resolved state, or a bare id as the subject. Promoting SHALL grant exactly the rights named
+and no others; demoting SHALL drop the subject to a plain member, clearing the granted
+rights and the custom title but leaving the tag untouched.
 
 #### Scenario: Promoting with no subject promotes the bot
 
@@ -339,6 +388,35 @@ dispatcher data are never in conflict with each other on either trigger.
 - **WHEN** the promotion or demotion trigger names the chat's owner as the subject
 - **THEN** the call raises the same refusal `promoteChatMember` gives for its owner, and the
   owner's membership is unchanged
+
+#### Scenario: The subject can be named in three ways
+
+- **WHEN** an actor promotes or demotes a declared user, a resolved state, or a bare id
+- **THEN** each names the same member
+
+#### Scenario: Promoting grants exactly the rights named
+
+- **WHEN** an actor promotes a member naming some rights
+- **THEN** only those rights are granted, following the same whole-mask rule as the
+  underlying call
+
+#### Scenario: Naming no right still promotes
+
+- **WHEN** an actor promotes a member naming no right
+- **THEN** the member is promoted, unlike a bare call in which naming no right reads as a
+  demotion, so there is no way through this trigger to explicitly grant nothing
+
+#### Scenario: A refused owner is a setup error
+
+- **WHEN** either trigger names the chat's owner
+- **THEN** it fails as a setup error rather than as a modeled API rejection, since a trigger
+  arranges the world directly and asks nothing of the intercepted call path
+
+#### Scenario: Dispatcher data never conflicts with a right
+
+- **WHEN** either trigger is given dispatcher data through its keyword-only parameter while
+  also naming rights
+- **THEN** the data and the rights are kept apart and never conflict
 
 ### Requirement: Sending replies is directly expressible
 
@@ -388,21 +466,10 @@ forgotten chat binding looking exactly like a genuine typo otherwise.
 ### Requirement: Deep-link buttons can be followed
 
 A user actor SHALL be able to follow a `url` button that deep-links to the bot under test,
-with the same validation a callback button gets: the button SHALL have to be carried by a
-message the environment actually holds, either a named one or any message of the actor's
-chat. Following SHALL replay what tapping causes in a real client — the user's private chat
-with the bot receives `/start <payload>`, or a bare `/start` when the link carries none — so
-filters, the command parser, middlewares and FSM all run as they do in production.
-
-Which parsed slot of a link names "the bot" depends on the link's kind, not on a fixed
-position: for every kind that addresses a bot by username, the button matches this bot when
-that username is the bot's own. The attachment-menu link is the one documented exception —
-`t.me/<chat>?attach=<bot>` addresses the *chat* in its username slot and names the bot in the
-`attach` parameter instead — so the button matches this bot when that parameter is, and the
-automatic scan surfaces such a button as this bot's the same way it surfaces a username match.
-A kind that addresses neither a username nor a parameter at any bot — a boost, an invite, a
-message link — never matches any bot, so a button of that kind is never treated as this bot's
-by either an explicit target or the scan.
+with the same validation a callback button gets: the button SHALL be carried by a message
+the environment actually holds, either a named one or any message of the actor's chat.
+Following SHALL replay what tapping causes in a real client, so filters, the command parser,
+middlewares and FSM run as they do in production.
 
 #### Scenario: Following a group button opens the conversation in the DM
 
@@ -426,6 +493,20 @@ by either an explicit target or the scan.
 - **WHEN** no target is given and several messages carry deep-link buttons
 - **THEN** the most recent followable link to this bot is the one followed
 
+#### Scenario: A link without a payload sends a bare start
+
+- **WHEN** the followed link carries no payload
+- **THEN** the user's private chat with the bot receives a bare `/start`, and with a payload
+  it receives `/start <payload>`
+
+### Requirement: A deep link names the bot by the slot its kind uses
+
+Which parsed slot of a link names "the bot" SHALL depend on the link's kind, not on a fixed
+position. For every kind that addresses a bot by username, the button matches this bot when
+that username is the bot's own; the attachment-menu link `t.me/<chat>?attach=<bot>` instead
+names the bot in its `attach` parameter. A kind that addresses no bot SHALL never match any
+bot, for an explicit target and the automatic scan alike.
+
 #### Scenario: An attachment-menu link matches by its parameter, not its address
 
 - **WHEN** the button's url addresses a chat by username and carries `?attach=<bot>` naming
@@ -433,67 +514,50 @@ by either an explicit target or the scan.
 - **THEN** the button is treated as this bot's — refused as an attachment-menu link, not as a
   link to a different bot — and the automatic scan surfaces it as a candidate
 
+#### Scenario: A link that addresses no bot never matches
+
+- **WHEN** the button is a boost, an invite or a message link
+- **THEN** it is never treated as this bot's, by either an explicit target or the scan
+
 ### Requirement: Only start links are followed, and the rest are refused by name
 
-The toolkit SHALL classify every `t.me` / `telegram.me` / `tg://resolve` url, and every other
-`tg://<host>` url, into the kind Telegram documents at https://core.telegram.org/api/links —
-one policy per kind, not one bucket for "recognized" and another for "everything else". `start`
-SHALL be the only followable kind, including a link with no query, which SHALL parse as a plain
-start with no payload. A `start` payload with a non-empty value SHALL be honored alongside any
-other query parameter, since a real client reads the parameter it recognizes and ignores the
-rest; that precedence SHALL hold in either query order, so a link carrying both a non-empty
-`start` and a Mini App, group or channel launch SHALL be followed as the start it also is. An
-empty `start` SHALL NOT take this precedence, since it carries no value a real client could
-have read as one — `?start=&startapp=y` SHALL classify as the `startapp` link it also is, not
-as a bare start, while a bare `?start=` with nothing else in the query is still the plain start
-it already was. The precedence SHALL need a real, non-empty `start` to take it, so one of those
-kinds appearing alone is refused as before.
-
-A query parameter Telegram documents as also being the companion of another format —
-`startapp` and `startattach`, each of which also serves as the start parameter of a named-app
-or named-chat attachment-menu link, and `text`, which a public username link may carry as a
-prefilled draft alongside another parameter — SHALL NOT outrank the format that carries it:
-`?startapp=x&text=y` SHALL classify as the Mini App link `startapp` names, not the draft `text`
-would be alone, and `?appname=<name>&startapp=<param>` SHALL classify as the direct Mini App
-link `appname` names, with `startapp` read as its parameter. A companion parameter appearing
-alone in the query still classifies by the format it names.
-
-Every other documented kind SHALL be refused with a message naming that kind and what a real
-client does with it, rather than being replayed as a plain start or lumped into a generic
-rejection: group, Mini App, channel and attachment-menu launches; a direct Mini App link and a
-game-share link; an affiliate-referral link; a profile link; a prefilled-draft link; chat invite
-links (including the legacy `joinchat` path and the `tg://join` form); a phone-number link,
-told apart from an invite link by its all-digit tail rather than folded into the same kind; a
-message link and its threaded and private-channel forms; a story link; a channel's web-preview
-link (`t.me/s/<username>`), distinguished from a direct Mini App link despite sharing the
-`t.me/<name>` shape; a share link; an invoice
-link, on its `$<slug>`, `/invoice/<slug>` and `tg://invoice` forms alike; a boost link, on its
-path, query and `tg://` forms; a video-chat link, including its `livestream` and legacy
-`voicechat` query spellings; a business-chat link; a sticker- or emoji-set link; and any Telegram
-service link (a proxy, theme, language pack, wallpaper, login code, chat folder or an app
-screen). Where the toolkit models the action a link only opens a screen for, the message SHALL
-point at the trigger that does: an invoice link SHALL point at `pay()` and `pre_checkout_query()`,
-a boost link SHALL point at `boost()`, and a prefilled-draft link SHALL name the text it would
-have left unsent and point at `send()` with that text. A `tg://` url whose host is not `resolve`
-SHALL still be classified as a Telegram link — by host where the host is one of the documented
-ones, and as a service link otherwise — never reported as "not a Telegram link" merely because
-its host is unfamiliar. A url that addresses neither a bot nor any other documented Telegram
-surface SHALL be refused as not a Telegram link at all.
-
-A `start` payload SHALL be validated against the alphabet Bot API deep linking defines —
-`A-Z`, `a-z`, `0-9`, `_` and `-`, 1 to 64 characters — before being followed. A payload outside
-that alphabet SHALL be refused naming the rule, rather than delivered to the handler, since a
-real client never sends `/start` for a link its own payload makes invalid. The caller MAY opt
-out of this validation, since the Bot API states the rule for what a bot should put in a link
-but does not promise a client enforces it, and production bots do receive payloads outside it;
-opting out SHALL replay the payload exactly as the button carries it, and SHALL NOT change
-which kinds are followable — a `startapp` link opted out of payload validation is still refused
-as a Mini App link, not silently followed as a start.
+The toolkit SHALL classify every `t.me` / `telegram.me` / `tg://resolve` url, and every
+other `tg://<host>` url, into the kind Telegram documents at
+https://core.telegram.org/api/links, with one policy per kind rather than one bucket for
+"recognized" and another for "everything else". `start` SHALL be the only followable kind,
+including a link with no query, which SHALL parse as a plain start with no payload.
 
 #### Scenario: A bare profile link replays as a plain start
 
 - **WHEN** the button's url is `https://t.me/<bot>` with no query
 - **THEN** following it sends `/start` with no payload
+
+#### Scenario: An unsupported kind is named, not downgraded
+
+- **WHEN** the button opens a group chooser, a Mini App, a channel chooser or the attachment
+  menu, with no `start` beside it
+- **THEN** following it raises, naming that kind and what to do instead, rather than sending
+  a plain `/start`
+
+#### Scenario: An unrecognized query is refused rather than guessed
+
+- **WHEN** the button's url carries a query parameter none of the documented kinds define
+- **THEN** following it raises, saying that what a real client would do with it is not
+  simulated
+
+#### Scenario: The scan skips what it cannot follow
+
+- **WHEN** a keyboard carries both an unfollowable deep link and a real start link to this bot
+- **THEN** the start link is followed; and when only unfollowable ones are present, the
+  failure names each url and why it was rejected
+
+### Requirement: A non-empty start outranks the other parameters of its link
+
+A `start` payload with a non-empty value SHALL be honored alongside any other query
+parameter, in either query order, since a real client reads the parameter it recognizes and
+ignores the rest. An empty `start` SHALL NOT take this precedence, since it carries no value
+a real client could have read as one, while a bare `?start=` with nothing else in the query
+is still the plain start it already was.
 
 #### Scenario: An explicit non-empty start wins over a start-ish parameter beside it
 
@@ -507,11 +571,62 @@ as a Mini App link, not silently followed as a start.
   `startgroup`, `startchannel`, `startattach` or `attach`, in either order
 - **THEN** following it raises as that other kind, rather than sending a bare `/start`
 
+#### Scenario: A start link that also names a launch is followed as the start
+
+- **WHEN** a link carries a non-empty `start` and a Mini App, group or channel launch
+- **THEN** it is followed as the start it also is
+
+#### Scenario: A start-ish kind alone is refused
+
+- **WHEN** a link carries one of those launch kinds without a non-empty `start`
+- **THEN** it is refused as that kind, since the precedence needs a real, non-empty `start`
+  to take it
+
+#### Scenario: An empty start with a launch classifies as the launch
+
+- **WHEN** a link is `?start=&startapp=y`
+- **THEN** it classifies as the `startapp` link it also is, not as a bare start
+
+#### Scenario: A bare empty start is still a plain start
+
+- **WHEN** a link carries `?start=` with nothing else in the query
+- **THEN** it is the plain start it already was
+
+### Requirement: A companion parameter does not outrank the format that carries it
+
+A query parameter Telegram documents as the companion of another format SHALL NOT outrank
+the format that carries it. These are `startapp` and `startattach`, each of which also
+serves as the start parameter of a named-app or named-chat attachment-menu link, and `text`,
+which a public username link may carry as a prefilled draft alongside another parameter.
+
 #### Scenario: A companion parameter does not outrank the format that carries it
 
 - **WHEN** the button's url carries a companion parameter (`startapp`, `startattach` or `text`)
   alongside a parameter of another documented format, in either order
 - **THEN** following it raises as that other format, not as the companion's own kind
+
+#### Scenario: A Mini App link with a draft text is the Mini App
+
+- **WHEN** a link is `?startapp=x&text=y`
+- **THEN** it classifies as the Mini App link `startapp` names, not the draft `text` would
+  be alone
+
+#### Scenario: A direct Mini App link reads startapp as its parameter
+
+- **WHEN** a link is `?appname=<name>&startapp=<param>`
+- **THEN** it classifies as the direct Mini App link `appname` names, with `startapp` read
+  as its parameter
+
+#### Scenario: A companion parameter alone classifies by its own format
+
+- **WHEN** a companion parameter is the only one in the query
+- **THEN** the link classifies by the format that parameter names
+
+### Requirement: Every other documented link kind is refused naming that kind
+
+Every documented kind other than `start` SHALL be refused with a message naming that kind
+and what a real client does with it, rather than being replayed as a plain start or lumped
+into a generic rejection.
 
 #### Scenario: Every documented format is refused as the format it is
 
@@ -537,6 +652,57 @@ as a Mini App link, not silently followed as a start.
 - **THEN** following it raises naming it a phone-number link, and the message does not call it
   an invite link
 
+#### Scenario: Each documented kind is told apart on every spelling it has
+
+- **WHEN** the button's url is any of: a group, Mini App, channel or attachment-menu launch;
+  a direct Mini App link; a game-share link; an affiliate-referral link; a profile link; a
+  prefilled-draft link; a chat invite link, including the legacy `joinchat` path and the
+  `tg://join` form; a phone-number link; a message link, including its threaded and
+  private-channel forms; a story link; a channel's web-preview link; a share link; an
+  invoice link, on its `$<slug>`, `/invoice/<slug>` and `tg://invoice` forms alike; a boost
+  link, on its path, query and `tg://` forms; a video-chat link, including its `livestream`
+  and legacy `voicechat` query spellings; a business-chat link; a sticker- or emoji-set
+  link; or a Telegram service link such as a proxy, theme, language pack, wallpaper, login
+  code, chat folder or an app screen
+- **THEN** following it is refused naming that kind, never as another kind
+
+#### Scenario: A phone-number link is told apart by its all-digit tail
+
+- **WHEN** a link has an all-digit tail where an invite link would carry a hash
+- **THEN** it is classified as a phone-number link, not folded into the invite-link kind
+
+### Requirement: Refusals point at the trigger that models the action
+
+Where the toolkit models the action a link only opens a screen for, the refusal message
+SHALL point at the trigger that does: an invoice link SHALL point at `pay()` and
+`pre_checkout_query()`, a boost link SHALL point at `boost()`, and a prefilled-draft link
+SHALL name the text it would have left unsent and point at `send()` with that text.
+
+#### Scenario: An invoice link points at the payment triggers
+
+- **WHEN** the button's url is an invoice link
+- **THEN** following it is refused with a message pointing at `pay()` and
+  `pre_checkout_query()`
+
+#### Scenario: A boost link points at the boost trigger
+
+- **WHEN** the button's url is a boost link
+- **THEN** following it is refused with a message pointing at `boost()`
+
+#### Scenario: A prefilled-draft link names its text
+
+- **WHEN** the button's url is a prefilled-draft link
+- **THEN** following it is refused with a message naming the text it would have left unsent
+  and pointing at `send()` with that text
+
+### Requirement: Telegram links are told apart from other urls
+
+A `tg://` url whose host is not `resolve` SHALL still be classified as a Telegram link, by
+host where the host is one of the documented ones and as a service link otherwise, never
+reported as "not a Telegram link" merely because its host is unfamiliar. A url that
+addresses neither a bot nor any other documented Telegram surface SHALL be refused as not a
+Telegram link at all.
+
 #### Scenario: A `tg://` host other than `resolve` is still a Telegram link
 
 - **WHEN** the button's url is a `tg://` url whose host is not `resolve`, whether or not the
@@ -545,12 +711,19 @@ as a Mini App link, not silently followed as a start.
   service link when the host is not individually enumerated — never claiming the url is not a
   Telegram link
 
-#### Scenario: An unsupported kind is named, not downgraded
+#### Scenario: A url that is not Telegram's is refused as such
 
-- **WHEN** the button opens a group chooser, a Mini App, a channel chooser or the attachment
-  menu, with no `start` beside it
-- **THEN** following it raises, naming that kind and what to do instead, rather than sending
-  a plain `/start`
+- **WHEN** the button's url addresses neither a bot nor any other documented Telegram
+  surface
+- **THEN** following it is refused as not a Telegram link at all
+
+### Requirement: A start payload is validated against the deep-linking alphabet
+
+A `start` payload SHALL be validated against the alphabet Bot API deep linking defines —
+`A-Z`, `a-z`, `0-9`, `_` and `-`, 1 to 64 characters — before being followed, and a payload
+outside it SHALL be refused naming the rule rather than delivered to the handler. The caller
+MAY opt out of this validation, in which case the payload SHALL be replayed exactly as the
+button carries it, and the opt-out SHALL NOT change which kinds are followable.
 
 #### Scenario: A start payload outside the deep-linking alphabet is refused
 
@@ -566,31 +739,24 @@ as a Mini App link, not silently followed as a start.
 - **THEN** the payload is replayed exactly as carried, and a kind other than `start` is still
   refused rather than made followable
 
-#### Scenario: An unrecognized query is refused rather than guessed
+#### Scenario: A real client never sends a start for an invalid payload
 
-- **WHEN** the button's url carries a query parameter none of the documented kinds define
-- **THEN** following it raises, saying that what a real client would do with it is not
-  simulated
+- **WHEN** a payload is outside the alphabet and validation is on
+- **THEN** it is refused, since a real client never sends `/start` for a link its own
+  payload makes invalid
 
-#### Scenario: The scan skips what it cannot follow
+#### Scenario: An opted-out Mini App link is still refused
 
-- **WHEN** a keyboard carries both an unfollowable deep link and a real start link to this bot
-- **THEN** the start link is followed; and when only unfollowable ones are present, the
-  failure names each url and why it was rejected
+- **WHEN** a `startapp` link is followed with payload validation opted out
+- **THEN** it is still refused as a Mini App link, not silently followed as a start
 
 ### Requirement: A user's own private chat opens on demand
 
-A blueprint SHALL NOT have to declare a user's private chat with the bot: every Telegram user
-can open one, so the environment SHALL create it, shaped exactly as a declared one, the first
-time it is needed on a *user-driven* path — when a deep link is followed, when an unbound
-actor sends, when an actor binds to its own id, and when the environment's own chat accessor
-is asked for the id of a *declared user* whose private chat was not itself declared. Any
-*other* chat the blueprint never declared SHALL still be refused, since the world cannot
-invent a group's title, type or membership from an identifier.
-
-The bot's own calls SHALL open nothing. A real bot cannot write into a private chat first — it
-may only answer a user who wrote to it — so a chat named by an outbound call and not declared
-SHALL be reported as a gap in the test's setup rather than opened on demand.
+A blueprint SHALL NOT have to declare a user's private chat with the bot: every Telegram
+user can open one, so the environment SHALL create it, shaped exactly as a declared one, the
+first time it is needed on a *user-driven* path. Any *other* chat the blueprint never
+declared SHALL still be refused, since the world cannot invent a group's title, type or
+membership from an identifier.
 
 #### Scenario: A followed link opens the chat
 
@@ -615,6 +781,17 @@ SHALL be reported as a gap in the test's setup rather than opened on demand.
 - **WHEN** an actor binds to the identifier of a group nobody declared
 - **THEN** the call raises, because the world has nothing to build that chat from
 
+#### Scenario: Binding to its own id opens it
+
+- **WHEN** an actor binds to its own user id and that user's private chat was never declared
+- **THEN** the chat is opened on demand, as for the other user-driven paths
+
+### Requirement: The bot's own calls never open a private chat
+
+The bot's own calls SHALL open nothing. A real bot cannot write into a private chat first,
+as it may only answer a user who wrote to it, so a chat named by an outbound call and not
+declared SHALL be reported as a gap in the test's setup rather than opened on demand.
+
 #### Scenario: The bot writing first does not open one
 
 - **WHEN** a handler sends a message to a declared user whose private chat was never declared
@@ -624,13 +801,9 @@ SHALL be reported as a gap in the test's setup rather than opened on demand.
 
 ### Requirement: Modeled Bot API methods mutate world state
 
-Bot API calls made by handlers SHALL be intercepted. For methods the environment models,
-the call SHALL be applied to the world state and SHALL return a result consistent with
-that state. Modeled methods SHALL cover at minimum: sending messages and media, sending
-invoices, games, paid media, checklists and rich messages, editing message text, caption,
-reply markup, media, live location and checklist, deleting messages, forwarding and
-copying messages singly and in batches, pinning, unpinning and unpinning all, answering
-callback queries, and chat member administration.
+Bot API calls made by handlers SHALL be intercepted. For methods the environment models, the
+call SHALL be applied to the world state and SHALL return a result consistent with that
+state.
 
 #### Scenario: Sending a message appends it to the chat
 
@@ -670,16 +843,21 @@ callback queries, and chat member administration.
 - **THEN** the button is resolved from the stored message, exactly as it is for a message
   sent with `sendMessage`
 
+#### Scenario: The modeled surface covers a minimum
+
+- **WHEN** a handler calls a method that sends messages or media, sends invoices, games,
+  paid media, checklists or rich messages, edits message text, caption, reply markup, media,
+  live location or checklist, deletes messages, forwards or copies messages singly or in
+  batches, pins, unpins or unpins all, answers callback queries, or administers chat members
+- **THEN** the call is modeled: applied to the world state, with a result consistent with
+  that state
+
 ### Requirement: Unmodeled methods are recorded and answered
 
-Any Bot API method the environment does not model SHALL still succeed by default: the
-call is recorded and answered with a schema-valid result synthesized from the method's
-declared return type. Synthesis SHALL derive from the generated method and type metadata,
-so newly added Bot API methods work without changes to the toolkit.
-
-The set of methods that are deliberately left unmodeled SHALL be enumerated rather than
-implied, and SHALL distinguish surfaces that are record-only by decision from clusters
-whose modeling is merely deferred.
+Any Bot API method the environment does not model SHALL still succeed by default: the call
+is recorded and answered with a schema-valid result synthesized from the method's declared
+return type. Synthesis SHALL derive from the generated method and type metadata, so newly
+added Bot API methods work without changes to the toolkit.
 
 #### Scenario: A method with no state semantics returns a valid object
 
@@ -694,6 +872,12 @@ whose modeling is merely deferred.
 - **THEN** the call succeeds with a synthesized result without any update to the testing
   package
 
+### Requirement: The deliberately unmodeled methods are enumerated
+
+The set of methods that are deliberately left unmodeled SHALL be enumerated rather than
+implied, and SHALL distinguish surfaces that are record-only by decision from clusters whose
+modeling is merely deferred.
+
 #### Scenario: A record-only method is never also modeled
 
 - **WHEN** the enumerated record-only surface is compared against the modeled method
@@ -707,56 +891,6 @@ A test SHALL be able to override the outcome of a specific method for that test 
 returning a chosen result or raising a Telegram error — and the override SHALL take
 precedence over both modeling and synthesis. Overrides SHALL be scopable to a number of
 calls so that consecutive calls can return different outcomes.
-
-An override declaration SHALL be narrowable to calls of a particular shape: equality tests
-on named fields of the **resolved** method — after bot-level defaults are filled in — ANDed
-together, plus an arbitrary predicate for what field equality cannot say. Declaring a filter
-on a field the method does not have SHALL be rejected immediately rather than registering a
-rule that can never match. When more than one declared rule could answer a call, the rules
-SHALL be tried in the order they were declared and the first whose shape accepts the call
-SHALL win; a rule whose shape does not accept a call SHALL be left untouched by it, including
-its remaining-calls budget, so an earlier call to a *different* shape cannot exhaust it.
-
-Every override declaration SHALL return a handle that withdraws exactly the rules that
-declaration registered, independently of any other declared override, and that handle SHALL
-also work as a context manager scoping the override to one block.
-
-The environment SHALL provide a named recipe for making every call addressed at one party
-fail the way a real block does, under the same handle-and-scoping rules as a general
-override but carrying no call-count budget — it SHALL hold for as long as it is in force
-rather than for a fixed number of calls. This SHALL cover every method that delivers content
-into a chat, **and** every method that acts on content already in that chat instead of
-delivering into it, since a bot's own recovery path for a failed delivery — editing,
-(un)pinning, or setting *and clearing* a reaction on what it already sent — must be seen to
-fail there too; the
-environment MAY name specific methods it deliberately excludes from this recipe, documenting
-why, without that exclusion being a defect. The party SHALL be matchable however a call
-addresses it, including by an addressing field other than the one primarily used to declare
-the block, so that "this recipient" is caught whichever field the intercepted call happens
-to name it with — but only where that field names the **addressee**: a field that names some
-other participant of a chat the call addresses separately SHALL NOT be treated as naming the
-blocked party, so an operation the bot performs in a chat it can still reach is not refused
-merely because it mentions the blocked user. Wherever a call's shape includes a chat-addressing field that Telegram
-allows to be given either by numeric id or by `@username`, an override's declared value and
-the call's actual value SHALL both be resolved through the world before comparison, so a
-rule declared with one spelling still answers a call made with the other.
-
-A call SHALL be recorded in the call log **before** any override is consulted for it, so
-that a test can assert both that the call was made — reaching the right addressee with the
-right content — and separately assert on how an override answered it.
-
-The environment SHALL provide an assertion that every override currently declared on it has
-answered at least one call, failing by naming each one that has not — the single most common
-reason a bot behaves as though a declared override were never registered at all. The same
-naming SHALL be appended to a wait's timeout message, since a never-matched override is
-frequently the reason the awaited condition never became true.
-
-Only rules a test declared as **expectations** SHALL be reportable that way. A rule generated
-as one alternative of a *simulation* — the set of methods the blocked-party recipe refuses,
-of which a bot is expected to take one or two and leave the rest untouched — SHALL be excluded
-from both the assertion and the timeout listing entirely, whether or not any of that
-simulation's rules ever fired, since a simulation is not a prediction of which alternative the
-bot will take. An expectation declared alongside a simulation SHALL still be reported.
 
 #### Scenario: Overriding a result
 
@@ -774,6 +908,19 @@ bot will take. An expectation declared alongside a simulation SHALL still be rep
 - **WHEN** one test overrides a method and a later test in the same module does not
 - **THEN** the later test observes the default modeled or synthesized behavior
 
+#### Scenario: Consecutive calls return different outcomes
+
+- **WHEN** a test scopes overrides of one method to a number of calls each
+- **THEN** consecutive calls observe the outcomes in the order they were scoped
+
+### Requirement: Override declarations can be narrowed to a call's shape
+
+An override declaration SHALL be narrowable to calls of a particular shape: equality tests
+on named fields of the **resolved** method — after bot-level defaults are filled in — ANDed
+together, plus an arbitrary predicate for what field equality cannot say. Declaring a filter
+on a field the method does not have SHALL be rejected immediately rather than registering a
+rule that can never match.
+
 #### Scenario: Two recipients of one trigger are given independent outcomes
 
 - **WHEN** a test declares one outcome for `SendMessage` filtered to one chat id and another
@@ -781,17 +928,46 @@ bot will take. An expectation declared alongside a simulation SHALL still be rep
 - **THEN** each call is answered according to the rule that names its own chat id, regardless
   of which of the two the handler happens to call first
 
+#### Scenario: A filter on an unknown field is rejected at declaration time
+
+- **WHEN** a test declares a field filter naming a field the method does not have
+- **THEN** the declaration raises immediately, naming the fields that do exist, rather than
+  registering a rule that can never match
+
+#### Scenario: A filter sees the resolved method
+
+- **WHEN** a filter names a field the bot's defaults fill in, and a call leaves that field
+  unset
+- **THEN** the filter compares against the value after the defaults are filled in
+
+#### Scenario: Field filters are ANDed and a predicate can narrow further
+
+- **WHEN** a declaration carries several field filters and a predicate
+- **THEN** it answers only calls for which every filter and the predicate accept
+
+### Requirement: Overrides are tried in the order they were declared
+
+When more than one declared rule could answer a call, the rules SHALL be tried in the order
+they were declared and the first whose shape accepts the call SHALL win. A rule whose shape
+does not accept a call SHALL be left untouched by it, including its remaining-calls budget,
+so an earlier call to a *different* shape cannot exhaust it.
+
 #### Scenario: A rule that does not match is not consumed
 
 - **WHEN** a call-limited rule is declared for one chat id, and a call is made against a
   *different* shape before a call matching the rule arrives
 - **THEN** the non-matching call does not reduce the rule's remaining budget
 
-#### Scenario: A filter on an unknown field is rejected at declaration time
+#### Scenario: The first declared rule that accepts a call wins
 
-- **WHEN** a test declares a field filter naming a field the method does not have
-- **THEN** the declaration raises immediately, naming the fields that do exist, rather than
-  registering a rule that can never match
+- **WHEN** two declared rules both accept a call
+- **THEN** the one declared first answers it
+
+### Requirement: Override handles withdraw exactly what they declared
+
+Every override declaration SHALL return a handle that withdraws exactly the rules that
+declaration registered, independently of any other declared override, and that handle SHALL
+also work as a context manager scoping the override to one block.
 
 #### Scenario: A handle withdraws only what it declared
 
@@ -805,6 +981,15 @@ bot will take. An expectation declared alongside a simulation SHALL still be rep
 - **THEN** the override answers calls made inside the block, and calls made after the block
   observe the default behavior again
 
+### Requirement: A blocked party can be simulated with a named recipe
+
+The environment SHALL provide a named recipe for making every call addressed at one party
+fail the way a real block does, under the same handle-and-scoping rules as a general
+override but carrying no call-count budget, so it holds for as long as it is in force. It
+SHALL cover every method that delivers content into a chat, **and** every method that acts
+on content already in that chat, since a bot's own recovery path for a failed delivery must
+be seen to fail there too.
+
 #### Scenario: Every delivery method into a blocked chat fails
 
 - **WHEN** a test declares the blocked-chat recipe for one chat id
@@ -817,6 +1002,51 @@ bot will take. An expectation declared alongside a simulation SHALL still be rep
   pins, reacts to, or *clears its reaction from* a message already stored in that chat
 - **THEN** each of those calls fails the same way a delivery into that chat fails
 
+#### Scenario: Two recipients can be blocked independently
+
+- **WHEN** a test declares the blocked-chat recipe for two different chat ids at once
+- **THEN** both chats' deliveries fail, and a message to a third, unblocked chat still
+  succeeds, regardless of which chat a handler happens to message first
+
+#### Scenario: The recipe holds for as long as it is in force
+
+- **WHEN** a test declares the blocked-chat recipe and the bot makes more calls into that
+  chat than any fixed budget would allow
+- **THEN** every one of them fails, with no call-count budget ever running out
+
+#### Scenario: The recipe covers recovery paths
+
+- **WHEN** the bot edits, (un)pins, or sets *and clears* a reaction on a message it already
+  sent into the blocked chat
+- **THEN** each of those calls fails there too, as a failed delivery's own recovery path
+
+#### Scenario: The recipe follows the same handle rules as an override
+
+- **WHEN** a test withdraws the recipe's handle, or uses it as a context manager around a
+  block
+- **THEN** the recipe's rules are withdrawn, or scoped to the block, exactly as for a
+  general override
+
+### Requirement: The blocked-party recipe documents the methods it excludes
+
+The environment MAY name specific methods it deliberately excludes from the blocked-party
+recipe; each one it names SHALL be documented with the reason, and such an exclusion SHALL
+NOT be a defect.
+
+#### Scenario: A deliberately excluded method is unaffected by the recipe
+
+- **WHEN** a test declares the blocked-chat recipe for one chat id, and the bot then calls a
+  method the recipe documents as excluded
+- **THEN** that call succeeds, and a test that wants it to fail declares that outcome itself
+
+### Requirement: The blocked party is matched by whichever field addresses it
+
+The party SHALL be matchable however a call addresses it, including by an addressing field
+other than the one primarily used to declare the block, so that "this recipient" is caught
+whichever field the intercepted call happens to name it with. This SHALL hold only where
+that field names the **addressee**: a field naming some other participant of a chat the call
+addresses separately SHALL NOT be treated as naming the blocked party.
+
 #### Scenario: A field naming someone other than the addressee does not trigger the recipe
 
 - **WHEN** a test declares the blocked-chat recipe for one party, and the bot then makes a
@@ -825,12 +1055,6 @@ bot will take. An expectation declared alongside a simulation SHALL still be rep
 - **THEN** that call succeeds, since a block stops what the bot does in the blocked party's
   own chat rather than everything that mentions them
 
-#### Scenario: A deliberately excluded method is unaffected by the recipe
-
-- **WHEN** a test declares the blocked-chat recipe for one chat id, and the bot then calls a
-  method the recipe documents as excluded
-- **THEN** that call succeeds, and a test that wants it to fail declares that outcome itself
-
 #### Scenario: A party addressed by a different field is still caught
 
 - **WHEN** a test declares the blocked recipe for one party, and a call the bot makes
@@ -838,11 +1062,18 @@ bot will take. An expectation declared alongside a simulation SHALL still be rep
   against
 - **THEN** that call still fails the way the recipe intends
 
-#### Scenario: Two recipients can be blocked independently
+#### Scenario: A reachable chat is not refused for mentioning the blocked user
 
-- **WHEN** a test declares the blocked-chat recipe for two different chat ids at once
-- **THEN** both chats' deliveries fail, and a message to a third, unblocked chat still
-  succeeds, regardless of which chat a handler happens to message first
+- **WHEN** the bot performs an operation in a chat it can still reach, naming the blocked
+  user only as another participant
+- **THEN** the operation is not refused merely because it mentions the blocked user
+
+### Requirement: Chat-addressing fields are compared through the world
+
+Wherever a call's shape includes a chat-addressing field that Telegram allows to be given
+either by numeric id or by `@username`, an override's declared value and the call's actual
+value SHALL both be resolved through the world before comparison, so a rule declared with
+one spelling still answers a call made with the other.
 
 #### Scenario: An addressing field is matched by either of its spellings
 
@@ -851,11 +1082,25 @@ bot will take. An expectation declared alongside a simulation SHALL still be rep
 - **THEN** a call made with the other spelling of the same chat still matches, in both
   directions
 
+### Requirement: A call is logged before any override is consulted
+
+A call SHALL be recorded in the call log **before** any override is consulted for it, so
+that a test can assert both that the call was made — reaching the right addressee with the
+right content — and separately assert on how an override answered it.
+
 #### Scenario: A refused call is still visible in the call log
 
 - **WHEN** a call is answered by an override that raises
 - **THEN** the call log still holds the call as the code under test built it, so a test can
   assert on the addressee and content of a call that was refused
+
+### Requirement: Declared overrides that never fired are reported
+
+The environment SHALL provide an assertion that every override currently declared on it has
+answered at least one call, failing by naming each one that has not — the single most common
+reason a bot behaves as though a declared override were never registered at all. The same
+naming SHALL be appended to a wait's timeout message, since a never-matched override is
+frequently the reason the awaited condition never became true.
 
 #### Scenario: A never-fired override is named
 
@@ -864,6 +1109,21 @@ bot will take. An expectation declared alongside a simulation SHALL still be rep
 - **THEN** the assertion fails, naming that override, rather than the test passing silently
   while the bot behaved as though the override did not exist
 
+#### Scenario: A never-fired override is named in a wait's timeout
+
+- **WHEN** a test declares an override that never matches any call, and a wait started after
+  it times out
+- **THEN** the timeout message also names that override
+
+### Requirement: Only expectations are reported as never fired
+
+Only rules a test declared as **expectations** SHALL be reportable as never fired. A rule
+generated as one alternative of a *simulation* — such as the methods the blocked-party
+recipe refuses, of which a bot is expected to take one or two — SHALL be excluded from both
+the assertion and the timeout listing entirely, whether or not it ever fired, since a
+simulation does not predict which alternative the bot will take. An expectation declared
+alongside a simulation SHALL still be reported.
+
 #### Scenario: A simulation's untaken alternatives are not reported as never-fired
 
 - **WHEN** a test runs inside the blocked-chat recipe's scope, where the bot takes one or two
@@ -871,12 +1131,6 @@ bot will take. An expectation declared alongside a simulation SHALL still be rep
   declared override fired — or a wait inside that scope times out
 - **THEN** neither the assertion nor the timeout mentions the recipe's untaken alternatives,
   while an expectation the test declared by hand alongside it is still named if it never fired
-
-#### Scenario: A never-fired override is named in a wait's timeout
-
-- **WHEN** a test declares an override that never matches any call, and a wait started after
-  it times out
-- **THEN** the timeout message also names that override
 
 ### Requirement: Call log for request assertions
 
@@ -900,43 +1154,8 @@ already resolved.
 Every object the environment gives to the code under test SHALL be bound to a `Bot` the way
 a parsed Bot API response is, so that its shortcuts work — including objects nested inside a
 result and the items of a list result. This SHALL hold for modeled, synthesized and
-overridden results alike, and SHALL also hold for objects read directly out of the world,
-whoever put them there: a message a user actor sent, and a service message produced as a
-side effect of a modeled call.
-
-An object that already carries a bot belongs to whoever owns it and SHALL NOT be re-bound,
-so a second `Bot` sharing the environment's session never takes over the world's own
-objects.
-
-The binding SHALL be a property of the world's chat registry rather than of one moment in its
-life: a chat SHALL be wired to its world however it is registered, including when the whole
-mapping is replaced after construction, so that messages stored afterwards are bound as usual.
-This ownership SHALL be enforced per chat, not only when the whole mapping is replaced, so
-that no path into the registry — a whole-mapping assignment, an item assignment, or any of
-the mapping protocol's own bulk-update operations — can register a chat that already belongs
-to a *different* world without the same refusal. Registering a **fresh** chat, one that does
-not yet belong to any world, SHALL always succeed: a plain mapping assigned wholesale SHALL be
-wrapped into a fresh registry wired to this world, and a bare `ChatState` SHALL be adopted the
-same way wherever it is registered. Registering a chat that already belongs to *this* same
-world SHALL be a no-op, so re-assigning a world's own `chats` to itself, or re-registering a
-chat under the id it already holds, changes nothing. Registering a chat that belongs to a
-*different* world SHALL instead be refused, because a chat is not a copy the registry could
-safely adopt: rewriting which world it belongs to would rewrite `chat.world` on the very
-object the donor world still holds onto, silently binding the donor's own chat — and
-everything it stores afterwards — to this world's bot instead, while the donor itself
-observes nothing was ever reassigned. Moving a chat to a different world SHALL remain
-possible, said explicitly: detaching it from its current world first, so that it is
-registered here as the fresh chat it has been made to be, is one way; handing over an
-independent copy of it, or one rebuilt from the same declaration, are others — none of which
-require the registry itself to guess which one a test meant.
-
-The refusal SHALL name remedies that **work as written**: every remedy it offers SHALL be
-spelled with the detaching step included, since a chat obtained from a declaration or a copy
-of the world is itself owned by the world it came from and would otherwise land the reader on
-the same refusal again. The whole-mapping refusal SHALL likewise point at building the world
-that is wanted and using it whole, rather than at any form of transplanting chats between
-worlds — including the unwrapped plain mapping, which is refused chat by chat for the same
-reason.
+overridden results alike, and for objects read directly out of the world, whoever put them
+there.
 
 #### Scenario: A shortcut on a result reaches the world
 
@@ -953,6 +1172,18 @@ reason.
 - **WHEN** a user actor sends a message and the test reads it back out of the chat
 - **THEN** calling a shortcut on it works, exactly as on a message a call returned
 
+#### Scenario: A service message produced by a call is bound too
+
+- **WHEN** a modeled call produces a service message as a side effect and the test reads it
+  out of the chat
+- **THEN** shortcuts work on it, exactly as on a message a call returned
+
+### Requirement: An object that already carries a bot is not re-bound
+
+An object that already carries a bot belongs to whoever owns it and SHALL NOT be re-bound,
+so a second `Bot` sharing the environment's session never takes over the world's own
+objects.
+
 #### Scenario: An object the world already owns is not re-bound
 
 - **WHEN** a second `Bot` shares the environment's session and a call through it returns a
@@ -960,11 +1191,48 @@ reason.
 - **THEN** that message stays bound to the environment's own bot, while objects minted for
   that call are bound to the calling bot
 
+### Requirement: A world's chat registry keeps every chat wired to it
+
+The binding SHALL be a property of the world's chat registry rather than of one moment in
+its life: a chat SHALL be wired to its world however it is registered, including when the
+whole mapping is replaced after construction, so that messages stored afterwards are bound
+as usual.
+
 #### Scenario: Replacing the chat mapping does not detach the world
 
 - **WHEN** a test assigns a plain mapping of chats to the world after it was built
 - **THEN** those chats are wired to the world as declared ones are, and messages stored in
   them afterwards carry the bot
+
+### Requirement: A fresh chat is always adopted by the registry
+
+Registering a **fresh** chat, one that belongs to no world, SHALL always succeed: a plain
+mapping assigned wholesale SHALL be wrapped into a fresh registry wired to this world, and a
+bare `ChatState` SHALL be adopted the same way wherever it is registered.
+
+#### Scenario: A fresh chat is adopted normally
+
+- **WHEN** a test registers a `ChatState` that has never belonged to any world
+- **THEN** the registration succeeds and the chat is wired to the registering world
+
+### Requirement: Re-registering a chat in its own world changes nothing
+
+Registering a chat that already belongs to *this* same world SHALL be a no-op, so
+re-assigning a world's own `chats` to itself, or re-registering a chat under the id it
+already holds, changes nothing.
+
+#### Scenario: Re-registering a chat in its own world is a no-op
+
+- **WHEN** a test registers a chat under a world it already belongs to
+- **THEN** the chat's wiring is unchanged
+
+### Requirement: A chat of a different world is refused on every path into the registry
+
+Registering a chat that belongs to a *different* world SHALL be refused, because a chat is
+not a copy the registry could safely adopt. This ownership SHALL be enforced per chat, so
+that no path into the registry — a whole-mapping assignment, an item assignment, or any of
+the mapping protocol's own bulk-update operations — can register such a chat without the
+same refusal.
 
 #### Scenario: Assigning another world's live registry is refused
 
@@ -979,11 +1247,48 @@ reason.
 - **THEN** the assignment raises the same way, because each chat inside it still belongs to
   the donor world, and the donor's own chats stay wired to the donor
 
+#### Scenario: The donor's chat is never silently rebound
+
+- **WHEN** a chat belonging to one world is registered in another world
+- **THEN** the registration is refused and the donor's chat stays bound to the donor, since
+  adopting it would rewrite `chat.world` on the very object the donor still holds, silently
+  binding the chat — and everything it stores afterwards — to the other world's bot
+
+#### Scenario: Item assignment and bulk updates are refused too
+
+- **WHEN** a chat belonging to a different world is registered by item assignment or by a
+  bulk-update operation of the mapping protocol
+- **THEN** the registration is refused in the same way as a whole-mapping assignment
+
+### Requirement: A chat can still be moved between worlds explicitly
+
+Moving a chat to a different world SHALL remain possible, said explicitly: detaching it from
+its current world first, so that it is registered here as the fresh chat it has been made to
+be, is one way; handing over an independent copy of it, or one rebuilt from the same
+declaration, are others. None of these SHALL require the registry itself to guess which one
+a test meant.
+
 #### Scenario: A chat detached from its world can be moved
 
 - **WHEN** a test removes a chat from its current world's registry, marks it as belonging to
   no world, and then registers it in a different world
 - **THEN** the registration succeeds, and the chat is now wired to the new world alone
+
+#### Scenario: An independent copy or a rebuilt chat can be registered
+
+- **WHEN** a test hands a world an independent copy of a chat, or one rebuilt from the same
+  declaration
+- **THEN** the registration succeeds, with the registry not guessing which move the test
+  meant
+
+### Requirement: A refusal names remedies that work as written
+
+The refusal SHALL name remedies that **work as written**: every remedy it offers SHALL be
+spelled with the detaching step included, since a chat obtained from a declaration or a copy
+of the world is itself owned by the world it came from and would otherwise land the reader
+on the same refusal again. The whole-mapping refusal SHALL instead point at building the
+world that is wanted and using it whole, rather than at any form of transplanting chats
+between worlds.
 
 #### Scenario: Every remedy a refusal names actually runs
 
@@ -992,15 +1297,12 @@ reason.
 - **THEN** the destination world ends up holding a correctly wired chat, rather than the same
   refusal being raised by the very line the message recommended
 
-#### Scenario: A fresh chat is adopted normally
+#### Scenario: The whole-mapping refusal points at building the world wanted
 
-- **WHEN** a test registers a `ChatState` that has never belonged to any world
-- **THEN** the registration succeeds and the chat is wired to the registering world
-
-#### Scenario: Re-registering a chat in its own world is a no-op
-
-- **WHEN** a test registers a chat under a world it already belongs to
-- **THEN** the chat's wiring is unchanged
+- **WHEN** a whole mapping, including an unwrapped plain mapping refused chat by chat for
+  the same reason, is refused
+- **THEN** the message points at building the world that is wanted and using it whole, not
+  at transplanting chats between worlds
 
 ### Requirement: Handlers receive the world's own objects
 
@@ -1008,14 +1310,6 @@ An update SHALL arrive at the dispatcher already bound, so that the framework do
 re-create it and the object a handler receives is the object the world stores. An update
 carrying objects that belong to a *different* environment SHALL be copied instead of
 claimed, and the message it carries SHALL be registered in the destination chat.
-
-Registering a carried message whose id is already taken by a *different* message in the
-destination chat SHALL raise `WorldLookupError` naming both messages, rather than silently
-keeping the one already there — a handler reacting to the incoming update would otherwise work
-on a message the world never stores, and a `wait_for_message` waiting for it would wait
-forever with nothing to explain why. Registering one whose id is taken by an equal message —
-the same update fed again, or an equal one built the same way twice — SHALL stay the silent
-no-op it always was.
 
 #### Scenario: Identity survives the dispatcher
 
@@ -1027,6 +1321,14 @@ no-op it always was.
 - **WHEN** one update object is fed to two environments
 - **THEN** the second environment answers in its own world, and the reply it sends does not
   reuse the incoming message's identifier
+
+### Requirement: A carried message whose id is taken is refused only when it differs
+
+Registering a carried message whose id is already taken by a *different* message in the
+destination chat SHALL raise `WorldLookupError` naming both messages, rather than silently
+keeping the one already there. Registering one whose id is taken by an equal message — the
+same update fed again, or an equal one built the same way twice — SHALL stay the silent
+no-op it always was.
 
 #### Scenario: A carried message id colliding with a different message is refused
 
@@ -1041,14 +1343,19 @@ no-op it always was.
   fed again
 - **THEN** no error is raised and the chat's state is unchanged
 
+#### Scenario: A silently kept message would hide the failure
+
+- **WHEN** a carried message is refused because its id is taken by a different message
+- **THEN** the failure is raised at registration, so a handler never works on a message the
+  world does not store and a `wait_for_message` never waits forever with nothing to explain
+  why
+
 ### Requirement: A chat's messages are ordered by identifier
 
 The list of messages a chat holds SHALL be kept in ascending `message_id` order as messages
 are stored, so that reading its last element means the newest message whoever produced it.
-Almost every producer allocates its identifier from the chat itself, but a message an update
-carried in from another environment was numbered there, and appending one could leave the list
-unsorted. The identifier a message carries SHALL NOT be rewritten to achieve the ordering,
-since it is how a test correlates what it fed with what the world holds.
+The identifier a message carries SHALL NOT be rewritten to achieve the ordering, since it is
+how a test correlates what it fed with what the world holds.
 
 #### Scenario: A message carried in from elsewhere lands in order
 
@@ -1062,22 +1369,20 @@ since it is how a test correlates what it fed with what the world holds.
 - **WHEN** such a message is registered
 - **THEN** it is found under the identifier it arrived with
 
+#### Scenario: A message numbered elsewhere cannot leave the list unsorted
+
+- **WHEN** a message carried in from another environment, numbered there rather than
+  allocated by the chat, is appended
+- **THEN** the list is still in ascending order
+
 ### Requirement: Objects a test hands to a call stay the test's own
 
 Values the code under test passes into a Bot API call SHALL be copied before they reach
 world state, so an object a test declares once — a shared `reply_markup`, a
 `ChatPermissions` constant, a list of commands — is never mutated, never bound to a bot, and
 never keeps a disposed environment alive. The value objects the world stores SHALL likewise
-be copied on the way out. A `Message` is the deliberate exception: the message a call returns
-is the one the chat holds.
-
-A value that already belongs to *this* environment's bot is the world's own object, not the
-caller's, and SHALL be passed through by identity instead of copied — so a stored message
-named as a field keeps tracking later edits to it, and two fields naming one stored object go
-on sharing it. That rule SHALL be the same one on every path a value enters the world by: a
-trigger's fields and an edit's changes SHALL NOT disagree about the same value. Ownership
-SHALL be decided by identity, so a value belonging to a *different* environment is still
-copied.
+be copied on the way out, except a `Message`: the message a call returns is the one the chat
+holds.
 
 #### Scenario: A shared constant is not captured by the world
 
@@ -1107,6 +1412,14 @@ copied.
 - **THEN** each call is answered with its own copy, and the declared object is neither
   mutated nor left bound to any bot
 
+### Requirement: The world's own objects are passed through by identity
+
+A value that already belongs to *this* environment's bot is the world's own object, not the
+caller's, and SHALL be passed through by identity instead of copied. Ownership SHALL be
+decided by identity, so a value belonging to a *different* environment is still copied. The
+rule SHALL be the same on every path a value enters the world by: a trigger's fields and an
+edit's changes SHALL NOT disagree about the same value.
+
 #### Scenario: An edit aliases what a send aliases
 
 - **WHEN** a test names a message the world already holds in the fields of an edit trigger,
@@ -1118,6 +1431,11 @@ copied.
 - **WHEN** a trigger field names an object bound to a different environment's bot
 - **THEN** the world stores a copy bound to this environment's bot, and the original is left
   as it was
+
+#### Scenario: A stored message named as a field keeps tracking edits
+
+- **WHEN** a stored message is named as a field and is edited afterwards
+- **THEN** the field shows the later edits, since it is the same object
 
 ### Requirement: Telegram errors behave like production errors
 
@@ -1146,21 +1464,10 @@ Telegram.
 ### Requirement: A gap in the test's own setup fails the test, not the bot
 
 A refusal caused by something the blueprint never declared, or by a surface the toolkit does
-not model, SHALL be raised as `WorldLookupError`, which the environment never converts into a
-Telegram error. It SHALL propagate out of the call the bot made and fail the test, so the
+not model, SHALL be raised as `WorldLookupError`, which the environment never converts into
+a Telegram error. It SHALL propagate out of the call the bot made and fail the test, so the
 bot's own error handling cannot swallow it and leave a green test that exercised the wrong
 branch. Its message SHALL say what to declare or how to proceed.
-
-The two kinds SHALL be distinguishable by type: `ApiRejection` is something Telegram itself
-would answer, and is what `handle_call` turns into a `TelegramBadRequest`, while
-`WorldLookupError` is not.
-
-A chat named by an outbound call and not declared SHALL be one of these gaps. Because the
-wording Telegram uses for it — "chat not found" — is a branch bots really do handle, reporting
-it as a Telegram error let a missing declaration run the blocked-user path and pass. Its
-message SHALL enumerate the chats the world does declare, SHALL point at the declaration and
-the on-demand helper that would add the missing one, and SHALL name the override that produces
-the real API refusal for a test that wants that branch.
 
 #### Scenario: An undeclared entity is not reported as a Bad Request
 
@@ -1168,26 +1475,6 @@ the real API refusal for a test that wants that branch.
   business connection the blueprint never declared
 - **THEN** the call raises `WorldLookupError` rather than `TelegramBadRequest`, and the
   message names what is missing
-
-#### Scenario: An undeclared chat says what this world has
-
-- **WHEN** an outbound call names a chat identifier or `@username` the blueprint never
-  declared
-- **THEN** the failure lists the declared chats with their type and readable name, or says the
-  world declares none, and names how to declare the missing one
-
-#### Scenario: A declared user with no private chat is told exactly that
-
-- **WHEN** the identifier belongs to a declared user whose private chat was never opened
-- **THEN** the failure says a bot cannot write first, and names declaring the chat, opening it
-  through the world, and having the user write first
-
-#### Scenario: The real refusal stays testable
-
-- **WHEN** a test declares `TelegramBadRequest` with Telegram's "chat not found" wording as
-  the outcome of the sending method
-- **THEN** the bot's own `except TelegramBadRequest` branch runs, without the world pretending
-  to be short of a chat
 
 #### Scenario: The bot's own error handling cannot hide it
 
@@ -1200,36 +1487,60 @@ the real API refusal for a test that wants that branch.
 - **THEN** the call raises `WorldLookupError` naming inline messages as unmodeled, rather
   than claiming Telegram refused it
 
+### Requirement: Setup gaps and Telegram refusals are told apart by type
+
+The two kinds SHALL be distinguishable by type: `ApiRejection` is something Telegram itself
+would answer, and is what `handle_call` turns into a `TelegramBadRequest`, while
+`WorldLookupError` is not.
+
 #### Scenario: Reaching into the world directly surfaces the rejection unconverted
 
 - **WHEN** a test asks a chat for a message or a topic that is not there, outside any call
 - **THEN** `ApiRejection` is raised as it is, since there is no call to convert it into a
   Telegram error
 
+### Requirement: An undeclared chat named by an outbound call is a setup gap
+
+A chat named by an outbound call and not declared SHALL be one of these gaps rather than a
+Telegram error. The wording Telegram uses for it — "chat not found" — is a branch bots
+really do handle, so reporting it as a Telegram error let a missing declaration run the
+blocked-user path and pass.
+
+#### Scenario: A declared user with no private chat is told exactly that
+
+- **WHEN** the identifier belongs to a declared user whose private chat was never opened
+- **THEN** the failure says a bot cannot write first, and names declaring the chat, opening it
+  through the world, and having the user write first
+
+### Requirement: The undeclared-chat message says what to do
+
+The message of an undeclared-chat gap SHALL enumerate the chats the world does declare,
+SHALL point at the declaration and the on-demand helper that would add the missing one, and
+SHALL name the override that produces the real API refusal for a test that wants that
+branch.
+
+#### Scenario: An undeclared chat says what this world has
+
+- **WHEN** an outbound call names a chat identifier or `@username` the blueprint never
+  declared
+- **THEN** the failure lists the declared chats with their type and readable name, or says the
+  world declares none, and names how to declare the missing one
+
+#### Scenario: The real refusal stays testable
+
+- **WHEN** a test declares `TelegramBadRequest` with Telegram's "chat not found" wording as
+  the outcome of the sending method
+- **THEN** the bot's own `except TelegramBadRequest` branch runs, without the world pretending
+  to be short of a chat
+
 ### Requirement: Waiting for a condition the bot reaches on its own
 
 The environment SHALL provide a way to wait for an arbitrary condition, re-checking it and
 yielding to the event loop in between so that background work the trigger did not await can
-run. The condition SHALL be allowed to be synchronous or to return an awaitable, and whatever
-truthy value it produces SHALL be returned, so a wait can fetch as well as test. The wait
-SHALL be satisfied immediately when the condition already holds, and SHALL NOT exceed its
-stated timeout whatever polling interval it was given.
-
-The description of what is awaited SHALL be the second **positional** parameter, since these
-waits are written with lambdas and that description is the only thing a failure message can
-say about one; it SHALL still be accepted as a keyword. The timing parameters SHALL stay
-keyword-only.
-
-The condition wait SHALL accept one view to watch, or an iterable of several, named by
-declaration, by resolved chat or topic state, by a **user** — standing for that user's private
-chat with the bot, opened on demand exactly as the actor path opens it — or by bare chat id,
-mixed freely — the same
-vocabulary every waiting helper that names a chat or topic accepts — whose contents are
-appended to the timeout message when it gives up — because the condition is a lambda over
-state the failure cannot otherwise describe, while what the bot posted instead is usually
-the answer. The timeout message SHALL also name any override declared on the environment
-that has not yet answered a call, since a never-matched override is frequently the reason
-the condition never became true.
+run. The condition MAY be synchronous or return an awaitable, and whatever truthy value it
+produces SHALL be returned. The wait SHALL be satisfied immediately when the condition
+already holds, and SHALL NOT exceed its stated timeout whatever polling interval it was
+given.
 
 #### Scenario: A background task satisfies the wait
 
@@ -1252,10 +1563,49 @@ the condition never became true.
 - **WHEN** a wait is given a polling interval coarser than the time left
 - **THEN** it gives up at the timeout rather than overshooting by a whole interval
 
+#### Scenario: The condition may return an awaitable
+
+- **WHEN** the condition is asynchronous
+- **THEN** the wait awaits it on each check, as it would a synchronous one
+
+### Requirement: A wait describes what it awaits through its second positional parameter
+
+The description of what is awaited SHALL be the second **positional** parameter, since these
+waits are written with lambdas and that description is the only thing a failure message can
+say about one; it SHALL still be accepted as a keyword. The timing parameters SHALL stay
+keyword-only.
+
 #### Scenario: The description is passed without ceremony
 
 - **WHEN** a test passes what it is waiting for as the argument after the predicate
 - **THEN** a timeout quotes it, exactly as when it is passed by keyword
+
+#### Scenario: The timing parameters stay keyword-only
+
+- **WHEN** a test passes the timeout or polling interval positionally
+- **THEN** the call is refused, while the same values passed by keyword are accepted
+
+### Requirement: A condition wait names the views it watches
+
+The condition wait SHALL accept one view to watch, or an iterable of several, named by
+declaration, by resolved chat or topic state, by a **user** — standing for that user's
+private chat with the bot, opened on demand exactly as the actor path opens it — or by bare
+chat id, mixed freely. This is the same vocabulary every waiting helper that names a chat or
+topic accepts.
+
+#### Scenario: Views are named in mixed forms
+
+- **WHEN** a condition wait is given an iterable naming one view by declaration, another by
+  resolved state, a user, and a bare chat id
+- **THEN** each names the view it stands for, a user standing for that user's private chat
+  with the bot, opened on demand as the actor path opens it
+
+### Requirement: A condition wait's timeout shows the watched views
+
+The contents of the watched views SHALL be appended to the timeout message when the wait
+gives up, because the condition is a lambda over state the failure cannot otherwise
+describe, while what the bot posted instead is usually the answer. The timeout message SHALL
+also name any override declared on the environment that has not yet answered a call.
 
 #### Scenario: A watched chat's contents appear in a timeout
 
@@ -1267,16 +1617,31 @@ the condition never became true.
 
 A chat SHALL provide a wait for a message matching a predicate, and a forum topic SHALL
 provide the same wait over its own messages, so a message posted into a sibling topic never
-satisfies it. The predicate SHALL be matched against every message the view holds, not only
-the ones arriving after the call; an omitted predicate SHALL match any message. The message
-returned SHALL be usable like any other object the world holds.
+satisfies it. An omitted predicate SHALL match any message, and the message returned SHALL
+be usable like any other object the world holds.
 
-When more than one message matches, the one with the **highest `message_id`** SHALL be
-returned — the newest as Telegram numbers them, rather than whichever the view holds last, so
-the result does not depend on the list happening to be sorted.
+#### Scenario: A topic waits only on its own thread
 
-Both forms SHALL take the description of what is awaited as their second positional
-parameter, on the same terms as the condition wait.
+- **WHEN** a matching message is posted into a different topic of the same chat
+- **THEN** the wait is not satisfied by it
+
+#### Scenario: What the wait returns is usable
+
+- **WHEN** a test calls a shortcut on the message a wait returned
+- **THEN** it works, exactly as on any message read out of the world
+
+#### Scenario: An omitted predicate matches any message
+
+- **WHEN** a wait is given no predicate and the view holds a message
+- **THEN** the wait returns a message of the view
+
+### Requirement: A message wait matches held messages and returns the newest
+
+The predicate SHALL be matched against every message the view holds, not only the ones
+arriving after the call. When more than one message matches, the one with the **highest
+`message_id`** SHALL be returned — the newest as Telegram numbers them, rather than
+whichever the view holds last, so the result does not depend on the list happening to be
+sorted.
 
 #### Scenario: A message that is already there matches
 
@@ -1289,15 +1654,10 @@ parameter, on the same terms as the condition wait.
   them
 - **THEN** the one with the highest `message_id` is returned
 
-#### Scenario: A topic waits only on its own thread
+### Requirement: A message wait takes its description as the second positional parameter
 
-- **WHEN** a matching message is posted into a different topic of the same chat
-- **THEN** the wait is not satisfied by it
-
-#### Scenario: What the wait returns is usable
-
-- **WHEN** a test calls a shortcut on the message a wait returned
-- **THEN** it works, exactly as on any message read out of the world
+Both forms of the message wait SHALL take the description of what is awaited as their second
+positional parameter, on the same terms as the condition wait.
 
 #### Scenario: A message wait names what it wanted
 
@@ -1308,17 +1668,8 @@ parameter, on the same terms as the condition wait.
 
 The environment SHALL provide a wait that polls several views together and returns once
 **every** one of them holds a matching message, rather than requiring a test to await each
-view's own message wait in turn. It SHALL accept the same vocabulary a single condition
-wait's `watch=` accepts for naming what to watch — a declaration, a resolved chat or topic
-state, a user standing for their private chat with the bot, or a bare chat id, one on its own
-or any iterable of them mixed freely — so that a
-broadcast confined to one topic of a forum is expressible the same way a broadcast across
-whole chats is, and so that the broadcast this helper exists for — every player got their
-message — is written with the list of user declarations a test already holds. It SHALL apply the same newest-match rule a single view's own message wait
-applies, and a predicate that raises on a message SHALL count as "no match" for that message
-exactly as it does for a single view's own wait, with what it raised reported per view once
-the wait gives up. A timeout SHALL name only the views still missing a match, not the ones
-that already have one.
+view's own message wait in turn. It SHALL apply the same newest-match rule a single view's
+own message wait applies.
 
 #### Scenario: A broadcast wait returns once every chat has a match
 
@@ -1326,6 +1677,14 @@ that already have one.
   their ids at once
 - **THEN** the wait returns a result keyed by chat id, once every named chat holds a message
   satisfying the predicate
+
+### Requirement: A broadcast wait names its views like a condition wait
+
+The broadcast wait SHALL accept the same vocabulary a single condition wait's `watch=`
+accepts for naming what to watch — a declaration, a resolved chat or topic state, a user
+standing for their private chat with the bot, or a bare chat id, one on its own or any
+iterable of them mixed freely, so a broadcast confined to one topic of a forum is
+expressible the same way a broadcast across whole chats is.
 
 #### Scenario: Mixed forms of naming a chat are accepted
 
@@ -1345,6 +1704,13 @@ that already have one.
 - **WHEN** the views passed to the broadcast wait include a forum topic rather than a whole
   chat
 - **THEN** a match is required only among that topic's own messages, not the whole forum's
+
+### Requirement: A broadcast wait reports only what is missing
+
+A predicate that raises on a message SHALL count as "no match" for that message exactly as
+it does for a single view's own wait, with what it raised reported per view once the wait
+gives up. A timeout SHALL name only the views still missing a match, not the ones that
+already have one.
 
 #### Scenario: A raising predicate is reported per view on timeout
 
@@ -1426,35 +1792,7 @@ any setting, the default SHALL be five seconds.
 
 The environment SHALL provide an explicit, opt-in way to cancel and await every task the
 test itself spawned and left running — a bot's own scheduler or timer — and to report how
-many there were. Only tasks created after the environment was built SHALL count as the
-test's own; a task already running SHALL be left alone. Because the environment's
-construction may happen with no event loop running at all, "already running" SHALL be
-established as of this environment's first asynchronous action if that comes later than
-construction, so that a task belonging to another, wider-scoped fixture — one already alive
-by the time this environment's own tasks could possibly begin — is spared regardless of
-whether the environment could observe it at construction time. Where **neither** of those two
-moments could observe anything — the environment was built with no loop running and has since
-done nothing asynchronous at all — it SHALL be treated as owning no tasks: nothing is
-cancelled and the reported number is zero, since every task in the loop would otherwise count
-as this environment's own.
-
-A task that does not finish
-within a stated timeout after being cancelled SHALL fail loudly rather than being abandoned
-a second time. A task that ends with anything other than the cancellation it was sent SHALL
-also fail loudly, distinctly from a task that merely failed to finish in time, naming every
-such task and preserving the original failure so it can be inspected rather than only
-noted. This SHALL hold for a task that ended **before** the drain as much as for one it
-cancelled: a task that died of its own bug earlier in the test SHALL be reported the same way,
-which requires the environment to remember the tasks created while it is live rather than to
-rely on a listing of unfinished ones. Such a task SHALL NOT be counted in the number reported,
-which counts what was drained. Where a task that outlived its cancellation and a task that
-failed on its own are found together, the unfinished task SHALL be the failure raised, naming
-the other alongside it, and the preserved original failure SHALL be attached to whichever
-error is actually raised. This SHALL NOT be invoked automatically by environment teardown, since teardown has
-both an asynchronous and a synchronous path and an automatic drain would behave differently
-between them, and since cancelling tasks a test never mentioned as an invisible side effect
-of teardown would obscure a stopped background process as a mystery rather than a stated
-outcome.
+many there were.
 
 #### Scenario: Tasks the test left running are cancelled and awaited
 
@@ -1462,10 +1800,23 @@ outcome.
   drain, with a timeout that comfortably exceeds what cancellation takes
 - **THEN** the task is cancelled, awaited, and counted in the number returned
 
+### Requirement: Only tasks created after the environment was built are drained
+
+Only tasks created after the environment was built SHALL count as the test's own; a task
+already running SHALL be left alone.
+
 #### Scenario: A task present before the environment was built is left alone
 
 - **WHEN** a task was already running before the environment was constructed
 - **THEN** draining does not cancel it and does not count it
+
+### Requirement: A wider-scoped fixture's tasks are spared without a loop at construction
+
+Because the environment's construction may happen with no event loop running at all,
+"already running" SHALL be established as of this environment's first asynchronous action if
+that comes later than construction, so that a task belonging to another, wider-scoped
+fixture — one already alive by the time this environment's own tasks could possibly begin —
+is spared regardless of whether the environment could observe it at construction time.
 
 #### Scenario: A task belonging to a wider-scoped fixture is spared even without a running loop at construction
 
@@ -1475,11 +1826,35 @@ outcome.
 - **THEN** draining does not cancel that task, exactly as if it had been running at
   construction
 
+### Requirement: An environment that never acted asynchronously owns no tasks
+
+Where neither the environment's construction nor its first asynchronous action could observe
+anything — it was built with no loop running and has since done nothing asynchronous at all
+— it SHALL be treated as owning no tasks: nothing is cancelled and the reported number is
+zero, since every task in the loop would otherwise count as this environment's own.
+
+#### Scenario: An environment that never acted asynchronously drains nothing
+
+- **WHEN** an environment built with no event loop running is asked to drain before it has
+  fed any update or handled any call, while unrelated tasks are running in the loop
+- **THEN** nothing is cancelled and the reported number is zero
+
+### Requirement: A task that outlives its cancellation fails loudly
+
+A task that does not finish within a stated timeout after being cancelled SHALL fail loudly
+rather than being abandoned a second time.
+
 #### Scenario: A task that outlives its cancellation fails loudly
 
 - **WHEN** a task swallows its own cancellation and is still running after the stated
   timeout
 - **THEN** draining raises, naming the task, rather than abandoning it silently
+
+### Requirement: A task that ends with its own failure fails loudly
+
+A task that ends with anything other than the cancellation it was sent SHALL also fail
+loudly, distinctly from a task that merely failed to finish in time, naming every such task
+and preserving the original failure so it can be inspected rather than only noted.
 
 #### Scenario: A task that fails on its own is reported rather than silently retrieved
 
@@ -1488,6 +1863,14 @@ outcome.
 - **THEN** draining raises, naming that task and preserving its original failure, rather
   than treating it the same as a task that was simply cancelled on time
 
+### Requirement: A task that ended before the drain is reported too
+
+The loud failure SHALL hold for a task that ended **before** the drain as much as for one it
+cancelled: a task that died of its own bug earlier in the test SHALL be reported the same
+way, which requires the environment to remember the tasks created while it is live rather
+than to rely on a listing of unfinished ones. Such a task SHALL NOT be counted in the number
+reported, which counts what was drained.
+
 #### Scenario: A task that died before the drain is reported too
 
 - **WHEN** a task spawned during the test raises and finishes on its own well before the
@@ -1495,11 +1878,31 @@ outcome.
 - **THEN** draining still raises, naming that task and preserving its failure, rather than
   reporting that there was nothing to drain
 
-#### Scenario: An environment that never acted asynchronously drains nothing
+#### Scenario: A task that died earlier is not counted
 
-- **WHEN** an environment built with no event loop running is asked to drain before it has
-  fed any update or handled any call, while unrelated tasks are running in the loop
-- **THEN** nothing is cancelled and the reported number is zero
+- **WHEN** a task died on its own before the drain and another was cancelled by it
+- **THEN** the reported number counts only the cancelled one
+
+### Requirement: Two kinds of task failure found together are raised as the unfinished one
+
+Where a task that outlived its cancellation and a task that failed on its own are found
+together, the unfinished task SHALL be the failure raised, naming the other alongside it,
+and the preserved original failure SHALL be attached to whichever error is actually raised.
+
+#### Scenario: An unfinished task outranks a task that failed on its own
+
+- **WHEN** a drain finds a task that swallowed its cancellation and a task that failed with
+  an exception of its own
+- **THEN** the failure raised is the unfinished task's, naming the other task alongside it
+- **AND** the preserved original failure is attached to the error actually raised
+
+### Requirement: Draining is never automatic
+
+Draining SHALL NOT be invoked automatically by environment teardown, since teardown has both
+an asynchronous and a synchronous path and an automatic drain would behave differently
+between them, and since cancelling tasks a test never mentioned as an invisible side effect
+of teardown would obscure a stopped background process as a mystery rather than a stated
+outcome.
 
 #### Scenario: Draining is not automatic
 
@@ -1561,13 +1964,8 @@ topic's name, icon and open/closed state.
 
 The forum management methods SHALL be applied to the world instead of being synthesized:
 creating, editing, closing, reopening and deleting a topic, unpinning all of a topic's
-messages, and the General-topic variants. Each SHALL emit the matching service message
-into the chat where Telegram would; closing and reopening the General topic SHALL emit
-`forum_topic_closed` and `forum_topic_reopened` with no thread id. A private chat SHALL take
-creating, editing and deleting a topic, renaming the General topic and unpinning a topic's
-messages, and its topic messages SHALL carry their thread id; closing, reopening and hiding
-there SHALL fail with `the chat is not a supergroup forum`. No call SHALL report a private
-chat's `is_forum`.
+messages, and the General-topic variants. Each SHALL emit the matching service message into
+the chat where Telegram would.
 
 #### Scenario: Creating a topic
 
@@ -1581,11 +1979,6 @@ chat's `is_forum`.
 - **THEN** the topic's state follows, and `forum_topic_closed` and `forum_topic_reopened`
   service messages are appended in order
 
-#### Scenario: Closing the General topic
-
-- **WHEN** a handler closes the General topic
-- **THEN** it is closed, and a `forum_topic_closed` message with no thread id is appended
-
 #### Scenario: Editing a topic
 
 - **WHEN** a handler edits a topic's name or icon
@@ -1598,11 +1991,38 @@ chat's `is_forum`.
 - **THEN** the topic and its messages are gone from the chat, and a later attempt to post
   into it fails with `message thread not found`, as the Bot API server answers it
 
+### Requirement: Closing and reopening the General topic emit no thread id
+
+Closing and reopening the General topic SHALL emit `forum_topic_closed` and
+`forum_topic_reopened` with no thread id.
+
+#### Scenario: Closing the General topic
+
+- **WHEN** a handler closes the General topic
+- **THEN** it is closed, and a `forum_topic_closed` message with no thread id is appended
+
+### Requirement: A private chat takes only some forum methods
+
+A private chat SHALL take creating, editing and deleting a topic, renaming the General topic
+and unpinning a topic's messages, and its topic messages SHALL carry their thread id.
+Closing, reopening and hiding there SHALL fail with `the chat is not a supergroup forum`,
+and no call SHALL report a private chat's `is_forum`.
+
 #### Scenario: A topic in a private chat
 
 - **WHEN** a handler creates a topic in a private chat and sends into it
 - **THEN** the message carries the topic's thread id, is a topic message, and replies to
   nothing
+
+#### Scenario: Closing, reopening and hiding fail in a private chat
+
+- **WHEN** a handler closes, reopens or hides a topic in a private chat
+- **THEN** the call fails with `the chat is not a supergroup forum`
+
+#### Scenario: A private chat is never reported as a forum
+
+- **WHEN** a handler reads a private chat after creating a topic in it
+- **THEN** no call reports the chat's `is_forum`
 
 ### Requirement: Actors can be bound to a topic
 
@@ -2063,13 +2483,11 @@ closed SHALL raise `TelegramBadRequest`.
 ### Requirement: Reactions are world state
 
 The environment SHALL record the reactions set on a message, per user, and expose them
-through the chat rather than through the stored message — the Bot API has no message field
-carrying them. `setMessageReaction` (the bot's own reactions on one message),
-`deleteMessageReaction` (one actor's reaction off one message) and
-`deleteAllMessageReactions` (one actor's reactions across the whole chat) SHALL each be
-applied to that state with their own semantics rather than synthesized. The two
-message-scoped methods SHALL fail with `TelegramBadRequest` for an unknown or deleted
-message.
+through the chat rather than through the stored message, since the Bot API has no message
+field carrying them. `setMessageReaction`, `deleteMessageReaction` and
+`deleteAllMessageReactions` SHALL each be applied to that state with their own semantics
+rather than synthesized. The two message-scoped methods SHALL fail with `TelegramBadRequest`
+for an unknown or deleted message.
 
 #### Scenario: The bot reacts to a message
 
@@ -2099,6 +2517,12 @@ message.
 - **THEN** none of that user's reactions remain anywhere in the chat, while other users'
   reactions on the same messages are untouched — the method removes an actor's reactions
   chat-wide, not every reaction on one message
+
+#### Scenario: A message-scoped method fails for an unknown message
+
+- **WHEN** a handler calls `setMessageReaction` or `deleteMessageReaction` on an unknown or
+  deleted message
+- **THEN** the call raises `TelegramBadRequest`
 
 ### Requirement: Reaction triggers derive from stored state
 
@@ -2198,12 +2622,8 @@ rather than being synthesized.
 ### Requirement: Member annotations are stored and read back
 
 Setting an administrator's custom title or a member's tag SHALL write to that member's
-stored state, and `getChatMember` SHALL surface both. The two apply to different members
-and SHALL enforce that distinction: a custom title belongs to an administrator, while a
-tag belongs to a regular member. That distinction SHALL hold over time as well as at the
-moment of writing: losing the administrator status SHALL take the custom title with it, while
-a tag SHALL outlive any status change, because the Bot API carries it on every membership
-variant.
+stored state, and `getChatMember` SHALL surface both. A custom title SHALL belong to an
+administrator and a tag to a regular member, and that distinction SHALL be enforced.
 
 #### Scenario: Custom title round-trips
 
@@ -2224,6 +2644,17 @@ variant.
 
 - **WHEN** a handler sets a tag for an administrator
 - **THEN** the call raises `TelegramBadRequest`, because the Bot API tags regular members
+
+#### Scenario: Losing administrator status takes the custom title with it
+
+- **WHEN** an administrator with a custom title loses that status
+- **THEN** the custom title is gone with it
+
+#### Scenario: A tag outlives any status change
+
+- **WHEN** a member carrying a tag changes status
+- **THEN** the tag is still reported, because the Bot API carries it on every membership
+  variant
 
 ### Requirement: The bot's own standing in a chat is declarable
 
@@ -2253,12 +2684,8 @@ SHALL be an ordinary member of every such chat.
 ### Requirement: Membership rights and permissions are declared state
 
 A member's administrator rights and a restricted member's permissions SHALL be part of the
-declared and stored membership, not invented when the membership is read. A blueprint SHALL be
-able to declare them for any member, the bot included, through `Blueprint.set_member`; an
-administrator declared without rights SHALL hold the ordinary administrator rights, and a
-restriction declared without permissions SHALL deny everything. `administrator_rights(...)`
-SHALL build the ordinary administrator rights with named overrides, so the case a test cares
-about — an administrator lacking one right — is a single declaration.
+declared and stored membership, not invented when the membership is read. A blueprint SHALL
+be able to declare them for any member, the bot included, through `Blueprint.set_member`.
 
 #### Scenario: The bot is declared to lack a right
 
@@ -2286,23 +2713,22 @@ about — an administrator lacking one right — is a single declaration.
 - **WHEN** `getChatAdministrators` is called for a chat with a declared administrator
 - **THEN** the entry for that administrator carries the declared rights
 
-### Requirement: Promotion and restriction persist what they granted
+#### Scenario: A restriction declared without permissions denies everything
+
+- **WHEN** a member is declared as restricted with no permissions
+- **THEN** reading the membership reports every permission as denied
+
+#### Scenario: A single withheld right is one declaration
+
+- **WHEN** a blueprint declares an administrator with `administrator_rights(...)` naming one
+  right as overridden
+- **THEN** the membership carries the ordinary administrator rights with only that override
+  applied
+
+### Requirement: Promotion persists the whole rights mask
 
 `promoteChatMember` SHALL store the whole rights mask the request carried, so a right the
-request did not pass is not granted and is reported as such. A request in which no right comes
-out true SHALL demote the member, as the Bot API documents; any right that is true — including
-the anonymity flag alone — SHALL keep the member an administrator. A demotion SHALL also clear
-the member's custom title, since that is an administrator's and the plain-member variant has no
-field for one; the member's tag SHALL survive it. `restrictChatMember` SHALL clear any
-administrator rights the member held.
-
-`restrictChatMember` and `setChatPermissions` SHALL store what the request *grants* rather than
-the mask it passed. Unless the request sets `use_independent_chat_permissions`, granting
-permission to send other message kinds or web page previews SHALL grant every kind of message,
-and granting polls SHALL grant messages — so the permissions read back may be broader than the
-ones handed in, as they are against the real API. Independently of that switch, a permission
-the request leaves unset SHALL take the value of the one the Bot API documents it as following.
-Neither method SHALL mutate or retain the caller's own permissions object.
+request did not pass is not granted and is reported as such.
 
 #### Scenario: A promotion grants exactly what was asked for
 
@@ -2314,6 +2740,12 @@ Neither method SHALL mutate or retain the caller's own permissions object.
 - **WHEN** a handler promotes the same member again with a different set of rights
 - **THEN** the member holds the second set, not the union of both
 
+### Requirement: A promotion that grants nothing demotes
+
+A promotion request in which no right comes out true SHALL demote the member, as the Bot API
+documents; any right that is true — including the anonymity flag alone — SHALL keep the
+member an administrator.
+
 #### Scenario: Hiding an administrator is not a demotion
 
 - **WHEN** a handler promotes a member passing only the anonymity flag
@@ -2324,6 +2756,11 @@ Neither method SHALL mutate or retain the caller's own permissions object.
 - **WHEN** a handler promotes a member passing no rights, or every right as false
 - **THEN** the member becomes an ordinary member, and can be promoted again later
 
+### Requirement: A demotion clears the title and keeps the tag
+
+A demotion SHALL clear the member's custom title, since that is an administrator's and the
+plain-member variant has no field for one; the member's tag SHALL survive it.
+
 #### Scenario: A demotion does not leave a title behind
 
 - **WHEN** a member with a custom title is demoted and later promoted again
@@ -2333,6 +2770,23 @@ Neither method SHALL mutate or retain the caller's own permissions object.
 
 - **WHEN** a member carrying a tag is demoted
 - **THEN** `getChatMember` reports the tag on the plain-member result
+
+### Requirement: Restricting a member clears administrator rights
+
+`restrictChatMember` SHALL clear any administrator rights the member held.
+
+#### Scenario: A restriction removes administrator rights
+
+- **WHEN** a handler restricts an administrator
+- **THEN** the member no longer holds any administrator rights
+
+### Requirement: A restriction stores what the request grants
+
+`restrictChatMember` and `setChatPermissions` SHALL store what the request *grants* rather
+than the mask it passed. Unless the request sets `use_independent_chat_permissions`,
+granting permission to send other message kinds or web page previews SHALL grant every kind
+of message, and granting polls SHALL grant messages — so the permissions read back may be
+broader than the ones handed in, as they are against the real API.
 
 #### Scenario: A restriction stores what it grants
 
@@ -2345,16 +2799,27 @@ Neither method SHALL mutate or retain the caller's own permissions object.
 - **WHEN** the same restriction sets `use_independent_chat_permissions`
 - **THEN** only the permission that was passed is reported as granted
 
+#### Scenario: Setting chat permissions applies the same couplings
+
+- **WHEN** a handler sets chat permissions granting other message kinds
+- **THEN** a later `getChat` reports every message kind as permitted
+
+### Requirement: An unset permission follows the one it defaults to
+
+Independently of the independent-permissions switch, a permission the request leaves unset
+SHALL take the value of the one the Bot API documents it as following. Neither method SHALL
+mutate or retain the caller's own permissions object.
+
 #### Scenario: An omitted permission follows the one it defaults to
 
 - **WHEN** a request grants a permission that another one defaults to, with or without
   independent permissions
 - **THEN** the dependent permission is reported as granted too
 
-#### Scenario: Setting chat permissions applies the same couplings
+#### Scenario: The caller's permissions object is left alone
 
-- **WHEN** a handler sets chat permissions granting other message kinds
-- **THEN** a later `getChat` reports every message kind as permitted
+- **WHEN** a handler passes a permissions object to either method
+- **THEN** the method neither mutates it nor retains it
 
 ### Requirement: Rights are reported per chat type
 
@@ -2675,11 +3140,7 @@ environment built from it SHALL start from an independent copy.
 ### Requirement: The sticker set lifecycle is modeled
 
 Creating a set, adding, deleting and replacing its stickers, renaming it and deleting it
-SHALL be applied to that registry, and `getStickerSet` SHALL report the result. A name
-already taken, and replacing a sticker the named set does not contain, SHALL fail with
-`TelegramBadRequest`, as Telegram does. Naming a set that does not exist, or a sticker that is
-in no set at all, SHALL fail with `WorldLookupError`: the environment holds only the sets the
-test declared or created, so that is a gap in the setup rather than a Telegram rejection.
+SHALL be applied to that registry, and `getStickerSet` SHALL report the result.
 
 #### Scenario: Create then add then read back
 
@@ -2690,6 +3151,19 @@ test declared or created, so that is a gap in the setup rather than a Telegram r
 
 - **WHEN** a handler reads a set to decide whether it is full, then adds a sticker
 - **THEN** the count it read reflects the stickers actually in the set
+
+#### Scenario: Deleting a set removes it
+
+- **WHEN** a handler deletes a set and then reads it
+- **THEN** the read raises `WorldLookupError`
+
+### Requirement: Sticker set refusals separate Telegram rejections from setup gaps
+
+A name already taken, and replacing a sticker the named set does not contain, SHALL fail
+with `TelegramBadRequest`, as Telegram does. Naming a set that does not exist, or a sticker
+that is in no set at all, SHALL fail with `WorldLookupError`: the environment holds only the
+sets the test declared or created, so that is a gap in the setup rather than a Telegram
+rejection.
 
 #### Scenario: Creating a set whose name is taken fails
 
@@ -2706,11 +3180,6 @@ test declared or created, so that is a gap in the setup rather than a Telegram r
 - **WHEN** a handler replaces a sticker the named set does not contain
 - **THEN** the call raises `TelegramBadRequest`, while deleting a sticker that is in no set at
   all raises `WorldLookupError`, since no set is named to reject it
-
-#### Scenario: Deleting a set removes it
-
-- **WHEN** a handler deletes a set and then reads it
-- **THEN** the read raises `WorldLookupError`
 
 ### Requirement: Sticker files are seeded, not modeled
 
@@ -3492,11 +3961,7 @@ An administrator the bot promoted SHALL report `can_be_edited` as true, and othe
 What a blueprint declares SHALL read back as the same state reached through API calls:
 declared permissions SHALL apply the documented defaults, a declared topic SHALL be created
 by the path `createForumTopic` takes, and a declared poll SHALL be stored on a message in its
-chat. A topic declared with `creator=`, a declared user or the bot, SHALL store that creator,
-SHALL have its `forum_topic_created` from them, and SHALL give them the creator's exemptions:
-the bot's from `TOPIC_CLOSED` and from `can_manage_topics` for its own topic, and a user
-actor's from `can_manage_topics`. A topic declared without one SHALL be no one's, and its
-`forum_topic_created` SHALL be from the bot.
+chat.
 
 #### Scenario: Declared permissions follow their defaults
 
@@ -3508,6 +3973,14 @@ actor's from `can_manage_topics`. A topic declared without one SHALL be no one's
 
 - **WHEN** a blueprint declares a poll in a chat
 - **THEN** the chat holds a message carrying that poll, and users can vote in it
+
+### Requirement: A declared topic names who opened it
+
+A topic declared with `creator=`, a declared user or the bot, SHALL store that creator, SHALL
+have its `forum_topic_created` from them, and SHALL give them the creator's exemptions: the
+bot's from `TOPIC_CLOSED` and from `can_manage_topics` for its own topic, and a user actor's
+from `can_manage_topics`. A topic declared without one SHALL be no one's, and its
+`forum_topic_created` SHALL be from the bot.
 
 #### Scenario: A topic the bot opened
 
@@ -3731,15 +4204,9 @@ messages.
 ### Requirement: Topic refusals use Telegram's wording
 
 A send, copy or forward the bot makes into a thread the chat does not have SHALL fail with
-`message thread not found`, whether the chat never had it or `deleteForumTopic` removed it, as
-the Bot API server looks the topic up first, after the bot's standing and before the message
-replied to. So SHALL one into thread 1 of a forum supergroup, the General topic's id. A forum
-method naming a topic `deleteForumTopic` removed SHALL fail with `TOPIC_DELETED`, and one naming
-a thread the chat never had with `message thread not found`; both are the server's answers,
-which its open source does not spell out. Message 1 of a supergroup or a channel SHALL be
-reserved for the chat's creation, so no topic SHALL be numbered 1. A topic a test or an actor
-names that the chat lacks, or an actor bound to a topic deleted since, SHALL be a setup error
-that names the topic, never a Telegram error.
+`message thread not found`, whether the chat never had it or `deleteForumTopic` removed it,
+and so SHALL one into thread 1 of a forum supergroup, the General topic's id. The Bot API
+server looks the topic up first, after the bot's standing and before the message replied to.
 
 #### Scenario: Posting into an unknown thread
 
@@ -3751,21 +4218,42 @@ that names the topic, never a Telegram error.
 - **WHEN** a handler deletes a topic and then posts into it
 - **THEN** the call raises `TelegramBadRequest` with `message thread not found`
 
+#### Scenario: Posting into thread 1
+
+- **WHEN** a handler sends a message with thread id 1 into a forum
+- **THEN** the call raises `TelegramBadRequest` with `message thread not found`
+
+### Requirement: Forum methods on a missing topic fail as the server answers
+
+A forum method naming a topic `deleteForumTopic` removed SHALL fail with `TOPIC_DELETED`,
+and one naming a thread the chat never had with `message thread not found`. Both are the
+server's answers, which its open source does not spell out.
+
 #### Scenario: Closing a deleted topic
 
 - **WHEN** a handler deletes a topic and then closes it
 - **THEN** the call raises `TelegramBadRequest` with `TOPIC_DELETED`
 
-#### Scenario: Posting into thread 1
+#### Scenario: A forum method naming a thread the chat never had
 
-- **WHEN** a handler sends a message with thread id 1 into a forum
+- **WHEN** a handler closes a thread the chat never had
 - **THEN** the call raises `TelegramBadRequest` with `message thread not found`
+
+### Requirement: No topic is numbered 1
+
+Message 1 of a supergroup or a channel SHALL be reserved for the chat's creation, so no
+topic SHALL be numbered 1.
 
 #### Scenario: Message numbering
 
 - **WHEN** a test declares a basic group, a supergroup and a channel and each gets its first
   message
 - **THEN** the basic group's is numbered 1, and the supergroup's and the channel's 2
+
+### Requirement: A topic the chat lacks is a setup error
+
+A topic a test or an actor names that the chat lacks, or an actor bound to a topic deleted
+since, SHALL be a setup error that names the topic, never a Telegram error.
 
 #### Scenario: A test names an unknown topic
 
@@ -3808,19 +4296,29 @@ message SHALL use no message id. User actors SHALL NOT be refused.
 
 ### Requirement: A topic message replies to the topic's root
 
-A message stored in a supergroup's forum topic other than General that replies to no
-message of its chat SHALL carry the topic's `forum_topic_created` service message as its
+A message stored in a supergroup's forum topic other than General that replies to no message
+of its chat SHALL carry the topic's `forum_topic_created` service message as its
 `reply_to_message`, and SHALL be marked as a topic message. This SHALL hold for the bot's
-sends, copies, forwards and topic service messages and for messages a user actor sends. An
-explicit reply SHALL keep its own target, and a reply in another chat SHALL still carry the
-root. A replied message SHALL carry no `reply_to_message` of its own, for an actor's reply
-as for the bot's. A private chat's topic SHALL give no implicit reply.
+sends, copies, forwards and topic service messages and for messages a user actor sends.
 
 #### Scenario: A handler reads the topic name
 
 - **WHEN** an actor bound to a topic sends a message
 - **THEN** the handler receives it with `reply_to_message.forum_topic_created` naming the
   topic
+
+#### Scenario: The bot's own topic messages carry the root
+
+- **WHEN** the bot sends, copies or forwards a message into a topic, or a topic service
+  message is stored
+- **THEN** the stored message replies to the topic's `forum_topic_created` message and is
+  marked as a topic message
+
+### Requirement: A reply inside a topic keeps its own target
+
+An explicit reply SHALL keep its own target, and a reply in another chat SHALL still carry
+the root. A replied message SHALL carry no `reply_to_message` of its own, for an actor's
+reply as for the bot's.
 
 #### Scenario: An explicit reply keeps its target
 
@@ -3833,38 +4331,32 @@ as for the bot's. A private chat's topic SHALL give no implicit reply.
 - **THEN** the stored reply's `reply_to_message` is that message, carrying no reply of its
   own
 
+#### Scenario: A reply in another chat still carries the root
+
+- **WHEN** a message in a topic replies to a message of another chat
+- **THEN** the stored message still carries the topic's root as its `reply_to_message`
+
+### Requirement: General and private-chat topics give no implicit reply
+
+The General topic has no root to reply to, and a private chat's topic SHALL give no implicit
+reply.
+
 #### Scenario: The General topic has no root
 
 - **WHEN** the bot sends a message into the General topic of a forum
 - **THEN** the stored message replies to nothing
 
+#### Scenario: A private chat's topic gives no implicit reply
+
+- **WHEN** a message is stored in a topic of a private chat and replies to nothing
+- **THEN** the stored message carries no implicit `reply_to_message`
+
 ### Requirement: The bot's own calls are checked against its rights
 
 Unless the environment is built with `enforce_bot_rights=False`, a call the bot makes into a
 group, a supergroup or a channel SHALL fail with Telegram's wording when the bot's standing
-there does not allow it. The rules SHALL be one table from method type to the right it takes,
-consulted once per call, for recorded-only methods too. Pinning and unpinning SHALL take
-`can_pin_messages`, or `can_edit_messages` in a channel. Banning, unbanning and restricting
-members and sender chats, and changing the chat's permissions, SHALL take
-`can_restrict_members`, and promoting `can_promote_members`; unbanning and promoting in a basic
-group SHALL fail with `method is available only in supergroup and channel chats` before any
-right is read. Touching the owner SHALL fail with `can't remove chat owner` before the rights in
-a supergroup or a channel. Changing the chat's title, description, photo or sticker set SHALL
-take `can_change_info`, setting a member's tag `can_manage_tags`, approving and declining
-suggested posts `can_post_messages`, and managing invite links and join requests
-`can_invite_users`. A topic method SHALL check the rights before it looks the topic up. Creating
-a topic SHALL take `can_manage_topics`, and so SHALL editing, closing and reopening a topic the
-bot did not create and every General topic method but unpinning; deleting a topic the bot did
-not create SHALL take `can_delete_messages`. Deleting someone else's message SHALL take
-administrator status in a basic group and `can_delete_messages` elsewhere. A send, copy or
-forward by a bot that is not an administrator SHALL take the chat's permission for that kind of
-message, narrowed by the bot's own restriction; a live location SHALL be refused as one, and
-paid media SHALL be checked only when forwarded or copied, taking both `can_send_photos` and
-`can_send_videos`. Posting into a channel SHALL take `can_post_messages`. The owner SHALL hold
-every right, and the chat's permissions SHALL NOT grant the bot an administrator's right. A bot
-that was removed from the chat or left it SHALL be refused every such call and every send with
-`TelegramForbiddenError` and the Bot API server's text. Private chats and user actors SHALL NOT
-be checked. With `enforce_bot_rights=False`, the bot SHALL hold every right.
+there does not allow it. The rules SHALL be one table from method type to the right it
+takes, consulted once per call, for recorded-only methods too.
 
 #### Scenario: A member bot pins
 
@@ -3872,17 +4364,32 @@ be checked. With `enforce_bot_rights=False`, the bot SHALL hold every right.
 - **THEN** the call raises `TelegramBadRequest` with
   `not enough rights to manage pinned messages in the chat`
 
+### Requirement: Rights enforcement does not apply when opted out or to private chats
+
+With `enforce_bot_rights=False`, the bot SHALL hold every right. Private chats and user
+actors SHALL NOT be checked.
+
+#### Scenario: Opting out
+
+- **WHEN** the environment is built with `enforce_bot_rights=False`
+- **THEN** the same bot pins, bans and sends as if it held every right
+
+#### Scenario: Private chats and user actors are never checked
+
+- **WHEN** the bot calls a method in a private chat, or a user actor acts in a group
+- **THEN** no bot right is consulted
+
+### Requirement: Pinning, moderation and promotion take their rights
+
+Pinning and unpinning SHALL take `can_pin_messages`, or `can_edit_messages` in a channel.
+Banning, unbanning and restricting members and sender chats, and changing the chat's
+permissions, SHALL take `can_restrict_members`, and promoting `can_promote_members`.
+
 #### Scenario: A member bot bans
 
 - **WHEN** the bot, a plain member of a supergroup, bans a user
 - **THEN** the call raises `TelegramBadRequest` with
   `not enough rights to restrict/unrestrict chat member`, and the user stays
-
-#### Scenario: A member bot renames the chat
-
-- **WHEN** the bot, a plain member of a group, sets the chat's title
-- **THEN** the call raises `TelegramBadRequest` with
-  `not enough rights to change chat title`
 
 #### Scenario: A member bot changes the chat's permissions
 
@@ -3890,17 +4397,94 @@ be checked. With `enforce_bot_rights=False`, the bot SHALL hold every right.
 - **THEN** the call raises `TelegramBadRequest` with
   `not enough rights to change chat permissions`, and the permissions stay
 
+#### Scenario: Pinning in a channel takes the edit right
+
+- **WHEN** the bot, an administrator of a channel without `can_edit_messages`, pins a
+  message
+- **THEN** the call fails with Telegram's wording, while the same call in a supergroup needs
+  `can_pin_messages`
+
+#### Scenario: Promoting takes the promote right
+
+- **WHEN** the bot, an administrator without `can_promote_members`, promotes a member
+- **THEN** the call fails with Telegram's wording
+
+### Requirement: Chat information, tags, suggested posts and invitations take their rights
+
+Changing the chat's title, description, photo or sticker set SHALL take `can_change_info`,
+and setting a member's tag `can_manage_tags`. Approving and declining suggested posts SHALL
+take `can_post_messages`, and managing invite links and join requests `can_invite_users`.
+
+#### Scenario: A member bot renames the chat
+
+- **WHEN** the bot, a plain member of a group, sets the chat's title
+- **THEN** the call raises `TelegramBadRequest` with
+  `not enough rights to change chat title`
+
+#### Scenario: Each remaining call takes its right
+
+- **WHEN** the bot lacks the right and sets a member's tag, approves or declines a suggested
+  post, or manages an invite link or a join request
+- **THEN** the call fails with Telegram's wording, the right needed being `can_manage_tags`,
+  `can_post_messages` or `can_invite_users` respectively
+
+### Requirement: A basic group and the owner are refused before any right is read
+
+Unbanning and promoting in a basic group SHALL fail with `method is available only in
+supergroup and channel chats` before any right is read. Touching the owner SHALL fail with
+`can't remove chat owner` before the rights in a supergroup or a channel.
+
 #### Scenario: Promoting in a basic group
 
 - **WHEN** the bot, an administrator of a basic group, promotes a member
 - **THEN** the call raises `TelegramBadRequest` with
   `method is available only in supergroup and channel chats`
 
+#### Scenario: Touching the owner is refused first
+
+- **WHEN** the bot bans or restricts the owner of a supergroup or a channel
+- **THEN** the call fails with `can't remove chat owner`, before any right is consulted
+
+### Requirement: Topic methods check the rights before the topic is looked up
+
+A topic method SHALL check the rights before it looks the topic up. Creating a topic SHALL
+take `can_manage_topics`, and so SHALL editing, closing and reopening a topic the bot did
+not create and every General topic method but unpinning; deleting a topic the bot did not
+create SHALL take `can_delete_messages`.
+
 #### Scenario: The bot closes its own topic
 
 - **WHEN** the bot, a plain member of a forum, closes a topic it created
 - **THEN** the topic closes, while closing a topic someone else created raises
   `TelegramBadRequest` with `not enough rights to close or open the topic`
+
+#### Scenario: Deleting a topic the bot did not create
+
+- **WHEN** a plain-member bot deletes a topic someone else created
+- **THEN** the call fails for lack of `can_delete_messages`
+
+#### Scenario: Rights are checked before the topic is looked up
+
+- **WHEN** a plain-member bot closes a topic that does not exist
+- **THEN** the call fails for lack of rights rather than for the missing topic
+
+### Requirement: Deleting someone else's message takes administrator standing
+
+Deleting someone else's message SHALL take administrator status in a basic group and
+`can_delete_messages` elsewhere.
+
+#### Scenario: A member bot deletes someone else's message
+
+- **WHEN** a plain-member bot deletes a message another user sent
+- **THEN** the call fails with Telegram's wording, while an administrator of a basic group,
+  or one holding `can_delete_messages` elsewhere, succeeds
+
+### Requirement: A send takes the chat's permission for that kind of message
+
+A send, copy or forward by a bot that is not an administrator SHALL take the chat's
+permission for that kind of message, narrowed by the bot's own restriction. A live location
+SHALL be refused as one, and paid media SHALL be checked only when forwarded or copied,
+taking both `can_send_photos` and `can_send_videos`.
 
 #### Scenario: A member bot sends into a silenced chat
 
@@ -3909,93 +4493,175 @@ be checked. With `enforce_bot_rights=False`, the bot SHALL hold every right.
   `not enough rights to send text messages to the chat`, while a user actor's message in
   the same chat is still delivered
 
+#### Scenario: Paid media is checked only when forwarded or copied
+
+- **WHEN** a plain-member bot forwards or copies paid media
+- **THEN** the call takes both `can_send_photos` and `can_send_videos`, and a plain send of
+  paid media is not checked this way
+
+### Requirement: Posting into a channel takes the post right
+
+Posting into a channel SHALL take `can_post_messages`.
+
+#### Scenario: An administrator without the post right cannot post
+
+- **WHEN** the bot, an administrator of a channel without `can_post_messages`, posts into it
+- **THEN** the call fails with Telegram's wording
+
+### Requirement: The owner holds every right and permissions grant no administrator right
+
+The owner SHALL hold every right, and the chat's permissions SHALL NOT grant the bot an
+administrator's right.
+
+#### Scenario: The owner holds every right
+
+- **WHEN** the bot is the owner of a chat and makes any rights-checked call
+- **THEN** no right is lacking
+
+#### Scenario: Permissions grant no administrator right
+
+- **WHEN** a chat's permissions allow everything and the bot, a plain member, makes an
+  administrator call
+- **THEN** the call fails, since permissions grant no administrator right
+
+### Requirement: A bot that left the chat is refused every call
+
+A bot that was removed from the chat or left it SHALL be refused every such call and every
+send with `TelegramForbiddenError` and the Bot API server's text.
+
 #### Scenario: A kicked bot sends
 
 - **WHEN** the bot's status in a supergroup is kicked and it sends a message there
 - **THEN** the call raises `TelegramForbiddenError` with
   `Forbidden: bot was kicked from the supergroup chat`, and nothing is stored
 
-#### Scenario: Opting out
-
-- **WHEN** the environment is built with `enforce_bot_rights=False`
-- **THEN** the same bot pins, bans and sends as if it held every right
-
 ### Requirement: The owner can turn a forum's topics off and on
 
-A user actor who owns a supergroup SHALL be able to turn its topics off and on. No update
-SHALL be delivered for it. Turning topics off SHALL keep them, and turning them on again
-SHALL restore them as they were. While topics are off, the forum methods SHALL fail with
-`the chat is not a forum`, and a message the bot sends with a thread id SHALL be stored
-without one, which is an assumption the Bot API does not document. A blueprint SHALL be
-able to declare a supergroup a forum before it has any topic. Anyone but the owner, or a
-chat other than a supergroup, SHALL be a setup error.
-
-#### Scenario: A stale thread id after topics are off
-
-- **WHEN** the owner turns topics off and the bot sends into a former topic's thread id
-- **THEN** the message is stored in the chat with no thread id, not as a topic message
+A user actor who owns a supergroup SHALL be able to turn its topics off and on, with no
+update delivered for it. Turning topics off SHALL keep them, and turning them on again SHALL
+restore them as they were.
 
 #### Scenario: Turning topics on again
 
 - **WHEN** the owner turns topics back on
 - **THEN** the former topics exist again, and a message sent into one is tagged with it
 
+### Requirement: While topics are off the forum methods fail
+
+While topics are off, the forum methods SHALL fail with `the chat is not a forum`, and a
+message the bot sends with a thread id SHALL be stored without one, which is an assumption
+the Bot API does not document.
+
+#### Scenario: A stale thread id after topics are off
+
+- **WHEN** the owner turns topics off and the bot sends into a former topic's thread id
+- **THEN** the message is stored in the chat with no thread id, not as a topic message
+
+#### Scenario: A forum method fails while topics are off
+
+- **WHEN** the owner turns topics off and a handler calls a forum method
+- **THEN** the call fails with `the chat is not a forum`
+
+### Requirement: A supergroup can be declared a forum before it has any topic
+
+A blueprint SHALL be able to declare a supergroup a forum before it has any topic.
+
+#### Scenario: A forum with no topics
+
+- **WHEN** a blueprint declares a supergroup a forum with no topic
+- **THEN** the chat is a forum, and a topic can be created in it
+
+### Requirement: Only the owner of a supergroup can turn topics off and on
+
+Anyone but the owner, or a chat other than a supergroup, SHALL be a setup error.
+
 #### Scenario: Someone else tries
 
 - **WHEN** a member who is not the owner turns topics off
 - **THEN** the trigger raises `WorldLookupError`, and the chat is still a forum
+
+#### Scenario: A chat other than a supergroup
+
+- **WHEN** an actor tries to turn topics off or on in a chat that is not a supergroup
+- **THEN** the trigger raises a setup error
 
 ### Requirement: Flood limits can be modeled per chat
 
 An environment built with `rate_limits` SHALL refuse a message-producing call into a chat
 that is over a limit with error 429, `Too Many Requests: retry after N`, and a
 `TelegramRetryAfter` whose `retry_after` is the whole seconds until a send into that chat is
-allowed. The default limits SHALL be one message per second in any chat and 20 per minute
-in a group or supergroup, counted for the whole chat across its topics. The limits SHALL be
-read only after the checks Telegram makes before sending, so a call refused for the bot's
-rights, its thread or the message it replies to SHALL fail with that refusal, and a refused
-call SHALL change nothing. The counted methods SHALL be the modeled sends, read off the
-modeling registry. A call SHALL be counted once it succeeds, a media group or batch once.
-The limits SHALL be read off the event loop's clock plus the time `advance_time` moved.
-Without `rate_limits` nothing SHALL be limited.
+allowed. Without `rate_limits` nothing SHALL be limited.
 
 #### Scenario: Two messages in one second
 
 - **WHEN** limits are on and the bot sends two messages into a chat at the same moment
 - **THEN** the second raises `TelegramRetryAfter` with `retry_after` 1, and is not stored
 
-#### Scenario: A refusal Telegram makes first
-
-- **WHEN** the chat is over its limit and the bot sends into a thread it does not have
-- **THEN** the call raises `TelegramBadRequest` with `message thread not found`
-
 #### Scenario: Waiting out the refusal
 
 - **WHEN** the test advances the time by that `retry_after`
 - **THEN** the next send into the chat goes through
+
+### Requirement: The default flood limits are counted per chat
+
+The default limits SHALL be one message per second in any chat and 20 per minute in a group
+or supergroup, counted for the whole chat across its topics.
 
 #### Scenario: A busy forum
 
 - **WHEN** the bot sends 20 messages within a minute into two topics of one group
 - **THEN** the 21st raises `TelegramRetryAfter`
 
+### Requirement: Flood limits are read after Telegram's own checks
+
+The limits SHALL be read only after the checks Telegram makes before sending, so a call
+refused for the bot's rights, its thread or the message it replies to SHALL fail with that
+refusal, and a refused call SHALL change nothing.
+
+#### Scenario: A refusal Telegram makes first
+
+- **WHEN** the chat is over its limit and the bot sends into a thread it does not have
+- **THEN** the call raises `TelegramBadRequest` with `message thread not found`
+
+### Requirement: Only successful modeled sends count toward a flood limit
+
+The counted methods SHALL be the modeled sends, read off the modeling registry. A call SHALL
+be counted once it succeeds, a media group or batch once. The limits SHALL be read off the
+event loop's clock plus the time `advance_time` moved.
+
+#### Scenario: A media group counts once
+
+- **WHEN** the bot sends a media group or a batch
+- **THEN** it counts once toward the limit
+
+#### Scenario: A refused call is not counted
+
+- **WHEN** a call is refused
+- **THEN** it does not count toward the limit and changes nothing
+
+#### Scenario: Advancing the time lifts the limit
+
+- **WHEN** a test moves the clock with `advance_time` past the window
+- **THEN** the limit is read off the event loop's clock plus that advance
+
 ### Requirement: The bot's background tasks can be waited for
 
-`wait_for_background_tasks()` SHALL wait, cancelling nothing, until every task the environment
-counts as the bot's is done: those alive or failed unseen, other than those alive at its first
-asynchronous entry, the caller, and every task waiting on the caller, by awaiting it, directly
-or through `gather`, or by having created it. A task that made the environment's first call
-SHALL count as the bot's. `drain()` SHALL count the same tasks. A task created while waiting
-SHALL be waited for too. A task that ended with an exception nobody retrieved SHALL be raised as
-`BackgroundTaskError`, the base of `DrainedTaskError`, with the first chained as its cause. At
-the timeout, which defaults to the environment's wait timeout, it SHALL raise `WaitTimeoutError`
-naming each task still running and its coroutine, and leave them running. It SHALL return how
-many tasks it waited for.
+`wait_for_background_tasks()` SHALL wait, cancelling nothing, until every task the
+environment counts as the bot's is done, and SHALL return how many tasks it waited for. A
+task created while waiting SHALL be waited for too.
 
 #### Scenario: A results broadcast
 
 - **WHEN** a handler broadcasts from a task and the test waits for the bot's tasks
 - **THEN** every message of the broadcast is stored, and the task was not cancelled
+
+### Requirement: Which tasks count as the bot's
+
+The tasks counted as the bot's are those alive or failed unseen, other than those alive at
+the environment's first asynchronous entry, the caller, and every task waiting on the
+caller, by awaiting it, directly or through `gather`, or by having created it. A task that
+made the environment's first call SHALL count as the bot's, and `drain()` SHALL count the
+same tasks.
 
 #### Scenario: A worker that touched the environment first
 
@@ -4007,26 +4673,30 @@ many tasks it waited for.
 - **WHEN** the test awaits a child task that drains
 - **THEN** the test's task is neither cancelled nor waited for
 
-#### Scenario: A task that never ends
+### Requirement: A background task that failed is raised
 
-- **WHEN** the bot's task is still running at the timeout
-- **THEN** `WaitTimeoutError` names it and its coroutine, and it keeps running
+A task that ended with an exception nobody retrieved SHALL be raised as
+`BackgroundTaskError`, the base of `DrainedTaskError`, with the first chained as its cause.
 
 #### Scenario: A task that failed
 
 - **WHEN** a bot's task raised an exception nobody retrieved
 - **THEN** the wait raises `BackgroundTaskError` with that exception as its cause
 
+### Requirement: A wait for background tasks that times out names what still runs
+
+At the timeout, which defaults to the environment's wait timeout, the wait SHALL raise
+`WaitTimeoutError` naming each task still running and its coroutine, and leave them running.
+
+#### Scenario: A task that never ends
+
+- **WHEN** the bot's task is still running at the timeout
+- **THEN** `WaitTimeoutError` names it and its coroutine, and it keeps running
+
 ### Requirement: Every route of a test is kept and can be checked
 
 An environment SHALL keep the route record of every update it routed for its whole life,
-readable as `all_routes`. `assert_updates_handled()` SHALL fail on every trigger none of
-whose updates was handled and on every update that raised, even if an error handler
-swallowed it, listing each with its description, except for a trigger the test passed to
-`assert_unhandled()`. `assert_unhandled()` SHALL apply to the trigger `routes` reports,
-SHALL fail if that trigger has nothing the check would flag, and SHALL return what it would
-flag. With the `bot_env_assert_updates_handled` fixture returning true, the plugin SHALL run
-the check after each test that passed, failing that test.
+readable as `all_routes`.
 
 #### Scenario: An update in the middle of a game went nowhere
 
@@ -4034,15 +4704,41 @@ the check after each test that passed, failing that test.
 - **THEN** `all_routes` holds all three, and `assert_updates_handled()` fails naming the
   unhandled one
 
+### Requirement: assert_updates_handled fails on what nobody handled
+
+`assert_updates_handled()` SHALL fail on every trigger none of whose updates was handled and
+on every update that raised, even if an error handler swallowed it, listing each with its
+description, except for a trigger the test passed to `assert_unhandled()`.
+
 #### Scenario: A join whose service message nobody claims
 
 - **WHEN** a trigger feeds a handled update and an unhandled one
 - **THEN** `assert_updates_handled()` passes
 
+#### Scenario: A raised update fails even when swallowed
+
+- **WHEN** an update's handler raised and an error handler swallowed the exception
+- **THEN** `assert_updates_handled()` fails, listing that update with its description
+
+### Requirement: assert_unhandled marks an update the bot is meant to ignore
+
+`assert_unhandled()` SHALL apply to the trigger `routes` reports, SHALL fail if that trigger
+has nothing the check would flag, and SHALL return what it would flag.
+
 #### Scenario: An update the test meant the bot to ignore
 
 - **WHEN** a test calls `assert_unhandled()` after an unhandled trigger
 - **THEN** `assert_updates_handled()` passes
+
+#### Scenario: Asserting unhandled on a handled trigger fails
+
+- **WHEN** a test calls `assert_unhandled()` after a trigger whose updates were all handled
+- **THEN** the call fails, since the trigger has nothing the check would flag
+
+### Requirement: The plugin can run the handled check after each test
+
+With the `bot_env_assert_updates_handled` fixture returning true, the plugin SHALL run the
+check after each test that passed, failing that test.
 
 #### Scenario: The plugin checks a passing test
 
@@ -4051,24 +4747,26 @@ the check after each test that passed, failing that test.
 
 ### Requirement: Parse modes are applied as the Bot API applies them
 
-Every modeled call SHALL apply each parse mode it carries, its own or the bot's default,
-to the text it formats, nested items included, and the world SHALL store the plain text with
+Every modeled call SHALL apply each parse mode it carries, its own or the bot's default, to
+the text it formats, nested items included, and the world SHALL store the plain text with
 the entities, offsets in UTF-16 code units. `HTML`, `MarkdownV2` and `Markdown` SHALL be
-parsed as TDLib parses them. Markup that cannot be parsed SHALL fail the call with
-`Bad Request: can't parse entities: ` and TDLib's description, and store nothing. A number
-TDLib cannot read SHALL be no number, never a failure of the toolkit. A parsed text SHALL be
-trimmed at its end, and of leading spaces and newlines up to its first entity. A parse mode
-on a non-empty text SHALL win over explicit entities, which SHALL stand only without a parse
-mode or with `none`. An unknown parse mode SHALL fail with `unsupported parse_mode`. A
-message text that is empty SHALL fail with `message text is empty` before the chat is
-checked, and one that is blank, as sent or once parsed, with `text must be non-empty`
-after the chat and the thread are checked; a caption or another optional text that parses
-to nothing SHALL be cleared. The call log SHALL keep the call as the bot made it.
+parsed as TDLib parses them.
 
 #### Scenario: A bold word
 
 - **WHEN** a handler sends `<b>Night</b> falls` with `parse_mode="HTML"`
 - **THEN** the chat stores `Night falls` with a bold entity at offset 0, length 5
+
+#### Scenario: The bot's default parse mode
+
+- **WHEN** the bot's default parse mode is `MarkdownV2` and a handler sends `*Day*`
+- **THEN** the chat stores `Day` with a bold entity
+
+### Requirement: Markup that cannot be parsed fails the call
+
+Markup that cannot be parsed SHALL fail the call with `Bad Request: can't parse entities: `
+and TDLib's description, and store nothing. A number TDLib cannot read SHALL be no number,
+never a failure of the toolkit.
 
 #### Scenario: An unescaped less-than sign
 
@@ -4080,6 +4778,39 @@ to nothing SHALL be cleared. The call log SHALL keep the call as the bot made it
 
 - **WHEN** a handler sends `<a href='tg://user?id=--5'>x</a>` with `parse_mode="HTML"`
 - **THEN** the chat stores `x` with a text link, and nothing raises
+
+### Requirement: Parsed text is trimmed
+
+A parsed text SHALL be trimmed at its end, and of leading spaces and newlines up to its
+first entity.
+
+#### Scenario: Leading whitespace
+
+- **WHEN** a handler sends ` <b>a</b>` with `parse_mode="HTML"`
+- **THEN** the chat stores `a` with a bold entity at offset 0
+
+### Requirement: A parse mode wins over explicit entities
+
+A parse mode on a non-empty text SHALL win over explicit entities, which SHALL stand only
+without a parse mode or with `none`. An unknown parse mode SHALL fail with `unsupported
+parse_mode`.
+
+#### Scenario: Entities and a parse mode together
+
+- **WHEN** a handler passes both `entities` and `parse_mode="HTML"`
+- **THEN** the stored entities are the parsed ones
+
+#### Scenario: An unknown parse mode fails
+
+- **WHEN** a handler sends a text with a parse mode the environment does not know
+- **THEN** the call fails with `unsupported parse_mode`
+
+### Requirement: Empty and blank texts are refused in the order Telegram refuses them
+
+A message text that is empty SHALL fail with `message text is empty` before the chat is
+checked, and one that is blank, as sent or once parsed, with `text must be non-empty` after
+the chat and the thread are checked. A caption or another optional text that parses to
+nothing SHALL be cleared.
 
 #### Scenario: Markup that parses to nothing
 
@@ -4097,20 +4828,20 @@ to nothing SHALL be cleared. The call log SHALL keep the call as the bot made it
 - **WHEN** the bot was kicked from a supergroup and sends `<b> </b>` there
 - **THEN** the call raises `TelegramForbiddenError`, not the blank text's refusal
 
-#### Scenario: Leading whitespace
+#### Scenario: An empty text is refused before the chat is checked
 
-- **WHEN** a handler sends ` <b>a</b>` with `parse_mode="HTML"`
-- **THEN** the chat stores `a` with a bold entity at offset 0
+- **WHEN** a handler sends an empty text into a chat the environment would also refuse
+- **THEN** the call fails with `message text is empty`, not with the chat's refusal
 
-#### Scenario: The bot's default parse mode
+### Requirement: The call log keeps the call as the bot made it
 
-- **WHEN** the bot's default parse mode is `MarkdownV2` and a handler sends `*Day*`
-- **THEN** the chat stores `Day` with a bold entity
+The call log SHALL keep the call as the bot made it.
 
-#### Scenario: Entities and a parse mode together
+#### Scenario: The recorded call keeps its markup
 
-- **WHEN** a handler passes both `entities` and `parse_mode="HTML"`
-- **THEN** the stored entities are the parsed ones
+- **WHEN** a handler sends `<b>Night</b> falls` with `parse_mode="HTML"`
+- **THEN** the call log holds the call with the text and parse mode exactly as the bot
+  passed them
 
 ### Requirement: The documentation shows fast sleeps that keep the loop's clock real
 
@@ -4129,19 +4860,21 @@ it shows SHALL run as written.
 
 A user actor SHALL be able to create a topic, close, reopen and delete one, hide and unhide
 the General topic, and close and reopen it. Each SHALL change the world as the matching bot
-method does, by the same code, and SHALL store and feed the service message Telegram posts
+method does, by the same code.
+
+#### Scenario: An actor's topic action changes the world as the bot method does
+
+- **WHEN** a user actor creates, closes, reopens or deletes a topic
+- **THEN** the world changes exactly as it does for `createForumTopic`, `closeForumTopic`,
+  `reopenForumTopic` or `deleteForumTopic`
+
+### Requirement: A topic action stores and feeds the service message Telegram posts
+
+Each topic action of a user actor SHALL store and feed the service message Telegram posts
 for it, from that user: `forum_topic_created`, `forum_topic_closed`, `forum_topic_reopened`,
 `general_forum_topic_hidden` or `general_forum_topic_unhidden`, and `forum_topic_closed` or
 `forum_topic_reopened` for the General topic. Deleting a topic SHALL feed nothing, as
-Telegram posts no message for it. A topic deleted since an actor was bound to it SHALL be a
-setup error, never a Telegram error.
-A topic SHALL be named as a declaration, a state or a thread id, and default to the topic the
-actor is bound to. The actor SHALL hold `can_manage_topics` in a chat that is a forum,
-whatever `enforce_bot_rights` says: as the owner or an administrator granted it, or, to
-create a topic, as the chat's permission of that name, which SHALL bind administrators as
-much as members and SHALL be narrowed by the actor's own restriction. The creator of a topic
-SHALL close, reopen and delete it without the right. Otherwise the trigger SHALL raise
-`WorldLookupError` naming the right and how to grant it, and change nothing.
+Telegram posts no message for it.
 
 #### Scenario: The owner closes a topic
 
@@ -4155,11 +4888,33 @@ SHALL close, reopen and delete it without the right. Otherwise the trigger SHALL
 - **THEN** the topic and its messages are gone, nothing is fed, and a later bot call into the
   thread fails with `message thread not found`
 
-#### Scenario: A member the chat lets create topics
+### Requirement: A topic is named by declaration, state or thread id
 
-- **WHEN** the chat's permissions grant `can_manage_topics` and a plain member creates a topic
-- **THEN** the topic exists with that member as its creator, who may then close, reopen and
-  delete it
+A topic SHALL be named as a declaration, a state or a thread id, and default to the topic
+the actor is bound to. A topic deleted since an actor was bound to it SHALL be a setup
+error, never a Telegram error.
+
+#### Scenario: A topic defaults to the one the actor is bound to
+
+- **WHEN** an actor bound to a topic closes a topic without naming one
+- **THEN** the topic it is bound to is closed
+
+#### Scenario: A topic is named in any of three ways
+
+- **WHEN** an actor names a topic by a declaration, a state or a thread id
+- **THEN** each names the same topic
+
+#### Scenario: A topic deleted since the actor was bound
+
+- **WHEN** an actor acts on a topic that was deleted after the actor was bound to it
+- **THEN** the trigger raises a setup error, never a Telegram error
+
+### Requirement: A topic action needs the right to manage topics
+
+The actor SHALL hold `can_manage_topics` in a chat that is a forum, whatever
+`enforce_bot_rights` says: as the owner or an administrator granted it. Otherwise the
+trigger SHALL raise `WorldLookupError` naming the right and how to grant it, and change
+nothing.
 
 #### Scenario: A member without the right
 
@@ -4167,17 +4922,37 @@ SHALL close, reopen and delete it without the right. Otherwise the trigger SHALL
 - **THEN** `WorldLookupError` names `can_manage_topics` and how to grant it, and no topic or
   message is added
 
+#### Scenario: An administrator without the right is refused
+
+- **WHEN** an administrator lacking `can_manage_topics` creates a topic in a chat whose
+  permissions also deny it
+- **THEN** `WorldLookupError` names the right and how to grant it, and nothing changes
+
+### Requirement: The chat's permission lets a member create a topic
+
+To create a topic, the chat's permission named `can_manage_topics` SHALL do in place of the
+right, binding administrators as much as members and narrowed by the actor's own
+restriction. The creator of a topic SHALL close, reopen and delete it without the right.
+
+#### Scenario: A member the chat lets create topics
+
+- **WHEN** the chat's permissions grant `can_manage_topics` and a plain member creates a topic
+- **THEN** the topic exists with that member as its creator, who may then close, reopen and
+  delete it
+
+#### Scenario: The permission binds administrators and is narrowed by a restriction
+
+- **WHEN** the chat denies `can_manage_topics` in its permissions, or the actor is
+  restricted from it
+- **THEN** creating a topic without the administrator right fails, whether the actor is an
+  administrator or a member
+
 ### Requirement: A group grants its members every permission by default
 
 A group or a supergroup SHALL have, unless its declaration gives others, every member
 permission granted. Telegram does not publish what a new group allows, so this SHALL be
 documented as the toolkit's convention, with `permissions=` as the way to model a stricter
-group. `getChat` SHALL report them, and the checks of what the bot may send as a plain or a
-restricted member SHALL read the same value; they SHALL NOT grant the bot an
-administrator's right. A private chat and a channel SHALL have none. `add_group` and
-`add_supergroup` SHALL accept `permissions=` to declare others, and
-`default_chat_permissions()` SHALL return the default as a new object that the Bot API's
-couplings leave unchanged.
+group. A private chat and a channel SHALL have none.
 
 #### Scenario: A new supergroup
 
@@ -4185,29 +4960,67 @@ couplings leave unchanged.
 - **THEN** `permissions` grants every permission, and the bot as a plain member sends text,
   polls and dice into it
 
+#### Scenario: A private chat and a channel have no permissions
+
+- **WHEN** a test reads a private chat or a channel
+- **THEN** it reports no member permissions
+
+### Requirement: The default permissions are what `getChat` and the bot's send checks read
+
+`getChat` SHALL report a group's permissions, and the checks of what the bot may send as a
+plain or a restricted member SHALL read the same value. They SHALL NOT grant the bot an
+administrator's right.
+
+#### Scenario: The bot's send checks read the same permissions
+
+- **WHEN** a group's permissions deny a kind of message and the bot, a plain member, sends
+  it
+- **THEN** the send is refused, as `getChat` reports the permission denied
+
+#### Scenario: Permissions grant the bot no administrator right
+
+- **WHEN** a group grants every permission and the bot, a plain member, makes an
+  administrator call
+- **THEN** the call is refused
+
+### Requirement: A group declares its permissions with `permissions=`
+
+`add_group` and `add_supergroup` SHALL accept `permissions=` to declare others, and
+`default_chat_permissions()` SHALL return the default as a new object that the Bot API's
+couplings leave unchanged.
+
 #### Scenario: Declared permissions replace the default
 
 - **WHEN** a supergroup is declared with `permissions=` that deny polls
 - **THEN** `getChat` reports them and the bot's `sendPoll` is refused as a plain member
 
+#### Scenario: The default is a new object each time
+
+- **WHEN** a test calls `default_chat_permissions()` twice and changes one result
+- **THEN** the other is unchanged, and the Bot API's couplings leave the default as it is
+
 ### Requirement: Users and chats can be added to a running environment
 
-A running environment SHALL be able to add a user, a private chat, a group, a supergroup and a
-channel, with members, taking what the blueprint's methods of the same name take. They SHALL
-be those blueprint methods run on a scratch blueprint, so the signatures and the shape are
-the same, and SHALL return the handle `env.user()` or `env.chat()` returns, a chat's live
-state. The id SHALL be the next free one unless given, allocated by the one function the
-blueprint uses with the ids the world has taken, and an id already taken SHALL raise
-`ValueError`, in a blueprint as in a running world. Members SHALL be named by spec, by actor
-or by id, in a blueprint as well, and a user the world does not have SHALL raise
-`WorldLookupError` naming `add_user`. The blueprint the environment was built from SHALL NOT
-change.
+A running environment SHALL be able to add a user, a private chat, a group, a supergroup and
+a channel, with members, taking what the blueprint's methods of the same name take, and
+SHALL return the handle `env.user()` or `env.chat()` returns, a chat's live state. The
+blueprint the environment was built from SHALL NOT change.
 
 #### Scenario: A newcomer joins a new group
 
 - **WHEN** a test adds a user and a supergroup with that user as a member, and the user sends
   a message into it
 - **THEN** the dispatcher handles the message as it handles one in a declared chat
+
+#### Scenario: A shared blueprint
+
+- **WHEN** two environments are built from one blueprint and one adds a user and a chat
+- **THEN** the blueprint and the other environment are unchanged
+
+### Requirement: Added entities are the blueprint methods run on a scratch blueprint
+
+Added users and chats SHALL be those blueprint methods run on a scratch blueprint, so the
+signatures and the shape are the same.
 
 #### Scenario: A chat equals a declared one
 
@@ -4220,41 +5033,85 @@ change.
 - **WHEN** a test reads the signature of `env.add_supergroup`
 - **THEN** its parameters are those of `Blueprint.add_supergroup`
 
+### Requirement: An added entity takes the next free id
+
+The id SHALL be the next free one unless given, allocated by the one function the blueprint
+uses with the ids the world has taken, and an id already taken SHALL raise `ValueError`, in
+a blueprint as in a running world.
+
 #### Scenario: An id already declared
 
 - **WHEN** a blueprint declares a chat with an id another of its chats has
 - **THEN** it raises `ValueError` naming the id
 
-#### Scenario: A shared blueprint
+#### Scenario: An id is allocated when none is given
 
-- **WHEN** two environments are built from one blueprint and one adds a user and a chat
-- **THEN** the blueprint and the other environment are unchanged
+- **WHEN** a test adds a user or a chat without an id
+- **THEN** it gets the next free id among those the world has taken
+
+#### Scenario: An id already taken in a running world
+
+- **WHEN** a test adds a chat with an id the running world has taken
+- **THEN** it raises `ValueError`
+
+### Requirement: Members are named by spec, by actor or by id
+
+Members SHALL be named by spec, by actor or by id, in a blueprint as well, and a user the
+world does not have SHALL raise `WorldLookupError` naming `add_user`.
+
+#### Scenario: A member is named in any of three ways
+
+- **WHEN** a test names a member by spec, by actor or by id
+- **THEN** each names the same user
+
+#### Scenario: An unknown member
+
+- **WHEN** a test names a member the world does not have
+- **THEN** it raises `WorldLookupError` naming `add_user`
 
 ### Requirement: A text an actor sends carries its bot commands
 
 A text, and a caption, that a user actor sends or edits SHALL carry the `bot_command`
 entities Telegram attaches, with UTF-16 offsets, unless the test passes `entities` or
-`caption_entities` itself, even empty. A command SHALL be a slash at the start of the text or
-after a character that is not a letter, a number, `_`, `/`, `<` or `>`, then one to 64 ASCII
-letters, digits or underscores, then optionally `@` and three to 32 of them, and SHALL not be
-followed by a letter, a number, `_`, `/`, `<` or `>`. A command that breaks a rule SHALL have
-no entity, and neither SHALL the command before an `@name` that does. Messages the bot sends
-SHALL not change.
+`caption_entities` itself, even empty. Messages the bot sends SHALL not change.
 
 #### Scenario: A command in the middle of a text
 
 - **WHEN** an actor sends `hi /start@my_bot now`
 - **THEN** the message carries one `bot_command` entity at offset 3 with length 13
 
+#### Scenario: Entities passed by the test
+
+- **WHEN** an actor sends `/start` with `fields={"entities": []}`
+- **THEN** the message carries exactly the entities passed
+
+#### Scenario: A caption or an edit carries the entities too
+
+- **WHEN** an actor sends a caption, or edits a text, containing a command
+- **THEN** it carries the `bot_command` entity just as a sent text does
+
+#### Scenario: The bot's own messages are not changed
+
+- **WHEN** the bot sends a text containing a command
+- **THEN** the message carries no `bot_command` entity it did not ask for
+
+### Requirement: What counts as a bot command
+
+A command SHALL be a slash at the start of the text or after a character that is not a
+letter, a number, `_`, `/`, `<` or `>`, then one to 64 ASCII letters, digits or underscores,
+then optionally `@` and three to 32 of them, and SHALL not be followed by a letter, a
+number, `_`, `/`, `<` or `>`. A command that breaks a rule SHALL have no entity, and neither
+SHALL the command before an `@name` that does.
+
 #### Scenario: Not a command
 
 - **WHEN** an actor sends `a/start`, `//start` or `/start/more`
 - **THEN** the message carries no entity
 
-#### Scenario: Entities passed by the test
+#### Scenario: A command before a bad bot name has no entity
 
-- **WHEN** an actor sends `/start` with `fields={"entities": []}`
-- **THEN** the message carries exactly the entities passed
+- **WHEN** an actor sends `/start@ab`
+- **THEN** the message carries no entity, since the `@name` breaks a rule
 
 ### Requirement: Raising a Telegram exception from a class it cannot be built from is refused
 
@@ -4278,17 +5135,21 @@ still be accepted.
 
 ### Requirement: Finished tasks are not held for the life of the environment
 
-The environment SHALL note the tasks it tracks weakly, and SHALL keep no task that succeeded or
-was cancelled once it ends. A task that failed SHALL be kept until its exception is retrieved,
-by the bot or by a report, so that `wait_for_background_tasks()` and `drain()` still raise
-`BackgroundTaskError` and `DrainedTaskError` for a failure nobody retrieved, and SHALL NOT for
-one the bot retrieved, however late. Retrieved failures SHALL be let go when the tasks are next
-counted rather than each time a task ends. A disposed environment SHALL hold no task.
+The environment SHALL note the tasks it tracks weakly, and SHALL keep no task that succeeded
+or was cancelled once it ends. A disposed environment SHALL hold no task.
 
 #### Scenario: Many short tasks
 
 - **WHEN** the bot spawns two hundred tasks that each finish
 - **THEN** the environment holds none of them, and none is kept alive by it
+
+### Requirement: A failed task is kept until its exception is retrieved
+
+A task that failed SHALL be kept until its exception is retrieved, by the bot or by a
+report, so that `wait_for_background_tasks()` and `drain()` still raise
+`BackgroundTaskError` and `DrainedTaskError` for a failure nobody retrieved, and SHALL NOT
+for one the bot retrieved, however late. Retrieved failures SHALL be let go when the tasks
+are next counted rather than each time a task ends.
 
 #### Scenario: A failure among them
 
@@ -4301,27 +5162,47 @@ counted rather than each time a task ends. A disposed environment SHALL hold no 
 - **WHEN** the bot awaits a task that failed, and catches the exception, at any later time
 - **THEN** neither `wait_for_background_tasks()` nor `drain()` reports it
 
-### Requirement: Another bot can act, and its messages are delivered as Telegram delivers them
+### Requirement: Another bot can be declared and act
 
-A blueprint SHALL declare another bot with `add_user(..., is_bot=True)`, and its
-Bot-to-Bot Communication Mode with `bot_to_bot_mode=`, which only a bot SHALL take; the bot under
-test SHALL take it as `Blueprint(bot_to_bot_mode=...)`, off by default, and its Group Privacy Mode
-as `bot_group_privacy=`, on by default, which `getMe` SHALL report as
-`can_read_all_group_messages` being its negation. Another bot's actor SHALL produce messages and service
-messages from it, with `is_bot` set, and SHALL be held to the rights checks of a user actor.
-In a group or a supergroup, its message or edit SHALL reach the bot when either bot has the
-mode on and the message names the bot in a command or replies to a message of the bot, or
-when the bot has the mode on and is an administrator or has privacy mode off. The implicit
-reply to a topic's root SHALL NOT count as a reply. Otherwise the message SHALL be stored,
-nothing SHALL be fed, and the trigger SHALL return `Withheld`, carrying the update and
-the reason. In a private chat, another bot's message SHALL raise `WorldLookupError` unless
-both bots have the mode on; in a business chat, unless the sending bot has it, and it SHALL
-then be delivered, which no source states. A service message another bot causes SHALL be delivered unless
-the environment was built with `deliver_service_messages_from_bots=False`, or the
-`bot_env_deliver_service_messages_from_bots` fixture returns false, in which case it SHALL be
-stored and not fed; a message SHALL count as a service message by what it carries, so one the
-test builds with `send(fields=...)` follows the same switch. Another bot's `click()`,
-`inline_query()`, `chosen_inline_result()` and `vote()` SHALL raise `WorldLookupError`.
+A blueprint SHALL declare another bot with `add_user(..., is_bot=True)`. Another bot's actor
+SHALL produce messages and service messages from it, with `is_bot` set, and SHALL be held to
+the rights checks of a user actor. Its `click()`, `inline_query()`, `chosen_inline_result()`
+and `vote()` SHALL raise `WorldLookupError`.
+
+#### Scenario: A bot without the right closes a topic
+
+- **WHEN** another bot that lacks `can_manage_topics` closes a topic
+- **THEN** the trigger raises `WorldLookupError` naming the right, and the topic stays open
+
+#### Scenario: A bot presses a button
+
+- **WHEN** another bot's actor clicks a button
+- **THEN** the trigger raises `WorldLookupError`, and nothing is fed
+
+### Requirement: The bots' own settings are declared
+
+`add_user(..., bot_to_bot_mode=...)` SHALL declare another bot's Bot-to-Bot Communication
+Mode, which only a bot SHALL take, and `Blueprint(bot_to_bot_mode=...)` the bot's own, off by
+default. `Blueprint(bot_group_privacy=...)` SHALL declare the bot's Group Privacy, on by
+default, and `getMe` SHALL report `can_read_all_group_messages` as its negation.
+
+#### Scenario: A person with the mode
+
+- **WHEN** a blueprint declares a user who is not a bot with `bot_to_bot_mode=True`
+- **THEN** the declaration raises `ValueError`
+
+#### Scenario: Group Privacy off
+
+- **WHEN** a blueprint declares `bot_group_privacy=False` and the bot calls `getMe`
+- **THEN** `can_read_all_group_messages` is true
+
+### Requirement: Another bot's group message is delivered as Telegram delivers it
+
+In a group or a supergroup, another bot's message or edit SHALL reach the bot when either bot
+has the mode on and the message names the bot in a command or replies to a message of the
+bot, or when the bot has the mode on and is an administrator or has Group Privacy off. The
+implicit reply to a topic's root SHALL NOT count as a reply. Otherwise the message SHALL be
+stored, nothing SHALL be fed, and the trigger SHALL return `Withheld`.
 
 #### Scenario: Another bot's plain message
 
@@ -4339,27 +5220,48 @@ test builds with `send(fields=...)` follows the same switch. Another bot's `clic
   message
 - **THEN** the message is delivered
 
+### Requirement: Another bot writes in private only as Telegram allows
+
+In a private chat, another bot's message SHALL raise `WorldLookupError` unless both bots have
+the mode on. In a business chat it SHALL raise unless the sending bot has the mode, and SHALL
+then be delivered, which no source states.
+
+#### Scenario: A private message without the mode on both sides
+
+- **WHEN** another bot with the mode on writes to the bot in private, and the bot has it off
+- **THEN** the trigger raises `WorldLookupError`, and nothing is stored
+
+#### Scenario: A business chat
+
+- **WHEN** another bot with the mode on writes into a business chat of the bot
+- **THEN** the business message is delivered
+
+### Requirement: Other bots' service messages have a switch
+
+A service message another bot causes SHALL be delivered unless the environment was built with
+`deliver_service_messages_from_bots=False`, or the `bot_env_deliver_service_messages_from_bots`
+fixture returns false, in which case it SHALL be stored and not fed. A message SHALL count as
+a service message by what it carries, so one the test builds with `send(fields=...)` SHALL
+follow the same switch.
+
 #### Scenario: A topic another bot closes
 
 - **WHEN** another bot with `can_manage_topics` closes a topic
 - **THEN** the topic is closed and `forum_topic_closed`, from that bot, is delivered; with
   `deliver_service_messages_from_bots=False` it is stored and the trigger returns `Withheld`
 
+#### Scenario: A service message the test builds
+
+- **WHEN** another bot without the mode sends `fields={"new_chat_title": ...}`
+- **THEN** the message is delivered as a service message, not withheld as a plain one
+
 ### Requirement: An anonymous administrator posts as the group
 
 `in_(chat, anonymous=True)` SHALL bind an actor that posts as the supergroup: every message
-and service message it produces SHALL be from `GroupAnonymousBot` (id 1087968824, first name
-`Group`, a bot), with the chat as `sender_chat`. A message, and never a service message,
-SHALL carry the administrator's custom title, if any, as `author_signature`. Binding SHALL raise `WorldLookupError` outside a supergroup and
-for a user who is not the owner or an administrator with `is_anonymous` set, and so SHALL a
-trigger once the user no longer is. The rights checks SHALL be the user's, the bot-to-bot
-rule SHALL NOT apply, `state()` SHALL use the FSM key of `GroupAnonymousBot`, a topic it
-opens SHALL count as opened by the user, whether bound anonymously or not, a membership update it causes SHALL be from
-`GroupAnonymousBot`, and joining, leaving or asking to join SHALL raise `WorldLookupError`.
-Every trigger of the binding SHALL recheck that the user is still such an administrator before
-changing anything. A reaction or a vote it makes SHALL name the chat as `actor_chat` or
-`voter_chat` and no user, and SHALL be kept as the chat's; a click, an inline query and the
-other queries SHALL come from the user, whose FSM key `env.state(user, chat)` reads.
+and service message it produces, and every membership update it causes, SHALL be from
+`GroupAnonymousBot` (id 1087968824, first name `Group`, a bot), messages with the chat as
+`sender_chat`. A message, and never a service message, SHALL carry the administrator's custom
+title, if any, as `author_signature`.
 
 #### Scenario: An anonymous host closes the game's topic
 
@@ -4369,23 +5271,60 @@ other queries SHALL come from the user, whose FSM key `env.state(user, chat)` re
   `sender_chat` and no `author_signature`, and is delivered, while a message the host sends
   carries "Host" as `author_signature`
 
+### Requirement: Only an anonymous administrator binds anonymously
+
+Binding anonymously SHALL raise `WorldLookupError` outside a supergroup and for a user who is
+not the owner or an administrator with `is_anonymous` set. Every trigger of the binding SHALL
+recheck that the user still is, and SHALL raise before changing anything once they are not.
+Joining, leaving or asking to join SHALL raise `WorldLookupError` for the binding.
+
 #### Scenario: A plain administrator
 
 - **WHEN** an administrator without `is_anonymous` is bound anonymously
 - **THEN** the binding raises `WorldLookupError` naming how to grant it
+
+#### Scenario: Anonymity taken away later
+
+- **WHEN** a bound anonymous administrator loses `is_anonymous` and then promotes a member
+- **THEN** the trigger raises `WorldLookupError`, and the member is not promoted
+
+### Requirement: An anonymous administrator keeps the user's rights and topics
+
+The rights checks of an anonymous binding SHALL be the user's, and the bot-to-bot rule SHALL
+NOT apply to it. A topic it opens SHALL count as opened by the user, whether bound anonymously
+or not, and not by another anonymous administrator.
+
+#### Scenario: A topic opened anonymously
+
+- **WHEN** an administrator without `can_manage_topics` opens a topic anonymously
+- **THEN** they close and reopen it, bound anonymously or not, and another anonymous
+  administrator without the right cannot
+
+### Requirement: Each update of an anonymous binding names the right sender
+
+`state()` of an anonymous binding SHALL use the FSM key of `GroupAnonymousBot`. A reaction or
+a vote it makes SHALL name the chat as `actor_chat` or `voter_chat` and no user, and SHALL be
+kept as the chat's. A click, an inline query and the other queries SHALL come from the user,
+whose FSM key `env.state(user, chat)` reads.
+
+#### Scenario: An anonymous reaction
+
+- **WHEN** an anonymous administrator reacts to a message
+- **THEN** `message_reaction` has the chat as `actor_chat` and no `user`
+
+#### Scenario: An anonymous administrator presses a button
+
+- **WHEN** the binding clicks a button whose handler sets an FSM state
+- **THEN** the callback query is from the user, and the state is under the user's key, not
+  the binding's
 
 ### Requirement: A trigger can change the world and withhold its update
 
 Every actor trigger that feeds an update SHALL take a keyword `deliver`, true by default. With
 `deliver=False` the trigger SHALL change the world and store every message it produces, a
 service message included, exactly as when it delivers, and SHALL feed nothing to the
-dispatcher, every update of a trigger that feeds several included. It SHALL return
-`Withheld`, carrying the withheld update and a reason naming `deliver=False`, except
-`create_topic()`, which SHALL return the new topic. Nothing SHALL be routed, so
-`assert_updates_handled()` SHALL have nothing to flag. It SHALL apply to another bot and to an
-anonymous administrator alike. A withheld trigger, whether the test or Telegram withholds it,
-SHALL open a route scope of its own, left empty, so `routes` and `last_route` SHALL NOT report
-the trigger before it.
+dispatcher, every update of a trigger that feeds several included. It SHALL apply to another
+bot and to an anonymous administrator alike.
 
 #### Scenario: A lost closure
 
@@ -4403,3 +5342,21 @@ the trigger before it.
 
 - **WHEN** a user joins with `deliver=False`
 - **THEN** the user is a member, `new_chat_members` is stored, and neither update is fed
+
+### Requirement: A withheld trigger reports itself
+
+A withheld trigger SHALL return `Withheld`, carrying the withheld update and the reason, which
+names `deliver=False` when the test withheld it, except `create_topic()`, which SHALL return
+the new topic. Whether the test or Telegram withholds it, the trigger SHALL open a route scope
+of its own, left empty, so `routes` and `last_route` SHALL NOT report the trigger before it,
+and `assert_updates_handled()` SHALL have nothing to flag.
+
+#### Scenario: A withheld trigger after a handled one
+
+- **WHEN** a handled trigger is followed by one with `deliver=False`
+- **THEN** `routes` is empty, `last_route` is `None`, and `assert_updates_handled()` passes
+
+#### Scenario: A withheld topic
+
+- **WHEN** a user creates a topic with `deliver=False`
+- **THEN** the trigger returns the new topic, and nothing is fed
