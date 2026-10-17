@@ -1048,6 +1048,9 @@ class PollState:
     #: When the poll closes by itself, if it was sent with a schedule.
     open_period: int | None = None
     close_date: datetime.datetime | None = None
+    #: The chat the poll was sent to, if known. A vote cast as a chat
+    #: must be in its own poll.
+    chat_id: int | None = None
 
     def vote_count(self, option_id: int) -> int:
         return sum(1 for chosen in self.votes.values() if option_id in chosen)

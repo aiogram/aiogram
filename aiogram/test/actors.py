@@ -2076,8 +2076,14 @@ class UserActor:
         anonymous voter, and the vote is kept as the chat's.
         """
         self._refuse_bot("vote in polls")
-        voter = self._bound_chat.id if self.anonymous else self.user.id
         poll = self.environment.world.poll(poll_id)
+        voter = self._bound_chat.id if self.anonymous else self.user.id
+        if self.anonymous and poll.chat_id not in {None, voter}:
+            msg = (
+                f"Poll {poll_id} belongs to chat {poll.chat_id}, so an administrator "
+                f"bound anonymously to chat {voter} cannot vote in it as the chat"
+            )
+            raise WorldLookupError(msg)
         if poll.is_closed:
             msg = f"Poll {poll_id} is closed and cannot be voted in"
             raise WorldLookupError(msg)

@@ -1905,7 +1905,7 @@ def copy_one(
     # uses neither.
     env.admit_send(target)
     if original.poll is not None and "poll" not in changes:
-        changes = {**changes, "poll": _copied_poll(env, original.poll)}
+        changes = {**changes, "poll": _copied_poll(env, original.poll, target)}
     return target.add_derived(
         original,
         message_id=target.allocate_message_id(),
@@ -1956,7 +1956,7 @@ def _poll_state(poll: Poll) -> PollState:
     )
 
 
-def _copied_poll(env: BotTestEnvironment, poll: Poll) -> Poll:
+def _copied_poll(env: BotTestEnvironment, poll: Poll, target: ChatState) -> Poll:
     """
     The poll a copy carries: a new poll, unlike a forward's.
 
@@ -1976,6 +1976,7 @@ def _copied_poll(env: BotTestEnvironment, poll: Poll) -> Poll:
         votes={},
         open_period=None,
         close_date=None,
+        chat_id=target.id,
     )
     env.world.polls[copied.id] = copied
     return copied.as_poll()
@@ -3648,6 +3649,7 @@ def handle_send_poll(env: BotTestEnvironment, method: SendPoll) -> Message:
         is_closed=bool(method.is_closed),
         open_period=method.open_period,
         close_date=close_at,
+        chat_id=chat.id,
     )
     message = build_message(env, method, chat)
     # Registered once the send went through, so a refused one leaves no

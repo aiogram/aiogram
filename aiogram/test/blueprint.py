@@ -792,6 +792,7 @@ class Blueprint:
                 allows_revoting=declared.allows_revoting,
                 correct_option_ids=declared.correct_option_ids,
                 explanation=declared.explanation,
+                chat_id=target.id,
             )
             world.polls[poll.id] = poll
             message = target.add_message(

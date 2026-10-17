@@ -14,6 +14,7 @@ from aiogram.test import (
     WorldLookupError,
     administrator_rights,
 )
+from aiogram.test.world import PollState
 from aiogram.types import (
     CallbackQuery,
     ChatMemberUpdated,
@@ -823,3 +824,58 @@ class TestAWithheldUpdateIsBound:
         withheld = await world["other"].send("plain")
 
         assert withheld.update.message.bot is world["env"].bot
+
+
+class TestAnAnonymousVoteIsInItsOwnChat:
+    async def test_a_poll_of_another_chat_is_refused(self, build):
+        world = build()
+        env, chat = world["env"], world["chat"]
+        env.enforce_bot_rights = False
+        poll = await env.bot.send_poll(
+            chat_id=world["channel"].id, question="Who?", options=["A", "B"], is_anonymous=False
+        )
+        admin = world["admin"].in_(chat, anonymous=True)
+
+        with pytest.raises(WorldLookupError, match=f"belongs to chat {world['channel'].id}"):
+            await admin.vote(poll.poll.id, [0])
+        assert env.world.poll(poll.poll.id).votes == {}
+
+    async def test_a_poll_of_no_known_chat_is_not_held_against_it(self, build):
+        world = build()
+        env, chat = world["env"], world["chat"]
+        env.world.polls["loose"] = PollState(
+            id="loose", question="Who?", options=["A", "B"], is_anonymous=False
+        )
+        admin = world["admin"].in_(chat, anonymous=True)
+
+        await admin.vote("loose", [0])
+
+        assert env.world.poll("loose").votes == {chat.id: [0]}
+
+    async def test_a_person_still_votes_in_any_chat(self, build):
+        world = build()
+        env = world["env"]
+        env.enforce_bot_rights = False
+        poll = await env.bot.send_poll(
+            chat_id=world["channel"].id, question="Who?", options=["A", "B"], is_anonymous=False
+        )
+
+        await world["alice"].vote(poll.poll.id, [1])
+
+        assert env.world.poll(poll.poll.id).votes == {world["alice"].user.id: [1]}
+
+    async def test_a_copied_poll_belongs_to_the_chat_it_was_copied_to(self, build):
+        world = build()
+        env, chat, channel = world["env"], world["chat"], world["channel"]
+        env.enforce_bot_rights = False
+        poll = await env.bot.send_poll(
+            chat_id=channel.id, question="Who?", options=["A", "B"], is_anonymous=False
+        )
+
+        copied = await env.bot.copy_message(
+            chat_id=chat.id, from_chat_id=channel.id, message_id=poll.message_id
+        )
+        sent = chat.find_message(copied.message_id)
+
+        assert env.world.poll(sent.poll.id).chat_id == chat.id
+        assert env.world.poll(poll.poll.id).chat_id == channel.id
