@@ -711,3 +711,75 @@ class TestAnonymousBeyondMessages:
         with pytest.raises(WorldLookupError, match="not an anonymous administrator"):
             await admin.promote(alice.user, can_pin_messages=True)
         assert chat.member(alice.user.id).status == ChatMemberStatus.MEMBER
+
+
+class TestOneCheckPerTrigger:
+    @staticmethod
+    def self_managing(world):
+        """An anonymous administrator who may promote, and its actor."""
+        chat, admin = world["chat"], world["admin"]
+        rights = administrator_rights(is_anonymous=True, can_promote_members=True)
+        chat.member(admin.user.id).rights = rights
+        return chat, admin, admin.in_(chat, anonymous=True)
+
+    async def test_demoting_itself_changes_the_world_and_announces_it(self, build, dp):
+        world = build()
+        chat, admin, anonymous = self.self_managing(world)
+        updates = []
+
+        @dp.chat_member()
+        async def collect(update: ChatMemberUpdated) -> None:
+            updates.append(update)
+
+        await anonymous.demote(admin.user.id)
+
+        assert chat.member(admin.user.id).status == ChatMemberStatus.MEMBER
+        assert [update.new_chat_member.status for update in updates] == ["member"]
+        world["env"].assert_updates_handled()
+        with pytest.raises(WorldLookupError, match="not an anonymous administrator"):
+            await anonymous.send("again")
+
+    async def test_promoting_itself_out_of_anonymity_announces_it(self, build, dp):
+        world = build()
+        chat, admin, anonymous = self.self_managing(world)
+        updates = []
+
+        @dp.chat_member()
+        async def collect(update: ChatMemberUpdated) -> None:
+            updates.append(update)
+
+        await anonymous.promote(admin.user.id, can_promote_members=True)
+
+        assert chat.member(admin.user.id).rights.is_anonymous is False
+        assert len(updates) == 1
+
+    async def test_a_send_checks_the_binding_once(self, build, monkeypatch):
+        world = build()
+        admin = world["admin"].in_(world["chat"], anonymous=True)
+        checks = []
+        original = type(admin)._require_anonymous
+
+        def counted(self, chat):
+            checks.append(chat.id)
+            return original(self, chat)
+
+        monkeypatch.setattr(type(admin), "_require_anonymous", counted)
+
+        await admin.send("hi")
+
+        assert checks == [world["chat"].id]
+
+    async def test_a_refused_trigger_changes_nothing(self, build):
+        world = build()
+        chat, alice = world["chat"], world["alice"]
+        admin = world["admin"].in_(chat, anonymous=True)
+        chat.member(world["admin"].user.id).rights = administrator_rights()
+        before = list(chat.messages)
+
+        with pytest.raises(WorldLookupError, match="not an anonymous administrator"):
+            await admin.send("hi")
+        with pytest.raises(WorldLookupError, match="not an anonymous administrator"):
+            await admin.promote(alice.user, can_pin_messages=True)
+
+        assert chat.messages == before
+        assert chat.member(alice.user.id).status == ChatMemberStatus.MEMBER
