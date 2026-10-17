@@ -13,8 +13,8 @@ See proposal.md for the motivation; the requirements are in
 
 ### D1. One module declares the texts
 
-`aiogram.test.rejections` holds a `Rejection` per text: the wording, an `origin` naming the Bot
-API server or TDLib, or `None` for the toolkit's guess, a `guaranteed` flag and the code. A
+`aiogram.test.rejections` holds a `Rejection` per text: the description, a `source` naming the Bot
+API server, TDLib or the API docs, or `None` for the toolkit's guess, and the code. A
 site raises `rejections.NAME(**fields)`. A registry of names rather than an enum or a table
 keyed by method, because a text is shared by sites that have nothing else in common, and a
 site needs only the name.
@@ -22,29 +22,38 @@ site needs only the name.
 A test walks the sources and fails on an `ApiRejection` built from a literal, and the tests'
 autouse fixture fails a refusal that was not declared.
 
-### D2. Guaranteed means sourced and matched by bots
+### D2. Sourced, not guaranteed
 
-A guaranteed text must cite a source, which `Rejection` enforces, and be one that bots
-realistically match on. The list was built from the sources: the Bot API server's
-`Client.cpp` for `bot was blocked by the user`, the chat access check, the `message to ...
-not found` checks, `message to be replied not found`, `message thread not found`, the expired
-query and the flood, and TDLib's parser for `can't parse entities`. A text the code never
-cited, such as `TOPIC_CLOSED`, stays best-effort, and so do texts that differ from the server's
-by a word.
-
-`message is not modified` is not on the list because the toolkit does not refuse an
-unchanged edit.
+Telegram guarantees no text, so none is a contract, and an earlier list of guaranteed texts
+promised more than Telegram does. A description is sourced when it is copied from the Bot API
+server's `Client.cpp`, from TDLib or from the MTProto error lists on core.telegram.org, such as
+`messages.sendMessage` for `TOPIC_CLOSED` and `TOPIC_DELETED`, and the day the sources were
+read is recorded once as `SOURCES_CHECKED`. The fake reproduces sourced texts so that a bot's
+heuristic can be tested, not because they are stable. A text that differs from its source by
+a word, or has none, is best-effort.
 
 ### D3. The code is the contract, so the code is checked
 
-`ApiRejection` refuses a code other than 400, 403 and 429, since any other would come back as
-an exception type the code does not stand for, and a 429 without `retry_after` would come back
-as a bare `TelegramAPIError`. `raise_api_error` applies the same rule to `retry_after`. The
-exception type is observable and the code is not, as `aiogram.exceptions` carries no
-`error_code`, so the tests' autouse fixture checks the type against the code on every refusal
-and the tests assert the type. `rejection_of()` reads a caught exception back against the
-declared texts, so a test also says which refusal of a code fired, without matching its
-wording.
+A 429 without `retry_after` would come back as a bare `TelegramAPIError`, and `retry_after`
+with another code as a `TelegramRetryAfter`, so `ApiRejection` and `raise_api_error` refuse
+both. The other codes `aiogram` maps are left alone. The exception type is observable and the
+code is not, as `aiogram.exceptions` carries no `error_code`, so the tests' autouse fixture
+records any refusal whose type disagrees with its code and fails the test at teardown, where a
+handler's broad `except` cannot hide it.
+
+### D3a. Naming a rejection
+
+The environment remembers, by identity in a weak map, which `ApiRejection` each exception it
+raised was made for, so `rejection_of()` and `rejection_fields()` hold when the description
+is perturbed. An exception it did not raise is read back against the declared descriptions,
+which no two share.
+
+### D3b. Perturbing
+
+`perturb_rejection_descriptions` replaces a description with a marker and its scrambled words,
+the same on every run, and leaves the code, the type and `retry_after`. A block declared
+without a message is perturbed as well, as the same rejection; a message the test declares is
+its own and is left alone.
 
 ### D4. Rights for a topic TDLib holds
 

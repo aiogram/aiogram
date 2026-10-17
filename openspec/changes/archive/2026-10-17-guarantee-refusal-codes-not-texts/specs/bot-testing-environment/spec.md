@@ -1,13 +1,13 @@
 ## ADDED Requirements
 
-### Requirement: A refusal guarantees its error code and exception type, not its text
+### Requirement: A rejection keeps its error code and exception type, not its text
 
-Every refusal the environment emits SHALL carry an `error_code` and raise the exception type
-for it: `TelegramBadRequest` for 400, `TelegramForbiddenError` for 403 and `TelegramRetryAfter`,
-carrying `retry_after`, for 429. Its description SHALL be best-effort, except for the texts
-documented as guaranteed, which are Telegram's own.
+Telegram guarantees no error text, so every rejection the environment emits SHALL carry an
+`error_code` and raise the exception type for it: `TelegramBadRequest` for 400,
+`TelegramForbiddenError` for 403 and `TelegramRetryAfter`, carrying `retry_after`, for 429.
+Its description SHALL be a heuristic aid, never a contract.
 
-#### Scenario: A refusal is matched by its type
+#### Scenario: A rejection is matched by its type
 
 - **WHEN** the bot sends into a group it was kicked from
 - **THEN** the call raises `TelegramForbiddenError`, whatever the description says
@@ -17,40 +17,73 @@ documented as guaranteed, which are Telegram's own.
 - **WHEN** the bot exceeds a declared rate limit
 - **THEN** the call raises `TelegramRetryAfter` carrying `retry_after`
 
-#### Scenario: A guaranteed text is Telegram's own
+#### Scenario: A sourced description is reproduced verbatim
 
 - **WHEN** the bot messages a user who blocked it
-- **THEN** the description is `Forbidden: bot was blocked by the user`
+- **THEN** the description is `Forbidden: bot was blocked by the user`, as the Bot API server
+  words it
 
-#### Scenario: Only Telegram's own texts are guaranteed
+#### Scenario: A retry_after that does not go with a 429 is refused
 
-- **WHEN** a test reads the guaranteed texts
-- **THEN** they are `bot was blocked by the user`, `bot was kicked from the … chat`,
-  `bot is not a member of the … chat`, `message to edit not found`,
-  `message to delete not found`, `message to be replied not found`, `message thread not
-  found`, `query is too old and response timeout expired or query ID is invalid`,
-  `TOPIC_CLOSED`, `TOPIC_DELETED`, `can't parse entities: …` and `retry after …`
-
-#### Scenario: A code the type cannot stand for is refused
-
-- **WHEN** a refusal is built with a code other than 400, 403 or 429, or a 429 without
-  `retry_after`
+- **WHEN** a rejection is built with a 429 and no `retry_after`, or with `retry_after` and
+  another code
 - **THEN** building it raises `ValueError`
 
-### Requirement: A refusal's text is declared once, sourced or best-effort
+### Requirement: A rejection's description is declared once, sourced or best-effort
 
-Each refusal SHALL be declared in `aiogram.test.rejections`, marked sourced, when its text comes
-from the Bot API server or TDLib, or best-effort. Only a sourced text SHALL be guaranteed.
+Each rejection SHALL be declared in `aiogram.test.rejections`. A sourced one SHALL reproduce
+its description verbatim from the Bot API server, TDLib or the error lists on
+core.telegram.org, and the day the sources were read SHALL be recorded once as
+`SOURCES_CHECKED`. A best-effort one SHALL approximate Telegram's wording.
 
-#### Scenario: A guaranteed text cites a source
+#### Scenario: The topic errors are sourced
 
-- **WHEN** a refusal is declared guaranteed without a source
-- **THEN** declaring it raises `ValueError`
+- **WHEN** a test reads `rejections.TOPIC_CLOSED`
+- **THEN** it is sourced from the error list of `messages.sendMessage`
 
-## RENAMED Requirements
+#### Scenario: A rejection is not built from a literal
 
-- FROM: `### Requirement: Topic methods check the rights before the topic is looked up`
-- TO: `### Requirement: Topic methods check the rights of a topic that exists`
+- **WHEN** a module of `aiogram.test` raises a rejection
+- **THEN** it raises one declared in `aiogram.test.rejections`
+
+### Requirement: A caught exception names its rejection
+
+`rejection_of()` SHALL return the declared rejection an exception came from, and
+`rejection_fields()` what its description was filled in with, so that a test tells two
+rejections of one error code apart without matching their wording. An exception the
+environment raised SHALL be known by identity, and any other read back against the declared
+descriptions.
+
+#### Scenario: Two rejections of one code are told apart
+
+- **WHEN** the bot's delete is refused once because the message is not found and once because
+  it cannot be deleted
+- **THEN** `rejection_of()` names a different rejection each time
+
+#### Scenario: A flood is named through aiogram's rewording
+
+- **WHEN** a declared rate limit raises `TelegramRetryAfter`
+- **THEN** `rejection_of()` names the flood rejection
+
+### Requirement: Rejection descriptions can be perturbed
+
+`BotTestEnvironment(perturb_rejection_descriptions=True)`, and the
+`bot_env_perturb_rejection_descriptions` fixture, SHALL give every rejection a different
+description with a recognisable marker, the same on every run, while keeping its error code,
+its exception type and its `retry_after`. A block declared without a message SHALL be
+perturbed too, and a message the test declares SHALL NOT. `rejection_of()` SHALL still name
+the rejection.
+
+#### Scenario: A bot meets a text it does not recognise
+
+- **WHEN** the environment perturbs and the bot is refused a send into a chat it was kicked from
+- **THEN** the call raises `TelegramForbiddenError` whose description does not contain `kicked`,
+  and `rejection_of()` names the kicked rejection
+
+#### Scenario: The default keeps the descriptions
+
+- **WHEN** the environment does not perturb and the bot deletes a message that is not there
+- **THEN** the description is `message to delete not found`
 
 ## MODIFIED Requirements
 
