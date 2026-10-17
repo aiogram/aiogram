@@ -8,3 +8,11 @@
 ## 2. Topic creators
 
 - [x] 2.1 Take `creator=` on `add_topic` and store it on the topic and its root (design D5); verify the bot's and a user's exemptions, the default, the forms a creator is named in, and an undeclared one
+
+## 3. Withheld updates
+
+- [x] 3.1 Add `deliver` to every trigger that feeds an update and withhold in `_feed` (design D6); verify a topic action, a message, a join's two updates, a promotion, `create_topic()`, the G13 actors, the queries and payments, and the lost-closure recipe
+
+## 4. Integration
+
+- [x] 4.1 Run `make lint`, `uv run pytest tests` with `aiogram/test` at 100% coverage, and the docs build; verify all pass with no new warnings for `testing.rst`

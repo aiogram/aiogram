@@ -91,3 +91,19 @@ is from the bot. The two disagree, and the documentation says so and points at
 `creator=blueprint.bot` for a topic the bot is meant to have opened. Making the default the
 bot would have exempted the bot from `TOPIC_CLOSED` in every suite that declares a topic,
 and turned a test of that refusal green for the wrong reason.
+
+### D6. Withholding is a keyword of every trigger
+
+`deliver` is a keyword-only parameter of each of the forty triggers that feed an update,
+next to `**data` (or next to `data=` on `promote` and `demote`), and the internal helpers
+pass it down to `_feed`. `_feed` checks it first, so a test's withholding wins over
+Telegram's and its reason is the one reported. The world is changed before `_feed` is
+reached, as it always was, so nothing about what is stored depends on delivery.
+
+An actor-level switch, such as `alice.withholding().close_topic()`, was considered. A
+keyword reads at the call that loses the update, cannot leak into the next trigger, and
+matches the one name `Undelivered` and `deliver_bot_service_messages` use. Its cost is that
+`deliver` cannot be dispatcher data, the same as `service_message` on `join()`.
+
+`create_topic()` returns the topic, which the test needs either way, rather than
+`Undelivered`. `delete_topic()` and `set_topics()` feed nothing, so they take no keyword.

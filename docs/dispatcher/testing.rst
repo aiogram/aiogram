@@ -3012,7 +3012,8 @@ Each trigger is what a client does through the Bot API method of the same name:
 ``create_topic()`` returns the new :class:`~aiogram.test.world.TopicState`, to pass on or bind
 an actor to. The others take a topic as a declaration, a state or a thread id, and default to
 the topic the actor is bound to, so ``owner.in_(team, topic=topic).close_topic()`` works too.
-Extra keyword arguments are dispatcher data, as in every other trigger. Deleting a topic
+Extra keyword arguments are dispatcher data, as in every other trigger, and
+``deliver=False`` withholds the service message, see `Updates that never arrive`_. Deleting a topic
 removes its messages and feeds nothing, because Telegram posts no service message for it and
 the Bot API has no type for one; the bot finds out when a send into the thread fails with
 ``message thread not found``. Closing and reopening the General topic post
@@ -3149,6 +3150,53 @@ the group's, so they raise for an anonymous binding.
     same user posting as themselves is not its creator. A ``chat_member`` update an
     anonymous administrator causes, such as a promotion, is from ``GroupAnonymousBot``, and
     so is the signature on a service message; no source the toolkit read confirms either.
+
+Updates that never arrive
+=========================
+
+An update can be lost on the way: the network or the bot's own infrastructure drops it, or
+Telegram never sends it, as for another bot's message above. Every actor trigger that feeds an
+update takes ``deliver=False`` for that. The world changes and stores what the trigger
+produced exactly as usual, a service message included, and nothing is fed to the dispatcher;
+the trigger returns :class:`~aiogram.test.Undelivered` instead of the handler's result:
+
+.. code-block:: python
+
+    result = await host.close_topic(game, deliver=False)
+
+    assert bot_env.chat(team).topic(game.message_thread_id).is_closed
+    assert isinstance(result, Undelivered)
+    assert result.update.message.forum_topic_closed is not None
+
+It works the same for a message, a membership change, a promotion, a topic action, and for
+another bot or an anonymous administrator. A trigger that feeds two updates, such as
+``join()`` with its ``new_chat_members``, withholds both. ``create_topic()`` returns the new
+topic either way. Nothing is routed, so :attr:`~aiogram.test.BotTestEnvironment.routes` is
+empty and ``assert_updates_handled()`` has nothing to flag. ``deliver`` is a keyword of the
+trigger, so it is not passed on as dispatcher data.
+
+A bot that missed a topic's closure learns of it only from its next send into the topic,
+which Telegram refuses with ``TOPIC_CLOSED``. The test reproduces that by withholding the
+closure and letting a player go on:
+
+.. code-block:: python
+
+    @router.message(Command("vote"))
+    async def vote(message: Message, game: Game) -> None:
+        try:
+            await message.answer("Vote counted")
+        except TelegramBadRequest as error:
+            if "TOPIC_CLOSED" not in error.message:
+                raise
+            await game.end_round(message.message_thread_id)
+
+
+    async def test_a_lost_closure_ends_the_round(host, player, game, round_topic):
+        await host.close_topic(round_topic, deliver=False)
+
+        await player.send("/vote")  # the player's actor is bound to the topic
+
+        assert game.round_over
 
 Business connections
 ====================

@@ -4364,3 +4364,31 @@ opens SHALL count as opened by the chat, a membership update it causes SHALL be 
 
 - **WHEN** an administrator without `is_anonymous` is bound anonymously
 - **THEN** the binding raises `WorldLookupError` naming how to grant it
+
+### Requirement: A trigger can change the world and withhold its update
+
+Every actor trigger that feeds an update SHALL take a keyword `deliver`, true by default. With
+`deliver=False` the trigger SHALL change the world and store every message it produces, a
+service message included, exactly as when it delivers, and SHALL feed nothing to the
+dispatcher, every update of a trigger that feeds several included. It SHALL return
+`Undelivered`, carrying the withheld update and a reason naming `deliver=False`, except
+`create_topic()`, which SHALL return the new topic. Nothing SHALL be routed, so
+`assert_updates_handled()` SHALL have nothing to flag. It SHALL apply to another bot and to an
+anonymous administrator alike.
+
+#### Scenario: A lost closure
+
+- **WHEN** an administrator closes a topic with `deliver=False`
+- **THEN** the topic is closed and `forum_topic_closed` is stored, no handler ran, and the
+  trigger returns `Undelivered` carrying that message
+
+#### Scenario: The bot learns from its next send
+
+- **WHEN** the closure was withheld and a player sends a command in the topic, and the bot
+  answers into it
+- **THEN** the bot's send fails with `TOPIC_CLOSED`
+
+#### Scenario: A join withholds both updates
+
+- **WHEN** a user joins with `deliver=False`
+- **THEN** the user is a member, `new_chat_members` is stored, and neither update is fed

@@ -633,7 +633,8 @@ class Undelivered:
 
     The world changed and stores what the trigger produced, exactly as
     when the update is delivered; only the dispatcher never saw
-    ``update``. ``reason`` says why, in words.
+    ``update``. ``reason`` says why, in words: the test passed
+    ``deliver=False``, or Telegram would not deliver it.
     """
 
     update: Update
@@ -668,6 +669,13 @@ class UserActor:
     :meth:`aiogram.dispatcher.dispatcher.Dispatcher.feed_update`, so filters, middlewares,
     dependency injection and FSM all run exactly as they do in production. Keyword
     arguments are passed through as handler dependencies.
+
+    Every trigger that feeds an update takes ``deliver``. With
+    ``deliver=False`` the world changes and stores what the trigger
+    produced, exactly as usual, and nothing is fed: the trigger
+    returns :class:`Undelivered` instead of the handler's result. It
+    reproduces an update Telegram never delivered, such as a lost
+    ``forum_topic_closed``.
     """
 
     def __init__(
@@ -787,6 +795,7 @@ class UserActor:
         fields: dict[str, Any] | None = None,
         reply_to: Message | int | None = None,
         ephemeral: bool = False,
+        deliver: bool = True,
         **data: Any,
     ) -> Any:
         """
@@ -812,18 +821,23 @@ class UserActor:
         ``fields`` sends one the same way.
         """
         if ephemeral or (fields or {}).get("ephemeral_message_id") is not None:
-            return await self._send_ephemeral(text, fields, reply_to, data)
+            return await self._send_ephemeral(text, fields, reply_to, data, deliver=deliver)
         message = self._build_message(text=text, fields=self._with_reply_to(fields, reply_to))
         self.chat.add_message(message)
         if self.business is not None:
             return await self._feed(
                 Update(update_id=self._next_update_id(), business_message=message),
                 data,
+                deliver=deliver,
             )
         update_id = self._next_update_id()
         if self.chat.type == ChatType.CHANNEL:
-            return await self._feed(Update(update_id=update_id, channel_post=message), data)
-        return await self._feed(Update(update_id=update_id, message=message), data)
+            return await self._feed(
+                Update(update_id=update_id, channel_post=message), data, deliver=deliver
+            )
+        return await self._feed(
+            Update(update_id=update_id, message=message), data, deliver=deliver
+        )
 
     async def _send_ephemeral(
         self,
@@ -831,6 +845,7 @@ class UserActor:
         fields: dict[str, Any] | None,
         reply_to: Message | int | None,
         data: dict[str, Any],
+        deliver: bool = True,
     ) -> Any:
         chat = self.chat
         if chat.type not in {ChatType.GROUP, ChatType.SUPERGROUP}:
@@ -861,6 +876,7 @@ class UserActor:
         return await self._feed(
             Update(update_id=self._next_update_id(), message=message),
             data,
+            deliver=deliver,
         )
 
     async def reply(
@@ -869,6 +885,7 @@ class UserActor:
         text: str | None = None,
         *,
         fields: dict[str, Any] | None = None,
+        deliver: bool = True,
         **data: Any,
     ) -> Any:
         """
@@ -889,6 +906,7 @@ class UserActor:
         text: str | None = None,
         *,
         fields: dict[str, Any] | None = None,
+        deliver: bool = True,
         **data: Any,
     ) -> Any:
         """
@@ -926,20 +944,25 @@ class UserActor:
             return await self._feed(
                 Update(update_id=self._next_update_id(), edited_business_message=edited),
                 data,
+                deliver=deliver,
             )
         update_id = self._next_update_id()
         if self.chat.type == ChatType.CHANNEL:
             return await self._feed(
                 Update(update_id=update_id, edited_channel_post=edited),
                 data,
+                deliver=deliver,
             )
-        return await self._feed(Update(update_id=update_id, edited_message=edited), data)
+        return await self._feed(
+            Update(update_id=update_id, edited_message=edited), data, deliver=deliver
+        )
 
     async def click(
         self,
         target: str | Button,
         *,
         message: Message | None = None,
+        deliver: bool = True,
         **data: Any,
     ) -> Any:
         """
@@ -985,6 +1008,7 @@ class UserActor:
         return await self._feed(
             Update(update_id=self._next_update_id(), callback_query=query),
             data,
+            deliver=deliver,
         )
 
     async def follow_deep_link(
@@ -993,6 +1017,7 @@ class UserActor:
         *,
         message: Message | None = None,
         validate_payload: bool = True,
+        deliver: bool = True,
         **data: Any,
     ) -> Any:
         """
@@ -1066,7 +1091,7 @@ class UserActor:
         # that for any unbound actor, the same as a plain `send()` from one, so this
         # just sends through a fresh actor for the same user rather than opening the
         # chat itself.
-        return await UserActor(self.environment, self.user).send(text, **data)
+        return await UserActor(self.environment, self.user).send(text, deliver=deliver, **data)
 
     async def inline_query(
         self,
@@ -1074,6 +1099,7 @@ class UserActor:
         *,
         offset: str = "",
         fields: dict[str, Any] | None = None,
+        deliver: bool = True,
         **data: Any,
     ) -> Any:
         """
@@ -1099,9 +1125,12 @@ class UserActor:
         return await self._feed(
             Update(update_id=self._next_update_id(), inline_query=inline),
             data,
+            deliver=deliver,
         )
 
-    async def join(self, *, service_message: bool = True, **data: Any) -> Any:
+    async def join(
+        self, *, service_message: bool = True, deliver: bool = True, **data: Any
+    ) -> Any:
         """
         Join this chat, producing `chat_member` — and, in a group, the
         `new_chat_members` service message a real join delivers alongside it.
@@ -1114,13 +1143,13 @@ class UserActor:
         """
         self._refuse_banned("join")
         return await self._change_membership(
-            ChatMemberStatus.MEMBER, data, service_message=service_message
+            ChatMemberStatus.MEMBER, data, deliver=deliver, service_message=service_message
         )
 
-    async def leave(self, **data: Any) -> Any:
+    async def leave(self, *, deliver: bool = True, **data: Any) -> Any:
         """Leave this chat. A banned user is not in it, so it raises."""
         self._refuse_banned("leave")
-        return await self._change_membership(ChatMemberStatus.LEFT, data)
+        return await self._change_membership(ChatMemberStatus.LEFT, data, deliver=deliver)
 
     def _refuse_banned(self, action: str) -> None:
         """
@@ -1142,7 +1171,9 @@ class UserActor:
             )
             raise WorldLookupError(msg)
 
-    async def add_bot(self, *, service_message: bool = True, **data: Any) -> Any:
+    async def add_bot(
+        self, *, service_message: bool = True, deliver: bool = True, **data: Any
+    ) -> Any:
         """
         Add the bot to this chat, producing `my_chat_member` rather than `chat_member` —
         and, in a group, the `new_chat_members` service message a real add delivers
@@ -1153,18 +1184,22 @@ class UserActor:
         return await self._change_membership(
             ChatMemberStatus.MEMBER,
             data,
+            deliver=deliver,
             subject=self.bot_user,
             service_message=service_message,
         )
 
-    async def remove_bot(self, **data: Any) -> Any:
-        return await self._change_membership(ChatMemberStatus.LEFT, data, subject=self.bot_user)
+    async def remove_bot(self, *, deliver: bool = True, **data: Any) -> Any:
+        return await self._change_membership(
+            ChatMemberStatus.LEFT, data, deliver=deliver, subject=self.bot_user
+        )
 
     async def promote(
         self,
         subject: UserSpec | UserState | int | None = None,
         *,
         data: dict[str, Any] | None = None,
+        deliver: bool = True,
         **rights: bool,
     ) -> Any:
         """
@@ -1224,6 +1259,7 @@ class UserActor:
         return await self._change_membership(
             ChatMemberStatus.ADMINISTRATOR,
             dict(data or {}),
+            deliver=deliver,
             subject=target,
             mutate=_promote,
         )
@@ -1233,6 +1269,7 @@ class UserActor:
         subject: UserSpec | UserState | int | None = None,
         *,
         data: dict[str, Any] | None = None,
+        deliver: bool = True,
     ) -> Any:
         """
         Demote an administrator back to a plain member.
@@ -1276,17 +1313,20 @@ class UserActor:
         return await self._change_membership(
             ChatMemberStatus.MEMBER,
             dict(data or {}),
+            deliver=deliver,
             subject=target,
             mutate=_demote,
         )
 
-    async def enable_business_connection(self, **data: Any) -> Any:
-        return await self._business_connection_update(is_enabled=True, data=data)
+    async def enable_business_connection(self, *, deliver: bool = True, **data: Any) -> Any:
+        return await self._business_connection_update(is_enabled=True, data=data, deliver=deliver)
 
-    async def disable_business_connection(self, **data: Any) -> Any:
-        return await self._business_connection_update(is_enabled=False, data=data)
+    async def disable_business_connection(self, *, deliver: bool = True, **data: Any) -> Any:
+        return await self._business_connection_update(is_enabled=False, data=data, deliver=deliver)
 
-    async def delete_business_messages(self, message_ids: list[int], **data: Any) -> Any:
+    async def delete_business_messages(
+        self, message_ids: list[int], *, deliver: bool = True, **data: Any
+    ) -> Any:
         """The business account deletes messages — they leave the chat, as in production."""
         connection = self._require_business()
         chat = self.chat
@@ -1301,6 +1341,7 @@ class UserActor:
         return await self._feed(
             Update(update_id=self._next_update_id(), deleted_business_messages=event),
             data,
+            deliver=deliver,
         )
 
     async def set_topics(self, enabled: bool) -> None:
@@ -1339,6 +1380,7 @@ class UserActor:
         *,
         icon_color: int | None = None,
         icon_custom_emoji_id: str | None = None,
+        deliver: bool = True,
         **data: Any,
     ) -> TopicState:
         """
@@ -1349,7 +1391,8 @@ class UserActor:
         message that opens it, from this user, is stored and fed to the
         dispatcher. It returns the new
         :class:`~aiogram.test.world.TopicState`, to bind an actor to or
-        close later; the handler's result is not returned.
+        close later; the handler's result is not returned, and nor is
+        :class:`Undelivered` when the message is withheld.
 
         The chat has to be a forum, and the user has to hold
         ``can_manage_topics``: as an administrator's right, or as the
@@ -1371,12 +1414,14 @@ class UserActor:
             author_signature=self._signature(),
         )
         assert topic.root_message is not None
-        await self._feed_message(topic.root_message, data)
+        await self._feed_message(topic.root_message, data, deliver=deliver)
         return topic
 
     async def close_topic(
         self,
         topic: TopicSpec | TopicState | int | None = None,
+        *,
+        deliver: bool = True,
         **data: Any,
     ) -> Any:
         """
@@ -1390,12 +1435,16 @@ class UserActor:
         """
         chat, target = self._managed_topic(topic, "close_general_topic")
         return await self._feed_message(
-            close_topic(self.environment, chat, target, **self._service_sender()), data
+            close_topic(self.environment, chat, target, **self._service_sender()),
+            data,
+            deliver=deliver,
         )
 
     async def reopen_topic(
         self,
         topic: TopicSpec | TopicState | int | None = None,
+        *,
+        deliver: bool = True,
         **data: Any,
     ) -> Any:
         """Reopen a topic, feeding ``forum_topic_reopened``.
@@ -1406,6 +1455,7 @@ class UserActor:
         return await self._feed_message(
             reopen_topic(self.environment, chat, target, **self._service_sender()),
             data,
+            deliver=deliver,
         )
 
     async def delete_topic(self, topic: TopicSpec | TopicState | int | None = None) -> None:
@@ -1421,7 +1471,7 @@ class UserActor:
         chat, target = self._managed_topic(topic, None)
         delete_topic(chat, target)
 
-    async def hide_general_topic(self, **data: Any) -> Any:
+    async def hide_general_topic(self, *, deliver: bool = True, **data: Any) -> Any:
         """
         Hide the General topic, which closes it, as a manager.
 
@@ -1430,18 +1480,19 @@ class UserActor:
         """
         chat = self._require_topic_manager()
         return await self._feed_message(
-            hide_general(self.environment, chat, **self._service_sender()), data
+            hide_general(self.environment, chat, **self._service_sender()), data, deliver=deliver
         )
 
-    async def unhide_general_topic(self, **data: Any) -> Any:
+    async def unhide_general_topic(self, *, deliver: bool = True, **data: Any) -> Any:
         """Unhide the General topic, feeding its service message."""
         chat = self._require_topic_manager()
         return await self._feed_message(
             unhide_general(self.environment, chat, **self._service_sender()),
             data,
+            deliver=deliver,
         )
 
-    async def close_general_topic(self, **data: Any) -> Any:
+    async def close_general_topic(self, *, deliver: bool = True, **data: Any) -> Any:
         """
         Close the General topic, as a user who may manage topics.
 
@@ -1453,14 +1504,16 @@ class UserActor:
         return await self._feed_message(
             close_general(self.environment, chat, **self._service_sender()),
             data,
+            deliver=deliver,
         )
 
-    async def reopen_general_topic(self, **data: Any) -> Any:
+    async def reopen_general_topic(self, *, deliver: bool = True, **data: Any) -> Any:
         """Reopen and unhide the General topic, feeding the message."""
         chat = self._require_topic_manager()
         return await self._feed_message(
             reopen_general(self.environment, chat, **self._service_sender()),
             data,
+            deliver=deliver,
         )
 
     def _managed_topic(
@@ -1541,17 +1594,25 @@ class UserActor:
             raise WorldLookupError(msg)
         return target
 
-    async def _feed_message(self, message: Message, data: dict[str, Any]) -> Any:
+    async def _feed_message(
+        self,
+        message: Message,
+        data: dict[str, Any],
+        deliver: bool = True,
+    ) -> Any:
         """Feed a service message already stored, from this chat."""
         return await self._feed(
             Update(update_id=self._next_update_id(), message=message),
             data,
             service=True,
+            deliver=deliver,
         )
 
     async def add_chat_to_community(
         self,
         community: CommunitySpec | CommunityState | int,
+        *,
+        deliver: bool = True,
         **data: Any,
     ) -> Any:
         state = self.environment.community(community)
@@ -1562,11 +1623,14 @@ class UserActor:
         return await self._service_message(
             {"community_chat_added": CommunityChatAdded(community=state.as_community())},
             data,
+            deliver=deliver,
         )
 
     async def remove_chat_from_community(
         self,
         community: CommunitySpec | CommunityState | int,
+        *,
+        deliver: bool = True,
         **data: Any,
     ) -> Any:
         state = self.environment.community(community)
@@ -1577,9 +1641,10 @@ class UserActor:
         return await self._service_message(
             {"community_chat_removed": CommunityChatRemoved()},
             data,
+            deliver=deliver,
         )
 
-    async def request_join(self, **data: Any) -> Any:
+    async def request_join(self, *, deliver: bool = True, **data: Any) -> Any:
         """
         Ask to join this chat, producing a `chat_join_request` the bot can act on.
 
@@ -1598,21 +1663,27 @@ class UserActor:
         return await self._feed(
             Update(update_id=self._next_update_id(), chat_join_request=event),
             data,
+            deliver=deliver,
         )
 
     async def chosen_inline_result(
         self,
         result_id: str,
         query: str = "",
+        *,
+        deliver: bool = True,
         **data: Any,
     ) -> Any:
         event = self._event(ChosenInlineResult, result_id=result_id, query=query)
         return await self._feed(
             Update(update_id=self._next_update_id(), chosen_inline_result=event),
             data,
+            deliver=deliver,
         )
 
-    async def shipping_query(self, invoice_payload: str = "payload", **data: Any) -> Any:
+    async def shipping_query(
+        self, invoice_payload: str = "payload", *, deliver: bool = True, **data: Any
+    ) -> Any:
         event = self._event(
             ShippingQuery,
             id=self.environment.world.next_query_id(QueryKind.SHIPPING),
@@ -1621,6 +1692,7 @@ class UserActor:
         return await self._feed(
             Update(update_id=self._next_update_id(), shipping_query=event),
             data,
+            deliver=deliver,
         )
 
     async def pre_checkout_query(
@@ -1629,6 +1701,7 @@ class UserActor:
         *,
         currency: str = "XTR",
         total_amount: int = 1,
+        deliver: bool = True,
         **data: Any,
     ) -> Any:
         event = self._event(
@@ -1641,6 +1714,7 @@ class UserActor:
         return await self._feed(
             Update(update_id=self._next_update_id(), pre_checkout_query=event),
             data,
+            deliver=deliver,
         )
 
     async def pay(
@@ -1650,6 +1724,7 @@ class UserActor:
         currency: str = "XTR",
         total_amount: int = 1,
         is_subscription: bool = False,
+        deliver: bool = True,
         **data: Any,
     ) -> Any:
         """
@@ -1707,30 +1782,37 @@ class UserActor:
             telegram_payment_charge_id=charge_id,
             **subscription,
         )
-        return await self._service_message({"successful_payment": payment}, data)
+        return await self._service_message({"successful_payment": payment}, data, deliver=deliver)
 
-    async def purchase_paid_media(self, payload: str = "payload", **data: Any) -> Any:
+    async def purchase_paid_media(
+        self, payload: str = "payload", *, deliver: bool = True, **data: Any
+    ) -> Any:
         event = self._event(PaidMediaPurchased, paid_media_payload=payload)
         return await self._feed(
             Update(update_id=self._next_update_id(), purchased_paid_media=event),
             data,
+            deliver=deliver,
         )
 
-    async def boost(self, **data: Any) -> Any:
+    async def boost(self, *, deliver: bool = True, **data: Any) -> Any:
         event = self._event(ChatBoostUpdated)
         return await self._feed(
             Update(update_id=self._next_update_id(), chat_boost=event),
             data,
+            deliver=deliver,
         )
 
-    async def remove_boost(self, **data: Any) -> Any:
+    async def remove_boost(self, *, deliver: bool = True, **data: Any) -> Any:
         event = self._event(ChatBoostRemoved)
         return await self._feed(
             Update(update_id=self._next_update_id(), removed_chat_boost=event),
             data,
+            deliver=deliver,
         )
 
-    async def stop_message_generation(self, draft_id: int = 1, **data: Any) -> Any:
+    async def stop_message_generation(
+        self, draft_id: int = 1, *, deliver: bool = True, **data: Any
+    ) -> Any:
         """
         The user taps the button that stops a draft's generation.
 
@@ -1765,6 +1847,7 @@ class UserActor:
         return await self._feed(
             Update(update_id=self._next_update_id(), stopped_message_generation=event),
             data,
+            deliver=deliver,
         )
 
     async def guest_message(
@@ -1772,6 +1855,7 @@ class UserActor:
         text: str | None = None,
         *,
         fields: dict[str, Any] | None = None,
+        deliver: bool = True,
         **data: Any,
     ) -> Any:
         """
@@ -1791,9 +1875,10 @@ class UserActor:
         return await self._feed(
             Update(update_id=self._next_update_id(), guest_message=message),
             data,
+            deliver=deliver,
         )
 
-    async def manage_bot(self, **data: Any) -> Any:
+    async def manage_bot(self, *, deliver: bool = True, **data: Any) -> Any:
         event = self._event(ManagedBotUpdated, user=self.user.as_user())
         # A synthesized user is not a bot, and the managed one is.
         event = event.model_copy(
@@ -1802,6 +1887,7 @@ class UserActor:
         return await self._feed(
             Update(update_id=self._next_update_id(), managed_bot=event),
             data,
+            deliver=deliver,
         )
 
     async def update_subscription(
@@ -1809,6 +1895,7 @@ class UserActor:
         invoice_payload: str = "payload",
         *,
         state: str = "active",
+        deliver: bool = True,
         **data: Any,
     ) -> Any:
         """
@@ -1832,9 +1919,12 @@ class UserActor:
         return await self._feed(
             Update(update_id=self._next_update_id(), subscription=event),
             data,
+            deliver=deliver,
         )
 
-    async def vote(self, poll_id: str, options: list[int], **data: Any) -> Any:
+    async def vote(
+        self, poll_id: str, options: list[int], *, deliver: bool = True, **data: Any
+    ) -> Any:
         """
         Vote in a poll, producing `poll_answer` and recording the vote.
 
@@ -1871,20 +1961,24 @@ class UserActor:
         return await self._feed(
             Update(update_id=self._next_update_id(), poll_answer=answer),
             data,
+            deliver=deliver,
         )
 
-    async def poll_update(self, poll_id: str, **data: Any) -> Any:
+    async def poll_update(self, poll_id: str, *, deliver: bool = True, **data: Any) -> Any:
         """The aggregate `poll` update, which is what an anonymous poll delivers."""
         poll = self.environment.world.poll(poll_id)
         return await self._feed(
             Update(update_id=self._next_update_id(), poll=poll.as_poll()),
             data,
+            deliver=deliver,
         )
 
     async def react(
         self,
         message: Message | int,
         reaction: list[ReactionTypeUnion] | str | None = None,
+        *,
+        deliver: bool = True,
         **data: Any,
     ) -> Any:
         """
@@ -1920,9 +2014,12 @@ class UserActor:
         return await self._feed(
             Update(update_id=self._next_update_id(), message_reaction=event),
             data,
+            deliver=deliver,
         )
 
-    async def reaction_count(self, message: Message | int, **data: Any) -> Any:
+    async def reaction_count(
+        self, message: Message | int, *, deliver: bool = True, **data: Any
+    ) -> Any:
         """The aggregate reaction update, which is what an anonymous audience delivers."""
         chat = self.chat
         message_id = message if isinstance(message, int) else message.message_id
@@ -1935,6 +2032,7 @@ class UserActor:
         return await self._feed(
             Update(update_id=self._next_update_id(), message_reaction_count=event),
             data,
+            deliver=deliver,
         )
 
     # -- internals --------------------------------------------------------------------
@@ -1990,7 +2088,12 @@ class UserActor:
             raise WorldLookupError(msg)
         return self.business
 
-    async def _business_connection_update(self, is_enabled: bool, data: dict[str, Any]) -> Any:
+    async def _business_connection_update(
+        self,
+        is_enabled: bool,
+        data: dict[str, Any],
+        deliver: bool = True,
+    ) -> Any:
         connection = self._require_business()
         connection.is_enabled = is_enabled
         # The connection names the account owner whoever toggles it:
@@ -2000,15 +2103,22 @@ class UserActor:
         return await self._feed(
             Update(update_id=self._next_update_id(), business_connection=event),
             data,
+            deliver=deliver,
         )
 
-    async def _service_message(self, fields: dict[str, Any], data: dict[str, Any]) -> Any:
+    async def _service_message(
+        self,
+        fields: dict[str, Any],
+        data: dict[str, Any],
+        deliver: bool = True,
+    ) -> Any:
         message = self._build_message(text=None, fields=fields)
         self.chat.add_message(message)
         return await self._feed(
             Update(update_id=self._next_update_id(), message=message),
             data,
             service=True,
+            deliver=deliver,
         )
 
     def _next_update_id(self) -> int:
@@ -2020,14 +2130,19 @@ class UserActor:
         data: dict[str, Any],
         *,
         service: bool = False,
+        deliver: bool = True,
     ) -> Any:
         """
-        Feed ``update``, unless Telegram would not deliver it.
+        Feed ``update``, unless it is withheld.
 
-        ``service`` says the message it carries is a service message.
-        What is not delivered is still in the world, and the trigger
-        returns :class:`Undelivered` instead of the handler's result.
+        ``deliver=False`` withholds it, and so does Telegram, for an
+        update it would not deliver. ``service`` says the message it
+        carries is a service message. What is withheld is still in the
+        world, and the trigger returns :class:`Undelivered` instead of
+        the handler's result.
         """
+        if not deliver:
+            return Undelivered(update, "withheld by the test with deliver=False")
         reason = self._withheld_by_telegram(update, service=service)
         if reason is not None:
             return Undelivered(update, reason)
@@ -2632,6 +2747,7 @@ class UserActor:
         *,
         mutate: Callable[[MemberState], None] | None = None,
         service_message: bool = False,
+        deliver: bool = True,
     ) -> Any:
         """
         Change a membership, routing by whose it is.
@@ -2682,9 +2798,10 @@ class UserActor:
         # `BotTestEnvironment.trigger`.
         with self.environment.trigger():
             if target.id == self.bot_user.id:
-                result = await self._feed(Update(update_id=update_id, my_chat_member=event), data)
+                update = Update(update_id=update_id, my_chat_member=event)
             else:
-                result = await self._feed(Update(update_id=update_id, chat_member=event), data)
+                update = Update(update_id=update_id, chat_member=event)
+            result = await self._feed(update, data, deliver=deliver)
             if service_message and chat.type in _MEMBER_SERVICE_MESSAGE_CHAT_TYPES:
-                await self._service_message({"new_chat_members": [user]}, data)
+                await self._service_message({"new_chat_members": [user]}, data, deliver)
         return result

@@ -412,7 +412,11 @@ messages and service messages are from ``GroupAnonymousBot``, with the group as
 ``Blueprint.add_topic(..., creator=...)`` names who opened a declared topic, a user or
 ``blueprint.bot``: its ``forum_topic_created`` is from them, and the creator's exemptions
 follow, such as the bot posting into its own closed topic. A topic declared without one is
-still announced as the bot's and is no one's.
+still announced as the bot's and is no one's. Every actor trigger that feeds an update takes
+``deliver=False``, which changes the world and stores what the trigger produced as usual,
+feeds nothing to the dispatcher and returns :class:`aiogram.test.Undelivered`, so a test can
+reproduce a lost update, such as a topic's closure the bot learns of only when its next send
+fails with ``TOPIC_CLOSED``.
 
 Migrating a suite written against the earlier toolkit:
 

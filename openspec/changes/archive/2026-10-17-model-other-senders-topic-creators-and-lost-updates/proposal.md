@@ -9,6 +9,9 @@ reproduce three situations it meets:
 - **Topics are the bot's.** A declared topic is announced as the bot's and counts as no
   one's, so a game whose topic a player or the host opened cannot be declared, and neither
   can one the bot opened, whose closed state it posts through.
+- **Lost updates.** A trigger always feeds what it produces, so a test cannot change the
+  world while the update never arrives, as when infrastructure drops a topic's
+  `forum_topic_closed` and the bot learns of the closure only from its next send.
 
 ## What Changes
 
@@ -26,6 +29,9 @@ reproduce three situations it meets:
   bot. Its `forum_topic_created` is from them and the creator's exemptions follow it.
   Without one the topic stays as it was: announced as the bot's, and no one's.
 
+- Every actor trigger that feeds an update takes `deliver=False`, which changes the world and
+  stores what the trigger produced as usual, feeds nothing, and returns `Undelivered`.
+
 ## Capabilities
 
 ### New Capabilities
@@ -40,8 +46,8 @@ None.
 
 - **Code**: `aiogram/test/actors.py`, `blueprint.py`, `world.py`, `modeling.py`,
   `environment.py`, `plugin.py` and `__init__.py`.
-- **Tests**: `tests/test_testing/test_other_actors.py`, `test_topic_creators.py` and
-  `test_plugin.py`.
-- **Docs**: a new section of `docs/dispatcher/testing.rst`, its forum topics section, its
-  fixtures and its API reference.
+- **Tests**: `tests/test_testing/test_other_actors.py`, `test_topic_creators.py`,
+  `test_withheld_updates.py` and `test_plugin.py`.
+- **Docs**: two new sections of `docs/dispatcher/testing.rst`, its forum topics section,
+  its fixtures and its API reference.
 - **Changelog**: folded into `CHANGES/1887.feature.rst`.
