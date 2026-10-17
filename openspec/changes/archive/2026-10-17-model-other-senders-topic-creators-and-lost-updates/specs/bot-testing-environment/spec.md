@@ -63,3 +63,45 @@ opens SHALL count as opened by the chat, a membership update it causes SHALL be 
 
 - **WHEN** an administrator without `is_anonymous` is bound anonymously
 - **THEN** the binding raises `WorldLookupError` naming how to grant it
+
+## MODIFIED Requirements
+
+### Requirement: A declared world matches one built through the API
+
+What a blueprint declares SHALL read back as the same state reached through API calls:
+declared permissions SHALL apply the documented defaults, a declared topic SHALL be created
+by the path `createForumTopic` takes, and a declared poll SHALL be stored on a message in its
+chat. A topic declared with `creator=`, a declared user or the bot, SHALL store that creator,
+SHALL have its `forum_topic_created` from them, and SHALL give them the creator's exemptions:
+the bot's from `TOPIC_CLOSED` and from `can_manage_topics` for its own topic, and a user
+actor's from `can_manage_topics`. A topic declared without one SHALL be no one's, and its
+`forum_topic_created` SHALL be from the bot.
+
+#### Scenario: Declared permissions follow their defaults
+
+- **WHEN** a blueprint declares a restricted member allowed to send messages
+- **THEN** the member reads back allowed to react, as the same restriction through the API
+  does
+
+#### Scenario: A declared poll is stored on a message
+
+- **WHEN** a blueprint declares a poll in a chat
+- **THEN** the chat holds a message carrying that poll, and users can vote in it
+
+#### Scenario: A topic the bot opened
+
+- **WHEN** a blueprint declares a topic with `creator=blueprint.bot` and the topic is closed
+- **THEN** the bot, a plain member, posts into it and closes and reopens it
+
+#### Scenario: A topic a player opened
+
+- **WHEN** a blueprint declares a topic with a user as its creator
+- **THEN** its `forum_topic_created` is from that user, who closes it without
+  `can_manage_topics`, and the bot's send into it while it is closed fails with
+  `TOPIC_CLOSED`
+
+#### Scenario: A topic declared without a creator
+
+- **WHEN** a blueprint declares a topic without `creator=`
+- **THEN** its `forum_topic_created` is from the bot, and neither the bot nor a user gets
+  a creator's exemption

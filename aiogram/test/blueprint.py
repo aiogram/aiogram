@@ -174,6 +174,9 @@ class TopicSpec:
     icon_color: int = DEFAULT_TOPIC_ICON_COLOR
     icon_custom_emoji_id: str | None = None
     message_thread_id: int | None = field(default=None, compare=False)
+    #: Who opened the topic, by id, or ``None`` for no one; see
+    #: :meth:`Blueprint.add_topic`.
+    creator_id: int | None = None
 
 
 @dataclass(eq=False)
@@ -501,13 +504,28 @@ class Blueprint:
         *,
         icon_color: int = DEFAULT_TOPIC_ICON_COLOR,
         icon_custom_emoji_id: str | None = None,
+        creator: UserRef | None = None,
     ) -> TopicSpec:
-        """Declare a forum topic. The chat becomes a forum."""
+        """
+        Declare a forum topic. The chat becomes a forum.
+
+        ``creator`` is who opened it: a declared user, by spec, actor
+        or id, or ``blueprint.bot``. Its ``forum_topic_created`` is
+        from them, and they get a creator's exemptions: the bot posts
+        into its own closed topic and edits, closes, reopens and
+        deletes it without ``can_manage_topics``, and a user actor
+        closes, reopens and deletes it.
+
+        Without one, the topic is no one's, so no one gets those
+        exemptions, though its ``forum_topic_created`` is from the
+        bot, as it always was.
+        """
         topic = TopicSpec(
             chat_id=chat.id,
             name=name,
             icon_color=icon_color,
             icon_custom_emoji_id=icon_custom_emoji_id,
+            creator_id=None if creator is None else user_ref_id(creator),
         )
         self.topics.append(topic)
         return topic
@@ -749,13 +767,15 @@ class Blueprint:
         for index, topic in enumerate(spec.topics):
             # Declared topics go through the same path as `createForumTopic`, so a
             # declared world is indistinguishable from one built by API calls.
+            opener = world.bot_user if topic.creator_id is None else world.user(topic.creator_id)
             created = create_topic(
                 world.chat(topic.chat_id),
                 name=topic.name,
                 date=world.now,
                 icon_color=topic.icon_color,
                 icon_custom_emoji_id=topic.icon_custom_emoji_id,
-                from_user=world.bot_user.as_user(),
+                from_user=opener.as_user(),
+                creator_id=topic.creator_id,
             )
             self.topics[index].message_thread_id = created.message_thread_id
         for index, declared in enumerate(spec.polls):

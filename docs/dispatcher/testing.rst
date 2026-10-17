@@ -2933,10 +2933,11 @@ fails with ``message thread not found``, and closing, reopening or hiding a topi
 only, by every call that returns a chat. The
 bot's own topic mode is not modeled: every private chat takes topics.
 
-A closed topic takes messages only from someone who may manage topics. A send, copy or
-forward the bot makes into one fails with ``Bad Request: TOPIC_CLOSED`` unless the bot is
-the owner or an administrator holding ``can_manage_topics``; the same goes for the General
-topic while it is closed or hidden. Declare the bot's standing to take the other branch:
+A closed topic takes messages only from someone who may manage topics, or from the user
+or bot who opened it. A send, copy or forward the bot makes into one fails with ``Bad
+Request: TOPIC_CLOSED`` unless the bot is the owner, an administrator holding
+``can_manage_topics``, or the topic's creator; the same goes for the General topic while it
+is closed or hidden. Declare the bot's standing to take the other branch:
 
 .. code-block:: python
 
@@ -3042,8 +3043,23 @@ or delete one they did not create.
 
 The couplings the Bot API documents apply: hiding the General topic also closes it, and
 reopening it also unhides it. :code:`editForumTopic` with an empty name keeps the current
-name, and an empty ``icon_custom_emoji_id`` removes the icon. A declared topic is created
-by the bot, as one created through :code:`createForumTopic` is.
+name, and an empty ``icon_custom_emoji_id`` removes the icon.
+
+A declared topic goes through the path :code:`createForumTopic` takes. ``creator=`` says who
+opened it, a declared user or ``blueprint.bot``, and its ``forum_topic_created`` is from
+them:
+
+.. code-block:: python
+
+    game = blueprint.add_topic(team, "Game", creator=host)       # a user's topic
+    lobby = blueprint.add_topic(team, "Lobby", creator=blueprint.bot)
+
+The creator gets the exemptions above: the bot posts into its own closed topic and edits,
+closes, reopens and deletes it without ``can_manage_topics``, and a user actor closes,
+reopens and deletes theirs. Without ``creator=`` the topic is no one's, so neither the bot
+nor any user gets them, though its ``forum_topic_created`` is from the bot, as it was before
+the creator could be declared. Declare ``creator=blueprint.bot`` for a topic the bot is
+meant to have opened.
 
 Other bots and anonymous administrators
 =======================================

@@ -6,6 +6,9 @@ reproduce three situations it meets:
 - **Other senders.** Only a plain user can act, so a test cannot have another bot post into
   the group, or an anonymous administrator close the game's topic as the group, and check
   what Telegram would deliver and with which sender fields.
+- **Topics are the bot's.** A declared topic is announced as the bot's and counts as no
+  one's, so a game whose topic a player or the host opened cannot be declared, and neither
+  can one the bot opened, whose closed state it posts through.
 
 ## What Changes
 
@@ -18,6 +21,10 @@ reproduce three situations it meets:
 - `UserActor.in_(chat, anonymous=True)` binds an anonymous administrator, whose messages and
   service messages are from `GroupAnonymousBot`, with the group as `sender_chat` and the
   custom title as `author_signature`.
+
+- `Blueprint.add_topic(..., creator=...)` names who opened a declared topic, a user or the
+  bot. Its `forum_topic_created` is from them and the creator's exemptions follow it.
+  Without one the topic stays as it was: announced as the bot's, and no one's.
 
 ## Capabilities
 
@@ -33,7 +40,8 @@ None.
 
 - **Code**: `aiogram/test/actors.py`, `blueprint.py`, `world.py`, `modeling.py`,
   `environment.py`, `plugin.py` and `__init__.py`.
-- **Tests**: `tests/test_testing/test_other_actors.py` and `test_plugin.py`.
-- **Docs**: a new section of `docs/dispatcher/testing.rst`, its fixtures and its API
-  reference.
+- **Tests**: `tests/test_testing/test_other_actors.py`, `test_topic_creators.py` and
+  `test_plugin.py`.
+- **Docs**: a new section of `docs/dispatcher/testing.rst`, its forum topics section, its
+  fixtures and its API reference.
 - **Changelog**: folded into `CHANGES/1887.feature.rst`.

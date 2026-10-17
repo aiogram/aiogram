@@ -8,6 +8,10 @@ See proposal.md for the motivation; the requirements are in
 - A message's sender came from `posted_by(chat, user)`, which made a channel post the
   channel's and anything else the user's.
 - `UserSpec` and `UserState` had `is_bot`, which only the bot under test set.
+- `TopicState.creator_id` drives every creator exemption: the bot's from `TOPIC_CLOSED`
+  (`posting_topic`) and from `can_manage_topics` (`_opened_by_bot`), and a user actor's
+  (`_managed_topic`). `Blueprint.build` left it `None` for a declared topic and posted its
+  `forum_topic_created` from the bot.
 
 ## Decisions
 
@@ -73,3 +77,17 @@ anonymous bot; TDLib passes the actor through as the server sends it, and no sou
 says what that is. The signature on a service message is likewise unconfirmed. A topic
 opened anonymously counts as the chat's, after TDLib's creator being a chat or a user.
 Joining and leaving refuse an anonymous binding.
+
+### D5. A declared topic names its creator
+
+`TopicSpec.creator_id` is filled from `add_topic(..., creator=...)`, which takes a user as
+`members=` does, by spec, actor or id, and `blueprint.bot` for the bot. `build` passes it to
+`create_topic` and posts `forum_topic_created` from that user, so the exemptions read one
+field and need no change. An undeclared creator fails the build with the world's own
+`WorldLookupError`.
+
+The default keeps what a test written earlier relies on: the topic is no one's and its root
+is from the bot. The two disagree, and the documentation says so and points at
+`creator=blueprint.bot` for a topic the bot is meant to have opened. Making the default the
+bot would have exempted the bot from `TOPIC_CLOSED` in every suite that declares a topic,
+and turned a test of that refusal green for the wrong reason.

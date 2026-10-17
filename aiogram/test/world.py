@@ -690,7 +690,9 @@ class TopicState:
     is_general: bool = False
     #: Who opened the topic, as TDLib's ``is_outgoing`` tells the
     #: bot's own topics apart. ``None`` for the General topic and for
-    #: a topic the blueprint declares, which is no one's.
+    #: a topic the blueprint declares with no creator, which is no
+    #: one's; the group's id when an anonymous administrator opened
+    #: it.
     creator_id: int | None = None
     chat: ChatState | None = field(default=None, repr=False, compare=False)
 

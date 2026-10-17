@@ -409,6 +409,10 @@ Communication rules allow, declared with ``bot_to_bot=`` on both bots and
 not document either way. ``in_(chat, anonymous=True)`` binds an anonymous administrator, whose
 messages and service messages are from ``GroupAnonymousBot``, with the group as
 ``sender_chat`` and their custom title as ``author_signature``, under the user's own rights.
+``Blueprint.add_topic(..., creator=...)`` names who opened a declared topic, a user or
+``blueprint.bot``: its ``forum_topic_created`` is from them, and the creator's exemptions
+follow, such as the bot posting into its own closed topic. A topic declared without one is
+still announced as the bot's and is no one's.
 
 Migrating a suite written against the earlier toolkit:
 
