@@ -57,7 +57,7 @@ from .errors import (
 )
 from .flood import FloodControl, RateLimits
 from .markup import apply_parse_modes, refuse_empty_text
-from .modeling import bot_me, check_bot_rights, find_handler
+from .modeling import check_bot_rights, find_handler
 from .mounting import bindables, detached_copy
 from .overrides import (
     OverrideBuilder,
@@ -662,7 +662,7 @@ class BotTestEnvironment:
             session=self.session,
             default=self.blueprint.default,
         )
-        self.bot._me = bot_me(self.world)
+        self.bot._me = self.world.bot_me()
         # From here on everything the world stores is bound to this bot, so a message a
         # test reads out of a chat is as usable as one a call returned.
         self.world.bind(self.bot)

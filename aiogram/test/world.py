@@ -1945,6 +1945,23 @@ class World:
             registry.update(value)
             value = registry
         super().__setattr__(name, value)
+        bot: Bot | None = getattr(self, "bound_bot", None)
+        if name == "bot_group_privacy" and bot is not None:
+            # What ``getMe`` reports changed, so the bot's cached answer
+            # must follow, or ``bot.me()`` and ``get_me()`` disagree.
+            bot._me = self.bot_me()
+
+    def bot_me(self) -> User:
+        """
+        The bot as ``getMe`` reports it.
+
+        ``can_read_all_group_messages`` is ``True`` when Group Privacy
+        is off, which only ``getMe`` reports, so a message's sender
+        lacks it.
+        """
+        return self.bot_user.as_user().model_copy(
+            update={"can_read_all_group_messages": not self.bot_group_privacy},
+        )
 
     def bind(self, bot: Bot) -> None:
         """

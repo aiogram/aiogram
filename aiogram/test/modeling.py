@@ -2806,21 +2806,9 @@ def handle_get_chat(env: BotTestEnvironment, method: GetChat) -> ChatFullInfo:
     return updated
 
 
-def bot_me(world: World) -> User:
-    """
-    The bot as ``getMe`` reports it.
-
-    ``can_read_all_group_messages`` is ``True`` when Group Privacy is
-    off, which only ``getMe`` reports, so a message's sender lacks it.
-    """
-    return world.bot_user.as_user().model_copy(
-        update={"can_read_all_group_messages": not world.bot_group_privacy},
-    )
-
-
 @models(GetMe)
 def handle_get_me(env: BotTestEnvironment, method: GetMe) -> User:
-    return bot_me(env.world)
+    return env.world.bot_me()
 
 
 # -- sticker sets ----------------------------------------------------------------------

@@ -5,6 +5,7 @@ import pytest
 from aiogram import F
 from aiogram.enums import ChatMemberStatus
 from aiogram.fsm.state import State
+from aiogram.methods import GetMe
 from aiogram.test import (
     Blueprint,
     BotTestEnvironment,
@@ -123,6 +124,28 @@ class TestDeclaringAnotherBot:
             assert (await env.bot.me()).can_read_all_group_messages is (not privacy)
         finally:
             env.dispose_sync()
+
+    @pytest.mark.parametrize("privacy", [True, False])
+    async def test_a_change_of_group_privacy_reaches_the_cached_bot(self, dp, privacy):
+        env = BotTestEnvironment(
+            blueprint=Blueprint(bot_group_privacy=privacy),
+            dispatcher=dp,
+        )
+        try:
+            env.world.bot_group_privacy = not privacy
+
+            assert (await env.bot.get_me()).can_read_all_group_messages is privacy
+            assert (await env.bot.me()).can_read_all_group_messages is privacy
+            assert env.calls.count(GetMe) == 1
+        finally:
+            env.dispose_sync()
+
+    def test_a_world_without_a_bot_has_nothing_to_refresh(self):
+        world = Blueprint().build()
+
+        world.bot_group_privacy = False
+
+        assert world.bot_me().can_read_all_group_messages is True
 
     def test_a_person_has_no_bot_to_bot_mode(self):
         with pytest.raises(ValueError, match="Only a bot"):
