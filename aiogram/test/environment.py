@@ -55,7 +55,7 @@ from .errors import (
 )
 from .flood import FloodControl, RateLimits
 from .markup import apply_parse_modes, refuse_empty_text
-from .modeling import check_bot_rights, find_handler, resolve_chat
+from .modeling import bot_me, check_bot_rights, find_handler, resolve_chat
 from .mounting import bindables, detached_copy
 from .overrides import (
     BLOCKED_BY_USER,
@@ -590,7 +590,7 @@ class BotTestEnvironment:
         clock_start: datetime.datetime | None = None,
         enforce_bot_rights: bool = True,
         rate_limits: RateLimits | None = None,
-        deliver_bot_service_messages: bool = True,
+        deliver_service_messages_from_bots: bool = True,
     ) -> None:
         """
         ``default_wait_timeout`` is how long every wait in this environment runs.
@@ -621,18 +621,18 @@ class BotTestEnvironment:
         ``retry_after`` that is the truth. Off by default; see
         :class:`aiogram.test.RateLimits`.
 
-        ``deliver_bot_service_messages`` decides whether a service
+        ``deliver_service_messages_from_bots`` decides whether a service
         message another bot causes, such as ``forum_topic_closed``,
         reaches the bot. No public source says; the default delivers
         it, as the Bot API server filters no sender and Telegram says
         bots receive all service messages. Pass ``False`` to withhold
         it: it is stored all the same, and the trigger returns
-        :class:`~aiogram.test.Undelivered`.
+        :class:`~aiogram.test.Withheld`.
         """
         #: Whether the bot's calls are checked against its rights.
         self.enforce_bot_rights = enforce_bot_rights
         #: Whether service messages other bots cause are delivered.
-        self.deliver_bot_service_messages = deliver_bot_service_messages
+        self.deliver_service_messages_from_bots = deliver_service_messages_from_bots
         #: The flood limits in force, or ``None`` when there are none.
         self.rate_limits = rate_limits
         self._flood = FloodControl(rate_limits) if rate_limits is not None else None
@@ -650,7 +650,7 @@ class BotTestEnvironment:
             session=self.session,
             default=self.blueprint.default,
         )
-        self.bot._me = self.world.bot_user.as_user()
+        self.bot._me = bot_me(self.world)
         # From here on everything the world stores is bound to this bot, so a message a
         # test reads out of a chat is as usable as one a call returned.
         self.world.bind(self.bot)
@@ -1293,7 +1293,7 @@ class BotTestEnvironment:
             last_name=known.last_name,
             username=known.username,
             language_code=known.language_code,
-            bot_to_bot=known.bot_to_bot,
+            bot_to_bot_mode=known.bot_to_bot_mode,
         )
 
     def _declared_members(

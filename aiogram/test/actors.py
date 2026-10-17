@@ -627,7 +627,7 @@ _ADMINISTRATOR_STATUSES = frozenset({ChatMemberStatus.CREATOR, ChatMemberStatus.
 
 
 @dataclasses.dataclass(frozen=True)
-class Undelivered:
+class Withheld:
     """
     What a trigger returns when its update did not reach the bot.
 
@@ -673,7 +673,7 @@ class UserActor:
     Every trigger that feeds an update takes ``deliver``. With
     ``deliver=False`` the world changes and stores what the trigger
     produced, exactly as usual, and nothing is fed: the trigger
-    returns :class:`Undelivered` instead of the handler's result. It
+    returns :class:`Withheld` instead of the handler's result. It
     reproduces an update Telegram never delivered, such as a lost
     ``forum_topic_closed``.
     """
@@ -1392,7 +1392,7 @@ class UserActor:
         dispatcher. It returns the new
         :class:`~aiogram.test.world.TopicState`, to bind an actor to or
         close later; the handler's result is not returned, and nor is
-        :class:`Undelivered` when the message is withheld.
+        :class:`Withheld` when the message is withheld.
 
         The chat has to be a forum, and the user has to hold
         ``can_manage_topics``: as an administrator's right, or as the
@@ -2138,14 +2138,14 @@ class UserActor:
         ``deliver=False`` withholds it, and so does Telegram, for an
         update it would not deliver. ``service`` says the message it
         carries is a service message. What is withheld is still in the
-        world, and the trigger returns :class:`Undelivered` instead of
+        world, and the trigger returns :class:`Withheld` instead of
         the handler's result.
         """
         if not deliver:
-            return Undelivered(update, "withheld by the test with deliver=False")
+            return Withheld(update, "withheld by the test with deliver=False")
         reason = self._withheld_by_telegram(update, service=service)
         if reason is not None:
-            return Undelivered(update, reason)
+            return Withheld(update, reason)
         return await self.environment.feed(update, **data)
 
     def _is_other_bot(self) -> bool:
@@ -2169,11 +2169,11 @@ class UserActor:
         if message is None or not self._is_other_bot():
             return None
         if service:
-            if self.environment.deliver_bot_service_messages:
+            if self.environment.deliver_service_messages_from_bots:
                 return None
             return (
                 f"a service message bot {self.user.id} caused, and the environment "
-                "withholds those (deliver_bot_service_messages=False)"
+                "withholds those (deliver_service_messages_from_bots=False)"
             )
         if message.chat.type not in _GROUP_TYPES or self._reaches_bot(message):
             return None
@@ -2194,12 +2194,12 @@ class UserActor:
         or has Group Privacy Mode off.
         """
         bot = self.environment.world.bot_user
-        if (bot.bot_to_bot or self.user.bot_to_bot) and self._addresses_bot(message):
+        if (bot.bot_to_bot_mode or self.user.bot_to_bot_mode) and self._addresses_bot(message):
             return True
-        if not bot.bot_to_bot:
+        if not bot.bot_to_bot_mode:
             return False
         status = self.chat.member(bot.id).status
-        return status in _ADMINISTRATOR_STATUSES or not self.environment.world.bot_privacy_mode
+        return status in _ADMINISTRATOR_STATUSES or not self.environment.world.bot_group_privacy
 
     def _addresses_bot(self, message: Message) -> bool:
         """
@@ -2282,13 +2282,13 @@ class UserActor:
         if (
             chat.type == ChatType.PRIVATE
             and self._is_other_bot()
-            and not (self.user.bot_to_bot and bot.bot_to_bot)
+            and not (self.user.bot_to_bot_mode and bot.bot_to_bot_mode)
         ):
             msg = (
                 f"Bot {self.user.id} cannot write to the bot in private: Telegram allows "
                 "it only when both turn on Bot-to-Bot Communication Mode; declare "
-                "`add_user(..., is_bot=True, bot_to_bot=True)` and "
-                "`Blueprint(bot_to_bot=True)`"
+                "`add_user(..., is_bot=True, bot_to_bot_mode=True)` and "
+                "`Blueprint(bot_to_bot_mode=True)`"
             )
             raise WorldLookupError(msg)
         values: dict[str, Any] = {

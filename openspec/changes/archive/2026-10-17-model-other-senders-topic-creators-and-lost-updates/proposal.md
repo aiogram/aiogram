@@ -15,12 +15,12 @@ reproduce three situations it meets:
 
 ## What Changes
 
-- `Blueprint.add_user(..., is_bot=True, bot_to_bot=...)` declares another bot, and
-  `Blueprint(bot_to_bot=..., bot_privacy_mode=...)` the bot's own settings. Another bot's
+- `Blueprint.add_user(..., is_bot=True, bot_to_bot_mode=...)` declares another bot, and
+  `Blueprint(bot_to_bot_mode=..., bot_group_privacy=...)` the bot's own settings. Another bot's
   group message reaches the bot only as Telegram's Bot-to-Bot Communication rules allow;
-  otherwise it is stored and the trigger returns the new `Undelivered`. Its service messages
-  are delivered unless `BotTestEnvironment(deliver_bot_service_messages=False)`, or the new
-  `bot_env_deliver_bot_service_messages` fixture, withholds them.
+  otherwise it is stored and the trigger returns the new `Withheld`. Its service messages
+  are delivered unless `BotTestEnvironment(deliver_service_messages_from_bots=False)`, or the new
+  `bot_env_deliver_service_messages_from_bots` fixture, withholds them.
 - `UserActor.in_(chat, anonymous=True)` binds an anonymous administrator, whose messages and
   service messages are from `GroupAnonymousBot`, with the group as `sender_chat` and the
   custom title as `author_signature`.
@@ -30,7 +30,7 @@ reproduce three situations it meets:
   Without one the topic stays as it was: announced as the bot's, and no one's.
 
 - Every actor trigger that feeds an update takes `deliver=False`, which changes the world and
-  stores what the trigger produced as usual, feeds nothing, and returns `Undelivered`.
+  stores what the trigger produced as usual, feeds nothing, and returns `Withheld`.
 
 ## Capabilities
 

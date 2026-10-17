@@ -500,7 +500,7 @@ class UserState:
     language_code: str | None = None
     #: Whether a bot turned on Bot-to-Bot Communication Mode in
     #: @BotFather. Only a bot has it, and no update reports it.
-    bot_to_bot: bool = False
+    bot_to_bot_mode: bool = False
 
     def as_user(self) -> User:
         return User(
@@ -1876,9 +1876,9 @@ class World:
     #: by every :meth:`ChatState.wait_for_message` in this world. Configuration rather than
     #: state, so two worlds that hold the same things still compare equal.
     default_wait_timeout: float = field(default=DEFAULT_WAIT_TIMEOUT, compare=False)
-    #: Whether the bot runs in Group Privacy Mode, which @BotFather
-    #: sets. Only the delivery of other bots' messages reads it.
-    bot_privacy_mode: bool = True
+    #: Whether the bot has Group Privacy on, which @BotFather sets.
+    #: ``getMe`` and the delivery of other bots' messages read it.
+    bot_group_privacy: bool = True
 
     def __setattr__(self, name: str, value: Any) -> None:
         """

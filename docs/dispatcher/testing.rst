@@ -3012,9 +3012,9 @@ Each trigger is what a client does through the Bot API method of the same name:
 ``create_topic()`` returns the new :class:`~aiogram.test.world.TopicState`, to pass on or bind
 an actor to. The others take a topic as a declaration, a state or a thread id, and default to
 the topic the actor is bound to, so ``owner.in_(team, topic=topic).close_topic()`` works too.
-Extra keyword arguments are dispatcher data, as in every other trigger, and
-``deliver=False`` withholds the service message, see `Updates that never arrive`_. Deleting a topic
-removes its messages and feeds nothing, because Telegram posts no service message for it and
+Extra keyword arguments are dispatcher data, as in every other trigger. With
+``deliver=False`` the world still changes; only the update is withheld, see `Updates that
+never arrive`_. Deleting a topic removes its messages and feeds nothing, because Telegram posts no service message for it and
 the Bot API has no type for one; the bot finds out when a send into the thread fails with
 ``message thread not found``. Closing and reopening the General topic post
 ``forum_topic_closed`` and ``forum_topic_reopened`` with no thread id, as the bot methods do:
@@ -3075,21 +3075,21 @@ topic still takes ``can_manage_topics``:
 
 .. code-block:: python
 
-    blueprint = Blueprint(bot_to_bot=True)            # the bot under test
-    host = blueprint.add_user("Host", username="host_bot", is_bot=True, bot_to_bot=True)
+    blueprint = Blueprint(bot_to_bot_mode=True)            # the bot under test
+    host = blueprint.add_user("Host", username="host_bot", is_bot=True, bot_to_bot_mode=True)
     team = blueprint.add_supergroup("Team", is_forum=True)
     blueprint.set_member(team, host, rights=administrator_rights())
 
     host_bot = bot_env.user(host).in_(team)
     await host_bot.send("/join@test_bot")             # delivered
     result = await host_bot.send("Day 2 begins")      # stored, not delivered
-    assert isinstance(result, Undelivered)
+    assert isinstance(result, Withheld)
 
 Telegram's bots see few messages of other bots, and the toolkit follows the rule of
 `Bot-to-Bot Communication <https://core.telegram.org/bots/features#bot-to-bot-communication>`_.
-``Blueprint(bot_to_bot=...)`` and ``add_user(..., bot_to_bot=...)`` declare the mode each bot
-turned on in @BotFather, off by default, and ``Blueprint(bot_privacy_mode=False)`` turns the
-bot's Group Privacy Mode off. In a group or a supergroup, another bot's message or edit
+``Blueprint(bot_to_bot_mode=...)`` and ``add_user(..., bot_to_bot_mode=...)`` declare the mode each bot
+turned on in @BotFather, off by default, and ``Blueprint(bot_group_privacy=False)`` turns the
+bot's Group Privacy off, which ``getMe`` reports as ``can_read_all_group_messages``. In a group or a supergroup, another bot's message or edit
 reaches the bot when:
 
 - either bot has the mode on, and the message names the bot in a command, such as
@@ -3097,7 +3097,7 @@ reaches the bot when:
 - the bot has the mode on, and is an administrator of the chat or has privacy mode off.
 
 Otherwise the message is stored as Telegram stores it, nothing is fed, and the trigger
-returns :class:`~aiogram.test.Undelivered`, whose ``update`` is what was withheld and whose
+returns :class:`~aiogram.test.Withheld`, whose ``update`` is what was withheld and whose
 ``reason`` says why. In a private chat Telegram lets two bots talk only when both have the
 mode on, so another bot's message there without it raises
 :class:`~aiogram.test.WorldLookupError`: there would be no message at all. A channel post is
@@ -3113,9 +3113,9 @@ the channel's, so the rule does not apply to one.
 A service message another bot causes, such as ``forum_topic_closed``, is delivered by
 default. No public source says either way: the Bot API server filters no update by its
 sender, and Telegram says every bot receives all service messages. Pass
-``BotTestEnvironment(deliver_bot_service_messages=False)``, or override the
-``bot_env_deliver_bot_service_messages`` fixture, to test a bot that never sees them; the
-world changes all the same, and the trigger returns :class:`~aiogram.test.Undelivered`.
+``BotTestEnvironment(deliver_service_messages_from_bots=False)``, or override the
+``bot_env_deliver_service_messages_from_bots`` fixture, to test a bot that never sees them; the
+world changes all the same, and the trigger returns :class:`~aiogram.test.Withheld`.
 ``create_topic()`` returns the new topic either way.
 
 An anonymous administrator posts as the supergroup. Bind the actor with
@@ -3156,16 +3156,16 @@ Updates that never arrive
 
 An update can be lost on the way: the network or the bot's own infrastructure drops it, or
 Telegram never sends it, as for another bot's message above. Every actor trigger that feeds an
-update takes ``deliver=False`` for that. The world changes and stores what the trigger
-produced exactly as usual, a service message included, and nothing is fed to the dispatcher;
-the trigger returns :class:`~aiogram.test.Undelivered` instead of the handler's result:
+update takes ``deliver=False`` for that: the world still changes; only the update is
+withheld. The trigger stores what it produced exactly as usual, a service message included, and nothing is fed to the dispatcher;
+the trigger returns :class:`~aiogram.test.Withheld` instead of the handler's result:
 
 .. code-block:: python
 
     result = await host.close_topic(game, deliver=False)
 
     assert bot_env.chat(team).topic(game.message_thread_id).is_closed
-    assert isinstance(result, Undelivered)
+    assert isinstance(result, Withheld)
     assert result.update.message.forum_topic_closed is not None
 
 It works the same for a message, a membership change, a promotion, a topic action, and for
@@ -3373,7 +3373,7 @@ API reference
 =============
 
 .. automodule:: aiogram.test
-    :members: Blueprint, BotTestEnvironment, UserActor, Undelivered, CallLog, RouteRecord, RateLimits, RateLimit, build_environment, default_blueprint, detach_router, administrator_rights, default_chat_permissions
+    :members: Blueprint, BotTestEnvironment, UserActor, Withheld, CallLog, RouteRecord, RateLimits, RateLimit, build_environment, default_blueprint, detach_router, administrator_rights, default_chat_permissions
     :member-order: bysource
     :undoc-members: False
 
@@ -3430,7 +3430,7 @@ Fixtures
     Whether ``bot_env`` checks the bot's own calls against its rights. ``True`` by
     default; override it to return ``False`` while migrating.
 
-``bot_env_deliver_bot_service_messages``
+``bot_env_deliver_service_messages_from_bots``
     Whether ``bot_env`` delivers the service messages other bots cause. ``True`` by
     default; override it to return ``False`` to withhold them.
 

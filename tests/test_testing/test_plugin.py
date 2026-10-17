@@ -134,7 +134,7 @@ class TestFixtures:
     def test_bot_service_messages_are_delivered_by_default(self):
         from aiogram.test import plugin
 
-        assert call_fixture(plugin.bot_env_deliver_bot_service_messages) is True
+        assert call_fixture(plugin.bot_env_deliver_service_messages_from_bots) is True
 
     def test_environment_picks_up_the_bot_service_messages_fixture(self):
         from aiogram.test import plugin
@@ -147,7 +147,7 @@ class TestFixtures:
         )
         environment = next(generator)
         try:
-            assert environment.deliver_bot_service_messages is False
+            assert environment.deliver_service_messages_from_bots is False
         finally:
             with pytest.raises(StopIteration):
                 next(generator)

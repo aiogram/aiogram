@@ -18,11 +18,13 @@ See proposal.md for the motivation; the requirements are in
 ### D1. Another bot is a user with `is_bot`
 
 `add_user(..., is_bot=True)` declares another bot, so it is an actor through `env.user()`
-and every rights check a user actor meets applies to it unchanged. `bot_to_bot` is a field
+and every rights check a user actor meets applies to it unchanged. `bot_to_bot_mode` is a field
 of `UserSpec` and `UserState`, because Telegram's rule reads it on both sides; the bot
-under test takes it, and Group Privacy Mode, as `Blueprint(bot_to_bot=...,
-bot_privacy_mode=...)`, stored on the bot's state and on `World.bot_privacy_mode`. A
-person with `bot_to_bot` is refused with `ValueError`. `getMe` is left as it was.
+under test takes it, and Group Privacy Mode, as `Blueprint(bot_to_bot_mode=...,
+bot_group_privacy=...)`, stored on the bot's state and on `World.bot_group_privacy`. A
+person with `bot_to_bot_mode` is refused with `ValueError`. `getMe`, and the `Bot`'s cached
+`me`, report `can_read_all_group_messages` as the negation of `bot_group_privacy`, as the
+Bot API documents that field for `getMe` only.
 
 ### D2. One place decides delivery
 
@@ -36,7 +38,7 @@ core.telegram.org/bots/features states:
 - with the mode on for the bot, everything gets through while the bot is the owner or an
   administrator, or has privacy mode off.
 
-What is withheld is stored as usual and the trigger returns `Undelivered(update, reason)`,
+What is withheld is stored as usual and the trigger returns `Withheld(update, reason)`,
 a frozen dataclass, instead of the handler's result. Nothing is routed, so
 `assert_updates_handled()` sees nothing to flag. In a private chat the features page
 requires the mode on both sides for a bot to message another at all, so `_build_message`
@@ -52,7 +54,7 @@ The Bot API server does not filter updates by sender (`need_skip_update_message`
 Client.cpp skips outgoing, old, self-destructing and imported messages, and a few
 content types), and the features page lists "All service messages" among what every bot
 receives. Neither says what Telegram's servers send for a service message another bot
-caused. The default delivers it; `deliver_bot_service_messages=False` withholds it, and
+caused. The default delivers it; `deliver_service_messages_from_bots=False` withholds it, and
 `_feed` is told which messages are service messages by the triggers that build them.
 
 ### D4. An anonymous administrator is a binding
@@ -102,8 +104,8 @@ reached, as it always was, so nothing about what is stored depends on delivery.
 
 An actor-level switch, such as `alice.withholding().close_topic()`, was considered. A
 keyword reads at the call that loses the update, cannot leak into the next trigger, and
-matches the one name `Undelivered` and `deliver_bot_service_messages` use. Its cost is that
+matches the one name `Withheld` and `deliver_service_messages_from_bots` use. Its cost is that
 `deliver` cannot be dispatcher data, the same as `service_message` on `join()`.
 
 `create_topic()` returns the topic, which the test needs either way, rather than
-`Undelivered`. `delete_topic()` and `set_topics()` feed nothing, so they take no keyword.
+`Withheld`. `delete_topic()` and `set_topics()` feed nothing, so they take no keyword.

@@ -8,7 +8,7 @@ from aiogram.fsm.state import State
 from aiogram.test import (
     Blueprint,
     BotTestEnvironment,
-    Undelivered,
+    Withheld,
     WorldLookupError,
     administrator_rights,
 )
@@ -43,9 +43,11 @@ def build(dp):
         bot_rights=None,
         service=True,
     ):
-        blueprint = Blueprint(bot_to_bot=ours, bot_privacy_mode=privacy)
+        blueprint = Blueprint(bot_to_bot_mode=ours, bot_group_privacy=privacy)
         alice = blueprint.add_user("Alice")
-        other = blueprint.add_user("Other", username="other_bot", is_bot=True, bot_to_bot=theirs)
+        other = blueprint.add_user(
+            "Other", username="other_bot", is_bot=True, bot_to_bot_mode=theirs
+        )
         admin = blueprint.add_user("Admin")
         owner = blueprint.add_user("Owner")
         chat = blueprint.add_supergroup(
@@ -63,7 +65,7 @@ def build(dp):
         environment = BotTestEnvironment(
             blueprint=blueprint,
             dispatcher=dp,
-            deliver_bot_service_messages=service,
+            deliver_service_messages_from_bots=service,
         )
         environments.append(environment)
         return {
@@ -86,31 +88,44 @@ def build(dp):
 
 class TestDeclaringAnotherBot:
     def test_a_bot_is_declared_with_its_mode(self):
-        blueprint = Blueprint(bot_to_bot=True, bot_privacy_mode=False)
-        other = blueprint.add_user("Other", is_bot=True, bot_to_bot=True)
+        blueprint = Blueprint(bot_to_bot_mode=True, bot_group_privacy=False)
+        other = blueprint.add_user("Other", is_bot=True, bot_to_bot_mode=True)
 
         world = blueprint.build()
 
         assert world.user(other.id).is_bot is True
-        assert world.user(other.id).bot_to_bot is True
-        assert world.bot_user.bot_to_bot is True
-        assert world.bot_privacy_mode is False
+        assert world.user(other.id).bot_to_bot_mode is True
+        assert world.bot_user.bot_to_bot_mode is True
+        assert world.bot_group_privacy is False
 
     def test_the_defaults_are_telegrams(self):
         world = Blueprint().build()
 
-        assert world.bot_user.bot_to_bot is False
-        assert world.bot_privacy_mode is True
+        assert world.bot_user.bot_to_bot_mode is False
+        assert world.bot_group_privacy is True
+
+    @pytest.mark.parametrize("privacy", [True, False])
+    async def test_get_me_reports_group_privacy(self, dp, privacy):
+        env = BotTestEnvironment(
+            blueprint=Blueprint(bot_group_privacy=privacy),
+            dispatcher=dp,
+        )
+        try:
+            me = await env.bot.get_me()
+            assert me.can_read_all_group_messages is (not privacy)
+            assert (await env.bot.me()).can_read_all_group_messages is (not privacy)
+        finally:
+            env.dispose_sync()
 
     def test_a_person_has_no_bot_to_bot_mode(self):
         with pytest.raises(ValueError, match="Only a bot"):
-            Blueprint().add_user("Alice", bot_to_bot=True)
+            Blueprint().add_user("Alice", bot_to_bot_mode=True)
 
     def test_a_running_world_adds_one_too(self, build):
         world = build()
-        actor = world["env"].add_user("Late", is_bot=True, bot_to_bot=True)
+        actor = world["env"].add_user("Late", is_bot=True, bot_to_bot_mode=True)
 
-        assert (actor.user.is_bot, actor.user.bot_to_bot) == (True, True)
+        assert (actor.user.is_bot, actor.user.bot_to_bot_mode) == (True, True)
 
 
 class TestAnotherBotsMessages:
@@ -123,7 +138,7 @@ class TestAnotherBotsMessages:
         assert stored.text == "hello"
         assert stored.from_user.is_bot is True
         assert stored.from_user.id == world["other_spec"].id
-        assert isinstance(result, Undelivered)
+        assert isinstance(result, Withheld)
         assert result.update.message is stored
         assert "Bot-to-Bot" in result.reason
         assert seen == []
@@ -151,7 +166,7 @@ class TestAnotherBotsMessages:
 
         result = await world["other"].send("/start@someone_bot")
 
-        assert isinstance(result, Undelivered)
+        assert isinstance(result, Withheld)
 
     async def test_a_reply_to_the_bot_gets_through(self, build, seen):
         world = build(theirs=True)
@@ -169,7 +184,7 @@ class TestAnotherBotsMessages:
 
         result = await world["other"].reply(world["chat"].messages[-1], "hi Alice")
 
-        assert isinstance(result, Undelivered)
+        assert isinstance(result, Withheld)
         assert seen == []
 
     async def test_the_topics_root_is_no_reply_to_the_bot(self, build, seen):
@@ -180,14 +195,14 @@ class TestAnotherBotsMessages:
 
         # The declared root is announced as the bot's.
         assert world["chat"].messages[-1].reply_to_message.from_user.is_bot
-        assert isinstance(result, Undelivered)
+        assert isinstance(result, Withheld)
 
     async def test_without_the_mode_on_either_side_nothing_counts(self, build, seen):
         world = build(bot_status=ChatMemberStatus.ADMINISTRATOR)
 
         result = await world["other"].send("/start@test_bot")
 
-        assert isinstance(result, Undelivered)
+        assert isinstance(result, Withheld)
 
     @pytest.mark.parametrize(
         ("status", "privacy"),
@@ -207,14 +222,14 @@ class TestAnotherBotsMessages:
 
         result = await world["other"].send("plain")
 
-        assert isinstance(result, Undelivered)
+        assert isinstance(result, Withheld)
 
     async def test_the_other_bots_mode_alone_reads_no_plain_message(self, build, seen):
         world = build(theirs=True, bot_status=ChatMemberStatus.ADMINISTRATOR)
 
         result = await world["other"].send("plain")
 
-        assert isinstance(result, Undelivered)
+        assert isinstance(result, Withheld)
 
     async def test_an_edit_follows_the_same_rule(self, build, seen):
         world = build()
@@ -223,7 +238,7 @@ class TestAnotherBotsMessages:
         result = await world["other"].edit(world["chat"].messages[-1], "v2")
 
         assert world["chat"].messages[-1].text == "v2"
-        assert isinstance(result, Undelivered)
+        assert isinstance(result, Withheld)
         assert result.update.edited_message is not None
 
     async def test_a_channel_post_is_the_channels(self, build, dp):
@@ -283,8 +298,8 @@ class TestAnotherBotsServiceMessages:
 
         assert world["topic"].is_closed
         assert world["chat"].messages[-1].forum_topic_closed is not None
-        assert isinstance(result, Undelivered)
-        assert "deliver_bot_service_messages=False" in result.reason
+        assert isinstance(result, Withheld)
+        assert "deliver_service_messages_from_bots=False" in result.reason
         assert seen == []
 
     async def test_a_withheld_topic_is_still_created(self, build, seen):

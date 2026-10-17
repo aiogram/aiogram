@@ -10,7 +10,7 @@ Nothing here imports :mod:`pytest`; the fixtures live in :mod:`aiogram.test.plug
 which pytest loads through the ``pytest11`` entry point.
 """
 
-from .actors import Undelivered, UserActor
+from .actors import UserActor, Withheld
 from .blueprint import (
     Blueprint,
     BusinessConnectionSpec,
@@ -100,11 +100,11 @@ __all__ = (
     "SynthesisError",
     "TopicSpec",
     "TopicState",
-    "Undelivered",
     "UserActor",
     "UserSpec",
     "UserState",
     "WaitTimeoutError",
+    "Withheld",
     "World",
     "WorldLookupError",
     "administrator_rights",

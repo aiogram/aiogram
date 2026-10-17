@@ -4304,25 +4304,26 @@ counted rather than each time a task ends. A disposed environment SHALL hold no 
 ### Requirement: Another bot can act, and its messages are delivered as Telegram delivers them
 
 A blueprint SHALL declare another bot with `add_user(..., is_bot=True)`, and its
-Bot-to-Bot Communication Mode with `bot_to_bot=`, which only a bot SHALL take; the bot under
-test SHALL take it as `Blueprint(bot_to_bot=...)`, off by default, and its Group Privacy Mode
-as `bot_privacy_mode=`, on by default. Another bot's actor SHALL produce messages and service
+Bot-to-Bot Communication Mode with `bot_to_bot_mode=`, which only a bot SHALL take; the bot under
+test SHALL take it as `Blueprint(bot_to_bot_mode=...)`, off by default, and its Group Privacy Mode
+as `bot_group_privacy=`, on by default, which `getMe` SHALL report as
+`can_read_all_group_messages` being its negation. Another bot's actor SHALL produce messages and service
 messages from it, with `is_bot` set, and SHALL be held to the rights checks of a user actor.
 In a group or a supergroup, its message or edit SHALL reach the bot when either bot has the
 mode on and the message names the bot in a command or replies to a message of the bot, or
 when the bot has the mode on and is an administrator or has privacy mode off. The implicit
 reply to a topic's root SHALL NOT count as a reply. Otherwise the message SHALL be stored,
-nothing SHALL be fed, and the trigger SHALL return `Undelivered`, carrying the update and
+nothing SHALL be fed, and the trigger SHALL return `Withheld`, carrying the update and
 the reason. In a private chat, another bot's message SHALL raise `WorldLookupError` unless
 both bots have the mode on. A service message another bot causes SHALL be delivered unless
-the environment was built with `deliver_bot_service_messages=False`, or the
-`bot_env_deliver_bot_service_messages` fixture returns false, in which case it SHALL be
+the environment was built with `deliver_service_messages_from_bots=False`, or the
+`bot_env_deliver_service_messages_from_bots` fixture returns false, in which case it SHALL be
 stored and not fed.
 
 #### Scenario: Another bot's plain message
 
 - **WHEN** another bot posts a plain message in a group and neither bot has the mode on
-- **THEN** the message is in the chat, no handler ran, and the trigger returns `Undelivered`
+- **THEN** the message is in the chat, no handler ran, and the trigger returns `Withheld`
 
 #### Scenario: A command naming the bot
 
@@ -4339,7 +4340,7 @@ stored and not fed.
 
 - **WHEN** another bot with `can_manage_topics` closes a topic
 - **THEN** the topic is closed and `forum_topic_closed`, from that bot, is delivered; with
-  `deliver_bot_service_messages=False` it is stored and the trigger returns `Undelivered`
+  `deliver_service_messages_from_bots=False` it is stored and the trigger returns `Withheld`
 
 ### Requirement: An anonymous administrator posts as the group
 
@@ -4371,7 +4372,7 @@ Every actor trigger that feeds an update SHALL take a keyword `deliver`, true by
 `deliver=False` the trigger SHALL change the world and store every message it produces, a
 service message included, exactly as when it delivers, and SHALL feed nothing to the
 dispatcher, every update of a trigger that feeds several included. It SHALL return
-`Undelivered`, carrying the withheld update and a reason naming `deliver=False`, except
+`Withheld`, carrying the withheld update and a reason naming `deliver=False`, except
 `create_topic()`, which SHALL return the new topic. Nothing SHALL be routed, so
 `assert_updates_handled()` SHALL have nothing to flag. It SHALL apply to another bot and to an
 anonymous administrator alike.
@@ -4380,7 +4381,7 @@ anonymous administrator alike.
 
 - **WHEN** an administrator closes a topic with `deliver=False`
 - **THEN** the topic is closed and `forum_topic_closed` is stored, no handler ran, and the
-  trigger returns `Undelivered` carrying that message
+  trigger returns `Withheld` carrying that message
 
 #### Scenario: The bot learns from its next send
 

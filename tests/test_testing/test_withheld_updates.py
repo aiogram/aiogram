@@ -8,7 +8,7 @@ from aiogram.exceptions import TelegramBadRequest
 from aiogram.test import (
     Blueprint,
     BotTestEnvironment,
-    Undelivered,
+    Withheld,
     administrator_rights,
 )
 from aiogram.types import Message
@@ -67,7 +67,7 @@ class TestWithholding:
         assert topic.is_closed
         closed = chat.messages[-1]
         assert closed.forum_topic_closed is not None
-        assert isinstance(result, Undelivered)
+        assert isinstance(result, Withheld)
         assert result.update.message is closed
         assert result.reason == WITHHELD
         assert seen == []
@@ -97,7 +97,7 @@ class TestWithholding:
         result = await forum["host"].promote(player.user, can_pin_messages=True, deliver=False)
 
         assert chat.member(player.user.id).status == ChatMemberStatus.ADMINISTRATOR
-        assert isinstance(result, Undelivered)
+        assert isinstance(result, Withheld)
         assert seen == []
 
     async def test_a_created_topic_is_still_returned(self, forum, seen):
@@ -139,7 +139,7 @@ class TestWithholding:
     async def test_every_trigger_takes_it(self, forum, seen, trigger, args, kwargs):
         result = await getattr(forum["private"], trigger)(*args, deliver=False, **kwargs)
 
-        assert isinstance(result, Undelivered)
+        assert isinstance(result, Withheld)
         assert seen == []
 
 
