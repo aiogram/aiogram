@@ -799,10 +799,41 @@ class TestMoreRows:
 
 class TestRightsBeforeTheTopic:
     async def test_an_unknown_topic_goes_on_to_the_server(self, forum):
+        env, chat, _declared, _own = await forum(
+            rights=administrator_rights(can_manage_topics=True),
+        )
+
+        with pytest.raises(TelegramBadRequest, match="message thread not found"):
+            await env.bot.close_forum_topic(chat_id=chat.id, message_thread_id=999)
+
+    @pytest.mark.parametrize(
+        ("name", "kwargs", "right"),
+        [
+            ("edit_forum_topic", {"name": "N"}, "can_manage_topics"),
+            ("close_forum_topic", {}, "can_manage_topics"),
+            ("reopen_forum_topic", {}, "can_manage_topics"),
+            ("delete_forum_topic", {}, "can_delete_messages"),
+        ],
+    )
+    async def test_an_unknown_topic_is_refused_for_the_rights_first(
+        self,
+        forum,
+        name,
+        kwargs,
+        right,
+    ):
+        # No topic, so no creator to excuse the bot from the right.
         env, chat, _declared, _own = await forum()
+        call = getattr(env.bot, name)
 
         with pytest.raises(TelegramBadRequest):
-            await env.bot.close_forum_topic(chat_id=chat.id, message_thread_id=999)
+            await call(chat_id=chat.id, message_thread_id=999, **kwargs)
+
+        held = administrator_rights(**{right: True})
+        env.chat(chat.id).member(env.world.bot_user.id).rights = held
+        env.chat(chat.id).member(env.world.bot_user.id).status = ChatMemberStatus.ADMINISTRATOR
+        with pytest.raises(TelegramBadRequest, match="message thread not found"):
+            await call(chat_id=chat.id, message_thread_id=999, **kwargs)
 
     async def test_unpinning_an_unknown_topic_is_refused_for_the_rights(self, forum):
         env, chat, _declared, _own = await forum()

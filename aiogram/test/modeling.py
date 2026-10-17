@@ -724,12 +724,13 @@ def _opened_by_bot(env: BotTestEnvironment, chat: ChatState, method: Any) -> boo
     TDLib checks the rights first, and lets the creator of a topic
     edit, close, reopen and delete it without them
     (ForumTopicManager.cpp, ``is_outgoing``). A topic it does not
-    know goes on to the server unchecked, so the handler's refusal
-    for an unknown topic answers it.
+    know has no creator to excuse the bot, so the rights are checked
+    and only a bot holding them goes on to the handler's refusal for
+    an unknown topic.
     """
     forum_chat(env, chat.id)
     topic = chat.topics.get(getattr(method, "message_thread_id", None) or 0)
-    return topic is None or topic.creator_id == env.world.bot_user.id
+    return topic is not None and topic.creator_id == env.world.bot_user.id
 
 
 _PINNING = RightRule(
