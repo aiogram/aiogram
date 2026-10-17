@@ -497,8 +497,12 @@ class TestClicking:
         async def clicked(query):
             return query.message.message_id
 
+        message = await env.bot.send_message(
+            chat_id=private.id,
+            text="pick",
+            reply_markup=TestClicking.keyboard("anything"),
+        )
         await alice.send("hi")
-        message = private.messages[-1]
 
         assert await alice.click("anything", message=message) == message.message_id
 

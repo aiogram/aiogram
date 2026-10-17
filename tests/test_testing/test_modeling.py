@@ -11,9 +11,8 @@ from aiogram.methods import (
     SendRichMessage,
     VerifyUser,
 )
-from aiogram.test import Blueprint, BotTestEnvironment, WorldLookupError
+from aiogram.test import Blueprint, BotTestEnvironment, WorldLookupError, rejections
 from aiogram.test.modeling import MEDIA_FIELDS
-from aiogram.test.world import BASE_DATE
 from aiogram.types import (
     ChatMemberAdministrator,
     ChatMemberBanned,
@@ -33,6 +32,8 @@ from aiogram.types import (
     ReplyKeyboardMarkup,
     ReplyParameters,
 )
+
+from .conftest import refused_with
 
 #: Methods whose request payload is not simply ``{<message field>: "file-id"}``.
 SEND_PAYLOADS = {
@@ -193,11 +194,11 @@ class TestSending:
 
         assert answer.reply_to_message.message_id == original.message_id
 
-    async def test_reply_parameters_to_a_missing_message_are_ignored(self, env, private):
+    async def test_a_missing_reply_target_is_dropped_when_allowed(self, env, private):
         message = await env.bot.send_message(
             chat_id=private.id,
             text="answer",
-            reply_parameters=ReplyParameters(message_id=999),
+            reply_parameters=ReplyParameters(message_id=999, allow_sending_without_reply=True),
         )
 
         assert message.reply_to_message is None
@@ -345,7 +346,7 @@ class TestMovingMessages:
         assert team.messages[-1] is forwarded
 
     async def test_forward_missing_message(self, env, private, team):
-        with pytest.raises(TelegramBadRequest, match="message to forward not found"):
+        with refused_with(TelegramBadRequest, rejections.MESSAGE_TO_FORWARD_NOT_FOUND):
             await env.bot.forward_message(
                 chat_id=team.id,
                 from_chat_id=private.id,
@@ -379,7 +380,7 @@ class TestMovingMessages:
         assert team.messages[-1].caption == "after"
 
     async def test_copy_missing_message(self, env, private, team):
-        with pytest.raises(TelegramBadRequest, match="message to copy not found"):
+        with refused_with(TelegramBadRequest, rejections.MESSAGE_TO_COPY_NOT_FOUND):
             await env.bot.copy_message(chat_id=team.id, from_chat_id=private.id, message_id=404)
 
 
@@ -493,14 +494,18 @@ class TestPinning:
         )
 
     async def test_pin_missing_message(self, env, private):
-        with pytest.raises(TelegramBadRequest, match="message to pin not found"):
+        with refused_with(TelegramBadRequest, rejections.MESSAGE_TO_PIN_NOT_FOUND):
             await env.bot.pin_chat_message(chat_id=private.id, message_id=404)
 
 
 class TestMembership:
+    @pytest.fixture
+    def blueprint(self, blueprint, moderated):
+        return moderated(blueprint)
+
     async def test_ban(self, env, team, blueprint):
         alice_id = blueprint.users[0].id
-        until = BASE_DATE + datetime.timedelta(days=1)
+        until = env.now + datetime.timedelta(days=1)
 
         await env.bot.ban_chat_member(chat_id=team.id, user_id=alice_id, until_date=until)
 
@@ -517,14 +522,20 @@ class TestMembership:
             until_date=datetime.timedelta(days=1),
         )
 
-        assert team.member(alice_id).until_date == BASE_DATE + datetime.timedelta(days=1)
+        assert team.member(alice_id).until_date == env.now + datetime.timedelta(days=1)
 
     async def test_ban_accepts_a_timestamp(self, env, team, blueprint):
         alice_id = blueprint.users[0].id
 
-        await env.bot.ban_chat_member(chat_id=team.id, user_id=alice_id, until_date=0)
+        until = env.now + datetime.timedelta(days=1)
 
-        assert team.member(alice_id).until_date.year == 1970
+        await env.bot.ban_chat_member(
+            chat_id=team.id,
+            user_id=alice_id,
+            until_date=int(until.timestamp()),
+        )
+
+        assert team.member(alice_id).until_date == until
 
     async def test_unban(self, env, team, blueprint):
         alice_id = blueprint.users[0].id
@@ -573,17 +584,19 @@ class TestMembership:
         member = await env.bot.get_chat_member(chat_id=team.id, user_id=alice_id)
         assert isinstance(member, ChatMemberBanned)
 
-    async def test_get_chat_member_for_the_bot(self, env, team):
-        member = await env.bot.get_chat_member(chat_id=team.id, user_id=env.blueprint.bot.id)
-
-        assert isinstance(member, ChatMemberMember)
-
     async def test_get_chat(self, env, team):
         chat = await env.bot.get_chat(chat_id=team.id)
 
         assert chat.id == team.id
         assert chat.title == "Team"
         assert chat.type == team.type
+
+
+class TestTheBotsOwnMembership:
+    async def test_get_chat_member_for_the_bot(self, env, team):
+        member = await env.bot.get_chat_member(chat_id=team.id, user_id=env.blueprint.bot.id)
+
+        assert isinstance(member, ChatMemberMember)
 
 
 class TestFallback:
@@ -629,6 +642,9 @@ class TestStoredMessagesAreUsable:
     """
 
     async def test_a_topic_creation_message_is_bound(self, env, team):
+        # Topics are created in a forum only.
+        team.is_forum = True
+        team.member(env.world.bot_user.id).set_status(ChatMemberStatus.ADMINISTRATOR)
         await env.bot.create_forum_topic(chat_id=team.id, name="Support")
 
         service = team.messages[-1]

@@ -78,7 +78,11 @@ class TestReplySugar:
 
         await alice.reply(first_reply, "second reply")
 
-        assert alice.chat.messages[-1].reply_to_message is first_reply
+        # A replied message that replies itself is carried without
+        # its own reply, as the Bot API never nests one.
+        replied = alice.chat.messages[-1].reply_to_message
+        assert replied.message_id == first_reply.message_id
+        assert replied.reply_to_message is None
         assert first_reply.reply_to_message is question
 
     async def test_reply_forwards_fields_and_data(self, env, dp, private, alice):

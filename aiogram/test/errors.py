@@ -1,13 +1,17 @@
 from __future__ import annotations
 
+from collections.abc import Mapping
 from http import HTTPStatus
 from typing import TYPE_CHECKING, Any, NoReturn
 
 from aiogram.methods import Response, TelegramMethod
+from aiogram.types import ResponseParameters
 
 if TYPE_CHECKING:
     from aiogram.client.bot import Bot
     from aiogram.client.session.base import BaseSession
+
+    from .rejections import Rejection
 
 
 class ApiRejection(Exception):
@@ -27,9 +31,69 @@ class ApiRejection(Exception):
     :class:`~aiogram.test.WorldLookupError`, which nothing converts and nothing catches, and
     the test fails with the message that says how to fix it.
 
-    The message is Telegram's own wording, without the ``Bad Request:`` prefix that
-    ``handle_call`` adds, so a test can assert on the string a real bot would see.
+    The description is Telegram's wording, without the ``Bad Request:``
+    prefix that ``handle_call`` adds, and best-effort: the error code
+    and the exception type it becomes are the contract. The ones that
+    are guaranteed too are listed in :mod:`aiogram.test.rejections`.
+
+    ``error_code`` is the HTTP status the rejection comes back with:
+    400 by default, 403 for a bot that is not in the chat, 429 for a
+    flood. ``handle_call`` names it by the prefix the Bot API gives
+    it, and the session turns it into the exception type ``aiogram``
+    maps that code to. A 429 carries ``retry_after``, which is what
+    makes it a :class:`~aiogram.exceptions.TelegramRetryAfter`, and
+    no other code does, so a mismatch is a :class:`ValueError`.
     """
+
+    def __init__(
+        self,
+        description: str,
+        *,
+        error_code: int = HTTPStatus.BAD_REQUEST,
+        retry_after: int | None = None,
+        rejection: Rejection | None = None,
+        fields: Mapping[str, str] | None = None,
+    ) -> None:
+        if (retry_after is None) == (error_code == HTTPStatus.TOO_MANY_REQUESTS):
+            msg = "a 429 carries retry_after, and nothing else does"
+            raise ValueError(msg)
+        super().__init__(description)
+        self.description = description
+        self.error_code = error_code
+        self.retry_after = retry_after
+        #: The declaration the text came from, if it has one.
+        self.rejection = rejection
+        #: What the declaration's description was filled in with.
+        self.fields = dict(fields or {})
+
+    @property
+    def prefix(self) -> str:
+        """What the Bot API server puts before the description."""
+        prefix = _ERROR_PREFIXES.get(self.error_code)
+        if prefix is None:
+            try:
+                prefix = HTTPStatus(self.error_code).phrase
+            except ValueError:
+                prefix = "Error"
+        return prefix
+
+    @property
+    def prefixed(self) -> str:
+        """The description as the Bot API server sends it."""
+        return f"{self.prefix}: {self.description}"
+
+
+#: The prefix the Bot API server puts before a refusal's text.
+_ERROR_PREFIXES: dict[int, str] = {
+    HTTPStatus.BAD_REQUEST: "Bad Request",
+    HTTPStatus.UNAUTHORIZED: "Unauthorized",
+    HTTPStatus.FORBIDDEN: "Forbidden",
+    HTTPStatus.NOT_FOUND: "Not Found",
+    HTTPStatus.CONFLICT: "Conflict",
+    HTTPStatus.REQUEST_ENTITY_TOO_LARGE: "Request Entity Too Large",
+    HTTPStatus.TOO_MANY_REQUESTS: "Too Many Requests",
+    HTTPStatus.INTERNAL_SERVER_ERROR: "Internal Server Error",
+}
 
 
 class NoFileContentError(LookupError):
@@ -61,7 +125,19 @@ class WaitTimeoutError(TimeoutError):
     """
 
 
-class DrainedTaskError(AssertionError):
+class BackgroundTaskError(AssertionError):
+    """
+    Raised when one of the bot's own background tasks failed.
+
+    :meth:`~aiogram.test.BotTestEnvironment.wait_for_background_tasks`
+    raises it for a task that ended with an exception nobody retrieved,
+    and :class:`DrainedTaskError` is the same failure as ``drain()``
+    finds it, so ``pytest.raises(BackgroundTaskError)`` catches both.
+    The first failure is chained as ``__cause__``.
+    """
+
+
+class DrainedTaskError(BackgroundTaskError):
     """
     Raised when a task :meth:`aiogram.test.BotTestEnvironment.drain` cancelled had already
     failed of its own accord.
@@ -86,18 +162,24 @@ def raise_api_error(
     method: TelegramMethod[Any],
     description: str,
     error_code: int = HTTPStatus.BAD_REQUEST,
+    retry_after: int | None = None,
 ) -> NoReturn:
     """
     Fail a call the way the real API would.
 
     Routed through :meth:`aiogram.client.session.base.BaseSession.check_response` on
     purpose, so the exception type, its message and the error pipeline under test are
-    the production ones rather than a lookalike.
+    the production ones rather than a lookalike. ``retry_after`` goes
+    into the response's ``parameters``, as a flood refusal carries it.
     """
+    if (retry_after is None) == (error_code == HTTPStatus.TOO_MANY_REQUESTS):
+        msg = "a 429 carries retry_after, and nothing else does"
+        raise ValueError(msg)
     response: Response[Any] = Response[method.__returning__](  # type: ignore
         ok=False,
         error_code=error_code,
         description=description,
+        parameters=None if retry_after is None else ResponseParameters(retry_after=retry_after),
     )
     session.check_response(
         bot=bot,

@@ -13,6 +13,12 @@ from aiogram.test import (
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
 
+@pytest.fixture
+def blueprint(blueprint, moderated):
+    """The bot administers the group, as its topic calls need."""
+    return moderated(blueprint)
+
+
 async def flip_later(flag: dict, delay: float = 0.02) -> None:
     await asyncio.sleep(delay)
     flag["ready"] = True
@@ -403,6 +409,8 @@ class TestDescriptionIsPositional:
         assert "waiting for the dawn announcement" in str(exc_info.value)
 
     async def test_a_topic_wait_describes_itself_too(self, env, team):
+        # Topics are created in a forum only.
+        team.is_forum = True
         topic = await env.bot.create_forum_topic(chat_id=team.id, name="Support")
         support = env.chat(team.id).topic(topic.message_thread_id)
 
@@ -598,7 +606,11 @@ class TestWaitForMessageInManyChats:
         task = asyncio.create_task(self.deal(table, chat_ids))
 
         try:
-            found = await table.wait_for_message_in(chat_ids, lambda m: m.text == "Night falls")
+            # The deal takes three delays, too close to the short default
+            # timeout on a loaded machine.
+            found = await table.wait_for_message_in(
+                chat_ids, lambda m: m.text == "Night falls", timeout=1.0
+            )
         finally:
             await task
 
@@ -710,6 +722,8 @@ class TestTheWaitFamilySpeaksOneVocabulary:
 
     async def test_watch_accepts_a_topic_declaration(self, quick, blueprint, dp):
         chat = quick.chat(blueprint.chats[1].id)
+        # Topics are created in a forum only.
+        chat.is_forum = True
         created = await quick.bot.create_forum_topic(chat_id=chat.id, name="Support")
         topic = quick.topic(chat.id, created.message_thread_id)
         await quick.bot.send_message(
@@ -793,6 +807,8 @@ class TestTheWaitFamilySpeaksOneVocabulary:
 
     async def test_wait_for_message_in_accepts_a_topic(self, quick, blueprint):
         chat = quick.chat(blueprint.chats[1].id)
+        # Topics are created in a forum only.
+        chat.is_forum = True
         created = await quick.bot.create_forum_topic(chat_id=chat.id, name="Support")
         topic = quick.topic(chat.id, created.message_thread_id)
         await quick.bot.send_message(

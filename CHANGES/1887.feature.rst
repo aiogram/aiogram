@@ -12,7 +12,10 @@ communities and invite links — then drive it through actors (``await user.send
 ``await user.reply(message, "text")``, ``await user.click(button)``,
 ``await user.follow_deep_link()``, ``await user.promote(**rights)``) and assert on the
 resulting chat state or on the recorded calls. There is a trigger for every
-:class:`aiogram.types.Update` variant, so no registered handler is unreachable from a test.
+:class:`aiogram.types.Update` variant, so no registered handler is unreachable from a test,
+including ``stop_message_generation()`` for ``stopped_message_generation``, which always
+arrives in the user's own private chat with the bot, the only chat ``sendMessageDraft``
+targets.
 Joining a group or adding the bot to one now also delivers the ``new_chat_members`` service
 message a real client shows alongside the membership update, in the order Telegram posts
 the two — pass ``service_message=False`` for the previous single-update behavior. A
@@ -101,8 +104,16 @@ documentation names which surfaces are deliberately left that way, and which are
 waiting for demand.
 
 Failures are two things, not one. A call the real Bot API would refuse fails as the
-:class:`aiogram.exceptions.TelegramBadRequest` it fails as in production, carrying
-Telegram's own wording, so a bot's ``except`` branch is testable. A gap in the *test's* own
+exception it fails as in production, so a bot's ``except`` branch is testable. Telegram
+guarantees no error text, so every such refusal keeps its error code and the exception type
+that stands for it (:class:`aiogram.exceptions.TelegramBadRequest` for 400,
+:class:`aiogram.exceptions.TelegramForbiddenError` for 403,
+:class:`aiogram.exceptions.TelegramRetryAfter` for 429), in line with the Bot API authors'
+advice to rely on the code, while its description is a heuristic aid: copied from the Bot API
+server, TDLib or core.telegram.org where a source is known, and approximated otherwise.
+``rejection_of()`` names the declared rejection a caught exception came from, and
+``BotTestEnvironment(perturb_rejection_descriptions=True)`` rewords every description so a
+bot's fallback for a text it does not recognise can be tested. A gap in the *test's* own
 setup — a user, chat, sticker set, poll or business connection the blueprint never declared
 — raises :class:`aiogram.test.WorldLookupError` instead, and nothing converts it: it
 propagates and fails the test with a message that says what to declare, rather than being
@@ -188,6 +199,269 @@ ones too. It is opt-in rather than automatic, since
 the pytest fixture's teardown is synchronous and cannot await a cancellation, and cancelling
 tasks a test never mentioned as an invisible side effect of a fixture going out of scope
 would turn a stopped scheduler into a mystery.
+Work that should finish rather than be cancelled — a results broadcast sent from a task of its
+own — is waited for with ``await env.wait_for_background_tasks()``, which waits until every task
+``drain()`` would have cancelled is done, including the ones spawned while it waits, cancels
+nothing, raises a task's own failure as :class:`aiogram.test.BackgroundTaskError` (the base of
+``DrainedTaskError``), and on timeout names each task still running and the coroutine it runs.
+A bot whose own sleeps make tests slow, but whose real database drivers rule out ``looptime``
+— which moves the clock their deadlines run on — has a documented recipe instead: scale the
+application's own sleep helper in the tests and leave the event loop's clock real.
+``advance_time()`` moves only the world's clock, which drivers never read, so it does not help
+there; ``looptime`` is the tool that moves the loop's clock, the one drivers' deadlines use.
+
+A text or caption sent with a ``parse_mode`` — passed to the call or the bot's default — is
+stored as Telegram stores it, as plain text and entities with UTF-16 offsets, rather than with
+its markup: ``HTML``, ``MarkdownV2`` and legacy ``Markdown`` are parsed by ports of TDLib's own
+parsers, so nested tags, links and mentions, pre with a language, spoilers, expandable
+quotes, custom emoji and MarkdownV2's escaping all come out as Telegram's would, and markup
+Telegram cannot parse fails the call with its own ``Bad Request: can't parse entities: ...``.
+A parse mode wins over explicit ``entities``, as on the Bot API server. A parsed text is
+trimmed at both ends as TDLib trims it, a number TDLib cannot read, such as the ``--5`` of
+``tg://user?id=--5``, is no number rather than a crash, and a message text that is empty or
+nothing but whitespace is refused with ``message text is empty`` or, after the chat and the
+thread are checked, ``text must be non-empty``, while a caption or another optional text that
+parses to nothing is cleared.
+
+A rich message sent as blocks is stored with those blocks in the shape Telegram returns, nested
+blocks and media included, instead of as an empty rich message; ``editMessageText`` replaces
+text with rich content and back, and ``click()`` and ``follow_deep_link()`` reach buttons
+anywhere inside rich content as well as on the inline keyboard. Rich content given only as
+``html`` or ``markdown`` is stored without blocks, since that rendering is Telegram's own.
+
+A restricted user is reported with a truthful ``is_member``: restricting someone who never
+joined leaves them absent and uncounted, and a restricted member who leaves or rejoins keeps
+the restriction. Restricting with every permission granted lifts it, a restriction or ban with
+no end reports ``until_date`` as the Unix epoch instead of a fixed date, a basic-group ban has
+no end, an end date no longer outlives the status it belonged to, and ``unbanChatMember``
+honours ``only_if_banned``.
+
+An ephemeral message is modeled as Telegram shows it: a send with
+``ephemeral_message_parameters`` returns ``message_id`` 0, an ``ephemeral_message_id`` and the
+``receiver_user``, stays out of ``chat.messages`` and is read back with
+``chat.ephemeral_messages(user)`` or waited for with
+``chat.wait_for_message(..., receiver=user)``. Only its receiver can press its buttons, the
+``editEphemeralMessage*`` and ``deleteEphemeralMessage`` methods act on it instead of being
+record-only, and ``send(..., ephemeral=True)`` delivers an ephemeral command whose
+``message.reply()`` answer is ephemeral too, with replies to ephemeral messages validated as
+the Bot API describes.
+
+The world has a clock a test controls with ``await env.advance_time(...)``. It starts at the
+real time, so dates a bot computes from ``datetime.now()`` work, or at a fixed
+``clock_start=`` (the ``bot_env_clock_start`` fixture) for reproducible dates, and stands still
+otherwise: dates no longer advance a second per update. The time limits the Bot API documents
+are measured against it — mutes and bans expire (with Telegram's "less than 30 seconds or more
+than 366 days is forever" rule, and a ``timedelta`` ``until_date`` counted from the clock),
+polls with ``open_period`` or ``close_date`` close on schedule and send a ``poll`` update, live
+locations stop being editable, messages older than 48 hours cannot be deleted, a private-chat
+dice cannot be deleted for 24 hours, old business messages cannot be edited, a pre-checkout
+query must be answered within 10 seconds and an ephemeral command within 15.
+
+Modeled methods follow the rules the Bot API states for them. ``sendMediaGroup`` stores each
+item's media and caption under one ``media_group_id`` and takes 2-10 items; a reply to a
+message that does not exist fails unless ``allow_sending_without_reply`` allows it, through
+``reply_parameters`` or the deprecated top-level fields, and a reply in another chat is carried
+as ``external_reply``; a single copy or forward leaves its album, while ``forwardMessages`` and
+``copyMessages`` keep each album together, and a copied poll is a poll of its own; a venue
+stores the location it was sent with and an invoice the total of its prices; copies and
+forwards land in the requested topic as new messages that keep no reply, edit or protection
+from the original, a forward of a forward keeps its first origin and a forwarded channel post
+names its signature in the origin, copies carry the new caption, its entities, the inline
+keyboard and their own reply, and service, protected, invoice, paid media and giveaway messages
+are refused where the Bot API refuses them; ``pinChatMessage`` posts its ``pinned_message``
+service message and ``unpinChatMessage`` without an id unpins only the newest pin; editing text
+or a caption fails on a message without that content, and every edit sets ``edit_date``, the
+bot edits only its own messages outside channels and, in business chats, the account's but not
+the customer's, and never a forward; ``editMessageMedia`` keeps an album item to its album's
+kind, and ``sendMediaGroup`` keeps documents and audio apart from other media; a quiz is copied
+only with a known answer; dates the bot passes count in whole seconds; a business message is
+edited only through its connection; a reply chain does not nest; the bot's channel posts,
+copies, forwards and service messages are the channel's, with no ``from_user``; a copy of a
+user's poll is a poll the bot can stop; ``restrictChatMember`` works in supergroups only; sends
+and media edits store the spoiler and caption placement flags; quizzes keep all their
+``correct_option_ids``, regular polls allow revoting by default and ``stopPoll`` stores its
+keyboard; hiding the General topic closes it and reopening unhides it; an empty topic name
+keeps the name; business messages are numbered per account, so ``deleteBusinessMessages`` finds
+their one chat; and checklists keep their title and tasks. Creation service messages cannot be
+deleted. Synthesized files get distinct ids and keep a file id the request passed with its
+unique id, dice carry their emoji and a value in its range, enumerated strings take valid
+values, booleans are false, rich voice note blocks convert, star transactions report the charge
+id, a positive amount and the user, and an administrator the bot promoted reports
+``can_be_edited``, while one known to be promoted by someone else cannot be edited, demoted or
+titled by the bot, and a star payment is refunded only to the user who paid it. A declared
+world matches one built through the API: declared permissions get the documented defaults,
+declared topics go through the path ``createForumTopic`` takes, and ``Blueprint.add_poll``
+declares a poll.
+
+Actor triggers produce only updates Telegram would deliver. ``click(..., message=m)`` presses
+the button on the stored version of ``m`` in the actor's chat and refuses a button it does not
+carry; a banned user cannot ``join``, ``leave`` or ``request_join``; a user's ``edit`` sets
+``edit_date``, changes only the fields passed and refuses a message the user did not send, and
+an edited message fed by hand replaces the stored one; ``vote`` refuses option ids the poll
+does not have, several options on a single-answer poll and a changed or retracted vote where
+revoting is not allowed; ``inline_query`` sets ``chat_type`` and accepts ``fields=``;
+``guest_message`` carries a ``guest_query_id`` the bot can answer;
+``update_subscription(state=...)`` takes one of the documented states; a subscription ``pay()``
+sets ``subscription_expiration_date`` and ``is_first_recurring``; and a ``business_connection``
+update names the account owner. Routing diagnostics no longer report a handler that raised
+``SkipHandler`` as the one that ran, and ``drain()`` no longer reports an exception the bot
+already retrieved.
+
+Forum topics answer in Telegram's words. A send, copy or forward into a thread the chat does not
+have fails with ``message thread not found``, deleted or never there, as does one into thread 1,
+the General topic's id, which no topic gets since message 1 of a supergroup or a channel is
+reserved for the chat's creation. A forum method naming a deleted topic fails with
+``TOPIC_DELETED``. A topic a test or an actor names but the chat lacks, or one an actor was
+bound to before it was deleted, is a setup gap that raises
+:class:`aiogram.test.WorldLookupError` naming it. A closed topic, and the General topic while
+closed or hidden, refuses the bot's sends, copies and forwards with ``TOPIC_CLOSED`` unless the
+bot is the owner or an administrator holding ``can_manage_topics``. A message in a topic that
+replies to nothing else, the bot's or an actor's, carries the topic's ``forum_topic_created``
+message as its ``reply_to_message``, so a handler reads the topic's name where it does in
+production; the General topic has none, and neither does a private chat's topic. A replied
+message carries no reply of its own, an actor's reply as the bot's. A bot's private chats take
+``createForumTopic``, ``editForumTopic`` and ``deleteForumTopic`` and keep a topic's thread id
+on its messages. Closing and reopening the General topic post ``forum_topic_closed`` and
+``forum_topic_reopened``, for the bot and for an actor. A supergroup's owner can turn topics off
+and on again with ``set_topics(...)``, which sets ``chat.is_forum`` and keeps the topics for
+when they come back, and ``add_supergroup(..., is_forum=True)`` declares a forum with none yet.
+The forum methods refuse a chat that is not a forum, and a send with a thread id into one lands
+untagged, as the Bot API server passes no topic there. A user manages topics through the actor —
+``create_topic()``, ``close_topic()``, ``reopen_topic()``, ``delete_topic()``,
+``hide_general_topic()``, ``unhide_general_topic()``, ``close_general_topic()`` and
+``reopen_general_topic()`` — which change the world as the matching bot methods do and feed the
+service message Telegram posts, from that user. Deleting a topic feeds nothing, as Telegram
+posts no message for it. The user has to hold ``can_manage_topics``, as an administrator's right
+or, to create a topic, as the chat's permission, or to be the topic's creator, or the trigger
+raises ``WorldLookupError`` naming the right.
+
+A group or a supergroup reports permissions instead of none: by default every member
+permission, granted. Telegram does not publish what a new group allows, so this is the
+toolkit's convention, one that restricts nothing a test did not ask for. ``getChat`` reports
+them, the checks of what a plain member can send read them, and ``add_group(...,
+permissions=...)`` and ``add_supergroup(..., permissions=...)`` model a stricter group,
+starting from ``default_chat_permissions()``.
+
+A running environment can gain users and chats, which only the blueprint could declare:
+``env.add_user()``, ``env.add_private_chat()``, ``env.add_group()``, ``env.add_supergroup()``
+and ``env.add_channel()`` take what the blueprint's methods of the same name take, are those
+methods run on a scratch blueprint so their shape is identical, and return the actor or the live
+chat state that ``env.user()`` and ``env.chat()`` return. A blueprint's ``members`` name users
+by declaration, actor or id as well, and a blueprint refuses a chat or user id it has already
+declared. The blueprint the environment was built from is left alone.
+
+A text an actor sends, and a caption, carries the ``bot_command`` entities a client attaches
+to ``/cmd`` and ``/cmd@bot``, found as Telegram finds them: a slash at the start or after
+anything but a letter, a digit, ``_``, ``/``, ``<`` or ``>``, one to 64 ASCII word characters,
+optionally ``@`` and three to 32 more, and none of those after it, with UTF-16 offsets. A
+router keying on ``message.entities`` now sees commands, an edit marks its new text, and
+entities passed in ``fields=`` are never replaced.
+
+The bot's own calls are checked against its rights, as Telegram checks them, with Telegram's
+wording: pinning and unpinning take ``can_pin_messages`` (``can_edit_messages`` in a
+channel), banning, unbanning and restricting take ``can_restrict_members``, promoting takes
+``can_promote_members``, deleting someone else's message takes ``can_delete_messages`` (any
+administrator in a basic group), changing the chat's title, description, photo or sticker set
+takes ``can_change_info``, changing its permissions takes ``can_restrict_members``, as do
+banning and unbanning sender chats, setting a member's tag takes ``can_manage_tags``,
+approving and declining suggested posts take ``can_post_messages``, managing invite links and
+join requests takes ``can_invite_users``,
+creating a topic takes ``can_manage_topics``, and so do editing, closing and reopening a topic
+the bot did not create, deleting one takes ``can_delete_messages``, and a bot that is not an
+administrator sends only what the chat's permissions and its own restriction allow (paid media
+only when forwarded, needing photos and videos), and posts into a channel only with
+``can_post_messages``. A bot that was removed from a chat or left it is answered with
+``TelegramForbiddenError`` and the Bot API server's ``Forbidden: bot was kicked from the
+supergroup chat`` or ``Forbidden: bot is not a member of the supergroup chat``. The rules are
+one table, ``aiogram.test.modeling.BOT_RIGHTS``. Private chats and user actors are not
+checked; a user may create a topic when the chat's permissions let members do so. A suite
+that now sees its bot refused without meaning it is the migration case: a suite written against
+the permissive fake declares the bot's standing with ``bot_status=`` or
+``Blueprint.set_member(chat, blueprint.bot, rights=...)``, or passes
+``BotTestEnvironment(enforce_bot_rights=False)`` — or overrides the
+``bot_env_enforce_bot_rights`` fixture — while it migrates.
+
+:attr:`aiogram.test.BotTestEnvironment.all_routes` keeps every update's route for the
+whole test rather than the last trigger's, and ``assert_updates_handled()`` fails listing each
+trigger none of whose updates was handled and each update that raised, even one an error
+handler swallowed. A test that means an update to go unhandled, or to fail, says so with
+``assert_unhandled()`` right after the trigger, which also returns those records. The check is
+opt-in, by calling it or with the ``bot_env_assert_updates_handled`` fixture, which runs it
+after every passing test.
+
+Declaring ``env.on(SendMessage).raises(TelegramRetryAfter)`` with the class, which cannot be
+built from the method and the message alone, raises a ``TypeError`` at the declaration with the
+instance to build instead, rather than failing in the middle of the bot's call; so does
+``TelegramMigrateToChat``, a class of your own that needs more, or anything that is not a
+Telegram exception. The environment no longer holds every task the bot spawned until it is
+disposed of: a task that succeeds or is cancelled is forgotten as it ends, so a long run does
+not grow with the tasks it spawned, and one that fails is kept until its exception is retrieved
+— by the bot, or by ``wait_for_background_tasks()`` or ``drain()``, which still report it. Both
+count a worker the test started even when its call was the environment's first, and never wait
+for or cancel the caller or a task waiting on it, such as the test's task awaiting the child
+that drains. Flood control can be tested two ways. The documentation shows the override that
+declares one ``TelegramRetryAfter``, built whole with its method and ``retry_after``. And
+``BotTestEnvironment(rate_limits=RateLimits())``, off by default, models Telegram's guidance per
+chat — about one message a second, and 20 a minute in a group, shared by its topics — refusing a
+send over it with a 429 whose ``retry_after`` is when the next one goes through, read off the
+event loop's clock so ``looptime`` and ``advance_time()`` both move it. Every message of a media
+group or a batch counts, as the FAQ speaks of messages and no source says otherwise. A send Telegram refuses
+for another reason first, such as the bot's rights or an unknown thread, gets that refusal in a
+flooded chat too.
+
+Two senders that are not plain users can act. Another bot is declared with
+``add_user(..., is_bot=True)``, and its messages and the service messages it causes carry
+``is_bot``; a group message of it reaches the bot under test only as Telegram's Bot-to-Bot
+Communication rules allow, declared with ``bot_to_bot_mode=`` on both bots and
+``Blueprint(bot_group_privacy=...)``, which ``getMe`` and the bot's cached ``me()`` report as
+``can_read_all_group_messages``, and is otherwise stored while the trigger returns
+:class:`aiogram.test.Withheld`. Its service messages are delivered unless
+``BotTestEnvironment(deliver_service_messages_from_bots=False)`` withholds them, since Telegram does
+not document either way. ``in_(chat, anonymous=True)`` binds an anonymous administrator, whose
+messages and service messages are from ``GroupAnonymousBot``, with the group as
+``sender_chat``, its messages, but no service message, signed with their custom title as
+``author_signature``, under the user's own rights; a topic it opens stays the user's.
+Its reactions and votes name the group as ``actor_chat`` and ``voter_chat``, while its clicks
+and queries stay the user's. A vote in a poll sent to another chat raises. The binding is checked once, as a trigger starts,
+so an administrator who demotes themself completes it. Another bot cannot click, use inline
+mode, vote, pay, buy, boost, subscribe or follow a deep link.
+``Blueprint.add_topic(..., creator=...)`` names who opened a declared topic, a user or
+``blueprint.bot``: its ``forum_topic_created`` is from them, and the creator's exemptions
+follow, such as the bot posting into its own closed topic. A topic declared without one is
+still announced as the bot's and is no one's. Every actor trigger that feeds an update takes
+``deliver=False``, which changes the world and stores what the trigger produced as usual,
+feeds nothing to the dispatcher and returns :class:`aiogram.test.Withheld`, carrying the update bound to the bot, so a test can
+reproduce a lost update, such as a topic's closure the bot learns of only when its next send
+fails with ``TOPIC_CLOSED``.
+
+Migrating a suite written against the earlier toolkit:
+
+- ``createForumTopic`` no longer turns a supergroup into a forum. Declare one with
+  ``add_supergroup(..., is_forum=True)``, or have its owner call ``set_topics(True)``.
+- A message in a forum topic now carries the topic's root as its ``reply_to_message``, as
+  Telegram delivers it, so ``if message.reply_to_message:`` no longer tells a reply from a
+  plain message inside a topic. Compare ``message.reply_to_message.message_id`` with
+  ``message.message_thread_id``, or check ``forum_topic_created`` on it.
+- A text an actor sends carries ``bot_command`` entities. A test that needs none passes
+  ``fields={"entities": None}``.
+- The bot's calls are checked against its rights and its membership. Declare its standing
+  with ``bot_status=`` or ``Blueprint.set_member(chat, blueprint.bot, rights=...)``, or opt
+  out with ``BotTestEnvironment(enforce_bot_rights=False)`` or by overriding the
+  ``bot_env_enforce_bot_rights`` fixture.
+- Supergroups and channels number their messages from 2, as message 1 is the chat's
+  creation; a test that asserted a first message id of 1 there expects 2. Basic groups still
+  start at 1.
+- A private chat now checks a send's thread id: one it has no topic for fails with
+  ``message thread not found`` rather than being stored as passed.
+- A blueprint raises ``ValueError`` for a chat or user id it has already declared.
+- A group's default permissions now grant changing its info, pinning, creating topics and
+  editing one's tag too. A test that relied on members lacking them declares
+  ``permissions=`` from ``default_chat_permissions()``.
+- ``unbanChatMember`` and ``promoteChatMember`` in a basic group fail with ``method is
+  available only in supergroup and channel chats``, as on the Bot API server.
+- Every actor trigger that feeds an update takes the keyword ``deliver``, so a handler
+  dependency named ``deliver`` can no longer be passed through a trigger's keyword arguments.
+  Rename the dependency, or feed the update with ``BotTestEnvironment.feed()``.
 
 .. warning::
 

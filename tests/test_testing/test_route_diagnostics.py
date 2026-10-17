@@ -12,7 +12,7 @@ import asyncio
 
 import pytest
 
-from aiogram import F, BaseMiddleware, Dispatcher, Router
+from aiogram import BaseMiddleware, Dispatcher, F, Router
 from aiogram.filters import Command
 from aiogram.test import BotTestEnvironment
 from aiogram.types import CallbackQuery, Update

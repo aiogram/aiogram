@@ -5,8 +5,7 @@ import pytest
 
 from aiogram import Dispatcher
 from aiogram.methods import GetFile
-from aiogram.test import Blueprint, BotTestEnvironment
-from aiogram.test import NoFileContentError
+from aiogram.test import Blueprint, BotTestEnvironment, NoFileContentError
 from aiogram.types import BufferedInputFile, File, FSInputFile, URLInputFile
 
 CONTENT = b"the quick brown fox" * 10
@@ -66,6 +65,24 @@ class TestDeclaredContent:
             first.dispose_sync()
             second.dispose_sync()
 
+    async def test_an_upload_does_not_take_a_declared_file_id(self, blueprint):
+        """A declared id shaped like a synthesized one keeps its content."""
+        user = blueprint.add_user("Ann")
+        chat = blueprint.add_private_chat(user)
+        blueprint.add_file("file-1", b"declared")
+        env = BotTestEnvironment(blueprint=blueprint, dispatcher=Dispatcher())
+        try:
+            message = await env.bot.send_document(
+                chat_id=chat.id,
+                document=BufferedInputFile(b"uploaded", filename="notes.txt"),
+            )
+
+            assert message.document.file_id != "file-1"
+            assert await download(env.bot, "file-1") == b"declared"
+            assert await download(env.bot, message.document) == b"uploaded"
+        finally:
+            env.dispose_sync()
+
 
 class TestUploadedContent:
     async def test_upload_then_download_round_trips(self, files_env):
@@ -106,6 +123,45 @@ class TestUploadedContent:
 
         with pytest.raises(NoFileContentError):
             await download(env.bot, message.document)
+
+    async def test_resending_a_file_id_keeps_its_unique_id(self, files_env):
+        """The same file sent again is the same file, unique id included."""
+        env, chat = files_env
+
+        first = await env.bot.send_document(
+            chat_id=chat.id,
+            document=BufferedInputFile(CONTENT, filename="a.txt"),
+        )
+        again = await env.bot.send_document(chat_id=chat.id, document=first.document.file_id)
+
+        assert again.document.file_id == first.document.file_id
+        assert again.document.file_unique_id == first.document.file_unique_id
+
+    async def test_get_file_reports_the_unique_id_the_message_carries(self, files_env):
+        env, chat = files_env
+        message = await env.bot.send_document(
+            chat_id=chat.id,
+            document=BufferedInputFile(CONTENT, filename="a.txt"),
+        )
+
+        first = await env.bot.get_file(file_id=message.document.file_id)
+        again = await env.bot.get_file(file_id=message.document.file_id)
+
+        assert first.file_unique_id == message.document.file_unique_id
+        assert again.file_unique_id == first.file_unique_id
+
+    async def test_resending_a_declared_sticker_keeps_its_unique_id(self, blueprint, dp):
+        blueprint.add_sticker_set("pack_by_bot", "Pack")
+        chat = blueprint.add_private_chat(blueprint.add_user("Ann"))
+        env = BotTestEnvironment(blueprint=blueprint, dispatcher=dp)
+        try:
+            declared = (await env.bot.get_sticker_set("pack_by_bot")).stickers[0]
+
+            sent = await env.bot.send_sticker(chat_id=chat.id, sticker=declared.file_id)
+
+            assert sent.sticker.file_unique_id == declared.file_unique_id
+        finally:
+            env.dispose_sync()
 
 
 class TestMissingContentFailsLoudly:

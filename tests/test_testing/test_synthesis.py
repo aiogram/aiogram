@@ -6,6 +6,7 @@ import pytest
 from pydantic import BaseModel
 
 from aiogram import methods
+from aiogram.enums import ChatType, PassportElementErrorType
 from aiogram.methods.base import TelegramMethod
 from aiogram.test.synthesis import (
     SynthesisContext,
@@ -14,7 +15,14 @@ from aiogram.test.synthesis import (
     synthesize,
     synthesize_result,
 )
-from aiogram.types import BusinessConnection, Chat, Message, User
+from aiogram.types import (
+    BusinessConnection,
+    Chat,
+    ChatFullInfo,
+    Message,
+    PassportElementErrorDataField,
+    User,
+)
 
 
 def all_methods() -> list[type[TelegramMethod[Any]]]:
@@ -59,7 +67,7 @@ class TestScalars:
     @pytest.mark.parametrize(
         ("annotation", "expected"),
         [
-            (bool, True),
+            (bool, False),
             (float, 1.0),
             (bytes, b""),
             (datetime.timedelta, datetime.timedelta(0)),
@@ -92,10 +100,10 @@ class TestUnions:
         assert synthesize(Optional[int], SynthesisContext()) == 1
 
     def test_union_picks_the_first_member(self):
-        assert synthesize(Union[bool, int], SynthesisContext()) is True
+        assert synthesize(Union[bool, int], SynthesisContext()) is False
 
     def test_pep604_union(self):
-        assert synthesize(bool | None, SynthesisContext()) is True
+        assert synthesize(bool | None, SynthesisContext()) is False
 
 
 class TestModels:
@@ -126,6 +134,17 @@ class TestModels:
 
         assert message.chat.id
 
+    def test_a_subclass_field_takes_its_base_enum(self):
+        chat = synthesize(ChatFullInfo, SynthesisContext())
+
+        assert chat.type == ChatType.PRIVATE
+
+    def test_a_base_without_the_field_names_no_enum(self):
+        """`PassportElementErrorType` holds error sources, not types."""
+        error = synthesize(PassportElementErrorDataField, SynthesisContext())
+
+        assert error.type not in set(PassportElementErrorType)
+
 
 class TestAnnotationAccepts:
     def test_plain_type(self):
@@ -138,6 +157,10 @@ class TestAnnotationAccepts:
 
     def test_anything_else(self):
         assert not annotation_accepts("not-a-type", Chat)
+
+    def test_a_base_class_field_takes_a_subclass(self):
+        assert annotation_accepts(Chat, ChatFullInfo)
+        assert not annotation_accepts(ChatFullInfo, Chat)
 
 
 class TestFailures:

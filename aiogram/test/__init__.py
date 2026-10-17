@@ -10,20 +10,29 @@ Nothing here imports :mod:`pytest`; the fixtures live in :mod:`aiogram.test.plug
 which pytest loads through the ``pytest11`` entry point.
 """
 
-from .actors import UserActor
+from . import rejections
+from .actors import UserActor, Withheld
 from .blueprint import (
     Blueprint,
     BusinessConnectionSpec,
     ChatSpec,
     CommunitySpec,
     MemberSpec,
+    PollSpec,
     TopicSpec,
     UserSpec,
     default_blueprint,
 )
 from .calls import CallLog, NoSuchCallError
 from .environment import BotTestEnvironment, RouteRecord, build_environment
-from .errors import ApiRejection, DrainedTaskError, NoFileContentError, WaitTimeoutError
+from .errors import (
+    ApiRejection,
+    BackgroundTaskError,
+    DrainedTaskError,
+    NoFileContentError,
+    WaitTimeoutError,
+)
+from .flood import RateLimit, RateLimits
 from .overrides import (
     ADDRESSING_FIELDS,
     BLOCKED_BY_USER,
@@ -35,6 +44,7 @@ from .overrides import (
     OverrideHandle,
     OverrideRule,
 )
+from .rejections import rejection_fields, rejection_of
 from .routing import detach_router
 from .session import FakeTelegramSession
 from .synthesis import SynthesisContext, SynthesisError, synthesize, synthesize_result
@@ -51,6 +61,7 @@ from .world import (
     World,
     WorldLookupError,
     administrator_rights,
+    default_chat_permissions,
 )
 
 __all__ = (
@@ -60,6 +71,7 @@ __all__ = (
     "BLOCKED_METHODS",
     "DELIVERY_METHODS",
     "ApiRejection",
+    "BackgroundTaskError",
     "Blueprint",
     "BotProfileState",
     "BotTestEnvironment",
@@ -71,8 +83,8 @@ __all__ = (
     "CommunitySpec",
     "CommunityState",
     "DrainedTaskError",
-    "InviteLinkState",
     "FakeTelegramSession",
+    "InviteLinkState",
     "MemberSpec",
     "MemberState",
     "MethodMatcher",
@@ -82,6 +94,9 @@ __all__ = (
     "OverrideBuilder",
     "OverrideHandle",
     "OverrideRule",
+    "PollSpec",
+    "RateLimit",
+    "RateLimits",
     "RouteRecord",
     "SynthesisContext",
     "SynthesisError",
@@ -91,12 +106,17 @@ __all__ = (
     "UserSpec",
     "UserState",
     "WaitTimeoutError",
+    "Withheld",
     "World",
     "WorldLookupError",
     "administrator_rights",
     "build_environment",
     "default_blueprint",
+    "default_chat_permissions",
     "detach_router",
+    "rejection_fields",
+    "rejection_of",
+    "rejections",
     "synthesize",
     "synthesize_result",
 )

@@ -53,9 +53,9 @@
       },
       {
         "type": "Array of InputRichMessageMedia",
-        "description": "List of media that are specified in the markdown or html fields using tg://photo?id=, tg://video?id=, and tg://audio?id= links",
-        "html_description": "<td><em>Optional</em>. List of media that are specified in the <em>markdown</em> or <em>html</em> fields using <code>tg://photo?id=</code>, <code>tg://video?id=</code>, and <code>tg://audio?id=</code> links</td>",
-        "rst_description": "*Optional*. List of media that are specified in the *markdown* or *html* fields using :code:`tg://photo?id=`, :code:`tg://video?id=`, and :code:`tg://audio?id=` links\n",
+        "description": "List of media that are specified in the markdown or html fields using tg://photo?id=, tg://video?id=, tg://document?id=, and tg://audio?id= links",
+        "html_description": "<td><em>Optional</em>. List of media that are specified in the <em>markdown</em> or <em>html</em> fields using <code>tg://photo?id=</code>, <code>tg://video?id=</code>, <code>tg://document?id=</code>, and <code>tg://audio?id=</code> links</td>",
+        "rst_description": "*Optional*. List of media that are specified in the *markdown* or *html* fields using :code:`tg://photo?id=`, :code:`tg://video?id=`, :code:`tg://document?id=`, and :code:`tg://audio?id=` links\n",
         "name": "media",
         "required": false
       }

@@ -1,8 +1,11 @@
 import pytest
 
 from aiogram.exceptions import TelegramBadRequest
+from aiogram.test import rejections
 from aiogram.test.world import PollState, WorldLookupError
 from aiogram.types import ReactionTypeEmoji
+
+from .conftest import refused_with
 
 THUMBS_UP = ReactionTypeEmoji(emoji="👍")
 HEART = ReactionTypeEmoji(emoji="❤")
@@ -77,7 +80,7 @@ class TestVoting:
         private,
         alice,
     ):
-        message = await send_poll(env, private)
+        message = await send_poll(env, private, allows_revoting=True)
         poll_id = message.poll.id
         poll = env.world.poll(poll_id)
         poll.votes[999] = [0]
@@ -144,18 +147,44 @@ class TestStoppingPolls:
         message = await send_poll(env, private)
         await env.bot.stop_poll(chat_id=private.id, message_id=message.message_id)
 
-        with pytest.raises(TelegramBadRequest, match="already been closed"):
+        with refused_with(TelegramBadRequest, rejections.POLL_CLOSED):
             await env.bot.stop_poll(chat_id=private.id, message_id=message.message_id)
 
     async def test_stopping_a_message_with_no_poll_fails(self, env, private):
         message = await env.bot.send_message(chat_id=private.id, text="hi")
 
-        with pytest.raises(TelegramBadRequest, match="doesn't contain a poll"):
+        with refused_with(TelegramBadRequest, rejections.NO_POLL):
             await env.bot.stop_poll(chat_id=private.id, message_id=message.message_id)
 
     async def test_stopping_an_unknown_message_fails(self, env, private):
         with pytest.raises(TelegramBadRequest, match="message to edit not found"):
             await env.bot.stop_poll(chat_id=private.id, message_id=999)
+
+    async def test_a_forward_shows_the_poll_closed_too(self, env, private):
+        """A forward carries the same poll, so it closes with the original."""
+        message = await send_poll(env, private)
+        forwarded = await env.bot.forward_message(
+            chat_id=private.id,
+            from_chat_id=private.id,
+            message_id=message.message_id,
+        )
+
+        await env.bot.stop_poll(chat_id=private.id, message_id=message.message_id)
+
+        assert private.find_message(forwarded.message_id).poll.is_closed is True
+
+    async def test_stopping_through_a_forward_fails(self, env, private):
+        """``stopPoll`` names the original message with the poll."""
+        message = await send_poll(env, private)
+        forwarded = await env.bot.forward_message(
+            chat_id=private.id,
+            from_chat_id=private.id,
+            message_id=message.message_id,
+        )
+
+        with refused_with(TelegramBadRequest, rejections.MESSAGE_WITH_POLL_TO_STOP_NOT_FOUND):
+            await env.bot.stop_poll(chat_id=private.id, message_id=forwarded.message_id)
+        assert env.world.poll(message.poll.id).is_closed is False
 
 
 class TestBotReactions:
@@ -199,7 +228,7 @@ class TestBotReactions:
         assert private.reactions_for(message.message_id) == {}
 
     async def test_reacting_to_an_unknown_message_fails(self, env, private):
-        with pytest.raises(TelegramBadRequest, match="message to react to not found"):
+        with refused_with(TelegramBadRequest, rejections.MESSAGE_TO_REACT_NOT_FOUND):
             await env.bot.set_message_reaction(
                 chat_id=private.id,
                 message_id=999,
@@ -264,7 +293,7 @@ class TestModeratingReactions:
         assert private.reactions_for(second.message_id) == {}
 
     async def test_deleting_a_reaction_from_an_unknown_message_fails(self, env, private, alice):
-        with pytest.raises(TelegramBadRequest, match="message to react to not found"):
+        with refused_with(TelegramBadRequest, rejections.MESSAGE_TO_REACT_NOT_FOUND):
             await env.bot.delete_message_reaction(
                 chat_id=private.id,
                 message_id=999,

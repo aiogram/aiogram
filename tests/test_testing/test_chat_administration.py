@@ -7,6 +7,7 @@ from aiogram.test import (
     BotTestEnvironment,
     WorldLookupError,
     administrator_rights,
+    rejections,
 )
 from aiogram.types import (
     ChatMemberAdministrator,
@@ -15,10 +16,16 @@ from aiogram.types import (
     ChatPhoto,
 )
 
+from .conftest import refused_with
+
 SILENCED = ChatPermissions(can_send_messages=False, can_send_other_messages=False)
 
 
 class TestChatMetadata:
+    @pytest.fixture
+    def blueprint(self, blueprint, moderated):
+        return moderated(blueprint)
+
     async def test_renaming_is_visible_to_get_chat(self, env, team):
         await env.bot.set_chat_title(chat_id=team.id, title="Renamed")
 
@@ -65,7 +72,7 @@ class TestChatMetadata:
         ],
     )
     async def test_administering_a_private_chat_fails(self, env, private, method_name, kwargs):
-        with pytest.raises(TelegramBadRequest, match="supergroup and channel chats only"):
+        with refused_with(TelegramBadRequest, rejections.SUPERGROUP_OR_CHANNEL_ONLY):
             await getattr(env.bot, method_name)(chat_id=private.id, **kwargs)
 
 
@@ -73,7 +80,7 @@ class TestChatPhoto:
     @pytest.fixture
     def photographed(self, dp):
         blueprint = Blueprint()
-        chat = blueprint.add_supergroup("Team")
+        chat = blueprint.add_supergroup("Team", bot_status=ChatMemberStatus.ADMINISTRATOR)
         chat.photo = ChatPhoto(
             small_file_id="s",
             small_file_unique_id="su",
@@ -100,6 +107,10 @@ class TestChatPhoto:
 
 
 class TestServiceMessages:
+    @pytest.fixture
+    def blueprint(self, blueprint, moderated):
+        return moderated(blueprint)
+
     async def test_a_rename_posts_a_service_message(self, env, team):
         await env.bot.set_chat_title(chat_id=team.id, title="Renamed")
 
@@ -133,6 +144,10 @@ class TestServiceMessages:
 
 
 class TestMembershipReads:
+    @pytest.fixture
+    def blueprint(self, blueprint, moderated):
+        return moderated(blueprint)
+
     async def test_promoting_changes_the_administrator_list(self, env, team, alice):
         await env.bot.promote_chat_member(
             chat_id=team.id,
@@ -195,6 +210,10 @@ class TestMembershipReads:
 
 
 class TestMemberAnnotations:
+    @pytest.fixture
+    def blueprint(self, blueprint, moderated):
+        return moderated(blueprint)
+
     async def test_custom_title_round_trips(self, env, team, alice):
         await env.bot.set_chat_administrator_custom_title(
             chat_id=team.id,
@@ -213,7 +232,7 @@ class TestMemberAnnotations:
             permissions=SILENCED,
         )
 
-        with pytest.raises(TelegramBadRequest, match="not an administrator"):
+        with refused_with(TelegramBadRequest, rejections.NOT_AN_ADMINISTRATOR):
             await env.bot.set_chat_administrator_custom_title(
                 chat_id=team.id,
                 user_id=alice.user.id,
@@ -223,7 +242,11 @@ class TestMemberAnnotations:
     async def test_member_tag_round_trips(self, dp):
         blueprint = Blueprint()
         member = blueprint.add_user("Member")
-        team = blueprint.add_supergroup("Team", members={member: ChatMemberStatus.MEMBER})
+        team = blueprint.add_supergroup(
+            "Team",
+            members={member: ChatMemberStatus.MEMBER},
+            bot_status=ChatMemberStatus.ADMINISTRATOR,
+        )
         env = BotTestEnvironment(blueprint=blueprint, dispatcher=dp)
         try:
             await env.bot.set_chat_member_tag(chat_id=team.id, user_id=member.id, tag="VIP")
@@ -236,7 +259,7 @@ class TestMemberAnnotations:
 
     async def test_a_tag_on_an_administrator_fails(self, env, team, alice):
         """A tag belongs to a regular member; an administrator carries a custom title."""
-        with pytest.raises(TelegramBadRequest, match="not a regular member"):
+        with refused_with(TelegramBadRequest, rejections.NOT_A_REGULAR_MEMBER):
             await env.bot.set_chat_member_tag(
                 chat_id=team.id,
                 user_id=alice.user.id,
@@ -378,7 +401,7 @@ class TestDeclaredRights:
         blueprint.set_member(
             team,
             quiet,
-            permissions=ChatPermissions(can_send_messages=False, can_send_polls=True),
+            permissions=ChatPermissions(can_send_messages=False, can_send_photos=True),
         )
         env = BotTestEnvironment(blueprint=blueprint, dispatcher=dp)
         try:
@@ -386,7 +409,7 @@ class TestDeclaredRights:
 
             assert member.status == ChatMemberStatus.RESTRICTED
             assert member.can_send_messages is False
-            assert member.can_send_polls is True
+            assert member.can_send_photos is True
         finally:
             env.dispose_sync()
 
@@ -431,6 +454,12 @@ class TestRightsFollowTheChatType:
             members={alice: ChatMemberStatus.ADMINISTRATOR},
         )
         channel = blueprint.add_channel("News", members={alice: ChatMemberStatus.ADMINISTRATOR})
+        # Promoting takes the right to promote.
+        blueprint.set_member(
+            supergroup,
+            blueprint.bot,
+            rights=administrator_rights(can_promote_members=True),
+        )
         environment = BotTestEnvironment(blueprint=blueprint, dispatcher=dp)
         try:
             yield environment, supergroup, channel, alice
@@ -474,6 +503,10 @@ class TestRightsFollowTheChatType:
 
 
 class TestPromoteAndRestrictPersist:
+    @pytest.fixture
+    def blueprint(self, blueprint, moderated):
+        return moderated(blueprint)
+
     @pytest.fixture
     def owned(self):
         """A supergroup with a declared owner, plus the environment it lives in."""
@@ -591,6 +624,30 @@ class TestPromoteAndRestrictPersist:
         assert isinstance(member, ChatMemberAdministrator)
         assert member.custom_title is None
 
+    async def test_leaving_drops_the_custom_title(self, env, team, alice):
+        await env.bot.promote_chat_member(
+            chat_id=team.id,
+            user_id=alice.user.id,
+            can_pin_messages=True,
+        )
+        await env.bot.set_chat_administrator_custom_title(
+            chat_id=team.id,
+            user_id=alice.user.id,
+            custom_title="Boss",
+        )
+        await alice.in_(team).leave()
+        await alice.in_(team).join()
+
+        await env.bot.promote_chat_member(
+            chat_id=team.id,
+            user_id=alice.user.id,
+            can_pin_messages=True,
+        )
+
+        member = await env.bot.get_chat_member(chat_id=team.id, user_id=alice.user.id)
+        assert isinstance(member, ChatMemberAdministrator)
+        assert member.custom_title is None
+
     async def test_a_demotion_keeps_the_tag(self, env, team, alice):
         """
         ``tag`` is not a title: ``ChatMemberMember`` carries one, so it survives.
@@ -623,7 +680,7 @@ class TestPromoteAndRestrictPersist:
         """
         env, team, owner = owned
 
-        with pytest.raises(TelegramBadRequest, match="can't remove chat owner"):
+        with refused_with(TelegramBadRequest, rejections.OWNER_PROTECTED):
             await env.bot.promote_chat_member(
                 chat_id=team.id,
                 user_id=owner.id,
@@ -636,7 +693,7 @@ class TestPromoteAndRestrictPersist:
         """A promotion granting nothing is a demotion, and the owner is not demotable."""
         env, team, owner = owned
 
-        with pytest.raises(TelegramBadRequest, match="can't remove chat owner"):
+        with refused_with(TelegramBadRequest, rejections.OWNER_PROTECTED):
             await env.bot.promote_chat_member(chat_id=team.id, user_id=owner.id)
 
         member = await env.bot.get_chat_member(chat_id=team.id, user_id=owner.id)
@@ -651,7 +708,7 @@ class TestPromoteAndRestrictPersist:
         """
         env, team, owner = owned
 
-        with pytest.raises(TelegramBadRequest, match="can't remove chat owner"):
+        with refused_with(TelegramBadRequest, rejections.OWNER_PROTECTED):
             await env.bot.ban_chat_member(chat_id=team.id, user_id=owner.id)
 
         assert env.chat(team.id).member(owner.id).status == ChatMemberStatus.CREATOR
@@ -659,7 +716,7 @@ class TestPromoteAndRestrictPersist:
     async def test_the_chat_owner_cannot_be_restricted(self, owned):
         env, team, owner = owned
 
-        with pytest.raises(TelegramBadRequest, match="can't remove chat owner"):
+        with refused_with(TelegramBadRequest, rejections.OWNER_PROTECTED):
             await env.bot.restrict_chat_member(
                 chat_id=team.id,
                 user_id=owner.id,
@@ -677,9 +734,9 @@ class TestPromoteAndRestrictPersist:
         """
         env, team, owner = owned
 
-        with pytest.raises(TelegramBadRequest, match="can't remove chat owner"):
+        with refused_with(TelegramBadRequest, rejections.OWNER_PROTECTED):
             await env.bot.ban_chat_member(chat_id=team.id, user_id=owner.id)
-        with pytest.raises(TelegramBadRequest, match="can't remove chat owner"):
+        with refused_with(TelegramBadRequest, rejections.OWNER_PROTECTED):
             await env.bot.promote_chat_member(
                 chat_id=team.id,
                 user_id=owner.id,
@@ -742,6 +799,10 @@ class TestPermissionCoupling:
     ``can_send_messages`` then took the wrong branch against a world Telegram would never
     hand it.
     """
+
+    @pytest.fixture
+    def blueprint(self, blueprint, moderated):
+        return moderated(blueprint)
 
     @pytest.mark.parametrize(
         "granted",
@@ -851,15 +912,36 @@ class TestPermissionCoupling:
         assert team.member(alice.user.id).permissions is not permissions
 
 
-class TestPermissionsAreNotEnforced:
-    async def test_a_silenced_chat_still_accepts_messages(self, env, team, alice):
-        """The fake models the shape of administration, not its policy."""
+class TestPermissionsBindTheBotOnly:
+    @pytest.fixture
+    def blueprint(self, blueprint, moderated):
+        return moderated(blueprint)
+
+    async def test_a_silenced_chat_refuses_a_member_bot_but_not_an_actor(self, dp):
+        """The bot's calls are checked; users do what the test says."""
+        blueprint = Blueprint()
+        alice = blueprint.add_user("Alice")
+        team = blueprint.add_supergroup("Team", members={alice: ChatMemberStatus.MEMBER})
+        team.permissions = SILENCED
+        env = BotTestEnvironment(blueprint=blueprint, dispatcher=dp)
+        try:
+            chat = env.chat(team)
+            with refused_with(
+                TelegramBadRequest, rejections.NO_RIGHTS_TO_SEND, noun="text messages"
+            ):
+                await env.bot.send_message(chat_id=team.id, text="refused")
+            await env.user(alice).in_(team).send("still sent")
+
+            assert [message.text for message in chat.messages] == ["still sent"]
+        finally:
+            env.dispose_sync()
+
+    async def test_a_silenced_chat_accepts_an_administrator_bot(self, env, team):
         await env.bot.set_chat_permissions(chat_id=team.id, permissions=SILENCED)
 
         await env.bot.send_message(chat_id=team.id, text="still sent")
-        await alice.in_(team).send("so is this")
 
-        assert [message.text for message in team.messages] == ["still sent", "so is this"]
+        assert team.messages[-1].text == "still sent"
 
     async def test_a_restricted_member_can_still_send(self, env, team, alice):
         await env.bot.restrict_chat_member(

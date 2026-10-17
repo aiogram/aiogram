@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from collections.abc import Iterator
+import datetime
+from collections.abc import Generator, Iterator
 from typing import Any
 
 import pytest
@@ -11,6 +12,7 @@ from aiogram.types import Message, TelegramObject
 
 from .blueprint import Blueprint, default_blueprint
 from .environment import BotTestEnvironment
+from .flood import RateLimits
 from .waiting import DEFAULT_WAIT_TIMEOUT
 from .world import ChatState
 
@@ -19,9 +21,11 @@ __all__ = (
     "bot_chat",
     "bot_dispatcher",
     "bot_env",
+    "bot_env_assert_updates_handled",
     "bot_env_wait_timeout",
     "bot_user",
     "pytest_assertrepr_compare",
+    "pytest_runtest_call",
 )
 
 
@@ -55,16 +59,100 @@ def bot_env_wait_timeout() -> float:
 
 
 @pytest.fixture
+def bot_env_clock_start() -> datetime.datetime | None:
+    """
+    Override this fixture to start ``bot_env``'s clock at a moment.
+
+    ``None``, the default, starts it at the real time. Returning
+    ``BASE_DATE`` gives dates that are the same on every run.
+    """
+    return None
+
+
+@pytest.fixture
+def bot_env_enforce_bot_rights() -> bool:
+    """
+    Override this fixture to stop checking the bot's rights.
+
+    ``True``, the default, refuses the bot's calls its standing in a
+    chat does not allow. Return ``False`` while migrating a suite
+    written against the permissive fake.
+    """
+    return True
+
+
+@pytest.fixture
+def bot_env_rate_limits() -> RateLimits | None:
+    """
+    Override this fixture to hold ``bot_env`` to flood limits.
+
+    ``None``, the default, models none. Return ``RateLimits()`` for
+    Telegram's guidance, or limits of your own.
+    """
+    return None
+
+
+@pytest.fixture
+def bot_env_deliver_service_messages_from_bots() -> bool:
+    """
+    Override this fixture to withhold other bots' service messages.
+
+    ``True``, the default, delivers a service message another bot
+    causes. Telegram does not document either way; return ``False``
+    to test a bot that never sees them.
+    """
+    return True
+
+
+@pytest.fixture
+def bot_env_perturb_rejection_descriptions() -> bool:
+    """
+    Override this fixture to reword every rejection's description.
+
+    ``False``, the default, words them as the toolkit knows Telegram
+    does. Return ``True`` to keep each error code and exception type
+    but give the description a marker and scrambled words, which tests
+    a bot's fallback for a text it does not recognise.
+    """
+    return False
+
+
+@pytest.fixture
+def bot_env_assert_updates_handled() -> bool:
+    """
+    Override this fixture to check every update after each test.
+
+    ``False``, the default, checks nothing. With ``True``, a test
+    that passes then fails if an update it fed went unhandled or
+    raised, as
+    :meth:`~aiogram.test.BotTestEnvironment.assert_updates_handled`
+    says, unless the test called ``assert_unhandled()`` for it.
+    """
+    return False
+
+
+@pytest.fixture
 def bot_env(
     bot_blueprint: Blueprint,
     bot_dispatcher: Dispatcher,
     bot_env_wait_timeout: float,
+    bot_env_clock_start: datetime.datetime | None,
+    bot_env_enforce_bot_rights: bool,
+    bot_env_rate_limits: RateLimits | None,
+    bot_env_assert_updates_handled: bool,
+    bot_env_deliver_service_messages_from_bots: bool,
+    bot_env_perturb_rejection_descriptions: bool,
 ) -> Iterator[BotTestEnvironment]:
     """An isolated fake Telegram world for exactly one test."""
     environment = BotTestEnvironment(
         blueprint=bot_blueprint,
         dispatcher=bot_dispatcher,
         default_wait_timeout=bot_env_wait_timeout,
+        clock_start=bot_env_clock_start,
+        enforce_bot_rights=bot_env_enforce_bot_rights,
+        rate_limits=bot_env_rate_limits,
+        deliver_service_messages_from_bots=bot_env_deliver_service_messages_from_bots,
+        perturb_rejection_descriptions=bot_env_perturb_rejection_descriptions,
     )
     try:
         yield environment
@@ -85,6 +173,26 @@ def bot_user(bot_env: BotTestEnvironment) -> Any:
     if bot_env.blueprint.chats:
         return actor.in_(bot_env.blueprint.chats[0].id)
     return actor
+
+
+@pytest.hookimpl(wrapper=True)
+def pytest_runtest_call(item: pytest.Item) -> Generator[None, object, object]:
+    """
+    Check ``bot_env``'s updates once a test passed, if it asks to.
+
+    In the call phase rather than at teardown, so the check fails
+    the test itself; a test that already failed is not checked.
+    """
+    result = yield
+    funcargs = getattr(item, "funcargs", {})
+    environment = funcargs.get("bot_env")
+    if funcargs.get("bot_env_assert_updates_handled") and isinstance(
+        environment,
+        BotTestEnvironment,
+    ):
+        __tracebackhide__ = True
+        environment.assert_updates_handled()
+    return result
 
 
 def pytest_assertrepr_compare(op: str, left: object, right: object) -> list[str] | None:

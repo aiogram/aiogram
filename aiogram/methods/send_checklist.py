@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
 
+from ..client.default import Default
 from ..types import ChatIdUnion, InlineKeyboardMarkup, InputChecklist, Message, ReplyParameters
 from .base import TelegramMethod
 
@@ -24,7 +25,7 @@ class SendChecklist(TelegramMethod[Message]):
     """A JSON-serialized object for the checklist to send"""
     disable_notification: bool | None = None
     """Sends the message silently. Users will receive a notification with no sound"""
-    protect_content: bool | None = None
+    protect_content: bool | Default | None = Default("protect_content")
     """Protects the contents of the sent message from forwarding and saving"""
     message_effect_id: str | None = None
     """Unique identifier of the message effect to be added to the message"""
@@ -44,7 +45,7 @@ class SendChecklist(TelegramMethod[Message]):
             chat_id: ChatIdUnion,
             checklist: InputChecklist,
             disable_notification: bool | None = None,
-            protect_content: bool | None = None,
+            protect_content: bool | Default | None = Default("protect_content"),
             message_effect_id: str | None = None,
             reply_parameters: ReplyParameters | None = None,
             reply_markup: InlineKeyboardMarkup | None = None,

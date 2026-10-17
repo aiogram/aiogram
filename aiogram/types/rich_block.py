@@ -14,14 +14,17 @@ class RichBlock(TelegramObject):
      - :class:`aiogram.types.rich_block_anchor.RichBlockAnchor`
      - :class:`aiogram.types.rich_block_list.RichBlockList`
      - :class:`aiogram.types.rich_block_block_quotation.RichBlockBlockQuotation`
+     - :class:`aiogram.types.rich_block_expandable_block_quotation.RichBlockExpandableBlockQuotation`
      - :class:`aiogram.types.rich_block_pull_quotation.RichBlockPullQuotation`
      - :class:`aiogram.types.rich_block_collage.RichBlockCollage`
      - :class:`aiogram.types.rich_block_slideshow.RichBlockSlideshow`
      - :class:`aiogram.types.rich_block_table.RichBlockTable`
      - :class:`aiogram.types.rich_block_details.RichBlockDetails`
      - :class:`aiogram.types.rich_block_map.RichBlockMap`
+     - :class:`aiogram.types.rich_block_buttons.RichBlockButtons`
      - :class:`aiogram.types.rich_block_animation.RichBlockAnimation`
      - :class:`aiogram.types.rich_block_audio.RichBlockAudio`
+     - :class:`aiogram.types.rich_block_document.RichBlockDocument`
      - :class:`aiogram.types.rich_block_photo.RichBlockPhoto`
      - :class:`aiogram.types.rich_block_video.RichBlockVideo`
      - :class:`aiogram.types.rich_block_voice_note.RichBlockVoiceNote`

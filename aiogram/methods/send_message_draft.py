@@ -20,7 +20,7 @@ class SendMessageDraft(TelegramMethod[bool]):
     chat_id: int
     """Unique identifier for the target private chat"""
     draft_id: int
-    """Unique identifier of the message draft; must be non-zero. Changes to drafts with the same identifier are animated"""
+    """Unique identifier of the message draft; must be non-zero. Changes to drafts with the same identifier are animated. Otherwise, the draft is replaced without animation"""
     message_thread_id: int | None = None
     """Unique identifier for the target message thread"""
     text: str | None = None
@@ -29,6 +29,10 @@ class SendMessageDraft(TelegramMethod[bool]):
     """Mode for parsing entities in the message text. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details"""
     entities: list[MessageEntity] | None = None
     """A JSON-serialized list of special entities that appear in message text, which can be specified instead of *parse_mode*"""
+    can_stop: bool | None = None
+    """Pass :code:`True` to show the user a button to stop further drafts. The bot will receive an :class:`aiogram.types.update.Update` 'stopped_message_generation' if the user presses the button"""
+    keep_on_stop: bool | None = None
+    """Pass :code:`True` to keep the draft in the chat when the button is pressed. The draft will still disappear after a short time or if the bot sends a message. To fully preserve the partial draft, the bot should send it as a new message"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!
@@ -43,6 +47,8 @@ class SendMessageDraft(TelegramMethod[bool]):
             text: str | None = None,
             parse_mode: str | Default | None = Default("parse_mode"),
             entities: list[MessageEntity] | None = None,
+            can_stop: bool | None = None,
+            keep_on_stop: bool | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!
@@ -56,5 +62,7 @@ class SendMessageDraft(TelegramMethod[bool]):
                 text=text,
                 parse_mode=parse_mode,
                 entities=entities,
+                can_stop=can_stop,
+                keep_on_stop=keep_on_stop,
                 **__pydantic_kwargs,
             )

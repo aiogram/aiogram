@@ -33,7 +33,7 @@ class PostStory(TelegramMethod[Story]):
     """A JSON-serialized list of clickable areas to be shown on the story"""
     post_to_chat_page: bool | None = None
     """Pass :code:`True` to keep the story accessible after it expires"""
-    protect_content: bool | None = None
+    protect_content: bool | Default | None = Default("protect_content")
     """Pass :code:`True` if the content of the story must be protected from forwarding and screenshotting"""
 
     if TYPE_CHECKING:
@@ -51,7 +51,7 @@ class PostStory(TelegramMethod[Story]):
             caption_entities: list[MessageEntity] | None = None,
             areas: list[StoryArea] | None = None,
             post_to_chat_page: bool | None = None,
-            protect_content: bool | None = None,
+            protect_content: bool | Default | None = Default("protect_content"),
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

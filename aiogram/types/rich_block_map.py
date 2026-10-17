@@ -23,7 +23,7 @@ class RichBlockMap(RichBlock):
     location: Location
     """Location of the center of the map"""
     zoom: int
-    """Map zoom level; 13-20"""
+    """Map zoom level"""
     width: int
     """Expected width of the map"""
     height: int

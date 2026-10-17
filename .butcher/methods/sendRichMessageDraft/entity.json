@@ -22,17 +22,17 @@
       {
         "type": "Integer",
         "required": true,
-        "description": "Unique identifier of the message draft; must be non-zero. Changes to drafts with the same identifier are animated.",
-        "html_description": "<td>Unique identifier of the message draft; must be non-zero. Changes to drafts with the same identifier are animated.</td>",
-        "rst_description": "Unique identifier of the message draft; must be non-zero. Changes to drafts with the same identifier are animated.\n",
+        "description": "Unique identifier of the message draft; must be non-zero. Changes to drafts with the same identifier are animated. Otherwise, the draft is replaced without animation.",
+        "html_description": "<td>Unique identifier of the message draft; must be non-zero. Changes to drafts with the same identifier are animated. Otherwise, the draft is replaced without animation.</td>",
+        "rst_description": "Unique identifier of the message draft; must be non-zero. Changes to drafts with the same identifier are animated. Otherwise, the draft is replaced without animation.\n",
         "name": "draft_id"
       },
       {
         "type": "InputRichMessage",
         "required": true,
-        "description": "The partial message to be streamed. Direct upload of new files isn't supported.",
-        "html_description": "<td>The partial message to be streamed. Direct upload of new files isn't supported.</td>",
-        "rst_description": "The partial message to be streamed. Direct upload of new files isn't supported.\n",
+        "description": "The partial message to be streamed. Direct upload of new files and explicit upload of files by a URL isn't supported.",
+        "html_description": "<td>The partial message to be streamed. Direct upload of new files and explicit upload of files by a URL isn't supported.</td>",
+        "rst_description": "The partial message to be streamed. Direct upload of new files and explicit upload of files by a URL isn't supported.\n",
         "name": "rich_message"
       },
       {
@@ -42,6 +42,22 @@
         "html_description": "<td>Unique identifier for the target message thread</td>",
         "rst_description": "Unique identifier for the target message thread\n",
         "name": "message_thread_id"
+      },
+      {
+        "type": "Boolean",
+        "required": false,
+        "description": "Pass True to show the user a button to stop further drafts. The bot will receive an Update 'stopped_message_generation' if the user presses the button.",
+        "html_description": "<td>Pass <em>True</em> to show the user a button to stop further drafts. The bot will receive an <a href=\"#update\">Update</a> &#8220;stopped_message_generation&#8221; if the user presses the button.</td>",
+        "rst_description": "Pass :code:`True` to show the user a button to stop further drafts. The bot will receive an :class:`aiogram.types.update.Update` 'stopped_message_generation' if the user presses the button.\n",
+        "name": "can_stop"
+      },
+      {
+        "type": "Boolean",
+        "required": false,
+        "description": "Pass True to keep the draft in the chat when the button is pressed. The draft will still disappear after a short time or if the bot sends a message. To fully preserve the partial draft, the bot should send it as a new message.",
+        "html_description": "<td>Pass <em>True</em> to keep the draft in the chat when the button is pressed. The draft will still disappear after a short time or if the bot sends a message. To fully preserve the partial draft, the bot should send it as a new message.</td>",
+        "rst_description": "Pass :code:`True` to keep the draft in the chat when the button is pressed. The draft will still disappear after a short time or if the bot sends a message. To fully preserve the partial draft, the bot should send it as a new message.\n",
+        "name": "keep_on_stop"
       }
     ],
     "category": "methods"

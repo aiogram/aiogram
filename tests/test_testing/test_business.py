@@ -2,9 +2,11 @@ import pytest
 
 from aiogram.exceptions import TelegramBadRequest
 from aiogram.methods import SendMessage, SetBusinessAccountName
-from aiogram.test import Blueprint, BotTestEnvironment
+from aiogram.test import Blueprint, BotTestEnvironment, rejections
 from aiogram.test.world import WorldLookupError
 from aiogram.types import BusinessBotRights
+
+from .conftest import refused_with
 
 
 @pytest.fixture
@@ -107,7 +109,7 @@ class TestModeledMethods:
         )
 
     async def test_read_missing_message_fails(self, business_env, connection, customer_chat):
-        with pytest.raises(TelegramBadRequest, match="message to read not found"):
+        with refused_with(TelegramBadRequest, rejections.MESSAGE_TO_READ_NOT_FOUND):
             await business_env.bot.read_business_message(
                 business_connection_id=connection.id,
                 chat_id=customer_chat.id,
@@ -130,6 +132,35 @@ class TestModeledMethods:
 
         # Only the message that belongs to the connection is removed.
         assert [item.text for item in chat.messages] == ["two"]
+
+    async def test_a_copy_of_a_business_message_is_not_one(
+        self,
+        business_env,
+        connection,
+        customer_chat,
+        business_blueprint,
+    ):
+        """The bot sends a copy itself, so deleting the original leaves the copy alone."""
+        owner_chat = business_env.chat(business_blueprint.chats[0])
+        original = await business_env.bot.send_message(
+            chat_id=customer_chat.id,
+            text="one",
+            business_connection_id=connection.id,
+        )
+        copied = await business_env.bot.copy_message(
+            chat_id=owner_chat.id,
+            from_chat_id=customer_chat.id,
+            message_id=original.message_id,
+        )
+        stored = owner_chat.find_message(copied.message_id)
+
+        assert stored.business_connection_id is None
+        assert stored.sender_business_bot is None
+        assert await business_env.bot.delete_business_messages(
+            business_connection_id=connection.id,
+            message_ids=[original.message_id],
+        )
+        assert owner_chat.find_message(copied.message_id) is not None
 
     async def test_account_methods_still_answer_from_synthesis(self, business_env):
         """The business *account* profile surface stays on the synthesize path."""

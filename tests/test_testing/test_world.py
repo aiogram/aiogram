@@ -4,7 +4,8 @@ import datetime
 import pytest
 
 from aiogram.enums import ChatMemberStatus, ChatType
-from aiogram.test import ApiRejection, Blueprint
+from aiogram.test import ApiRejection, Blueprint, rejections
+from aiogram.test.rejections import rejection_of
 from aiogram.test.world import (
     BASE_DATE,
     CHAT_TYPE_SCOPED_RIGHTS,
@@ -278,8 +279,11 @@ class TestChatState:
     def test_require_missing_message(self):
         chat = ChatState(id=1)
 
-        with pytest.raises(ApiRejection, match="does not exist"):
+        with pytest.raises(ApiRejection) as refused:
             chat.require_message(1)
+
+        assert refused.value.error_code == 400
+        assert rejection_of(refused.value) is rejections.MESSAGE_NOT_FOUND
 
     def test_update_replaces_the_stored_message(self):
         chat = ChatState(id=1)
@@ -339,7 +343,8 @@ class TestWorld:
 
         assert [world.next_update_id(), world.next_update_id()] == [1, 2]
         assert [world.next_query_id(), world.next_query_id()] == ["1", "2"]
-        assert world.next_date() == BASE_DATE + datetime.timedelta(seconds=2)
+        # Dates come from the clock, which updates do not move.
+        assert world.next_date() == world.now
 
     def test_ensure_private_chat_creates_one_shaped_like_a_declared_chat(self):
         world = World(bot_user=UserState(id=42, is_bot=True))
@@ -829,5 +834,5 @@ class TestResolveTopic:
     def test_an_unknown_thread_id_fails(self, forum):
         chat, _spec = forum
 
-        with pytest.raises(ApiRejection, match="Topic 999 does not exist"):
+        with pytest.raises(WorldLookupError, match="Topic 999 does not exist"):
             resolve_topic(chat, 999)

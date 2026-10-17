@@ -1,8 +1,10 @@
 from __future__ import annotations
 
 import copy
+import datetime
+from collections.abc import Collection, Mapping
 from dataclasses import dataclass, field
-from typing import Any
+from typing import Any, Protocol, TypeAlias
 
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ChatMemberStatus, ChatType
@@ -13,11 +15,12 @@ from aiogram.types import (
     ChatPermissions,
     ChatPhoto,
     MenuButtonUnion,
+    Message,
     Sticker,
 )
 
+from .synthesis import unique_file_id
 from .world import (
-    BASE_DATE,
     DEFAULT_TOPIC_ICON_COLOR,
     BotProfileState,
     BusinessConnectionState,
@@ -30,9 +33,16 @@ from .world import (
     StickerSetState,
     UserState,
     World,
+    aware,
     create_topic,
+    default_chat_permissions,
+    granted_permissions,
+    new_poll,
+    posted_by,
     private_chat_shape,
+    quiz_problem,
     scope_key,
+    wall_clock,
 )
 
 DEFAULT_TOKEN = "42:TEST"
@@ -41,6 +51,56 @@ FIRST_USER_ID = 1000
 FIRST_GROUP_ID = -1000
 FIRST_SUPERGROUP_ID = -1001000000000
 FIRST_COMMUNITY_ID = 5000
+
+
+def free_id(
+    explicit: int | None,
+    first: int,
+    step: int,
+    taken: Collection[int],
+    kind: str,
+) -> int:
+    """
+    The id asked for, or the first free one counting from ``first``.
+
+    The one allocation a blueprint and a running environment share,
+    each passing the ids it has taken. An ``explicit`` id already
+    taken raises :class:`ValueError`.
+    """
+    if explicit is not None:
+        if explicit in taken:
+            msg = f"{kind} {explicit} already exists in this world"
+            raise ValueError(msg)
+        return explicit
+    candidate = first
+    while candidate in taken:
+        candidate += step
+    return candidate
+
+
+class _Identified(Protocol):
+    @property
+    def id(self) -> int: ...
+
+
+class _Acting(Protocol):
+    """A user actor, as a member is named by one."""
+
+    @property
+    def user(self) -> _Identified: ...
+
+
+#: How a member is named: by declaration, by actor or by id.
+UserRef: TypeAlias = "UserSpec | _Acting | int"
+
+
+def user_ref_id(user: UserRef) -> int:
+    """The id of the user ``user`` names."""
+    if isinstance(user, int):
+        return user
+    if isinstance(user, UserSpec):
+        return user.id
+    return user.user.id
 
 
 @dataclass(eq=False)
@@ -57,6 +117,9 @@ class UserSpec:
     last_name: str | None = None
     username: str | None = None
     language_code: str | None = None
+    #: Bot-to-Bot Communication Mode, for a bot; see
+    #: :meth:`Blueprint.add_user`.
+    bot_to_bot_mode: bool = False
 
 
 @dataclass
@@ -90,11 +153,16 @@ class ChatSpec:
     first_name: str | None = None
     last_name: str | None = None
     description: str | None = None
+    #: What members may do. ``None`` is every permission in a group or
+    #: a supergroup, see :func:`~aiogram.test.default_chat_permissions`,
+    #: and nothing in a private chat or a channel.
     permissions: ChatPermissions | None = None
     photo: ChatPhoto | None = None
     sticker_set_name: str | None = None
     invite_links: list[InviteLinkState] = field(default_factory=list)
     members: list[MemberSpec] = field(default_factory=list)
+    #: Whether topics are on. Declaring a topic turns them on too.
+    is_forum: bool = False
 
 
 @dataclass(eq=False)
@@ -106,6 +174,31 @@ class TopicSpec:
     icon_color: int = DEFAULT_TOPIC_ICON_COLOR
     icon_custom_emoji_id: str | None = None
     message_thread_id: int | None = field(default=None, compare=False)
+    #: Who opened the topic, by id, or ``None`` for no one; see
+    #: :meth:`Blueprint.add_topic`.
+    creator_id: int | None = None
+
+
+@dataclass(eq=False)
+class PollSpec:
+    """
+    Declaration of a poll the bot already sent. Compared by identity.
+
+    ``poll_id`` and ``message_id`` are filled in by
+    :meth:`Blueprint.build`, so a test can vote in the poll by its id.
+    """
+
+    chat_id: int
+    question: str
+    options: list[str]
+    type: str | None = None
+    is_anonymous: bool | None = None
+    allows_multiple_answers: bool | None = None
+    allows_revoting: bool | None = None
+    correct_option_ids: list[int] | None = None
+    explanation: str | None = None
+    poll_id: str | None = field(default=None, compare=False)
+    message_id: int | None = field(default=None, compare=False)
 
 
 @dataclass(eq=False)
@@ -145,7 +238,16 @@ class Blueprint:
         default: DefaultBotProperties | None = None,
         bot_first_name: str = "Bot",
         bot_username: str = "test_bot",
+        bot_to_bot_mode: bool = False,
+        bot_group_privacy: bool = True,
     ) -> None:
+        """
+        ``bot_to_bot_mode`` and ``bot_group_privacy`` are what the bot set in
+        @BotFather: Bot-to-Bot Communication Mode, off by default, and
+        Group Privacy, on by default. They decide which messages of
+        other bots reach it, see :meth:`add_user`, and ``getMe``
+        reports privacy off as ``can_read_all_group_messages``.
+        """
         self.token = token
         self.default = default or DefaultBotProperties()
         self.bot_id = _token_bot_id(token)
@@ -154,10 +256,17 @@ class Blueprint:
             is_bot=True,
             first_name=bot_first_name,
             username=bot_username,
+            bot_to_bot_mode=bot_to_bot_mode,
         )
+        self.bot_group_privacy = bot_group_privacy
         self.users: list[UserSpec] = []
         self.chats: list[ChatSpec] = []
+        #: Ids a running environment has taken already, so a blueprint
+        #: it declares with allocates around them.
+        self.taken_user_ids: set[int] = set()
+        self.taken_chat_ids: set[int] = set()
         self.topics: list[TopicSpec] = []
+        self.polls: list[PollSpec] = []
         self.business_connections: list[BusinessConnectionSpec] = []
         self.communities: list[CommunitySpec] = []
         self.profile = BotProfileState()
@@ -176,13 +285,36 @@ class Blueprint:
         username: str | None = None,
         language_code: str | None = None,
         id: int | None = None,
+        is_bot: bool = False,
+        bot_to_bot_mode: bool = False,
     ) -> UserSpec:
+        """
+        Declare a user, or with ``is_bot`` another bot.
+
+        Another bot acts through ``env.user(...)`` as a user does,
+        and its messages carry ``is_bot``. ``bot_to_bot_mode`` is its
+        Bot-to-Bot Communication Mode, which only a bot has: a
+        message it posts in a group reaches the bot under test only
+        when Telegram would deliver it, see the testing guide.
+        """
+        if bot_to_bot_mode and not is_bot:
+            msg = "Only a bot has Bot-to-Bot Communication Mode; pass `is_bot=True`"
+            raise ValueError(msg)
+        taken = {*self.taken_user_ids, *(user.id for user in self.users), self.bot.id}
         user = UserSpec(
-            id=id if id is not None else FIRST_USER_ID + len(self.users),
+            id=free_id(
+                id,
+                FIRST_USER_ID + len(self.users) + len(self.taken_user_ids),
+                1,
+                taken,
+                "User",
+            ),
             first_name=first_name,
             last_name=last_name,
             username=username,
             language_code=language_code,
+            is_bot=is_bot,
+            bot_to_bot_mode=bot_to_bot_mode,
         )
         self.users.append(user)
         return user
@@ -197,39 +329,61 @@ class Blueprint:
         self,
         title: str = "Group",
         *,
-        members: dict[UserSpec, str] | None = None,
+        members: Mapping[UserRef, str] | None = None,
         id: int | None = None,
         bot_status: str | None = None,
+        permissions: ChatPermissions | None = None,
     ) -> ChatSpec:
+        """
+        Declare a basic group.
+
+        ``permissions`` are what its members may do. Without them
+        the group grants every permission, see
+        :func:`~aiogram.test.default_chat_permissions`.
+        """
         return self._add_group_like(
             chat_type=ChatType.GROUP,
             title=title,
             members=members,
-            chat_id=id if id is not None else FIRST_GROUP_ID - len(self.chats),
+            chat_id=self._chat_id(id, FIRST_GROUP_ID),
             bot_status=bot_status,
+            permissions=permissions,
         )
 
     def add_supergroup(
         self,
         title: str = "Supergroup",
         *,
-        members: dict[UserSpec, str] | None = None,
+        members: Mapping[UserRef, str] | None = None,
         id: int | None = None,
         bot_status: str | None = None,
+        is_forum: bool = False,
+        permissions: ChatPermissions | None = None,
     ) -> ChatSpec:
-        return self._add_group_like(
+        """
+        Declare a supergroup.
+
+        ``is_forum`` turns its topics on before any is declared, as for
+        a forum whose topics the bot creates itself. ``permissions`` are
+        what its members may do; without them it grants every one,
+        :func:`~aiogram.test.default_chat_permissions`.
+        """
+        chat = self._add_group_like(
             chat_type=ChatType.SUPERGROUP,
             title=title,
             members=members,
-            chat_id=id if id is not None else FIRST_SUPERGROUP_ID - len(self.chats),
+            chat_id=self._chat_id(id, FIRST_SUPERGROUP_ID),
             bot_status=bot_status,
+            permissions=permissions,
         )
+        chat.is_forum = is_forum
+        return chat
 
     def add_channel(
         self,
         title: str = "Channel",
         *,
-        members: dict[UserSpec, str] | None = None,
+        members: Mapping[UserRef, str] | None = None,
         id: int | None = None,
         bot_status: str | None = None,
     ) -> ChatSpec:
@@ -237,20 +391,26 @@ class Blueprint:
             chat_type=ChatType.CHANNEL,
             title=title,
             members=members,
-            chat_id=id if id is not None else FIRST_SUPERGROUP_ID - len(self.chats),
+            chat_id=self._chat_id(id, FIRST_SUPERGROUP_ID),
             bot_status=bot_status,
         )
+
+    def _chat_id(self, explicit: int | None, first: int) -> int:
+        """A new chat's id, counting down from ``first``."""
+        taken = {*self.taken_chat_ids, *(chat.id for chat in self.chats)}
+        return free_id(explicit, first - len(taken), -1, taken, "Chat")
 
     def _add_group_like(
         self,
         chat_type: str,
         title: str,
-        members: dict[UserSpec, str] | None,
+        members: Mapping[UserRef, str] | None,
         chat_id: int,
         bot_status: str | None = None,
+        permissions: ChatPermissions | None = None,
     ) -> ChatSpec:
-        members = members or {}
-        bot_membership = members.get(self.bot)
+        statuses = {user_ref_id(user): status for user, status in (members or {}).items()}
+        bot_membership = statuses.get(self.bot.id)
         # `bot_status` and a `members[blueprint.bot]` entry are two ways of saying the
         # same thing; accepting both silently would let one shadow the other, so passing
         # `bot_status` (any value, including MEMBER) alongside an explicit entry is
@@ -265,8 +425,9 @@ class Blueprint:
             id=chat_id,
             type=chat_type,
             title=title,
+            permissions=permissions,
             members=[
-                MemberSpec(user_id=user.id, status=status) for user, status in members.items()
+                MemberSpec(user_id=user_id, status=status) for user_id, status in statuses.items()
             ],
         )
         # Almost every group bot's first move is checking its own rights, so the bot is
@@ -344,16 +505,68 @@ class Blueprint:
         *,
         icon_color: int = DEFAULT_TOPIC_ICON_COLOR,
         icon_custom_emoji_id: str | None = None,
+        creator: UserRef | None = None,
     ) -> TopicSpec:
-        """Declare a forum topic. The chat becomes a forum."""
+        """
+        Declare a forum topic. The chat becomes a forum.
+
+        ``creator`` is who opened it: a declared user, by spec, actor
+        or id, or ``blueprint.bot``. Its ``forum_topic_created`` is
+        from them, and they get a creator's exemptions: the bot posts
+        into its own closed topic and edits, closes, reopens and
+        deletes it without ``can_manage_topics``, and a user actor
+        closes, reopens and deletes it.
+
+        Without one, the topic is no one's, so no one gets those
+        exemptions, though its ``forum_topic_created`` is from the
+        bot, as it always was.
+        """
         topic = TopicSpec(
             chat_id=chat.id,
             name=name,
             icon_color=icon_color,
             icon_custom_emoji_id=icon_custom_emoji_id,
+            creator_id=None if creator is None else user_ref_id(creator),
         )
         self.topics.append(topic)
         return topic
+
+    def add_poll(
+        self,
+        chat: ChatSpec,
+        question: str,
+        options: list[str],
+        *,
+        type: str | None = None,
+        is_anonymous: bool | None = None,
+        allows_multiple_answers: bool | None = None,
+        allows_revoting: bool | None = None,
+        correct_option_ids: list[int] | None = None,
+        explanation: str | None = None,
+    ) -> PollSpec:
+        """
+        Declare a poll the bot already sent into ``chat``.
+
+        It is stored as ``sendPoll`` stores one, on a message from the
+        bot, with the same defaults. A quiz needs its correct option
+        ids, as ``sendPoll`` requires.
+        """
+        problem = quiz_problem(type, list(options), correct_option_ids)
+        if problem is not None:
+            raise ValueError(problem.description)
+        poll = PollSpec(
+            chat_id=chat.id,
+            question=question,
+            options=list(options),
+            type=type,
+            is_anonymous=is_anonymous,
+            allows_multiple_answers=allows_multiple_answers,
+            allows_revoting=allows_revoting,
+            correct_option_ids=correct_option_ids,
+            explanation=explanation,
+        )
+        self.polls.append(poll)
+        return poll
 
     def add_business_connection(
         self,
@@ -430,7 +643,7 @@ class Blueprint:
             stickers=[
                 Sticker(
                     file_id=f"{name}-{index + 1}",
-                    file_unique_id=f"{name}-{index + 1}-unique",
+                    file_unique_id=unique_file_id(f"{name}-{index + 1}"),
                     type=sticker_type,
                     width=512,
                     height=512,
@@ -511,44 +724,28 @@ class Blueprint:
 
     # -- materialization --------------------------------------------------------------
 
-    def build(self) -> World:
-        """Materialize an independent world. The blueprint itself is left untouched."""
+    def build(self, start: datetime.datetime | None = None) -> World:
+        """
+        Materialize an independent world, leaving the blueprint as is.
+
+        The world's clock starts at ``start``, or at the real time, to
+        the second, when none is given.
+        """
         spec = copy.deepcopy(self)
         world = World(
-            bot_user=_user_state(spec.bot),
+            now=aware(start) if start is not None else wall_clock(),
+            bot_user=user_state(spec.bot),
             profile=spec.profile,
             files=spec.files,
             stars=StarLedger(opening_balance=spec.star_balance),
             owned_gifts={gift.owned_gift_id: gift for gift in spec.owned_gifts},
             sticker_sets={item.name: item for item in spec.sticker_sets},
+            bot_group_privacy=spec.bot_group_privacy,
         )
         for user in spec.users:
-            world.users[user.id] = _user_state(user)
+            world.users[user.id] = user_state(user)
         for chat in spec.chats:
-            world.chats[chat.id] = ChatState(
-                id=chat.id,
-                type=chat.type,
-                title=chat.title,
-                username=chat.username,
-                first_name=chat.first_name,
-                last_name=chat.last_name,
-                description=chat.description,
-                permissions=chat.permissions,
-                photo=chat.photo,
-                sticker_set_name=chat.sticker_set_name,
-                invite_links=list(chat.invite_links),
-                members={
-                    member.user_id: MemberState(
-                        user_id=member.user_id,
-                        status=member.status,
-                        custom_title=member.custom_title,
-                        tag=member.tag,
-                        rights=member.rights,
-                        permissions=member.permissions,
-                    )
-                    for member in chat.members
-                },
-            )
+            world.chats[chat.id] = chat_state(chat)
         for community in spec.communities:
             world.communities[community.id] = CommunityState(
                 id=community.id,
@@ -565,19 +762,71 @@ class Blueprint:
                 is_enabled=connection.is_enabled,
                 can_reply=connection.can_reply,
                 rights=connection.rights,
+                # Dated by the clock, as declared topics and polls are.
+                date=world.now,
             )
         for index, topic in enumerate(spec.topics):
             # Declared topics go through the same path as `createForumTopic`, so a
             # declared world is indistinguishable from one built by API calls.
+            opener = world.bot_user if topic.creator_id is None else world.user(topic.creator_id)
             created = create_topic(
                 world.chat(topic.chat_id),
                 name=topic.name,
-                date=BASE_DATE,
+                date=world.now,
                 icon_color=topic.icon_color,
                 icon_custom_emoji_id=topic.icon_custom_emoji_id,
+                from_user=opener.as_user(),
+                creator_id=topic.creator_id,
             )
             self.topics[index].message_thread_id = created.message_thread_id
+        for index, declared in enumerate(spec.polls):
+            # Stored as `sendPoll` stores one, for the same reason.
+            target = world.chat(declared.chat_id)
+            poll = new_poll(
+                world.next_query_id(),
+                declared.question,
+                declared.options,
+                poll_type=declared.type,
+                is_anonymous=declared.is_anonymous,
+                allows_multiple_answers=declared.allows_multiple_answers,
+                allows_revoting=declared.allows_revoting,
+                correct_option_ids=declared.correct_option_ids,
+                explanation=declared.explanation,
+                chat_id=target.id,
+            )
+            world.polls[poll.id] = poll
+            message = target.add_message(
+                Message(
+                    message_id=target.allocate_message_id(),
+                    date=world.now,
+                    chat=target.as_chat(),
+                    **posted_by(target, world.bot_user.as_user()),
+                    poll=poll.as_poll(),
+                ),
+            )
+            self.polls[index].poll_id = poll.id
+            self.polls[index].message_id = message.message_id
         return world
+
+
+def _chat_permissions(chat: ChatSpec) -> ChatPermissions | None:
+    """
+    What a declared chat lets its members do.
+
+    A group or a supergroup that declares nothing grants every
+    permission, and a private chat or a channel has no permissions
+    to report.
+    """
+    if chat.permissions is None and chat.type in {ChatType.GROUP, ChatType.SUPERGROUP}:
+        return default_chat_permissions()
+    return _granted(chat.permissions)
+
+
+def _granted(permissions: ChatPermissions | None) -> ChatPermissions | None:
+    """Declared permissions as the API would store the same request."""
+    if permissions is None:
+        return None
+    return granted_permissions(permissions, use_independent_chat_permissions=None)
 
 
 def _token_bot_id(token: str) -> int:
@@ -585,7 +834,43 @@ def _token_bot_id(token: str) -> int:
     return int(head) if head.isdigit() else FALLBACK_BOT_ID
 
 
-def _user_state(spec: UserSpec) -> UserState:
+def chat_state(spec: ChatSpec) -> ChatState:
+    """
+    The state a declared chat starts as.
+
+    The one place a chat declaration is turned into a chat, for
+    :meth:`Blueprint.build` and for the chats a running environment
+    adds, so a chat added late is shaped exactly like a declared one.
+    """
+    return ChatState(
+        id=spec.id,
+        type=spec.type,
+        title=spec.title,
+        username=spec.username,
+        first_name=spec.first_name,
+        last_name=spec.last_name,
+        description=spec.description,
+        permissions=_chat_permissions(spec),
+        photo=spec.photo,
+        sticker_set_name=spec.sticker_set_name,
+        invite_links=list(spec.invite_links),
+        is_forum=spec.is_forum,
+        members={
+            member.user_id: MemberState(
+                user_id=member.user_id,
+                status=member.status,
+                custom_title=member.custom_title,
+                tag=member.tag,
+                rights=member.rights,
+                permissions=_granted(member.permissions),
+            )
+            for member in spec.members
+        },
+    )
+
+
+def user_state(spec: UserSpec) -> UserState:
+    """The state a declared user starts as; see :func:`chat_state`."""
     return UserState(
         id=spec.id,
         is_bot=spec.is_bot,
@@ -593,6 +878,7 @@ def _user_state(spec: UserSpec) -> UserState:
         last_name=spec.last_name,
         username=spec.username,
         language_code=spec.language_code,
+        bot_to_bot_mode=spec.bot_to_bot_mode,
     )
 
 

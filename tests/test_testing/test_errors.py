@@ -119,3 +119,11 @@ class TestThePublicSurface:
 
         assert DrainedTaskError is internal
         assert issubclass(DrainedTaskError, AssertionError)
+
+    def test_the_background_task_error_is_the_drain_errors_base(self):
+        from aiogram.test import BackgroundTaskError, DrainedTaskError
+        from aiogram.test.errors import BackgroundTaskError as internal
+
+        assert BackgroundTaskError is internal
+        assert issubclass(BackgroundTaskError, AssertionError)
+        assert issubclass(DrainedTaskError, BackgroundTaskError)

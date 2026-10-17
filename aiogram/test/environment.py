@@ -3,19 +3,35 @@ from __future__ import annotations
 import asyncio
 import contextlib
 import contextvars
-from collections.abc import Callable, Iterable, Iterator
+import datetime
+import functools
+import heapq
+import inspect
+import weakref
+from collections.abc import Awaitable, Callable, Iterable, Iterator, Mapping
 from dataclasses import dataclass, field
 from http import HTTPStatus
-from typing import TYPE_CHECKING, Any, NoReturn, TypeAlias, cast
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Concatenate,
+    NoReturn,
+    ParamSpec,
+    TypeAlias,
+    TypeVar,
+    cast,
+)
 
 from aiogram.client.bot import Bot
 from aiogram.dispatcher.dispatcher import Dispatcher
-from aiogram.dispatcher.event.bases import UNHANDLED
+from aiogram.dispatcher.event.bases import UNHANDLED, SkipHandler
+from aiogram.exceptions import TelegramAPIError
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.methods import TelegramMethod
-from aiogram.types import Message, TelegramObject, Update
+from aiogram.types import Message, TelegramObject, Update, User
 
+from . import rejections
 from .actors import UserActor
 from .blueprint import (
     Blueprint,
@@ -23,16 +39,27 @@ from .blueprint import (
     ChatSpec,
     CommunitySpec,
     TopicSpec,
+    UserRef,
     UserSpec,
+    chat_state,
     default_blueprint,
+    user_ref_id,
+    user_state,
 )
 from .calls import CallLog
 from .defaults import resolve_defaults
-from .errors import ApiRejection, DrainedTaskError, WaitTimeoutError, raise_api_error
-from .modeling import find_handler
+from .errors import (
+    ApiRejection,
+    BackgroundTaskError,
+    DrainedTaskError,
+    WaitTimeoutError,
+    raise_api_error,
+)
+from .flood import FloodControl, RateLimits
+from .markup import apply_parse_modes, refuse_empty_text
+from .modeling import check_bot_rights, find_handler
 from .mounting import bindables, detached_copy
 from .overrides import (
-    BLOCKED_BY_USER,
     OverrideBuilder,
     OverrideHandle,
     OverrideRegistry,
@@ -48,6 +75,7 @@ from .world import (
     TopicState,
     UserState,
     WorldLookupError,
+    aware,
     describe_message,
     newest_match,
     resolve_topic,
@@ -67,6 +95,13 @@ _CARRIED_MESSAGE_FIELDS: tuple[str, ...] = (
     "edited_channel_post",
     "business_message",
     "edited_business_message",
+    "guest_message",
+)
+
+#: The carried-message fields that hold a new version of a message
+#: the chat already stores, rather than a new message.
+_EDITED_MESSAGE_FIELDS = frozenset(
+    {"edited_message", "edited_channel_post", "edited_business_message"},
 )
 
 #: Observers the handler-naming middleware stays off.
@@ -246,6 +281,26 @@ class _TriggerFrame:
     records: list[RouteRecord] = field(default_factory=list)
     #: Set when the block that opened this frame ends; see the class docstring.
     closed: bool = False
+    #: Set by :meth:`BotTestEnvironment.assert_unhandled`: the test
+    #: meant this trigger to go unhandled or fail.
+    expected_unhandled: bool = False
+
+    def unhandled(self) -> list[RouteRecord]:
+        """
+        What :meth:`BotTestEnvironment.assert_updates_handled` flags.
+
+        Every record of a trigger none of whose updates was handled,
+        else only the records that raised: a trigger is one thing the
+        test did, and ``member.join()`` whose service message nobody
+        claims was still handled.
+        """
+        if not any(record.handled for record in self.records):
+            return list(self.records)
+        return [record for record in self.records if record.exception is not None]
+
+
+#: Something passing time causes, run by `advance_time`.
+DueAction: TypeAlias = Callable[[], Awaitable[None]]
 
 
 class _RouteMiddleware:
@@ -324,6 +379,16 @@ class _HandlerMiddleware:
             record.router = getattr(data.get("event_router"), "name", None)
         try:
             return await handler(event, data)
+        except SkipHandler:
+            # Control flow, not a failure: a skipping handler did not
+            # claim the update, so it is not the handler that ran.
+            # aiogram catches nothing else, so a `CancelHandler` the
+            # handler raised fails the update and is recorded below.
+            if record is not None:
+                record.handler = None
+                record.handler_module = None
+                record.router = None
+            raise
         except BaseException as error:
             # The deepest catch wins: this is the frame the exception was raised in, while
             # the update-level middleware only sees it after every inner one had a chance
@@ -389,6 +454,68 @@ def _require_distinct_views(views: tuple[MessageView, ...]) -> None:
         seen[key] = view
 
 
+def _unretrieved(task: asyncio.Task[Any]) -> bool:
+    """
+    Whether ``task`` failed and nobody has retrieved why.
+
+    asyncio sets a flag when a task ends with an exception and clears
+    it when anyone asks for that exception, which is also what stops
+    it complaining about the task later. Where the flag is missing,
+    the task is kept as if it had failed.
+    """
+    return bool(getattr(task, "_log_traceback", True))
+
+
+_Declared = TypeVar("_Declared", UserSpec, ChatSpec)
+_Admitted = TypeVar("_Admitted")
+_Options = ParamSpec("_Options")
+
+
+def _declares(
+    declare: Callable[Concatenate[Blueprint, _Options], _Declared],
+) -> Callable[
+    [Callable[[BotTestEnvironment, _Declared], _Admitted]],
+    Callable[Concatenate[BotTestEnvironment, _Options], _Admitted],
+]:
+    """
+    Make an environment method take what a blueprint method takes.
+
+    The decorated method receives what ``declare`` declared on a
+    scratch blueprint and puts it into the world, so the signature
+    lives on the blueprint alone. ``members`` are checked against the
+    world first.
+    """
+
+    def decorate(
+        admit: Callable[[BotTestEnvironment, _Declared], _Admitted],
+    ) -> Callable[Concatenate[BotTestEnvironment, _Options], _Admitted]:
+        @functools.wraps(admit)
+        def method(
+            self: BotTestEnvironment,
+            /,
+            *args: _Options.args,
+            **kwargs: _Options.kwargs,
+        ) -> _Admitted:
+            options = cast("dict[str, Any]", kwargs)
+            if options.get("members") is not None:
+                options["members"] = self._declared_members(options["members"])
+            return admit(self, declare(self._scratch(), *args, **kwargs))
+
+        returned = inspect.signature(admit).return_annotation
+        signature = inspect.signature(declare).replace(return_annotation=returned)
+        # What help() and the API reference show.
+        method.__dict__["__signature__"] = signature
+        return method
+
+    return decorate
+
+
+def _awaits(task: asyncio.Task[Any], target: asyncio.Task[Any]) -> bool:
+    """Whether ``task`` is suspended on ``target`` or a gather of it."""
+    waiter = getattr(task, "_fut_waiter", None)
+    return waiter is target or target in getattr(waiter, "_children", ())
+
+
 def _running_tasks() -> frozenset[asyncio.Task[Any]]:
     """
     Every task alive right now, or nothing at all outside a running loop.
@@ -414,6 +541,24 @@ def _describe_failures(failures: list[tuple[str, BaseException]]) -> str:
         f"The first one is chained as the cause of this error. `drain()` exists to silence "
         f"the noise of tasks left pending, not to silence what they raised."
     )
+
+
+def _describe_task_failures(failures: list[tuple[str, BaseException]]) -> str:
+    """How ``wait_for_background_tasks()`` names the failures."""
+    listing = "\n".join(f"  {name}: {type(error).__name__}: {error}" for name, error in failures)
+    return (
+        f"{len(failures)} background task(s) ended with an exception:\n{listing}\n"
+        f"The first one is chained as the cause of this error."
+    )
+
+
+def _describe_task(task: asyncio.Task[Any]) -> str:
+    """A task's name and the coroutine it runs, for a timeout."""
+    coro = task.get_coro()
+    name = getattr(coro, "__qualname__", None)
+    if not isinstance(name, str):  # pragma: no cover - eager tasks only
+        name = repr(coro)
+    return f"{task.get_name()} ({name})"
 
 
 def _event_type_of(update: Update | None) -> str | None:
@@ -443,6 +588,11 @@ class BotTestEnvironment:
         dispatcher: Dispatcher | None = None,
         *,
         default_wait_timeout: float = DEFAULT_WAIT_TIMEOUT,
+        clock_start: datetime.datetime | None = None,
+        enforce_bot_rights: bool = True,
+        rate_limits: RateLimits | None = None,
+        deliver_service_messages_from_bots: bool = True,
+        perturb_rejection_descriptions: bool = False,
     ) -> None:
         """
         ``default_wait_timeout`` is how long every wait in this environment runs.
@@ -453,17 +603,66 @@ class BotTestEnvironment:
         instead of a five-second pause per timing bug, says so once here rather than on
         every call. It is stored on the world, which is how a chat reaches it; an explicit
         ``timeout=`` on a single call still wins over it.
+
+        ``clock_start`` is where the world's clock starts. By default it
+        is the real time, to the second, so dates a bot computes from
+        ``datetime.now()`` land where Telegram would see them; pass a
+        fixed moment, such as ``BASE_DATE``, for dates that are the same
+        on every run.
+
+        ``enforce_bot_rights`` refuses the bot's own calls that its
+        standing in a chat does not allow, as Telegram does: pinning
+        without ``can_pin_messages``, banning without
+        ``can_restrict_members``, sending what the chat's permissions
+        forbid. Pass ``False`` while migrating a suite written against
+        the permissive fake; then the bot holds every right it needs.
+
+        ``rate_limits`` turns on Telegram's flood limits per chat: a
+        send over them fails with
+        :class:`~aiogram.exceptions.TelegramRetryAfter` and a
+        ``retry_after`` that is the truth. Off by default; see
+        :class:`aiogram.test.RateLimits`.
+
+        ``deliver_service_messages_from_bots`` decides whether a service
+        message another bot causes, such as ``forum_topic_closed``,
+        reaches the bot. No public source says; the default delivers
+        it, as the Bot API server filters no sender and Telegram says
+        bots receive all service messages. Pass ``False`` to withhold
+        it: it is stored all the same, and the trigger returns
+        :class:`~aiogram.test.Withheld`.
+
+        ``perturb_rejection_descriptions`` rewords every rejection the
+        environment answers with. It keeps the error code and the
+        exception type, which are the contract, and gives the
+        description a marker and scrambled words, the same on every
+        run, so a test can check what a bot does with a text it does not
+        recognise. :func:`~aiogram.test.rejection_of` still names the
+        rejection.
         """
+        #: Whether rejection descriptions are replaced.
+        self.perturb_rejection_descriptions = perturb_rejection_descriptions
+        #: Whether the bot's calls are checked against its rights.
+        self.enforce_bot_rights = enforce_bot_rights
+        #: Whether service messages other bots cause are delivered.
+        self.deliver_service_messages_from_bots = deliver_service_messages_from_bots
+        #: The flood limits in force, or ``None`` when there are none.
+        self.rate_limits = rate_limits
+        self._flood = FloodControl(rate_limits) if rate_limits is not None else None
+        #: The send this call was let through with, see `admit_send`.
+        self._admitted: tuple[FloodControl, ChatState, int] | None = None
         self.blueprint = blueprint if blueprint is not None else default_blueprint()
-        self.world = self.blueprint.build()
+        self.world = self.blueprint.build(start=clock_start)
         self.world.default_wait_timeout = default_wait_timeout
+        #: Where the world's clock started, so the rate clock can add
+        #: what `advance_time` moved it by.
+        self._clock_origin = self.world.now
         self.session = FakeTelegramSession(self)
         self.bot = Bot(
             token=self.blueprint.token,
             session=self.session,
             default=self.blueprint.default,
         )
-        self.bot._me = self.world.bot_user.as_user()
+        self.bot._me = self.world.bot_me()
         # From here on everything the world stores is bound to this bot, so a message a
         # test reads out of a chat is as usable as one a call returned.
         self.world.bind(self.bot)
@@ -476,21 +675,37 @@ class BotTestEnvironment:
         self._original_workflow_data = dict(self.dispatcher.workflow_data)
         self.dispatcher.fsm.storage = self._storage
         self._disposed = False
+        #: Events that passing time causes, as (moment, order, action).
+        self._due: list[tuple[datetime.datetime, int, DueAction]] = []
+        self._due_order = 0
+        self._advancing = False
 
         # Which update is in flight lives in `_ROUTE_IN_FLIGHT` and which trigger is open
         # in `_TRIGGER_SCOPES`, both context variables; see `_TriggerFrame` for why the
         # open scope is neither a counter nor a list on this object. What *is* on this
         # object is the last scope that finished, which is what the readers report.
         self._last_trigger: _TriggerFrame | None = None
+        # Every trigger of this environment's life, in the order they
+        # began; see `all_routes`.
+        self._trigger_history: list[_TriggerFrame] = []
         self._route_middleware = _RouteMiddleware(self)
         self._handler_middleware = _HandlerMiddleware(self)
         self._instrument_routing()
         self._protected_tasks = set(_running_tasks())
         self._protection_extended = False
-        # Every task created while this environment was live, so `drain` can also report a
-        # task that already *finished* — `asyncio.all_tasks()` only ever answers with the
-        # unfinished ones. See `_track_spawned_tasks`.
-        self._spawned_tasks: set[asyncio.Task[Any]] = set()
+        # The finished tasks that failed without anyone retrieving
+        # why, so `drain` can also report a task that already ended:
+        # `asyncio.all_tasks()` answers with the unfinished ones only.
+        # See `_track_spawned_tasks`.
+        self._failed_tasks: set[asyncio.Task[Any]] = set()
+        # Every task created while this environment tracks them ->
+        # the task that created it, held weakly. A task that has just
+        # ended is still here before its done callback runs, which
+        # `all_tasks()` no longer lists. See `_track_spawned_tasks`.
+        self._spawned: weakref.WeakKeyDictionary[
+            asyncio.Task[Any],
+            asyncio.Task[Any] | None,
+        ] = weakref.WeakKeyDictionary()
         self._tracking_loop: asyncio.AbstractEventLoop | None = None
         self._installed_task_factory: Any = None
         self._previous_task_factory: Any = None
@@ -529,7 +744,11 @@ class BotTestEnvironment:
         self.dispatcher.workflow_data.update(self._original_workflow_data)
         self._uninstrument_routing()
         self._untrack_spawned_tasks()
-        self._spawned_tasks.clear()
+        self._failed_tasks.clear()
+        self._spawned.clear()
+        # Due actions close over this environment, which nothing
+        # advances any more.
+        self._due.clear()
 
     # -- routing diagnostics ----------------------------------------------------------
 
@@ -569,7 +788,9 @@ class BotTestEnvironment:
             # through `feed` — `dispatcher.feed_update(env.bot, update)` called directly is
             # the way that happens. It is still one thing that happened, so it becomes a
             # finished scope of its own rather than being dropped.
-            self._last_trigger = _TriggerFrame(environment=self, records=[record], closed=True)
+            frame = _TriggerFrame(environment=self, records=[record], closed=True)
+            self._trigger_history.append(frame)
+            self._last_trigger = frame
         else:
             frame.records.append(record)
 
@@ -594,6 +815,7 @@ class BotTestEnvironment:
 
     def _push_scope(self) -> tuple[_TriggerFrame, contextvars.Token[tuple[_TriggerFrame, ...]]]:
         frame = _TriggerFrame(environment=self)
+        self._trigger_history.append(frame)
         return frame, _TRIGGER_SCOPES.set((*_TRIGGER_SCOPES.get(), frame))
 
     def _pop_scope(
@@ -615,6 +837,74 @@ class BotTestEnvironment:
         keeps the ordinary one-feed-then-assert case needing no ceremony.
         """
         return self._open_scope() or self._last_trigger
+
+    @property
+    def now(self) -> datetime.datetime:
+        """The world's clock; it stands still until advanced."""
+        return self.world.now
+
+    def schedule(self, moment: datetime.datetime, action: DueAction) -> None:
+        """
+        Run ``action`` once the clock reaches ``moment``.
+
+        A naive ``moment`` is read as local time, as everywhere else the
+        world reads a date, so it compares with the aware clock.
+        """
+        self._due_order += 1
+        heapq.heappush(self._due, (aware(moment), self._due_order, action))
+
+    async def advance_time(self, delta: float | datetime.timedelta) -> None:
+        """
+        Move the world's clock forward by seconds or a duration.
+
+        What the passing time causes happens before this returns, in
+        the order of its moments, each at its own moment: a poll whose
+        schedule ends closes and its update is dispatched. Updates fed
+        here share one route scope; an advance that feeds nothing
+        leaves the previous trigger's routes in place. If a handler
+        raises, the clock stays at that moment and the events after it
+        stay due.
+
+        Time never goes backwards, and one advance cannot start while
+        another runs: both raise and leave the clock as it was.
+        """
+        step = (
+            delta if isinstance(delta, datetime.timedelta) else datetime.timedelta(seconds=delta)
+        )
+        if step < datetime.timedelta(0):
+            msg = f"The clock cannot go backwards (advance_time({delta!r}))"
+            raise ValueError(msg)
+        if self._advancing:
+            msg = (
+                "advance_time() is already running; a handler or a concurrent task "
+                "cannot move the clock in the middle of an advance"
+            )
+            raise RuntimeError(msg)
+        self._advancing = True
+        try:
+            target = self.world.now + step
+            # A scope opens only when something falls due, so an
+            # advance that dispatches nothing keeps the last routes.
+            scope = (
+                self.trigger()
+                if self._due and self._due[0][0] <= target
+                else contextlib.nullcontext()
+            )
+            previous = self._last_trigger
+            with scope:
+                while self._due and self._due[0][0] <= target:
+                    moment, _order, action = heapq.heappop(self._due)
+                    self.world.move_clock(max(self.world.now, moment))
+                    await action()
+            # A due action can turn out to have nothing to do, such as
+            # closing a poll already stopped; its empty scope must not
+            # replace the routes of the trigger before it.
+            last = self._last_trigger
+            if last is not previous and last is not None and not last.records:
+                self._last_trigger = previous
+            self.world.move_clock(target)
+        finally:
+            self._advancing = False
 
     @contextlib.contextmanager
     def trigger(self) -> Iterator[None]:
@@ -672,13 +962,15 @@ class BotTestEnvironment:
     @property
     def routes(self) -> list[RouteRecord]:
         """
-        Every update of the trigger in scope, in the order the records were completed.
+        The routes of the last trigger only, in the order they ended.
 
-        A short history rather than the whole session: the question a failing test asks is
+        Every update of the trigger in scope. A short history rather
+        than the whole session: the question a failing test asks is
         "where did *that* go", and one action's worth of updates is the answer. Read inside
         a :meth:`trigger` block it is that block's records so far; read outside one, the
         records of the trigger that completed most recently. See :meth:`trigger` for what
         delimits a scope and for what "most recently" means under :func:`asyncio.gather`.
+        :attr:`all_routes` keeps every trigger's records instead.
         """
         scope = self._scope()
         return list(scope.records) if scope is not None else []
@@ -765,6 +1057,88 @@ class BotTestEnvironment:
         )
         raise AssertionError(msg)
 
+    @property
+    def all_routes(self) -> list[RouteRecord]:
+        """
+        The routes of the whole test, every trigger's, in order.
+
+        Every update this environment routed. :attr:`routes` answers for
+        the last trigger only; this keeps them all, grouped by trigger
+        in the order the triggers began, so a test can look back at a
+        game's worth of updates. Each record is the one :attr:`routes`
+        reported.
+        """
+        return [record for frame in self._trigger_history for record in frame.records]
+
+    def assert_unhandled(self) -> list[RouteRecord]:
+        """
+        Say the last trigger was meant to go unhandled, or to fail.
+
+        :meth:`assert_updates_handled` then leaves it out. Call it
+        after a trigger the bot is meant to ignore, or one whose
+        handler is meant to raise, and it returns the updates that
+        went unhandled or raised so the test can check them::
+
+            await stranger.send("hello")
+            bot_env.assert_unhandled()
+
+            await bot_user.send("/crash")
+            [record] = bot_env.assert_unhandled()
+            assert isinstance(record.exception, KeyError)
+
+        It reads the trigger :attr:`routes` reads, and fails if that
+        trigger was handled without an error, naming where it went.
+        """
+        scope = self._scope()
+        records = list(scope.records) if scope is not None else []
+        if scope is None or not records:
+            msg = (
+                "Expected the last trigger to go unhandled, but no update "
+                "has been routed through this environment yet."
+            )
+            raise AssertionError(msg)
+        unhandled = scope.unhandled()
+        if not unhandled:
+            went = "\n".join(record.describe() for record in records)
+            msg = (
+                f"Expected the last trigger to go unhandled, but its "
+                f"{len(records)} update(s) were handled:\n{went}"
+            )
+            raise AssertionError(msg)
+        scope.expected_unhandled = True
+        return unhandled
+
+    def assert_updates_handled(self) -> None:
+        """
+        Assert that no trigger of this environment went unhandled.
+
+        Checks :attr:`all_routes`: a trigger fails it when none of
+        its updates was handled, or when any of them raised, even if
+        the bot's error handler swallowed it. A trigger the test
+        passed to :meth:`assert_unhandled` is left out. The failure
+        lists each update with :meth:`RouteRecord.describe`.
+
+        Opt-in, like :meth:`assert_overrides_consumed`: call it at the
+        end of a test, or have the plugin call it after every passing
+        test with the ``bot_env_assert_updates_handled`` fixture.
+        """
+        flagged = [
+            record
+            for frame in self._trigger_history
+            if not frame.expected_unhandled
+            for record in frame.unhandled()
+        ]
+        if not flagged:
+            return
+        went = "\n".join(record.describe() for record in flagged)
+        msg = (
+            f"{len(flagged)} update(s) fed to this environment went "
+            f"unhandled or raised:\n{went}\n"
+            f"Call `env.assert_unhandled()` after a trigger the bot is "
+            f"meant to ignore, or one meant to fail."
+        )
+        raise AssertionError(msg)
+
     async def __aenter__(self) -> BotTestEnvironment:
         return self
 
@@ -829,6 +1203,124 @@ class BotTestEnvironment:
         community_id = community if isinstance(community, int) else community.id
         return self.world.community(community_id)
 
+    # -- additions -----------------------------------------------------
+    #
+    # A blueprint declares the world before it exists; these add to
+    # it while it runs. They are the blueprint's own builders over
+    # a scratch blueprint, so what they make is shaped exactly as a
+    # declared user or chat is, and the blueprint the environment
+    # was built from, which a suite may share, is left alone.
+
+    @_declares(Blueprint.add_user)
+    def add_user(self, spec: UserSpec) -> UserActor:
+        """
+        Add a user to the running world, as the actor for them.
+
+        Declared as :meth:`Blueprint.add_user` declares one, and the
+        same as ``env.user(...)`` returns. The id is the next free one
+        unless given; one already taken raises :class:`ValueError`.
+        """
+        self.world.users[spec.id] = user_state(spec)
+        return self.user(spec.id)
+
+    def add_private_chat(self, user: UserSpec | UserActor | int) -> ChatState:
+        """
+        Add the private chat between the bot and ``user``.
+
+        Opening one is rarely needed: a user's first message, or
+        ``env.chat(user)``, opens it. It is refused, with
+        :class:`ValueError`, when it is open already.
+        """
+        scratch = self._scratch()
+        declared = self._declared_user(user)
+        if declared.id in self.world.chats:
+            msg = (
+                f"The private chat with user {declared.id} is open already; "
+                f"`env.chat({declared.id})` returns it"
+            )
+            raise ValueError(msg)
+        return self._admit_chat(scratch.add_private_chat(declared))
+
+    @_declares(Blueprint.add_group)
+    def add_group(self, spec: ChatSpec) -> ChatState:
+        """
+        Add a basic group to the running world, as its live ChatState.
+
+        Declared as :meth:`Blueprint.add_group` declares one, which
+        returns a declaration instead. ``members`` name users of this
+        world, declared or added, by spec, actor or id. Returns what
+        ``env.chat(...)`` does.
+        """
+        return self._admit_chat(spec)
+
+    @_declares(Blueprint.add_supergroup)
+    def add_supergroup(self, spec: ChatSpec) -> ChatState:
+        """
+        Add a supergroup to the running world, as its live ChatState.
+
+        As :meth:`Blueprint.add_supergroup` declares one; see
+        :meth:`add_group`.
+        """
+        return self._admit_chat(spec)
+
+    @_declares(Blueprint.add_channel)
+    def add_channel(self, spec: ChatSpec) -> ChatState:
+        """
+        Add a channel to the running world, as its live ChatState.
+
+        As :meth:`Blueprint.add_channel` declares one; see
+        :meth:`add_group`.
+        """
+        return self._admit_chat(spec)
+
+    def _scratch(self) -> Blueprint:
+        """
+        An empty blueprint for the same bot, to declare with.
+
+        It knows the ids this world has taken, so what it declares is
+        numbered as the next user or chat of this world.
+        """
+        scratch = Blueprint(token=self.blueprint.token)
+        scratch.bot = self.blueprint.bot
+        scratch.taken_user_ids = set(self.world.users)
+        scratch.taken_chat_ids = set(self.world.chats)
+        return scratch
+
+    def _declared_user(self, user: UserRef) -> UserSpec:
+        """A declaration of a user of this world, however named."""
+        user_id = user_ref_id(user)
+        if user_id == self.world.bot_user.id:
+            return self.blueprint.bot
+        known = self.world.users.get(user_id)
+        if known is None:
+            msg = (
+                f"User {user_id} is not in this world, so it cannot be a member; "
+                f"add one with `env.add_user(...)`"
+            )
+            raise WorldLookupError(msg)
+        return UserSpec(
+            id=known.id,
+            is_bot=known.is_bot,
+            first_name=known.first_name,
+            last_name=known.last_name,
+            username=known.username,
+            language_code=known.language_code,
+            bot_to_bot_mode=known.bot_to_bot_mode,
+        )
+
+    def _declared_members(
+        self,
+        members: Mapping[UserRef, str],
+    ) -> dict[UserRef, str]:
+        """The members, each checked to be a user of this world."""
+        return {self._declared_user(user): status for user, status in members.items()}
+
+    def _admit_chat(self, spec: ChatSpec) -> ChatState:
+        """Put a declared chat into the world, as ``build`` would."""
+        state = chat_state(spec)
+        self.world.chats[state.id] = state
+        return state
+
     def on(self, method_type: type[TelegramMethod[Any]], **fields: Any) -> OverrideBuilder:
         """
         Declare what a Bot API call answers, optionally only for calls of a given shape.
@@ -860,7 +1352,7 @@ class BotTestEnvironment:
         self,
         chat_id: ChatSpec | ChatState | UserSpec | UserState | int,
         *,
-        message: str = BLOCKED_BY_USER,
+        message: str | None = None,
     ) -> OverrideHandle:
         """
         Make every call addressed at one chat fail the way a block makes it fail.
@@ -894,7 +1386,12 @@ class BotTestEnvironment:
         both that the bot tried and that it failed — see :meth:`handle_call`.
         """
         resolved = chat_id if isinstance(chat_id, int) else chat_id.id
-        return block_chat(self.overrides, resolved, message=message)
+        return block_chat(
+            self.overrides,
+            resolved,
+            message=message,
+            perturb=self.perturb_rejection_descriptions,
+        )
 
     def state(
         self,
@@ -962,17 +1459,7 @@ class BotTestEnvironment:
         Whatever the case, the message the update carries ends up **registered in its chat**
         — see :meth:`_register_carried_message`.
         """
-        # One pass over the bindables instead of one to ask whose they are and another to
-        # claim them: `bound_elsewhere` and `mount` walk the same graph with the same
-        # pruning, and an update is walked on every single trigger.
-        self._protect_running_tasks()
-        nodes = list(bindables(update, prune_bound=True))
-        if any(node.bot is not None and node.bot is not self.bot for node in nodes):
-            update = detached_copy(update, bot=self.bot)
-        else:
-            for node in nodes:
-                if node.bot is None:
-                    node.as_(self.bot)
+        update = self.adopt(update)
         self._register_carried_message(update)
         # A feed that is neither inside an explicit `trigger()` block of this environment
         # nor nested in one of its handlers is a trigger of its own, so it opens a scope of
@@ -988,6 +1475,30 @@ class BotTestEnvironment:
             return await self.dispatcher.feed_update(self.bot, update, **kwargs)
         finally:
             self._pop_scope(frame, token)
+
+    def adopt(self, update: Update) -> Update:
+        """
+        Make ``update`` this environment's, as :meth:`feed` does first.
+
+        What the update carries is bound to the bot, or copied when it
+        belongs to another environment, and the tasks already running
+        are spared from :meth:`drain`. An update a trigger withholds
+        takes the same path, so its ``callback_query.answer()`` works
+        and a test whose first trigger is withheld still has its task
+        snapshot. The copy, if any, is what comes back.
+        """
+        # One pass over the bindables instead of one to ask whose they are and another to
+        # claim them: `bound_elsewhere` and `mount` walk the same graph with the same
+        # pruning, and an update is walked on every single trigger.
+        self._protect_running_tasks()
+        nodes = list(bindables(update, prune_bound=True))
+        if any(node.bot is not None and node.bot is not self.bot for node in nodes):
+            copy: Update = detached_copy(update, bot=self.bot)
+            return copy
+        for node in nodes:
+            if node.bot is None:
+                node.as_(self.bot)
+        return update
 
     def _register_carried_message(self, update: Update) -> None:
         """
@@ -1022,6 +1533,9 @@ class BotTestEnvironment:
         the time this runs the incoming message is bound to this environment's bot, same as
         anything already stored, so comparing equal is exactly what "the same message, again"
         means, and that case stays the silent no-op it always was.
+
+        An edited message is not a collision: it is the new version
+        of the message under its id, so it replaces the stored one.
         """
         for name in _CARRIED_MESSAGE_FIELDS:
             message: Message | None = getattr(update, name, None)
@@ -1031,9 +1545,40 @@ class BotTestEnvironment:
             if chat is None:
                 # Not a chat this world declared; nothing to keep it in.
                 return
+            if message.ephemeral_message_id is not None:
+                # Every ephemeral message has message_id 0, so it
+                # is kept apart from the shared history, by its
+                # ephemeral id.
+                if message.from_user is None:
+                    msg = (
+                        f"Ephemeral message {message.ephemeral_message_id} fed into chat "
+                        f"{chat.id} names no sender, so it cannot be registered: an "
+                        f"incoming ephemeral message is kept under its from_user"
+                    )
+                    raise WorldLookupError(msg)
+                # One counter numbers the bot's ephemeral messages and
+                # the users', so an id the bot used is taken as well.
+                known = chat.find_any_ephemeral(message.ephemeral_message_id)
+                if known is None:
+                    chat.add_ephemeral_command(message)
+                elif known != message:
+                    msg = (
+                        f"Chat {chat.id} already holds a different ephemeral message under "
+                        f"ephemeral id {message.ephemeral_message_id}, so the incoming one "
+                        f"cannot be registered:\n"
+                        f"  already there: {describe_message(known)}\n"
+                        f"  incoming:      {describe_message(message)}"
+                    )
+                    raise WorldLookupError(msg)
+                return
             existing = chat.find_message(message.message_id)
             if existing is None:
                 chat.add_message(message)
+            elif name in _EDITED_MESSAGE_FIELDS:
+                # An edit is the message's new version: it takes the
+                # place of the stored one rather than colliding.
+                if existing is not message:
+                    chat.replace_message(message)
             elif existing != message:
                 msg = (
                     f"Chat {chat.id} already holds a different message under id "
@@ -1049,6 +1594,14 @@ class BotTestEnvironment:
                 raise WorldLookupError(msg)
             # Even an already-known message may have been allocated elsewhere.
             chat.last_message_id = max(chat.last_message_id, message.message_id)
+            connection = self.world.business_connections.get(
+                message.business_connection_id or "",
+            )
+            if connection is not None:
+                connection.last_message_id = max(
+                    connection.last_message_id,
+                    message.message_id,
+                )
             return
 
     # -- waiting ----------------------------------------------------------------------
@@ -1342,6 +1895,11 @@ class BotTestEnvironment:
         cancelled (they are over) and do not count towards the returned number, which stays
         "how many tasks this drained".
 
+        Such a task is not held forever. One that succeeded or was
+        cancelled is forgotten as it ends, so a long run does not grow
+        with the tasks it spawned, and one that failed is kept until its
+        exception is retrieved, by the bot or by this report.
+
         **Called with no protection snapshot at all, it does nothing and answers ``0``.**
         That is the environment the synchronous ``bot_env`` fixture builds — no loop running
         at construction, so the creation-time snapshot is empty — on which nothing has been
@@ -1360,7 +1918,14 @@ class BotTestEnvironment:
         at this environment's **first asynchronous entry point** — the first :meth:`feed` or
         :meth:`handle_call`, the earliest moment a loop is guaranteed to exist and still
         before the bot under test can have spawned anything. Everything alive at that
-        instant is spared.
+        instant is spared, but the task making the entry, which may be
+        a worker the bot started.
+
+        **Never the caller, nor a task waiting on it.** A drain called
+        from a child task must not cancel the test's task that awaits
+        that child. A task waits on another when it awaits it,
+        directly or through ``gather``, or created it, which covers a
+        ``TaskGroup`` and ``asyncio.wait``.
 
         The bluntness that remains is worth stating plainly: a task the *bot* creates from
         a fixture, before the first update is fed, is spared too, and a task created by
@@ -1401,12 +1966,7 @@ class BotTestEnvironment:
             # environment never ran, so it owns nothing — and "everything unprotected"
             # would here mean "every task in the loop". See the docstring.
             return 0
-        current = asyncio.current_task()
-        mine = {
-            task
-            for task in (*asyncio.all_tasks(), *self._spawned_tasks)
-            if task is not current and task not in self._protected_tasks
-        }
+        mine = self._own_tasks()
         pending = {task for task in mine if not task.done()}
         failures: list[tuple[str, BaseException]] = []
         # Tasks that finished on their own before the drain. `asyncio.all_tasks()` does not
@@ -1433,9 +1993,135 @@ class BotTestEnvironment:
                 msg += f"\n{_describe_failures(failures)}"
                 raise WaitTimeoutError(msg) from failures[0][1]
             raise WaitTimeoutError(msg)
+        self._release_retrieved_failures()
         if failures:
             raise DrainedTaskError(_describe_failures(failures)) from failures[0][1]
         return len(pending)
+
+    async def wait_for_background_tasks(self, timeout: float | None = None) -> int:
+        """
+        Wait until the bot's background tasks are done, cancelling none.
+
+        :meth:`drain` stops what a test left running, and that is
+        wrong for work that should finish: a results broadcast
+        cancelled halfway leaves half the players without one. This
+        waits for the same tasks ``drain()`` would cancel, those
+        created since this environment first ran, and returns how
+        many it waited for::
+
+            await bot_user.send("/end_game")
+            await bot_env.wait_for_background_tasks()
+            assert all(chat.messages for chat in player_chats)
+
+        A task spawned while waiting is waited for too, so it returns
+        once none is left. A task that ended with an exception nobody
+        retrieved is raised as
+        :class:`~aiogram.test.BackgroundTaskError`, the first chained
+        as its cause. The caller and every task waiting on it are
+        never waited for, as :meth:`drain` spares them. ``timeout``
+        defaults to this
+        environment's ``default_wait_timeout``, and the deadline is
+        read off the event loop's clock.
+
+        :raises aiogram.test.errors.WaitTimeoutError: if tasks are
+            still running at the deadline, naming each and its
+            coroutine. They are left running.
+        :raises aiogram.test.errors.BackgroundTaskError: if a task
+            ended with an exception of its own.
+        """
+        if timeout is None:
+            timeout = self.world.default_wait_timeout
+        if not (self._protection_extended or self._protected_tasks):
+            # Never ran, so it owns nothing; see `drain`.
+            return 0
+        loop = asyncio.get_running_loop()
+        deadline = loop.time() + timeout
+        waited: set[asyncio.Task[Any]] = set()
+        while True:
+            pending = {task for task in self._own_tasks() if not task.done()}
+            if not pending:
+                break
+            waited |= pending
+            remaining = deadline - loop.time()
+            if remaining <= 0:
+                self._task_timeout(timeout, pending)
+            await asyncio.wait(pending, timeout=remaining)
+        failures: list[tuple[str, BaseException]] = []
+        self._collect_failures(self._own_tasks(), failures)
+        self._release_retrieved_failures()
+        if failures:
+            msg = _describe_task_failures(failures)
+            raise BackgroundTaskError(msg) from failures[0][1]
+        return len(waited)
+
+    def _task_timeout(
+        self,
+        timeout: float,
+        pending: set[asyncio.Task[Any]],
+    ) -> NoReturn:
+        """Fail the wait for background tasks, naming what runs."""
+        names = "\n".join(sorted(f"  {_describe_task(task)}" for task in pending))
+        msg = (
+            f"Timed out after {timeout}s waiting for the bot's background "
+            f"tasks; {len(pending)} still running:\n{names}\n"
+            f"Nothing was cancelled. A task meant to run for the whole "
+            f"test is not one to wait for: wait_for() the state it "
+            f"should reach, and drain() it at the end."
+        )
+        failures: list[tuple[str, BaseException]] = []
+        self._collect_failures(
+            [task for task in self._own_tasks() if task.done()],
+            failures,
+        )
+        if failures:
+            msg += f"\n{_describe_task_failures(failures)}"
+            raise WaitTimeoutError(msg) from failures[0][1]
+        raise WaitTimeoutError(msg)
+
+    def _own_tasks(self) -> set[asyncio.Task[Any]]:
+        """
+        The tasks this environment counts as the bot's.
+
+        Those alive now or failed unseen, minus those alive at its
+        first asynchronous entry and those :meth:`_spared_tasks` names.
+        """
+        self._release_retrieved_failures()
+        candidates = {
+            *asyncio.all_tasks(),
+            *list(self._spawned),
+            *self._failed_tasks,
+        } - self._protected_tasks
+        return candidates - self._spared_tasks(candidates)
+
+    def _spared_tasks(self, candidates: set[asyncio.Task[Any]]) -> set[asyncio.Task[Any]]:
+        """
+        The caller and every task waiting on it: never the bot's.
+
+        ``drain()`` or ``wait_for_background_tasks()`` called from a
+        child task must not cancel or wait for the test's task that
+        awaits that child, or for itself. A task waits on another when
+        it awaits it, directly or through ``gather``, as asyncio's
+        ``_fut_waiter`` shows, or created it, which covers a
+        ``TaskGroup`` and ``asyncio.wait``, which await a future of
+        their own. Both are followed until nothing new is found. A
+        worker started with ``create_task`` waits on nothing, so it is
+        the bot's, even when its call was the environment's first.
+        """
+        current = asyncio.current_task()
+        if current is None:  # pragma: no cover - always in a task
+            return set()
+        spared = {current}
+        frontier = [current]
+        while frontier:
+            task = frontier.pop()
+            waiting = {other for other in candidates if _awaits(other, task)}
+            creator = self._spawned.get(task)
+            if creator is not None:
+                waiting.add(creator)
+            for other in waiting - spared:
+                spared.add(other)
+                frontier.append(other)
+        return spared
 
     @staticmethod
     def _collect_failures(
@@ -1452,8 +2138,12 @@ class BotTestEnvironment:
         for task in tasks:
             if task.cancelled():
                 continue
+            # asyncio clears the flag once someone retrieves the
+            # exception, by awaiting the task or asking for it. That
+            # failure was the bot's to handle, and it did.
+            retrieved = not _unretrieved(task)
             error = task.exception()
-            if error is not None:
+            if error is not None and not retrieved:
                 failures.append((task.get_name(), error))
 
     # -- call handling ----------------------------------------------------------------
@@ -1472,6 +2162,9 @@ class BotTestEnvironment:
             return
         self._protection_extended = True
         current = asyncio.current_task()
+        # The task making this entry is not spared: it may be a worker
+        # the bot started. The test's own task is spared as the
+        # caller, or as waiting on it; see `_spared_tasks`.
         self._protected_tasks |= {task for task in _running_tasks() if task is not current}
         self._track_spawned_tasks()
 
@@ -1485,10 +2178,17 @@ class BotTestEnvironment:
         worth reporting.
 
         The previous factory is called rather than replaced, so an eager task factory or a
-        framework's own stays in force and this only observes. Tasks are held by a **strong**
-        reference until :meth:`_restore`: a failed task collected before the drain takes its
-        exception with it, and asyncio then prints the never-retrieved warning this exists to
-        prevent.
+        framework's own stays in force and this only observes.
+
+        A task and who created it are noted weakly: asyncio holds a
+        running one, and a just-ended one until its done callback has
+        run, so neither is lost. A failed one is held by a **strong**
+        reference until someone retrieves its exception or :meth:`drain`
+        and :meth:`wait_for_background_tasks` report it: collected
+        earlier it would take the exception with it, and asyncio would
+        print the never-retrieved warning this exists to prevent. Every
+        other task is let go as it ends, see :meth:`_forget_task`, so a
+        long run does not grow with the tasks it has spawned.
 
         Two environments alive at once nest, and restoring is by identity — an environment
         whose factory is no longer the loop's leaves it alone rather than tearing another
@@ -1496,21 +2196,57 @@ class BotTestEnvironment:
         """
         loop = asyncio.get_running_loop()
         previous: Any = loop.get_task_factory()
-        spawned = self._spawned_tasks
 
         def factory(loop: Any, coro: Any, **kwargs: Any) -> Any:
+            creator = asyncio.current_task(loop)
             task: Any = (
                 asyncio.Task(coro, loop=loop, **kwargs)
                 if previous is None
                 else previous(loop, coro, **kwargs)
             )
-            spawned.add(cast("asyncio.Task[Any]", task))
+            self._remember_task(cast("asyncio.Task[Any]", task), creator)
             return task
 
         self._tracking_loop = loop
         self._previous_task_factory = previous
         self._installed_task_factory = factory
         loop.set_task_factory(factory)
+
+    def _remember_task(
+        self,
+        task: asyncio.Task[Any],
+        creator: asyncio.Task[Any] | None,
+    ) -> None:
+        """Note ``task`` and its creator, and watch it end."""
+        if self._disposed:
+            return
+        self._spawned[task] = creator
+        task.add_done_callback(self._forget_task)
+
+    def _release_retrieved_failures(self) -> None:
+        """
+        Whoever retrieved a kept task's exception has taken it over.
+
+        Swept when the tasks are counted rather than as each one
+        ends, so many failures cost one pass each count.
+        """
+        self._failed_tasks = {kept for kept in self._failed_tasks if _unretrieved(kept)}
+
+    def _forget_task(self, task: asyncio.Task[Any]) -> None:
+        """
+        Keep a task that ended only if it failed unseen.
+
+        A task that succeeded or was cancelled has nothing to report.
+        One that failed is kept until its exception is retrieved. The
+        flag asyncio clears on retrieval is the only way to tell a
+        failure the bot handled, by awaiting the task, from one nobody
+        saw, and it can be cleared long after the task ended. The
+        traceback is held either way, so keeping the task costs no
+        more than a record would and, unlike one, can still say
+        whether the bot retrieved it.
+        """
+        if not self._disposed and not task.cancelled() and _unretrieved(task):
+            self._failed_tasks.add(task)
 
     def _untrack_spawned_tasks(self) -> None:
         loop = self._tracking_loop
@@ -1556,6 +2292,8 @@ class BotTestEnvironment:
             user=self.world.bot_user.as_user(),
             date=self.world.next_date(),
             counter=self.world.last_update_id,
+            file_numbers=self.world.next_file_number,
+            files=self.world.files,
         )
 
     def fail(
@@ -1563,6 +2301,7 @@ class BotTestEnvironment:
         method: TelegramMethod[Any],
         description: str,
         error_code: int = HTTPStatus.BAD_REQUEST,
+        retry_after: int | None = None,
     ) -> NoReturn:
         raise_api_error(
             session=self.session,
@@ -1570,7 +2309,62 @@ class BotTestEnvironment:
             method=method,
             description=description,
             error_code=error_code,
+            retry_after=retry_after,
         )
+
+    def _refuse(self, method: TelegramMethod[Any], error: ApiRejection) -> NoReturn:
+        """Answer a call with the refusal the world raised."""
+        description = error.description
+        if self.perturb_rejection_descriptions:
+            description = rejections.perturb(description)
+        try:
+            self.fail(
+                method,
+                f"{error.prefix}: {description}",
+                error.error_code,
+                error.retry_after,
+            )
+        except TelegramAPIError as raised:
+            rejections.remember(raised, error)
+            raise
+
+    def rate_clock(self) -> float:
+        """
+        Seconds on the clock the flood limits are read against.
+
+        The event loop's time, so a looptime loop moves it, plus how
+        far :meth:`advance_time` moved the world's clock, so waiting
+        out a ``retry_after`` either way lets the next send through.
+        """
+        moved = (self.world.now - self._clock_origin).total_seconds()
+        return asyncio.get_running_loop().time() + moved
+
+    def _find_user(self, user_id: int) -> User | None:
+        """The user a ``tg://user?id=`` link in the bot's text names."""
+        if user_id == self.world.bot_user.id:
+            return self.world.bot_user.as_user()
+        user = self.world.users.get(user_id)
+        return None if user is None else user.as_user()
+
+    def admit_send(self, chat: ChatState, messages: int = 1) -> None:
+        """
+        Let a send into ``chat`` past the flood limits, or refuse it.
+
+        A modeled send calls this once Telegram's local checks have
+        passed and before it changes the world, so a call they refuse
+        answers with their 400 rather than a 429, and a call refused
+        here leaves nothing behind. An album or a batch is admitted
+        once, with the number of ``messages`` it puts into the chat,
+        and counts as all of them. With no ``rate_limits``, everything
+        is admitted.
+        """
+        flood = self._flood
+        if flood is None or self._admitted is not None:
+            return
+        wait = flood.retry_after(chat.id, chat.type, self.rate_clock())
+        if wait is not None:
+            raise rejections.FLOOD(retry_after=wait, seconds=wait)
+        self._admitted = (flood, chat, messages)
 
     async def handle_call(
         self,
@@ -1598,6 +2392,10 @@ class BotTestEnvironment:
         first half exactly when it matters most, since the refusal path is the one where
         "did we even try, and try at whom?" is the question.
 
+        A modeled method's parse modes are applied first, as the Bot API
+        server parses before anything else reads the text; see
+        :mod:`aiogram.test.markup`.
+
         A modeled rejection comes back as the :class:`~aiogram.exceptions.TelegramBadRequest`
         Telegram would have answered with. A :class:`~aiogram.test.WorldLookupError`
         deliberately does **not**: a gap in the test's own setup must fail the test rather
@@ -1615,11 +2413,31 @@ class BotTestEnvironment:
             return outcome.apply(resolved, bot)
 
         handler = find_handler(resolved)
+        try:
+            if handler is not None:
+                # Telegram parses before anything else looks at the
+                # text, and the world stores what parsing leaves.
+                refuse_empty_text(resolved)
+                resolved = apply_parse_modes(resolved, self._find_user)
+            check_bot_rights(self, resolved)
+        except ApiRejection as error:
+            self._refuse(resolved, error)
+
         if handler is not None:
+            # The handler runs to its end without awaiting, so no other
+            # call can admit a send in between.
+            self._admitted = None
             try:
-                return handler(self, resolved)
+                result = handler(self, resolved)
             except ApiRejection as error:
-                self.fail(resolved, f"Bad Request: {error}")
+                self._refuse(resolved, error)
+            admitted, self._admitted = self._admitted, None
+            if admitted is not None:
+                # Counted once it went through: a refused send is no
+                # message in the chat.
+                flood, chat, messages = admitted
+                flood.record(chat.id, chat.type, self.rate_clock(), messages)
+            return result
 
         return synthesize_result(resolved.__returning__, self.synthesis_context())
 

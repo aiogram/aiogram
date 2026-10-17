@@ -35,6 +35,7 @@ CHAT_MEMBER_ADMINISTRATOR = ChatMemberAdministrator(
     can_post_stories=True,
     can_edit_stories=True,
     can_delete_stories=True,
+    can_send_welcome_messages=True,
     is_anonymous=False,
     can_manage_voice_chats=False,
 ).model_dump()
