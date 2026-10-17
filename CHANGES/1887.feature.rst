@@ -282,7 +282,8 @@ id, a positive amount and the user, and an administrator the bot promoted report
 ``can_be_edited``, while one known to be promoted by someone else cannot be edited, demoted or
 titled by the bot, and a star payment is refunded only to the user who paid it. A declared
 world matches one built through the API: declared permissions get the documented defaults,
-declared topics are created by the bot, and ``Blueprint.add_poll`` declares a poll.
+declared topics go through the path ``createForumTopic`` takes, and ``Blueprint.add_poll``
+declares a poll.
 
 Actor triggers produce only updates Telegram would deliver. ``click(..., message=m)`` presses
 the button on the stored version of ``m`` in the actor's chat and refuses a button it does not
@@ -447,6 +448,9 @@ Migrating a suite written against the earlier toolkit:
   ``permissions=`` from ``default_chat_permissions()``.
 - ``unbanChatMember`` and ``promoteChatMember`` in a basic group fail with ``method is
   available only in supergroup and channel chats``, as on the Bot API server.
+- Every actor trigger that feeds an update takes the keyword ``deliver``, so a handler
+  dependency named ``deliver`` can no longer be passed through a trigger's keyword arguments.
+  Rename the dependency, or feed the update with ``BotTestEnvironment.feed()``.
 
 .. warning::
 
