@@ -1176,7 +1176,6 @@ def bot_command_entities(text: str | None) -> list[MessageEntity]:
     return found
 
 
-#: The fields whose text a message cannot do without.
 #: The methods whose ``text`` is a message's whole text.
 _TEXT_METHODS = (SendMessage, EditMessageText, EditEphemeralMessageText)
 
