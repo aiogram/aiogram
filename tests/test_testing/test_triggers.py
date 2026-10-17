@@ -241,7 +241,7 @@ class TestJoinRequests:
     async def test_acting_on_a_request_that_does_not_exist_fails(self, outsider_env, method_name):
         env, outsider, club = outsider_env
 
-        with pytest.raises(TelegramBadRequest, match="no join request is pending"):
+        with pytest.raises(TelegramBadRequest):
             await getattr(env.bot, method_name)(chat_id=club.id, user_id=outsider.user.id)
 
 

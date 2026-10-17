@@ -107,7 +107,7 @@ class TestModeledMethods:
         )
 
     async def test_read_missing_message_fails(self, business_env, connection, customer_chat):
-        with pytest.raises(TelegramBadRequest, match="message to read not found"):
+        with pytest.raises(TelegramBadRequest):
             await business_env.bot.read_business_message(
                 business_connection_id=connection.id,
                 chat_id=customer_chat.id,

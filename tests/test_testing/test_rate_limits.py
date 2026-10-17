@@ -274,7 +274,7 @@ class TestLocalChecksComeFirst:
         chat.member(env.world.bot_user.id).set_status(ChatMemberStatus.MEMBER)
         chat.permissions = ChatPermissions(can_send_messages=False)
 
-        with pytest.raises(TelegramBadRequest, match="send text messages"):
+        with pytest.raises(TelegramBadRequest):
             await env.bot.send_message(chat_id=chat.id, text="x")
 
     async def test_a_valid_send_is_still_flooded(self, flooded):

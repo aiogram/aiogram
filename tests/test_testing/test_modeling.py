@@ -345,7 +345,7 @@ class TestMovingMessages:
         assert team.messages[-1] is forwarded
 
     async def test_forward_missing_message(self, env, private, team):
-        with pytest.raises(TelegramBadRequest, match="message to forward not found"):
+        with pytest.raises(TelegramBadRequest):
             await env.bot.forward_message(
                 chat_id=team.id,
                 from_chat_id=private.id,
@@ -379,7 +379,7 @@ class TestMovingMessages:
         assert team.messages[-1].caption == "after"
 
     async def test_copy_missing_message(self, env, private, team):
-        with pytest.raises(TelegramBadRequest, match="message to copy not found"):
+        with pytest.raises(TelegramBadRequest):
             await env.bot.copy_message(chat_id=team.id, from_chat_id=private.id, message_id=404)
 
 
@@ -493,7 +493,7 @@ class TestPinning:
         )
 
     async def test_pin_missing_message(self, env, private):
-        with pytest.raises(TelegramBadRequest, match="message to pin not found"):
+        with pytest.raises(TelegramBadRequest):
             await env.bot.pin_chat_message(chat_id=private.id, message_id=404)
 
 

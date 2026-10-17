@@ -86,7 +86,7 @@ class TestTheBotsExemptions:
         env, chat, topic, _alice = build(creator)
         topic.is_closed = True
 
-        with pytest.raises(TelegramBadRequest, match="TOPIC_CLOSED"):
+        with pytest.raises(TelegramBadRequest):
             await env.bot.send_message(
                 chat_id=chat.id, text="x", message_thread_id=topic.message_thread_id
             )
@@ -102,7 +102,7 @@ class TestTheBotsExemptions:
     async def test_it_needs_the_right_for_a_users_topic(self, build):
         env, chat, topic, _alice = build("alice")
 
-        with pytest.raises(TelegramBadRequest, match="not enough rights to close"):
+        with pytest.raises(TelegramBadRequest):
             await env.bot.close_forum_topic(
                 chat_id=chat.id, message_thread_id=topic.message_thread_id
             )

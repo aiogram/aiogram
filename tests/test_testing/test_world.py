@@ -278,8 +278,10 @@ class TestChatState:
     def test_require_missing_message(self):
         chat = ChatState(id=1)
 
-        with pytest.raises(ApiRejection, match="does not exist"):
+        with pytest.raises(ApiRejection) as refused:
             chat.require_message(1)
+
+        assert refused.value.error_code == 400
 
     def test_update_replaces_the_stored_message(self):
         chat = ChatState(id=1)

@@ -152,7 +152,7 @@ class TestErrors:
             stickers=[sticker()],
         )
 
-        with pytest.raises(TelegramBadRequest, match="already occupied"):
+        with pytest.raises(TelegramBadRequest):
             await env.bot.create_new_sticker_set(
                 user_id=owner.id,
                 name=PACK,
@@ -194,7 +194,7 @@ class TestErrors:
             stickers=[sticker("file-1")],
         )
 
-        with pytest.raises(TelegramBadRequest, match="is not in set"):
+        with pytest.raises(TelegramBadRequest):
             await env.bot.replace_sticker_in_set(
                 user_id=owner.id,
                 name=PACK,

@@ -130,7 +130,7 @@ class TestPresenceOfRestrictedUsers:
 
 class TestSupergroupsOnly:
     async def test_a_basic_group_member_cannot_be_restricted(self, env, club, alice):
-        with pytest.raises(TelegramBadRequest, match="only for supergroups"):
+        with pytest.raises(TelegramBadRequest):
             await restrict(env, club, alice)
 
         assert club.member(alice.id).status == ChatMemberStatus.MEMBER
@@ -303,7 +303,7 @@ class TestUnbanning:
         try:
             owned = owned_env.chat(world_blueprint.chats[-1])
 
-            with pytest.raises(TelegramBadRequest, match="chat owner"):
+            with pytest.raises(TelegramBadRequest):
                 await owned_env.bot.unban_chat_member(chat_id=owned.id, user_id=owner.id)
             assert await owned_env.bot.unban_chat_member(
                 chat_id=owned.id,

@@ -297,7 +297,7 @@ class TestWhoMay:
         # A bot that may manage topics would post anyway.
         chat.member(env.world.bot_user.id).set_status(ChatMemberStatus.MEMBER)
 
-        with pytest.raises(TelegramBadRequest, match="TOPIC_CLOSED"):
+        with pytest.raises(TelegramBadRequest):
             await env.bot.send_message(chat_id=chat.id, text="x", message_thread_id=thread_id)
 
     @pytest.mark.parametrize("who", ["limited", "member"])

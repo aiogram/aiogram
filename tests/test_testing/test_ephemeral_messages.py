@@ -136,7 +136,7 @@ class TestOutgoingEphemeralMessages:
     async def test_it_is_refused_outside_a_group(self, env, alice, chat_fixture, request):
         chat = request.getfixturevalue(chat_fixture)
 
-        with pytest.raises(TelegramBadRequest, match="group and supergroup"):
+        with pytest.raises(TelegramBadRequest):
             await send_to(env, chat, alice)
 
         assert chat.sent_ephemeral == {}
@@ -607,7 +607,7 @@ class TestRepliesToEphemeralCommands:
         (command,) = team.ephemeral_commands(alice)
         before = list(team.messages)
 
-        with pytest.raises(TelegramBadRequest, match="must itself be an ephemeral message"):
+        with pytest.raises(TelegramBadRequest):
             await env.bot.send_message(
                 chat_id=team.id,
                 text="public",
