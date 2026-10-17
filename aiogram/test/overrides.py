@@ -7,9 +7,19 @@ from typing import TYPE_CHECKING, Any, TypeAlias
 from typing_extensions import Self
 
 from aiogram import methods
-from aiogram.exceptions import TelegramAPIError, TelegramBadRequest, TelegramForbiddenError
+from aiogram.exceptions import (
+    TelegramAPIError,
+    TelegramBadRequest,
+    TelegramConflictError,
+    TelegramEntityTooLarge,
+    TelegramForbiddenError,
+    TelegramNotFound,
+    TelegramServerError,
+    TelegramUnauthorizedError,
+)
 from aiogram.methods import TelegramMethod
 
+from . import refusals
 from .mounting import detached_copy
 
 if TYPE_CHECKING:
@@ -22,10 +32,11 @@ if TYPE_CHECKING:
 #: which is the thing that owns a world to look the name up in.
 ChatIdResolver: TypeAlias = "Callable[[Any], Any]"
 
-#: What Telegram answers when the addressee has blocked the bot. Declared here so
+#: What Telegram answers when the addressee has blocked the bot, a guaranteed text declared
+#: in :mod:`aiogram.test.refusals`. Declared here so
 #: :meth:`aiogram.test.BotTestEnvironment.blocked` and a test asserting on the string a
 #: real bot would see agree by construction.
-BLOCKED_BY_USER = "Forbidden: bot was blocked by the user"
+BLOCKED_BY_USER = refusals.BOT_BLOCKED().prefixed
 
 #: Name prefixes of the methods that deliver something *into* a chat, and therefore of the
 #: methods a block stops. Matching by prefix rather than listing thirty classes is what
@@ -178,6 +189,27 @@ class Outcome:
         if isinstance(self.error, TelegramAPIError):
             raise self.error
         raise self.error(method=method, message=self.message)
+
+
+#: The prefix the Bot API gives the status an exception class stands for.
+_STATUS_PREFIXES: dict[type[TelegramAPIError], str] = {
+    TelegramBadRequest: "Bad Request",
+    TelegramUnauthorizedError: "Unauthorized",
+    TelegramForbiddenError: "Forbidden",
+    TelegramNotFound: "Not Found",
+    TelegramConflictError: "Conflict",
+    TelegramEntityTooLarge: "Request Entity Too Large",
+    TelegramServerError: "Internal Server Error",
+}
+
+
+def default_message(error: type[TelegramAPIError] | TelegramAPIError) -> str:
+    """The text ``raises()`` gives an error declared without one."""
+    error_type = error if isinstance(error, type) else type(error)
+    for candidate, prefix in _STATUS_PREFIXES.items():
+        if issubclass(error_type, candidate):
+            return f"{prefix}: test error"
+    return "Bad Request: test error"
 
 
 #: How to build the exceptions whose constructor wants more than
@@ -553,7 +585,7 @@ class OverrideBuilder(OverrideHandle):
     def raises(
         self,
         error: type[TelegramAPIError] | TelegramAPIError = TelegramBadRequest,
-        message: str = "Bad Request: test error",
+        message: str | None = None,
         *,
         times: int | None = None,
     ) -> OverrideBuilder:
@@ -566,8 +598,14 @@ class OverrideBuilder(OverrideHandle):
         ``retry_after``, is passed as an instance built whole. A
         class that cannot be built from the two is a
         :class:`TypeError` here, not when the bot's call fails.
+
+        Without a ``message``, the text is ``test error`` under the
+        prefix the class stands for, such as ``Forbidden:``. The
+        exception type is the contract, the text is yours.
         """
         require_raisable(error, self._method_type)
+        if message is None:
+            message = default_message(error)
         self.register(
             self.matcher(),
             Outcome(error=error, message=message, remaining=times),

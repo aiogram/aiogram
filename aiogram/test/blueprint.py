@@ -553,7 +553,7 @@ class Blueprint:
         """
         problem = quiz_problem(type, list(options), correct_option_ids)
         if problem is not None:
-            raise ValueError(problem)
+            raise ValueError(problem.description)
         poll = PollSpec(
             chat_id=chat.id,
             question=question,

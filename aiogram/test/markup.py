@@ -43,6 +43,7 @@ from aiogram.methods import (
 )
 from aiogram.types import MessageEntity, TelegramObject, User
 
+from . import refusals
 from .errors import ApiRejection
 
 __all__ = ("UserLookup", "apply_parse_modes", "bot_command_entities", "parse_entities")
@@ -189,7 +190,12 @@ def _utf16_units(byte: int) -> int:
 
 
 def _error(message: str) -> ApiRejection:
-    return ApiRejection(f"can't parse entities: {message}")
+    return refusals.ENTITIES(detail=message)
+
+
+def _approximate(message: str) -> ApiRejection:
+    """A parse refusal whose detail TDLib's texts do not give."""
+    return refusals.ENTITIES_DATE_TIME(detail=message)
 
 
 # -- links -------------------------------------------------------------
@@ -310,9 +316,9 @@ def _date_time(unix: str | None, date_format: str | None) -> dict[str, Any]:
     """
     unix_time = None if unix is None else _int64(unix)
     if unix_time is None or unix_time < 0:
-        raise _error("Invalid Unix time specified")
+        raise _approximate("Invalid Unix time specified")
     if date_format and not _valid_date_format(date_format):
-        raise _error("Invalid date and time format specified")
+        raise _approximate("Invalid date and time format specified")
     return {"unix_time": unix_time, "date_time_format": date_format or None}
 
 
@@ -1037,7 +1043,7 @@ def parse_entities(
     """
     parser = _PARSERS.get(parse_mode.lower())
     if parser is None:
-        raise ApiRejection("unsupported parse_mode")
+        raise refusals.UNSUPPORTED_PARSE_MODE()
     data, entities = parser(text)
     plain = _remove_carriage_returns(data.decode("utf-8", errors="replace"), entities)
     plain = _trim_start(_trim_end(plain, entities), entities)
@@ -1203,7 +1209,7 @@ def refuse_empty_text(method: Any) -> None:
     :func:`refuse_blank_text`.
     """
     if isinstance(method, _TEXT_METHODS) and method.text == "":
-        raise ApiRejection("message text is empty")
+        raise refusals.MESSAGE_TEXT_EMPTY()
 
 
 def refuse_blank_text(method: Any) -> None:
@@ -1217,7 +1223,7 @@ def refuse_blank_text(method: Any) -> None:
     """
     text = method.text if isinstance(method, _TEXT_METHODS) else None
     if text is not None and _blank(text):
-        raise ApiRejection("text must be non-empty")
+        raise refusals.TEXT_MUST_BE_NON_EMPTY()
 
 
 def apply_parse_modes(value: Any, find_user: UserLookup) -> Any:
@@ -1258,7 +1264,7 @@ def apply_parse_modes(value: Any, find_user: UserLookup) -> Any:
         plain, entities = parse_entities(text, str(mode), find_user)
         if not plain and text_field == "message_text":
             # An inline result's text: no chat to check first.
-            raise ApiRejection("text must be non-empty")
+            raise refusals.TEXT_MUST_BE_NON_EMPTY()
         if not plain and _message_text(value, text_field):
             # Kept empty, for the send to refuse in its turn.
             changes[text_field] = plain

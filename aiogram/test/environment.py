@@ -30,6 +30,7 @@ from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.methods import TelegramMethod
 from aiogram.types import ChatPermissions, Message, TelegramObject, Update, User
 
+from . import refusals
 from .actors import UserActor
 from .blueprint import (
     Blueprint,
@@ -2318,11 +2319,7 @@ class BotTestEnvironment:
             return
         wait = flood.retry_after(chat.id, chat.type, self.rate_clock())
         if wait is not None:
-            raise ApiRejection(
-                f"retry after {wait}",
-                error_code=HTTPStatus.TOO_MANY_REQUESTS,
-                retry_after=wait,
-            )
+            raise refusals.FLOOD(retry_after=wait, seconds=wait)
         self._admitted = (flood, chat)
 
     async def handle_call(

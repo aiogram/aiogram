@@ -531,7 +531,8 @@ Answering queries
 A trigger that issues a query records it as outstanding, and the matching answer method
 consumes it. Answering an id that was never issued — or answering the same query twice —
 raises :class:`aiogram.exceptions.TelegramBadRequest` with Telegram's own wording, so the
-"query is too old and response timeout expired" failure is testable:
+"query is too old and response timeout expired" failure is testable (this text is on the
+list of `guaranteed texts <Refusals and error codes_>`_):
 
 .. code-block:: python
 
@@ -1033,10 +1034,9 @@ The clock drives every time limit the Bot API documents for something the toolki
 
 .. note::
 
-    The Bot API does not document the wording of these errors. The toolkit uses the wording
-    Telegram is widely observed to return where there is one ("message can't be deleted",
-    "message can't be edited", "query is too old ..."), and its own otherwise, so assert the
-    exception type rather than its text.
+    The Bot API does not document the wording of these errors, so assert the exception type
+    rather than its text, except for the texts `listed as guaranteed <Refusals and error
+    codes_>`_.
 
 The clock dates the world; it does not freeze the host. A bot that reads ``datetime.now()``
 or ``time.time()`` itself sees the real time, which a library such as
@@ -1245,14 +1245,15 @@ When a call fails
 Two different things can go wrong, and they are deliberately different exceptions.
 
 A call the real Bot API would have refused fails the way it fails in production: a
-:class:`aiogram.exceptions.TelegramBadRequest` carrying Telegram's own wording. Forwarding a
+:class:`aiogram.exceptions.TelegramBadRequest`, or the exception type its error code stands
+for (see `Refusals and error codes`_). Forwarding a
 message that is not there, demoting the chat owner, stopping a poll that is already closed,
 answering a query twice — bot code legitimately catches those, and a test of that ``except``
 branch is a real test:
 
 .. code-block:: python
 
-    with pytest.raises(TelegramBadRequest, match="message to forward not found"):
+    with pytest.raises(TelegramBadRequest):
         await bot_env.bot.forward_message(chat_id=chat.id, from_chat_id=chat.id, message_id=999)
 
 A gap in the *test's own setup* does not. Asking for a user, chat, sticker set, poll or
@@ -1291,6 +1292,41 @@ the bot is the one asking. ``chat.topic(999)`` is the exception: a topic the tes
 part of its setup, so an unknown one raises :class:`aiogram.test.WorldLookupError` and
 lists the topics there are, while the bot's own calls go through ``chat.topic_for_call()`` and
 answer in Telegram's words.
+
+Refusals and error codes
+========================
+
+The Bot API authors advise clients to rely on the error code rather than on the
+description, and the toolkit's refusals follow the same contract. Every refusal guarantees
+its ``error_code`` and the exception type :mod:`aiogram` raises for it:
+:class:`~aiogram.exceptions.TelegramBadRequest` for 400,
+:class:`~aiogram.exceptions.TelegramForbiddenError` for 403, and
+:class:`~aiogram.exceptions.TelegramRetryAfter` for 429, which carries ``retry_after``. Match
+a refusal by that type:
+
+.. code-block:: python
+
+    with pytest.raises(TelegramForbiddenError):
+        await bot_env.bot.send_message(chat_id=group.id, text="hi")
+
+The description is a different matter. Only the texts below are guaranteed, because they are
+Telegram's own, taken from the Bot API server or from TDLib, and bots match on them. Every
+other description is the toolkit's approximation of Telegram's wording and may change, so a
+test that matches it will break for no reason that concerns the bot:
+
+* ``bot was blocked by the user``
+* ``bot was kicked from the … chat``
+* ``bot is not a member of the … chat``
+* ``message to edit not found``
+* ``message to delete not found``
+* ``message to be replied not found``
+* ``message thread not found``
+* ``query is too old and response timeout expired or query ID is invalid``
+* ``can't parse entities: …``
+* ``retry after …``
+
+Each refusal is declared in :mod:`aiogram.test.refusals`, marked as sourced or best-effort,
+and the texts above are the ones marked guaranteed there.
 
 Overriding results and simulating failures
 ==========================================
@@ -2526,7 +2562,8 @@ The bot's own rights
 --------------------
 
 The bot's own calls are checked against its standing in the chat, as Telegram checks them,
-and refused with Telegram's own wording. A private chat needs no right. The rules are one
+and refused with TDLib's wording, which is best-effort (see `Refusals and error codes`_). A
+private chat needs no right. The rules are one
 table, :data:`aiogram.test.modeling.BOT_RIGHTS`, from method to the right it takes, consulted
 once per call before the method is modeled:
 
@@ -3434,6 +3471,8 @@ API reference
 .. autoclass:: aiogram.test.WorldLookupError
 
 .. autoclass:: aiogram.test.ApiRejection
+
+.. autoclass:: aiogram.test.refusals.Refusal
 
 .. autoclass:: aiogram.test.WaitTimeoutError
 

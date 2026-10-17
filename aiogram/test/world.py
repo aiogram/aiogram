@@ -47,8 +47,10 @@ from aiogram.types import (
     User,
 )
 
+from . import refusals
 from .errors import ApiRejection
 from .mounting import detached_copy, mount, owned_or_copied
+from .refusals import Refusal
 from .waiting import DEFAULT_WAIT_TIMEOUT, describe_callable, poll_until
 
 if TYPE_CHECKING:
@@ -845,8 +847,7 @@ class StickerSetState:
         for index, sticker in enumerate(self.stickers):
             if sticker.file_id == file_id:
                 return index
-        msg = f"Sticker {file_id!r} is not in set {self.name!r}"
-        raise ApiRejection(msg)
+        raise refusals.STICKER_NOT_IN_SET(file_id=file_id, name=self.name)
 
     def as_sticker_set(self) -> StickerSet:
         """
@@ -1085,13 +1086,13 @@ def quiz_problem(
     poll_type: str | None,
     options: list[str],
     correct_option_ids: list[int] | None,
-) -> str | None:
-    """What makes a poll's correct option ids invalid, if anything."""
+) -> ApiRejection | None:
+    """The refusal for a poll's invalid correct option ids, if any."""
     if poll_type == PollType.QUIZ and not correct_option_ids:
-        return "a quiz poll must have correct_option_ids"
+        return refusals.QUIZ_NEEDS_ANSWERS()
     wrong = [i for i in correct_option_ids or [] if not 0 <= i < len(options)]
     if wrong:
-        return f"correct_option_ids {wrong} are not options of a {len(options)}-option poll"
+        return refusals.QUIZ_ANSWER_RANGE(wrong=wrong, count=len(options))
     return None
 
 
@@ -1118,7 +1119,7 @@ def new_poll(
     kind = poll_type or PollType.REGULAR
     problem = quiz_problem(kind, options, correct_option_ids)
     if problem is not None:
-        raise ApiRejection(problem)
+        raise problem
     return PollState(
         id=poll_id,
         question=question,
@@ -1333,8 +1334,7 @@ class ChatState:
     def require_message(self, message_id: int) -> Message:
         message = self.find_message(message_id)
         if message is None:
-            msg = f"Message {message_id} does not exist in chat {self.id}"
-            raise ApiRejection(msg)
+            raise refusals.MESSAGE_MISSING(message_id=message_id, chat_id=self.id)
         return message
 
     def update_message(self, message_id: int, **changes: Any) -> Message:
@@ -1420,7 +1420,9 @@ class ChatState:
         **changes: Any,
     ) -> Message:
         """Replace a stored ephemeral message with an edited copy."""
-        message = self._require_ephemeral(receiver_id, ephemeral_id, "message to edit not found")
+        message = self._require_ephemeral(
+            receiver_id, ephemeral_id, refusals.MESSAGE_TO_EDIT_NOT_FOUND
+        )
         edited = derive_message(message, changes, self.bound_bot)
         stored = self.sent_ephemeral[receiver_id]
         stored[stored.index(message)] = edited
@@ -1430,14 +1432,19 @@ class ChatState:
         message = self._require_ephemeral(
             receiver_id,
             ephemeral_id,
-            "message to delete not found",
+            refusals.MESSAGE_TO_DELETE_NOT_FOUND,
         )
         self.sent_ephemeral[receiver_id].remove(message)
 
-    def _require_ephemeral(self, receiver_id: int, ephemeral_id: int, error: str) -> Message:
+    def _require_ephemeral(
+        self,
+        receiver_id: int,
+        ephemeral_id: int,
+        error: Refusal,
+    ) -> Message:
         message = self.find_ephemeral_message(receiver_id, ephemeral_id)
         if message is None:
-            raise ApiRejection(error)
+            raise error()
         return message
 
     def delete_message(self, message_id: int) -> None:
@@ -1542,8 +1549,7 @@ class ChatState:
         for link in self.invite_links:
             if link.invite_link == url:
                 return link
-        msg = f"Invite link {url} does not exist in chat {self.id}"
-        raise ApiRejection(msg)
+        raise refusals.INVITE_LINK_MISSING(url=url, chat_id=self.id)
 
     @property
     def primary_invite_link(self) -> InviteLinkState | None:
@@ -1654,8 +1660,8 @@ class ChatState:
         if topic is not None and not (sending and general):
             return topic
         if message_thread_id in self.deleted_topic_ids and not sending:
-            raise ApiRejection("TOPIC_DELETED")
-        raise ApiRejection("message thread not found")
+            raise refusals.TOPIC_DELETED()
+        raise refusals.THREAD_NOT_FOUND()
 
     def _missing_topic_message(self, message_thread_id: int) -> str:
         """Say which topics this chat has, and how to add one."""
@@ -2091,11 +2097,7 @@ class World:
         issued = self.query_issued.pop(query_id, self.now)
         expired = kind in ANSWER_WINDOWS and self.now - issued > ANSWER_WINDOWS[kind]
         if self.pending_queries.pop(query_id, None) != kind or expired:
-            msg = (
-                "query is too old and response timeout expired or query ID is invalid "
-                f"({kind} {query_id!r} is not outstanding)"
-            )
-            raise ApiRejection(msg)
+            raise refusals.QUERY_TOO_OLD()
 
     def next_date(self) -> datetime.datetime:
         """The date of something happening now: the clock's time."""
