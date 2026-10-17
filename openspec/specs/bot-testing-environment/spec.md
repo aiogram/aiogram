@@ -1605,7 +1605,7 @@ topic accepts.
 The contents of the watched views SHALL be appended to the timeout message when the wait
 gives up, because the condition is a lambda over state the failure cannot otherwise
 describe, while what the bot posted instead is usually the answer. The timeout message SHALL
-also name any override declared on the environment that has not yet answered a call.
+also name the overrides reported as never fired.
 
 #### Scenario: A watched chat's contents appear in a timeout
 
@@ -4912,9 +4912,9 @@ error, never a Telegram error.
 ### Requirement: A topic action needs the right to manage topics
 
 The actor SHALL hold `can_manage_topics` in a chat that is a forum, whatever
-`enforce_bot_rights` says: as the owner or an administrator granted it. Otherwise the
-trigger SHALL raise `WorldLookupError` naming the right and how to grant it, and change
-nothing.
+`enforce_bot_rights` says: as the owner or an administrator granted it. Otherwise, absent
+the chat permission that lets a member create a topic, the trigger SHALL raise
+`WorldLookupError` naming the right and how to grant it, and change nothing.
 
 #### Scenario: A member without the right
 
@@ -5229,7 +5229,7 @@ then be delivered, which no source states.
 #### Scenario: A private message without the mode on both sides
 
 - **WHEN** another bot with the mode on writes to the bot in private, and the bot has it off
-- **THEN** the trigger raises `WorldLookupError`, and nothing is stored
+- **THEN** the trigger raises `WorldLookupError`
 
 #### Scenario: A business chat
 
