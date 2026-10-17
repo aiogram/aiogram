@@ -1702,17 +1702,20 @@ def _copyable(message: Message) -> bool:
     )
 
 
-def _thread_changes(
+def landing(
     env: BotTestEnvironment,
     target: ChatState,
     thread_id: int | None,
 ) -> dict[str, Any]:
     """
-    Where a forward or copy lands within ``target``.
+    Check where a forward or copy goes, and say where it lands.
 
-    That is the thread the request names, in a forum, and no thread
+    The server checks the chat, then the thread, before anything
+    else, and the handler asks here once, for the whole call. The
+    landing is the thread the request names, in a forum, and no thread
     otherwise: the original's thread belongs to its own chat.
     """
+    require_standing(env, target)
     topic = posting_topic(env, target, thread_id)
     if topic is None or topic.is_general:
         return {"message_thread_id": None, "is_topic_message": None}
@@ -1728,7 +1731,7 @@ def forward_one(
     source: ChatState,
     target: ChatState,
     message_id: int,
-    thread_id: int | None = None,
+    thread: dict[str, Any],
     protect_content: object = None,
     media_group_id: str | None = None,
 ) -> Message:
@@ -1738,10 +1741,9 @@ def forward_one(
     A single forward stands alone, so it is in no album; a batch passes
     the ``media_group_id`` that keeps an album's forwards together.
     """
-    # The server checks the chat and the thread, then TDLib the rest;
-    # all before an id is allocated, so a refused forward uses none.
-    require_standing(env, target)
-    thread = _thread_changes(env, target, thread_id)
+    # The handler checked the chat and the thread, the server's part;
+    # TDLib's follows, all before an id is allocated, so a refused
+    # forward uses none.
     original = source.find_message(message_id)
     if original is None:
         raise rejections.MESSAGE_TO_FORWARD_NOT_FOUND()
@@ -1830,14 +1832,8 @@ def _new_message_changes(protect_content: object) -> dict[str, Any]:
 def handle_forward(env: BotTestEnvironment, method: ForwardMessage) -> Message:
     source = resolve_chat(env, method.from_chat_id)
     target = resolve_chat(env, method.chat_id)
-    return forward_one(
-        env,
-        source,
-        target,
-        method.message_id,
-        method.message_thread_id,
-        method.protect_content,
-    )
+    thread = landing(env, target, method.message_thread_id)
+    return forward_one(env, source, target, method.message_id, thread, method.protect_content)
 
 
 @models(ForwardMessages, sends=True)
@@ -1851,8 +1847,7 @@ def handle_forward_many(env: BotTestEnvironment, method: ForwardMessages) -> lis
         if (original := source.find_message(message_id)) is not None and _forwardable(original)
     ]
     # Checked for the whole batch first, so a refusal stores nothing.
-    require_standing(env, target)
-    posting_topic(env, target, method.message_thread_id)
+    thread = landing(env, target, method.message_thread_id)
     for original in originals:
         require_send_permission(env, target, content_kind(original), forwarded=True)
     if originals:
@@ -1866,7 +1861,7 @@ def handle_forward_many(env: BotTestEnvironment, method: ForwardMessages) -> lis
             source,
             target,
             original.message_id,
-            method.message_thread_id,
+            thread,
             method.protect_content,
             albums.get(original.media_group_id or ""),
         )
@@ -1880,7 +1875,7 @@ def copy_one(
     source: ChatState,
     target: ChatState,
     message_id: int,
-    thread_id: int | None = None,
+    thread: dict[str, Any],
     protect_content: object = None,
     **changes: Any,
 ) -> Message:
@@ -1889,10 +1884,9 @@ def copy_one(
 
     ``changes`` are what the request replaces: a caption, an inline
     keyboard, or the album a batch keeps together. The rest is the
-    original's.
+    original's. ``thread`` is where it lands, as the handler resolved
+    it after the checks of the chat.
     """
-    require_standing(env, target)
-    thread = _thread_changes(env, target, thread_id)
     original = source.find_message(message_id)
     if original is None:
         raise rejections.MESSAGE_TO_COPY_NOT_FOUND()
@@ -2007,15 +2001,14 @@ def handle_copy(env: BotTestEnvironment, method: CopyMessage) -> MessageId:
         changes["reply_markup"] = method.reply_markup
     # The chat and the thread before the message replied to, as the
     # server checks them first.
-    require_standing(env, target)
-    posting_topic(env, target, method.message_thread_id)
+    thread = landing(env, target, method.message_thread_id)
     changes.update(_reply_changes(env, method, target, ephemeral=False))
     copied = copy_one(
         env,
         source,
         target,
         method.message_id,
-        method.message_thread_id,
+        thread,
         method.protect_content,
         **changes,
     )
@@ -2039,8 +2032,7 @@ def handle_copy_many(env: BotTestEnvironment, method: CopyMessages) -> list[Mess
         if (original := source.find_message(message_id)) is not None and _copyable(original)
     ]
     # Checked for the whole batch first, so a refusal stores nothing.
-    require_standing(env, target)
-    posting_topic(env, target, method.message_thread_id)
+    thread = landing(env, target, method.message_thread_id)
     for original in originals:
         require_send_permission(env, target, content_kind(original), forwarded=True)
     if originals:
@@ -2054,7 +2046,7 @@ def handle_copy_many(env: BotTestEnvironment, method: CopyMessages) -> list[Mess
             source,
             target,
             original.message_id,
-            method.message_thread_id,
+            thread,
             method.protect_content,
             media_group_id=albums.get(original.media_group_id or ""),
             **changes,

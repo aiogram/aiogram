@@ -5,7 +5,7 @@ import pytest
 from aiogram.enums import ChatMemberStatus
 from aiogram.exceptions import TelegramBadRequest
 from aiogram.methods import EditMessageMedia, SendChatAction
-from aiogram.test import Blueprint, BotTestEnvironment, WorldLookupError, rejections
+from aiogram.test import Blueprint, BotTestEnvironment, WorldLookupError, modeling, rejections
 from aiogram.test.modeling import EDITABLE_MEDIA_FIELDS, media_field
 from aiogram.types import (
     InlineKeyboardButton,
@@ -363,6 +363,31 @@ class TestBatchForwardAndCopy:
         )
 
         assert len(result) == 1
+
+    @pytest.mark.parametrize("method_name", ["forward_messages", "copy_messages"])
+    async def test_a_batch_checks_the_chat_and_thread_once(
+        self, env, private, team, alice, monkeypatch, method_name
+    ):
+        calls = []
+        for name in ("require_standing", "posting_topic"):
+            original = getattr(modeling, name)
+
+            def counted(*args, _name=name, _original=original, **kwargs):
+                calls.append(_name)
+                return _original(*args, **kwargs)
+
+            monkeypatch.setattr(modeling, name, counted)
+        for text in ("one", "two", "three"):
+            await alice.send(text)
+        source_ids = [message.message_id for message in private.messages]
+
+        await getattr(env.bot, method_name)(
+            chat_id=team.id,
+            from_chat_id=private.id,
+            message_ids=source_ids,
+        )
+
+        assert sorted(calls) == ["posting_topic", "require_standing"]
 
     @pytest.mark.parametrize("method_name", ["forward_messages", "copy_messages"])
     async def test_an_unknown_source_chat_fails(self, env, team, method_name):
