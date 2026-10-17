@@ -104,8 +104,14 @@ documentation names which surfaces are deliberately left that way, and which are
 waiting for demand.
 
 Failures are two things, not one. A call the real Bot API would refuse fails as the
-:class:`aiogram.exceptions.TelegramBadRequest` it fails as in production, carrying
-Telegram's own wording, so a bot's ``except`` branch is testable. A gap in the *test's* own
+exception it fails as in production, so a bot's ``except`` branch is testable, and every
+such refusal guarantees its error code and the exception type that stands for it
+(:class:`aiogram.exceptions.TelegramBadRequest` for 400,
+:class:`aiogram.exceptions.TelegramForbiddenError` for 403,
+:class:`aiogram.exceptions.TelegramRetryAfter` for 429) while its description is
+best-effort, except for the handful of Telegram's own texts that bots match on and the
+documentation lists, in line with the Bot API authors' advice to rely on the code rather than
+the description. A gap in the *test's* own
 setup — a user, chat, sticker set, poll or business connection the blueprint never declared
 — raises :class:`aiogram.test.WorldLookupError` instead, and nothing converts it: it
 propagates and fails the test with a message that says what to declare, rather than being
