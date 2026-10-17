@@ -2,7 +2,7 @@ import pytest
 
 from aiogram.enums import ChatMemberStatus
 from aiogram.exceptions import TelegramBadRequest
-from aiogram.test import Blueprint, BotTestEnvironment, WorldLookupError
+from aiogram.test import Blueprint, BotTestEnvironment, WorldLookupError, refusals
 from aiogram.test.errors import WaitTimeoutError
 from aiogram.test.world import BASE_DATE
 from aiogram.types import (
@@ -17,6 +17,8 @@ from aiogram.types import (
     ReplyParameters,
     Update,
 )
+
+from .conftest import refused_with
 
 
 def keyboard(callback_data="ok"):
@@ -136,7 +138,7 @@ class TestOutgoingEphemeralMessages:
     async def test_it_is_refused_outside_a_group(self, env, alice, chat_fixture, request):
         chat = request.getfixturevalue(chat_fixture)
 
-        with pytest.raises(TelegramBadRequest):
+        with refused_with(TelegramBadRequest, refusals.EPHEMERAL_GROUPS_ONLY):
             await send_to(env, chat, alice)
 
         assert chat.sent_ephemeral == {}
@@ -607,7 +609,7 @@ class TestRepliesToEphemeralCommands:
         (command,) = team.ephemeral_commands(alice)
         before = list(team.messages)
 
-        with pytest.raises(TelegramBadRequest):
+        with refused_with(TelegramBadRequest, refusals.EPHEMERAL_REPLY_NEEDS_EPHEMERAL):
             await env.bot.send_message(
                 chat_id=team.id,
                 text="public",

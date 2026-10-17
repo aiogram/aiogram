@@ -42,7 +42,9 @@ an exception type the code does not stand for, and a 429 without `retry_after` w
 as a bare `TelegramAPIError`. `raise_api_error` applies the same rule to `retry_after`. The
 exception type is observable and the code is not, as `aiogram.exceptions` carries no
 `error_code`, so the tests' autouse fixture checks the type against the code on every refusal
-and the tests assert the type.
+and the tests assert the type. `refusal_of()` reads a caught exception back against the
+declared texts, so a test also says which refusal of a code fired, without matching its
+wording.
 
 ### D4. Rights before the topic
 

@@ -2,9 +2,17 @@ import pytest
 
 from aiogram.enums import ChatMemberStatus, ChatType
 from aiogram.exceptions import TelegramBadRequest
-from aiogram.test import Blueprint, BotTestEnvironment, ChatSpec, default_chat_permissions
+from aiogram.test import (
+    Blueprint,
+    BotTestEnvironment,
+    ChatSpec,
+    default_chat_permissions,
+    refusals,
+)
 from aiogram.test.world import granted_permissions
 from aiogram.types import ChatPermissions
+
+from .conftest import refused_with
 
 
 @pytest.fixture
@@ -122,7 +130,7 @@ class TestTheSameValueIsEnforced:
         env, chat = member_bot
         chat.permissions = chat.permissions.model_copy(update={"can_send_polls": False})
 
-        with pytest.raises(TelegramBadRequest):
+        with refused_with(TelegramBadRequest, refusals.SEND_RIGHTS):
             await env.bot.send_poll(chat_id=chat.id, question="q", options=["a", "b"])
 
     async def test_the_chat_defaults_bound_a_restricted_bot_too(self, make):
@@ -138,7 +146,7 @@ class TestTheSameValueIsEnforced:
         )
 
         await env.bot.send_message(chat_id=chat.id, text="x")
-        with pytest.raises(TelegramBadRequest):
+        with refused_with(TelegramBadRequest, refusals.SEND_RIGHTS):
             await env.bot.send_poll(chat_id=chat.id, question="q", options=["a", "b"])
 
     async def test_restricting_with_the_defaults_restricts_nothing(self, make):

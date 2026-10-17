@@ -1,8 +1,11 @@
 import pytest
 
 from aiogram.exceptions import TelegramBadRequest
+from aiogram.test import refusals
 from aiogram.test.world import PollState, WorldLookupError
 from aiogram.types import ReactionTypeEmoji
+
+from .conftest import refused_with
 
 THUMBS_UP = ReactionTypeEmoji(emoji="👍")
 HEART = ReactionTypeEmoji(emoji="❤")
@@ -144,13 +147,13 @@ class TestStoppingPolls:
         message = await send_poll(env, private)
         await env.bot.stop_poll(chat_id=private.id, message_id=message.message_id)
 
-        with pytest.raises(TelegramBadRequest):
+        with refused_with(TelegramBadRequest, refusals.POLL_CLOSED):
             await env.bot.stop_poll(chat_id=private.id, message_id=message.message_id)
 
     async def test_stopping_a_message_with_no_poll_fails(self, env, private):
         message = await env.bot.send_message(chat_id=private.id, text="hi")
 
-        with pytest.raises(TelegramBadRequest):
+        with refused_with(TelegramBadRequest, refusals.NO_POLL):
             await env.bot.stop_poll(chat_id=private.id, message_id=message.message_id)
 
     async def test_stopping_an_unknown_message_fails(self, env, private):
@@ -179,7 +182,7 @@ class TestStoppingPolls:
             message_id=message.message_id,
         )
 
-        with pytest.raises(TelegramBadRequest):
+        with refused_with(TelegramBadRequest, refusals.POLL_STOP_NOT_FOUND):
             await env.bot.stop_poll(chat_id=private.id, message_id=forwarded.message_id)
         assert env.world.poll(message.poll.id).is_closed is False
 
@@ -225,7 +228,7 @@ class TestBotReactions:
         assert private.reactions_for(message.message_id) == {}
 
     async def test_reacting_to_an_unknown_message_fails(self, env, private):
-        with pytest.raises(TelegramBadRequest):
+        with refused_with(TelegramBadRequest, refusals.REACT_NOT_FOUND):
             await env.bot.set_message_reaction(
                 chat_id=private.id,
                 message_id=999,
@@ -290,7 +293,7 @@ class TestModeratingReactions:
         assert private.reactions_for(second.message_id) == {}
 
     async def test_deleting_a_reaction_from_an_unknown_message_fails(self, env, private, alice):
-        with pytest.raises(TelegramBadRequest):
+        with refused_with(TelegramBadRequest, refusals.REACT_NOT_FOUND):
             await env.bot.delete_message_reaction(
                 chat_id=private.id,
                 message_id=999,

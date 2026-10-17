@@ -4,8 +4,16 @@ from aiogram import Dispatcher
 from aiogram.enums import ChatMemberStatus
 from aiogram.exceptions import TelegramBadRequest
 from aiogram.methods import AnswerPreCheckoutQuery, AnswerShippingQuery
-from aiogram.test import Blueprint, BotTestEnvironment, WorldLookupError, administrator_rights
+from aiogram.test import (
+    Blueprint,
+    BotTestEnvironment,
+    WorldLookupError,
+    administrator_rights,
+    refusals,
+)
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, Update
+
+from .conftest import refused_with
 
 #: How to drive each update variant: the actor to use, and what to call on it.
 #: The guard below *invokes* these, so a mapping that names the wrong trigger fails.
@@ -241,7 +249,7 @@ class TestJoinRequests:
     async def test_acting_on_a_request_that_does_not_exist_fails(self, outsider_env, method_name):
         env, outsider, club = outsider_env
 
-        with pytest.raises(TelegramBadRequest):
+        with refused_with(TelegramBadRequest, refusals.JOIN_REQUEST_NOT_PENDING):
             await getattr(env.bot, method_name)(chat_id=club.id, user_id=outsider.user.id)
 
 

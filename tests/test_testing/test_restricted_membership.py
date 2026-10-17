@@ -4,9 +4,11 @@ import pytest
 
 from aiogram.enums import ChatMemberStatus
 from aiogram.exceptions import TelegramBadRequest
-from aiogram.test import Blueprint, BotTestEnvironment, WorldLookupError
+from aiogram.test import Blueprint, BotTestEnvironment, WorldLookupError, refusals
 from aiogram.test.world import UNTIL_FOREVER
 from aiogram.types import ChatPermissions
+
+from .conftest import refused_with
 
 EVERYTHING = ChatPermissions(**dict.fromkeys(ChatPermissions.model_fields, True))
 LATER = datetime.datetime(2030, 1, 1, tzinfo=datetime.timezone.utc)
@@ -130,7 +132,7 @@ class TestPresenceOfRestrictedUsers:
 
 class TestSupergroupsOnly:
     async def test_a_basic_group_member_cannot_be_restricted(self, env, club, alice):
-        with pytest.raises(TelegramBadRequest):
+        with refused_with(TelegramBadRequest, refusals.SUPERGROUPS_ONLY):
             await restrict(env, club, alice)
 
         assert club.member(alice.id).status == ChatMemberStatus.MEMBER
@@ -303,7 +305,7 @@ class TestUnbanning:
         try:
             owned = owned_env.chat(world_blueprint.chats[-1])
 
-            with pytest.raises(TelegramBadRequest):
+            with refused_with(TelegramBadRequest, refusals.OWNER_PROTECTED):
                 await owned_env.bot.unban_chat_member(chat_id=owned.id, user_id=owner.id)
             assert await owned_env.bot.unban_chat_member(
                 chat_id=owned.id,

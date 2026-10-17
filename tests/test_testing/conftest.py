@@ -1,3 +1,5 @@
+from contextlib import contextmanager
+
 import pytest
 
 from aiogram import Dispatcher
@@ -9,6 +11,7 @@ from aiogram.exceptions import (
     TelegramRetryAfter,
 )
 from aiogram.test import ApiRejection, Blueprint, BotTestEnvironment, administrator_rights
+from aiogram.test.refusals import Refusal, refusal_of
 
 #: The exception type each error code the toolkit refuses with becomes.
 EXCEPTION_FOR_CODE = {
@@ -16,6 +19,21 @@ EXCEPTION_FOR_CODE = {
     403: TelegramForbiddenError,
     429: TelegramRetryAfter,
 }
+
+
+@contextmanager
+def refused_with(error_type: type[TelegramAPIError], refusal: Refusal):
+    """
+    Expect a call to fail as ``refusal`` declares, without matching its text.
+
+    The exception type is the contract and the declaration says which
+    of the refusals of that code fired, so a best-effort wording can
+    change without a test noticing.
+    """
+    with pytest.raises(error_type) as caught:
+        yield
+    assert refusal_of(caught.value) is refusal
+    assert type(caught.value) is EXCEPTION_FOR_CODE[refusal.error_code]
 
 
 @pytest.fixture(autouse=True)

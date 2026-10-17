@@ -10,7 +10,9 @@ from aiogram.test import (
     BotTestEnvironment,
     Withheld,
     administrator_rights,
+    refusals,
 )
+from aiogram.test.refusals import refusal_of
 from aiogram.types import Message
 
 WITHHELD = "withheld by the test with deliver=False"
@@ -173,10 +175,10 @@ class TestTheLostClosure:
             try:
                 await message.answer("Vote counted")
             except TelegramBadRequest as error:
-                learned.append(error.message)
+                learned.append(error)
 
         await forum["host"].close_topic(forum["topic"], deliver=False)
         await forum["player"].send("/vote")
 
-        assert len(learned) == 1
+        assert [refusal_of(error) for error in learned] == [refusals.TOPIC_CLOSED]
         assert forum["topic"].messages[-1].text == "/vote"

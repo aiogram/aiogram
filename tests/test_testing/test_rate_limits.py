@@ -5,10 +5,12 @@ import pytest
 from aiogram.enums import ChatMemberStatus
 from aiogram.exceptions import TelegramBadRequest, TelegramRetryAfter
 from aiogram.methods import CopyMessages, SendMediaGroup, SendMessage, SetChatTitle
-from aiogram.test import Blueprint, BotTestEnvironment, RateLimit, RateLimits
+from aiogram.test import Blueprint, BotTestEnvironment, RateLimit, RateLimits, refusals
 from aiogram.test.flood import RATE_LIMITED_METHODS, FloodControl
 from aiogram.test.modeling import SENDING_METHODS
 from aiogram.types import ChatPermissions, InputMediaPhoto, ReplyParameters
+
+from .conftest import refused_with
 
 
 @pytest.fixture
@@ -274,7 +276,7 @@ class TestLocalChecksComeFirst:
         chat.member(env.world.bot_user.id).set_status(ChatMemberStatus.MEMBER)
         chat.permissions = ChatPermissions(can_send_messages=False)
 
-        with pytest.raises(TelegramBadRequest):
+        with refused_with(TelegramBadRequest, refusals.SEND_RIGHTS):
             await env.bot.send_message(chat_id=chat.id, text="x")
 
     async def test_a_valid_send_is_still_flooded(self, flooded):

@@ -4,7 +4,9 @@ import pytest
 
 from aiogram.enums import ChatMemberStatus
 from aiogram.exceptions import TelegramBadRequest
-from aiogram.test import Blueprint, BotTestEnvironment, WorldLookupError
+from aiogram.test import Blueprint, BotTestEnvironment, WorldLookupError, refusals
+
+from .conftest import refused_with
 
 
 @pytest.fixture
@@ -86,7 +88,7 @@ class TestTheBotsExemptions:
         env, chat, topic, _alice = build(creator)
         topic.is_closed = True
 
-        with pytest.raises(TelegramBadRequest):
+        with refused_with(TelegramBadRequest, refusals.TOPIC_CLOSED):
             await env.bot.send_message(
                 chat_id=chat.id, text="x", message_thread_id=topic.message_thread_id
             )
@@ -102,7 +104,7 @@ class TestTheBotsExemptions:
     async def test_it_needs_the_right_for_a_users_topic(self, build):
         env, chat, topic, _alice = build("alice")
 
-        with pytest.raises(TelegramBadRequest):
+        with refused_with(TelegramBadRequest, refusals.TOGGLE_TOPIC_RIGHTS):
             await env.bot.close_forum_topic(
                 chat_id=chat.id, message_thread_id=topic.message_thread_id
             )

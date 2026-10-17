@@ -2,8 +2,10 @@ import pytest
 
 from aiogram import Dispatcher
 from aiogram.exceptions import TelegramBadRequest
-from aiogram.test import Blueprint, BotTestEnvironment, WorldLookupError
+from aiogram.test import Blueprint, BotTestEnvironment, WorldLookupError, refusals
 from aiogram.test.modeling import GIFT_CATALOGUE, gift_catalogue
+
+from .conftest import refused_with
 
 STAR_GIFT, STAR_GIFT_COST = GIFT_CATALOGUE[0]
 HEART_GIFT, HEART_GIFT_COST = GIFT_CATALOGUE[1]
@@ -112,7 +114,7 @@ class TestRefunds:
             telegram_payment_charge_id=charge,
         )
 
-        with pytest.raises(TelegramBadRequest):
+        with refused_with(TelegramBadRequest, refusals.CHARGE_REFUNDED):
             await env.bot.refund_star_payment(
                 user_id=customer.user.id,
                 telegram_payment_charge_id=charge,
@@ -214,7 +216,7 @@ class TestSendingGifts:
     async def test_sending_without_a_recipient_fails(self, shop):
         env, _ = shop
 
-        with pytest.raises(TelegramBadRequest):
+        with refused_with(TelegramBadRequest, refusals.GIFT_NEEDS_RECIPIENT):
             await env.bot.send_gift(gift_id=STAR_GIFT)
 
     async def test_an_unaffordable_gift_drives_the_balance_negative(self, dp):

@@ -16,8 +16,9 @@ from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ChatMemberStatus, ParseMode
 from aiogram.exceptions import TelegramBadRequest, TelegramForbiddenError
 from aiogram.methods import AnswerInlineQuery, GiftPremiumSubscription, SendGift, SendMessage
-from aiogram.test import ApiRejection, Blueprint, BotTestEnvironment
+from aiogram.test import ApiRejection, Blueprint, BotTestEnvironment, refusals
 from aiogram.test.markup import apply_parse_modes, parse_entities
+from aiogram.test.refusals import refusal_of
 from aiogram.types import (
     BufferedInputFile,
     EphemeralMessageParameters,
@@ -29,6 +30,8 @@ from aiogram.types import (
     User,
 )
 from aiogram.utils.text_decorations import html_decoration, markdown_decoration
+
+from .conftest import refused_with
 
 
 def parsed(text, mode="HTML", find_user=lambda user_id: None):
@@ -666,7 +669,7 @@ class TestThroughTheBot:
         assert dumped(private.messages[-1].entities) == dumped(entities)
 
     async def test_an_unknown_parse_mode_is_refused(self, env, private):
-        with pytest.raises(TelegramBadRequest):
+        with refused_with(TelegramBadRequest, refusals.UNSUPPORTED_PARSE_MODE):
             await env.bot.send_message(private.id, "x", parse_mode="BBCode")
 
     async def test_a_caption_and_its_edit(self, env, private):
@@ -804,19 +807,19 @@ class TestEmptyTexts:
     async def test_a_blank_text_is_refused(self, env, private, text, mode):
         before = len(private.messages)
 
-        with pytest.raises(TelegramBadRequest):
+        with refused_with(TelegramBadRequest, refusals.TEXT_MUST_BE_NON_EMPTY):
             await env.bot.send_message(private.id, text, parse_mode=mode)
 
         assert len(private.messages) == before
 
     async def test_an_empty_text_is_refused_by_the_server(self, env, private):
-        with pytest.raises(TelegramBadRequest):
+        with refused_with(TelegramBadRequest, refusals.MESSAGE_TEXT_EMPTY):
             await env.bot.send_message(private.id, "")
 
     async def test_an_edit_to_nothing_is_refused(self, env, private):
         sent = await env.bot.send_message(private.id, "x")
 
-        with pytest.raises(TelegramBadRequest):
+        with refused_with(TelegramBadRequest, refusals.TEXT_MUST_BE_NON_EMPTY):
             await env.bot.edit_message_text(
                 "<i>  </i>",
                 chat_id=private.id,
@@ -875,6 +878,7 @@ class TestOptionalTexts:
             apply_parse_modes(method, lambda user_id: None)
 
         assert refused.value.error_code == 400
+        assert refusal_of(refused.value) is refusals.TEXT_MUST_BE_NON_EMPTY
 
 
 class TestTheOrderOfTheRefusals:
@@ -897,7 +901,7 @@ class TestTheOrderOfTheRefusals:
     async def test_an_empty_text_is_refused_before_the_chat(self, kicked):
         env, chat = kicked
 
-        with pytest.raises(TelegramBadRequest):
+        with refused_with(TelegramBadRequest, refusals.MESSAGE_TEXT_EMPTY):
             await env.bot.send_message(chat.id, "")
 
     async def test_the_thread_comes_before_a_blank_text(self, dp):
@@ -924,7 +928,7 @@ class TestTheOrderOfTheRefusals:
                 ),
             )
 
-            with pytest.raises(TelegramBadRequest):
+            with refused_with(TelegramBadRequest, refusals.TEXT_MUST_BE_NON_EMPTY):
                 await env.bot.edit_ephemeral_message_text(
                     chat_id=chat.id,
                     receiver_user_id=alice.id,

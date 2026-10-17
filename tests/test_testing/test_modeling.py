@@ -11,9 +11,8 @@ from aiogram.methods import (
     SendRichMessage,
     VerifyUser,
 )
-from aiogram.test import Blueprint, BotTestEnvironment, WorldLookupError
+from aiogram.test import Blueprint, BotTestEnvironment, WorldLookupError, refusals
 from aiogram.test.modeling import MEDIA_FIELDS
-from aiogram.test.world import BASE_DATE
 from aiogram.types import (
     ChatMemberAdministrator,
     ChatMemberBanned,
@@ -33,6 +32,8 @@ from aiogram.types import (
     ReplyKeyboardMarkup,
     ReplyParameters,
 )
+
+from .conftest import refused_with
 
 #: Methods whose request payload is not simply ``{<message field>: "file-id"}``.
 SEND_PAYLOADS = {
@@ -345,7 +346,7 @@ class TestMovingMessages:
         assert team.messages[-1] is forwarded
 
     async def test_forward_missing_message(self, env, private, team):
-        with pytest.raises(TelegramBadRequest):
+        with refused_with(TelegramBadRequest, refusals.FORWARD_NOT_FOUND):
             await env.bot.forward_message(
                 chat_id=team.id,
                 from_chat_id=private.id,
@@ -379,7 +380,7 @@ class TestMovingMessages:
         assert team.messages[-1].caption == "after"
 
     async def test_copy_missing_message(self, env, private, team):
-        with pytest.raises(TelegramBadRequest):
+        with refused_with(TelegramBadRequest, refusals.COPY_NOT_FOUND):
             await env.bot.copy_message(chat_id=team.id, from_chat_id=private.id, message_id=404)
 
 
@@ -493,7 +494,7 @@ class TestPinning:
         )
 
     async def test_pin_missing_message(self, env, private):
-        with pytest.raises(TelegramBadRequest):
+        with refused_with(TelegramBadRequest, refusals.PIN_NOT_FOUND):
             await env.bot.pin_chat_message(chat_id=private.id, message_id=404)
 
 
