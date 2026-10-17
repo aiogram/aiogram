@@ -17,7 +17,7 @@ from aiogram.methods import SendMessage
 from aiogram.test import ApiRejection, refusals
 from aiogram.test.errors import raise_api_error
 from aiogram.test.overrides import default_message
-from aiogram.test.refusals import GUARANTEED, REFUSALS, Refusal
+from aiogram.test.refusals import GUARANTEED, REFUSALS, Refusal, refusal_of
 
 from .conftest import EXCEPTION_FOR_CODE
 
@@ -64,6 +64,27 @@ class TestTheContract:
             assert raised.value.message == rejection.prefixed
         else:
             assert raised.value.retry_after == retry_after
+
+    @pytest.mark.parametrize("name", sorted(set(REFUSALS) - {"ENTITIES_DATE_TIME"}))
+    async def test_a_caught_exception_names_its_refusal(self, env, name):
+        refusal = REFUSALS[name]
+        rejection = refusal(
+            retry_after=7 if refusal.error_code == 429 else None, **fields_of(refusal)
+        )
+
+        assert refusal_of(rejection) is refusal
+        with pytest.raises(EXCEPTION_FOR_CODE[refusal.error_code]) as raised:
+            env.fail(
+                SendMessage(chat_id=1, text="hi"),
+                rejection.prefixed,
+                rejection.error_code,
+                rejection.retry_after,
+            )
+        if refusal.error_code != 429:
+            assert refusal_of(raised.value) is refusal
+
+    def test_a_text_nobody_declared_names_no_refusal(self):
+        assert refusal_of(ApiRejection("made up")) is None
 
     @pytest.mark.parametrize(
         ("error_code", "prefix"),

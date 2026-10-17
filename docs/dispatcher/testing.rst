@@ -1326,7 +1326,9 @@ test that matches it will break for no reason that concerns the bot:
 * ``retry after …``
 
 Each refusal is declared in :mod:`aiogram.test.refusals`, marked as sourced or best-effort,
-and the texts above are the ones marked guaranteed there.
+and the texts above are the ones marked guaranteed there. To tell two refusals of one code
+apart without matching their wording, compare the declaration:
+``refusal_of(raised.value) is refusals.CANT_BE_DELETED``.
 
 Overriding results and simulating failures
 ==========================================

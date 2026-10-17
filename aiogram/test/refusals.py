@@ -23,11 +23,15 @@ walks the sources to keep it that way.
 from __future__ import annotations
 
 import dataclasses
+import re
+import string
 from http import HTTPStatus
 
-from .errors import ApiRejection
+from aiogram.exceptions import TelegramAPIError
 
-__all__ = ("GUARANTEED", "REFUSALS", "Refusal")
+from .errors import _ERROR_PREFIXES, ApiRejection
+
+__all__ = ("GUARANTEED", "REFUSALS", "Refusal", "refusal_of")
 
 #: Where the Bot API server's own texts live.
 _SERVER = "telegram-bot-api Client.cpp"
@@ -174,6 +178,11 @@ TEXT_MUST_BE_NON_EMPTY = _declare("TEXT_MUST_BE_NON_EMPTY", "text must be non-em
 FORWARD_NOT_FOUND = _declare("FORWARD_NOT_FOUND", "message to forward not found", _SERVER)
 COPY_NOT_FOUND = _declare("COPY_NOT_FOUND", "message to copy not found", _SERVER)
 PIN_NOT_FOUND = _declare("PIN_NOT_FOUND", "message to pin not found", _SERVER)
+REACT_NOT_FOUND = _declare("REACT_NOT_FOUND", "message to react not found", _SERVER)
+SUPERGROUPS_ONLY = _declare("SUPERGROUPS_ONLY", "method is available only in supergroups", _SERVER)
+STICKER_SET_OCCUPIED = _declare(
+    "STICKER_SET_OCCUPIED", "sticker set name is already occupied", _SERVER
+)
 CANT_BE_DELETED = _declare("CANT_BE_DELETED", "message can't be deleted", _SERVER)
 SUPERGROUP_OR_CHANNEL_ONLY = _declare(
     "SUPERGROUP_OR_CHANNEL_ONLY",
@@ -261,12 +270,10 @@ JOIN_REQUEST_NOT_PENDING = _declare(
     "USER_ALREADY_PARTICIPANT: no join request is pending for this user",
 )
 
-# Wording that differs from Telegram's, or that Telegram words
-# differently by case.
+# Wording the toolkit chose, as Telegram's is not known.
 CANT_BE_EDITED = _declare("CANT_BE_EDITED", "message can't be edited")
 CANT_BE_FORWARDED = _declare("CANT_BE_FORWARDED", "message can't be forwarded")
 CANT_BE_COPIED = _declare("CANT_BE_COPIED", "message can't be copied")
-REACT_NOT_FOUND = _declare("REACT_NOT_FOUND", "message to react to not found")
 READ_NOT_FOUND = _declare("READ_NOT_FOUND", "message to read not found")
 NO_CONTENT_TO_EDIT = _declare("NO_CONTENT_TO_EDIT", "there is no {kind} in the message to edit")
 ALBUM_ITEM_EDIT = _declare("ALBUM_ITEM_EDIT", "an album item can be edited only to {kinds}")
@@ -281,7 +288,6 @@ MEDIA_GROUP_MIXED = _declare(
 )
 MIXED_CHATS = _declare("MIXED_CHATS", "all messages must be from the same chat")
 NO_PERSONAL_CHAT = _declare("NO_PERSONAL_CHAT", "user has no personal chat")
-SUPERGROUPS_ONLY = _declare("SUPERGROUPS_ONLY", "method is available only for supergroups")
 ADMINISTRABLE_ONLY = _declare(
     "ADMINISTRABLE_ONLY",
     "method is available for supergroup and channel chats only",
@@ -293,9 +299,6 @@ ADMIN_RIGHTS_NOT_EDITABLE = _declare(
 NOT_AN_ADMINISTRATOR = _declare("NOT_AN_ADMINISTRATOR", "user is not an administrator")
 NOT_A_REGULAR_MEMBER = _declare("NOT_A_REGULAR_MEMBER", "user is not a regular member")
 NOT_A_CHAT_MEMBER = _declare("NOT_A_CHAT_MEMBER", "user is not a member of the chat")
-STICKER_SET_OCCUPIED = _declare(
-    "STICKER_SET_OCCUPIED", "Sticker set name {name!r} is already occupied"
-)
 STICKER_NOT_IN_SET = _declare("STICKER_NOT_IN_SET", "Sticker {file_id!r} is not in set {name!r}")
 CHARGE_NOT_PAID_BY = _declare(
     "CHARGE_NOT_PAID_BY", "Charge {charge!r} was not paid by user {user_id}"
@@ -357,3 +360,30 @@ ENTITIES_DATE_TIME = _declare("ENTITIES_DATE_TIME", "can't parse entities: {deta
 GUARANTEED: tuple[Refusal, ...] = tuple(
     refusal for refusal in REFUSALS.values() if refusal.guaranteed
 )
+
+
+def _pattern(refusal: Refusal) -> re.Pattern[str]:
+    parts = [
+        re.escape(literal) + ("(?s:.*)" if field is not None else "")
+        for literal, field, _, _ in string.Formatter().parse(refusal.text)
+    ]
+    return re.compile("".join(parts))
+
+
+_PATTERNS = [(refusal, _pattern(refusal)) for refusal in REFUSALS.values()]
+
+
+def refusal_of(error: TelegramAPIError | ApiRejection) -> Refusal | None:
+    """
+    The declared refusal an exception came from, if it names one.
+
+    A test can tell two refusals of one error code apart without
+    matching their best-effort wording: ``refusal_of(raised.value) is
+    refusals.CANT_BE_DELETED``. It reads the description back against
+    the declared texts, so it works on what a bot catches as well. Two
+    refusals with the same text answer with the first one declared.
+    """
+    text = error.description if isinstance(error, ApiRejection) else error.message
+    for prefix in _ERROR_PREFIXES.values():
+        text = text.removeprefix(f"{prefix}: ")
+    return next((r for r, pattern in _PATTERNS if pattern.fullmatch(text)), None)

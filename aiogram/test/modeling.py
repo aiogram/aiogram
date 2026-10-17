@@ -2850,7 +2850,7 @@ def _next_sticker_file_id(env: BotTestEnvironment) -> str:
 @models(CreateNewStickerSet)
 def handle_create_sticker_set(env: BotTestEnvironment, method: CreateNewStickerSet) -> bool:
     if method.name in env.world.sticker_sets:
-        raise refusals.STICKER_SET_OCCUPIED(name=method.name)
+        raise refusals.STICKER_SET_OCCUPIED()
     env.world.sticker_sets[method.name] = StickerSetState(
         name=method.name,
         title=method.title,
