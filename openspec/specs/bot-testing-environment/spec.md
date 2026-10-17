@@ -4315,7 +4315,8 @@ when the bot has the mode on and is an administrator or has privacy mode off. Th
 reply to a topic's root SHALL NOT count as a reply. Otherwise the message SHALL be stored,
 nothing SHALL be fed, and the trigger SHALL return `Withheld`, carrying the update and
 the reason. In a private chat, another bot's message SHALL raise `WorldLookupError` unless
-both bots have the mode on. A service message another bot causes SHALL be delivered unless
+both bots have the mode on; in a business chat, unless the sending bot has it, and it SHALL
+then be delivered, which no source states. A service message another bot causes SHALL be delivered unless
 the environment was built with `deliver_service_messages_from_bots=False`, or the
 `bot_env_deliver_service_messages_from_bots` fixture returns false, in which case it SHALL be
 stored and not fed; a message SHALL count as a service message by what it carries, so one the
@@ -4348,12 +4349,12 @@ test builds with `send(fields=...)` follows the same switch. Another bot's `clic
 
 `in_(chat, anonymous=True)` SHALL bind an actor that posts as the supergroup: every message
 and service message it produces SHALL be from `GroupAnonymousBot` (id 1087968824, first name
-`Group`, a bot), with the chat as `sender_chat` and the administrator's custom title, if
-any, as `author_signature`. Binding SHALL raise `WorldLookupError` outside a supergroup and
+`Group`, a bot), with the chat as `sender_chat`. A message, and never a service message,
+SHALL carry the administrator's custom title, if any, as `author_signature`. Binding SHALL raise `WorldLookupError` outside a supergroup and
 for a user who is not the owner or an administrator with `is_anonymous` set, and so SHALL a
 trigger once the user no longer is. The rights checks SHALL be the user's, the bot-to-bot
 rule SHALL NOT apply, `state()` SHALL use the FSM key of `GroupAnonymousBot`, a topic it
-opens SHALL count as opened by the chat, a membership update it causes SHALL be from
+opens SHALL count as opened by the user, whether bound anonymously or not, a membership update it causes SHALL be from
 `GroupAnonymousBot`, and joining, leaving or asking to join SHALL raise `WorldLookupError`.
 Every trigger of the binding SHALL recheck that the user is still such an administrator before
 changing anything. A reaction or a vote it makes SHALL name the chat as `actor_chat` or
@@ -4365,7 +4366,8 @@ other queries SHALL come from the user, whose FSM key `env.state(user, chat)` re
 - **WHEN** an administrator with `is_anonymous` and the title "Host" closes a topic
   anonymously
 - **THEN** `forum_topic_closed` is from `GroupAnonymousBot`, with the group as
-  `sender_chat` and "Host" as `author_signature`, and is delivered
+  `sender_chat` and no `author_signature`, and is delivered, while a message the host sends
+  carries "Host" as `author_signature`
 
 #### Scenario: A plain administrator
 

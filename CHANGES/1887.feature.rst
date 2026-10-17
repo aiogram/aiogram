@@ -409,7 +409,8 @@ Communication rules allow, declared with ``bot_to_bot_mode=`` on both bots and
 ``BotTestEnvironment(deliver_service_messages_from_bots=False)`` withholds them, since Telegram does
 not document either way. ``in_(chat, anonymous=True)`` binds an anonymous administrator, whose
 messages and service messages are from ``GroupAnonymousBot``, with the group as
-``sender_chat`` and their custom title as ``author_signature``, under the user's own rights.
+``sender_chat``, its messages, but no service message, signed with their custom title as
+``author_signature``, under the user's own rights; a topic it opens stays the user's.
 Its reactions and votes name the group as ``actor_chat`` and ``voter_chat``, while its clicks
 and queries stay the user's. Another bot cannot click, use inline mode or vote.
 ``Blueprint.add_topic(..., creator=...)`` names who opened a declared topic, a user or

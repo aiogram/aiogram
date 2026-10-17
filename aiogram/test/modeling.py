@@ -3869,15 +3869,15 @@ def service_message(
     connection: BusinessConnectionState | None = None,
     *,
     sender: User | None = None,
-    signature: str | None = None,
 ) -> Message:
     """
     Emit a service message the way Telegram posts one for an administrative action.
 
     One posted on behalf of a business account is numbered by its
     ``connection`` too, as every business message is. It is from the
-    ``sender``, the bot unless a user actor took the action, and an
-    anonymous administrator's custom title is its ``signature``.
+    ``sender``, the bot unless a user actor took the action. A service
+    message carries no ``author_signature``: Telegram's
+    ``messageService`` has no post author.
     """
     values: dict[str, Any] = {
         "message_id": chat.allocate_message_id(connection),
@@ -3886,8 +3886,6 @@ def service_message(
         **posted_by(chat, sender or env.world.bot_user.as_user()),
         **fields,
     }
-    if signature is not None:
-        values["author_signature"] = signature
     if thread_id is not None:
         values["message_thread_id"] = thread_id
         values["is_topic_message"] = True
@@ -3982,7 +3980,6 @@ def close_topic(
     topic: TopicState,
     *,
     by: User | None = None,
-    signature: str | None = None,
 ) -> Message:
     """Close ``topic``, and post the service message that says so."""
     topic.is_closed = True
@@ -3992,7 +3989,6 @@ def close_topic(
         {"forum_topic_closed": ForumTopicClosed()},
         topic.message_thread_id,
         sender=by,
-        signature=signature,
     )
 
 
@@ -4002,7 +3998,6 @@ def reopen_topic(
     topic: TopicState,
     *,
     by: User | None = None,
-    signature: str | None = None,
 ) -> Message:
     """Reopen ``topic``, and post the service message that says so."""
     topic.is_closed = False
@@ -4012,7 +4007,6 @@ def reopen_topic(
         {"forum_topic_reopened": ForumTopicReopened()},
         topic.message_thread_id,
         sender=by,
-        signature=signature,
     )
 
 
@@ -4035,18 +4029,13 @@ def hide_general(
     chat: ChatState,
     *,
     by: User | None = None,
-    signature: str | None = None,
 ) -> Message:
     """Hide the General topic, which closes it, and post a message."""
     chat.general_topic.is_hidden = True
     # Hiding the General topic closes it too.
     chat.general_topic.is_closed = True
     return service_message(
-        env,
-        chat,
-        {"general_forum_topic_hidden": GeneralForumTopicHidden()},
-        sender=by,
-        signature=signature,
+        env, chat, {"general_forum_topic_hidden": GeneralForumTopicHidden()}, sender=by
     )
 
 
@@ -4055,7 +4044,6 @@ def unhide_general(
     chat: ChatState,
     *,
     by: User | None = None,
-    signature: str | None = None,
 ) -> Message:
     """Unhide the General topic, and post the service message."""
     chat.general_topic.is_hidden = False
@@ -4064,7 +4052,6 @@ def unhide_general(
         chat,
         {"general_forum_topic_unhidden": GeneralForumTopicUnhidden()},
         sender=by,
-        signature=signature,
     )
 
 
@@ -4073,7 +4060,6 @@ def close_general(
     chat: ChatState,
     *,
     by: User | None = None,
-    signature: str | None = None,
 ) -> Message:
     """
     Close the General topic, and post ``forum_topic_closed``.
@@ -4082,9 +4068,7 @@ def close_general(
     (ForumTopicManager.cpp), so the service message is the same.
     """
     chat.general_topic.is_closed = True
-    return service_message(
-        env, chat, {"forum_topic_closed": ForumTopicClosed()}, sender=by, signature=signature
-    )
+    return service_message(env, chat, {"forum_topic_closed": ForumTopicClosed()}, sender=by)
 
 
 def reopen_general(
@@ -4092,7 +4076,6 @@ def reopen_general(
     chat: ChatState,
     *,
     by: User | None = None,
-    signature: str | None = None,
 ) -> Message:
     """
     Reopen the General topic, which unhides it too.
@@ -4102,9 +4085,7 @@ def reopen_general(
     """
     chat.general_topic.is_closed = False
     chat.general_topic.is_hidden = False
-    return service_message(
-        env, chat, {"forum_topic_reopened": ForumTopicReopened()}, sender=by, signature=signature
-    )
+    return service_message(env, chat, {"forum_topic_reopened": ForumTopicReopened()}, sender=by)
 
 
 @models(CloseForumTopic)

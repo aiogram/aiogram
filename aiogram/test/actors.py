@@ -754,11 +754,12 @@ class UserActor:
 
         ``anonymous=True`` posts as the supergroup, as an anonymous
         administrator does: every message and service message is from
-        ``GroupAnonymousBot``, with the group as ``sender_chat`` and the
+        ``GroupAnonymousBot``, with the group as ``sender_chat``. A
+        message, but no service message, is signed with the
         administrator's custom title as ``author_signature``. The user
         must be the owner or an administrator whose ``is_anonymous`` is
-        set, or the binding raises :class:`WorldLookupError`. Rights
-        are still the user's own.
+        set, or the binding raises :class:`WorldLookupError`. Rights,
+        and the topics the actor opens, are still the user's own.
 
         Binding to the actor's own id is the one case an undeclared chat is still
         allowed: every Telegram user *can* open a private chat with the bot, the same
@@ -1462,8 +1463,7 @@ class UserActor:
             icon_color=icon_color or DEFAULT_TOPIC_ICON_COLOR,
             icon_custom_emoji_id=icon_custom_emoji_id,
             from_user=self._sender(),
-            creator_id=self._creator_id(),
-            author_signature=self._signature(),
+            creator_id=self.user.id,
         )
         assert topic.root_message is not None
         await self._feed_message(topic.root_message, data, deliver=deliver)
@@ -1577,7 +1577,7 @@ class UserActor:
         self._require_topic_manager(opened=True)
         chat = self.chat
         target = self._require_regular_topic(chat, topic, general_trigger)
-        if target.creator_id != self._creator_id():
+        if target.creator_id != self.user.id:
             # The creator of a topic manages it without the right, as
             # TDLib's ``is_outgoing`` check lets it.
             self._require_topic_manager()
@@ -2332,6 +2332,34 @@ class UserActor:
             raise WorldLookupError(msg)
         return member
 
+    def _require_private_bot_to_bot(self, bot: UserState) -> None:
+        """
+        Refuse another bot's private message Telegram would not allow.
+
+        Two bots talk in private only with the mode on both sides. A
+        business chat asks it of the sending business bot alone; that
+        the bot under test receives another bot there once the sender
+        has it is an assumption, which no source states.
+        """
+        if self.business is not None:
+            if self.user.bot_to_bot_mode:
+                return
+            msg = (
+                f"Bot {self.user.id} cannot write into a business chat: the toolkit "
+                "lets a bot do that only with Bot-to-Bot Communication Mode on; declare "
+                "`add_user(..., is_bot=True, bot_to_bot_mode=True)`"
+            )
+            raise WorldLookupError(msg)
+        if self.user.bot_to_bot_mode and bot.bot_to_bot_mode:
+            return
+        msg = (
+            f"Bot {self.user.id} cannot write to the bot in private: Telegram allows "
+            "it only when both turn on Bot-to-Bot Communication Mode; declare "
+            "`add_user(..., is_bot=True, bot_to_bot_mode=True)` and "
+            "`Blueprint(bot_to_bot_mode=True)`"
+        )
+        raise WorldLookupError(msg)
+
     def _sender(self) -> User:
         """Who this actor's messages are from."""
         return group_anonymous_bot() if self.anonymous else self.user.as_user()
@@ -2344,42 +2372,19 @@ class UserActor:
 
     def _service_sender(self) -> dict[str, Any]:
         """Who a service message this actor causes is from."""
-        return {"by": self._sender(), "signature": self._signature()}
-
-    def _creator_id(self) -> int:
-        """
-        Who a topic this actor opens counts as opened by.
-
-        The group, for an anonymous administrator: TDLib keeps a
-        topic's creator as a chat or a user. That the group is the
-        creator here is an assumption.
-        """
-        return self.chat.id if self.anonymous else self.user.id
+        return {"by": self._sender()}
 
     def _build_message(self, text: str | None, fields: dict[str, Any] | None) -> Message:
         chat = self.chat
         bot = self.environment.world.bot_user
-        if (
-            chat.type == ChatType.PRIVATE
-            and self._is_other_bot()
-            and not (self.user.bot_to_bot_mode and bot.bot_to_bot_mode)
-        ):
-            msg = (
-                f"Bot {self.user.id} cannot write to the bot in private: Telegram allows "
-                "it only when both turn on Bot-to-Bot Communication Mode; declare "
-                "`add_user(..., is_bot=True, bot_to_bot_mode=True)` and "
-                "`Blueprint(bot_to_bot_mode=True)`"
-            )
-            raise WorldLookupError(msg)
+        if chat.type == ChatType.PRIVATE and self._is_other_bot():
+            self._require_private_bot_to_bot(bot)
         values: dict[str, Any] = {
             "date": self.environment.world.next_date(),
             "chat": chat.as_chat(),
             # A channel post is the channel's, whoever published it.
             **posted_by(chat, self._sender()),
         }
-        signature = self._signature()
-        if signature is not None:
-            values["author_signature"] = signature
         if fields is None or "message_id" not in fields:
             values["message_id"] = chat.allocate_message_id(self.business)
         if chat.type == ChatType.CHANNEL:
@@ -2405,7 +2410,12 @@ class UserActor:
                 entities = bot_command_entities(values.get(text_field))
                 if entities:
                     values[entities_field] = entities
-        return Message(**values)
+        message = Message(**values)
+        signature = self._signature()
+        if signature is None or "author_signature" in values or _is_service(message):
+            return message
+        # A service message has no post author in Telegram's schema.
+        return message.model_copy(update={"author_signature": signature})
 
     def _with_reply_to(
         self,

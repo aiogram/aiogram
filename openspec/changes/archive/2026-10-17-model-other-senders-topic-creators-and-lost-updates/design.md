@@ -42,7 +42,10 @@ What is withheld is stored as usual and the trigger returns `Withheld(update, re
 a frozen dataclass, instead of the handler's result. Nothing is routed, so
 `assert_updates_handled()` sees nothing to flag. In a private chat the features page
 requires the mode on both sides for a bot to message another at all, so `_build_message`
-raises `WorldLookupError` before anything is stored.
+raises `WorldLookupError` before anything is stored. In a business chat the features page
+and the Bot API changelog ask the mode only of the sending business bot, so another bot
+writing into one needs it on its own side; that the bot under test then receives it is an
+assumption.
 
 **Assumptions.** The implicit reply to a topic's root does not count as a reply to the bot
 that opened the topic, since Telegram speaks of replying directly. Edits follow the rule for
@@ -66,19 +69,24 @@ so rights stay the user's. `posted_by` recognises the anonymous bot and gives th
 The user is TDLib's (UserManager.cpp, `get_anonymous_bot_user_id` and `get_user_force`):
 id 1087968824, first name `Group`, username `GroupAnonymousBot`, a bot, built fresh per
 message since a message binds what it carries. `author_signature` is the custom title, as
-the Bot API's `Message.author_signature` documents; the service-message helpers of
-`modeling.py` take it as `signature`.
+the Bot API's `Message.author_signature` documents, on a message only: Telegram's schema
+gives `messageService` no post author, and TDLib sets `author_signature` only for a
+`message` (MessagesManager.cpp), so no service message carries one.
 
 The binding requires a supergroup, as `Message.sender_chat` names "the supergroup itself",
 and an owner or administrator whose `is_anonymous` is set, which `getChatMember` reports.
 It is checked when binding and again on each message. `state()` uses the anonymous bot's id,
 the key the dispatcher derives from `from_user`.
 
+A topic opened anonymously is the administrator's: TDLib makes the account that created a
+topic its creator (ForumTopicManager.cpp), and `is_outgoing` is per account, so the creator
+exemptions follow that user whether bound anonymously or not, and another anonymous
+administrator does not get them.
+
 **Assumptions.** A `chat_member` update an anonymous administrator causes is from the
 anonymous bot; TDLib passes the actor through as the server sends it, and no source read
-says what that is. The signature on a service message is likewise unconfirmed. A topic
-opened anonymously counts as the chat's, after TDLib's creator being a chat or a user.
-Joining and leaving refuse an anonymous binding.
+says what that is. What Telegram reports as the creator of an anonymously opened topic is
+not verified. Joining and leaving refuse an anonymous binding.
 
 ### D5. A declared topic names its creator
 

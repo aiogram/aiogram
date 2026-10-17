@@ -8,6 +8,7 @@ from aiogram.fsm.state import State
 from aiogram.test import (
     Blueprint,
     BotTestEnvironment,
+    CommunityState,
     Withheld,
     WorldLookupError,
     administrator_rights,
@@ -268,6 +269,44 @@ class TestAnotherBotsMessages:
         assert len(seen) == 1
 
 
+class TestAnotherBotInABusinessChat:
+    @pytest.fixture
+    def business(self, dp):
+        def make(*, theirs):
+            blueprint = Blueprint()
+            owner = blueprint.add_user("Owner")
+            other = blueprint.add_user("Other", is_bot=True, bot_to_bot_mode=theirs)
+            blueprint.add_private_chat(other)
+            connection = blueprint.add_business_connection(owner)
+            env = BotTestEnvironment(blueprint=blueprint, dispatcher=dp)
+            return env, env.user(other).in_(other.id, business=connection)
+
+        return make
+
+    async def test_the_senders_mode_alone_lets_it_in(self, business, dp):
+        env, other = business(theirs=True)
+        seen = []
+
+        @dp.business_message()
+        async def collect(message: Message) -> None:
+            seen.append(message)
+
+        try:
+            await other.send("hi")
+        finally:
+            env.dispose_sync()
+
+        assert seen[0].from_user.is_bot is True
+
+    async def test_without_it_the_message_is_refused(self, business):
+        env, other = business(theirs=False)
+        try:
+            with pytest.raises(WorldLookupError, match="business chat"):
+                await other.send("hi")
+        finally:
+            env.dispose_sync()
+
+
 class TestAnotherBotInPrivate:
     async def test_it_takes_the_mode_on_both_sides(self, build):
         world = build(ours=True)
@@ -361,19 +400,34 @@ class TestAnonymousAdministrator:
 
         assert seen[0].author_signature is None
 
-    async def test_a_service_message_carries_the_same_sender(self, build, seen):
+    async def test_a_service_message_carries_the_sender_but_no_signature(self, build, seen):
         world = build()
         admin = world["admin"].in_(world["chat"], anonymous=True)
 
         await admin.close_topic(world["topic"])
         await admin.hide_general_topic()
+        await admin.promote(world["alice"].user)
+        world["env"].world.communities[5000] = CommunityState(id=5000, name="Club")
+        await admin.add_chat_to_community(5000)
+        await admin.create_topic("Mafia")
 
+        assert len(seen) == 4
         for message in seen:
             assert message.from_user.username == "GroupAnonymousBot"
             assert message.sender_chat.id == world["chat"].id
-            assert message.author_signature == "Host"
+            assert message.author_signature is None
         assert seen[0].forum_topic_closed is not None
         assert seen[1].general_forum_topic_hidden is not None
+        assert seen[2].community_chat_added is not None
+        assert seen[3].forum_topic_created is not None
+
+    async def test_an_explicit_signature_wins(self, build, seen):
+        world = build()
+        admin = world["admin"].in_(world["chat"], anonymous=True)
+
+        await admin.send("hi", fields={"author_signature": "Narrator"})
+
+        assert seen[0].author_signature == "Narrator"
 
     async def test_the_owner_can_be_anonymous_too(self, build, seen):
         world = build()
@@ -393,23 +447,27 @@ class TestAnonymousAdministrator:
         with pytest.raises(WorldLookupError, match="can_manage_topics"):
             await admin.close_topic(world["topic"])
 
-    async def test_a_topic_opened_anonymously_is_the_groups(self, build, seen):
+    async def test_a_topic_opened_anonymously_is_the_admins(self, build, seen):
         world = build()
-        member = world["chat"].member(world["admin"].user.id)
-        member.rights = administrator_rights(is_anonymous=True, can_manage_topics=False)
-        admin = world["admin"].in_(world["chat"], anonymous=True)
+        chat = world["chat"]
+        for user in (world["admin"].user, world["owner"].user):
+            chat.member(user.id).rights = administrator_rights(
+                is_anonymous=True, can_manage_topics=False
+            )
+        chat.member(world["owner"].user.id).status = ChatMemberStatus.ADMINISTRATOR
+        admin = world["admin"].in_(chat, anonymous=True)
 
         topic = await admin.create_topic("Mafia")
 
-        assert topic.creator_id == world["chat"].id
-        root = topic.root_message
-        assert (root.sender_chat.id, root.author_signature) == (world["chat"].id, "Host")
-        # Its creator closes it without the right.
+        assert topic.creator_id == world["admin"].user.id
+        assert topic.root_message.sender_chat.id == chat.id
+        # Its creator manages it without the right, bound either way.
         await admin.close_topic(topic)
-        assert topic.is_closed
-        # The same user, posting as themselves, is not its creator.
+        await world["admin"].in_(chat).reopen_topic(topic)
+        assert not topic.is_closed
+        # Another anonymous administrator is not its creator.
         with pytest.raises(WorldLookupError, match="can_manage_topics"):
-            await world["admin"].in_(world["chat"]).reopen_topic(topic)
+            await world["owner"].in_(chat, anonymous=True).close_topic(topic)
 
     async def test_the_bot_to_bot_rule_does_not_apply(self, build, seen):
         world = build()

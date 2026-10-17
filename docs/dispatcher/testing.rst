@@ -3106,8 +3106,10 @@ Otherwise the message is stored as Telegram stores it, nothing is fed, and the t
 returns :class:`~aiogram.test.Withheld`, whose ``update`` is what was withheld and whose
 ``reason`` says why. In a private chat Telegram lets two bots talk only when both have the
 mode on, so another bot's message there without it raises
-:class:`~aiogram.test.WorldLookupError`: there would be no message at all. A channel post is
-the channel's, so the rule does not apply to one.
+:class:`~aiogram.test.WorldLookupError`: there would be no message at all. In a business
+chat Telegram asks the mode of the sending business bot only, so another bot's message there
+takes the mode on its own side; that it then reaches the bot is an assumption, which no source
+states. A channel post is the channel's, so the rule does not apply to one.
 
 .. note::
 
@@ -3134,16 +3136,22 @@ An anonymous administrator posts as the supergroup. Bind the actor with
     )
 
     host = bot_env.user(host_user).in_(team, anonymous=True)
+    await host.send("Night falls")
+    night = bot_env.chat(team).messages[-1]
+    assert night.from_user.username == "GroupAnonymousBot"
+    assert night.sender_chat.id == team.id
+    assert night.author_signature == "Host"
+
     await host.close_topic(game)
     closed = bot_env.chat(team).messages[-1]
-    assert closed.from_user.username == "GroupAnonymousBot"
     assert closed.sender_chat.id == team.id
-    assert closed.author_signature == "Host"
+    assert closed.author_signature is None
 
 Its messages and service messages are from ``GroupAnonymousBot`` (id 1087968824, first name
-``Group``), with the group as ``sender_chat`` and the administrator's custom title, if they
-have one, as ``author_signature``, as the Bot API reports them. The user must be the owner or
-an administrator whose ``is_anonymous`` is set; anyone else, or a chat that is not a
+``Group``), with the group as ``sender_chat``, as the Bot API reports them. A message carries
+the administrator's custom title, if they have one, as ``author_signature``; a service message
+never does, since Telegram's ``messageService`` has no post author. The user must be
+the owner or an administrator whose ``is_anonymous`` is set; anyone else, or a chat that is not a
 supergroup, raises :class:`~aiogram.test.WorldLookupError`. Rights are the user's own, so
 the checks of the topic and membership triggers apply unchanged, and the bot-to-bot rule
 does not: the sender is the group. A demotion, or the right taken away, makes every later
@@ -3163,10 +3171,12 @@ Which user an update names decides its FSM key:
 
 .. note::
 
-    **Assumptions.** A topic an anonymous administrator opens counts as the group's, so the
-    same user posting as themselves is not its creator. A ``chat_member`` update an
-    anonymous administrator causes, such as a promotion, is from ``GroupAnonymousBot``, and
-    so is the signature on a service message; no source the toolkit read confirms either.
+    **Assumptions.** A topic an anonymous administrator opens is theirs, as TDLib credits the
+    account that created it, so they manage it without the right whether bound anonymously
+    or not, and another anonymous administrator does not; what Telegram reports as its
+    creator is not verified. A ``chat_member`` update an anonymous administrator causes,
+    such as a promotion, is from ``GroupAnonymousBot``, which no source the toolkit read
+    confirms.
 
 Updates that never arrive
 =========================

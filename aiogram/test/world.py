@@ -691,8 +691,7 @@ class TopicState:
     #: Who opened the topic, as TDLib's ``is_outgoing`` tells the
     #: bot's own topics apart. ``None`` for the General topic and for
     #: a topic the blueprint declares with no creator, which is no
-    #: one's; the group's id when an anonymous administrator opened
-    #: it.
+    #: one's. An anonymous administrator's topic is still theirs.
     creator_id: int | None = None
     chat: ChatState | None = field(default=None, repr=False, compare=False)
 
@@ -2208,7 +2207,6 @@ def create_topic(
     icon_custom_emoji_id: str | None = None,
     from_user: User | None = None,
     creator_id: int | None = None,
-    author_signature: str | None = None,
 ) -> TopicState:
     """
     Open a forum topic the way Telegram does.
@@ -2217,8 +2215,7 @@ def create_topic(
     that opened it, so blueprint-declared topics and topics created through the API are
     indistinguishable — both go through here. ``creator_id`` is who
     opened it, which the bot's rights read; see
-    :attr:`TopicState.creator_id`. ``author_signature`` signs it for
-    an anonymous administrator.
+    :attr:`TopicState.creator_id`.
     """
     message_thread_id = chat.allocate_message_id()
     chat.is_forum = True
@@ -2229,7 +2226,6 @@ def create_topic(
             date=date,
             chat=chat.as_chat(),
             **sender,
-            author_signature=author_signature,
             message_thread_id=message_thread_id,
             is_topic_message=True,
             forum_topic_created=ForumTopicCreated(
