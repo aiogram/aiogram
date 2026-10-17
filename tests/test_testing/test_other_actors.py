@@ -12,7 +12,13 @@ from aiogram.test import (
     WorldLookupError,
     administrator_rights,
 )
-from aiogram.types import ChatMemberUpdated, Message
+from aiogram.types import (
+    CallbackQuery,
+    ChatMemberUpdated,
+    InlineKeyboardButton,
+    InlineKeyboardMarkup,
+    Message,
+)
 
 ANONYMOUS = administrator_rights(is_anonymous=True)
 PLAYING = State("playing")
@@ -494,3 +500,133 @@ class TestBindingAnonymously:
 
         with pytest.raises(WorldLookupError, match="not an anonymous administrator"):
             await admin.send("hi")
+
+
+class TestWhatABotCannotDo:
+    @pytest.mark.parametrize(
+        ("trigger", "args", "action"),
+        [
+            ("click", ("go",), "press buttons"),
+            ("inline_query", ("q",), "use inline mode"),
+            ("chosen_inline_result", ("r1",), "use inline mode"),
+            ("vote", ("p1", [0]), "vote in polls"),
+        ],
+    )
+    async def test_it_is_refused(self, build, seen, trigger, args, action):
+        world = build()
+
+        with pytest.raises(WorldLookupError, match=f"cannot {action}: only a person"):
+            await getattr(world["other"], trigger)(*args)
+        assert seen == []
+
+    async def test_a_service_message_it_builds_follows_the_switch(self, build, seen):
+        world = build()
+
+        await world["other"].send(fields={"new_chat_title": "Renamed"})
+
+        assert seen[0].new_chat_title == "Renamed"
+
+    async def test_the_switch_withholds_one_it_builds_too(self, build, seen):
+        world = build(theirs=True, service=False)
+
+        result = await world["other"].send(fields={"new_chat_title": "Renamed"})
+
+        assert "deliver_service_messages_from_bots=False" in result.reason
+        assert seen == []
+
+
+class TestWithheldByTelegram:
+    async def test_it_leaves_an_empty_route_scope(self, build, seen):
+        world = build()
+        env = world["env"]
+        await world["alice"].send("handled")
+        assert env.last_route is not None
+
+        await world["other"].send("plain")
+
+        assert env.routes == []
+        assert env.last_route is None
+        with pytest.raises(AssertionError):
+            env.assert_handled_by("collect")
+        env.assert_updates_handled()
+
+    async def test_its_repr_is_short(self, build):
+        world = build()
+
+        result = await world["other"].send("plain")
+
+        text = repr(result)
+        assert text.startswith(f"Withheld(update_id={result.update.update_id}, ")
+        assert "kind='message'" in text
+        assert "reason=" in text
+        assert "Message(" not in text
+
+
+class TestAnonymousBeyondMessages:
+    async def test_a_reaction_names_the_chat_and_no_user(self, build, dp):
+        world = build()
+        await world["alice"].send("vote me")
+        reactions = []
+
+        @dp.message_reaction()
+        async def collect(update) -> None:
+            reactions.append(update)
+
+        admin = world["admin"].in_(world["chat"], anonymous=True)
+        message_id = world["chat"].messages[-1].message_id
+        await admin.react(message_id, "👍")
+
+        assert reactions[0].user is None
+        assert reactions[0].actor_chat.id == world["chat"].id
+        assert world["chat"].id in world["chat"].reactions_for(message_id)
+
+    async def test_a_vote_names_the_chat_and_no_user(self, build, dp):
+        world = build()
+        env, chat = world["env"], world["chat"]
+        poll = await env.bot.send_poll(
+            chat_id=chat.id, question="Who?", options=["A", "B"], is_anonymous=False
+        )
+        answers = []
+
+        @dp.poll_answer()
+        async def collect(answer) -> None:
+            answers.append(answer)
+
+        admin = world["admin"].in_(chat, anonymous=True)
+        await admin.vote(poll.poll.id, [1])
+
+        assert answers[0].user is None
+        assert answers[0].voter_chat.id == chat.id
+        assert env.world.poll(poll.poll.id).votes == {chat.id: [1]}
+
+    async def test_a_click_is_the_users_own_and_so_is_its_key(self, build, dp):
+        world = build()
+        env, chat = world["env"], world["chat"]
+        keyboard = InlineKeyboardMarkup(
+            inline_keyboard=[[InlineKeyboardButton(text="Play", callback_data="play")]],
+        )
+        await env.bot.send_message(chat_id=chat.id, text="Ready?", reply_markup=keyboard)
+        pressed = []
+
+        @dp.callback_query(F.data == "play")
+        async def play(query: CallbackQuery, state) -> None:
+            pressed.append(query.from_user.id)
+            await state.set_state(PLAYING)
+
+        anonymous = world["admin"].in_(chat, anonymous=True)
+        await anonymous.click("play")
+
+        assert pressed == [world["admin"].user.id]
+        assert await anonymous.state().get_state() is None
+        assert await env.state(world["admin"].user.id, chat).get_state() == PLAYING.state
+        assert await world["admin"].in_(chat).state().get_state() == PLAYING.state
+
+    async def test_a_promotion_rechecks_the_binding(self, build):
+        world = build()
+        chat, alice = world["chat"], world["alice"]
+        admin = world["admin"].in_(chat, anonymous=True)
+        chat.member(world["admin"].user.id).rights = administrator_rights()
+
+        with pytest.raises(WorldLookupError, match="not an anonymous administrator"):
+            await admin.promote(alice.user, can_pin_messages=True)
+        assert chat.member(alice.user.id).status == ChatMemberStatus.MEMBER

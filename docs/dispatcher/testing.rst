@@ -3013,10 +3013,11 @@ Each trigger is what a client does through the Bot API method of the same name:
 an actor to. The others take a topic as a declaration, a state or a thread id, and default to
 the topic the actor is bound to, so ``owner.in_(team, topic=topic).close_topic()`` works too.
 Extra keyword arguments are dispatcher data, as in every other trigger. With
-``deliver=False`` the world still changes; only the update is withheld, see `Updates that
-never arrive`_. Deleting a topic removes its messages and feeds nothing, because Telegram posts no service message for it and
-the Bot API has no type for one; the bot finds out when a send into the thread fails with
-``message thread not found``. Closing and reopening the General topic post
+``deliver=False`` the world still changes; only the update is withheld, see
+`Updates that never arrive`_. Deleting a topic removes its messages and feeds nothing,
+because Telegram posts no service message for it and the Bot API has no type for one;
+the bot finds out when a send into the thread fails with ``message thread not found``.
+Closing and reopening the General topic post
 ``forum_topic_closed`` and ``forum_topic_reopened`` with no thread id, as the bot methods do:
 Telegram edits the General topic the way it edits any other. Reopening it unhides it too, and
 one ``forum_topic_reopened`` says both. An actor bound to a topic deleted since cannot send
@@ -3085,12 +3086,17 @@ topic still takes ``can_manage_topics``:
     result = await host_bot.send("Day 2 begins")      # stored, not delivered
     assert isinstance(result, Withheld)
 
+A bot presses no buttons, has no inline mode and votes in no poll, so ``click()``,
+``inline_query()``, ``chosen_inline_result()`` and ``vote()`` raise
+:class:`~aiogram.test.WorldLookupError` for one.
+
 Telegram's bots see few messages of other bots, and the toolkit follows the rule of
 `Bot-to-Bot Communication <https://core.telegram.org/bots/features#bot-to-bot-communication>`_.
-``Blueprint(bot_to_bot_mode=...)`` and ``add_user(..., bot_to_bot_mode=...)`` declare the mode each bot
-turned on in @BotFather, off by default, and ``Blueprint(bot_group_privacy=False)`` turns the
-bot's Group Privacy off, which ``getMe`` reports as ``can_read_all_group_messages``. In a group or a supergroup, another bot's message or edit
-reaches the bot when:
+``Blueprint(bot_to_bot_mode=...)`` and ``add_user(..., bot_to_bot_mode=...)`` declare the
+mode each bot turned on in @BotFather, off by default, and
+``Blueprint(bot_group_privacy=False)`` turns the bot's Group Privacy off, which ``getMe``
+reports as ``can_read_all_group_messages``. In a group or a supergroup, another bot's message
+or edit reaches the bot when:
 
 - either bot has the mode on, and the message names the bot in a command, such as
   ``/join@test_bot``, or replies to one of the bot's messages; or
@@ -3110,13 +3116,13 @@ the channel's, so the rule does not apply to one.
     The toolkit counts only a reply to another message of the bot. Edits follow the rule for
     messages, which Telegram does not state either.
 
-A service message another bot causes, such as ``forum_topic_closed``, is delivered by
-default. No public source says either way: the Bot API server filters no update by its
-sender, and Telegram says every bot receives all service messages. Pass
-``BotTestEnvironment(deliver_service_messages_from_bots=False)``, or override the
-``bot_env_deliver_service_messages_from_bots`` fixture, to test a bot that never sees them; the
-world changes all the same, and the trigger returns :class:`~aiogram.test.Withheld`.
-``create_topic()`` returns the new topic either way.
+A service message another bot causes, such as ``forum_topic_closed``, or one the test builds
+for it with ``send(fields=...)``, is delivered by default. No public source says either way:
+the Bot API server filters no update by its sender, and Telegram says every bot receives all
+service messages. Pass ``BotTestEnvironment(deliver_service_messages_from_bots=False)``, or
+override the ``bot_env_deliver_service_messages_from_bots`` fixture, to test a bot that never
+sees them; the world changes all the same, and the trigger returns
+:class:`~aiogram.test.Withheld`. ``create_topic()`` returns the new topic either way.
 
 An anonymous administrator posts as the supergroup. Bind the actor with
 ``anonymous=True``:
@@ -3140,9 +3146,20 @@ have one, as ``author_signature``, as the Bot API reports them. The user must be
 an administrator whose ``is_anonymous`` is set; anyone else, or a chat that is not a
 supergroup, raises :class:`~aiogram.test.WorldLookupError`. Rights are the user's own, so
 the checks of the topic and membership triggers apply unchanged, and the bot-to-bot rule
-does not: the sender is the group. ``state()`` reads the FSM key of ``GroupAnonymousBot``,
-which the dispatcher uses for these messages. Joining and leaving are the user's own, never
-the group's, so they raise for an anonymous binding.
+does not: the sender is the group. A demotion, or the right taken away, makes every later
+trigger of the binding raise. Joining and leaving are the user's own, never the group's, so
+they raise for an anonymous binding.
+
+Which user an update names decides its FSM key:
+
+- Messages, service messages and membership updates are from ``GroupAnonymousBot``, so
+  ``state()`` of an anonymous binding reads that key, which every anonymous administrator of
+  the chat shares.
+- A click, an inline query, a payment and the other queries come from the user themselves,
+  as Telegram shows whoever pressed. ``bot_env.state(user, chat)``, or
+  ``bot_env.user(user).in_(chat).state()``, reads their key.
+- A reaction or a vote names the chat as ``actor_chat`` or ``voter_chat`` and no user, as the
+  Bot API documents for an anonymous user, and is kept as the chat's.
 
 .. note::
 
@@ -3157,8 +3174,9 @@ Updates that never arrive
 An update can be lost on the way: the network or the bot's own infrastructure drops it, or
 Telegram never sends it, as for another bot's message above. Every actor trigger that feeds an
 update takes ``deliver=False`` for that: the world still changes; only the update is
-withheld. The trigger stores what it produced exactly as usual, a service message included, and nothing is fed to the dispatcher;
-the trigger returns :class:`~aiogram.test.Withheld` instead of the handler's result:
+withheld. The trigger stores what it produced exactly as usual, a service message included,
+feeds nothing to the dispatcher, and returns :class:`~aiogram.test.Withheld` instead of
+the handler's result:
 
 .. code-block:: python
 
@@ -3171,9 +3189,11 @@ the trigger returns :class:`~aiogram.test.Withheld` instead of the handler's res
 It works the same for a message, a membership change, a promotion, a topic action, and for
 another bot or an anonymous administrator. A trigger that feeds two updates, such as
 ``join()`` with its ``new_chat_members``, withholds both. ``create_topic()`` returns the new
-topic either way. Nothing is routed, so :attr:`~aiogram.test.BotTestEnvironment.routes` is
-empty and ``assert_updates_handled()`` has nothing to flag. ``deliver`` is a keyword of the
-trigger, so it is not passed on as dispatcher data.
+topic either way. The trigger still opens a route scope, left empty, so
+:attr:`~aiogram.test.BotTestEnvironment.routes` is empty and ``last_route`` is ``None``
+rather than the previous trigger's, ``assert_handled_by()`` fails, and
+``assert_updates_handled()`` has nothing to flag. An update Telegram withholds is reported the
+same way. ``deliver`` is a keyword of the trigger, so it is not passed on as dispatcher data.
 
 A bot that missed a topic's closure learns of it only from its next send into the topic,
 which Telegram refuses with ``TOPIC_CLOSED``. The test reproduces that by withholding the

@@ -115,6 +115,25 @@ class TestWithholding:
         assert result.reason == WITHHELD
         assert seen == []
 
+    async def test_a_reply_takes_it_too(self, forum, seen):
+        await forum["player"].send("first", deliver=False)
+
+        result = await forum["player"].reply(forum["chat"].messages[-1], "second", deliver=False)
+
+        assert result.update.message.text == "second"
+        assert seen == []
+
+    async def test_it_leaves_an_empty_route_scope(self, forum, seen):
+        env = forum["env"]
+        await forum["player"].send("handled")
+        assert env.last_route is not None
+
+        await forum["player"].send("lost", deliver=False)
+
+        assert env.routes == []
+        assert env.last_route is None
+        assert len(env.all_routes) == 1
+
     async def test_delivering_is_the_default(self, forum, seen):
         await forum["host"].close_topic(forum["topic"], deliver=True)
 

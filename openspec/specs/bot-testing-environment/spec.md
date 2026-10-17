@@ -4318,7 +4318,9 @@ the reason. In a private chat, another bot's message SHALL raise `WorldLookupErr
 both bots have the mode on. A service message another bot causes SHALL be delivered unless
 the environment was built with `deliver_service_messages_from_bots=False`, or the
 `bot_env_deliver_service_messages_from_bots` fixture returns false, in which case it SHALL be
-stored and not fed.
+stored and not fed; a message SHALL count as a service message by what it carries, so one the
+test builds with `send(fields=...)` follows the same switch. Another bot's `click()`,
+`inline_query()`, `chosen_inline_result()` and `vote()` SHALL raise `WorldLookupError`.
 
 #### Scenario: Another bot's plain message
 
@@ -4353,6 +4355,10 @@ trigger once the user no longer is. The rights checks SHALL be the user's, the b
 rule SHALL NOT apply, `state()` SHALL use the FSM key of `GroupAnonymousBot`, a topic it
 opens SHALL count as opened by the chat, a membership update it causes SHALL be from
 `GroupAnonymousBot`, and joining, leaving or asking to join SHALL raise `WorldLookupError`.
+Every trigger of the binding SHALL recheck that the user is still such an administrator before
+changing anything. A reaction or a vote it makes SHALL name the chat as `actor_chat` or
+`voter_chat` and no user, and SHALL be kept as the chat's; a click, an inline query and the
+other queries SHALL come from the user, whose FSM key `env.state(user, chat)` reads.
 
 #### Scenario: An anonymous host closes the game's topic
 
@@ -4375,7 +4381,9 @@ dispatcher, every update of a trigger that feeds several included. It SHALL retu
 `Withheld`, carrying the withheld update and a reason naming `deliver=False`, except
 `create_topic()`, which SHALL return the new topic. Nothing SHALL be routed, so
 `assert_updates_handled()` SHALL have nothing to flag. It SHALL apply to another bot and to an
-anonymous administrator alike.
+anonymous administrator alike. A withheld trigger, whether the test or Telegram withholds it,
+SHALL open a route scope of its own, left empty, so `routes` and `last_route` SHALL NOT report
+the trigger before it.
 
 #### Scenario: A lost closure
 

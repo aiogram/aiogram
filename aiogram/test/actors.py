@@ -10,7 +10,7 @@ from urllib.parse import parse_qs, urlsplit
 
 from pydantic import BaseModel
 
-from aiogram.enums import BotSubscriptionUpdatedState, ChatMemberStatus, ChatType
+from aiogram.enums import BotSubscriptionUpdatedState, ChatMemberStatus, ChatType, ContentType
 from aiogram.types import (
     BotSubscriptionUpdated,
     BusinessMessagesDeleted,
@@ -626,6 +626,42 @@ _GROUP_TYPES = frozenset({ChatType.GROUP, ChatType.SUPERGROUP})
 _ADMINISTRATOR_STATUSES = frozenset({ChatMemberStatus.CREATOR, ChatMemberStatus.ADMINISTRATOR})
 
 
+#: What a message can carry when a user posts it; anything else is a
+#: service message. ``unknown`` is a message the test built bare.
+_POSTED_CONTENT = frozenset(
+    {
+        ContentType.TEXT,
+        ContentType.ANIMATION,
+        ContentType.AUDIO,
+        ContentType.DOCUMENT,
+        ContentType.LIVE_PHOTO,
+        ContentType.PAID_MEDIA,
+        ContentType.PHOTO,
+        ContentType.STICKER,
+        ContentType.STORY,
+        ContentType.VIDEO,
+        ContentType.VIDEO_NOTE,
+        ContentType.VOICE,
+        ContentType.CHECKLIST,
+        ContentType.CONTACT,
+        ContentType.DICE,
+        ContentType.GAME,
+        ContentType.POLL,
+        ContentType.VENUE,
+        ContentType.LOCATION,
+        ContentType.INVOICE,
+        ContentType.GIVEAWAY,
+        ContentType.RICH_MESSAGE,
+        ContentType.UNKNOWN,
+    },
+)
+
+
+def _is_service(message: Message) -> bool:
+    """Whether ``message`` is a service message rather than a post."""
+    return message.content_type not in _POSTED_CONTENT
+
+
 @dataclasses.dataclass(frozen=True)
 class Withheld:
     """
@@ -639,6 +675,12 @@ class Withheld:
 
     update: Update
     reason: str
+
+    def __repr__(self) -> str:
+        return (
+            f"Withheld(update_id={self.update.update_id}, "
+            f"kind={self.update.event_type!r}, reason={self.reason!r})"
+        )
 
 
 def _detached(value: Any, bot: Bot) -> Any:
@@ -759,10 +801,15 @@ class UserActor:
         """
         FSM context for this actor's binding.
 
-        The key is the one the dispatcher itself would use. An
-        anonymous administrator's messages are from
-        ``GroupAnonymousBot``, so its key is that user's, which every
-        anonymous administrator of the chat shares.
+        The key is the one the dispatcher uses for this actor's
+        messages. Bound anonymously, those are from
+        ``GroupAnonymousBot``, and so are its service messages and
+        membership updates, so the key is that user's, shared by every
+        anonymous administrator of the chat. A click, an inline query
+        or a payment comes from the user themselves, as Telegram shows
+        whoever pressed; ``env.state(user, chat)`` or
+        ``user.in_(chat).state()`` reads that key. A reaction or a vote
+        made anonymously names the chat and no user.
         """
         return self.environment.state(
             GROUP_ANONYMOUS_BOT_ID if self.anonymous else self.user.id,
@@ -783,6 +830,9 @@ class UserActor:
         type or membership from a bare id.
         """
         if self._chat is not None:
+            if self.anonymous:
+                # Checked on every use: a later demotion ends it.
+                self._require_anonymous(self._chat)
             return self._chat
         return self.environment.world.ensure_private_chat(self.user)
 
@@ -898,7 +948,7 @@ class UserActor:
             await alice.reply(question, "42")
             await bob.reply(alice.chat.messages[-1], "same here")
         """
-        return await self.send(text, fields=fields, reply_to=message, **data)
+        return await self.send(text, fields=fields, reply_to=message, deliver=deliver, **data)
 
     async def edit(
         self,
@@ -978,6 +1028,7 @@ class UserActor:
         copy the bot has edited since cannot press a button that is
         gone.
         """
+        self._refuse_bot("press buttons")
         callback_data = (
             target.callback_data
             if isinstance(target, (InlineKeyboardButton, RichMessageButton))
@@ -1111,6 +1162,7 @@ class UserActor:
         ``InlineQuery`` fields, such as ``location`` or a
         ``chat_type`` the binding cannot express.
         """
+        self._refuse_bot("use inline mode")
         bound = self._chat
         chat_type = "sender" if bound is None or bound.id == self.user.id else bound.type
         values: dict[str, Any] = {
@@ -1604,7 +1656,6 @@ class UserActor:
         return await self._feed(
             Update(update_id=self._next_update_id(), message=message),
             data,
-            service=True,
             deliver=deliver,
         )
 
@@ -1674,6 +1725,7 @@ class UserActor:
         deliver: bool = True,
         **data: Any,
     ) -> Any:
+        self._refuse_bot("use inline mode")
         event = self._event(ChosenInlineResult, result_id=result_id, query=query)
         return await self._feed(
             Update(update_id=self._next_update_id(), chosen_inline_result=event),
@@ -1936,7 +1988,13 @@ class UserActor:
         of them unless it allows multiple answers, and no change to an
         earlier vote unless it allows revoting. Retracting changes the
         vote, so it needs revoting too.
+
+        An actor bound anonymously votes as the chat: the answer has
+        ``voter_chat`` and no ``user``, as the Bot API documents for an
+        anonymous voter, and the vote is kept as the chat's.
         """
+        self._refuse_bot("vote in polls")
+        voter = self.chat.id if self.anonymous else self.user.id
         poll = self.environment.world.poll(poll_id)
         if poll.is_closed:
             msg = f"Poll {poll_id} is closed and cannot be voted in"
@@ -1947,14 +2005,15 @@ class UserActor:
                 f"for it; use `poll_update()` to trigger the aggregate `poll` update"
             )
             raise WorldLookupError(msg)
-        self._require_valid_vote(poll, options)
+        self._require_valid_vote(poll, options, voter)
         if options:
-            poll.votes[self.user.id] = list(options)
+            poll.votes[voter] = list(options)
         else:
-            poll.votes.pop(self.user.id, None)
+            poll.votes.pop(voter, None)
         answer = PollAnswer(
             poll_id=poll_id,
-            user=self.user.as_user(),
+            user=None if self.anonymous else self.user.as_user(),
+            voter_chat=self.chat.as_chat() if self.anonymous else None,
             option_ids=list(options),
             option_persistent_ids=[str(option) for option in options],
         )
@@ -1986,8 +2045,13 @@ class UserActor:
 
         ``old_reaction`` is read before the mutation and ``new_reaction`` after, which is
         the only way those fields can be truthful (design decision D3).
+
+        An actor bound anonymously reacts as the chat: the update has
+        ``actor_chat`` and no ``user``, as the Bot API documents for an
+        anonymous user, and the reaction is kept as the chat's.
         """
         chat = self.chat
+        reactor = chat.id if self.anonymous else self.user.id
         message_id = message if isinstance(message, int) else message.message_id
         if chat.find_message(message_id) is None:
             msg = f"Message {message_id} does not exist in chat {chat.id}"
@@ -2000,13 +2064,14 @@ class UserActor:
         # copied in: the update binds whatever it carries, and the world's own objects are
         # compared against plainly declared ones.
         old = _detached(
-            list(chat.reactions_for(message_id).get(self.user.id, [])), self.environment.bot
+            list(chat.reactions_for(message_id).get(reactor, [])), self.environment.bot
         )
-        chat.set_reaction(message_id, self.user.id, new_reaction)
+        chat.set_reaction(message_id, reactor, new_reaction)
         event = MessageReactionUpdated(
             chat=chat.as_chat(),
             message_id=message_id,
-            user=self.user.as_user(),
+            user=None if self.anonymous else self.user.as_user(),
+            actor_chat=chat.as_chat() if self.anonymous else None,
             date=self.environment.world.next_date(),
             old_reaction=old,
             new_reaction=new_reaction,
@@ -2052,7 +2117,7 @@ class UserActor:
         event = synthesize(event_type, context, name=event_type.__name__)
         return event.model_copy(update=overrides) if overrides else event
 
-    def _require_valid_vote(self, poll: PollState, options: list[int]) -> None:
+    def _require_valid_vote(self, poll: PollState, options: list[int], voter: int) -> None:
         """Refuse an answer Telegram would not deliver for ``poll``."""
         unknown = [option for option in options if not 0 <= option < len(poll.options)]
         if unknown:
@@ -2067,14 +2132,14 @@ class UserActor:
                 f"{len(options)} options cannot be cast"
             )
             raise WorldLookupError(msg)
-        previous = poll.votes.get(self.user.id)
+        previous = poll.votes.get(voter)
         if (
             previous is not None
             and sorted(previous) != sorted(options)
             and not poll.allows_revoting
         ):
             msg = (
-                f"Poll {poll.id} does not allow revoting, so user {self.user.id} "
+                f"Poll {poll.id} does not allow revoting, so voter {voter} "
                 f"cannot change their vote {previous} to {list(options)}"
             )
             raise WorldLookupError(msg)
@@ -2117,7 +2182,6 @@ class UserActor:
         return await self._feed(
             Update(update_id=self._next_update_id(), message=message),
             data,
-            service=True,
             deliver=deliver,
         )
 
@@ -2129,24 +2193,40 @@ class UserActor:
         update: Update,
         data: dict[str, Any],
         *,
-        service: bool = False,
         deliver: bool = True,
     ) -> Any:
         """
         Feed ``update``, unless it is withheld.
 
         ``deliver=False`` withholds it, and so does Telegram, for an
-        update it would not deliver. ``service`` says the message it
-        carries is a service message. What is withheld is still in the
+        update it would not deliver. What is withheld is still in the
         world, and the trigger returns :class:`Withheld` instead of
-        the handler's result.
+        the handler's result. A withheld trigger still opens a route
+        scope of its own, left empty, so the route readers report it
+        rather than the trigger before it.
         """
-        if not deliver:
-            return Withheld(update, "withheld by the test with deliver=False")
-        reason = self._withheld_by_telegram(update, service=service)
-        if reason is not None:
+        if self.anonymous:
+            self._require_anonymous(self.chat)
+        reason = (
+            "withheld by the test with deliver=False"
+            if not deliver
+            else self._withheld_by_telegram(update)
+        )
+        if reason is None:
+            return await self.environment.feed(update, **data)
+        with self.environment.trigger():
             return Withheld(update, reason)
-        return await self.environment.feed(update, **data)
+
+    def _refuse_bot(self, action: str) -> None:
+        """
+        Refuse what only a person does.
+
+        A bot gets no buttons to press, no inline mode and no poll to
+        vote in: the Bot API gives it no method for any of them.
+        """
+        if self.user.is_bot:
+            msg = f"Bot {self.user.id} cannot {action}: only a person can"
+            raise WorldLookupError(msg)
 
     def _is_other_bot(self) -> bool:
         """Whether this actor is a bot posting as itself."""
@@ -2156,7 +2236,7 @@ class UserActor:
             and self.user.id != self.environment.world.bot_user.id
         )
 
-    def _withheld_by_telegram(self, update: Update, *, service: bool) -> str | None:
+    def _withheld_by_telegram(self, update: Update) -> str | None:
         """
         Why Telegram would not deliver another bot's message, if not.
 
@@ -2168,7 +2248,7 @@ class UserActor:
         message = update.message or update.edited_message
         if message is None or not self._is_other_bot():
             return None
-        if service:
+        if _is_service(message):
             if self.environment.deliver_service_messages_from_bots:
                 return None
             return (

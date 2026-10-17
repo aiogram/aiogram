@@ -109,3 +109,24 @@ matches the one name `Withheld` and `deliver_service_messages_from_bots` use. It
 
 `create_topic()` returns the topic, which the test needs either way, rather than
 `Withheld`. `delete_topic()` and `set_topics()` feed nothing, so they take no keyword.
+
+### D7. Who an anonymous binding's other updates name
+
+Only what is posted as the group is from the anonymous bot. A click, an inline query and the
+other queries reveal the user, as Telegram shows whoever pressed, so they keep `from_user`
+and the user's FSM key, which `env.state(user, chat)` reads; `state()` of the binding reads
+the key its messages use. A reaction and a vote name the chat as `actor_chat` and
+`voter_chat` with no user, which is what the Bot API's `MessageReactionUpdated` and
+`PollAnswer` document for an anonymous user, and are stored under the chat's id. The binding
+is rechecked whenever its chat is read and again in `_feed`, so a trigger refuses before it
+changes anything once the user lost `is_anonymous`.
+
+### D8. A bot is refused what only a person does
+
+`click()`, `inline_query()`, `chosen_inline_result()` and `vote()` raise for an `is_bot`
+actor: the Bot API gives a bot no way to press a button, use inline mode or vote. Delivery no
+longer takes a `service` flag from the trigger: a message is a service message when its
+`content_type` is none a user can post, so a service message a test builds for another bot
+with `send(fields=...)` follows the service switch. A withheld trigger opens an empty route
+scope through `trigger()`, so the route readers do not report the trigger before it, and
+`Withheld`'s repr names the update id, its kind and the reason rather than the whole update.
