@@ -39,6 +39,7 @@ from aiogram.types import (
     ShippingQuery,
     SuccessfulPayment,
     Update,
+    User,
 )
 
 from .markup import bot_command_entities
@@ -59,6 +60,7 @@ from .mounting import owned_or_copied
 from .synthesis import synthesize
 from .world import (
     DEFAULT_TOPIC_ICON_COLOR,
+    GROUP_ANONYMOUS_BOT_ID,
     BusinessConnectionState,
     ChargeState,
     ChatState,
@@ -70,6 +72,7 @@ from .world import (
     UserState,
     WorldLookupError,
     create_topic,
+    group_anonymous_bot,
     mask,
     posted_by,
     resolve_topic,
@@ -616,6 +619,27 @@ def _refuse_ephemeral(message: Message, action: str) -> None:
         raise WorldLookupError(msg)
 
 
+#: The chats another bot's messages are checked for delivery in. A
+#: private chat refuses them up front, and a channel post is the
+#: channel's.
+_GROUP_TYPES = frozenset({ChatType.GROUP, ChatType.SUPERGROUP})
+_ADMINISTRATOR_STATUSES = frozenset({ChatMemberStatus.CREATOR, ChatMemberStatus.ADMINISTRATOR})
+
+
+@dataclasses.dataclass(frozen=True)
+class Undelivered:
+    """
+    What a trigger returns when its update did not reach the bot.
+
+    The world changed and stores what the trigger produced, exactly as
+    when the update is delivered; only the dispatcher never saw
+    ``update``. ``reason`` says why, in words.
+    """
+
+    update: Update
+    reason: str
+
+
 def _detached(value: Any, bot: Bot) -> Any:
     """
     Copy what the caller handed a trigger, before an update carries it into the world.
@@ -653,12 +677,16 @@ class UserActor:
         chat: ChatState | None = None,
         topic: TopicState | None = None,
         business: BusinessConnectionState | None = None,
+        anonymous: bool = False,
     ) -> None:
         self.environment = environment
         self.user = user
         self._chat = chat
         self.topic = topic
         self.business = business
+        #: Whether this actor posts as its supergroup, as an
+        #: anonymous administrator does.
+        self.anonymous = anonymous
 
     def in_(
         self,
@@ -666,12 +694,21 @@ class UserActor:
         *,
         topic: TopicSpec | TopicState | int | None = None,
         business: BusinessConnectionSpec | BusinessConnectionState | str | None = None,
+        anonymous: bool = False,
     ) -> UserActor:
         """
         Bind this user to a chat, optionally to a topic or a business connection.
 
         Returns a new actor, leaving this one untouched. The binding decides what the
         triggers produce: a plain message, a topic-tagged message, or a business message.
+
+        ``anonymous=True`` posts as the supergroup, as an anonymous
+        administrator does: every message and service message is from
+        ``GroupAnonymousBot``, with the group as ``sender_chat`` and the
+        administrator's custom title as ``author_signature``. The user
+        must be the owner or an administrator whose ``is_anonymous`` is
+        set, or the binding raises :class:`WorldLookupError`. Rights
+        are still the user's own.
 
         Binding to the actor's own id is the one case an undeclared chat is still
         allowed: every Telegram user *can* open a private chat with the bot, the same
@@ -690,12 +727,15 @@ class UserActor:
                 if chat_id == self.user.id
                 else world.chat(chat_id)
             )
+        if anonymous:
+            self._require_anonymous(state)
         return UserActor(
             self.environment,
             self.user,
             state,
             topic=self._resolve_topic(state, topic),
             business=self.environment.business_connection(business) if business else None,
+            anonymous=anonymous,
         )
 
     @staticmethod
@@ -708,9 +748,16 @@ class UserActor:
         return resolve_topic(chat, topic)
 
     def state(self) -> FSMContext:
-        """FSM context for this actor's binding — the key the dispatcher itself would use."""
+        """
+        FSM context for this actor's binding.
+
+        The key is the one the dispatcher itself would use. An
+        anonymous administrator's messages are from
+        ``GroupAnonymousBot``, so its key is that user's, which every
+        anonymous administrator of the chat shares.
+        """
         return self.environment.state(
-            self.user.id,
+            GROUP_ANONYMOUS_BOT_ID if self.anonymous else self.user.id,
             self.chat.id,
             topic=self.topic,
             business_connection=self.business,
@@ -1076,7 +1123,18 @@ class UserActor:
         return await self._change_membership(ChatMemberStatus.LEFT, data)
 
     def _refuse_banned(self, action: str) -> None:
-        """Refuse a banned user's own move: only an unban ends a ban."""
+        """
+        Refuse a move the user cannot make: only an unban ends a ban.
+
+        Joining or leaving is the user's own, never the group's, so an
+        actor bound anonymously cannot do it either.
+        """
+        if self.anonymous:
+            msg = (
+                f"An anonymous administrator cannot {action} chat {self.chat.id} as the "
+                "group; bind the user without `anonymous=True`"
+            )
+            raise WorldLookupError(msg)
         if self.chat.member(self.user.id).status == ChatMemberStatus.KICKED:
             msg = (
                 f"User {self.user.id} is banned from chat {self.chat.id}, so they cannot "
@@ -1308,8 +1366,9 @@ class UserActor:
             date=self.environment.world.next_date(),
             icon_color=icon_color or DEFAULT_TOPIC_ICON_COLOR,
             icon_custom_emoji_id=icon_custom_emoji_id,
-            from_user=self.user.as_user(),
-            creator_id=self.user.id,
+            from_user=self._sender(),
+            creator_id=self._creator_id(),
+            author_signature=self._signature(),
         )
         assert topic.root_message is not None
         await self._feed_message(topic.root_message, data)
@@ -1331,7 +1390,7 @@ class UserActor:
         """
         chat, target = self._managed_topic(topic, "close_general_topic")
         return await self._feed_message(
-            close_topic(self.environment, chat, target, by=self.user.as_user()), data
+            close_topic(self.environment, chat, target, **self._service_sender()), data
         )
 
     async def reopen_topic(
@@ -1345,7 +1404,7 @@ class UserActor:
         """
         chat, target = self._managed_topic(topic, "reopen_general_topic")
         return await self._feed_message(
-            reopen_topic(self.environment, chat, target, by=self.user.as_user()),
+            reopen_topic(self.environment, chat, target, **self._service_sender()),
             data,
         )
 
@@ -1371,14 +1430,14 @@ class UserActor:
         """
         chat = self._require_topic_manager()
         return await self._feed_message(
-            hide_general(self.environment, chat, by=self.user.as_user()), data
+            hide_general(self.environment, chat, **self._service_sender()), data
         )
 
     async def unhide_general_topic(self, **data: Any) -> Any:
         """Unhide the General topic, feeding its service message."""
         chat = self._require_topic_manager()
         return await self._feed_message(
-            unhide_general(self.environment, chat, by=self.user.as_user()),
+            unhide_general(self.environment, chat, **self._service_sender()),
             data,
         )
 
@@ -1392,7 +1451,7 @@ class UserActor:
         """
         chat = self._require_topic_manager()
         return await self._feed_message(
-            close_general(self.environment, chat, by=self.user.as_user()),
+            close_general(self.environment, chat, **self._service_sender()),
             data,
         )
 
@@ -1400,7 +1459,7 @@ class UserActor:
         """Reopen and unhide the General topic, feeding the message."""
         chat = self._require_topic_manager()
         return await self._feed_message(
-            reopen_general(self.environment, chat, by=self.user.as_user()),
+            reopen_general(self.environment, chat, **self._service_sender()),
             data,
         )
 
@@ -1413,7 +1472,7 @@ class UserActor:
         self._require_topic_manager(opened=True)
         chat = self.chat
         target = self._require_regular_topic(chat, topic, general_trigger)
-        if target.creator_id != self.user.id:
+        if target.creator_id != self._creator_id():
             # The creator of a topic manages it without the right, as
             # TDLib's ``is_outgoing`` check lets it.
             self._require_topic_manager()
@@ -1483,8 +1542,12 @@ class UserActor:
         return target
 
     async def _feed_message(self, message: Message, data: dict[str, Any]) -> Any:
-        """Feed a message already stored as an update from this chat."""
-        return await self._feed(Update(update_id=self._next_update_id(), message=message), data)
+        """Feed a service message already stored, from this chat."""
+        return await self._feed(
+            Update(update_id=self._next_update_id(), message=message),
+            data,
+            service=True,
+        )
 
     async def add_chat_to_community(
         self,
@@ -1945,22 +2008,183 @@ class UserActor:
         return await self._feed(
             Update(update_id=self._next_update_id(), message=message),
             data,
+            service=True,
         )
 
     def _next_update_id(self) -> int:
         return self.environment.world.next_update_id()
 
-    async def _feed(self, update: Update, data: dict[str, Any]) -> Any:
+    async def _feed(
+        self,
+        update: Update,
+        data: dict[str, Any],
+        *,
+        service: bool = False,
+    ) -> Any:
+        """
+        Feed ``update``, unless Telegram would not deliver it.
+
+        ``service`` says the message it carries is a service message.
+        What is not delivered is still in the world, and the trigger
+        returns :class:`Undelivered` instead of the handler's result.
+        """
+        reason = self._withheld_by_telegram(update, service=service)
+        if reason is not None:
+            return Undelivered(update, reason)
         return await self.environment.feed(update, **data)
+
+    def _is_other_bot(self) -> bool:
+        """Whether this actor is a bot posting as itself."""
+        return (
+            self.user.is_bot
+            and not self.anonymous
+            and self.user.id != self.environment.world.bot_user.id
+        )
+
+    def _withheld_by_telegram(self, update: Update, *, service: bool) -> str | None:
+        """
+        Why Telegram would not deliver another bot's message, if not.
+
+        A service message is delivered unless the environment
+        withholds it; no public source says either way. A regular
+        message in a group follows Bot-to-Bot Communication Mode, see
+        :meth:`_reaches_bot`. Anything else is delivered.
+        """
+        message = update.message or update.edited_message
+        if message is None or not self._is_other_bot():
+            return None
+        if service:
+            if self.environment.deliver_bot_service_messages:
+                return None
+            return (
+                f"a service message bot {self.user.id} caused, and the environment "
+                "withholds those (deliver_bot_service_messages=False)"
+            )
+        if message.chat.type not in _GROUP_TYPES or self._reaches_bot(message):
+            return None
+        return (
+            f"a message from bot {self.user.id}, which Telegram delivers to the bot only "
+            "with Bot-to-Bot Communication Mode on one side and a mention or reply, or "
+            "on the bot's side and the bot an administrator or out of privacy mode"
+        )
+
+    def _reaches_bot(self, message: Message) -> bool:
+        """
+        Whether another bot's group message reaches the bot.
+
+        Telegram's rule (core.telegram.org/bots/features): with
+        Bot-to-Bot Communication Mode on for either bot, a command
+        naming the bot or a direct reply to it gets through; with it on
+        for the bot, everything does while the bot is an administrator
+        or has Group Privacy Mode off.
+        """
+        bot = self.environment.world.bot_user
+        if (bot.bot_to_bot or self.user.bot_to_bot) and self._addresses_bot(message):
+            return True
+        if not bot.bot_to_bot:
+            return False
+        status = self.chat.member(bot.id).status
+        return status in _ADMINISTRATOR_STATUSES or not self.environment.world.bot_privacy_mode
+
+    def _addresses_bot(self, message: Message) -> bool:
+        """
+        Whether ``message`` names the bot in a command or replies to it.
+
+        A topic's root, which every message in the topic replies to
+        when it replies to nothing else, does not count: Telegram
+        speaks of replying directly, and does not say whether an
+        implicit reply does.
+        """
+        bot = self.environment.world.bot_user
+        suffix = f"@{bot.username}".lower()
+        for text, entities in (
+            (message.text, message.entities),
+            (message.caption, message.caption_entities),
+        ):
+            for entity in entities or []:
+                if (
+                    entity.type == "bot_command"
+                    and text is not None
+                    and entity.extract_from(text).lower().endswith(suffix)
+                ):
+                    return True
+        reply = message.reply_to_message
+        if reply is None or reply.from_user is None or reply.from_user.id != bot.id:
+            return False
+        return not (message.is_topic_message and reply.message_id == message.message_thread_id)
+
+    def _require_anonymous(self, chat: ChatState) -> MemberState:
+        """The membership that lets the user post as ``chat``."""
+        if chat.type != ChatType.SUPERGROUP:
+            msg = (
+                f"Only a supergroup has anonymous administrators, and chat {chat.id} is a "
+                f"{chat.type}"
+            )
+            raise WorldLookupError(msg)
+        member = chat.member(self.user.id)
+        rights = member.rights
+        if (
+            member.status not in _ADMINISTRATOR_STATUSES
+            or rights is None
+            or not rights.is_anonymous
+        ):
+            msg = (
+                f"User {self.user.id} is not an anonymous administrator of chat {chat.id}, "
+                f"so they cannot post as it; declare them with `blueprint.set_member(chat, "
+                f"user, rights=administrator_rights(is_anonymous=True))` or "
+                f"`promote(user, is_anonymous=True)`"
+            )
+            raise WorldLookupError(msg)
+        return member
+
+    def _sender(self) -> User:
+        """Who this actor's messages are from."""
+        return group_anonymous_bot() if self.anonymous else self.user.as_user()
+
+    def _signature(self) -> str | None:
+        """The custom title an anonymous administrator signs with."""
+        if not self.anonymous:
+            return None
+        return self._require_anonymous(self.chat).custom_title
+
+    def _service_sender(self) -> dict[str, Any]:
+        """Who a service message this actor causes is from."""
+        return {"by": self._sender(), "signature": self._signature()}
+
+    def _creator_id(self) -> int:
+        """
+        Who a topic this actor opens counts as opened by.
+
+        The group, for an anonymous administrator: TDLib keeps a
+        topic's creator as a chat or a user. That the group is the
+        creator here is an assumption.
+        """
+        return self.chat.id if self.anonymous else self.user.id
 
     def _build_message(self, text: str | None, fields: dict[str, Any] | None) -> Message:
         chat = self.chat
+        bot = self.environment.world.bot_user
+        if (
+            chat.type == ChatType.PRIVATE
+            and self._is_other_bot()
+            and not (self.user.bot_to_bot and bot.bot_to_bot)
+        ):
+            msg = (
+                f"Bot {self.user.id} cannot write to the bot in private: Telegram allows "
+                "it only when both turn on Bot-to-Bot Communication Mode; declare "
+                "`add_user(..., is_bot=True, bot_to_bot=True)` and "
+                "`Blueprint(bot_to_bot=True)`"
+            )
+            raise WorldLookupError(msg)
         values: dict[str, Any] = {
             "date": self.environment.world.next_date(),
             "chat": chat.as_chat(),
             # A channel post is the channel's, whoever published it.
-            **posted_by(chat, self.user.as_user()),
+            **posted_by(chat, self._sender()),
         }
+        signature = self._signature()
+        if signature is not None:
+            values["author_signature"] = signature
         if fields is None or "message_id" not in fields:
             values["message_id"] = chat.allocate_message_id(self.business)
         if chat.type == ChatType.CHANNEL:
@@ -2037,6 +2261,9 @@ class UserActor:
             and sender_chat is not None
             and sender_chat.id == chat.id
         ):
+            return
+        # A message posted as the group is an anonymous actor's.
+        if self.anonymous and sender_chat is not None and sender_chat.id == chat.id:
             return
         if sender is not None:
             author = f"user {sender.id}"
@@ -2441,7 +2668,9 @@ class UserActor:
         new = member.as_chat_member(user, chat.type, self.bot_user.id)
         event = ChatMemberUpdated(
             chat=chat.as_chat(),
-            from_user=self.user.as_user(),
+            # GroupAnonymousBot for an anonymous administrator, which
+            # no source the toolkit read confirms.
+            from_user=self._sender(),
             date=self.environment.world.next_date(),
             old_chat_member=old,
             new_chat_member=new,

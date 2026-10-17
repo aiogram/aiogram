@@ -93,6 +93,18 @@ def bot_env_rate_limits() -> RateLimits | None:
 
 
 @pytest.fixture
+def bot_env_deliver_bot_service_messages() -> bool:
+    """
+    Override this fixture to withhold other bots' service messages.
+
+    ``True``, the default, delivers a service message another bot
+    causes. Telegram does not document either way; return ``False``
+    to test a bot that never sees them.
+    """
+    return True
+
+
+@pytest.fixture
 def bot_env_assert_updates_handled() -> bool:
     """
     Override this fixture to check every update after each test.
@@ -115,6 +127,7 @@ def bot_env(
     bot_env_enforce_bot_rights: bool,
     bot_env_rate_limits: RateLimits | None,
     bot_env_assert_updates_handled: bool,
+    bot_env_deliver_bot_service_messages: bool,
 ) -> Iterator[BotTestEnvironment]:
     """An isolated fake Telegram world for exactly one test."""
     environment = BotTestEnvironment(
@@ -124,6 +137,7 @@ def bot_env(
         clock_start=bot_env_clock_start,
         enforce_bot_rights=bot_env_enforce_bot_rights,
         rate_limits=bot_env_rate_limits,
+        deliver_bot_service_messages=bot_env_deliver_bot_service_messages,
     )
     try:
         yield environment

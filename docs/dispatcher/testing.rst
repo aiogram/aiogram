@@ -3045,6 +3045,95 @@ reopening it also unhides it. :code:`editForumTopic` with an empty name keeps th
 name, and an empty ``icon_custom_emoji_id`` removes the icon. A declared topic is created
 by the bot, as one created through :code:`createForumTopic` is.
 
+Other bots and anonymous administrators
+=======================================
+
+A group game meets two senders that are not plain users: another bot in the group, and an
+administrator who posts as the group. Both are actors like any other, and every message and
+service message they produce carries Telegram's sender fields.
+
+Declare another bot with ``add_user(..., is_bot=True)``. Its messages carry
+``from_user.is_bot``, and it needs the same rights as a user for what it does, so closing a
+topic still takes ``can_manage_topics``:
+
+.. code-block:: python
+
+    blueprint = Blueprint(bot_to_bot=True)            # the bot under test
+    host = blueprint.add_user("Host", username="host_bot", is_bot=True, bot_to_bot=True)
+    team = blueprint.add_supergroup("Team", is_forum=True)
+    blueprint.set_member(team, host, rights=administrator_rights())
+
+    host_bot = bot_env.user(host).in_(team)
+    await host_bot.send("/join@test_bot")             # delivered
+    result = await host_bot.send("Day 2 begins")      # stored, not delivered
+    assert isinstance(result, Undelivered)
+
+Telegram's bots see few messages of other bots, and the toolkit follows the rule of
+`Bot-to-Bot Communication <https://core.telegram.org/bots/features#bot-to-bot-communication>`_.
+``Blueprint(bot_to_bot=...)`` and ``add_user(..., bot_to_bot=...)`` declare the mode each bot
+turned on in @BotFather, off by default, and ``Blueprint(bot_privacy_mode=False)`` turns the
+bot's Group Privacy Mode off. In a group or a supergroup, another bot's message or edit
+reaches the bot when:
+
+- either bot has the mode on, and the message names the bot in a command, such as
+  ``/join@test_bot``, or replies to one of the bot's messages; or
+- the bot has the mode on, and is an administrator of the chat or has privacy mode off.
+
+Otherwise the message is stored as Telegram stores it, nothing is fed, and the trigger
+returns :class:`~aiogram.test.Undelivered`, whose ``update`` is what was withheld and whose
+``reason`` says why. In a private chat Telegram lets two bots talk only when both have the
+mode on, so another bot's message there without it raises
+:class:`~aiogram.test.WorldLookupError`: there would be no message at all. A channel post is
+the channel's, so the rule does not apply to one.
+
+.. note::
+
+    **An assumption.** Telegram does not say whether the implicit reply every message in a
+    topic carries, to the topic's root, counts as a reply to the bot that opened the topic.
+    The toolkit counts only a reply to another message of the bot. Edits follow the rule for
+    messages, which Telegram does not state either.
+
+A service message another bot causes, such as ``forum_topic_closed``, is delivered by
+default. No public source says either way: the Bot API server filters no update by its
+sender, and Telegram says every bot receives all service messages. Pass
+``BotTestEnvironment(deliver_bot_service_messages=False)``, or override the
+``bot_env_deliver_bot_service_messages`` fixture, to test a bot that never sees them; the
+world changes all the same, and the trigger returns :class:`~aiogram.test.Undelivered`.
+``create_topic()`` returns the new topic either way.
+
+An anonymous administrator posts as the supergroup. Bind the actor with
+``anonymous=True``:
+
+.. code-block:: python
+
+    blueprint.set_member(
+        team, host_user, rights=administrator_rights(is_anonymous=True), custom_title="Host"
+    )
+
+    host = bot_env.user(host_user).in_(team, anonymous=True)
+    await host.close_topic(game)
+    closed = bot_env.chat(team).messages[-1]
+    assert closed.from_user.username == "GroupAnonymousBot"
+    assert closed.sender_chat.id == team.id
+    assert closed.author_signature == "Host"
+
+Its messages and service messages are from ``GroupAnonymousBot`` (id 1087968824, first name
+``Group``), with the group as ``sender_chat`` and the administrator's custom title, if they
+have one, as ``author_signature``, as the Bot API reports them. The user must be the owner or
+an administrator whose ``is_anonymous`` is set; anyone else, or a chat that is not a
+supergroup, raises :class:`~aiogram.test.WorldLookupError`. Rights are the user's own, so
+the checks of the topic and membership triggers apply unchanged, and the bot-to-bot rule
+does not: the sender is the group. ``state()`` reads the FSM key of ``GroupAnonymousBot``,
+which the dispatcher uses for these messages. Joining and leaving are the user's own, never
+the group's, so they raise for an anonymous binding.
+
+.. note::
+
+    **Assumptions.** A topic an anonymous administrator opens counts as the group's, so the
+    same user posting as themselves is not its creator. A ``chat_member`` update an
+    anonymous administrator causes, such as a promotion, is from ``GroupAnonymousBot``, and
+    so is the signature on a service message; no source the toolkit read confirms either.
+
 Business connections
 ====================
 
@@ -3220,7 +3309,7 @@ API reference
 =============
 
 .. automodule:: aiogram.test
-    :members: Blueprint, BotTestEnvironment, UserActor, CallLog, RouteRecord, RateLimits, RateLimit, build_environment, default_blueprint, detach_router, administrator_rights, default_chat_permissions
+    :members: Blueprint, BotTestEnvironment, UserActor, Undelivered, CallLog, RouteRecord, RateLimits, RateLimit, build_environment, default_blueprint, detach_router, administrator_rights, default_chat_permissions
     :member-order: bysource
     :undoc-members: False
 
@@ -3276,6 +3365,10 @@ Fixtures
 ``bot_env_enforce_bot_rights``
     Whether ``bot_env`` checks the bot's own calls against its rights. ``True`` by
     default; override it to return ``False`` while migrating.
+
+``bot_env_deliver_bot_service_messages``
+    Whether ``bot_env`` delivers the service messages other bots cause. ``True`` by
+    default; override it to return ``False`` to withhold them.
 
 ``bot_env_assert_updates_handled``
     Whether every passing test then checks ``bot_env``'s updates with

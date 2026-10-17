@@ -399,6 +399,17 @@ event loop's clock so ``looptime`` and ``advance_time()`` both move it. A send T
 for another reason first, such as the bot's rights or an unknown thread, gets that refusal in a
 flooded chat too.
 
+Two senders that are not plain users can act. Another bot is declared with
+``add_user(..., is_bot=True)``, and its messages and the service messages it causes carry
+``is_bot``; a group message of it reaches the bot under test only as Telegram's Bot-to-Bot
+Communication rules allow, declared with ``bot_to_bot=`` on both bots and
+``Blueprint(bot_privacy_mode=...)``, and is otherwise stored while the trigger returns
+:class:`aiogram.test.Undelivered`. Its service messages are delivered unless
+``BotTestEnvironment(deliver_bot_service_messages=False)`` withholds them, since Telegram does
+not document either way. ``in_(chat, anonymous=True)`` binds an anonymous administrator, whose
+messages and service messages are from ``GroupAnonymousBot``, with the group as
+``sender_chat`` and their custom title as ``author_signature``, under the user's own rights.
+
 Migrating a suite written against the earlier toolkit:
 
 - ``createForumTopic`` no longer turns a supergroup into a forum. Declare one with

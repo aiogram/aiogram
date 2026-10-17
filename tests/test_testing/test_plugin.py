@@ -61,7 +61,7 @@ class TestFixtures:
         original_storage = dispatcher.fsm.storage
 
         generator = call_fixture(
-            plugin.bot_env, blueprint, dispatcher, wait_timeout, None, True, None, False
+            plugin.bot_env, blueprint, dispatcher, wait_timeout, None, True, None, False, True
         )
         environment = next(generator)
         assert dispatcher.fsm.storage is not original_storage
@@ -80,7 +80,7 @@ class TestFixtures:
         original_storage = dispatcher.fsm.storage
 
         generator = call_fixture(
-            plugin.bot_env, blueprint, dispatcher, wait_timeout, None, True, None, False
+            plugin.bot_env, blueprint, dispatcher, wait_timeout, None, True, None, False, True
         )
         environment = next(generator)
         with pytest.raises(RuntimeError, match="boom"):
@@ -96,7 +96,7 @@ class TestFixtures:
         dispatcher = call_fixture(plugin.bot_dispatcher)
 
         generator = call_fixture(
-            plugin.bot_env, blueprint, dispatcher, 12.5, None, True, None, False
+            plugin.bot_env, blueprint, dispatcher, 12.5, None, True, None, False, True
         )
         environment = next(generator)
         try:
@@ -122,11 +122,32 @@ class TestFixtures:
         dispatcher = call_fixture(plugin.bot_dispatcher)
 
         generator = call_fixture(
-            plugin.bot_env, blueprint, dispatcher, 5.0, None, False, None, False
+            plugin.bot_env, blueprint, dispatcher, 5.0, None, False, None, False, True
         )
         environment = next(generator)
         try:
             assert environment.enforce_bot_rights is False
+        finally:
+            with pytest.raises(StopIteration):
+                next(generator)
+
+    def test_bot_service_messages_are_delivered_by_default(self):
+        from aiogram.test import plugin
+
+        assert call_fixture(plugin.bot_env_deliver_bot_service_messages) is True
+
+    def test_environment_picks_up_the_bot_service_messages_fixture(self):
+        from aiogram.test import plugin
+
+        blueprint = call_fixture(plugin.bot_blueprint)
+        dispatcher = call_fixture(plugin.bot_dispatcher)
+
+        generator = call_fixture(
+            plugin.bot_env, blueprint, dispatcher, 5.0, None, True, None, False, False
+        )
+        environment = next(generator)
+        try:
+            assert environment.deliver_bot_service_messages is False
         finally:
             with pytest.raises(StopIteration):
                 next(generator)
@@ -144,7 +165,7 @@ class TestFixtures:
         limits = RateLimits()
 
         generator = call_fixture(
-            plugin.bot_env, blueprint, dispatcher, 5.0, None, True, limits, False
+            plugin.bot_env, blueprint, dispatcher, 5.0, None, True, limits, False, True
         )
         environment = next(generator)
         try:
@@ -160,7 +181,7 @@ class TestFixtures:
         dispatcher = call_fixture(plugin.bot_dispatcher)
 
         generator = call_fixture(
-            plugin.bot_env, blueprint, dispatcher, 5.0, BASE_DATE, True, None, False
+            plugin.bot_env, blueprint, dispatcher, 5.0, BASE_DATE, True, None, False, True
         )
         environment = next(generator)
         try:
@@ -185,7 +206,7 @@ class TestFixtures:
         blueprint.add_user("Lonely")
         dispatcher = Dispatcher()
         generator = call_fixture(
-            plugin.bot_env, blueprint, dispatcher, 5.0, None, True, None, False
+            plugin.bot_env, blueprint, dispatcher, 5.0, None, True, None, False, True
         )
         environment = next(generator)
         try:

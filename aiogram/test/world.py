@@ -93,6 +93,13 @@ _RESERVED_FIRST_MESSAGE = frozenset({ChatType.SUPERGROUP, ChatType.CHANNEL})
 #: How much of a message's text a failure message shows before cutting it off.
 MESSAGE_PREVIEW_LIMIT = 60
 
+#: The user a supergroup's anonymous administrator posts as. TDLib
+#: hardcodes the id, name and username (UserManager.cpp,
+#: ``get_anonymous_bot_user_id`` and ``get_user_force``), and the Bot
+#: API server puts it in ``from`` when the sender chat is the chat
+#: itself (Client.cpp, ``create_message``).
+GROUP_ANONYMOUS_BOT_ID = 1087968824
+
 #: Administrator rights the Bot API only reports in some chat types, and in which. Outside
 #: them the real API leaves the field unset, so a bot that reads
 #: ``member.can_post_messages`` in a supergroup gets ``None`` there and must not get a
@@ -491,6 +498,9 @@ class UserState:
     last_name: str | None = None
     username: str | None = None
     language_code: str | None = None
+    #: Whether a bot turned on Bot-to-Bot Communication Mode in
+    #: @BotFather. Only a bot has it, and no update reports it.
+    bot_to_bot: bool = False
 
     def as_user(self) -> User:
         return User(
@@ -1864,6 +1874,9 @@ class World:
     #: by every :meth:`ChatState.wait_for_message` in this world. Configuration rather than
     #: state, so two worlds that hold the same things still compare equal.
     default_wait_timeout: float = field(default=DEFAULT_WAIT_TIMEOUT, compare=False)
+    #: Whether the bot runs in Group Privacy Mode, which @BotFather
+    #: sets. Only the delivery of other bots' messages reads it.
+    bot_privacy_mode: bool = True
 
     def __setattr__(self, name: str, value: Any) -> None:
         """
@@ -2121,15 +2134,32 @@ def _find_ephemeral(stores: Iterable[list[Message]], ephemeral_id: int) -> Messa
     return None
 
 
+def group_anonymous_bot() -> User:
+    """
+    The user an anonymous administrator's messages are from.
+
+    A new object on every call, since a message binds what it carries.
+    """
+    return User(
+        id=GROUP_ANONYMOUS_BOT_ID,
+        is_bot=True,
+        first_name="Group",
+        username="GroupAnonymousBot",
+    )
+
+
 def posted_by(chat: ChatState, sender: User) -> dict[str, Any]:
     """
     Who a message ``sender`` posts in ``chat`` is from.
 
     A channel post is the channel's: Telegram names the channel as its
-    sender chat and no user.
+    sender chat and no user. A post from the anonymous administrators'
+    bot is the group's, which is its sender chat.
     """
     if chat.type == ChatType.CHANNEL:
         return {"from_user": None, "sender_chat": chat.as_chat()}
+    if sender.id == GROUP_ANONYMOUS_BOT_ID:
+        return {"from_user": sender, "sender_chat": chat.as_chat()}
     return {"from_user": sender, "sender_chat": None}
 
 
@@ -2176,6 +2206,7 @@ def create_topic(
     icon_custom_emoji_id: str | None = None,
     from_user: User | None = None,
     creator_id: int | None = None,
+    author_signature: str | None = None,
 ) -> TopicState:
     """
     Open a forum topic the way Telegram does.
@@ -2184,16 +2215,19 @@ def create_topic(
     that opened it, so blueprint-declared topics and topics created through the API are
     indistinguishable — both go through here. ``creator_id`` is who
     opened it, which the bot's rights read; see
-    :attr:`TopicState.creator_id`.
+    :attr:`TopicState.creator_id`. ``author_signature`` signs it for
+    an anonymous administrator.
     """
     message_thread_id = chat.allocate_message_id()
     chat.is_forum = True
+    sender = {"from_user": None} if from_user is None else posted_by(chat, from_user)
     chat.add_message(
         Message(
             message_id=message_thread_id,
             date=date,
             chat=chat.as_chat(),
-            from_user=from_user,
+            **sender,
+            author_signature=author_signature,
             message_thread_id=message_thread_id,
             is_topic_message=True,
             forum_topic_created=ForumTopicCreated(

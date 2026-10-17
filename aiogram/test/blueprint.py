@@ -117,6 +117,9 @@ class UserSpec:
     last_name: str | None = None
     username: str | None = None
     language_code: str | None = None
+    #: Bot-to-Bot Communication Mode, for a bot; see
+    #: :meth:`Blueprint.add_user`.
+    bot_to_bot: bool = False
 
 
 @dataclass
@@ -232,7 +235,15 @@ class Blueprint:
         default: DefaultBotProperties | None = None,
         bot_first_name: str = "Bot",
         bot_username: str = "test_bot",
+        bot_to_bot: bool = False,
+        bot_privacy_mode: bool = True,
     ) -> None:
+        """
+        ``bot_to_bot`` and ``bot_privacy_mode`` are what the bot set in
+        @BotFather: Bot-to-Bot Communication Mode, off by default, and
+        Group Privacy Mode, on by default. They decide only which
+        messages of other bots reach it; see :meth:`add_user`.
+        """
         self.token = token
         self.default = default or DefaultBotProperties()
         self.bot_id = _token_bot_id(token)
@@ -241,7 +252,9 @@ class Blueprint:
             is_bot=True,
             first_name=bot_first_name,
             username=bot_username,
+            bot_to_bot=bot_to_bot,
         )
+        self.bot_privacy_mode = bot_privacy_mode
         self.users: list[UserSpec] = []
         self.chats: list[ChatSpec] = []
         #: Ids a running environment has taken already, so a blueprint
@@ -268,7 +281,21 @@ class Blueprint:
         username: str | None = None,
         language_code: str | None = None,
         id: int | None = None,
+        is_bot: bool = False,
+        bot_to_bot: bool = False,
     ) -> UserSpec:
+        """
+        Declare a user, or with ``is_bot`` another bot.
+
+        Another bot acts through ``env.user(...)`` as a user does,
+        and its messages carry ``is_bot``. ``bot_to_bot`` is its
+        Bot-to-Bot Communication Mode, which only a bot has: a
+        message it posts in a group reaches the bot under test only
+        when Telegram would deliver it, see the testing guide.
+        """
+        if bot_to_bot and not is_bot:
+            msg = "Only a bot has Bot-to-Bot Communication Mode; pass `is_bot=True`"
+            raise ValueError(msg)
         taken = {*self.taken_user_ids, *(user.id for user in self.users), self.bot.id}
         user = UserSpec(
             id=free_id(
@@ -282,6 +309,8 @@ class Blueprint:
             last_name=last_name,
             username=username,
             language_code=language_code,
+            is_bot=is_bot,
+            bot_to_bot=bot_to_bot,
         )
         self.users.append(user)
         return user
@@ -692,6 +721,7 @@ class Blueprint:
             stars=StarLedger(opening_balance=spec.star_balance),
             owned_gifts={gift.owned_gift_id: gift for gift in spec.owned_gifts},
             sticker_sets={item.name: item for item in spec.sticker_sets},
+            bot_privacy_mode=spec.bot_privacy_mode,
         )
         for user in spec.users:
             world.users[user.id] = user_state(user)
@@ -826,6 +856,7 @@ def user_state(spec: UserSpec) -> UserState:
         last_name=spec.last_name,
         username=spec.username,
         language_code=spec.language_code,
+        bot_to_bot=spec.bot_to_bot,
     )
 
 
