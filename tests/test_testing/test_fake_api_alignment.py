@@ -17,7 +17,7 @@ from aiogram.test import (
     BotTestEnvironment,
     WorldLookupError,
     administrator_rights,
-    refusals,
+    rejections,
 )
 from aiogram.test.synthesis import SynthesisContext, annotation_accepts, synthesize
 from aiogram.test.world import World
@@ -148,7 +148,7 @@ class TestMediaGroups:
         assert messages[0].media_group_id == messages[1].media_group_id
 
     async def test_a_document_is_grouped_only_with_documents(self, env, private):
-        with refused_with(TelegramBadRequest, refusals.MEDIA_GROUP_MIXED):
+        with refused_with(TelegramBadRequest, rejections.MEDIA_GROUP_MIXED):
             await env.bot.send_media_group(
                 chat_id=private.id,
                 media=[InputMediaPhoto(media="photo"), InputMediaDocument(media="document")],
@@ -190,7 +190,7 @@ class TestMediaGroups:
 
     @pytest.mark.parametrize("size", [1, 11])
     async def test_an_album_of_the_wrong_size_is_refused(self, env, private, size):
-        with refused_with(TelegramBadRequest, refusals.MEDIA_GROUP_SIZE):
+        with refused_with(TelegramBadRequest, rejections.MEDIA_GROUP_SIZE):
             await env.bot.send_media_group(
                 chat_id=private.id,
                 media=[InputMediaPhoto(media=f"p{index}") for index in range(size)],
@@ -367,7 +367,7 @@ class TestReplies:
     ):
         target = await env.bot.send_message(chat_id=private.id, text="elsewhere")
 
-        with refused_with(TelegramBadRequest, refusals.REPLY_ELSEWHERE_UNSUPPORTED):
+        with refused_with(TelegramBadRequest, rejections.REPLY_ELSEWHERE_UNSUPPORTED):
             await env.bot.send_message(
                 chat_id=team.id,
                 text="answer",
@@ -388,7 +388,7 @@ class TestReplies:
     ):
         target = await env.bot.send_message(chat_id=bobs.id, text="elsewhere")
 
-        with refused_with(TelegramBadRequest, refusals.REPLY_ELSEWHERE_UNSUPPORTED):
+        with refused_with(TelegramBadRequest, rejections.REPLY_ELSEWHERE_UNSUPPORTED):
             await env.bot.send_message(
                 business_connection_id=connection.id,
                 chat_id=private.id,
@@ -470,7 +470,7 @@ class TestCopiesAndForwards:
         await env.user(alice).in_(team).send(fields={"poll": quiz})
         users = team.messages[-1]
 
-        with refused_with(TelegramBadRequest, refusals.CANT_BE_COPIED):
+        with refused_with(TelegramBadRequest, rejections.MESSAGE_CANT_BE_COPIED):
             await env.bot.copy_message(
                 chat_id=bobs.id,
                 from_chat_id=team.id,
@@ -733,7 +733,7 @@ class TestCopiesAndForwards:
     async def test_a_protected_message_cannot_be_forwarded(self, env, private, bobs):
         source = await env.bot.send_message(chat_id=private.id, text="hi", protect_content=True)
 
-        with refused_with(TelegramBadRequest, refusals.CANT_BE_FORWARDED):
+        with refused_with(TelegramBadRequest, rejections.MESSAGE_CANT_BE_FORWARDED):
             await env.bot.forward_message(
                 chat_id=bobs.id,
                 from_chat_id=private.id,
@@ -753,13 +753,13 @@ class TestCopiesAndForwards:
         service = team.messages[-1]
         text = await env.bot.send_message(chat_id=team.id, text="hi")
 
-        with refused_with(TelegramBadRequest, refusals.CANT_BE_COPIED):
+        with refused_with(TelegramBadRequest, rejections.MESSAGE_CANT_BE_COPIED):
             await env.bot.copy_message(
                 chat_id=private.id,
                 from_chat_id=team.id,
                 message_id=service.message_id,
             )
-        with refused_with(TelegramBadRequest, refusals.CANT_BE_FORWARDED):
+        with refused_with(TelegramBadRequest, rejections.MESSAGE_CANT_BE_FORWARDED):
             await env.bot.forward_message(
                 chat_id=private.id,
                 from_chat_id=team.id,
@@ -891,7 +891,7 @@ class TestCopiesAndForwards:
             prices=[LabeledPrice(label="Stars", amount=1)],
         )
 
-        with refused_with(TelegramBadRequest, refusals.CANT_BE_COPIED):
+        with refused_with(TelegramBadRequest, rejections.MESSAGE_CANT_BE_COPIED):
             await env.bot.copy_message(
                 chat_id=bobs.id,
                 from_chat_id=private.id,
@@ -945,7 +945,7 @@ class TestCopiesAndForwards:
         )
 
         assert bobs.find_message(copied.message_id).reply_to_message == target
-        with refused_with(TelegramBadRequest, refusals.REPLY_NOT_FOUND):
+        with refused_with(TelegramBadRequest, rejections.MESSAGE_TO_BE_REPLIED_NOT_FOUND):
             await env.bot.copy_message(
                 chat_id=bobs.id,
                 from_chat_id=private.id,
@@ -1057,7 +1057,7 @@ class TestEditsActOnTheirContent:
             message_id=source.message_id,
         )
 
-        with refused_with(TelegramBadRequest, refusals.CANT_BE_EDITED):
+        with refused_with(TelegramBadRequest, rejections.MESSAGE_CANT_BE_EDITED):
             await env.bot.edit_message_text(
                 chat_id=bobs.id,
                 message_id=forwarded.message_id,
@@ -1070,7 +1070,7 @@ class TestEditsActOnTheirContent:
         await env.user(alice).in_(team).send("mine")
         users = team.messages[-1]
 
-        with refused_with(TelegramBadRequest, refusals.CANT_BE_EDITED):
+        with refused_with(TelegramBadRequest, rejections.MESSAGE_CANT_BE_EDITED):
             await env.bot.edit_message_text(
                 chat_id=team.id,
                 message_id=users.message_id,
@@ -1082,7 +1082,7 @@ class TestEditsActOnTheirContent:
     async def test_editing_text_on_a_photo_fails(self, env, private):
         photo = await env.bot.send_photo(chat_id=private.id, photo="photo", caption="c")
 
-        with refused_with(TelegramBadRequest, refusals.NO_CONTENT_TO_EDIT):
+        with refused_with(TelegramBadRequest, rejections.NO_CONTENT_TO_EDIT):
             await env.bot.edit_message_text(
                 chat_id=private.id,
                 message_id=photo.message_id,
@@ -1095,7 +1095,7 @@ class TestEditsActOnTheirContent:
     async def test_editing_a_caption_on_a_text_message_fails(self, env, private):
         text = await env.bot.send_message(chat_id=private.id, text="t")
 
-        with refused_with(TelegramBadRequest, refusals.NO_CONTENT_TO_EDIT):
+        with refused_with(TelegramBadRequest, rejections.NO_CONTENT_TO_EDIT):
             await env.bot.edit_message_caption(
                 chat_id=private.id,
                 message_id=text.message_id,
@@ -1105,7 +1105,7 @@ class TestEditsActOnTheirContent:
     async def test_editing_media_on_a_sticker_fails(self, env, private):
         sticker = await env.bot.send_sticker(chat_id=private.id, sticker="sticker")
 
-        with refused_with(TelegramBadRequest, refusals.NO_CONTENT_TO_EDIT):
+        with refused_with(TelegramBadRequest, rejections.NO_CONTENT_TO_EDIT):
             await env.bot.edit_message_media(
                 chat_id=private.id,
                 message_id=sticker.message_id,
@@ -1131,7 +1131,7 @@ class TestEditsActOnTheirContent:
             media=[InputMediaPhoto(media="one"), InputMediaPhoto(media="two")],
         )
 
-        with refused_with(TelegramBadRequest, refusals.ALBUM_ITEM_EDIT):
+        with refused_with(TelegramBadRequest, rejections.ALBUM_ITEM_EDIT):
             await env.bot.edit_message_media(
                 chat_id=private.id,
                 message_id=album[0].message_id,
@@ -1158,14 +1158,14 @@ class TestEditsActOnTheirContent:
             ephemeral_message_parameters=to_alice,
         )
 
-        with refused_with(TelegramBadRequest, refusals.NO_CONTENT_TO_EDIT):
+        with refused_with(TelegramBadRequest, rejections.NO_CONTENT_TO_EDIT):
             await env.bot.edit_ephemeral_message_text(
                 chat_id=team.id,
                 receiver_user_id=alice.id,
                 ephemeral_message_id=photo.ephemeral_message_id,
                 text="now text",
             )
-        with refused_with(TelegramBadRequest, refusals.NO_CONTENT_TO_EDIT):
+        with refused_with(TelegramBadRequest, rejections.NO_CONTENT_TO_EDIT):
             await env.bot.edit_ephemeral_message_caption(
                 chat_id=team.id,
                 receiver_user_id=alice.id,
@@ -1367,7 +1367,7 @@ class TestPolls:
         assert message.poll.allows_revoting is True
 
     async def test_a_correct_option_must_be_an_option(self, env, private):
-        with refused_with(TelegramBadRequest, refusals.QUIZ_ANSWER_RANGE):
+        with refused_with(TelegramBadRequest, rejections.QUIZ_ANSWER_RANGE):
             await env.bot.send_poll(
                 chat_id=private.id,
                 question="Q?",
@@ -1377,7 +1377,7 @@ class TestPolls:
             )
 
     async def test_a_quiz_without_an_answer_is_refused(self, env, private):
-        with refused_with(TelegramBadRequest, refusals.QUIZ_NEEDS_ANSWERS):
+        with refused_with(TelegramBadRequest, rejections.QUIZ_NEEDS_ANSWERS):
             await env.bot.send_poll(
                 chat_id=private.id,
                 question="Q?",
@@ -1498,7 +1498,7 @@ class TestBusinessDeletions:
             text="theirs",
         )
 
-        with refused_with(TelegramBadRequest, refusals.MIXED_CHATS):
+        with refused_with(TelegramBadRequest, rejections.MIXED_CHATS):
             await env.bot.delete_business_messages(
                 business_connection_id=connection.id,
                 message_ids=[mine.message_id, theirs.message_id],
@@ -1554,7 +1554,7 @@ class TestChecklists:
             business_connection_id=connection.id, chat_id=private.id, text="plain"
         )
 
-        with refused_with(TelegramBadRequest, refusals.NO_CONTENT_TO_EDIT):
+        with refused_with(TelegramBadRequest, rejections.NO_CONTENT_TO_EDIT):
             await env.bot.edit_message_checklist(
                 business_connection_id=connection.id,
                 chat_id=private.id,
@@ -1712,7 +1712,7 @@ class TestStarTransactions:
         await env.user(alice).pay(total_amount=50)
         charge = private.messages[-1].successful_payment.telegram_payment_charge_id
 
-        with refused_with(TelegramBadRequest, refusals.CHARGE_NOT_PAID_BY):
+        with refused_with(TelegramBadRequest, rejections.CHARGE_NOT_PAID_BY):
             await env.bot.refund_star_payment(user_id=bob.id, telegram_payment_charge_id=charge)
 
         assert env.world.stars.charge(charge).is_refunded is False
@@ -1764,11 +1764,11 @@ class TestEditableAdministrators:
     ):
         await env.user(alice).in_(team).promote(bob, can_delete_messages=True)
 
-        with refused_with(TelegramBadRequest, refusals.ADMIN_RIGHTS_NOT_EDITABLE):
+        with refused_with(TelegramBadRequest, rejections.NO_RIGHTS_TO_EDIT_ADMINISTRATOR):
             await env.bot.promote_chat_member(
                 chat_id=team.id, user_id=bob.id, can_pin_messages=True
             )
-        with refused_with(TelegramBadRequest, refusals.ADMIN_RIGHTS_NOT_EDITABLE):
+        with refused_with(TelegramBadRequest, rejections.NO_RIGHTS_TO_EDIT_ADMINISTRATOR):
             await env.bot.promote_chat_member(chat_id=team.id, user_id=bob.id)
 
         member = await env.bot.get_chat_member(chat_id=team.id, user_id=bob.id)
@@ -1779,7 +1779,7 @@ class TestEditableAdministrators:
     async def test_the_bot_cannot_title_someone_elses_administrator(self, env, team, alice, bob):
         await env.user(alice).in_(team).promote(bob, can_delete_messages=True)
 
-        with refused_with(TelegramBadRequest, refusals.CUSTOM_TITLE_RIGHTS):
+        with refused_with(TelegramBadRequest, rejections.NO_RIGHTS_TO_CHANGE_CUSTOM_TITLE):
             await env.bot.set_chat_administrator_custom_title(
                 chat_id=team.id, user_id=bob.id, custom_title="Boss"
             )
@@ -1805,7 +1805,7 @@ class TestMemberTags:
             permissions=ChatPermissions(can_send_messages=False),
         )
 
-        with refused_with(TelegramBadRequest, refusals.NOT_A_CHAT_MEMBER):
+        with refused_with(TelegramBadRequest, rejections.USER_NOT_A_MEMBER):
             await env.bot.set_chat_member_tag(chat_id=team.id, user_id=bob.id, tag="muted")
 
         assert team.member(bob.id).tag is None

@@ -1322,13 +1322,15 @@ test that matches it will break for no reason that concerns the bot:
 * ``message to be replied not found``
 * ``message thread not found``
 * ``query is too old and response timeout expired or query ID is invalid``
+* ``TOPIC_CLOSED``
+* ``TOPIC_DELETED``
 * ``can't parse entities: …``
 * ``retry after …``
 
-Each refusal is declared in :mod:`aiogram.test.refusals`, marked as sourced or best-effort,
+Each refusal is declared in :mod:`aiogram.test.rejections`, marked as sourced or best-effort,
 and the texts above are the ones marked guaranteed there. To tell two refusals of one code
 apart without matching their wording, compare the declaration:
-``refusal_of(raised.value) is refusals.CANT_BE_DELETED``.
+``rejection_of(raised.value) is rejections.MESSAGE_CANT_BE_DELETED``.
 
 Overriding results and simulating failures
 ==========================================
@@ -2574,7 +2576,7 @@ once per call before the method is modeled:
 
     * - Call
       - What the bot needs
-      - Refusal (after ``Bad Request:``)
+      - Rejection (after ``Bad Request:``)
     * - :code:`pinChatMessage`, :code:`unpinChatMessage`, :code:`unpinAllChatMessages`,
         and the topic and General variants of unpinning all
       - ``can_pin_messages``; in a channel, ``can_edit_messages``
@@ -3474,7 +3476,7 @@ API reference
 
 .. autoclass:: aiogram.test.ApiRejection
 
-.. autoclass:: aiogram.test.refusals.Refusal
+.. autoclass:: aiogram.test.rejections.Rejection
 
 .. autoclass:: aiogram.test.WaitTimeoutError
 

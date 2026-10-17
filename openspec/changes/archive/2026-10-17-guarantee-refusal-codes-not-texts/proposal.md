@@ -10,7 +10,7 @@ all. A test that matches a guessed text breaks for no reason that concerns the b
 - Every refusal guarantees its `error_code` and the exception type for it. The description is
   best-effort, except for ten texts taken from the Bot API server or TDLib that bots match on,
   which the documentation lists.
-- Each refusal's text is declared once, in `aiogram.test.refusals`, marked sourced or
+- Each refusal's text is declared once, in `aiogram.test.rejections`, marked sourced or
   best-effort. `ApiRejection` takes only a 400, a 403 or a 429, and a 429 only with
   `retry_after`.
 - `env.on(...).raises(Error)` without a message words its default under the prefix of the
@@ -32,9 +32,9 @@ None.
 
 ## Impact
 
-- **Code**: `aiogram/test/refusals.py`, `errors.py`, `modeling.py`, `world.py`, `markup.py`,
+- **Code**: `aiogram/test/rejections.py`, `errors.py`, `modeling.py`, `world.py`, `markup.py`,
   `environment.py` and `overrides.py`.
-- **Tests**: `tests/test_testing/test_refusals.py`, its `conftest.py`, `test_bot_rights.py`
+- **Tests**: `tests/test_testing/test_rejections.py`, its `conftest.py`, `test_bot_rights.py`
   and every test that matched a description.
 - **Docs**: a new section of `docs/dispatcher/testing.rst`.
 - **Changelog**: folded into `CHANGES/1887.feature.rst`.

@@ -29,7 +29,7 @@ documented as guaranteed, which are Telegram's own.
   `bot is not a member of the … chat`, `message to edit not found`,
   `message to delete not found`, `message to be replied not found`, `message thread not
   found`, `query is too old and response timeout expired or query ID is invalid`,
-  `can't parse entities: …` and `retry after …`
+  `TOPIC_CLOSED`, `TOPIC_DELETED`, `can't parse entities: …` and `retry after …`
 
 #### Scenario: A code the type cannot stand for is refused
 
@@ -39,7 +39,7 @@ documented as guaranteed, which are Telegram's own.
 
 ### Requirement: A refusal's text is declared once, sourced or best-effort
 
-Each refusal SHALL be declared in `aiogram.test.refusals`, marked sourced, when its text comes
+Each refusal SHALL be declared in `aiogram.test.rejections`, marked sourced, when its text comes
 from the Bot API server or TDLib, or best-effort. Only a sourced text SHALL be guaranteed.
 
 #### Scenario: A guaranteed text cites a source

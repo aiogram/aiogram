@@ -47,10 +47,10 @@ from aiogram.types import (
     User,
 )
 
-from . import refusals
+from . import rejections
 from .errors import ApiRejection
 from .mounting import detached_copy, mount, owned_or_copied
-from .refusals import Refusal
+from .rejections import Rejection
 from .waiting import DEFAULT_WAIT_TIMEOUT, describe_callable, poll_until
 
 if TYPE_CHECKING:
@@ -847,7 +847,7 @@ class StickerSetState:
         for index, sticker in enumerate(self.stickers):
             if sticker.file_id == file_id:
                 return index
-        raise refusals.STICKER_NOT_IN_SET(file_id=file_id, name=self.name)
+        raise rejections.STICKER_NOT_IN_SET(file_id=file_id, name=self.name)
 
     def as_sticker_set(self) -> StickerSet:
         """
@@ -1089,10 +1089,10 @@ def quiz_problem(
 ) -> ApiRejection | None:
     """The refusal for a poll's invalid correct option ids, if any."""
     if poll_type == PollType.QUIZ and not correct_option_ids:
-        return refusals.QUIZ_NEEDS_ANSWERS()
+        return rejections.QUIZ_NEEDS_ANSWERS()
     wrong = [i for i in correct_option_ids or [] if not 0 <= i < len(options)]
     if wrong:
-        return refusals.QUIZ_ANSWER_RANGE(wrong=wrong, count=len(options))
+        return rejections.QUIZ_ANSWER_RANGE(wrong=wrong, count=len(options))
     return None
 
 
@@ -1334,7 +1334,7 @@ class ChatState:
     def require_message(self, message_id: int) -> Message:
         message = self.find_message(message_id)
         if message is None:
-            raise refusals.MESSAGE_MISSING(message_id=message_id, chat_id=self.id)
+            raise rejections.MESSAGE_NOT_FOUND(message_id=message_id, chat_id=self.id)
         return message
 
     def update_message(self, message_id: int, **changes: Any) -> Message:
@@ -1421,7 +1421,7 @@ class ChatState:
     ) -> Message:
         """Replace a stored ephemeral message with an edited copy."""
         message = self._require_ephemeral(
-            receiver_id, ephemeral_id, refusals.MESSAGE_TO_EDIT_NOT_FOUND
+            receiver_id, ephemeral_id, rejections.MESSAGE_TO_EDIT_NOT_FOUND
         )
         edited = derive_message(message, changes, self.bound_bot)
         stored = self.sent_ephemeral[receiver_id]
@@ -1432,7 +1432,7 @@ class ChatState:
         message = self._require_ephemeral(
             receiver_id,
             ephemeral_id,
-            refusals.MESSAGE_TO_DELETE_NOT_FOUND,
+            rejections.MESSAGE_TO_DELETE_NOT_FOUND,
         )
         self.sent_ephemeral[receiver_id].remove(message)
 
@@ -1440,7 +1440,7 @@ class ChatState:
         self,
         receiver_id: int,
         ephemeral_id: int,
-        error: Refusal,
+        error: Rejection,
     ) -> Message:
         message = self.find_ephemeral_message(receiver_id, ephemeral_id)
         if message is None:
@@ -1549,7 +1549,7 @@ class ChatState:
         for link in self.invite_links:
             if link.invite_link == url:
                 return link
-        raise refusals.INVITE_LINK_MISSING(url=url, chat_id=self.id)
+        raise rejections.INVITE_LINK_NOT_FOUND(url=url, chat_id=self.id)
 
     @property
     def primary_invite_link(self) -> InviteLinkState | None:
@@ -1648,10 +1648,9 @@ class ChatState:
         default (``check_message_topic`` in Client.cpp). So is one
         into thread 1 of a forum supergroup, the General topic, which
         a send names by passing no thread. A forum method naming a
-        deleted topic answers ``TOPIC_DELETED``, which is Telegram's
-        server error name; neither TDLib nor the Bot API server
-        spells it out. Any other unknown id answers ``message thread
-        not found``.
+        deleted topic answers ``TOPIC_DELETED``, an MTProto error the
+        Bot API server passes through as the description. Any other
+        unknown id answers ``message thread not found``.
         """
         if message_thread_id is None:
             return self.general_topic
@@ -1660,8 +1659,8 @@ class ChatState:
         if topic is not None and not (sending and general):
             return topic
         if message_thread_id in self.deleted_topic_ids and not sending:
-            raise refusals.TOPIC_DELETED()
-        raise refusals.THREAD_NOT_FOUND()
+            raise rejections.TOPIC_DELETED()
+        raise rejections.MESSAGE_THREAD_NOT_FOUND()
 
     def _missing_topic_message(self, message_thread_id: int) -> str:
         """Say which topics this chat has, and how to add one."""
@@ -2097,7 +2096,7 @@ class World:
         issued = self.query_issued.pop(query_id, self.now)
         expired = kind in ANSWER_WINDOWS and self.now - issued > ANSWER_WINDOWS[kind]
         if self.pending_queries.pop(query_id, None) != kind or expired:
-            raise refusals.QUERY_TOO_OLD()
+            raise rejections.QUERY_TOO_OLD()
 
     def next_date(self) -> datetime.datetime:
         """The date of something happening now: the clock's time."""

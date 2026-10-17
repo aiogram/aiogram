@@ -11,7 +11,7 @@ from aiogram.exceptions import (
     TelegramRetryAfter,
 )
 from aiogram.test import ApiRejection, Blueprint, BotTestEnvironment, administrator_rights
-from aiogram.test.refusals import Refusal, refusal_of
+from aiogram.test.rejections import Rejection, rejection_fields, rejection_of
 
 #: The exception type each error code the toolkit refuses with becomes.
 EXCEPTION_FOR_CODE = {
@@ -22,43 +22,59 @@ EXCEPTION_FOR_CODE = {
 
 
 @contextmanager
-def refused_with(error_type: type[TelegramAPIError], refusal: Refusal):
+def refused_with(
+    error_type: type[TelegramAPIError],
+    rejection: Rejection,
+    **fields: object,
+):
     """
-    Expect a call to fail as ``refusal`` declares, without matching its text.
+    Expect a call to fail as ``rejection`` declares, not as it words it.
 
     The exception type is the contract and the declaration says which
-    of the refusals of that code fired, so a best-effort wording can
-    change without a test noticing.
+    of the rejections of that code fired, so a best-effort wording can
+    change without a test noticing. Fields name what the description
+    was filled in with, such as ``noun="polls"``.
     """
     with pytest.raises(error_type) as caught:
         yield
-    assert refusal_of(caught.value) is refusal
-    assert type(caught.value) is EXCEPTION_FOR_CODE[refusal.error_code]
+    assert rejection_of(caught.value) is rejection
+    assert type(caught.value) is EXCEPTION_FOR_CODE[rejection.error_code]
+    found = rejection_fields(caught.value)
+    assert {name: found.get(name) for name in fields} == {
+        name: str(value) for name, value in fields.items()
+    }
 
 
 @pytest.fixture(autouse=True)
-def _every_refusal_keeps_its_contract(monkeypatch):
+def _every_rejection_keeps_its_contract(monkeypatch):
     """
-    Check the error contract on every refusal any test in this package causes.
+    Check the error contract on every rejection a test causes.
 
-    The error code and the exception type are guaranteed, whatever the text says.
-    So whenever the environment answers a refusal, the exception that comes out
-    must be the type its code stands for, a 429 must carry its ``retry_after``,
-    and the refusal must be one declared in :mod:`aiogram.test.refusals`.
+    The code and the exception type are guaranteed, whatever the
+    description says. Whenever the environment answers a rejection,
+    the exception must be the type its code stands for, carry its
+    ``retry_after``, and come from a declared rejection. A violation
+    is recorded and fails the test at teardown, as a handler's broad
+    ``except`` could swallow an assertion raised in the call.
     """
     refuse = BotTestEnvironment._refuse
+    violations = []
 
     def checked(self, method, error: ApiRejection):
-        assert error.refusal is not None, f"{error.description!r} is not a declared refusal"
+        if error.rejection is None:
+            violations.append(f"{error.description!r} is not declared")
         try:
             refuse(self, method, error)
         except TelegramAPIError as raised:
-            assert type(raised) is EXCEPTION_FOR_CODE[error.error_code], error.description
-            if error.retry_after is not None:
-                assert raised.retry_after == error.retry_after
+            if type(raised) is not EXCEPTION_FOR_CODE.get(error.error_code):
+                violations.append(f"{error.description!r} became {type(raised)}")
+            if getattr(raised, "retry_after", None) != error.retry_after:
+                violations.append(f"{error.description!r} lost its retry_after")
             raise
 
     monkeypatch.setattr(BotTestEnvironment, "_refuse", checked)
+    yield
+    assert not violations, violations
 
 
 #: What the bot holds in a chat a test has it moderate: an ordinary

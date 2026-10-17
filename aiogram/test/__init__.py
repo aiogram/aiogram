@@ -10,6 +10,7 @@ Nothing here imports :mod:`pytest`; the fixtures live in :mod:`aiogram.test.plug
 which pytest loads through the ``pytest11`` entry point.
 """
 
+from . import rejections
 from .actors import UserActor, Withheld
 from .blueprint import (
     Blueprint,
@@ -43,6 +44,7 @@ from .overrides import (
     OverrideHandle,
     OverrideRule,
 )
+from .rejections import rejection_fields, rejection_of
 from .routing import detach_router
 from .session import FakeTelegramSession
 from .synthesis import SynthesisContext, SynthesisError, synthesize, synthesize_result
@@ -112,6 +114,9 @@ __all__ = (
     "default_blueprint",
     "default_chat_permissions",
     "detach_router",
+    "rejection_fields",
+    "rejection_of",
+    "rejections",
     "synthesize",
     "synthesize_result",
 )

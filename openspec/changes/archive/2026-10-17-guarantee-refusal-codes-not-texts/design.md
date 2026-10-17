@@ -13,9 +13,9 @@ See proposal.md for the motivation; the requirements are in
 
 ### D1. One module declares the texts
 
-`aiogram.test.refusals` holds a `Refusal` per text: the wording, an `origin` naming the Bot
+`aiogram.test.rejections` holds a `Rejection` per text: the wording, an `origin` naming the Bot
 API server or TDLib, or `None` for the toolkit's guess, a `guaranteed` flag and the code. A
-site raises `refusals.NAME(**fields)`. A registry of names rather than an enum or a table
+site raises `rejections.NAME(**fields)`. A registry of names rather than an enum or a table
 keyed by method, because a text is shared by sites that have nothing else in common, and a
 site needs only the name.
 
@@ -24,7 +24,7 @@ autouse fixture fails a refusal that was not declared.
 
 ### D2. Guaranteed means sourced and matched by bots
 
-A guaranteed text must cite a source, which `Refusal` enforces, and be one that bots
+A guaranteed text must cite a source, which `Rejection` enforces, and be one that bots
 realistically match on. The list was built from the sources: the Bot API server's
 `Client.cpp` for `bot was blocked by the user`, the chat access check, the `message to ...
 not found` checks, `message to be replied not found`, `message thread not found`, the expired
@@ -42,7 +42,7 @@ an exception type the code does not stand for, and a 429 without `retry_after` w
 as a bare `TelegramAPIError`. `raise_api_error` applies the same rule to `retry_after`. The
 exception type is observable and the code is not, as `aiogram.exceptions` carries no
 `error_code`, so the tests' autouse fixture checks the type against the code on every refusal
-and the tests assert the type. `refusal_of()` reads a caught exception back against the
+and the tests assert the type. `rejection_of()` reads a caught exception back against the
 declared texts, so a test also says which refusal of a code fired, without matching its
 wording.
 

@@ -28,9 +28,9 @@ from aiogram.dispatcher.event.bases import UNHANDLED, SkipHandler
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.methods import TelegramMethod
-from aiogram.types import ChatPermissions, Message, TelegramObject, Update, User
+from aiogram.types import Message, TelegramObject, Update, User
 
-from . import refusals
+from . import rejections
 from .actors import UserActor
 from .blueprint import (
     Blueprint,
@@ -56,7 +56,7 @@ from .errors import (
 )
 from .flood import FloodControl, RateLimits
 from .markup import apply_parse_modes, refuse_empty_text
-from .modeling import bot_me, check_bot_rights, find_handler, resolve_chat
+from .modeling import bot_me, check_bot_rights, find_handler
 from .mounting import bindables, detached_copy
 from .overrides import (
     BLOCKED_BY_USER,
@@ -2319,7 +2319,7 @@ class BotTestEnvironment:
             return
         wait = flood.retry_after(chat.id, chat.type, self.rate_clock())
         if wait is not None:
-            raise refusals.FLOOD(retry_after=wait, seconds=wait)
+            raise rejections.FLOOD(retry_after=wait, seconds=wait)
         self._admitted = (flood, chat)
 
     async def handle_call(

@@ -8,7 +8,7 @@ from aiogram.test import (
     BotTestEnvironment,
     WorldLookupError,
     administrator_rights,
-    refusals,
+    rejections,
 )
 from aiogram.types import InputMediaPhoto, Message, ReplyParameters
 
@@ -126,7 +126,7 @@ class TestClosedTopics:
         chat.topic(thread_id).is_closed = True
         before = len(chat.topic(thread_id).messages)
 
-        with refused_with(TelegramBadRequest, refusals.TOPIC_CLOSED):
+        with refused_with(TelegramBadRequest, rejections.TOPIC_CLOSED):
             await send(env, chat, thread_id)
 
         assert len(chat.topic(thread_id).messages) == before
@@ -146,7 +146,7 @@ class TestClosedTopics:
         )
         chat.topic(thread_id).is_closed = True
 
-        with refused_with(TelegramBadRequest, refusals.TOPIC_CLOSED):
+        with refused_with(TelegramBadRequest, rejections.TOPIC_CLOSED):
             await _send_message(env, chat, thread_id)
 
     async def test_the_owner_posts_into_a_closed_topic(self, make_env):
@@ -181,7 +181,7 @@ class TestClosedTopics:
         del chat.members[env.world.bot_user.id]
         chat.topic(thread_id).is_closed = True
 
-        with refused_with(TelegramBadRequest, refusals.TOPIC_CLOSED):
+        with refused_with(TelegramBadRequest, rejections.TOPIC_CLOSED):
             await _send_message(env, chat, thread_id)
 
 
@@ -191,7 +191,7 @@ class TestClosedGeneralTopic:
         env, chat, _thread_id = make_env()
         setattr(chat.general_topic, state, True)
 
-        with refused_with(TelegramBadRequest, refusals.TOPIC_CLOSED):
+        with refused_with(TelegramBadRequest, rejections.TOPIC_CLOSED):
             await env.bot.send_message(chat_id=chat.id, text="x")
 
     @pytest.mark.parametrize("state", ["is_closed", "is_hidden"])
@@ -464,7 +464,7 @@ class TestForumToggle:
         await owner.set_topics(False)
         kwargs = {key: thread_id if value == "thread" else value for key, value in kwargs.items()}
 
-        with refused_with(TelegramBadRequest, refusals.NOT_A_FORUM):
+        with refused_with(TelegramBadRequest, rejections.NOT_A_FORUM):
             await getattr(env.bot, name)(chat_id=chat.id, **kwargs)
 
     async def test_turning_topics_on_again_restores_them(self, owned_forum):
@@ -511,7 +511,7 @@ class TestForumToggle:
             env.dispose_sync()
 
     async def test_a_plain_supergroup_has_no_topics_to_create(self, env, team):
-        with refused_with(TelegramBadRequest, refusals.NOT_A_FORUM):
+        with refused_with(TelegramBadRequest, rejections.NOT_A_FORUM):
             await env.bot.create_forum_topic(chat_id=team.id, name="New")
 
 
@@ -673,7 +673,7 @@ class TestPrivateChatTopics:
     async def test_closing_is_a_supergroups(self, private, call):
         env, chat = private
 
-        with refused_with(TelegramBadRequest, refusals.NOT_A_SUPERGROUP_FORUM):
+        with refused_with(TelegramBadRequest, rejections.NOT_A_SUPERGROUP_FORUM):
             await call(env.bot, chat.id)
 
     async def test_get_chat_never_reports_it_a_forum(self, private):

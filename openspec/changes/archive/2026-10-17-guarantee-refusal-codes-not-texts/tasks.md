@@ -2,7 +2,7 @@
 
 ## 1. Declared refusals
 
-- [x] 1.1 Declare every refusal in `aiogram.test.refusals`, sourced or best-effort, and raise them from the sites (design D1); verify no `ApiRejection` is built from a literal
+- [x] 1.1 Declare every refusal in `aiogram.test.rejections`, sourced or best-effort, and raise them from the sites (design D1); verify no `ApiRejection` is built from a literal
 - [x] 1.2 Guarantee the codes and the sourced texts bots match on (design D2, D3); verify each code becomes its exception type and the documentation lists the guaranteed texts
 
 ## 2. Topic rights

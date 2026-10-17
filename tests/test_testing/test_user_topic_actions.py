@@ -9,7 +9,7 @@ from aiogram.test import (
     WorldLookupError,
     administrator_rights,
     default_chat_permissions,
-    refusals,
+    rejections,
 )
 from aiogram.types import ChatPermissions, Message
 
@@ -300,7 +300,7 @@ class TestWhoMay:
         # A bot that may manage topics would post anyway.
         chat.member(env.world.bot_user.id).set_status(ChatMemberStatus.MEMBER)
 
-        with refused_with(TelegramBadRequest, refusals.TOPIC_CLOSED):
+        with refused_with(TelegramBadRequest, rejections.TOPIC_CLOSED):
             await env.bot.send_message(chat_id=chat.id, text="x", message_thread_id=thread_id)
 
     @pytest.mark.parametrize("who", ["limited", "member"])

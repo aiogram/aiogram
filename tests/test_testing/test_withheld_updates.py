@@ -10,9 +10,9 @@ from aiogram.test import (
     BotTestEnvironment,
     Withheld,
     administrator_rights,
-    refusals,
+    rejections,
 )
-from aiogram.test.refusals import refusal_of
+from aiogram.test.rejections import rejection_of
 from aiogram.types import Message
 
 WITHHELD = "withheld by the test with deliver=False"
@@ -180,5 +180,5 @@ class TestTheLostClosure:
         await forum["host"].close_topic(forum["topic"], deliver=False)
         await forum["player"].send("/vote")
 
-        assert [refusal_of(error) for error in learned] == [refusals.TOPIC_CLOSED]
+        assert [rejection_of(error) for error in learned] == [rejections.TOPIC_CLOSED]
         assert forum["topic"].messages[-1].text == "/vote"

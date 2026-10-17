@@ -26,12 +26,15 @@ out — so handing out the stored instance would bind the world's own state and 
 comparison failing with two identical-looking sides. Those are copied out explicitly, at the
 handler that returns them.
 
-**Refusing a call.** Raise a refusal declared in :mod:`aiogram.test.refusals`, such as
-``raise refusals.CANT_BE_DELETED()``, for something the real API would refuse. Its text is
-declared there, sourced or best-effort, and ``handle_call`` turns it into the exception its
-error code stands for, a :class:`~aiogram.exceptions.TelegramBadRequest` for the usual 400.
-Raise :class:`~aiogram.test.WorldLookupError` for a gap in the test's own setup or a limit of the
-fake — that one propagates and fails the test instead of arriving as an error the bot might
+**Refusing a call.** Raise a rejection declared in
+:mod:`aiogram.test.rejections`, such as
+``raise rejections.MESSAGE_CANT_BE_DELETED()``, for something the
+real API would refuse. Its description is declared there, sourced or
+best-effort, and ``handle_call`` turns it into the exception its error
+code stands for, a :class:`~aiogram.exceptions.TelegramBadRequest` for
+the usual 400. Raise :class:`~aiogram.test.WorldLookupError` for a gap
+in the test's own setup or a limit of the fake. That one propagates
+and fails the test instead of arriving as an error the bot might
 catch.
 """
 
@@ -275,10 +278,10 @@ from aiogram.types import (
     Venue,
 )
 
-from . import refusals
+from . import rejections
 from .markup import refuse_blank_text
 from .mounting import detached_copy
-from .refusals import Refusal
+from .rejections import Rejection
 from .rich import materialize_rich_message
 from .synthesis import (
     annotation_accepts,
@@ -312,7 +315,6 @@ from .world import (
     no_administrator_rights,
     posted_by,
     scope_key,
-    scoped_rights,
 )
 
 if TYPE_CHECKING:
@@ -642,9 +644,9 @@ def require_standing(env: BotTestEnvironment, chat: ChatState) -> None:
     if member is None or member.is_present:
         return
     refusal = (
-        refusals.BOT_KICKED
+        rejections.BOT_KICKED
         if member.status == ChatMemberStatus.KICKED
-        else refusals.BOT_NOT_A_MEMBER
+        else rejections.BOT_NOT_A_MEMBER
     )
     raise refusal(noun=_CHAT_NOUNS[chat.type])
 
@@ -661,15 +663,15 @@ class RightRule:
     The administrator right one kind of call takes.
 
     ``right`` names it, or is a function of the chat's type naming
-    it. ``refusal`` is Telegram's refusal without it, and ``refusals``
-    the one a chat type gets instead. The rule holds in
+    it. ``rejection`` is Telegram's refusal without it, and
+    ``rejections`` the one a chat type gets instead. The rule holds in
     ``chat_types`` only, and ``before`` runs first, see
     :data:`Precheck`.
     """
 
     right: str | Callable[[str], str]
-    refusal: Refusal
-    refusals: Mapping[str, Refusal] = dataclasses.field(default_factory=dict)
+    rejection: Rejection
+    rejections: Mapping[str, Rejection] = dataclasses.field(default_factory=dict)
     chat_types: frozenset[str] = _GROUP_LIKE
     before: Precheck | None = None
 
@@ -677,9 +679,9 @@ class RightRule:
         """The right a chat of ``chat_type`` takes."""
         return self.right if isinstance(self.right, str) else self.right(chat_type)
 
-    def refusal_in(self, chat_type: str) -> Refusal:
+    def rejection_in(self, chat_type: str) -> Rejection:
         """Telegram's refusal in a chat of ``chat_type``."""
-        return self.refusals.get(chat_type, self.refusal)
+        return self.rejections.get(chat_type, self.rejection)
 
 
 def _pin_right(chat_type: str) -> str:
@@ -737,15 +739,15 @@ def _opened_by_bot(env: BotTestEnvironment, chat: ChatState, method: Any) -> boo
 
 _PINNING = RightRule(
     right=_pin_right,
-    refusal=refusals.PIN_RIGHTS,
+    rejection=rejections.NO_RIGHTS_TO_PIN,
     before=_on_behalf_of_business,
 )
 _RESTRICTING = RightRule(
     right="can_restrict_members",
     # TDLib has no check of its own in a basic group, so the server's
     # error comes back.
-    refusal=refusals.RESTRICT_RIGHTS,
-    refusals={ChatType.GROUP: refusals.CHAT_ADMIN_REQUIRED},
+    rejection=rejections.NO_RIGHTS_TO_RESTRICT,
+    rejections={ChatType.GROUP: rejections.CHAT_ADMIN_REQUIRED},
     before=_owner_first,
 )
 #: Where the Bot API server takes unbanning and promoting at all
@@ -755,11 +757,11 @@ _RESTRICTING = RightRule(
 _SUPERGROUP_OR_CHANNEL = frozenset({ChatType.SUPERGROUP, ChatType.CHANNEL})
 _STICKER_SET = RightRule(
     right="can_change_info",
-    refusal=refusals.STICKER_SET_RIGHTS,
+    rejection=rejections.NO_RIGHTS_TO_CHANGE_STICKER_SET,
 )
 _SENDER_CHAT_BANS = RightRule(
     right="can_restrict_members",
-    refusal=refusals.RESTRICT_RIGHTS,
+    rejection=rejections.NO_RIGHTS_TO_RESTRICT,
     chat_types=_SUPERGROUP_OR_CHANNEL,
 )
 _SUGGESTED_POSTS = RightRule(
@@ -767,31 +769,31 @@ _SUGGESTED_POSTS = RightRule(
     # TDLib's text when the right is missing (MessagesManager.cpp,
     # ``process_suggested_post``). The toolkit has no channel direct
     # messages chat, so the right is read off the chat named.
-    refusal=refusals.SUGGESTED_POST_RIGHTS,
+    rejection=rejections.SUGGESTED_POST_UNUSABLE,
     chat_types=frozenset({ChatType.CHANNEL}),
 )
 _INVITING = RightRule(
     right="can_invite_users",
-    refusal=refusals.INVITE_LINK_RIGHTS,
+    rejection=rejections.NO_RIGHTS_TO_MANAGE_INVITE_LINKS,
 )
 _JOIN_REQUESTS = RightRule(
     right="can_invite_users",
-    refusal=refusals.JOIN_REQUEST_RIGHTS,
+    rejection=rejections.NO_RIGHTS_TO_MANAGE_JOIN_REQUESTS,
 )
 _CHAT_PHOTO = RightRule(
     right="can_change_info",
-    refusal=refusals.CHAT_PHOTO_RIGHTS,
+    rejection=rejections.NO_RIGHTS_TO_CHANGE_PHOTO,
 )
 _SUPERGROUP = frozenset({ChatType.SUPERGROUP})
 _TOGGLING_TOPICS = RightRule(
     right="can_manage_topics",
-    refusal=refusals.TOGGLE_TOPIC_RIGHTS,
+    rejection=rejections.NO_RIGHTS_TO_TOGGLE_TOPIC,
     chat_types=_SUPERGROUP,
     before=_opened_by_bot,
 )
 _TOGGLING_GENERAL = RightRule(
     right="can_manage_topics",
-    refusal=refusals.TOGGLE_TOPIC_RIGHTS,
+    rejection=rejections.NO_RIGHTS_TO_TOGGLE_TOPIC,
     chat_types=_SUPERGROUP,
     before=_forum_first,
 )
@@ -808,7 +810,7 @@ BOT_RIGHTS: dict[type[TelegramMethod[Any]], RightRule] = {
     BanChatMember: _RESTRICTING,
     UnbanChatMember: RightRule(
         right="can_restrict_members",
-        refusal=refusals.RESTRICT_RIGHTS,
+        rejection=rejections.NO_RIGHTS_TO_RESTRICT,
         chat_types=_SUPERGROUP_OR_CHANNEL,
         before=_unban_first,
     ),
@@ -816,13 +818,13 @@ BOT_RIGHTS: dict[type[TelegramMethod[Any]], RightRule] = {
     RestrictChatMember: dataclasses.replace(_RESTRICTING, chat_types=_SUPERGROUP),
     PromoteChatMember: RightRule(
         right="can_promote_members",
-        refusal=refusals.PROMOTE_RIGHTS,
+        rejection=rejections.NO_RIGHTS_TO_PROMOTE,
         chat_types=_SUPERGROUP_OR_CHANNEL,
         before=_owner_first,
     ),
     SetChatPermissions: RightRule(
         right="can_restrict_members",
-        refusal=refusals.PERMISSIONS_RIGHTS,
+        rejection=rejections.NO_RIGHTS_TO_CHANGE_PERMISSIONS,
     ),
     SetChatStickerSet: _STICKER_SET,
     DeleteChatStickerSet: _STICKER_SET,
@@ -832,17 +834,17 @@ BOT_RIGHTS: dict[type[TelegramMethod[Any]], RightRule] = {
         right="can_manage_tags",
         # TDLib leaves the check to the server, whose answer is not
         # in the open source; this is its usual one.
-        refusal=refusals.CHAT_ADMIN_REQUIRED,
+        rejection=rejections.CHAT_ADMIN_REQUIRED,
     ),
     ApproveSuggestedPost: _SUGGESTED_POSTS,
     DeclineSuggestedPost: _SUGGESTED_POSTS,
     SetChatTitle: RightRule(
         right="can_change_info",
-        refusal=refusals.CHAT_TITLE_RIGHTS,
+        rejection=rejections.NO_RIGHTS_TO_CHANGE_TITLE,
     ),
     SetChatDescription: RightRule(
         right="can_change_info",
-        refusal=refusals.CHAT_DESCRIPTION_RIGHTS,
+        rejection=rejections.NO_RIGHTS_TO_CHANGE_DESCRIPTION,
     ),
     SetChatPhoto: _CHAT_PHOTO,
     DeleteChatPhoto: _CHAT_PHOTO,
@@ -856,19 +858,19 @@ BOT_RIGHTS: dict[type[TelegramMethod[Any]], RightRule] = {
     DeclineChatJoinRequest: _JOIN_REQUESTS,
     CreateForumTopic: RightRule(
         right="can_manage_topics",
-        refusal=refusals.CREATE_TOPIC_RIGHTS,
+        rejection=rejections.NO_RIGHTS_TO_CREATE_TOPIC,
         chat_types=_SUPERGROUP,
         before=_forum_first,
     ),
     EditForumTopic: RightRule(
         right="can_manage_topics",
-        refusal=refusals.EDIT_TOPIC_RIGHTS,
+        rejection=rejections.NO_RIGHTS_TO_EDIT_TOPIC,
         chat_types=_SUPERGROUP,
         before=_opened_by_bot,
     ),
     EditGeneralForumTopic: RightRule(
         right="can_manage_topics",
-        refusal=refusals.EDIT_TOPIC_RIGHTS,
+        rejection=rejections.NO_RIGHTS_TO_EDIT_TOPIC,
         chat_types=_SUPERGROUP,
         before=_forum_first,
     ),
@@ -880,7 +882,7 @@ BOT_RIGHTS: dict[type[TelegramMethod[Any]], RightRule] = {
     UnhideGeneralForumTopic: _TOGGLING_GENERAL,
     DeleteForumTopic: RightRule(
         right="can_delete_messages",
-        refusal=refusals.DELETE_TOPIC_RIGHTS,
+        rejection=rejections.NO_RIGHTS_TO_DELETE_TOPIC,
         chat_types=_SUPERGROUP,
         before=_opened_by_bot,
     ),
@@ -907,7 +909,7 @@ def check_bot_rights(env: BotTestEnvironment, method: TelegramMethod[Any]) -> No
     if rule.before is not None and rule.before(env, chat, method):
         return
     if not holds_right(chat, env.world.bot_user.id, rule.right_in(chat.type)):
-        raise rule.refusal_in(chat.type)()
+        raise rule.rejection_in(chat.type)()
 
 
 #: Message content field -> the permissions sending it takes, and how
@@ -1009,7 +1011,7 @@ def require_send_permission(
         return
     if chat.type == ChatType.CHANNEL:
         if not bot_has_right(env, chat, "can_post_messages"):
-            raise refusals.CHANNEL_POST_RIGHTS()
+            raise rejections.NO_RIGHTS_TO_POST_IN_CHANNEL()
         return
     member = _bot_member(env, chat)
     if member is not None and member.status in _ADMINISTRATOR_STATUSES:
@@ -1018,7 +1020,7 @@ def require_send_permission(
         return
     permissions, noun = _SEND_PERMISSIONS.get(kind, (("can_send_messages",), "text messages"))
     if not all(member_may(chat, member, permission) for permission in permissions):
-        raise refusals.SEND_RIGHTS(noun=noun)
+        raise rejections.NO_RIGHTS_TO_SEND(noun=noun)
 
 
 def bot_may_delete(env: BotTestEnvironment, chat: ChatState, message: Message) -> bool:
@@ -1065,8 +1067,8 @@ def posting_topic(
     the chat does not have fails as :meth:`ChatState.topic_for_call`
     says. A closed topic, or a closed or hidden General topic, takes
     messages only from someone who may manage topics or from the
-    topic's creator: ``TOPIC_CLOSED`` otherwise. That text is the
-    server's, which neither TDLib nor the Bot API server spells out.
+    topic's creator: ``TOPIC_CLOSED`` otherwise, an MTProto error the
+    Bot API server passes through as the description.
     """
     if chat.type == ChatType.PRIVATE:
         # The server looks up any thread a private chat is sent.
@@ -1077,7 +1079,7 @@ def posting_topic(
     closed = topic.is_closed or (topic.is_general and topic.is_hidden)
     opened = topic.creator_id is not None and topic.creator_id == env.world.bot_user.id
     if closed and not opened and not bot_has_right(env, chat, "can_manage_topics"):
-        raise refusals.TOPIC_CLOSED()
+        raise rejections.TOPIC_CLOSED()
     return topic
 
 
@@ -1210,22 +1212,22 @@ def _ephemeral_receiver(
     replied_id = None if reply_parameters is None else reply_parameters.ephemeral_message_id
     if parameters is None:
         if replied_id is not None:
-            raise refusals.EPHEMERAL_REPLY_NEEDS_EPHEMERAL()
+            raise rejections.REPLY_TO_EPHEMERAL_NOT_EPHEMERAL()
         return None
     if chat.type not in {ChatType.GROUP, ChatType.SUPERGROUP}:
-        raise refusals.EPHEMERAL_GROUPS_ONLY()
+        raise rejections.EPHEMERAL_GROUPS_ONLY()
     receiver = env.world.user(parameters.receiver_user_id)
     if replied_id is not None:
         command = chat.find_ephemeral_command(replied_id)
         if command is None:
-            raise refusals.REPLY_NOT_FOUND()
+            raise rejections.MESSAGE_TO_BE_REPLIED_NOT_FOUND()
         if _age(env, command) > _EPHEMERAL_REPLY_WINDOW:
-            raise refusals.EPHEMERAL_REPLY_WINDOW()
+            raise rejections.EPHEMERAL_REPLY_WINDOW()
     if (
         parameters.replace_callback_query_message
         and parameters.callback_query_id in env.world.ephemeral_callbacks
     ):
-        raise refusals.EPHEMERAL_CANT_REPLACE()
+        raise rejections.EPHEMERAL_CANT_REPLACE()
     return receiver
 
 
@@ -1267,7 +1269,7 @@ def _reply_changes(
     where = chat if target_chat is None else resolve_chat(env, target_chat)
     on_behalf = getattr(method, "business_connection_id", None) is not None
     if where is not chat and (ephemeral or on_behalf):
-        raise refusals.REPLY_ELSEWHERE_UNSUPPORTED()
+        raise rejections.REPLY_ELSEWHERE_UNSUPPORTED()
     replied = where.find_message(message_id)
     if replied is None:
         in_topic = chat.is_forum and getattr(method, "message_thread_id", None) is not None
@@ -1278,7 +1280,7 @@ def _reply_changes(
         else:
             allowed = bool(allow_without_reply)
         if not allowed:
-            raise refusals.REPLY_NOT_FOUND()
+            raise rejections.MESSAGE_TO_BE_REPLIED_NOT_FOUND()
         return {}
     if where is chat:
         if replied.reply_to_message is not None:
@@ -1490,7 +1492,7 @@ def _check_business_edit_window(env: BotTestEnvironment, message: Message) -> No
         and message.reply_markup is None
         and _age(env, message) > _BUSINESS_EDIT_WINDOW
     ):
-        raise refusals.CANT_BE_EDITED()
+        raise rejections.MESSAGE_CANT_BE_EDITED()
 
 
 def _check_editable_by_bot(env: BotTestEnvironment, chat: ChatState, message: Message) -> None:
@@ -1513,16 +1515,16 @@ def _check_editable_by_bot(env: BotTestEnvironment, chat: ChatState, message: Me
             or (sender is not None and sender.id == connection.user_id)
         ):
             return
-        raise refusals.CANT_BE_EDITED()
+        raise rejections.MESSAGE_CANT_BE_EDITED()
     if sender is None or sender.id != env.world.bot_user.id:
-        raise refusals.CANT_BE_EDITED()
+        raise rejections.MESSAGE_CANT_BE_EDITED()
 
 
 def _edit_target(
     env: BotTestEnvironment,
     method: TelegramMethod[Any],
     *,
-    forwarded: Refusal = refusals.CANT_BE_EDITED,
+    forwarded: Rejection = rejections.MESSAGE_CANT_BE_EDITED,
 ) -> tuple[ChatState, Message]:
     """
     The chat and stored message an edit targets, or a refusal.
@@ -1542,7 +1544,7 @@ def _edit_target(
         # A business message is edited through its connection, and only
         # a business message is: the bot's own chat and the business
         # chat are different places to Telegram.
-        raise refusals.MESSAGE_TO_EDIT_NOT_FOUND()
+        raise rejections.MESSAGE_TO_EDIT_NOT_FOUND()
     # Every edit method is bound by these rules, so check them here.
     _check_editable_by_bot(env, chat, stored)
     if stored.forward_origin is not None:
@@ -1575,10 +1577,10 @@ def handle_send_media_group(
     chat = resolve_chat(env, method.chat_id)
     # The server reads the items before it looks at the chat.
     if not _MEDIA_GROUP_SIZE[0] <= len(method.media) <= _MEDIA_GROUP_SIZE[1]:
-        raise refusals.MEDIA_GROUP_SIZE()
+        raise rejections.MEDIA_GROUP_SIZE()
     kinds = {media_field(item) for item in method.media}
     if len(kinds) > 1 and kinds & _ALBUM_KINDS.keys():
-        raise refusals.MEDIA_GROUP_MIXED()
+        raise rejections.MEDIA_GROUP_MIXED()
     require_standing(env, chat)
     posting_topic(env, chat, method.message_thread_id)
     for kind in sorted(kinds):
@@ -1741,9 +1743,9 @@ def forward_one(
     thread = _thread_changes(env, target, thread_id)
     original = source.find_message(message_id)
     if original is None:
-        raise refusals.FORWARD_NOT_FOUND()
+        raise rejections.MESSAGE_TO_FORWARD_NOT_FOUND()
     if not _forwardable(original):
-        raise refusals.CANT_BE_FORWARDED()
+        raise rejections.MESSAGE_CANT_BE_FORWARDED()
     require_send_permission(env, target, content_kind(original), forwarded=True)
     env.admit_send(target)
     return target.add_derived(
@@ -1892,9 +1894,9 @@ def copy_one(
     thread = _thread_changes(env, target, thread_id)
     original = source.find_message(message_id)
     if original is None:
-        raise refusals.COPY_NOT_FOUND()
+        raise rejections.MESSAGE_TO_COPY_NOT_FOUND()
     if not _copyable(original):
-        raise refusals.CANT_BE_COPIED()
+        raise rejections.MESSAGE_CANT_BE_COPIED()
     require_send_permission(env, target, content_kind(original), forwarded=True)
     if all(getattr(original, name) is None for name in CAPTIONED_FIELDS):
         # A caption is for media: a text, sticker or poll copy takes
@@ -2112,7 +2114,7 @@ CAPTIONED_FIELDS: tuple[str, ...] = tuple(
 def _require_content(message: Message | None, fields: tuple[str, ...], kind: str) -> None:
     """Refuse to edit ``kind`` on a message with none of ``fields``."""
     if message is not None and all(getattr(message, name) is None for name in fields):
-        raise refusals.NO_CONTENT_TO_EDIT(kind=kind)
+        raise rejections.NO_CONTENT_TO_EDIT(kind=kind)
 
 
 @models(EditMessageText)
@@ -2208,7 +2210,7 @@ def _check_media_edit(
         _VISUAL_ALBUM_KINDS,
     )
     if media_field(method.media) not in allowed:
-        raise refusals.ALBUM_ITEM_EDIT(kinds=", ".join(sorted(allowed)))
+        raise rejections.ALBUM_ITEM_EDIT(kinds=", ".join(sorted(allowed)))
 
 
 @models(EditMessageMedia)
@@ -2254,7 +2256,7 @@ def _stored_ephemeral(env: BotTestEnvironment, method: _EphemeralEdit) -> Messag
     chat = resolve_chat(env, method.chat_id)
     message = chat.find_ephemeral_message(method.receiver_user_id, method.ephemeral_message_id)
     if message is None:
-        raise refusals.MESSAGE_TO_EDIT_NOT_FOUND()
+        raise rejections.MESSAGE_TO_EDIT_NOT_FOUND()
     return message
 
 
@@ -2329,7 +2331,7 @@ def _require_live(env: BotTestEnvironment, stored: Message) -> Location:
         or current is None
         or (current != LIVE_FOREVER and _age(env, stored) >= datetime.timedelta(seconds=current))
     ):
-        raise refusals.CANT_BE_EDITED()
+        raise rejections.MESSAGE_CANT_BE_EDITED()
     return location
 
 
@@ -2352,7 +2354,7 @@ def handle_edit_live_location(
         if (current != LIVE_FOREVER and live_period > current + _DAY) or (
             ends > now + datetime.timedelta(days=90)
         ):
-            raise refusals.LIVE_PERIOD_RANGE()
+            raise rejections.LIVE_PERIOD_RANGE()
     return chat.update_message(
         message_id,
         **edit_stamp(env),
@@ -2433,9 +2435,9 @@ def handle_delete(env: BotTestEnvironment, method: DeleteMessage) -> bool:
     chat = resolve_chat(env, method.chat_id)
     message = chat.find_message(method.message_id)
     if message is None:
-        raise refusals.MESSAGE_TO_DELETE_NOT_FOUND()
+        raise rejections.MESSAGE_TO_DELETE_NOT_FOUND()
     if not (_deletable(env, chat, message) and bot_may_delete(env, chat, message)):
-        raise refusals.CANT_BE_DELETED()
+        raise rejections.MESSAGE_CANT_BE_DELETED()
     chat.delete_message(method.message_id)
     return True
 
@@ -2473,7 +2475,7 @@ def handle_pin(env: BotTestEnvironment, method: PinChatMessage) -> bool:
     chat = resolve_chat(env, method.chat_id)
     pinned = None if method.message_id is None else chat.find_message(method.message_id)
     if pinned is None:
-        raise refusals.PIN_NOT_FOUND()
+        raise rejections.MESSAGE_TO_PIN_NOT_FOUND()
     connection = (
         None
         if method.business_connection_id is None
@@ -2567,7 +2569,7 @@ def handle_get_user_personal_chat_messages(
 ) -> list[Message]:
     chat = env.world.chats.get(method.user_id)
     if chat is None:
-        raise refusals.NO_PERSONAL_CHAT()
+        raise rejections.NO_PERSONAL_CHAT()
     return chat.messages[-method.limit :]
 
 
@@ -2594,8 +2596,8 @@ def _not_the_owner(chat: ChatState, user_id: int) -> MemberState:
         # group the server decides, and its answer is not in the open
         # source; the toolkit gives its usual one.
         if chat.type == ChatType.GROUP:
-            raise refusals.CHAT_ADMIN_REQUIRED()
-        raise refusals.OWNER_PROTECTED()
+            raise rejections.CHAT_ADMIN_REQUIRED()
+        raise rejections.OWNER_PROTECTED()
     return member
 
 
@@ -2625,7 +2627,7 @@ def _supergroup_or_channel(env: BotTestEnvironment, chat_id: Any) -> ChatState:
     """
     chat = resolve_chat(env, chat_id)
     if chat.type not in _SUPERGROUP_OR_CHANNEL:
-        raise refusals.SUPERGROUP_OR_CHANNEL_ONLY()
+        raise rejections.SUPERGROUP_OR_CHANNEL_ONLY()
     return chat
 
 
@@ -2690,7 +2692,7 @@ def handle_promote(env: BotTestEnvironment, method: PromoteChatMember) -> bool:
         # The bot may edit only the administrators it promoted, which
         # is what ``can_be_edited`` reports; one known to be promoted
         # by someone else is not the bot's to edit or demote.
-        raise refusals.ADMIN_RIGHTS_NOT_EDITABLE()
+        raise rejections.NO_RIGHTS_TO_EDIT_ADMINISTRATOR()
     granted = mask(ChatAdministratorRights, method, coerce=True)
     if not any(granted.values()):
         # Demotion takes away an administrator's standing only: it
@@ -2728,7 +2730,7 @@ def handle_restrict(env: BotTestEnvironment, method: RestrictChatMember) -> bool
     """
     chat = resolve_chat(env, method.chat_id)
     if chat.type != ChatType.SUPERGROUP:
-        raise refusals.SUPERGROUPS_ONLY()
+        raise rejections.SUPERGROUPS_ONLY()
     member = _not_the_owner(chat, method.user_id)
     granted = granted_permissions(
         method.permissions,
@@ -2852,7 +2854,7 @@ def _next_sticker_file_id(env: BotTestEnvironment) -> str:
 @models(CreateNewStickerSet)
 def handle_create_sticker_set(env: BotTestEnvironment, method: CreateNewStickerSet) -> bool:
     if method.name in env.world.sticker_sets:
-        raise refusals.STICKER_SET_OCCUPIED()
+        raise rejections.STICKER_SET_OCCUPIED()
     env.world.sticker_sets[method.name] = StickerSetState(
         name=method.name,
         title=method.title,
@@ -3074,9 +3076,9 @@ def handle_refund_star_payment(env: BotTestEnvironment, method: RefundStarPaymen
     charge = env.world.stars.charge(method.telegram_payment_charge_id)
     if charge.user_id != method.user_id:
         # A charge is refunded to the user who paid it.
-        raise refusals.CHARGE_NOT_PAID_BY(charge=charge.id, user_id=method.user_id)
+        raise rejections.CHARGE_NOT_PAID_BY(charge=charge.id, user_id=method.user_id)
     if charge.is_refunded:
-        raise refusals.CHARGE_REFUNDED(charge=charge.id)
+        raise rejections.CHARGE_REFUNDED(charge=charge.id)
     charge.is_refunded = True
     _spend(env, charge.amount, charge_id=charge.id, partner_id=charge.user_id)
     return True
@@ -3101,7 +3103,7 @@ def handle_get_available_gifts(env: BotTestEnvironment, method: GetAvailableGift
 def handle_send_gift(env: BotTestEnvironment, method: SendGift) -> bool:
     owner_id = method.user_id if method.user_id is not None else method.chat_id
     if owner_id is None:
-        raise refusals.GIFT_NEEDS_RECIPIENT()
+        raise rejections.GIFT_NEEDS_RECIPIENT()
     cost = _gift_cost(method.gift_id)
     owned_gift_id = env.world.next_query_id()
     env.world.owned_gifts[owned_gift_id] = OwnedGiftState(
@@ -3238,7 +3240,7 @@ def handle_create_subscription_invite_link(
     chat = resolve_chat(env, method.chat_id)
     seconds = _as_seconds(method.subscription_period)
     if seconds != SUBSCRIPTION_PERIOD:
-        raise refusals.SUBSCRIPTION_PERIOD(period=SUBSCRIPTION_PERIOD)
+        raise rejections.SUBSCRIPTION_PERIOD(period=SUBSCRIPTION_PERIOD)
     link = InviteLinkState(
         invite_link=_next_invite_link(env),
         creator_id=env.world.bot_user.id,
@@ -3273,7 +3275,7 @@ def handle_edit_subscription_invite_link(
     """Only the name is editable; the subscription terms survive untouched."""
     link = resolve_chat(env, method.chat_id).invite_link(method.invite_link)
     if link.subscription_period is None:
-        raise refusals.NOT_A_SUBSCRIPTION_LINK()
+        raise rejections.NOT_A_SUBSCRIPTION_LINK()
     link.name = method.name
     return _invite_link_result(env, link)
 
@@ -3307,7 +3309,7 @@ def _administrable(env: BotTestEnvironment, method: TelegramMethod[Any]) -> Chat
     """Resolve a chat that can be administered — a private chat cannot."""
     chat = resolve_chat(env, method.chat_id)  # type: ignore[attr-defined]
     if chat.type == ChatType.PRIVATE:
-        raise refusals.ADMINISTRABLE_ONLY()
+        raise rejections.SUPERGROUP_OR_CHANNEL_ONLY()
     return chat
 
 
@@ -3410,7 +3412,7 @@ def _annotated_member(
     env: BotTestEnvironment,
     method: TelegramMethod[Any],
     allowed: set[str],
-    complaint: Refusal,
+    complaint: Rejection,
 ) -> MemberState:
     chat = resolve_chat(env, method.chat_id)  # type: ignore[attr-defined]
     user_id: int = method.user_id  # type: ignore[attr-defined]
@@ -3430,12 +3432,12 @@ def handle_set_custom_title(
         env,
         method,
         {ChatMemberStatus.CREATOR, ChatMemberStatus.ADMINISTRATOR},
-        refusals.NOT_AN_ADMINISTRATOR,
+        rejections.NOT_AN_ADMINISTRATOR,
     )
     if member.promoted_by is not None and member.promoted_by != env.world.bot_user.id:
         # The title is the bot's to set only on an administrator it
         # promoted, as for `promoteChatMember`.
-        raise refusals.CUSTOM_TITLE_RIGHTS()
+        raise rejections.NO_RIGHTS_TO_CHANGE_CUSTOM_TITLE()
     member.custom_title = method.custom_title
     return True
 
@@ -3447,12 +3449,12 @@ def handle_set_member_tag(env: BotTestEnvironment, method: SetChatMemberTag) -> 
         env,
         method,
         {ChatMemberStatus.MEMBER, ChatMemberStatus.RESTRICTED},
-        refusals.NOT_A_REGULAR_MEMBER,
+        rejections.NOT_A_REGULAR_MEMBER,
     )
     if not member.is_present:
         # A restriction outlives leaving, but a user outside the chat
         # is not one of its members to tag.
-        raise refusals.NOT_A_CHAT_MEMBER()
+        raise rejections.USER_NOT_A_MEMBER()
     member.tag = method.tag
     return True
 
@@ -3596,7 +3598,7 @@ _POLL_SCHEDULE_RANGE = (5, 2628000)
 def _poll_close(env: BotTestEnvironment, method: SendPoll) -> datetime.datetime | None:
     """When a poll closes by itself, validated as the Bot API states."""
     if method.open_period is not None and method.close_date is not None:
-        raise refusals.POLL_PERIOD_CONFLICT()
+        raise rejections.POLL_PERIOD_CONFLICT()
     now = env.world.now
     moment: datetime.datetime | None
     if method.open_period is not None:
@@ -3611,7 +3613,7 @@ def _poll_close(env: BotTestEnvironment, method: SendPoll) -> datetime.datetime 
         return None
     shortest, longest = _POLL_SCHEDULE_RANGE
     if not shortest <= (moment - start).total_seconds() <= longest:
-        raise refusals.POLL_SCHEDULE_RANGE(shortest=shortest, longest=longest)
+        raise rejections.POLL_SCHEDULE_RANGE(shortest=shortest, longest=longest)
     return moment
 
 
@@ -3698,13 +3700,15 @@ def handle_stop_poll(env: BotTestEnvironment, method: StopPoll) -> Poll:
     ``stopPoll`` names "the original message with the poll", so a
     forward of it, which carries the same poll, is refused.
     """
-    chat, stored = _edit_target(env, method, forwarded=refusals.POLL_STOP_NOT_FOUND)
+    chat, stored = _edit_target(
+        env, method, forwarded=rejections.MESSAGE_WITH_POLL_TO_STOP_NOT_FOUND
+    )
     message_id = stored.message_id
     if stored.poll is None:
-        raise refusals.NO_POLL()
+        raise rejections.NO_POLL()
     poll = env.world.poll(stored.poll.id)
     if poll.is_closed:
-        raise refusals.POLL_CLOSED()
+        raise rejections.POLL_CLOSED()
     # The keyboard is the one the request passes, or none.
     return _close_poll(env, poll, (chat, message_id), reply_markup=method.reply_markup)
 
@@ -3718,7 +3722,7 @@ def _reaction_target(
     chat = resolve_chat(env, method.chat_id)  # type: ignore[attr-defined]
     message_id: int = method.message_id  # type: ignore[attr-defined]
     if chat.find_message(message_id) is None:
-        raise refusals.REACT_NOT_FOUND()
+        raise rejections.MESSAGE_TO_REACT_NOT_FOUND()
     return chat, message_id
 
 
@@ -3768,7 +3772,7 @@ def _pending_request(env: BotTestEnvironment, method: TelegramMethod[Any]) -> Ch
     chat = resolve_chat(env, method.chat_id)  # type: ignore[attr-defined]
     user_id: int = method.user_id  # type: ignore[attr-defined]
     if user_id not in chat.join_requests:
-        raise refusals.JOIN_REQUEST_NOT_PENDING()
+        raise rejections.JOIN_REQUEST_NOT_PENDING()
     chat.join_requests.discard(user_id)
     return chat
 
@@ -3888,10 +3892,10 @@ def forum_chat(env: BotTestEnvironment, chat_id: Any, *, private: bool = False) 
     chat = resolve_chat(env, chat_id)
     if chat.type == ChatType.PRIVATE:
         if not private:
-            raise refusals.NOT_A_SUPERGROUP_FORUM()
+            raise rejections.NOT_A_SUPERGROUP_FORUM()
         return chat
     if not chat.is_forum:
-        raise refusals.NOT_A_FORUM()
+        raise rejections.NOT_A_FORUM()
     return chat
 
 
@@ -4169,7 +4173,7 @@ def handle_read_business_message(
     env.world.business_connection(method.business_connection_id)
     chat = resolve_chat(env, method.chat_id)
     if chat.find_message(method.message_id) is None:
-        raise refusals.READ_NOT_FOUND()
+        raise rejections.MESSAGE_TO_READ_NOT_FOUND()
     return True
 
 
@@ -4199,7 +4203,7 @@ def handle_delete_business_messages(
         )
     }
     if len(held) > 1:
-        raise refusals.MIXED_CHATS()
+        raise rejections.MIXED_CHATS()
     for chat_id, ids in held.items():
         chat = env.world.chat(chat_id)
         for message_id in sorted(ids):

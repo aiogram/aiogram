@@ -19,7 +19,7 @@ from aiogram.exceptions import (
 )
 from aiogram.methods import TelegramMethod
 
-from . import refusals
+from . import rejections
 from .mounting import detached_copy
 
 if TYPE_CHECKING:
@@ -32,11 +32,12 @@ if TYPE_CHECKING:
 #: which is the thing that owns a world to look the name up in.
 ChatIdResolver: TypeAlias = "Callable[[Any], Any]"
 
-#: What Telegram answers when the addressee has blocked the bot, a guaranteed text declared
-#: in :mod:`aiogram.test.refusals`. Declared here so
-#: :meth:`aiogram.test.BotTestEnvironment.blocked` and a test asserting on the string a
-#: real bot would see agree by construction.
-BLOCKED_BY_USER = refusals.BOT_BLOCKED().prefixed
+#: What Telegram answers when the addressee has blocked the bot, a
+#: guaranteed description declared in :mod:`aiogram.test.rejections`.
+#: Named here so :meth:`aiogram.test.BotTestEnvironment.blocked` and
+#: a test asserting on the string a real bot would see agree by
+#: construction.
+BLOCKED_BY_USER = rejections.BOT_BLOCKED().prefixed
 
 #: Name prefixes of the methods that deliver something *into* a chat, and therefore of the
 #: methods a block stops. Matching by prefix rather than listing thirty classes is what
@@ -191,7 +192,7 @@ class Outcome:
         raise self.error(method=method, message=self.message)
 
 
-#: The prefix the Bot API gives the status an exception class stands for.
+#: The prefix the Bot API gives the status of an exception class.
 _STATUS_PREFIXES: dict[type[TelegramAPIError], str] = {
     TelegramBadRequest: "Bad Request",
     TelegramUnauthorizedError: "Unauthorized",

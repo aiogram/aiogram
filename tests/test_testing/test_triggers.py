@@ -9,7 +9,7 @@ from aiogram.test import (
     BotTestEnvironment,
     WorldLookupError,
     administrator_rights,
-    refusals,
+    rejections,
 )
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, Update
 
@@ -249,7 +249,7 @@ class TestJoinRequests:
     async def test_acting_on_a_request_that_does_not_exist_fails(self, outsider_env, method_name):
         env, outsider, club = outsider_env
 
-        with refused_with(TelegramBadRequest, refusals.JOIN_REQUEST_NOT_PENDING):
+        with refused_with(TelegramBadRequest, rejections.JOIN_REQUEST_NOT_PENDING):
             await getattr(env.bot, method_name)(chat_id=club.id, user_id=outsider.user.id)
 
 

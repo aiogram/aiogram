@@ -3,7 +3,7 @@ import pytest
 from aiogram.enums import ChatMemberStatus
 from aiogram.exceptions import TelegramBadRequest
 from aiogram.methods import GetForumTopicIconStickers
-from aiogram.test import ApiRejection, Blueprint, BotTestEnvironment, refusals
+from aiogram.test import ApiRejection, Blueprint, BotTestEnvironment, rejections
 from aiogram.test.world import (
     BASE_DATE,
     DEFAULT_TOPIC_ICON_COLOR,
@@ -256,7 +256,7 @@ class TestForumMethods:
         thread_id = support.message_thread_id
         await forum_env.bot.delete_forum_topic(chat_id=forum.id, message_thread_id=thread_id)
 
-        with refused_with(TelegramBadRequest, refusals.TOPIC_DELETED):
+        with refused_with(TelegramBadRequest, rejections.TOPIC_DELETED):
             await forum_env.bot.close_forum_topic(chat_id=forum.id, message_thread_id=thread_id)
 
     async def test_moving_into_a_deleted_topic_fails_as_unknown(self, forum_env, forum, support):
@@ -350,7 +350,7 @@ class TestTopicCreationMessage:
         created = forum.messages[0]
         assert created.forum_topic_created is not None
 
-        with refused_with(TelegramBadRequest, refusals.CANT_BE_DELETED):
+        with refused_with(TelegramBadRequest, rejections.MESSAGE_CANT_BE_DELETED):
             await forum_env.bot.delete_message(chat_id=forum.id, message_id=created.message_id)
         await forum_env.bot.delete_messages(chat_id=forum.id, message_ids=[created.message_id])
 

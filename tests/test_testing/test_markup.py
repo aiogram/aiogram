@@ -16,9 +16,9 @@ from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ChatMemberStatus, ParseMode
 from aiogram.exceptions import TelegramBadRequest, TelegramForbiddenError
 from aiogram.methods import AnswerInlineQuery, GiftPremiumSubscription, SendGift, SendMessage
-from aiogram.test import ApiRejection, Blueprint, BotTestEnvironment, refusals
+from aiogram.test import ApiRejection, Blueprint, BotTestEnvironment, rejections
 from aiogram.test.markup import apply_parse_modes, parse_entities
-from aiogram.test.refusals import refusal_of
+from aiogram.test.rejections import rejection_of
 from aiogram.types import (
     BufferedInputFile,
     EphemeralMessageParameters,
@@ -269,16 +269,26 @@ class TestHtml:
                 '<tg-emoji emoji-id="9223372036854775808">x</tg-emoji>',
                 "Invalid custom emoji identifier specified",
             ),
-            ("<tg-time>x</tg-time>", "Invalid Unix time specified"),
-            ('<tg-time unix="-1">x</tg-time>', "Invalid Unix time specified"),
-            (
-                '<tg-time unix="1" format="x">x</tg-time>',
-                "Invalid date and time format specified",
-            ),
         ],
     )
     def test_broken_markup_gets_telegrams_words(self, text, error):
         assert refused(text) == f"can't parse entities: {error}"
+
+    @pytest.mark.parametrize(
+        "text",
+        [
+            "<tg-time>x</tg-time>",
+            '<tg-time unix="-1">x</tg-time>',
+            '<tg-time unix="1" format="x">x</tg-time>',
+            "<tg-time unix='--5'>x</tg-time>",
+        ],
+    )
+    def test_a_broken_date_and_time_is_refused(self, text):
+        # TDLib's words for these are unknown, so only the rejection is.
+        with pytest.raises(ApiRejection) as failure:
+            parse_entities(text, "HTML")
+
+        assert rejection_of(failure.value) is rejections.INVALID_DATE_TIME_ENTITY
 
     def test_an_empty_end_tag_closes_the_innermost(self):
         assert parsed("<b>x</>") == ("x", [entity("bold", 0, 1)])
@@ -329,13 +339,18 @@ class TestMarkdownV2:
             ("![x](tg://emoji)", "Custom emoji URL must have an emoji identifier"),
             ("![x](tg://emoji?x=1)", "Custom emoji URL must have an emoji identifier"),
             ("![x](tg://emoji?id=y)", "Invalid custom emoji identifier specified"),
-            ("![x](tg://time?format=t)", "Invalid Unix time specified"),
             ("|x", "Character '|' is reserved and must be escaped with the preceding '\\'"),
             ("!x", "Character '!' is reserved and must be escaped with the preceding '\\'"),
         ],
     )
     def test_broken_markup_gets_telegrams_words(self, text, error):
         assert refused(text, "MarkdownV2") == f"can't parse entities: {error}"
+
+    def test_a_broken_date_and_time_is_refused(self):
+        with pytest.raises(ApiRejection) as failure:
+            parse_entities("![x](tg://time?format=t)", "MarkdownV2")
+
+        assert rejection_of(failure.value) is rejections.INVALID_DATE_TIME_ENTITY
 
     def test_pre_with_and_without_a_language(self):
         assert parsed("```python\nx = 1\n```\n```\ny\n```", "MarkdownV2") == (
@@ -669,7 +684,7 @@ class TestThroughTheBot:
         assert dumped(private.messages[-1].entities) == dumped(entities)
 
     async def test_an_unknown_parse_mode_is_refused(self, env, private):
-        with refused_with(TelegramBadRequest, refusals.UNSUPPORTED_PARSE_MODE):
+        with refused_with(TelegramBadRequest, rejections.UNSUPPORTED_PARSE_MODE):
             await env.bot.send_message(private.id, "x", parse_mode="BBCode")
 
     async def test_a_caption_and_its_edit(self, env, private):
@@ -793,11 +808,6 @@ class TestMalformedIntegers:
             "can't parse entities: Invalid custom emoji identifier specified"
         )
 
-    def test_a_unix_time_is_refused(self):
-        assert refused("<tg-time unix='--5'>x</tg-time>") == (
-            "can't parse entities: Invalid Unix time specified"
-        )
-
 
 class TestEmptyTexts:
     @pytest.mark.parametrize(
@@ -807,19 +817,19 @@ class TestEmptyTexts:
     async def test_a_blank_text_is_refused(self, env, private, text, mode):
         before = len(private.messages)
 
-        with refused_with(TelegramBadRequest, refusals.TEXT_MUST_BE_NON_EMPTY):
+        with refused_with(TelegramBadRequest, rejections.TEXT_MUST_BE_NON_EMPTY):
             await env.bot.send_message(private.id, text, parse_mode=mode)
 
         assert len(private.messages) == before
 
     async def test_an_empty_text_is_refused_by_the_server(self, env, private):
-        with refused_with(TelegramBadRequest, refusals.MESSAGE_TEXT_EMPTY):
+        with refused_with(TelegramBadRequest, rejections.MESSAGE_TEXT_EMPTY):
             await env.bot.send_message(private.id, "")
 
     async def test_an_edit_to_nothing_is_refused(self, env, private):
         sent = await env.bot.send_message(private.id, "x")
 
-        with refused_with(TelegramBadRequest, refusals.TEXT_MUST_BE_NON_EMPTY):
+        with refused_with(TelegramBadRequest, rejections.TEXT_MUST_BE_NON_EMPTY):
             await env.bot.edit_message_text(
                 "<i>  </i>",
                 chat_id=private.id,
@@ -878,7 +888,7 @@ class TestOptionalTexts:
             apply_parse_modes(method, lambda user_id: None)
 
         assert refused.value.error_code == 400
-        assert refusal_of(refused.value) is refusals.TEXT_MUST_BE_NON_EMPTY
+        assert rejection_of(refused.value) is rejections.TEXT_MUST_BE_NON_EMPTY
 
 
 class TestTheOrderOfTheRefusals:
@@ -901,7 +911,7 @@ class TestTheOrderOfTheRefusals:
     async def test_an_empty_text_is_refused_before_the_chat(self, kicked):
         env, chat = kicked
 
-        with refused_with(TelegramBadRequest, refusals.MESSAGE_TEXT_EMPTY):
+        with refused_with(TelegramBadRequest, rejections.MESSAGE_TEXT_EMPTY):
             await env.bot.send_message(chat.id, "")
 
     async def test_the_thread_comes_before_a_blank_text(self, dp):
@@ -928,7 +938,7 @@ class TestTheOrderOfTheRefusals:
                 ),
             )
 
-            with refused_with(TelegramBadRequest, refusals.TEXT_MUST_BE_NON_EMPTY):
+            with refused_with(TelegramBadRequest, rejections.TEXT_MUST_BE_NON_EMPTY):
                 await env.bot.edit_ephemeral_message_text(
                     chat_id=chat.id,
                     receiver_user_id=alice.id,

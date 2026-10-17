@@ -2,7 +2,7 @@ import pytest
 
 from aiogram.exceptions import TelegramBadRequest
 from aiogram.methods import SendMessage, SetBusinessAccountName
-from aiogram.test import Blueprint, BotTestEnvironment, refusals
+from aiogram.test import Blueprint, BotTestEnvironment, rejections
 from aiogram.test.world import WorldLookupError
 from aiogram.types import BusinessBotRights
 
@@ -109,7 +109,7 @@ class TestModeledMethods:
         )
 
     async def test_read_missing_message_fails(self, business_env, connection, customer_chat):
-        with refused_with(TelegramBadRequest, refusals.READ_NOT_FOUND):
+        with refused_with(TelegramBadRequest, rejections.MESSAGE_TO_READ_NOT_FOUND):
             await business_env.bot.read_business_message(
                 business_connection_id=connection.id,
                 chat_id=customer_chat.id,

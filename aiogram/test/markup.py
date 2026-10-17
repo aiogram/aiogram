@@ -43,7 +43,7 @@ from aiogram.methods import (
 )
 from aiogram.types import MessageEntity, TelegramObject, User
 
-from . import refusals
+from . import rejections
 from .errors import ApiRejection
 
 __all__ = ("UserLookup", "apply_parse_modes", "bot_command_entities", "parse_entities")
@@ -190,12 +190,12 @@ def _utf16_units(byte: int) -> int:
 
 
 def _error(message: str) -> ApiRejection:
-    return refusals.ENTITIES(detail=message)
+    return rejections.CANT_PARSE_ENTITIES(detail=message)
 
 
 def _approximate(message: str) -> ApiRejection:
     """A parse refusal whose detail TDLib's texts do not give."""
-    return refusals.ENTITIES_DATE_TIME(detail=message)
+    return rejections.INVALID_DATE_TIME_ENTITY(detail=message)
 
 
 # -- links -------------------------------------------------------------
@@ -1043,7 +1043,7 @@ def parse_entities(
     """
     parser = _PARSERS.get(parse_mode.lower())
     if parser is None:
-        raise refusals.UNSUPPORTED_PARSE_MODE()
+        raise rejections.UNSUPPORTED_PARSE_MODE()
     data, entities = parser(text)
     plain = _remove_carriage_returns(data.decode("utf-8", errors="replace"), entities)
     plain = _trim_start(_trim_end(plain, entities), entities)
@@ -1209,7 +1209,7 @@ def refuse_empty_text(method: Any) -> None:
     :func:`refuse_blank_text`.
     """
     if isinstance(method, _TEXT_METHODS) and method.text == "":
-        raise refusals.MESSAGE_TEXT_EMPTY()
+        raise rejections.MESSAGE_TEXT_EMPTY()
 
 
 def refuse_blank_text(method: Any) -> None:
@@ -1223,7 +1223,7 @@ def refuse_blank_text(method: Any) -> None:
     """
     text = method.text if isinstance(method, _TEXT_METHODS) else None
     if text is not None and _blank(text):
-        raise refusals.TEXT_MUST_BE_NON_EMPTY()
+        raise rejections.TEXT_MUST_BE_NON_EMPTY()
 
 
 def apply_parse_modes(value: Any, find_user: UserLookup) -> Any:
@@ -1264,7 +1264,7 @@ def apply_parse_modes(value: Any, find_user: UserLookup) -> Any:
         plain, entities = parse_entities(text, str(mode), find_user)
         if not plain and text_field == "message_text":
             # An inline result's text: no chat to check first.
-            raise refusals.TEXT_MUST_BE_NON_EMPTY()
+            raise rejections.TEXT_MUST_BE_NON_EMPTY()
         if not plain and _message_text(value, text_field):
             # Kept empty, for the send to refuse in its turn.
             changes[text_field] = plain

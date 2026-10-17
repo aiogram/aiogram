@@ -11,7 +11,7 @@ from aiogram.methods import (
     SendRichMessage,
     VerifyUser,
 )
-from aiogram.test import Blueprint, BotTestEnvironment, WorldLookupError, refusals
+from aiogram.test import Blueprint, BotTestEnvironment, WorldLookupError, rejections
 from aiogram.test.modeling import MEDIA_FIELDS
 from aiogram.types import (
     ChatMemberAdministrator,
@@ -346,7 +346,7 @@ class TestMovingMessages:
         assert team.messages[-1] is forwarded
 
     async def test_forward_missing_message(self, env, private, team):
-        with refused_with(TelegramBadRequest, refusals.FORWARD_NOT_FOUND):
+        with refused_with(TelegramBadRequest, rejections.MESSAGE_TO_FORWARD_NOT_FOUND):
             await env.bot.forward_message(
                 chat_id=team.id,
                 from_chat_id=private.id,
@@ -380,7 +380,7 @@ class TestMovingMessages:
         assert team.messages[-1].caption == "after"
 
     async def test_copy_missing_message(self, env, private, team):
-        with refused_with(TelegramBadRequest, refusals.COPY_NOT_FOUND):
+        with refused_with(TelegramBadRequest, rejections.MESSAGE_TO_COPY_NOT_FOUND):
             await env.bot.copy_message(chat_id=team.id, from_chat_id=private.id, message_id=404)
 
 
@@ -494,7 +494,7 @@ class TestPinning:
         )
 
     async def test_pin_missing_message(self, env, private):
-        with refused_with(TelegramBadRequest, refusals.PIN_NOT_FOUND):
+        with refused_with(TelegramBadRequest, rejections.MESSAGE_TO_PIN_NOT_FOUND):
             await env.bot.pin_chat_message(chat_id=private.id, message_id=404)
 
 

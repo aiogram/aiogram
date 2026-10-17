@@ -3,7 +3,7 @@ import pytest
 from aiogram import Dispatcher
 from aiogram.exceptions import TelegramBadRequest
 from aiogram.methods import SetStickerKeywords
-from aiogram.test import Blueprint, BotTestEnvironment, WorldLookupError, refusals
+from aiogram.test import Blueprint, BotTestEnvironment, WorldLookupError, rejections
 from aiogram.types import BufferedInputFile, InputSticker
 
 from .conftest import refused_with
@@ -154,7 +154,7 @@ class TestErrors:
             stickers=[sticker()],
         )
 
-        with refused_with(TelegramBadRequest, refusals.STICKER_SET_OCCUPIED):
+        with refused_with(TelegramBadRequest, rejections.STICKER_SET_OCCUPIED):
             await env.bot.create_new_sticker_set(
                 user_id=owner.id,
                 name=PACK,
@@ -196,7 +196,7 @@ class TestErrors:
             stickers=[sticker("file-1")],
         )
 
-        with refused_with(TelegramBadRequest, refusals.STICKER_NOT_IN_SET):
+        with refused_with(TelegramBadRequest, rejections.STICKER_NOT_IN_SET):
             await env.bot.replace_sticker_in_set(
                 user_id=owner.id,
                 name=PACK,

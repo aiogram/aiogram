@@ -4,8 +4,8 @@ import datetime
 import pytest
 
 from aiogram.enums import ChatMemberStatus, ChatType
-from aiogram.test import ApiRejection, Blueprint, refusals
-from aiogram.test.refusals import refusal_of
+from aiogram.test import ApiRejection, Blueprint, rejections
+from aiogram.test.rejections import rejection_of
 from aiogram.test.world import (
     BASE_DATE,
     CHAT_TYPE_SCOPED_RIGHTS,
@@ -283,7 +283,7 @@ class TestChatState:
             chat.require_message(1)
 
         assert refused.value.error_code == 400
-        assert refusal_of(refused.value) is refusals.MESSAGE_MISSING
+        assert rejection_of(refused.value) is rejections.MESSAGE_NOT_FOUND
 
     def test_update_replaces_the_stored_message(self):
         chat = ChatState(id=1)

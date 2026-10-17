@@ -10,7 +10,7 @@ if TYPE_CHECKING:
     from aiogram.client.bot import Bot
     from aiogram.client.session.base import BaseSession
 
-    from .refusals import Refusal
+    from .rejections import Rejection
 
 
 class ApiRejection(Exception):
@@ -32,15 +32,16 @@ class ApiRejection(Exception):
 
     The description is Telegram's wording, without the ``Bad Request:``
     prefix that ``handle_call`` adds, and best-effort: the error code
-    and the exception type it becomes are the contract. The texts
-    that are guaranteed too are listed in :mod:`aiogram.test.refusals`.
+    and the exception type it becomes are the contract. The ones that
+    are guaranteed too are listed in :mod:`aiogram.test.rejections`.
 
-    ``error_code`` is the HTTP status the refusal comes back with:
+    ``error_code`` is the HTTP status the rejection comes back with:
     400 by default, 403 for a bot that is not in the chat, 429 for a
     flood. ``handle_call`` names it by the prefix the Bot API gives
-    it, and a 429 carries ``retry_after``. Any other code, and a 429
-    without ``retry_after``, would come back as an exception type the
-    code does not stand for, so they are a :class:`ValueError`.
+    it, and the session turns it into the exception type ``aiogram``
+    maps that code to. A 429 carries ``retry_after``, which is what
+    makes it a :class:`~aiogram.exceptions.TelegramRetryAfter`, and
+    no other code does, so a mismatch is a :class:`ValueError`.
     """
 
     def __init__(
@@ -49,12 +50,9 @@ class ApiRejection(Exception):
         *,
         error_code: int = HTTPStatus.BAD_REQUEST,
         retry_after: int | None = None,
-        refusal: Refusal | None = None,
+        rejection: Rejection | None = None,
     ) -> None:
-        if error_code not in _ERROR_PREFIXES:
-            msg = f"a refusal is a 400, a 403 or a 429, not {error_code}"
-            raise ValueError(msg)
-        if (retry_after is None) != (error_code != HTTPStatus.TOO_MANY_REQUESTS):
+        if (retry_after is None) == (error_code == HTTPStatus.TOO_MANY_REQUESTS):
             msg = "a 429 carries retry_after, and nothing else does"
             raise ValueError(msg)
         super().__init__(description)
@@ -62,19 +60,30 @@ class ApiRejection(Exception):
         self.error_code = error_code
         self.retry_after = retry_after
         #: The declaration the text came from, if it has one.
-        self.refusal = refusal
+        self.rejection = rejection
 
     @property
     def prefixed(self) -> str:
         """The description as the Bot API server sends it."""
-        return f"{_ERROR_PREFIXES[self.error_code]}: {self.description}"
+        prefix = _ERROR_PREFIXES.get(self.error_code)
+        if prefix is None:
+            try:
+                prefix = HTTPStatus(self.error_code).phrase
+            except ValueError:
+                prefix = "Error"
+        return f"{prefix}: {self.description}"
 
 
 #: The prefix the Bot API server puts before a refusal's text.
 _ERROR_PREFIXES: dict[int, str] = {
     HTTPStatus.BAD_REQUEST: "Bad Request",
+    HTTPStatus.UNAUTHORIZED: "Unauthorized",
     HTTPStatus.FORBIDDEN: "Forbidden",
+    HTTPStatus.NOT_FOUND: "Not Found",
+    HTTPStatus.CONFLICT: "Conflict",
+    HTTPStatus.REQUEST_ENTITY_TOO_LARGE: "Request Entity Too Large",
     HTTPStatus.TOO_MANY_REQUESTS: "Too Many Requests",
+    HTTPStatus.INTERNAL_SERVER_ERROR: "Internal Server Error",
 }
 
 
