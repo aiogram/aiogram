@@ -100,10 +100,11 @@ class RedisStorage(BaseStorage):
         key: StorageKey,
     ) -> str | None:
         redis_key = self.key_builder.build(key, "state")
-        value = await self.redis.get(redis_key)
+        # annotated rather than cast: redis-py < 7 returns Any here, newer releases are typed
+        value: bytes | str | None = await self.redis.get(redis_key)
         if isinstance(value, bytes):
             return value.decode("utf-8")
-        return cast(str | None, value)
+        return value
 
     async def set_data(
         self,

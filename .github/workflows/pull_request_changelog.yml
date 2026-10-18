@@ -43,7 +43,7 @@ jobs:
         id: towncrier
         env:
           BASE_BRANCH: ${{ github.base_ref }}
-        run: uvx --from 'towncrier~=24.8.0' towncrier check --compare-with "origin/${BASE_BRANCH}"
+        run: uvx --from 'towncrier~=26.9.0' towncrier check --compare-with "origin/${BASE_BRANCH}"
 
       - name: Save check result
         if: always()

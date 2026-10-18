@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import io
 import pathlib
-from collections.abc import AsyncGenerator, AsyncIterator
+from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
 from types import TracebackType
 from typing import (
@@ -366,7 +366,7 @@ class Bot:
         return extract_bot_id(self.__token)
 
     @asynccontextmanager
-    async def context(self, auto_close: bool = True) -> AsyncIterator[Bot]:
+    async def context(self, auto_close: bool = True) -> AsyncGenerator[Bot]:
         """
         Generate bot context
 
