@@ -1,0 +1,1 @@
+Added a migration guide entry for the removed :code:`configure_app` webhook helper and its v3 replacements.

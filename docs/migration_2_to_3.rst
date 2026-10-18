@@ -1462,6 +1462,43 @@ Webhook
   (`make requests in response to updates <https://core.telegram.org/bots/faq#how-can-i-make-requests-in-response-to-updates>`_);
   see `Replying into the webhook response`_ below for when this is actually enabled.
 
+Setting up the web application
+------------------------------
+
+In v2 :code:`aiogram.dispatcher.webhook.configure_app` added the
+webhook route to an aiohttp application and attached the dispatcher
+to it. In v3 this is split in two steps:
+:class:`~aiogram.webhook.aiohttp_server.SimpleRequestHandler`
+registers the route, and :code:`setup_application` connects the
+dispatcher startup and shutdown events to the application.
+
+.. code-block:: python
+
+    # Version 2.x
+    from aiogram.dispatcher.webhook import configure_app
+
+    configure_app(dp, app, path=WEBHOOK_PATH)
+
+.. code-block:: python
+
+    # Version 3.x
+    from aiogram.webhook.aiohttp_server import (
+        SimpleRequestHandler,
+        setup_application,
+    )
+
+    handler = SimpleRequestHandler(dispatcher=dp, bot=bot)
+    handler.register(app, path=WEBHOOK_PATH)
+    setup_application(app, dp, bot=bot)
+
+- The v3 route only accepts :code:`POST` requests, while the v2 route
+  accepted any HTTP method.
+- There is no :code:`route_name` argument. Extra keyword arguments of
+  :code:`register` are passed to aiohttp, so use :code:`name=...` to
+  get a named route.
+- To serve several bots from one application, use
+  :class:`~aiogram.webhook.aiohttp_server.TokenBasedRequestHandler`.
+
 Replying into the webhook response
 ----------------------------------
 
