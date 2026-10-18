@@ -1,1 +1,1 @@
-Use `hmac.compare_digest` for validating Login Widget data to prevent timing attacks.
+Use ``hmac.compare_digest`` for validating Login Widget data to prevent timing attacks.
