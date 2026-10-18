@@ -186,6 +186,7 @@ Misc
   - :meth:`aiogram.types.message.Message.reply` and the other :code:`reply_*` shortcuts now fill :code:`ephemeral_message_parameters` instead of the deprecated :code:`receiver_user_id` when replying to an ephemeral message
   - :code:`receiver_user_id` is no longer emitted as a parameter of the :code:`reply_*` shortcuts; it was never one before Bot API 10.3, since the shortcuts filled it themselves
   - Added :meth:`aiogram.types.message.Message.as_ephemeral_message_parameters` shortcut - builds the :class:`aiogram.types.ephemeral_message_parameters.EphemeralMessageParameters` for an ephemeral message, and accepts :code:`callback_query_id` and :code:`replace_callback_query_message`, which cannot be derived from a message
+
   `#1888 <https://github.com/aiogram/aiogram/issues/1888>`_
 
 
@@ -305,6 +306,7 @@ Misc
   *New Fields:*
 
   - Added :code:`subscription` field to :class:`aiogram.types.update.Update` - user payment subscription has changed; dispatched as the new :code:`subscription` event, so handlers can be registered via :code:`@router.subscription()`
+
   `#1852 <https://github.com/aiogram/aiogram/issues/1852>`_
 
 
@@ -435,6 +437,7 @@ Misc
   *New Fields:*
 
   - Added :code:`link` field to :class:`aiogram.types.poll_media.PollMedia` - hyperlink associated with the poll media
+
   `#1830 <https://github.com/aiogram/aiogram/issues/1830>`_
 
 
@@ -580,6 +583,7 @@ Misc
   *New Types:*
 
   - Added :class:`aiogram.types.bot_access_settings.BotAccessSettings` type - defines the access configuration for a bot
+
   `#1806 <https://github.com/aiogram/aiogram/issues/1806>`_
 
 
@@ -658,6 +662,7 @@ Misc
   - Added :code:`allow_adding_options` - allows users to add their own poll options
   - Added :code:`hide_results_until_closes` - hides vote results until the poll is closed
   - Added :code:`description`, :code:`description_parse_mode`, :code:`description_entities` - optional poll description with parse mode and formatting
+
   `#1792 <https://github.com/aiogram/aiogram/issues/1792>`_
 
 
@@ -695,6 +700,7 @@ Misc
   - Added :code:`can_manage_tags` field to :class:`aiogram.types.chat_member_administrator.ChatMemberAdministrator` and :class:`aiogram.types.chat_administrator_rights.ChatAdministratorRights` - indicates whether the administrator can manage tags of other chat members
   - Added :code:`can_manage_tags` parameter to :class:`aiogram.methods.promote_chat_member.PromoteChatMember` method
   - Added :code:`sender_tag` field to :class:`aiogram.types.message.Message` - the tag of the message sender in the chat
+
   `#1780 <https://github.com/aiogram/aiogram/issues/1780>`_
 
 
@@ -828,6 +834,7 @@ Features
   - Added ``rating``, ``paid_message_star_count``, ``unique_gift_colors`` fields to the ``ChatFullInfo`` class
   - Added support for ``message_effect_id`` parameter in forward/copy operations
   - Added ``completed_by_chat`` field to the ``ChecklistTask`` class
+
   `#1747 <https://github.com/aiogram/aiogram/issues/1747>`_
 
 
@@ -882,6 +889,7 @@ Features
   - Updated development deps
   - Fixed tests to support Py3.14
   - Refactored `uvloop` using due to deprecation of `asyncio.set_event_loop_police`
+
   `#1730 <https://github.com/aiogram/aiogram/issues/1730>`_
 
 
@@ -895,6 +903,7 @@ Deprecations and Removals
   - Updated type annotations to Python 3.10+ style, replacing deprecated ``List``, ``Set``, etc., with built-in ``list``, ``set``, and related types.
   - Refactored code by simplifying nested ``if`` expressions.
   - Updated several dependencies, including security-related upgrades.
+
   `#1726 <https://github.com/aiogram/aiogram/issues/1726>`_
 
 
@@ -954,6 +963,7 @@ Features
   **Additional Features**
 
   - Added the field :code:`is_paid_post` to the class :class:`aiogram.types.message.Message`, indicating whether a message is a paid post.
+
   `#1720 <https://github.com/aiogram/aiogram/issues/1720>`_
 
 
@@ -988,6 +998,7 @@ Features
   - `BaseStorage's child methods`
   - `SceneWizard.set_data`
   - `SceneWizard.update_data`
+
   `#1683 <https://github.com/aiogram/aiogram/issues/1683>`_
 - Add support for `State` type in scenes methods like `goto`, `enter`, `get`
   `#1685 <https://github.com/aiogram/aiogram/issues/1685>`_
@@ -1016,6 +1027,7 @@ Features
   - Increased the maximum number of options in a poll to 12.
   - Added the method :class:`aiogram.methods.get_my_star_balance.GetMyStarBalance`, allowing bots to get their current balance of Telegram Stars.
   - Added the class :class:`aiogram.types.direct_message_price_changed.DirectMessagePriceChanged` and the field :code:`direct_message_price_changed` to the class :class:`aiogram.types.message.Message`, describing a service message about a price change for direct messages sent to the channel chat.
+
   `#1704 <https://github.com/aiogram/aiogram/issues/1704>`_
 
 
@@ -1153,7 +1165,7 @@ Features
     allowing bots to gift a user a Telegram Premium subscription paid in Telegram Stars.
   - Added the field :code:`premium_subscription_duration` to the class
     :class:`aiogram.types.transaction_partner_user.TransactionPartnerUser`
-  for transactions involving a Telegram Premium subscription purchased by the bot.
+    for transactions involving a Telegram Premium subscription purchased by the bot.
   - Added the field :code:`transaction_type` to the class
     :class:`aiogram.types.transaction_partner_user.TransactionPartnerUser`,
     simplifying the differentiation and processing of all transaction types.
@@ -1168,6 +1180,7 @@ Features
     for paid messages sent to the chat.
   - Added the field :code:`paid_star_count` to the class :class:`aiogram.types.message.Message`,
     containing the number of Telegram Stars that were paid to send the message.
+
   `#1671 <https://github.com/aiogram/aiogram/issues/1671>`_
 
 
@@ -1206,6 +1219,7 @@ Bugfixes
   ::
 
      {}
+
   `#1664 <https://github.com/aiogram/aiogram/issues/1664>`_
 
 
@@ -1305,6 +1319,7 @@ Features
   - Added the fields :code:`cover` and :code:`start_timestamp` to the classes :class:`aiogram.types.input_media_video.InputMediaVideo` and :class:`aiogram.types.input_paid_media_video.InputPaidMediaVideo`, allowing bots to edit video covers and start timestamps, and specify them for videos in albums and paid media.
   - Added the parameter :code:`video_start_timestamp` to the methods :class:`aiogram.methods.forward_message.ForwardMessage` and :class:`aiogram.methods.copy_message.CopyMessage`, allowing bots to change the start timestamp for forwarded and copied videos.
   - Allowed adding reactions to most types of service messages.
+
   `#1638 <https://github.com/aiogram/aiogram/issues/1638>`_
 
 
@@ -1348,6 +1363,7 @@ Features
   - Added the field :code:`upgrade_star_count` to the class :class:`aiogram.types.gift.Gift`.
   - Added the parameter :code:`pay_for_upgrade` to the method :class:`aiogram.methods.send_gift.SendGift`.
   - Removed the field :code:`hide_url` from the class :class:`aiogram.types.inline_query_result_article.InlineQueryResultArticle`. Pass an empty string as :code:`url` instead.
+
   `#1623 <https://github.com/aiogram/aiogram/issues/1623>`_
 
 
@@ -1362,6 +1378,7 @@ Features
   - Added the field :code:`nanostar_amount` to the class :class:`aiogram.types.star_transaction.StarTransaction`.
   - Added the class :class:`aiogram.types.transaction_partner_affiliate_program.TransactionPartnerAffiliateProgram` for transactions pertaining to incoming affiliate commissions.
   - Added the class :class:`aiogram.types.affiliate_info.AffiliateInfo` and the field :code:`affiliate` to the class :class:`aiogram.types.transaction_partner_user.TransactionPartnerUser`, allowing bots to identify the relevant affiliate in transactions with an affiliate commission.
+
   `#1617 <https://github.com/aiogram/aiogram/issues/1617>`_
 
 
@@ -1414,6 +1431,7 @@ Features
     allowing bots to get all gifts available for sending.
   - Added the field :code:`gift` to the class
     :class:`aiogram.types.transaction_partner_user.TransactionPartnerUser`.
+
   `#1606 <https://github.com/aiogram/aiogram/issues/1606>`_
 
 
@@ -1439,6 +1457,7 @@ Misc
 
     When developers of this dependencies will release new versions with precompiled wheels for Windows, Linux and macOS,
     this action will not be necessary anymore until the next version of the Python interpreter.
+
   `#1589 <https://github.com/aiogram/aiogram/issues/1589>`_
 - Added business_connection_id to the :class:`aiogram.types.message.Message` API methods shortcuts.
 
@@ -1492,6 +1511,7 @@ Features
     :class:`aiogram.methods.edit_message_media.EditMessageMedia`.
   - Added support for hashtag and cashtag entities with a specified chat username
     that opens a search for the relevant tag within the specified chat.
+
   `#1601 <https://github.com/aiogram/aiogram/issues/1601>`_
 
 
@@ -1560,6 +1580,7 @@ Features
     and :class:`aiogram.types.chat_boost_source_giveaway.ChatBoostSourceGiveaway`.
   - Added the field :code:`is_star_giveaway` to the class
     :class:`aiogram.types.giveaway_completed.GiveawayCompleted`.
+
   `#1510 <https://github.com/aiogram/aiogram/issues/1510>`_
 - Added missing method aliases such as `.answer()`, `.reply()`, and others to `InaccessibleMessage`.
   This change ensures consistency and improves usability by aligning the functionality of `InaccessibleMessage` with the `Message` type.
@@ -1586,7 +1607,7 @@ Features
   `#1451 <https://github.com/aiogram/aiogram/issues/1451>`_
 - Added getting user from `chat_boost` with source `ChatBoostSourcePremium` in `UserContextMiddleware` for `EventContext`
   `#1474 <https://github.com/aiogram/aiogram/issues/1474>`_
-- Added full support of `Bot API 7.8 <https://core.telegram.org/bots/api-changelog#august-14-2024>`_
+- Added full support of `Bot API 7.8 <https://core.telegram.org/bots/api-changelog#august-14-2024>`__
 
   - Added the ability to send paid media to any chat.
   - Added the parameter :code:`business_connection_id` to the method
@@ -1605,6 +1626,7 @@ Features
     :class:`aiogram.types.chat_member_member.ChatMemberMember` for members with an active subscription.
   - Added support for paid reactions and the class
     :class:`aiogram.types.reaction_type_paid.ReactionTypePaid`.
+
   `#1560 <https://github.com/aiogram/aiogram/issues/1560>`_
 
 
@@ -1621,7 +1643,7 @@ Misc
 Features
 --------
 
-- Added full support of `Bot API 7.8 <https://core.telegram.org/bots/api-changelog#july-31-2024>`_
+- Added full support of `Bot API 7.8 <https://core.telegram.org/bots/api-changelog#july-31-2024>`__
 
   - Added the field :code:`has_main_web_app` to the class :class:`aiogram.types.user.User`,
     which is returned in the response to :class:`aiogram.methods.get_me.GetMe`.
@@ -1629,6 +1651,7 @@ Features
     :class:`aiogram.methods.pin_chat_message.PinChatMessage`
     and :class:`aiogram.methods.unpin_chat_message.UnpinChatMessage`,
     allowing bots to manage pinned messages on behalf of a business account.
+
   `#1551 <https://github.com/aiogram/aiogram/issues/1551>`_
 
 
@@ -1663,6 +1686,7 @@ Features
   - Added the field :code:`refunded_payment` to the class
     :class:`aiogram.types.message.Message`,
     describing a service message about a refunded payment.
+
   `#1536 <https://github.com/aiogram/aiogram/issues/1536>`_
 
 
@@ -1704,6 +1728,7 @@ Features
   - Added support for launching Web Apps via t.me link in the class
       :class:`aiogram.types.menu_button_web_app.MenuButtonWebApp`.
   - Added the field :code:`section_separator_color` to the class :code:`ThemeParams`.
+
   `#1533 <https://github.com/aiogram/aiogram/issues/1533>`_
 
 
@@ -1748,6 +1773,7 @@ Features
   - Added the parameter :code:`business_connection_id` to the method
       :class:`aiogram.methods.stop_poll.StopPoll`,
       allowing the bot to stop polls it sent on behalf of a business account.
+
   `#1518 <https://github.com/aiogram/aiogram/issues/1518>`_
 
 
@@ -1774,6 +1800,7 @@ Misc
 
   If incorrect URIs provided to "--redis" and/or "--mongo" options tests should fail with errors instead of skipping.
   Otherwise the next scenario is possible:
+
     1) developer breaks RedisStorage and/or MongoStorage code
     2) tests are run with incorrect redis and/or mongo URIsprovided by "--redis" and "--mongo" options (for example, wrong port specified)
     3) tests pass because skipping doesn't fail tests run
@@ -1856,6 +1883,7 @@ Features
 
       async with Bot(...).context() as bot:
           ...
+
   `#1468 <https://github.com/aiogram/aiogram/issues/1468>`_
 
 
@@ -1867,6 +1895,7 @@ Bugfixes
   - **WebAppChat Class Implementation**: Introduced the `WebAppChat` class with all its fields (`id`, `type`, `title`, `username`, and `photo_url`) as specified in the Telegram API, which was previously missing from the library.
 
   - **WebAppInitData Class Fields**: Included previously omitted fields in the `WebAppInitData` class: `chat`, `chat_type`, `chat_instance`, to match the official documentation for a complete Telegram Web Apps support.
+
   `#1424 <https://github.com/aiogram/aiogram/issues/1424>`_
 - Fixed poll answer FSM context by handling :code:`voter_chat` for :code:`poll_answer` event
   `#1436 <https://github.com/aiogram/aiogram/issues/1436>`_
@@ -1912,6 +1941,7 @@ Features
   .. warning::
 
       Note that the old way of setting these global bot properties is now deprecated and will be removed in the next major release.
+
   `#1392 <https://github.com/aiogram/aiogram/issues/1392>`_
 - A new enum :code:`KeyboardButtonPollTypeType` for :code:`KeyboardButtonPollTypeType.type` field has bed added.
   `#1398 <https://github.com/aiogram/aiogram/issues/1398>`_
@@ -1924,6 +1954,7 @@ Features
   - Added the fields :code:`chat` and :code:`id` to the class :code:`Story`.
   - Added the field :code:`unrestrict_boost_count` to the class :code:`Chat`.
   - Added the field :code:`custom_emoji_sticker_set_name` to the class :code:`Chat`.
+
   `#1417 <https://github.com/aiogram/aiogram/issues/1417>`_
 
 
@@ -1960,6 +1991,7 @@ Features
   - Chat Boosts
   - Giveaway
   - Other changes
+
   `#1387 <https://github.com/aiogram/aiogram/issues/1387>`_
 
 
@@ -2012,6 +2044,7 @@ Misc
   - :code:`pydantic` - fixed compatibility (broken in 2.4)
   - :code:`aiodns` - added new dependency to the :code:`fast` extras (:code:`pip install aiogram[fast]`)
   - *others...*
+
   `#1327 <https://github.com/aiogram/aiogram/issues/1327>`_
 - Prevent update handling task pointers from being garbage collected, backport from 2.x
   `#1331 <https://github.com/aiogram/aiogram/issues/1331>`_
@@ -2144,6 +2177,7 @@ Features
           currency=Currency.USD,
           ...
       )
+
   `#1194 <https://github.com/aiogram/aiogram/issues/1194>`_
 - Updated keyboard builders with new methods for integrating buttons and keyboard creation more seamlessly.
   Added functionality to create buttons from existing markup and attach another builder.
@@ -2163,6 +2197,7 @@ Bugfixes
   - ShippingQuery.answer
   - PreCheckoutQuery.answer
   - Message.delete_reply_markup
+
   `#1244 <https://github.com/aiogram/aiogram/issues/1244>`_
 
 
@@ -2251,11 +2286,13 @@ Features
 
       If you have implemented you own storages you should extend record key generation
       with new one attribute - :code:`thread_id`
+
   `#1161 <https://github.com/aiogram/aiogram/issues/1161>`_
 - Improved CallbackData serialization.
 
   - Minimized UUID (hex without dashes)
   - Replaced bool values with int (true=1, false=0)
+
   `#1163 <https://github.com/aiogram/aiogram/issues/1163>`_
 - Added a tool to make text formatting flexible and easy.
   More details on the :ref:`corresponding documentation page <formatting-tool>`
@@ -2322,6 +2359,7 @@ Misc
       Note that this issue has breaking changes described in the Bot API changelog,
       this changes is not breaking in the API but breaking inside aiogram because
       Beta stage is not finished.
+
   `#1139 <https://github.com/aiogram/aiogram/issues/1139>`_
 - Added full support of `Bot API 6.7 <https://core.telegram.org/bots/api-changelog#april-21-2023>`_
 
@@ -2329,12 +2367,14 @@ Misc
 
       Note that arguments *switch_pm_parameter* and *switch_pm_text* was deprecated
       and should be changed to *button* argument as described in API docs.
+
   `#1168 <https://github.com/aiogram/aiogram/issues/1168>`_
 - Updated `Pydantic to V2 <https://docs.pydantic.dev/2.0/migration/>`_
 
   .. warning::
 
       Be careful, not all libraries is already updated to using V2
+
   `#1202 <https://github.com/aiogram/aiogram/issues/1202>`_
 - Added global defaults :code:`disable_web_page_preview` and :code:`protect_content` in addition to :code:`parse_mode` to the Bot instance,
   reworked internal request builder mechanism.
@@ -2348,11 +2388,13 @@ Misc
   .. danger::
 
     **Breaking**: The 'bot' argument now is required in `URLInputFile`
+
   `#1210 <https://github.com/aiogram/aiogram/issues/1210>`_
 - Updated magic-filter with new features
 
   - Added hint for :code:`len(F)` error
   - Added not in operation
+
   `#1221 <https://github.com/aiogram/aiogram/issues/1221>`_
 
 
@@ -2447,6 +2489,7 @@ Features
   - *Sticker*: :meth:`aiogram.types.sticker.Sticker.set_position_in_set`,
       :meth:`aiogram.types.sticker.Sticker.delete_from_set`,
   - *User*: :meth:`aiogram.types.user.User.get_profile_photos`
+
   `#952 <https://github.com/aiogram/aiogram/issues/952>`_
 - Added :ref:`callback answer <callback-answer-util>` feature
   `#1091 <https://github.com/aiogram/aiogram/issues/1091>`_
@@ -2478,6 +2521,7 @@ Misc
 
       Note that :obj:`aiogram.types.chat_permissions.ChatPermissions` is updated without
       backward compatibility, so now this object has no :code:`can_send_media_messages` attribute
+
   `#1112 <https://github.com/aiogram/aiogram/issues/1112>`_
 - Replaced error :code:`TypeError: TelegramEventObserver.__call__() got an unexpected keyword argument '<name>'`
   with a more understandable one for developers and with a link to the documentation.
@@ -2507,11 +2551,13 @@ Features
   - :code:`Message.stop_live_location(...)`
   - :code:`Message.pin(...)`
   - :code:`Message.unpin()`
+
   `#1030 <https://github.com/aiogram/aiogram/issues/1030>`_
 - Added following methods to :code:`User` class:
 
   - :code:`User.mention_markdown(...)`
   - :code:`User.mention_html(...)`
+
   `#1049 <https://github.com/aiogram/aiogram/issues/1049>`_
 - Added full support of `Bot API 6.3 <https://core.telegram.org/bots/api-changelog#november-5-2022>`_
   `#1057 <https://github.com/aiogram/aiogram/issues/1057>`_
@@ -2526,6 +2572,7 @@ Bugfixes
 
   - :code:`Message.answer(...)`
   - :code:`Message.copy_to(...)`
+
   `#1064 <https://github.com/aiogram/aiogram/issues/1064>`_
 
 
@@ -2637,6 +2684,7 @@ Bugfixes
   * proximity_alert_triggered
   * supergroup_chat_created
   * channel_chat_created
+
   `#906 <https://github.com/aiogram/aiogram/issues/906>`_
 - Fixed the ability to compare the state, now comparison to copy of the state will return `True`.
   `#927 <https://github.com/aiogram/aiogram/issues/927>`_
@@ -2662,6 +2710,7 @@ Misc
   - :code:`aiogram.dispatcher.handler` -> :code:`aiogram.handler`
   - :code:`aiogram.dispatcher.webhook` -> :code:`aiogram.webhook`
   - :code:`aiogram.dispatcher.flags/*` -> :code:`aiogram.dispatcher.flags` (single module instead of package)
+
   `#938 <https://github.com/aiogram/aiogram/issues/938>`_
 - Removed deprecated :code:`router.<event>_handler` and :code:`router.register_<event>_handler` methods.
   `#941 <https://github.com/aiogram/aiogram/issues/941>`_
@@ -2776,6 +2825,7 @@ Features
       @router.message(F.photo[-1].as_("photo"))
       async def download_photos_handler(message: Message, photo: PhotoSize, bot: Bot):
           content = await bot.download(photo)
+
   `#759 <https://github.com/aiogram/aiogram/issues/759>`_
 
 
@@ -2820,6 +2870,7 @@ Features
         - 1 validation error for ContentTypesFilter
           content_types
             Invalid content types {'42'} is not allowed here (type=value_error)
+
   `#717 <https://github.com/aiogram/aiogram/issues/717>`_
 - **Breaking internal API change**
   Reworked FSM Storage record keys propagation
@@ -2832,6 +2883,7 @@ Features
 
       @router.message(magic_data=F.event.from_user.id == F.config.admin_id)
       ...
+
   `#724 <https://github.com/aiogram/aiogram/issues/724>`_
 
 
@@ -2858,6 +2910,7 @@ Misc
 
   - Automatically apply Bound Filters with default values to handlers
   - Fix data transfer from parent to included routers filters
+
   `#727 <https://github.com/aiogram/aiogram/issues/727>`_
 - Added full support of Bot API 5.4
   https://core.telegram.org/bots/api-changelog#november-5-2021
@@ -2899,6 +2952,7 @@ Misc
 
   - Exceptions module was moved from :code:`aiogram.utils.exceptions` to :code:`aiogram.exceptions`
   - Added prefix `Telegram` for all error classes
+
   `#700 <https://github.com/aiogram/aiogram/issues/700>`_
 - Replaced all :code:`pragma: no cover` marks via global :code:`.coveragerc` config
   `#702 <https://github.com/aiogram/aiogram/issues/702>`_

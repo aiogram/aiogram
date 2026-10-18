@@ -69,7 +69,7 @@ Another example of overriding default properties:
     await bot.send_message(chat_id, text, parse_mode=None)
 
 In this case the message will be send withoout parse mode, even if default parse mode is set it may be useful
-if you want to send message with plain text or :ref:`aiogram.types.message_entity.MessageEntity`.
+if you want to send message with plain text or :class:`aiogram.types.message_entity.MessageEntity`.
 
 .. code-block:: python
 

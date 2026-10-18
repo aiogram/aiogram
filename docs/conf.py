@@ -1,6 +1,8 @@
 import datetime
 from pathlib import Path
 
+from sphinx import addnodes
+
 import aiogram
 
 project = "aiogram"
@@ -30,7 +32,7 @@ extensions = [
     "sphinx.ext.intersphinx",
     "sphinx_substitution_extensions",
     "sphinx_copybutton",
-    # "sphinxcontrib.towncrier.ext",  # Temporary disabled due to bug in the extension https://github.com/sphinx-contrib/sphinxcontrib-towncrier/issues/92
+    "sphinxcontrib.towncrier.ext",
 ]
 
 rst_prolog = f"""
@@ -78,5 +80,27 @@ def skip_model_prefixed_members(app, what, name, obj, skip, options):
     return skip
 
 
+# autodoc renders attribute type annotations from raw __annotations__ strings
+# (typing.get_type_hints() fails on TelegramMethod subclasses because
+# BotContextController._bot references the TYPE_CHECKING-only Bot import),
+# so short type names stay unresolved and can match several documented objects.
+# Disambiguate the known cases explicitly instead of touching generated code.
+_AMBIGUOUS_XREFS = {
+    ("BotCommand", "aiogram.methods.set_my_commands"): "aiogram.types.bot_command.BotCommand",
+    (
+        "EncryptedPassportElement",
+        "aiogram.types.passport_data",
+    ): "aiogram.types.encrypted_passport_element.EncryptedPassportElement",
+}
+
+
+def disambiguate_ambiguous_xrefs(app, doctree):
+    for node in doctree.findall(addnodes.pending_xref):
+        key = (node.get("reftarget"), node.get("py:module"))
+        if key in _AMBIGUOUS_XREFS:
+            node["reftarget"] = _AMBIGUOUS_XREFS[key]
+
+
 def setup(app):
     app.connect("autodoc-skip-member", skip_model_prefixed_members)
+    app.connect("doctree-read", disambiguate_ambiguous_xrefs)
