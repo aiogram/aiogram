@@ -45,6 +45,7 @@ if TYPE_CHECKING:
         SendLocation,
         SendMediaGroup,
         SendMessage,
+        SendMessageDraft,
         SendPaidMedia,
         SendPhoto,
         SendPoll,
@@ -5354,3 +5355,176 @@ class Message(MaybeInaccessibleMessage):
             reply_markup=reply_markup,
             **kwargs,
         ).as_(self._bot)
+
+    def answer_draft(
+        self,
+        draft_id: int,
+        text: str | None = None,
+        parse_mode: str | Default | None = Default("parse_mode"),
+        entities: list[MessageEntity] | None = None,
+        can_stop: bool | None = None,
+        keep_on_stop: bool | None = None,
+        **kwargs: Any,
+    ) -> SendMessageDraft:
+        """
+        Shortcut for method :class:`aiogram.methods.send_message_draft.SendMessageDraft`
+        will automatically fill method attributes:
+
+        - :code:`chat_id`
+
+        Use this method to stream a partial message to a user while the message is being
+        generated. Note that the streamed draft is ephemeral and acts as a temporary
+        30-second preview - once the output is finalized, you **must** call
+        :class:`aiogram.methods.send_message.SendMessage` with the complete message to
+        persist it in the user's chat.
+
+        Source: https://core.telegram.org/bots/api#sendmessagedraft
+
+        :param draft_id: Unique identifier of the message draft; must be non-zero.
+            Changes to drafts with the same identifier are animated. Otherwise, the draft
+            is replaced without animation
+        :param text: Text of the message to be sent, 0-4096 characters after entities
+            parsing. Pass an empty text to show a 'Thinking…' placeholder
+        :param parse_mode: Mode for parsing entities in the message text
+        :param entities: A JSON-serialized list of special entities that appear in
+            message text, which can be specified instead of *parse_mode*
+        :param can_stop: Pass :code:`True` to show the user a button to stop further drafts
+        :param keep_on_stop: Pass :code:`True` to keep the draft in the chat when the
+            button is pressed
+        :return: instance of method :class:`aiogram.methods.send_message_draft.SendMessageDraft`
+        """
+        from aiogram.methods import SendMessageDraft
+
+        assert self.chat is not None, (
+            "This method can be used only if chat is present in the message."
+        )
+
+        return SendMessageDraft(
+            chat_id=self.chat.id,
+            draft_id=draft_id,
+            text=text,
+            parse_mode=parse_mode,
+            entities=entities,
+            can_stop=can_stop,
+            keep_on_stop=keep_on_stop,
+            **kwargs,
+        ).as_(self._bot)
+
+    def reply_draft(
+        self,
+        draft_id: int,
+        text: str | None = None,
+        parse_mode: str | Default | None = Default("parse_mode"),
+        entities: list[MessageEntity] | None = None,
+        can_stop: bool | None = None,
+        keep_on_stop: bool | None = None,
+        **kwargs: Any,
+    ) -> SendMessageDraft:
+        """
+        Shortcut for method :class:`aiogram.methods.send_message_draft.SendMessageDraft`
+        will automatically fill method attributes:
+
+        - :code:`chat_id`
+
+        Alias for :meth:`answer_draft` — draft messages are ephemeral and do not
+        support reply parameters, so both methods behave identically.
+
+        Source: https://core.telegram.org/bots/api#sendmessagedraft
+
+        :param draft_id: Unique identifier of the message draft; must be non-zero
+        :param text: Text of the message to be sent, 0-4096 characters after entities parsing
+        :param parse_mode: Mode for parsing entities in the message text
+        :param entities: A JSON-serialized list of special entities
+        :param can_stop: Pass :code:`True` to show the user a button to stop further drafts
+        :param keep_on_stop: Pass :code:`True` to keep the draft in the chat when the button is pressed
+        :return: instance of method :class:`aiogram.methods.send_message_draft.SendMessageDraft`
+        """
+        return self.answer_draft(
+            draft_id=draft_id,
+            text=text,
+            parse_mode=parse_mode,
+            entities=entities,
+            can_stop=can_stop,
+            keep_on_stop=keep_on_stop,
+            **kwargs,
+        )
+
+    def answer_rich_draft(
+        self,
+        draft_id: int,
+        rich_message: InputRichMessage,
+        can_stop: bool | None = None,
+        keep_on_stop: bool | None = None,
+        **kwargs: Any,
+    ) -> SendRichMessageDraft:
+        """
+        Shortcut for method :class:`aiogram.methods.send_rich_message_draft.SendRichMessageDraft`
+        will automatically fill method attributes:
+
+        - :code:`chat_id`
+
+        Use this method to stream a partial rich message to a user while the message is
+        being generated. Note that the streamed draft is ephemeral and acts as a
+        temporary 30-second preview - once the output is finalized, you **must** call
+        :class:`aiogram.methods.send_rich_message.SendRichMessage` with the complete
+        message to persist it in the user's chat.
+
+        Source: https://core.telegram.org/bots/api#sendrichmessagedraft
+
+        :param draft_id: Unique identifier of the message draft; must be non-zero.
+            Changes to drafts with the same identifier are animated. Otherwise, the draft
+            is replaced without animation
+        :param rich_message: The partial message to be streamed. Direct upload of new
+            files and explicit upload of files by a URL isn't supported
+        :param can_stop: Pass :code:`True` to show the user a button to stop further drafts
+        :param keep_on_stop: Pass :code:`True` to keep the draft in the chat when the
+            button is pressed
+        :return: instance of method :class:`aiogram.methods.send_rich_message_draft.SendRichMessageDraft`
+        """
+        from aiogram.methods import SendRichMessageDraft
+
+        assert self.chat is not None, (
+            "This method can be used only if chat is present in the message."
+        )
+
+        return SendRichMessageDraft(
+            chat_id=self.chat.id,
+            draft_id=draft_id,
+            rich_message=rich_message,
+            can_stop=can_stop,
+            keep_on_stop=keep_on_stop,
+            **kwargs,
+        ).as_(self._bot)
+
+    def reply_rich_draft(
+        self,
+        draft_id: int,
+        rich_message: InputRichMessage,
+        can_stop: bool | None = None,
+        keep_on_stop: bool | None = None,
+        **kwargs: Any,
+    ) -> SendRichMessageDraft:
+        """
+        Shortcut for method :class:`aiogram.methods.send_rich_message_draft.SendRichMessageDraft`
+        will automatically fill method attributes:
+
+        - :code:`chat_id`
+
+        Alias for :meth:`answer_rich_draft` — draft messages are ephemeral and do not
+        support reply parameters, so both methods behave identically.
+
+        Source: https://core.telegram.org/bots/api#sendrichmessagedraft
+
+        :param draft_id: Unique identifier of the message draft; must be non-zero
+        :param rich_message: The partial message to be streamed
+        :param can_stop: Pass :code:`True` to show the user a button to stop further drafts
+        :param keep_on_stop: Pass :code:`True` to keep the draft in the chat when the button is pressed
+        :return: instance of method :class:`aiogram.methods.send_rich_message_draft.SendRichMessageDraft`
+        """
+        return self.answer_rich_draft(
+            draft_id=draft_id,
+            rich_message=rich_message,
+            can_stop=can_stop,
+            keep_on_stop=keep_on_stop,
+            **kwargs,
+        )
