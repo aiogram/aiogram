@@ -23,7 +23,7 @@ silently absent instead of raising. Past misses: business-account callback queri
 
 **Dependency injection** — `dispatcher/event/handler.py` filters kwargs by handler
 signature. It broke on `ForwardRef` annotations under Python 3.14 (#1741). Any
-change here must be checked against the whole 3.10–3.14 matrix, not just local Python.
+change here must be checked against the whole 3.11–3.14 matrix, not just local Python.
 
 **Workflow-data contract** — polling and webhook must inject the *same* keys.
 `dispatcher` was missing from handler kwargs on the webhook feed path while polling
@@ -54,7 +54,7 @@ asserted against `memory_storage`.
    `Message` vs `InaccessibleMessage`).
 3. `filterwarnings = error` in pytest: a new DeprecationWarning or ResourceWarning
    from your change fails CI. Close what you open.
-4. mypy runs in strict mode over `aiogram` only, targeting `python_version = 3.10` —
-   no 3.11+ syntax, no untyped defs, no unused ignores.
+4. mypy runs in strict mode over `aiogram` only, targeting `python_version = 3.11` —
+   no 3.12+ syntax, no untyped defs, no unused ignores.
 5. `CHANGES/<issue>.bugfix.rst` is CI-gated. Use the `aiogram-bugfix` skill for the
    full loop.
