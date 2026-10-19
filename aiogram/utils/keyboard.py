@@ -256,7 +256,7 @@ class KeyboardBuilder(ABC, Generic[ButtonType]):
             keyboard = cast(list[list[KeyboardButton]], self.export())  # type: ignore
             return ReplyKeyboardMarkup(keyboard=keyboard, **kwargs)
         inline_keyboard = cast(list[list[InlineKeyboardButton]], self.export())  # type: ignore
-        return InlineKeyboardMarkup(inline_keyboard=inline_keyboard)
+        return InlineKeyboardMarkup(inline_keyboard=inline_keyboard, **kwargs)
 
     def attach(self, builder: KeyboardBuilder[ButtonType]) -> KeyboardBuilder[ButtonType]:
         if not isinstance(builder, KeyboardBuilder):
@@ -337,9 +337,17 @@ class InlineKeyboardBuilder(KeyboardBuilder[InlineKeyboardButton]):
             ),
         )
 
-    def as_markup(self, **kwargs: Any) -> InlineKeyboardMarkup:
+    def as_markup(
+        self,
+        *,
+        force_reply: bool | None = None,
+        **kwargs: Any,
+    ) -> InlineKeyboardMarkup:
         """Construct an InlineKeyboardMarkup"""
-        return cast(InlineKeyboardMarkup, super().as_markup(**kwargs))
+        return cast(
+            InlineKeyboardMarkup,
+            super().as_markup(force_reply=force_reply, **kwargs),
+        )
 
     def __init__(self, markup: list[list[InlineKeyboardButton]] | None = None) -> None:
         super().__init__(button_type=InlineKeyboardButton, markup=markup)
@@ -405,9 +413,30 @@ class ReplyKeyboardBuilder(KeyboardBuilder[KeyboardButton]):
             ),
         )
 
-    def as_markup(self, **kwargs: Any) -> ReplyKeyboardMarkup:
+    def as_markup(
+        self,
+        *,
+        is_persistent: bool | None = None,
+        resize_keyboard: bool | None = None,
+        one_time_keyboard: bool | None = None,
+        input_field_placeholder: str | None = None,
+        selective: bool | None = None,
+        force_reply: bool | None = None,
+        **kwargs: Any,
+    ) -> ReplyKeyboardMarkup:
         """Construct a ReplyKeyboardMarkup"""
-        return cast(ReplyKeyboardMarkup, super().as_markup(**kwargs))
+        return cast(
+            ReplyKeyboardMarkup,
+            super().as_markup(
+                is_persistent=is_persistent,
+                resize_keyboard=resize_keyboard,
+                one_time_keyboard=one_time_keyboard,
+                input_field_placeholder=input_field_placeholder,
+                selective=selective,
+                force_reply=force_reply,
+                **kwargs,
+            ),
+        )
 
     def __init__(self, markup: list[list[KeyboardButton]] | None = None) -> None:
         super().__init__(button_type=KeyboardButton, markup=markup)
