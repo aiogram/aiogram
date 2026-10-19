@@ -35,15 +35,11 @@ By default, stopping polling (by SIGINT/SIGTERM or
 :meth:`aiogram.dispatcher.dispatcher.Dispatcher.stop_polling`) does not wait for these handlers:
 shutdown callbacks run and bot sessions are closed while they may still be running,
 and :meth:`aiogram.dispatcher.dispatcher.Dispatcher.run_polling` cancels the remaining ones
-when it closes the event loop. Telegram does not send those updates again.
+when it closes the event loop. Their updates have usually been confirmed already,
+so Telegram does not send them again.
 
-.. versionadded:: 3.32.0
-
-    The :code:`tasks_shutdown_timeout` parameter of
-    :meth:`aiogram.dispatcher.dispatcher.Dispatcher.start_polling` and
-    :meth:`aiogram.dispatcher.dispatcher.Dispatcher.run_polling`.
-
-To let the handlers finish, pass the number of seconds to wait for them:
+To let the handlers finish, pass the number of seconds to wait for them
+as :code:`tasks_shutdown_timeout`:
 
 .. code-block:: python
 
@@ -57,11 +53,26 @@ When polling is stopped, the dispatcher then:
    the cancellation, logging a warning with their number;
 4. runs shutdown callbacks and closes bot sessions.
 
-A handler that calls :code:`await dispatcher.stop_polling()` is not waited for:
-:code:`stop_polling()` returns once shutdown has completed, and the rest of that handler runs after it.
-
 Keep the timeout shorter than the time your process manager gives the process
 between SIGTERM and SIGKILL, so that shutdown callbacks still have time to run.
+A second SIGINT or SIGTERM during the wait is logged and does not shorten it.
+
+The wait only happens when polling is stopped through the dispatcher:
+by :meth:`aiogram.dispatcher.dispatcher.Dispatcher.stop_polling`, or by SIGINT/SIGTERM
+when :code:`handle_signals=True` and the event loop supports signal handlers,
+which it does not on Windows. Otherwise SIGINT raises :code:`KeyboardInterrupt`
+or cancels the task that runs :meth:`aiogram.dispatcher.dispatcher.Dispatcher.start_polling`,
+and shutdown runs without waiting, as it does when that task is cancelled in any other way.
+
+A handler that calls :code:`await dispatcher.stop_polling()` is not waited for:
+:code:`stop_polling()` returns once shutdown has completed, and the rest of that handler runs after it.
+This relies on the task that calls :code:`stop_polling()`, so in two cases the handler
+is waited for and then cancelled when the timeout expires: when polling was already stopping
+(for example after SIGTERM), and when the handler awaits :code:`stop_polling()`
+through another task, as :code:`asyncio.shield()`, :code:`asyncio.gather()` and,
+on Python 3.10 and 3.11, :code:`asyncio.wait_for()` do.
+A handler avoids both by starting :code:`stop_polling()` in a task of its own,
+keeping a reference to that task, and returning without awaiting it.
 
 .. note::
 
