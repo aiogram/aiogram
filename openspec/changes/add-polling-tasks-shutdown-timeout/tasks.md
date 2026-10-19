@@ -9,6 +9,7 @@
 - [x] 1.7 Two bots: both handlers finish before the shutdown callback, and both sessions close after it
 - [x] 1.8 `run_polling(..., tasks_shutdown_timeout=5)`: the handler finishes before shutdown instead of being cancelled when the event loop closes
 - [x] 1.9 Run them on `dev-3.x` before the change: 1.2, 1.3, 1.7 and 1.8 fail; 1.4, 1.5 and 1.6 pass there by design, since they pin behaviour that must not change
+- [x] 1.10 Record in the helper when the long poll of each bot is cancelled, and expect it before any handler finishes or is cancelled, so that 1.2, 1.3, 1.7 and 1.8 also fail when the wait runs while polling still fetches updates (checked by moving the wait in front of the cancelling of the polling tasks: those 8 cases fail)
 
 ## 2. Implementation
 
@@ -22,6 +23,7 @@
 
 - [x] 3.1 Add a "Shutdown" section to `docs/dispatcher/long_polling.rst` before "Example": the default, a `run_polling(bot, tasks_shutdown_timeout=30)` example, the order of steps on stop, stopping from a handler, `handle_as_tasks=False`, and that handling is still not exactly-once. `docs/dispatcher/dispatcher.rst` autodocs both runners and needs no edit
 - [x] 3.2 Add `CHANGES/XXXX.feature.rst` describing the new parameter and the unchanged default; rename it to the issue number before the PR is opened
+- [x] 3.3 Say in the "Shutdown" section when the wait does not apply: SIGINT that the dispatcher does not handle (`handle_signals=False`, Windows), a second signal during the wait, and a handler that calls `stop_polling()` after polling has started to stop or through another task (`asyncio.shield()`, `asyncio.gather()`, `asyncio.wait_for()` on Python 3.10 and 3.11); give the way to stop from a handler that avoids them. No `versionadded` note until the release number is known
 
 ## 4. Quality gates
 

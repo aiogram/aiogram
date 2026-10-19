@@ -51,6 +51,9 @@ the task, so at most `N` tasks are in the set. An update the polling task holds 
   aiohttp's `on_shutdown`; see Open Questions.
 - Sequential handling of selected update types, which #1397 asks for.
 - Changing what happens when the task running `start_polling()` is itself cancelled.
+  #1635 asked for that (`start_polling()` wrapped in `asyncio.wait_for()`) and was closed as
+  intended behaviour, with `stop_polling()` from a separate task recommended instead. A
+  cancelled `start_polling()` runs shutdown without waiting, as before.
 
 ## Decisions
 
@@ -155,6 +158,13 @@ back keeps the strong reference that #1331 introduced until the task is done, wh
 done callback still takes care of. The rest of that handler runs after shutdown, as it
 does today.
 
+The exclusion is keyed on `asyncio.current_task()`, so it only covers a handler that awaits
+`stop_polling()` in its own task before the wait has started; see Risks for the two cases
+it misses. A context variable set in the handler task would also reach tasks the handler
+starts, but it would then exclude a handler that starts `stop_polling()` in a separate task
+and returns without awaiting it, which must be waited for like any other handler (the
+`run_polling()` test uses that pattern), so it was not used.
+
 ### Logging
 
 - INFO `Waiting up to %s seconds for %d update(s) to be handled` when the wait starts with
@@ -170,7 +180,7 @@ does today.
   through `**kwargs` into the workflow data and nothing waits. After this change the name
   is consumed by the parameter, so middlewares or handlers that read
   `data["tasks_shutdown_timeout"]` stop receiving it. `tasks_concurrency_limit` carried the
-  same risk. The `versionadded` note in the docs shows the first version that waits.
+  same risk. The changelog entry names the first version that waits.
 - **No exactly-once handling** → A handler cancelled after the timeout has usually had its
   update confirmed already. With `tasks_concurrency_limit`, an update can be handled in
   full during the wait without having been confirmed, and Telegram sends it again on the
@@ -180,7 +190,24 @@ does today.
 - **`stop_polling()` from a handler after the wait has started** → If polling is already
   stopping (for example after SIGTERM) and a handler that is being waited for then calls
   `stop_polling()`, that handler is in the set being waited on: it is cancelled inside
-  `stop_polling()` when the timeout expires. Shutdown is still bounded by the timeout.
+  `stop_polling()` when the timeout expires. In a probe with a timeout of 1 s and SIGTERM
+  at 0.05 s, a handler that called `stop_polling()` at 0.30 s was cancelled at 1.06 s.
+- **`stop_polling()` awaited through another task** → `asyncio.shield()` and
+  `asyncio.gather()` run the coroutine in a new task, and `asyncio.wait_for()` does so on
+  3.10 and 3.11 but not on 3.12 and 3.13 (checked with `asyncio.current_task()`). The
+  task that calls `stop_polling()` is then not the handler task, so the handler is waited
+  for while it waits for shutdown, and it is cancelled when the timeout expires. A probe
+  with `await asyncio.wait_for(dispatcher.stop_polling(), 5)` in a handler and a timeout of
+  1 s finished shutdown at 0.05 s on Python 3.13, and on 3.10 cancelled the handler at
+  1.05 s. The docs describe both cases and the way to avoid them: start `stop_polling()` in
+  a task of its own and return from the handler without awaiting it.
+- **Signals the dispatcher does not handle** → With `handle_signals=False`, or on Windows,
+  where the event loop has no signal handlers, SIGINT does not go through
+  `_signal_stop_polling()`: it raises `KeyboardInterrupt` or cancels the task running
+  `start_polling()`, and shutdown runs without waiting. Seen with
+  `run_polling(handle_signals=False, tasks_shutdown_timeout=5)` and SIGINT on Linux with
+  Python 3.10 and 3.13: the handler was cancelled at once. The docs say that the wait needs
+  `stop_polling()` or a signal the dispatcher handles.
 - **A second SIGINT/SIGTERM during the wait is only logged** → `_signal_stop_polling()`
   sets an event that is already set, so Ctrl+C does not cut the wait short. See Open
   Questions.
@@ -204,8 +231,8 @@ dp.run_polling(bot, tasks_shutdown_timeout=30)
   to the dispatcher's shutdown callbacks depends on the order of registration. A timeout on
   `BaseRequestHandler` that waits for those tasks in an `on_shutdown` callback running
   before session close could reuse `_wait_for_handle_update_tasks()`'s approach.
-- Two neighbouring issues seen while testing, both separate changes: cancelling the task
-  that runs `start_polling()` from outside leaves the `_polling` tasks running after
-  shutdown has run; and `_polling` creates the `_process_update()` coroutine before
-  `await semaphore.acquire()`, so a stop during `acquire()` leaves a coroutine that is never
-  awaited (a `RuntimeWarning`).
+- A neighbouring issue seen while testing, for a separate change: `_polling` creates the
+  `_process_update()` coroutine before `await semaphore.acquire()`, so a stop during
+  `acquire()` leaves a coroutine that is never awaited (a `RuntimeWarning`). Cancelling the
+  task that runs `start_polling()` also leaves the `_polling` tasks running after shutdown,
+  but #1635 already settled that as intended.

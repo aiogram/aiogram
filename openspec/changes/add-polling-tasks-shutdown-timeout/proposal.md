@@ -21,8 +21,9 @@ For a payment handler this means the Stars were charged and the goods were not h
 over. There is no supported way to wait for these handlers: the task set is private, and
 it was added in #1331 only to keep task references from being garbage collected.
 
-Related: #1397 asks for sequential handling of some updates such as `successful_payment`;
-#919 is a closed question about handlers being cancelled.
+Related: #1397 asks for more control over how updates are acknowledged, so that updates
+such as `successful_payment` can be handled sequentially; #919 is a closed 2.x question
+about handlers being cancelled when polling stops.
 
 ## What Changes
 
@@ -34,8 +35,13 @@ Related: #1397 asks for sequential handling of some updates such as `successful_
   after the timeout are cancelled, and their cancellation is awaited before shutdown.
 - The wait is logged at INFO level with the number of updates; cancelling handlers after
   the timeout is logged at WARNING level with their number.
-- A handler that calls `await dispatcher.stop_polling()` is not waited for, so it does not
-  wait for itself; `stop_polling()` still returns after shutdown has completed.
+- A handler that calls `await dispatcher.stop_polling()` in its own task, before polling
+  has started to stop, is not waited for, so it does not wait for itself;
+  `stop_polling()` still returns after shutdown has completed. The docs name the cases this
+  does not cover and how to avoid them.
+- The wait applies to `stop_polling()` and to SIGINT/SIGTERM handled by the dispatcher
+  (`handle_signals=True` on an event loop with signal handlers). A cancelled
+  `start_polling()` keeps shutting down without waiting, as #1635 settled.
 - With `None`, the default, nothing waits, as before.
 
 Not breaking: the default keeps the current behaviour, and the parameter is a new keyword.
