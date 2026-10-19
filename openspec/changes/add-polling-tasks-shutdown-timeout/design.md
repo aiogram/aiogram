@@ -50,6 +50,9 @@ the task, so at most `N` tasks are in the set. An update the polling task holds 
   `_background_feed_update_tasks` and never awaits them either, but its lifecycle belongs to
   aiohttp's `on_shutdown`; see Open Questions.
 - Sequential handling of selected update types, which #1397 asks for.
+- Waiting for tasks that handlers start themselves. Only `_handle_update_tasks` is awaited:
+  in a probe, a handler that started a background task and returned let shutdown run at
+  once, and that task sent its message after `session.close()`.
 - Changing what happens when the task running `start_polling()` is itself cancelled.
   #1635 asked for that (`start_polling()` wrapped in `asyncio.wait_for()`) and was closed as
   intended behaviour, with `stop_polling()` from a separate task recommended instead. A

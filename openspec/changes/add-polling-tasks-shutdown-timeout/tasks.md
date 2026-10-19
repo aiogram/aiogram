@@ -23,7 +23,7 @@
 
 - [x] 3.1 Add a "Shutdown" section to `docs/dispatcher/long_polling.rst` before "Example": the default, a `run_polling(bot, tasks_shutdown_timeout=30)` example, the order of steps on stop, stopping from a handler, `handle_as_tasks=False`, and that handling is still not exactly-once. `docs/dispatcher/dispatcher.rst` autodocs both runners and needs no edit
 - [x] 3.2 Add `CHANGES/XXXX.feature.rst` describing the new parameter and the unchanged default; rename it to the issue number before the PR is opened
-- [x] 3.3 Say in the "Shutdown" section when the wait does not apply: SIGINT that the dispatcher does not handle (`handle_signals=False`, Windows), a second signal during the wait, and a handler that calls `stop_polling()` after polling has started to stop or through another task (`asyncio.shield()`, `asyncio.gather()`, `asyncio.wait_for()` on Python 3.10 and 3.11); give the way to stop from a handler that avoids them. No `versionadded` note until the release number is known
+- [x] 3.3 Say in the "Shutdown" section when the wait does not apply: tasks that handlers or middlewares start themselves, SIGINT that the dispatcher does not handle (`handle_signals=False`, Windows), a second signal during the wait, and a handler that calls `stop_polling()` after polling has started to stop or through another task (`asyncio.shield()`, `asyncio.gather()`, `asyncio.wait_for()` on Python 3.10 and 3.11); give the way to stop from a handler that avoids them. No `versionadded` note until the release number is known
 
 ## 4. Quality gates
 

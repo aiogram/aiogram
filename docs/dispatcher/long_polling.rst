@@ -53,6 +53,9 @@ When polling is stopped, the dispatcher then:
    the cancellation, logging a warning with their number;
 4. runs shutdown callbacks and closes bot sessions.
 
+Only the tasks that polling starts for updates are waited for:
+tasks that handlers or middlewares start themselves are not.
+
 Keep the timeout shorter than the time your process manager gives the process
 between SIGTERM and SIGKILL, so that shutdown callbacks still have time to run.
 A second SIGINT or SIGTERM during the wait is logged and does not shorten it.
