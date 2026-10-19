@@ -72,12 +72,17 @@ async def anext(ait):
 def polling_one_update_per_bot(dispatcher: Dispatcher, events: list[str], process_update, *bots):
     """
     Let each bot receive one update, handled by `process_update`, followed by a long poll
-    that never returns, and record shutdown and closing of bot sessions into `events`
+    that never returns, and record cancelling that long poll, shutdown and closing of
+    bot sessions into `events`
     """
 
     async def listen_updates(bot, *_, **__):
         yield Update(update_id=bot.id)
-        await Event().wait()
+        try:
+            await Event().wait()
+        except asyncio.CancelledError:
+            events.append(f"polling stopped {bot.id}")
+            raise
 
     @dispatcher.shutdown()
     async def on_shutdown():
@@ -1300,6 +1305,7 @@ class TestDispatcher:
 
         assert events == [
             "handler started",
+            f"polling stopped {bot.id}",
             "handler finished",
             "shutdown",
             f"session closed {bot.id}",
@@ -1337,6 +1343,7 @@ class TestDispatcher:
 
         assert events == [
             "handler started",
+            f"polling stopped {bot.id}",
             "handler cancelled",
             "shutdown",
             f"session closed {bot.id}",
@@ -1369,7 +1376,12 @@ class TestDispatcher:
             await dispatcher.stop_polling()
             assert polling.done()
 
-            assert events == ["handler started", "shutdown", f"session closed {bot.id}"]
+            assert events == [
+                "handler started",
+                f"polling stopped {bot.id}",
+                "shutdown",
+                f"session closed {bot.id}",
+            ]
             (handler_task,) = dispatcher._handle_update_tasks
             release.set()
             await handler_task
@@ -1440,6 +1452,7 @@ class TestDispatcher:
 
         assert events == [
             "handler started",
+            f"polling stopped {bot.id}",
             "shutdown",
             f"session closed {bot.id}",
             "handler finished",
@@ -1472,8 +1485,9 @@ class TestDispatcher:
             assert polling.done()
 
         assert sorted(events[:2]) == ["handler started 42", "handler started 43"]
-        assert sorted(events[2:4]) == ["handler finished 42", "handler finished 43"]
-        assert events[4:] == ["shutdown", "session closed 42", "session closed 43"]
+        assert sorted(events[2:4]) == ["polling stopped 42", "polling stopped 43"]
+        assert sorted(events[4:6]) == ["handler finished 42", "handler finished 43"]
+        assert events[6:] == ["shutdown", "session closed 42", "session closed 43"]
 
     def test_run_polling(self, bot: MockedBot):
         dispatcher = Dispatcher()
@@ -1518,6 +1532,7 @@ class TestDispatcher:
 
         assert events == [
             "handler started",
+            f"polling stopped {bot.id}",
             "handler finished",
             "shutdown",
             f"session closed {bot.id}",
