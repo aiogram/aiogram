@@ -352,6 +352,34 @@ class Dispatcher(Router):
         finally:
             semaphore.release()
 
+    async def _wait_for_handle_update_tasks(self, timeout: float | None) -> None:
+        """
+        Wait for updates that are still being handled in tasks started by polling
+
+        Tasks still running after the timeout are cancelled, and their cancellation is awaited.
+
+        :param timeout: Maximum time to wait in seconds (None = do not wait)
+        """
+        if timeout is None or not self._handle_update_tasks:
+            return
+        tasks = set(self._handle_update_tasks)
+        loggers.dispatcher.info(
+            "Waiting up to %s seconds for %d update(s) to be handled",
+            timeout,
+            len(tasks),
+        )
+        _, pending = await asyncio.wait(tasks, timeout=timeout)
+        if not pending:
+            return
+        loggers.dispatcher.warning(
+            "%d update(s) were not handled within %s seconds, cancelling them",
+            len(pending),
+            timeout,
+        )
+        for task in pending:
+            task.cancel()
+        await asyncio.wait(pending)
+
     async def _polling(
         self,
         bot: Bot,
@@ -506,8 +534,20 @@ class Dispatcher(Router):
             raise RuntimeError(msg)
         if not self._stop_signal or not self._stopped_signal:
             return
+        # A handler that stops polling is not waited for on shutdown,
+        # because it is the one waiting for shutdown to complete
+        handler_task = asyncio.current_task()
+        if handler_task in self._handle_update_tasks:
+            self._handle_update_tasks.discard(handler_task)
+        else:
+            handler_task = None
         self._stop_signal.set()
-        await self._stopped_signal.wait()
+        try:
+            await self._stopped_signal.wait()
+        finally:
+            if handler_task is not None:
+                # Keep a reference to the task until it is done, as polling does
+                self._handle_update_tasks.add(handler_task)
 
     def _signal_stop_polling(self, sig: signal.Signals) -> None:
         if not self._running_lock.locked():
@@ -528,6 +568,7 @@ class Dispatcher(Router):
         handle_signals: bool = True,
         close_bot_session: bool = True,
         tasks_concurrency_limit: int | None = None,
+        tasks_shutdown_timeout: float | None = None,
         **kwargs: Any,
     ) -> None:
         """
@@ -543,6 +584,10 @@ class Dispatcher(Router):
         :param close_bot_session: close bot sessions on shutdown
         :param tasks_concurrency_limit: Maximum number of concurrent updates to process
             (None = no limit), used only if handle_as_tasks is True
+        :param tasks_shutdown_timeout: Maximum time in seconds to wait on shutdown for updates
+            that are still being handled, before shutdown callbacks run and bot sessions
+            are closed; handlers still running after it are cancelled
+            (None = do not wait), used only if handle_as_tasks is True
         :param kwargs: contextual data
         :return:
         """
@@ -618,6 +663,8 @@ class Dispatcher(Router):
                     task.cancel()
                     with suppress(CancelledError):
                         await task
+                # Let updates that are still being handled finish before shutdown
+                await self._wait_for_handle_update_tasks(timeout=tasks_shutdown_timeout)
                 # Wait finished tasks to propagate unhandled exceptions
                 await asyncio.gather(*done)
 
@@ -640,6 +687,7 @@ class Dispatcher(Router):
         handle_signals: bool = True,
         close_bot_session: bool = True,
         tasks_concurrency_limit: int | None = None,
+        tasks_shutdown_timeout: float | None = None,
         **kwargs: Any,
     ) -> None:
         """
@@ -654,6 +702,10 @@ class Dispatcher(Router):
         :param close_bot_session: close bot sessions on shutdown
         :param tasks_concurrency_limit: Maximum number of concurrent updates to process
             (None = no limit), used only if handle_as_tasks is True
+        :param tasks_shutdown_timeout: Maximum time in seconds to wait on shutdown for updates
+            that are still being handled, before shutdown callbacks run and bot sessions
+            are closed; handlers still running after it are cancelled
+            (None = do not wait), used only if handle_as_tasks is True
         :param kwargs: contextual data
         :return:
         """
@@ -668,6 +720,7 @@ class Dispatcher(Router):
                 handle_signals=handle_signals,
                 close_bot_session=close_bot_session,
                 tasks_concurrency_limit=tasks_concurrency_limit,
+                tasks_shutdown_timeout=tasks_shutdown_timeout,
             )
 
             try:
