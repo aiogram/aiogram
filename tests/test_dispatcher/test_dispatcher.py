@@ -1,5 +1,6 @@
 import asyncio
 import datetime
+import inspect
 import signal
 import time
 import warnings
@@ -32,8 +33,8 @@ from aiogram.types import (
     ChosenInlineResult,
     InlineQuery,
     ManagedBotUpdated,
-    MessageGenerationStopped,
     Message,
+    MessageGenerationStopped,
     MessageReactionCountUpdated,
     MessageReactionUpdated,
     PaidMediaPurchased,
@@ -1061,6 +1062,76 @@ class TestDispatcher:
 
             # The semaphore should have been acquired and released the same number of times
             assert semaphore._value == tasks_concurrency_limit
+
+    @pytest.mark.parametrize("cancel_handler", [False, True])
+    async def test_polling_cancel_while_waiting_for_semaphore(
+        self, bot: MockedBot, cancel_handler: bool
+    ):
+        dispatcher = Dispatcher()
+        waiting = Event()
+        started = Event()
+        release = Event()
+        coroutines = []
+        process_update = dispatcher._process_update
+
+        class ObservedSemaphore(asyncio.Semaphore):
+            async def acquire(self):
+                if self.locked():
+                    waiting.set()
+                return await super().acquire()
+
+        semaphore = ObservedSemaphore(1)
+
+        @dispatcher.message()
+        async def handler(message: Message):
+            started.set()
+            await release.wait()
+
+        async def updates(*args, **kwargs):
+            for update_id in range(2):
+                yield UPDATE.model_copy(update={"update_id": update_id})
+
+        def track_process_update(**kwargs):
+            coroutine = process_update(**kwargs)
+            coroutines.append(coroutine)
+            return coroutine
+
+        with (
+            patch.object(dispatcher, "_listen_updates", new=updates),
+            patch.object(dispatcher, "_process_update", new=track_process_update),
+            patch("asyncio.Semaphore", return_value=semaphore),
+        ):
+            polling = asyncio.create_task(dispatcher._polling(bot, tasks_concurrency_limit=1))
+            try:
+                await asyncio.wait_for(waiting.wait(), timeout=2)
+                await asyncio.wait_for(started.wait(), timeout=2)
+                assert len(semaphore._waiters) == 1
+                assert not semaphore._waiters[0].done()
+
+                polling.cancel()
+                with pytest.raises(asyncio.CancelledError):
+                    await polling
+
+                assert len(coroutines) == 1
+                assert inspect.getcoroutinestate(coroutines[0]) == inspect.CORO_SUSPENDED
+                assert len(dispatcher._handle_update_tasks) == 1
+                assert semaphore.locked()
+            finally:
+                polling.cancel()
+                with suppress(asyncio.CancelledError):
+                    await polling
+                handler_tasks = list(dispatcher._handle_update_tasks)
+                release.set()
+                if cancel_handler:
+                    for task in handler_tasks:
+                        task.cancel()
+                await asyncio.gather(*handler_tasks, return_exceptions=True)
+                for coroutine in coroutines:
+                    coroutine.close()
+
+        assert semaphore._value == 1
+        assert not dispatcher._handle_update_tasks
+        assert all(task.cancelled() == cancel_handler for task in handler_tasks)
 
     async def test_exception_handler_catch_exceptions(self, bot: MockedBot):
         dp = Dispatcher()

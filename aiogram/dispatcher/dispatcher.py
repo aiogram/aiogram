@@ -395,11 +395,12 @@ class Dispatcher(Router):
                 backoff_config=backoff_config,
                 allowed_updates=allowed_updates,
             ):
+                if handle_as_tasks and semaphore:
+                    # Wait for capacity before creating the update coroutine.
+                    await semaphore.acquire()
                 handle_update = self._process_update(bot=bot, update=update, **kwargs)
                 if handle_as_tasks:
                     if semaphore:
-                        # Use semaphore to limit concurrent tasks
-                        await semaphore.acquire()
                         handle_update_task = asyncio.create_task(
                             self._process_with_semaphore(handle_update, semaphore),
                         )
