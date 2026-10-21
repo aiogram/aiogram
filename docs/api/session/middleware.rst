@@ -14,6 +14,8 @@ Some useful cases that is:
 So, you can do it using client session middlewares.
 A client session middleware is a function (or callable class) that receives the request and the next middleware to call.
 The middleware can modify the request and then call the next middleware to continue the request processing.
+The next middleware returns the result of the Telegram method (for example, a ``Message``
+or ``bool``), not a ``Response`` wrapper.
 
 How to register client session middleware?
 ==========================================
@@ -35,7 +37,7 @@ Register using decorator
         make_request: NextRequestMiddlewareType[TelegramType],
         bot: "Bot",
         method: TelegramMethod[TelegramType],
-    ) -> Response[TelegramType]:
+    ) -> TelegramType:
         # do something with request
         return await make_request(bot, method)
 
@@ -67,7 +69,7 @@ Function based session middleware
         make_request: NextRequestMiddlewareType[TelegramType],
         bot: "Bot",
         method: TelegramMethod[TelegramType],
-    ) -> Response[TelegramType]:
+    ) -> TelegramType:
         try:
             # do something with request
             return await make_request(bot, method)

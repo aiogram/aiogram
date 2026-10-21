@@ -1,0 +1,2 @@
+Fixed client session middleware return type hints to describe the Telegram method result
+instead of a ``Response`` wrapper.

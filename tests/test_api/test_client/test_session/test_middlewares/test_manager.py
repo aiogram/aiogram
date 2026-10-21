@@ -4,8 +4,8 @@ from aiogram.client.session.middlewares.base import (
     NextRequestMiddlewareType,
 )
 from aiogram.client.session.middlewares.manager import RequestMiddlewareManager
-from aiogram.methods import Response, TelegramMethod
-from aiogram.types import TelegramObject
+from aiogram.methods import TelegramMethod
+from aiogram.methods.base import TelegramType
 
 
 class TestMiddlewareManager:
@@ -26,10 +26,10 @@ class TestMiddlewareManager:
         class MyMiddleware(BaseRequestMiddleware):
             async def __call__(
                 self,
-                make_request: NextRequestMiddlewareType,
+                make_request: NextRequestMiddlewareType[TelegramType],
                 bot: Bot,
-                method: TelegramMethod[TelegramObject],
-            ) -> Response[TelegramObject]:
+                method: TelegramMethod[TelegramType],
+            ) -> TelegramType:
                 return await make_request(bot, method)
 
         manager.register(MyMiddleware())
