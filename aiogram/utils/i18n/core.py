@@ -52,9 +52,12 @@ class I18n(ContextInstanceMixin["I18n"]):
         Use I18n context
         """
         token = self.set_current(self)
+        # Global translation helpers read the base class context, including for subclasses.
+        base_token = I18n.set_current(self)
         try:
             yield self
         finally:
+            I18n.reset_current(base_token)
             self.reset_current(token)
 
     def find_locales(self) -> dict[str, gettext.GNUTranslations]:
