@@ -1,0 +1,1 @@
+Fixed :code:`check_webapp_signature` raising ``TypeError`` instead of returning ``False`` when the client-supplied hash contains non-ASCII characters.

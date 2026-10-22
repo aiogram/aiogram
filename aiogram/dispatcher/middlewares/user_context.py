@@ -198,8 +198,19 @@ class UserContextMiddleware(BaseMiddleware):
         if event.subscription:
             return EventContext(user=event.subscription.user)
         if event.stopped_message_generation:
+            stopped = event.stopped_message_generation
+            # sendMessageDraft targets a private chat, so chat.id is the user id.
+            # Derive the user from the chat to expose event_from_user/state
+            # to handlers, like every other private-chat branch does.
             return EventContext(
-                chat=event.stopped_message_generation.chat,
-                thread_id=event.stopped_message_generation.message_thread_id,
+                chat=stopped.chat,
+                user=User(
+                    id=stopped.chat.id,
+                    is_bot=False,
+                    first_name=stopped.chat.first_name or "",
+                    last_name=stopped.chat.last_name,
+                    username=stopped.chat.username,
+                ),
+                thread_id=stopped.message_thread_id,
             )
         return EventContext()
