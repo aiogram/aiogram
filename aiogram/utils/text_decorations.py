@@ -330,7 +330,13 @@ class MarkdownDecoration(TextDecoration):
         return "\n".join(f">{line}" for line in value.splitlines())
 
     def expandable_blockquote(self, value: str) -> str:
-        return "\n".join(f">{line}" for line in value.splitlines()) + "||"
+        return (
+            "\n".join(
+                f"**>{line}" if index == 0 else f">{line}"
+                for index, line in enumerate(value.splitlines())
+            )
+            + "||"
+        )
 
     def date_time(
         self,
