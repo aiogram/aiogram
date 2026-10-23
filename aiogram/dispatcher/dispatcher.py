@@ -534,13 +534,15 @@ class Dispatcher(Router):
             raise RuntimeError(msg)
         if not self._stop_signal or not self._stopped_signal:
             return
-        # A handler that stops polling is not waited for on shutdown,
-        # because it is the one waiting for shutdown to complete
-        handler_task = asyncio.current_task()
-        if handler_task in self._handle_update_tasks:
-            self._handle_update_tasks.discard(handler_task)
-        else:
-            handler_task = None
+        # A handler that starts the stop is not waited for on shutdown, because it is
+        # the one waiting for shutdown to complete. When the stop was already started
+        # (by a signal or another call), the handler is waited for like any other one.
+        handler_task = None
+        if not self._stop_signal.is_set():
+            current_task = asyncio.current_task()
+            if current_task in self._handle_update_tasks:
+                self._handle_update_tasks.discard(current_task)
+                handler_task = current_task
         self._stop_signal.set()
         try:
             await self._stopped_signal.wait()

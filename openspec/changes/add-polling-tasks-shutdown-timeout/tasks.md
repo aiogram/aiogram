@@ -10,14 +10,16 @@
 - [x] 1.8 `run_polling(..., tasks_shutdown_timeout=5)`: the handler finishes before shutdown instead of being cancelled when the event loop closes
 - [x] 1.9 Run them on `dev-3.x` before the change: 1.2, 1.3, 1.7 and 1.8 fail; 1.4, 1.5 and 1.6 pass there by design, since they pin behaviour that must not change
 - [x] 1.10 Record in the helper when the long poll of each bot is cancelled, and expect it before any handler finishes or is cancelled, so that 1.2, 1.3, 1.7 and 1.8 also fail when the wait runs while polling still fetches updates (checked by moving the wait in front of the cancelling of the polling tasks: those 8 cases fail)
+- [x] 1.11 With a fixed order of events and no timing: a handler that calls `stop_polling()` while `_stop_signal` is still clear is out of `_handle_update_tasks` while it waits for shutdown, and one that calls it after `_stop_signal` is set stays in it
+- [x] 1.12 A handler that calls `stop_polling()` after `_signal_stop_polling(signal.SIGTERM)` is waited for: it is cancelled when the timeout expires, before the shutdown callback, with the WARNING about one update
 
 ## 2. Implementation
 
 - [x] 2.1 Add `Dispatcher._wait_for_handle_update_tasks(timeout)` to `aiogram/dispatcher/dispatcher.py`: return at once for `None` or an empty set; otherwise log, `asyncio.wait()` a copy of the set with the timeout, then log, cancel and await whatever is still pending
 - [x] 2.2 Add `tasks_shutdown_timeout: float | None = None` to `start_polling()` after `tasks_concurrency_limit`, with a docstring entry, and call the helper after the pending polling tasks are cancelled and before `asyncio.gather(*done)`
 - [x] 2.3 Add the same parameter and docstring entry to `run_polling()` and forward it to `start_polling()` by name
-- [x] 2.4 In `stop_polling()`, remove `asyncio.current_task()` from `_handle_update_tasks` before setting `_stop_signal` when it is a handler task, and add it back once `_stopped_signal` is set
-- [x] 2.5 Confirm the tests from section 1 pass, and that removing either half of 2.4 makes 1.6 fail
+- [x] 2.4 In `stop_polling()`, remove `asyncio.current_task()` from `_handle_update_tasks` before setting `_stop_signal` when it is a handler task and `_stop_signal` is not set yet, and add it back once `_stopped_signal` is set
+- [x] 2.5 Confirm the tests from section 1 pass, that removing either half of 2.4 makes 1.6 fail, and that removing the `_stop_signal` check makes 1.11 and 1.12 fail
 
 ## 3. Docs and changelog
 

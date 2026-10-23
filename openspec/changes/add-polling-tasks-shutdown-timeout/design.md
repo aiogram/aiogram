@@ -161,9 +161,16 @@ back keeps the strong reference that #1331 introduced until the task is done, wh
 done callback still takes care of. The rest of that handler runs after shutdown, as it
 does today.
 
+The handler is removed only when `_stop_signal` is not set yet, that is, when this call
+starts the stop. Once a signal or another call has started it, polling may still be
+cancelling its tasks before the wait takes its copy of the set, and a handler that removed
+itself in that window would not be waited for although it was running when the stop
+began. The check and the removal run without an `await` in between, so no other task can
+set `_stop_signal` between them.
+
 The exclusion is keyed on `asyncio.current_task()`, so it only covers a handler that awaits
-`stop_polling()` in its own task before the wait has started; see Risks for the two cases
-it misses. A context variable set in the handler task would also reach tasks the handler
+`stop_polling()` in its own task before polling has started to stop; see Risks for the two
+cases it misses. A context variable set in the handler task would also reach tasks the handler
 starts, but it would then exclude a handler that starts `stop_polling()` in a separate task
 and returns without awaiting it, which must be waited for like any other handler (the
 `run_polling()` test uses that pattern), so it was not used.
@@ -190,10 +197,10 @@ and returns without awaiting it, which must be waited for like any other handler
   next start. The docs say that side-effecting handlers still need their own protection.
 - **A handler that ignores cancellation extends shutdown past the timeout** → The await
   after `cancel()` has no bound. `asyncio.run()` teardown has the same property today.
-- **`stop_polling()` from a handler after the wait has started** → If polling is already
-  stopping (for example after SIGTERM) and a handler that is being waited for then calls
-  `stop_polling()`, that handler is in the set being waited on: it is cancelled inside
-  `stop_polling()` when the timeout expires. In a probe with a timeout of 1 s and SIGTERM
+- **`stop_polling()` from a handler after polling has started to stop** → If polling is
+  already stopping (for example after SIGTERM) and a handler then calls `stop_polling()`,
+  that handler stays in the set being waited on: it is cancelled inside `stop_polling()`
+  when the timeout expires. In a probe with a timeout of 1 s and SIGTERM
   at 0.05 s, a handler that called `stop_polling()` at 0.30 s was cancelled at 1.06 s.
 - **`stop_polling()` awaited through another task** → `asyncio.shield()` and
   `asyncio.gather()` run the coroutine in a new task, and `asyncio.wait_for()` does so on
