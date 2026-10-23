@@ -1,11 +1,13 @@
 import asyncio
 import datetime
+import logging
 import signal
 import time
 import warnings
 from asyncio import Event
 from collections import Counter
-from contextlib import suppress
+from contextlib import ExitStack, contextmanager, suppress
+from functools import partial
 from typing import Any
 from unittest.mock import AsyncMock, patch
 
@@ -64,6 +66,50 @@ async def invalid_message_handler(message: Message):
 
 async def anext(ait):
     return await ait.__anext__()
+
+
+@contextmanager
+def polling_one_update_per_bot(dispatcher: Dispatcher, events: list[str], process_update, *bots):
+    """
+    Let each bot receive one update, handled by `process_update`, followed by a long poll
+    that never returns, and record cancelling that long poll, shutdown and closing of
+    bot sessions into `events`
+    """
+
+    async def listen_updates(bot, *_, **__):
+        yield Update(update_id=bot.id)
+        try:
+            await Event().wait()
+        except asyncio.CancelledError:
+            events.append(f"polling stopped {bot.id}")
+            raise
+
+    @dispatcher.shutdown()
+    async def on_shutdown():
+        events.append("shutdown")
+
+    with ExitStack() as stack:
+        stack.enter_context(
+            patch(
+                "aiogram.dispatcher.dispatcher.Dispatcher._listen_updates",
+                side_effect=listen_updates,
+            )
+        )
+        stack.enter_context(
+            patch(
+                "aiogram.dispatcher.dispatcher.Dispatcher._process_update",
+                side_effect=process_update,
+            )
+        )
+        for bot in bots:
+            stack.enter_context(
+                patch.object(
+                    bot.session,
+                    "close",
+                    side_effect=partial(events.append, f"session closed {bot.id}"),
+                )
+            )
+        yield
 
 
 RAW_UPDATE = {
@@ -1219,6 +1265,292 @@ class TestDispatcher:
     async def test_stop_polling_by_signal(self, bot: MockedBot):
         pass
 
+    @pytest.mark.parametrize("stop_by_signal", [False, True])
+    @pytest.mark.parametrize("tasks_concurrency_limit", [None, 1])
+    async def test_start_polling_waits_for_update_tasks(
+        self,
+        bot: MockedBot,
+        caplog,
+        stop_by_signal: bool,
+        tasks_concurrency_limit: int | None,
+    ):
+        caplog.set_level(logging.INFO, logger="aiogram.dispatcher")
+        dispatcher = Dispatcher()
+        events: list[str] = []
+        started = Event()
+
+        async def process_update(*_, **__):
+            events.append("handler started")
+            started.set()
+            await asyncio.sleep(0.1)
+            events.append("handler finished")
+            return True
+
+        with polling_one_update_per_bot(dispatcher, events, process_update, bot):
+            polling = asyncio.create_task(
+                dispatcher.start_polling(
+                    bot,
+                    handle_signals=False,
+                    tasks_concurrency_limit=tasks_concurrency_limit,
+                    tasks_shutdown_timeout=5,
+                )
+            )
+            await started.wait()
+            if stop_by_signal:
+                dispatcher._signal_stop_polling(signal.SIGTERM)
+                await polling
+            else:
+                await dispatcher.stop_polling()
+                assert polling.done()
+
+        assert events == [
+            "handler started",
+            f"polling stopped {bot.id}",
+            "handler finished",
+            "shutdown",
+            f"session closed {bot.id}",
+        ]
+        assert not dispatcher._handle_update_tasks
+        assert "Waiting up to 5 seconds for 1 update(s) to be handled" in caplog.text
+        assert "were not handled" not in caplog.text
+
+    @pytest.mark.parametrize("tasks_shutdown_timeout", [0, 0.05])
+    async def test_start_polling_cancels_update_tasks_after_timeout(
+        self, bot: MockedBot, caplog, tasks_shutdown_timeout: float
+    ):
+        dispatcher = Dispatcher()
+        events: list[str] = []
+        started = Event()
+
+        async def process_update(*_, **__):
+            events.append("handler started")
+            started.set()
+            try:
+                await Event().wait()
+            except asyncio.CancelledError:
+                events.append("handler cancelled")
+                raise
+
+        with polling_one_update_per_bot(dispatcher, events, process_update, bot):
+            polling = asyncio.create_task(
+                dispatcher.start_polling(
+                    bot, handle_signals=False, tasks_shutdown_timeout=tasks_shutdown_timeout
+                )
+            )
+            await started.wait()
+            await dispatcher.stop_polling()
+            assert polling.done()
+
+        assert events == [
+            "handler started",
+            f"polling stopped {bot.id}",
+            "handler cancelled",
+            "shutdown",
+            f"session closed {bot.id}",
+        ]
+        assert not dispatcher._handle_update_tasks
+        assert [r.getMessage() for r in caplog.records if r.levelno == logging.WARNING] == [
+            f"1 update(s) were not handled within {tasks_shutdown_timeout} seconds, "
+            "cancelling them"
+        ]
+
+    async def test_start_polling_does_not_wait_for_update_tasks_by_default(
+        self, bot: MockedBot, caplog
+    ):
+        caplog.set_level(logging.INFO, logger="aiogram.dispatcher")
+        dispatcher = Dispatcher()
+        events: list[str] = []
+        started = Event()
+        release = Event()
+
+        async def process_update(*_, **__):
+            events.append("handler started")
+            started.set()
+            await release.wait()
+            events.append("handler finished")
+            return True
+
+        with polling_one_update_per_bot(dispatcher, events, process_update, bot):
+            polling = asyncio.create_task(dispatcher.start_polling(bot, handle_signals=False))
+            await started.wait()
+            await dispatcher.stop_polling()
+            assert polling.done()
+
+            assert events == [
+                "handler started",
+                f"polling stopped {bot.id}",
+                "shutdown",
+                f"session closed {bot.id}",
+            ]
+            (handler_task,) = dispatcher._handle_update_tasks
+            release.set()
+            await handler_task
+
+        assert events[-1] == "handler finished"
+        assert "Waiting up to" not in caplog.text
+
+    async def test_start_polling_shutdown_timeout_without_update_tasks(
+        self, bot: MockedBot, caplog
+    ):
+        caplog.set_level(logging.INFO, logger="aiogram.dispatcher")
+        dispatcher = Dispatcher()
+        events: list[str] = []
+        started = Event()
+
+        async def process_update(*_, **__):
+            events.append("handler started")
+            started.set()
+            try:
+                await Event().wait()
+            except asyncio.CancelledError:
+                events.append("handler cancelled")
+                raise
+
+        with polling_one_update_per_bot(dispatcher, events, process_update, bot):
+            polling = asyncio.create_task(
+                dispatcher.start_polling(
+                    bot, handle_signals=False, handle_as_tasks=False, tasks_shutdown_timeout=5
+                )
+            )
+            await started.wait()
+            await dispatcher.stop_polling()
+            assert polling.done()
+
+        # The handler runs inside the polling task, so it is cancelled together with polling
+        assert events == [
+            "handler started",
+            "handler cancelled",
+            "shutdown",
+            f"session closed {bot.id}",
+        ]
+        assert "Waiting up to" not in caplog.text
+
+    async def test_stop_polling_from_handler_does_not_wait_for_itself(
+        self, bot: MockedBot, caplog
+    ):
+        dispatcher = Dispatcher()
+        events: list[str] = []
+        handler_tasks: list[asyncio.Task[Any]] = []
+
+        async def process_update(*_, **__):
+            events.append("handler started")
+            handler_task = asyncio.current_task()
+            handler_tasks.append(handler_task)
+            await dispatcher.stop_polling()
+            # The task is tracked again, so it is not garbage collected while it finishes
+            assert handler_task in dispatcher._handle_update_tasks
+            events.append("handler finished")
+            return True
+
+        with polling_one_update_per_bot(dispatcher, events, process_update, bot):
+            await asyncio.wait_for(
+                dispatcher.start_polling(bot, handle_signals=False, tasks_shutdown_timeout=5),
+                timeout=1,
+            )
+            (handler_task,) = handler_tasks
+            await handler_task
+
+        assert events == [
+            "handler started",
+            f"polling stopped {bot.id}",
+            "shutdown",
+            f"session closed {bot.id}",
+            "handler finished",
+        ]
+        assert not dispatcher._handle_update_tasks
+        assert "were not handled" not in caplog.text
+
+    @pytest.mark.parametrize("stop_started", [False, True])
+    async def test_stop_polling_from_handler_is_excluded_only_when_it_starts_the_stop(
+        self, stop_started: bool
+    ):
+        dispatcher = Dispatcher()
+        dispatcher._stop_signal = Event()
+        dispatcher._stopped_signal = Event()
+        tracked_while_waiting: list[bool] = []
+
+        async def stopped_wait() -> bool:
+            tracked_while_waiting.append(asyncio.current_task() in dispatcher._handle_update_tasks)
+            return True
+
+        async def handler() -> None:
+            await dispatcher.stop_polling()
+
+        async with dispatcher._running_lock:
+            if stop_started:
+                # A signal or another stop_polling() call has already started the stop
+                dispatcher._stop_signal.set()
+            with patch.object(dispatcher._stopped_signal, "wait", new=stopped_wait):
+                handler_task = asyncio.create_task(handler())
+                dispatcher._handle_update_tasks.add(handler_task)
+                await handler_task
+
+        # The shutdown wait keeps covering the handler unless the handler started the stop
+        assert tracked_while_waiting == [stop_started]
+        assert handler_task in dispatcher._handle_update_tasks
+
+    async def test_stop_polling_from_handler_after_signal_is_waited_for(
+        self, bot: MockedBot, caplog
+    ):
+        dispatcher = Dispatcher()
+        events: list[str] = []
+
+        async def process_update(*_, **__):
+            events.append("handler started")
+            dispatcher._signal_stop_polling(signal.SIGTERM)
+            try:
+                await dispatcher.stop_polling()
+            except asyncio.CancelledError:
+                events.append("handler cancelled")
+                raise
+            return True
+
+        with polling_one_update_per_bot(dispatcher, events, process_update, bot):
+            await asyncio.wait_for(
+                dispatcher.start_polling(bot, handle_signals=False, tasks_shutdown_timeout=0.1),
+                timeout=1,
+            )
+
+        # The stop was started by the signal, so the handler is waited for and then cancelled
+        assert events == [
+            "handler started",
+            f"polling stopped {bot.id}",
+            "handler cancelled",
+            "shutdown",
+            f"session closed {bot.id}",
+        ]
+        assert "1 update(s) were not handled within 0.1 seconds" in caplog.text
+        assert not dispatcher._handle_update_tasks
+
+    async def test_start_polling_waits_for_update_tasks_of_all_bots(self):
+        dispatcher = Dispatcher()
+        bot1, bot2 = MockedBot(token="42:TEST"), MockedBot(token="43:TEST")
+        events: list[str] = []
+        both_started = Event()
+
+        async def process_update(*_, bot, **__):
+            events.append(f"handler started {bot.id}")
+            if len(events) == 2:
+                both_started.set()
+            await asyncio.sleep(0.05)
+            events.append(f"handler finished {bot.id}")
+            return True
+
+        with polling_one_update_per_bot(dispatcher, events, process_update, bot1, bot2):
+            polling = asyncio.create_task(
+                dispatcher.start_polling(
+                    bot1, bot2, handle_signals=False, tasks_shutdown_timeout=5
+                )
+            )
+            await both_started.wait()
+            await dispatcher.stop_polling()
+            assert polling.done()
+
+        assert sorted(events[:2]) == ["handler started 42", "handler started 43"]
+        assert sorted(events[2:4]) == ["polling stopped 42", "polling stopped 43"]
+        assert sorted(events[4:6]) == ["handler finished 42", "handler finished 43"]
+        assert events[6:] == ["shutdown", "session closed 42", "session closed 43"]
+
     def test_run_polling(self, bot: MockedBot):
         dispatcher = Dispatcher()
 
@@ -1243,6 +1575,30 @@ class TestDispatcher:
             patched_start_polling.assert_awaited_once()
 
         assert start_called
+
+    def test_run_polling_waits_for_update_tasks(self, bot: MockedBot):
+        dispatcher = Dispatcher()
+        events: list[str] = []
+        stop_tasks: list[asyncio.Task[None]] = []
+
+        async def process_update(*_, **__):
+            events.append("handler started")
+            # Stop from another task, keeping a reference to it
+            stop_tasks.append(asyncio.create_task(dispatcher.stop_polling()))
+            await asyncio.sleep(0.1)
+            events.append("handler finished")
+            return True
+
+        with polling_one_update_per_bot(dispatcher, events, process_update, bot):
+            dispatcher.run_polling(bot, handle_signals=False, tasks_shutdown_timeout=5)
+
+        assert events == [
+            "handler started",
+            f"polling stopped {bot.id}",
+            "handler finished",
+            "shutdown",
+            f"session closed {bot.id}",
+        ]
 
     async def test_feed_webhook_update_fast_process(self, bot: MockedBot):
         dispatcher = Dispatcher()

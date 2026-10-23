@@ -24,6 +24,74 @@ or :meth:`aiogram.dispatcher.dispatcher.Dispatcher.run_polling` methods.
 
     If you will use multibot mode, you should use webhook mode for all bots.
 
+Shutdown
+========
+
+With :code:`handle_as_tasks=True` (the default) each update is handled in its own task,
+and the update is confirmed to Telegram by the next :code:`getUpdates` request,
+which is usually sent before its handler has finished.
+
+By default, stopping polling (by SIGINT/SIGTERM or
+:meth:`aiogram.dispatcher.dispatcher.Dispatcher.stop_polling`) does not wait for these handlers:
+shutdown callbacks run and bot sessions are closed while they may still be running,
+and :meth:`aiogram.dispatcher.dispatcher.Dispatcher.run_polling` cancels the remaining ones
+when it closes the event loop. Their updates have usually been confirmed already,
+so Telegram does not send them again.
+
+To let the handlers finish, pass the number of seconds to wait for them
+as :code:`tasks_shutdown_timeout`:
+
+.. code-block:: python
+
+    dp.run_polling(bot, tasks_shutdown_timeout=30)
+
+When polling is stopped, the dispatcher then:
+
+1. stops fetching new updates;
+2. waits up to 30 seconds for the updates that are still being handled, of all bots;
+3. cancels the handlers still running after that and waits until they have handled
+   the cancellation, logging a warning with their number;
+4. runs shutdown callbacks and closes bot sessions.
+
+Only the tasks that polling starts for updates are waited for:
+tasks that handlers or middlewares start themselves are not.
+
+Keep the timeout shorter than the time your process manager gives the process
+between SIGTERM and SIGKILL, so that shutdown callbacks still have time to run.
+A second SIGINT or SIGTERM during the wait is logged and does not shorten it.
+
+The wait only happens when polling is stopped through the dispatcher:
+by :meth:`aiogram.dispatcher.dispatcher.Dispatcher.stop_polling`, or by SIGINT/SIGTERM
+when :code:`handle_signals=True` and the event loop supports signal handlers,
+which it does not on Windows. Otherwise SIGINT raises :code:`KeyboardInterrupt`
+or cancels the task that runs :meth:`aiogram.dispatcher.dispatcher.Dispatcher.start_polling`,
+and shutdown runs without waiting, as it does when that task is cancelled in any other way.
+
+A handler that calls :code:`await dispatcher.stop_polling()` is not waited for:
+:code:`stop_polling()` returns once shutdown has completed, and the rest of that handler runs after it.
+This relies on the task that calls :code:`stop_polling()`, so in two cases the handler
+is waited for and then cancelled when the timeout expires: when polling was already stopping
+(for example after SIGTERM), and when the handler awaits :code:`stop_polling()`
+through another task, as :code:`asyncio.shield()`, :code:`asyncio.gather()` and,
+on Python 3.10 and 3.11, :code:`asyncio.wait_for()` do.
+A handler avoids both by starting :code:`stop_polling()` in a task of its own,
+keeping a reference to that task, and returning without awaiting it.
+
+.. note::
+
+    With :code:`handle_as_tasks=False` the handler runs inside the polling loop and
+    :code:`tasks_shutdown_timeout` has no effect: stopping polling cancels the handler at once,
+    its update is not confirmed yet, and Telegram sends it again after the next start.
+
+.. note::
+
+    The timeout does not make handling exactly-once. A handler cancelled after the timeout
+    leaves its work unfinished, and its update may already be confirmed.
+    With :code:`tasks_concurrency_limit`, an update can be handled in full during the wait
+    without having been confirmed, and then Telegram sends it again after the next start.
+    Handlers with side effects, such as handing over goods after a payment,
+    still need to record their progress and to recognise an update they have already handled.
+
 Example
 =======
 
