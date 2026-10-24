@@ -2,13 +2,12 @@ from __future__ import annotations
 
 import functools
 from collections.abc import Callable
-from contextlib import AbstractAsyncContextManager
 from typing import TYPE_CHECKING, Any
 
 from aiogram.dispatcher.middlewares.manager import MiddlewareManager
 from aiogram.exceptions import UnsupportedKeywordArgument
 from aiogram.filters.base import Filter
-from aiogram.tracer import tracer
+from aiogram.tracer import AbstractTracer, execute_with_tracing, tracer
 
 from .bases import UNHANDLED, MiddlewareType, SkipHandler
 from .handler import CallbackType, FilterObject, HandlerObject
@@ -113,14 +112,16 @@ class TelegramEventObserver:
 
     @staticmethod
     async def call_handler_with_tracing(
-        handler_manager: AbstractAsyncContextManager[None],
+        tracer_instance: AbstractTracer,
         handler: HandlerObject,
         event: TelegramObject,
         /,  # preventing shadowing from kwargs
         **kwargs: Any,
     ) -> Any:
-        async with handler_manager:
-            return await handler.call(event, **kwargs)
+        return await execute_with_tracing(
+            tracer_instance.get_handler_span_manager(handler),
+            handler.call(event, **kwargs),
+        )
 
     async def trigger(self, event: TelegramObject, **kwargs: Any) -> Any:
         """
@@ -131,25 +132,22 @@ class TelegramEventObserver:
         for handler in self.handlers:
             kwargs["handler"] = handler
             result, data = await handler.check(event, **kwargs)
-            if not result:
-                continue
-            kwargs.update(data)
-            try:
-                handler_call = handler.call
-                if tracer_instance is not None and (
-                    handler_manager := tracer_instance.get_handler_span_manager(handler)
-                ):
-                    handler_call = functools.partial(
-                        self.call_handler_with_tracing,
-                        handler_manager,
-                        handler,
+            if result:
+                kwargs.update(data)
+                try:
+                    handler_call = handler.call
+                    if tracer_instance is not None:
+                        handler_call = functools.partial(
+                            self.call_handler_with_tracing, tracer_instance, handler
+                        )
+                    wrapped_inner = self.outer_middleware.wrap_middlewares(
+                        self._resolve_middlewares(),
+                        handler_call,
                     )
-                wrapped_inner = self.outer_middleware.wrap_middlewares(
-                    self._resolve_middlewares(), handler_call
-                )
-                return await wrapped_inner(event, kwargs)
-            except SkipHandler:
-                continue
+                    return await wrapped_inner(event, kwargs)
+                except SkipHandler:
+                    continue
+
         return UNHANDLED
 
     def __call__(

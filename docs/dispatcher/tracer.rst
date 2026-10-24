@@ -31,7 +31,7 @@ Example of implementation
 
   from aiogram import Dispatcher
   from aiogram.tracer import AbstractTracer
-  from aiogram.types import TelegramObject
+  from aiogram.types import Update
 
 
   class MySimpleTracer(AbstractTracer):
@@ -40,9 +40,9 @@ Example of implementation
       def get_middleware_span_manager(self, middleware): return None
 
       @contextlib.asynccontextmanager
-      async def get_trigger_span_manager(self, event: TelegramObject):
-          print(f"Start processing update, type: {type(event).__name__}")
+      async def get_trigger_span_manager(self, update: Update):
+          print(f"Start processing update id={update.update_id}")
           yield
-          print(f"End processing update, type: {type(event).__name__}")
+          print(f"End processing update id={update.update_id}")
 
   dp = Dispatcher(tracer=MySimpleTracer())

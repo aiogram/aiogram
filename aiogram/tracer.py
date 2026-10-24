@@ -13,7 +13,7 @@ from aiogram.dispatcher.event.bases import MiddlewareEventType, MiddlewareType
 
 if TYPE_CHECKING:
     from aiogram.dispatcher.event.handler import HandlerObject
-    from aiogram.types import TelegramObject
+    from aiogram.types import Update
 
 
 SPAN_MANAGER_TYPE = AbstractAsyncContextManager[None] | None
@@ -35,7 +35,7 @@ class AbstractTracer(ABC):
         """
 
     @abstractmethod
-    def get_trigger_span_manager(self, event: TelegramObject) -> SPAN_MANAGER_TYPE:
+    def get_trigger_span_manager(self, update: Update) -> SPAN_MANAGER_TYPE:
         """
         Method for getting manager that will be used to wrap full update processing flow
         (e.g. routing, filtering, etc).
@@ -73,12 +73,11 @@ class SpanProxy:
         exc_value: BaseException | None,
         traceback: TracebackType | None,
     ) -> bool | None:
-        if self.have_error_during_enter:
-            return None
-        try:
-            return await self.span.__aexit__(exc_type, exc_value, traceback)
-        except Exception:
-            logger.exception("Exception during exiting span.")
+        if not self.have_error_during_enter:
+            try:
+                await self.span.__aexit__(exc_type, exc_value, traceback)
+            except Exception:
+                logger.exception("Exception during exiting span.")
         return None
 
 
@@ -118,8 +117,8 @@ class TracerProxy(AbstractTracer):
         return self.tracer.get_handler_span_manager(handler)
 
     @safe_span_manager("trigger")
-    def get_trigger_span_manager(self, event: TelegramObject) -> SPAN_MANAGER_TYPE:
-        return self.tracer.get_trigger_span_manager(event)
+    def get_trigger_span_manager(self, update: Update) -> SPAN_MANAGER_TYPE:
+        return self.tracer.get_trigger_span_manager(update)
 
 
 tracer: ContextVar[AbstractTracer | None] = ContextVar("tracer", default=None)

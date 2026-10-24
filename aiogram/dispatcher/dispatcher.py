@@ -167,10 +167,11 @@ class Dispatcher(Router):
             # The preferred way is that pass already mounted Bot instance to this update
             # before call feed_update method
             update = Update.model_validate(update.model_dump(), context={"bot": bot})
-        token = tracer_var.set(self.tracer) if self.tracer else None
+
+        token = tracer_var.set(self.tracer)
         try:
             response = await execute_with_tracing(
-                self.tracer.get_trigger_span_manager(update.event) if self.tracer else None,
+                self.tracer.get_trigger_span_manager(update) if self.tracer else None,
                 self.update.wrap_outer_middleware(
                     self.update.trigger,
                     update,
@@ -185,8 +186,7 @@ class Dispatcher(Router):
             handled = response is not UNHANDLED
             return response
         finally:
-            if token:
-                tracer_var.reset(token)
+            tracer_var.reset(token)
             finish_time = loop.time()
             duration = (finish_time - start_time) * 1000
             loggers.event.info(
@@ -293,6 +293,7 @@ class Dispatcher(Router):
             raise SkipHandler() from e
 
         kwargs.update(event_update=update)
+
         return await self.propagate_event(update_type=update_type, event=event, **kwargs)
 
     @classmethod

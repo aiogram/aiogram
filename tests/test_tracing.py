@@ -192,7 +192,7 @@ class TestIntegration:
         tracer_impl.get_trigger_span_manager.assert_called_once()
         assert (
             tracer_impl.get_trigger_span_manager.call_args[0][0].model_dump()
-            == UPDATE.event.model_dump()
+            == UPDATE.model_dump()
         )
         spans.trigger.__aenter__.assert_awaited_once()
         spans.trigger.__aexit__.assert_awaited_once()
