@@ -41,14 +41,6 @@ class AbstractTracer(ABC):
         (e.g. routing, filtering, etc).
         """
 
-    @abstractmethod
-    def get_filter_span_manager(self, handler: HandlerObject) -> SPAN_MANAGER_TYPE:
-        """
-        Method for getting manager that will be used to wrap filter check for handler,
-        both handler and observer filters. In the case of observer-level filters,
-        ``HandlerObject`` with dummy callback(lambda function) will be passed.
-        """
-
 
 T = TypeVar("T")
 
@@ -128,10 +120,6 @@ class TracerProxy(AbstractTracer):
     @safe_span_manager("trigger")
     def get_trigger_span_manager(self, event: TelegramObject) -> SPAN_MANAGER_TYPE:
         return self.tracer.get_trigger_span_manager(event)
-
-    @safe_span_manager("filter")
-    def get_filter_span_manager(self, handler: HandlerObject) -> SPAN_MANAGER_TYPE:
-        return self.tracer.get_filter_span_manager(handler)
 
 
 tracer: ContextVar[AbstractTracer | None] = ContextVar("tracer", default=None)

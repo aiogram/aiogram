@@ -8,7 +8,7 @@ from typing import TYPE_CHECKING, Any
 from aiogram.dispatcher.middlewares.manager import MiddlewareManager
 from aiogram.exceptions import UnsupportedKeywordArgument
 from aiogram.filters.base import Filter
-from aiogram.tracer import execute_with_tracing, tracer
+from aiogram.tracer import tracer
 
 from .bases import UNHANDLED, MiddlewareType, SkipHandler
 from .handler import CallbackType, FilterObject, HandlerObject
@@ -108,13 +108,8 @@ class TelegramEventObserver:
         )
         return wrapped_outer(event, data)
 
-    async def check_root_filters(self, event: TelegramObject, **kwargs: Any) -> Any:
-        tracer_instance = tracer.get()
-        result, data = await execute_with_tracing(
-            tracer_instance.get_filter_span_manager(self._handler) if tracer_instance else None,
-            self._handler.check(event, **kwargs),
-        )
-        return result, data
+    def check_root_filters(self, event: TelegramObject, **kwargs: Any) -> Any:
+        return self._handler.check(event, **kwargs)
 
     @staticmethod
     async def call_handler_with_tracing(
@@ -135,10 +130,7 @@ class TelegramEventObserver:
         tracer_instance = tracer.get()
         for handler in self.handlers:
             kwargs["handler"] = handler
-            result, data = await execute_with_tracing(
-                tracer_instance.get_filter_span_manager(handler) if tracer_instance else None,
-                handler.check(event, **kwargs),
-            )
+            result, data = await handler.check(event, **kwargs)
             if not result:
                 continue
             kwargs.update(data)

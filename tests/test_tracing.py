@@ -20,7 +20,6 @@ class Spans:
     handler: AsyncMock
     middleware: AsyncMock
     trigger: AsyncMock
-    filter: AsyncMock
 
 
 @pytest.fixture
@@ -29,7 +28,6 @@ def spans():
         handler=AsyncMock(),
         middleware=AsyncMock(),
         trigger=AsyncMock(),
-        filter=AsyncMock(),
     )
 
 
@@ -49,7 +47,6 @@ def tracer_impl(spans: Spans):
     tracer_instance.get_handler_span_manager.return_value = spans.handler
     tracer_instance.get_middleware_span_manager.return_value = spans.middleware
     tracer_instance.get_trigger_span_manager.return_value = spans.trigger
-    tracer_instance.get_filter_span_manager.return_value = spans.filter
     yield tracer_instance
 
 
@@ -108,7 +105,7 @@ class TestProxy:
 
     @pytest.mark.parametrize(
         "method_name",
-        [f"get_{name}_span_manager" for name in ("middleware", "trigger", "filter", "handler")],
+        [f"get_{name}_span_manager" for name in ("middleware", "trigger", "handler")],
     )
     async def test_proxy_delegates_to_tracer(self, method_name, tracer_impl):
         mocked_object = MagicMock()
@@ -159,14 +156,6 @@ class TestArgumentPassing:
             call(inner_middleware),
         ]
 
-    async def test_filter_argument_passing(self, tracer_impl, trigger, observer, test_filter):
-        some_other_filter = lambda event, **kwargs: True
-        observer.register(lambda event: None, some_other_filter)
-        await trigger()
-        assert (
-            tracer_impl.get_filter_span_manager.call_args[0][0].filters[0].callback is test_filter
-        )
-
 
 class TestIntegration:
     @pytest.fixture
@@ -184,7 +173,7 @@ class TestIntegration:
 
     @pytest.mark.parametrize(
         "method_name",
-        [f"get_{name}_span_manager" for name in ("middleware", "trigger", "filter", "handler")],
+        [f"get_{name}_span_manager" for name in ("middleware", "trigger", "handler")],
     )
     async def test_handle_if_span_manager_is_none(self, tracer_impl, trigger, method_name):
         getattr(tracer_impl, method_name).return_value = None
