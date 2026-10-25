@@ -40,7 +40,7 @@ jobs:
         # YAML-aware guard shared with `make lint-workflows`; see the script docstring
         run: uv run scripts/check_action_refs.py
 
-      - uses: zizmorcore/zizmor-action@v0.6.4
+      - uses: zizmorcore/zizmor-action@v0.7.1
         with:
           config: .github/zizmor.yml  # explicit: auto-discovery needs a real .git directory and silently fails in git worktrees
           persona: regular
