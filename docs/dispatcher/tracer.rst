@@ -16,6 +16,17 @@ tracing for this component will be skipped.
   If an exception is raised during any interaction with the tracer, it will be suppressed and logged automatically
   without interrupting the normal flow of the application.
 
+.. note::
+  The dispatcher routes every update through its own internal handler, so ``get_handler_span_manager``
+  is also called for it (its span wraps the whole routing). To trace user handlers only, skip it:
+
+  .. code-block:: python
+
+      def get_handler_span_manager(self, handler):
+          if isinstance(getattr(handler.callback, "__self__", None), Dispatcher):
+              return None
+          ...
+
 .. data:: SPAN_MANAGER_TYPE
    :annotation: = AbstractAsyncContextManager[None] | None
 
