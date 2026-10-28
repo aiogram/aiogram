@@ -1,0 +1,1 @@
+Added a security policy (:code:`SECURITY.md`) describing how to report vulnerabilities privately, and enrolled the project in Anthropic OSS Scanner (:code:`.oss-scanner/` build and threat model).
