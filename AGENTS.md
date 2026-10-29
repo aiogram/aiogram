@@ -5,7 +5,7 @@ This file defines how coding agents should contribute to `aiogram` on `dev-3.x`.
 ## Scope and defaults
 
 - Base branch: `dev-3.x`
-- Python: `>=3.10`
+- Python: `>=3.11`
 - Main tooling: `uv`, `ruff`, `mypy`, `pytest`, `towncrier`, `butcher`
 - Keep diffs focused; avoid unrelated refactors/reformatting.
 
