@@ -21,9 +21,24 @@ jobs:
     name: Changelog fragment
     runs-on: ubuntu-latest
     timeout-minutes: 5
-    if: "!contains(github.event.pull_request.labels.*.name, 'skip news')"
+    permissions:
+      contents: read
+      pull-requests: read  # current labels
     steps:
+      - name: Check skip news label
+        id: labels
+        # Not github.event.pull_request.labels: that is the label set at event time, and
+        # cancel-in-progress can leave an `opened` run that predates the `labeled` one
+        # (bots open a PR and label it right after).
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          skip="$(gh api "repos/${GITHUB_REPOSITORY}/issues/${PR_NUMBER}/labels" --jq 'any(.[]; .name == "skip news")')"
+          echo "skip=${skip}" >> "${GITHUB_OUTPUT}"
+
       - uses: actions/checkout@v7
+        if: steps.labels.outputs.skip == 'false'
         with:
           # full history: towncrier diffs against the merge-base with the base branch
           fetch-depth: 0
@@ -31,16 +46,19 @@ jobs:
           persist-credentials: false
 
       - uses: astral-sh/setup-uv@v10.3.2
+        if: steps.labels.outputs.skip == 'false'
 
       - name: Fetch base branch
         # kept separate from the towncrier step so a fetch failure skips towncrier
         # and maps to `inconclusive` instead of reading as a missing changelog
+        if: steps.labels.outputs.skip == 'false'
         env:
           BASE_BRANCH: ${{ github.base_ref }}
         run: git fetch --no-tags origin "+refs/heads/${BASE_BRANCH}:refs/remotes/origin/${BASE_BRANCH}"
 
       - name: Check changelog
         id: towncrier
+        if: steps.labels.outputs.skip == 'false'
         env:
           BASE_BRANCH: ${{ github.base_ref }}
         run: uvx --from 'towncrier~=24.8.0' towncrier check --compare-with "origin/${BASE_BRANCH}"
@@ -48,11 +66,19 @@ jobs:
       - name: Save check result
         if: always()
         env:
+          SKIP_NEWS: ${{ steps.labels.outputs.skip }}
           CHECK_OUTCOME: ${{ steps.towncrier.outcome }}
         # outcome can also be `skipped` / `cancelled`; report those as `inconclusive`
         # so the commenter neither asks for a changelog nor confirms one
         run: |
+          if [ "${SKIP_NEWS}" = "true" ]; then
+            CHECK_OUTCOME="skip-news"
+          fi
           case "${CHECK_OUTCOME}" in
+            skip-news)
+              state="skip-news"
+              echo "### :corn: Changelog is not needed (\`skip news\` label present)" >> "$GITHUB_STEP_SUMMARY"
+              ;;
             success)
               state="success"
               echo "### :heavy_check_mark: Changelog found" >> "$GITHUB_STEP_SUMMARY"
@@ -86,22 +112,4 @@ jobs:
           name: changelog-check
           path: ${{ runner.temp }}/changelog-state.txt
           # artifacts are immutable per run; without this, "Re-run failed jobs" fails on the upload
-          overwrite: true
-
-  skip-news:
-    name: Changelog not needed
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
-    if: "contains(github.event.pull_request.labels.*.name, 'skip news')"
-    steps:
-      - name: Save check result
-        run: |
-          echo "skip-news" > "${RUNNER_TEMP}/changelog-state.txt"
-          echo "### :corn: Changelog is not needed (\`skip news\` label present)" >> "$GITHUB_STEP_SUMMARY"
-
-      - name: Upload check result
-        uses: actions/upload-artifact@v7
-        with:
-          name: changelog-check
-          path: ${{ runner.temp }}/changelog-state.txt
           overwrite: true
