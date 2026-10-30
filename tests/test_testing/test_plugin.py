@@ -60,7 +60,18 @@ class TestFixtures:
         wait_timeout = call_fixture(plugin.bot_env_wait_timeout)
         original_storage = dispatcher.fsm.storage
 
-        generator = call_fixture(plugin.bot_env, blueprint, dispatcher, wait_timeout)
+        generator = call_fixture(
+            plugin.bot_env,
+            blueprint,
+            dispatcher,
+            wait_timeout,
+            None,
+            True,
+            None,
+            False,
+            True,
+            False,
+        )
         environment = next(generator)
         assert dispatcher.fsm.storage is not original_storage
         with pytest.raises(StopIteration):
@@ -77,7 +88,18 @@ class TestFixtures:
         wait_timeout = call_fixture(plugin.bot_env_wait_timeout)
         original_storage = dispatcher.fsm.storage
 
-        generator = call_fixture(plugin.bot_env, blueprint, dispatcher, wait_timeout)
+        generator = call_fixture(
+            plugin.bot_env,
+            blueprint,
+            dispatcher,
+            wait_timeout,
+            None,
+            True,
+            None,
+            False,
+            True,
+            False,
+        )
         environment = next(generator)
         with pytest.raises(RuntimeError, match="boom"):
             generator.throw(RuntimeError("boom"))
@@ -91,10 +113,118 @@ class TestFixtures:
         blueprint = call_fixture(plugin.bot_blueprint)
         dispatcher = call_fixture(plugin.bot_dispatcher)
 
-        generator = call_fixture(plugin.bot_env, blueprint, dispatcher, 12.5)
+        generator = call_fixture(
+            plugin.bot_env, blueprint, dispatcher, 12.5, None, True, None, False, True, False
+        )
         environment = next(generator)
         try:
             assert environment.world.default_wait_timeout == 12.5
+        finally:
+            with pytest.raises(StopIteration):
+                next(generator)
+
+    def test_clock_start_defaults_to_the_real_time(self):
+        from aiogram.test import plugin
+
+        assert call_fixture(plugin.bot_env_clock_start) is None
+
+    def test_bot_rights_are_enforced_by_default(self):
+        from aiogram.test import plugin
+
+        assert call_fixture(plugin.bot_env_enforce_bot_rights) is True
+
+    def test_environment_picks_up_the_enforce_bot_rights_fixture(self):
+        from aiogram.test import plugin
+
+        blueprint = call_fixture(plugin.bot_blueprint)
+        dispatcher = call_fixture(plugin.bot_dispatcher)
+
+        generator = call_fixture(
+            plugin.bot_env, blueprint, dispatcher, 5.0, None, False, None, False, True, False
+        )
+        environment = next(generator)
+        try:
+            assert environment.enforce_bot_rights is False
+        finally:
+            with pytest.raises(StopIteration):
+                next(generator)
+
+    def test_bot_service_messages_are_delivered_by_default(self):
+        from aiogram.test import plugin
+
+        assert call_fixture(plugin.bot_env_deliver_service_messages_from_bots) is True
+
+    def test_rejection_descriptions_are_not_perturbed_by_default(self):
+        from aiogram.test import plugin
+
+        assert call_fixture(plugin.bot_env_perturb_rejection_descriptions) is False
+
+    def test_environment_picks_up_the_perturbation_fixture(self):
+        from aiogram.test import plugin
+
+        blueprint = call_fixture(plugin.bot_blueprint)
+        dispatcher = call_fixture(plugin.bot_dispatcher)
+
+        generator = call_fixture(
+            plugin.bot_env, blueprint, dispatcher, 5.0, None, True, None, False, True, True
+        )
+        environment = next(generator)
+        try:
+            assert environment.perturb_rejection_descriptions is True
+        finally:
+            with pytest.raises(StopIteration):
+                next(generator)
+
+    def test_environment_picks_up_the_bot_service_messages_fixture(self):
+        from aiogram.test import plugin
+
+        blueprint = call_fixture(plugin.bot_blueprint)
+        dispatcher = call_fixture(plugin.bot_dispatcher)
+
+        generator = call_fixture(
+            plugin.bot_env, blueprint, dispatcher, 5.0, None, True, None, False, False, False
+        )
+        environment = next(generator)
+        try:
+            assert environment.deliver_service_messages_from_bots is False
+        finally:
+            with pytest.raises(StopIteration):
+                next(generator)
+
+    def test_rate_limits_are_off_by_default(self):
+        from aiogram.test import plugin
+
+        assert call_fixture(plugin.bot_env_rate_limits) is None
+
+    def test_environment_picks_up_the_rate_limits_fixture(self):
+        from aiogram.test import RateLimits, plugin
+
+        blueprint = call_fixture(plugin.bot_blueprint)
+        dispatcher = call_fixture(plugin.bot_dispatcher)
+        limits = RateLimits()
+
+        generator = call_fixture(
+            plugin.bot_env, blueprint, dispatcher, 5.0, None, True, limits, False, True, False
+        )
+        environment = next(generator)
+        try:
+            assert environment.rate_limits is limits
+        finally:
+            with pytest.raises(StopIteration):
+                next(generator)
+
+    def test_environment_picks_up_the_clock_start_fixture(self):
+        from aiogram.test import BASE_DATE, plugin
+
+        blueprint = call_fixture(plugin.bot_blueprint)
+        dispatcher = call_fixture(plugin.bot_dispatcher)
+
+        generator = call_fixture(
+            plugin.bot_env, blueprint, dispatcher, 5.0, BASE_DATE, True, None, False, True, False
+        )
+        environment = next(generator)
+        try:
+            assert environment.now == BASE_DATE
         finally:
             with pytest.raises(StopIteration):
                 next(generator)
@@ -114,7 +244,9 @@ class TestFixtures:
         blueprint = Blueprint()
         blueprint.add_user("Lonely")
         dispatcher = Dispatcher()
-        generator = call_fixture(plugin.bot_env, blueprint, dispatcher, 5.0)
+        generator = call_fixture(
+            plugin.bot_env, blueprint, dispatcher, 5.0, None, True, None, False, True, False
+        )
         environment = next(generator)
         try:
             actor = call_fixture(plugin.bot_user, environment)
@@ -245,6 +377,37 @@ class TestPluginDiscovery:
                     assert bot_env.bot.id
                     assert bot_chat.id
                     assert bot_user.user.id
+                """,
+            ),
+        )
+
+        result = subprocess.run(
+            [sys.executable, "-m", "pytest", str(test_file), "-q", "-p", "no:cacheprovider"],
+            capture_output=True,
+            text=True,
+            cwd=tmp_path,
+            check=False,
+        )
+
+        assert result.returncode == 0, result.stdout + result.stderr
+
+    def test_clock_start_override_reaches_bot_env(self, tmp_path):
+        test_file = tmp_path / "test_generated.py"
+        test_file.write_text(
+            textwrap.dedent(
+                """
+                import pytest
+
+                from aiogram.test import BASE_DATE
+
+
+                @pytest.fixture
+                def bot_env_clock_start():
+                    return BASE_DATE
+
+
+                def test_environment_picked_up_the_override(bot_env):
+                    assert bot_env.now == BASE_DATE
                 """,
             ),
         )

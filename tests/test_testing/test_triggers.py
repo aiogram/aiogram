@@ -1,10 +1,19 @@
 import pytest
 
 from aiogram import Dispatcher
+from aiogram.enums import ChatMemberStatus
 from aiogram.exceptions import TelegramBadRequest
 from aiogram.methods import AnswerPreCheckoutQuery, AnswerShippingQuery
-from aiogram.test import Blueprint, BotTestEnvironment
+from aiogram.test import (
+    Blueprint,
+    BotTestEnvironment,
+    WorldLookupError,
+    administrator_rights,
+    rejections,
+)
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, Update
+
+from .conftest import refused_with
 
 #: How to drive each update variant: the actor to use, and what to call on it.
 #: The guard below *invokes* these, so a mapping that names the wrong trigger fails.
@@ -44,6 +53,7 @@ TRIGGERS = {
         "plain",
         lambda actor: actor.reaction_count(actor.chat.messages[-1]),
     ),
+    "stopped_message_generation": ("plain", lambda actor: actor.stop_message_generation()),
 }
 
 
@@ -196,7 +206,7 @@ class TestJoinRequests:
         """A group and a user who is deliberately *not* a member of it."""
         blueprint = Blueprint()
         outsider = blueprint.add_user("Outsider")
-        blueprint.add_supergroup("Club")
+        blueprint.add_supergroup("Club", bot_status=ChatMemberStatus.ADMINISTRATOR)
         environment = BotTestEnvironment(blueprint=blueprint, dispatcher=dp)
         try:
             yield environment, environment.user(outsider), environment.chat(blueprint.chats[0])
@@ -239,7 +249,7 @@ class TestJoinRequests:
     async def test_acting_on_a_request_that_does_not_exist_fails(self, outsider_env, method_name):
         env, outsider, club = outsider_env
 
-        with pytest.raises(TelegramBadRequest, match="no join request is pending"):
+        with refused_with(TelegramBadRequest, rejections.JOIN_REQUEST_NOT_PENDING):
             await getattr(env.bot, method_name)(chat_id=club.id, user_id=outsider.user.id)
 
 
@@ -417,6 +427,14 @@ class TestRemainingUpdateKinds:
 
         assert seen == [alice.user.id]
 
+    async def test_the_managed_bot_is_a_bot(self, env, alice):
+        seen = []
+        env.dispatcher.managed_bot.register(lambda event: seen.append(event.bot_user.is_bot))
+
+        await alice.manage_bot()
+
+        assert seen == [True]
+
     async def test_subscription(self, env, alice):
         seen = []
         env.dispatcher.subscription.register(lambda event: seen.append(event.invoice_payload))
@@ -424,6 +442,24 @@ class TestRemainingUpdateKinds:
         await alice.update_subscription("sub-1")
 
         assert seen == ["sub-1"]
+
+    async def test_stopped_message_generation(self, env, alice):
+        seen = []
+
+        async def handler(event, event_from_user, state):
+            seen.append((event.draft_id, event.chat.id, event_from_user.id))
+            await state.set_state("stopped")
+
+        env.dispatcher.stopped_message_generation.register(handler)
+
+        await alice.stop_message_generation(draft_id=7)
+
+        assert seen == [(7, alice.user.id, alice.user.id)]
+        assert await alice.state().get_state() == "stopped"
+
+    async def test_stopped_message_generation_needs_the_private_chat(self, env, team, alice):
+        with pytest.raises(WorldLookupError, match="own private chat"):
+            await alice.in_(team).stop_message_generation()
 
     async def test_event_from_user_resolves_on_the_new_triggers(self, env, alice):
         seen = []
@@ -454,7 +490,8 @@ class TestBotMembership:
         await actor.join()
 
         assert mine == ["member", "left"]
-        assert others == ["member"]
+        # Alice is an administrator, and joining does not demote her.
+        assert others == ["administrator"]
 
     async def test_removing_the_bot_updates_the_membership_state(self, env, team, alice):
         actor = alice.in_(team)
@@ -469,6 +506,10 @@ class TestBotMembership:
         seen = []
         env.dispatcher.chat_member.register(seen.append)
         actor = alice.in_(team)
+        # Promoting takes the right to promote.
+        bot = team.member(env.world.bot_user.id)
+        bot.set_status(ChatMemberStatus.ADMINISTRATOR)
+        bot.rights = administrator_rights(can_promote_members=True)
         await env.bot.promote_chat_member(
             chat_id=team.id,
             user_id=alice.user.id,

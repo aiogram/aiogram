@@ -357,7 +357,9 @@ class TestChatMemberUpdatedStatusFilter:
             [
                 ADMINISTRATOR,
                 ChatMemberMember(status="member", **PARAMS),
-                ChatMemberAdministrator(status="administrator", **PARAMS),
+                ChatMemberAdministrator(
+                    status="administrator", can_send_welcome_messages=True, **PARAMS
+                ),
                 True,
             ],
             [

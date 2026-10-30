@@ -1,1 +1,0 @@
-Improved import performance by reusing the type namespace when rebuilding Telegram object models.

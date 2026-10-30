@@ -132,7 +132,12 @@ def party():
     players = [blueprint.add_user(name) for name in ("Alice", "Bob", "Carol")]
     for player in players:
         blueprint.add_private_chat(player)
-    blueprint.add_supergroup("Table", members=dict.fromkeys(players, ChatMemberStatus.MEMBER))
+    # The bot runs the game, so it administers the table: it pins.
+    blueprint.add_supergroup(
+        "Table",
+        members=dict.fromkeys(players, ChatMemberStatus.MEMBER),
+        bot_status=ChatMemberStatus.ADMINISTRATOR,
+    )
     return blueprint
 
 
@@ -849,9 +854,11 @@ class TestASimulationIsNotAnExpectation:
         alice = table.chat(party.users[0].id)
         table.on(SendMessage, chat_id=alice.id + 999).raises(TelegramForbiddenError)
 
-        with table.blocked(chat_id=alice.id):
-            with pytest.raises(AssertionError, match="never matched a call") as failure:
-                table.assert_overrides_consumed()
+        with (
+            table.blocked(chat_id=alice.id),
+            pytest.raises(AssertionError, match="never matched a call") as failure,
+        ):
+            table.assert_overrides_consumed()
 
         message = str(failure.value)
         assert "1 declared override(s)" in message

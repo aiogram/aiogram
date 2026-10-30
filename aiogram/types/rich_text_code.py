@@ -7,7 +7,6 @@ from .base import TelegramObject
 from .rich_text import RichText
 
 if TYPE_CHECKING:
-    from .rich_text import RichText
     from .rich_text_union import RichTextUnion
 
 

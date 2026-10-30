@@ -1,14 +1,26 @@
 from __future__ import annotations
 
+import inspect
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Any, TypeAlias
 
 from typing_extensions import Self
 
 from aiogram import methods
-from aiogram.exceptions import TelegramAPIError, TelegramBadRequest, TelegramForbiddenError
+from aiogram.exceptions import (
+    TelegramAPIError,
+    TelegramBadRequest,
+    TelegramConflictError,
+    TelegramEntityTooLarge,
+    TelegramForbiddenError,
+    TelegramNotFound,
+    TelegramServerError,
+    TelegramUnauthorizedError,
+)
 from aiogram.methods import TelegramMethod
 
+from . import rejections
+from .errors import ApiRejection
 from .mounting import detached_copy
 
 if TYPE_CHECKING:
@@ -21,10 +33,12 @@ if TYPE_CHECKING:
 #: which is the thing that owns a world to look the name up in.
 ChatIdResolver: TypeAlias = "Callable[[Any], Any]"
 
-#: What Telegram answers when the addressee has blocked the bot. Declared here so
-#: :meth:`aiogram.test.BotTestEnvironment.blocked` and a test asserting on the string a
-#: real bot would see agree by construction.
-BLOCKED_BY_USER = "Forbidden: bot was blocked by the user"
+#: What Telegram answers when the addressee has blocked the bot, a
+#: guaranteed description declared in :mod:`aiogram.test.rejections`.
+#: Named here so :meth:`aiogram.test.BotTestEnvironment.blocked` and
+#: a test asserting on the string a real bot would see agree by
+#: construction.
+BLOCKED_BY_USER = rejections.BOT_BLOCKED().prefixed
 
 #: Name prefixes of the methods that deliver something *into* a chat, and therefore of the
 #: methods a block stops. Matching by prefix rather than listing thirty classes is what
@@ -146,6 +160,8 @@ class Outcome:
     error: type[TelegramAPIError] | TelegramAPIError | None = None
     message: str = "Bad Request: test error"
     remaining: int | None = None
+    #: The rejection this answer stands for, when the toolkit makes it.
+    origin: ApiRejection | None = None
 
     def consume(self) -> None:
         if self.remaining is not None:
@@ -176,7 +192,92 @@ class Outcome:
             return detached_copy(self.result, bot=bot)
         if isinstance(self.error, TelegramAPIError):
             raise self.error
-        raise self.error(method=method, message=self.message)
+        raised = self.error(method=method, message=self.message)
+        if self.origin is not None:
+            rejections.remember(raised, self.origin)
+        raise raised
+
+
+#: The prefix the Bot API gives the status of an exception class.
+_STATUS_PREFIXES: dict[type[TelegramAPIError], str] = {
+    TelegramBadRequest: "Bad Request",
+    TelegramUnauthorizedError: "Unauthorized",
+    TelegramForbiddenError: "Forbidden",
+    TelegramNotFound: "Not Found",
+    TelegramConflictError: "Conflict",
+    TelegramEntityTooLarge: "Request Entity Too Large",
+    TelegramServerError: "Internal Server Error",
+}
+
+
+def default_message(error: type[TelegramAPIError] | TelegramAPIError) -> str:
+    """The text ``raises()`` gives an error declared without one."""
+    error_type = error if isinstance(error, type) else type(error)
+    for candidate, prefix in _STATUS_PREFIXES.items():
+        if issubclass(error_type, candidate):
+            return f"{prefix}: test error"
+    return "Bad Request: test error"
+
+
+#: How to build the exceptions whose constructor wants more than
+#: the method and the message, for the failure that tells a test
+#: to pass an instance.
+_CONSTRUCTED: dict[str, str] = {
+    "TelegramRetryAfter": (
+        'TelegramRetryAfter(method={method}, message="Too Many Requests: retry after 5", '
+        "retry_after=5)"
+    ),
+    "TelegramMigrateToChat": (
+        "TelegramMigrateToChat(method={method}, "
+        'message="Bad Request: group chat was upgraded to a supergroup chat", '
+        "migrate_to_chat_id=-1001234567890)"
+    ),
+}
+
+
+def require_raisable(error: object, method_type: type[TelegramMethod[Any]]) -> None:
+    """
+    Refuse what ``raises()`` could not raise, as it is declared.
+
+    Given a class, the call builds the exception from the method and
+    the message alone. Most of Telegram's exceptions take just those,
+    but ``TelegramRetryAfter`` also takes ``retry_after`` and
+    ``TelegramMigrateToChat`` ``migrate_to_chat_id``, and built from
+    the class they failed with a ``TypeError`` out of the middle of
+    the bot's call, nowhere near the line that declared it.
+    """
+    if isinstance(error, TelegramAPIError):
+        return
+    if not (isinstance(error, type) and issubclass(error, TelegramAPIError)):
+        msg = (
+            f"raises() takes a TelegramAPIError subclass or an instance of one, "
+            f"not {error!r}. The message of a class goes second: "
+            f'`raises(TelegramBadRequest, "Bad Request: chat not found")`'
+        )
+        raise TypeError(msg)
+    needed = [
+        name
+        for name, parameter in inspect.signature(error).parameters.items()
+        if parameter.default is parameter.empty
+        and parameter.kind in {parameter.POSITIONAL_OR_KEYWORD, parameter.KEYWORD_ONLY}
+        and name not in {"method", "message"}
+    ]
+    if not needed:
+        return
+    method = f"{method_type.__name__}(...)"
+    example = _CONSTRUCTED.get(error.__name__)
+    if example is None:
+        extras = ", ".join(f"{name}=..." for name in needed)
+        example = f"{error.__name__}(method={method}, message=..., {extras})"
+    else:
+        example = example.format(method=method)
+    msg = (
+        f"{error.__name__} cannot be raised from the class: its constructor also needs "
+        f"{', '.join(needed)}, and raises() has only the method and the message to give it. "
+        f"Pass an instance built whole:\n\n"
+        f"    env.on({method_type.__name__}).raises({example})"
+    )
+    raise TypeError(msg)
 
 
 def fresh_result(result: Any) -> Any:
@@ -491,10 +592,27 @@ class OverrideBuilder(OverrideHandle):
     def raises(
         self,
         error: type[TelegramAPIError] | TelegramAPIError = TelegramBadRequest,
-        message: str = "Bad Request: test error",
+        message: str | None = None,
         *,
         times: int | None = None,
     ) -> OverrideBuilder:
+        """
+        Make the matched calls fail with ``error``.
+
+        A class is raised with the call's method and ``message``,
+        which suits most of Telegram's exceptions. One that needs
+        more, such as ``TelegramRetryAfter`` with its
+        ``retry_after``, is passed as an instance built whole. A
+        class that cannot be built from the two is a
+        :class:`TypeError` here, not when the bot's call fails.
+
+        Without a ``message``, the text is ``test error`` under the
+        prefix the class stands for, such as ``Forbidden:``. The
+        exception type is the contract, the text is yours.
+        """
+        require_raisable(error, self._method_type)
+        if message is None:
+            message = default_message(error)
         self.register(
             self.matcher(),
             Outcome(error=error, message=message, remaining=times),
@@ -505,10 +623,15 @@ class OverrideBuilder(OverrideHandle):
 def block_chat(
     registry: OverrideRegistry,
     chat_id: int,
-    message: str = BLOCKED_BY_USER,
+    message: str | None = None,
+    *,
+    perturb: bool = False,
 ) -> OverrideHandle:
     """
     Make every call addressed at ``chat_id`` fail the way a block makes it fail.
+
+    With no ``message`` the answer is the rejection ``bot was blocked
+    by the user``, perturbed when ``perturb`` says so.
 
     One rule per method in :data:`BLOCKED_METHODS` per **addressing field** it has, all
     under one handle, so the whole block is lifted by a single
@@ -540,6 +663,11 @@ def block_chat(
     ``with env.blocked(alice):`` into a forty-line wall about methods nobody expected to be
     called. See :meth:`OverrideRegistry.unfired`.
     """
+    origin = None
+    if message is None:
+        origin = rejections.BOT_BLOCKED()
+        description = rejections.perturb(origin.description) if perturb else origin.description
+        message = f"{origin.prefix}: {description}"
     handle = OverrideHandle(registry)
     for method_type in BLOCKED_METHODS:
         addressing = ("chat_id", "user_id") if method_type in DELIVERY_METHODS else ("chat_id",)
@@ -548,7 +676,7 @@ def block_chat(
                 continue
             handle.register(
                 MethodMatcher(method_type=method_type, fields=((name, chat_id),)),
-                Outcome(error=TelegramForbiddenError, message=message),
+                Outcome(error=TelegramForbiddenError, message=message, origin=origin),
                 expected=False,
             )
     return handle

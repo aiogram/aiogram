@@ -22,6 +22,12 @@ from aiogram.types import (
 )
 
 
+@pytest.fixture
+def blueprint(blueprint, moderated):
+    """The bot administers the group, as its permissions call takes."""
+    return moderated(blueprint)
+
+
 class TestFakeTelegramSession:
     async def test_no_token_is_required(self, env):
         assert env.bot.token == "42:TEST"

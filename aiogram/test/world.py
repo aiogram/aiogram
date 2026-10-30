@@ -8,7 +8,12 @@ from typing import TYPE_CHECKING, Any, TypeAlias, cast
 
 from pydantic import BaseModel
 
-from aiogram.enums import ChatMemberStatus, ChatType
+from aiogram.enums import (
+    ChatMemberStatus,
+    ChatType,
+    PollType,
+    TransactionPartnerUserTransactionTypeEnum,
+)
 from aiogram.types import (
     BotCommand,
     BotCommandScopeDefault,
@@ -38,11 +43,14 @@ from aiogram.types import (
     StarTransaction,
     Sticker,
     StickerSet,
+    TransactionPartnerUser,
     User,
 )
 
+from . import rejections
 from .errors import ApiRejection
 from .mounting import detached_copy, mount, owned_or_copied
+from .rejections import Rejection
 from .waiting import DEFAULT_WAIT_TIMEOUT, describe_callable, poll_until
 
 if TYPE_CHECKING:
@@ -58,12 +66,41 @@ BASE_DATE: datetime.datetime = datetime.datetime(
     0,
     tzinfo=datetime.timezone.utc,
 )
-"""Fixed point in time every synthesized date is derived from, so tests are reproducible."""
+"""
+A fixed moment for a world's clock to start at, for dates that are the
+same on every run: ``BotTestEnvironment(clock_start=BASE_DATE)``. By
+default a clock starts at the real time instead.
+"""
+
+
+def wall_clock() -> datetime.datetime:
+    """The real time, in UTC, to the second: where a clock starts."""
+    return datetime.datetime.now(datetime.timezone.utc).replace(microsecond=0)
+
+
+#: How the Bot API reports a restriction or ban with no end: Unix 0.
+UNTIL_FOREVER: datetime.datetime = datetime.datetime(1970, 1, 1, tzinfo=datetime.timezone.utc)
 
 DEFAULT_TOPIC_ICON_COLOR = 0x6FB9F0
 GENERAL_TOPIC_NAME = "General"
+#: The thread id the Bot API server gives a forum's General topic
+#: (``GENERAL_FORUM_TOPIC_ID`` in telegram-bot-api's Client.h).
+GENERAL_FORUM_TOPIC_ID = 1
+#: The chat types whose message 1 is the chat's creation, which
+#: TDLib will not let anyone reply to (MessagesManager.cpp,
+#: ``can_reply_to_message``). In a forum it is the General topic's
+#: root, so no other topic can be numbered 1. Basic groups number
+#: messages per user, so nothing is reserved there.
+_RESERVED_FIRST_MESSAGE = frozenset({ChatType.SUPERGROUP, ChatType.CHANNEL})
 #: How much of a message's text a failure message shows before cutting it off.
 MESSAGE_PREVIEW_LIMIT = 60
+
+#: The user a supergroup's anonymous administrator posts as. TDLib
+#: hardcodes the id, name and username (UserManager.cpp,
+#: ``get_anonymous_bot_user_id`` and ``get_user_force``), and the Bot
+#: API server puts it in ``from`` when the sender chat is the chat
+#: itself (Client.cpp, ``create_message``).
+GROUP_ANONYMOUS_BOT_ID = 1087968824
 
 #: Administrator rights the Bot API only reports in some chat types, and in which. Outside
 #: them the real API leaves the field unset, so a bot that reads
@@ -179,6 +216,97 @@ def no_administrator_rights() -> ChatAdministratorRights:
     return ChatAdministratorRights(**_NO_ADMIN_RIGHTS)
 
 
+#: The message kinds that ``can_send_other_messages`` and ``can_add_web_page_previews``
+#: bring with them when permissions are not set independently.
+_IMPLIED_MESSAGE_PERMISSIONS = (
+    "can_send_messages",
+    "can_send_audios",
+    "can_send_documents",
+    "can_send_photos",
+    "can_send_videos",
+    "can_send_video_notes",
+    "can_send_voice_notes",
+)
+
+#: Permission -> the permissions granting it also grants, unless the request passed
+#: ``use_independent_chat_permissions=True``. Stated by ``restrictChatMember`` and
+#: ``setChatPermissions`` in identical words, on that very parameter.
+_COUPLED_PERMISSIONS: dict[str, tuple[str, ...]] = {
+    "can_send_other_messages": _IMPLIED_MESSAGE_PERMISSIONS,
+    "can_add_web_page_previews": _IMPLIED_MESSAGE_PERMISSIONS,
+    "can_send_polls": ("can_send_messages",),
+}
+
+#: Permission -> the one it copies when the request leaves it unset. Unlike the couplings
+#: above, these hold however permissions are set:
+#: :class:`~aiogram.types.chat_permissions.ChatPermissions` states them on the fields
+#: themselves rather than on the methods, so ``use_independent_chat_permissions`` does not
+#: switch them off.
+_PERMISSION_DEFAULTS: dict[str, str] = {
+    "can_react_to_messages": "can_send_messages",
+    "can_edit_tag": "can_pin_messages",
+    "can_manage_topics": "can_pin_messages",
+}
+
+
+def granted_permissions(
+    permissions: ChatPermissions,
+    use_independent_chat_permissions: bool | None,
+) -> ChatPermissions:
+    """
+    What a permissions request actually grants, once the Bot API's couplings are applied.
+
+    ``restrictChatMember`` and ``setChatPermissions`` do not store the mask they are handed.
+    Unless the request passes ``use_independent_chat_permissions=True``, granting
+    ``can_send_other_messages`` or ``can_add_web_page_previews`` also grants every kind of
+    message — a sticker is a message, and Telegram will not let a user send one while
+    forbidding text — and granting ``can_send_polls`` grants ``can_send_messages``. A fake
+    that stored the raw mask reported a member who may send stickers but not text, a state
+    the real API cannot produce, and a bot gating itself on ``can_send_messages`` took the
+    wrong branch against it.
+
+    Independently of that switch, three permissions default to another when the request
+    leaves them unset — ``can_react_to_messages`` to ``can_send_messages``, ``can_edit_tag``
+    and ``can_manage_topics`` to ``can_pin_messages`` — because the Bot API documents those
+    defaults on the fields rather than on the methods. They are filled after the couplings,
+    so a permission a coupling granted is one they can inherit.
+
+    The result is a fresh object either way, so nothing a caller still holds is mutated, and
+    ``model_copy`` rather than a new instance keeps whatever a future Bot API version parked
+    in the request's extra fields.
+    """
+    values = mask(ChatPermissions, permissions)
+    if not use_independent_chat_permissions:
+        for source, implied in _COUPLED_PERMISSIONS.items():
+            if values[source]:
+                values.update(dict.fromkeys(implied, True))
+    for name, fallback in _PERMISSION_DEFAULTS.items():
+        if values[name] is None:
+            values[name] = values[fallback]
+    return permissions.model_copy(update=values)
+
+
+def default_chat_permissions() -> ChatPermissions:
+    """
+    The permissions a group or supergroup gives its members by default.
+
+    Every member permission the Bot API knows, granted. Telegram does
+    not publish what a new group allows, so this is the toolkit's
+    convention rather than a documented default, chosen so a declared
+    group restricts nothing it was not told to. TDLib's own comment
+    that a group commonly lets everyone invite users, pin messages
+    and change its info (DialogParticipant.cpp,
+    ``apply_restrictions``) points the same way. It is what
+    ``getChat`` reports for a chat nobody has changed the permissions
+    of, and what its members can do until someone does.
+
+    Model a stricter group with ``add_group(..., permissions=...)``,
+    starting from this one with ``model_copy(update=...)`` to deny one
+    permission. It is a fresh object on every call.
+    """
+    return ChatPermissions(**dict.fromkeys(ChatPermissions.model_fields, True))
+
+
 class QueryKind(str, Enum):
     """Kinds of query a trigger can issue and an answer method must consume."""
 
@@ -186,6 +314,13 @@ class QueryKind(str, Enum):
     INLINE = "inline query"
     SHIPPING = "shipping query"
     PRE_CHECKOUT = "pre-checkout query"
+
+
+#: How long the Bot API gives a query kind to be answered, where it
+#: documents a limit. Other kinds do not expire.
+ANSWER_WINDOWS: dict[str, datetime.timedelta] = {
+    QueryKind.PRE_CHECKOUT: datetime.timedelta(seconds=10),
+}
 
 
 class WorldLookupError(LookupError):
@@ -216,7 +351,14 @@ def describe_message(message: Message) -> str:
     else:
         preview = repr(body)
     keyboard = " [inline keyboard]" if message.reply_markup is not None else ""
-    return f"#{message.message_id} {preview}{keyboard}"
+    # Every ephemeral message has message_id 0; its ephemeral id is
+    # what tells it apart.
+    ident = (
+        f"#{message.message_id}"
+        if message.ephemeral_message_id is None
+        else f"ephemeral #{message.ephemeral_message_id}"
+    )
+    return f"{ident} {preview}{keyboard}"
 
 
 def _describe_messages(messages: list[Message], noun: str) -> str:
@@ -247,6 +389,9 @@ def newest_match(
     report a predicate that is simply buggy instead of quietly finding nothing. A chat
     holds messages of every shape, and the natural ``m.text.startswith(...)`` blows up on
     the first service message it meets.
+
+    An ephemeral message is collected by its ephemeral id, since every
+    one of them has ``message_id`` 0.
     """
     newest: Message | None = None
     for message in messages:
@@ -255,13 +400,24 @@ def newest_match(
                 matched = predicate(message)
             except Exception as error:
                 if raised is not None:
-                    raised[message.message_id] = error
+                    key = message.ephemeral_message_id
+                    raised[message.message_id if key is None else key] = error
                 continue
             if not matched:
                 continue
-        if newest is None or message.message_id > newest.message_id:
+        if newest is None or _sent_order(message) > _sent_order(newest):
             newest = message
     return newest
+
+
+def _sent_order(message: Message) -> tuple[int, int]:
+    """
+    Where ``message`` falls among those of one view, by its ids.
+
+    Ephemeral messages all have ``message_id`` 0, and are ordered by
+    their ephemeral ids instead.
+    """
+    return message.message_id, message.ephemeral_message_id or 0
 
 
 async def _wait_for_message(
@@ -273,6 +429,8 @@ async def _wait_for_message(
     where: str,
     timeout: float,
     interval: float,
+    hint: Callable[[], str] | None = None,
+    kind: str = "message",
 ) -> Message:
     """
     The polling core behind :meth:`ChatState.wait_for_message` and its topic-scoped twin.
@@ -281,6 +439,8 @@ async def _wait_for_message(
     view recomputed on every read — capturing the list once would wait on a snapshot taken
     before the message being waited for arrived. ``noun`` and ``where`` are how the failure
     message names the view ("the topic holds…", "…in topic #7 'Support' of chat -100").
+
+    ``kind`` names one of its messages by the id it is told apart by.
 
     **The newest match wins, by id and not by position.** Every match is evaluated and the
     highest ``message_id`` among them is returned, rather than the last one the list
@@ -306,16 +466,17 @@ async def _wait_for_message(
         problems = ""
         if raised:
             details = "; ".join(
-                f"{type(error).__name__}({str(error)!r}) on message #{message_id}"
+                f"{type(error).__name__}({str(error)!r}) on {kind} #{message_id}"
                 for message_id, error in sorted(raised.items())
             )
             problems = (
                 f" The predicate raised on {len(raised)} of them, which counted as no "
                 f"match: {details}."
             )
+        more = "" if hint is None else hint()
         return (
             f"Timed out after {timeout}s waiting for {wanted} in {where}. "
-            f"{_describe_messages(view(), noun)}{problems}"
+            f"{_describe_messages(view(), noun)}{problems}{more}"
         )
 
     return cast(
@@ -339,6 +500,9 @@ class UserState:
     last_name: str | None = None
     username: str | None = None
     language_code: str | None = None
+    #: Whether a bot turned on Bot-to-Bot Communication Mode in
+    #: @BotFather. Only a bot has it, and no update reports it.
+    bot_to_bot_mode: bool = False
 
     def as_user(self) -> User:
         return User(
@@ -375,12 +539,98 @@ class MemberState:
     #: What a restricted member may do. ``None`` means every permission is denied, which is
     #: what a restriction with no permissions passed amounts to.
     permissions: ChatPermissions | None = None
+    #: Whether a restricted user is in the chat. A restriction outlives
+    #: leaving, and can be set on someone who never joined, so presence
+    #: is stored apart from it. Other statuses carry presence in
+    #: themselves, so this is only read while restricted.
+    is_member: bool = True
+    #: Who promoted an administrator, when the world knows: the bot
+    #: may edit the rights of the administrators it promoted.
+    promoted_by: int | None = None
 
     @property
     def is_present(self) -> bool:
+        if self.status == ChatMemberStatus.RESTRICTED:
+            return self.is_member
         return self.status not in {ChatMemberStatus.LEFT, ChatMemberStatus.KICKED}
 
-    def as_chat_member(self, user: User, chat_type: str) -> ChatMemberUnion:
+    def settle(self, now: datetime.datetime) -> None:
+        """
+        End a restriction or ban whose end date the clock has reached.
+
+        A present restricted user becomes a member; an absent one, or a
+        banned user, has left. No update is sent: the Bot API documents
+        none for a restriction running out.
+        """
+        # A test can set a naive end date by hand; it is read as local
+        # time rather than failing to compare with the aware clock.
+        if self.until_date is None or now < aware(self.until_date):
+            return
+        if self.status == ChatMemberStatus.RESTRICTED:
+            self.lift_restriction()
+        elif self.status == ChatMemberStatus.KICKED:
+            self.set_status(ChatMemberStatus.LEFT)
+
+    def lift_restriction(self) -> None:
+        """End a restriction: present users stay, absent ones left."""
+        self.set_status(ChatMemberStatus.MEMBER if self.is_member else ChatMemberStatus.LEFT)
+        self.permissions = None
+
+    def set_status(self, status: str) -> None:
+        """
+        Move to ``status``, keeping what belongs to the membership.
+
+        A restriction keeps the user's presence, so a user restricted
+        while absent stays absent. An end date belongs to a restriction
+        or a ban only: on any other status the Bot API reads
+        ``until_date`` as a subscription's expiry, so it is cleared on
+        a move into such a status. Staying in one, such as a member
+        joining again, keeps the subscription's expiry. A custom title
+        belongs to an administrator or the owner, so it ends with that
+        status rather than coming back on a later promotion.
+        """
+        was_present = self.is_present
+        previous = self.status
+        self.status = status
+        self.is_member = was_present if status == ChatMemberStatus.RESTRICTED else True
+        if status != ChatMemberStatus.ADMINISTRATOR:
+            self.promoted_by = None
+        if status not in {ChatMemberStatus.ADMINISTRATOR, ChatMemberStatus.CREATOR}:
+            self.custom_title = None
+        if status != previous and status not in {
+            ChatMemberStatus.RESTRICTED,
+            ChatMemberStatus.KICKED,
+        }:
+            self.until_date = None
+
+    def join_or_leave(self, status: str) -> None:
+        """
+        Join (``MEMBER``) or leave (``LEFT``), or move to ``status``.
+
+        A restriction outlives leaving and rejoining, however the user
+        gets in, so for a restricted user only presence moves. Joining
+        does not demote an administrator or the owner already in the
+        chat. Any other move is :meth:`set_status`.
+        """
+        if status == ChatMemberStatus.MEMBER and self.status in {
+            ChatMemberStatus.ADMINISTRATOR,
+            ChatMemberStatus.CREATOR,
+        }:
+            return
+        if self.status == ChatMemberStatus.RESTRICTED and status in {
+            ChatMemberStatus.MEMBER,
+            ChatMemberStatus.LEFT,
+        }:
+            self.is_member = status == ChatMemberStatus.MEMBER
+            return
+        self.set_status(status)
+
+    def as_chat_member(
+        self,
+        user: User,
+        chat_type: str,
+        viewer_id: int | None = None,
+    ) -> ChatMemberUnion:
         """
         The Bot API's view of this membership in a chat of ``chat_type``.
 
@@ -388,6 +638,9 @@ class MemberState:
         ``can_post_messages`` only for channels and ``can_manage_topics`` only for
         supergroups, so a variant built without knowing where the member is cannot be
         truthful about either.
+
+        ``viewer_id`` is the bot asking: an administrator it promoted
+        reports ``can_be_edited``, and any other does not.
         """
         if self.status == ChatMemberStatus.CREATOR:
             return ChatMemberOwner(
@@ -400,22 +653,22 @@ class MemberState:
             return ChatMemberAdministrator(
                 user=user,
                 custom_title=self.custom_title,
-                can_be_edited=False,
+                can_be_edited=(self.promoted_by is not None and self.promoted_by == viewer_id),
                 **mask(ChatAdministratorRights, scoped_rights(declared, chat_type)),
             )
         if self.status == ChatMemberStatus.RESTRICTED:
             permissions = self.permissions if self.permissions is not None else ChatPermissions()
             return ChatMemberRestricted(
                 user=user,
-                is_member=True,
+                is_member=self.is_member,
                 tag=self.tag,
-                until_date=self.until_date or BASE_DATE,
+                until_date=self.until_date or UNTIL_FOREVER,
                 # An unset permission is a denied one: the Bot API's own restricted member
                 # carries plain booleans, while a request omits what it does not grant.
                 **mask(ChatPermissions, permissions, coerce=True),
             )
         if self.status == ChatMemberStatus.KICKED:
-            return ChatMemberBanned(user=user, until_date=self.until_date or BASE_DATE)
+            return ChatMemberBanned(user=user, until_date=self.until_date or UNTIL_FOREVER)
         if self.status == ChatMemberStatus.LEFT:
             return ChatMemberLeft(user=user)
         return ChatMemberMember(user=user, tag=self.tag, until_date=self.until_date)
@@ -437,6 +690,11 @@ class TopicState:
     is_closed: bool = False
     is_hidden: bool = False
     is_general: bool = False
+    #: Who opened the topic, as TDLib's ``is_outgoing`` tells the
+    #: bot's own topics apart. ``None`` for the General topic and for
+    #: a topic the blueprint declares with no creator, which is no
+    #: one's. An anonymous administrator's topic is still theirs.
+    creator_id: int | None = None
     chat: ChatState | None = field(default=None, repr=False, compare=False)
 
     @property
@@ -448,6 +706,36 @@ class TopicState:
         return [
             item for item in self.chat.messages if item.message_thread_id == self.message_thread_id
         ]
+
+    @property
+    def root_message(self) -> Message | None:
+        """
+        The ``forum_topic_created`` message that opened this topic.
+
+        Telegram makes it the ``reply_to_message`` of every message in
+        the topic that replies to nothing else, and bots read the
+        topic's name from it. The General topic has none.
+        """
+        if self.is_general or self.chat is None or self.message_thread_id is None:
+            return None
+        return self.chat.find_message(self.message_thread_id)
+
+    def root_reply(self, values: Mapping[str, Any]) -> dict[str, Any]:
+        """
+        The ``reply_to_message`` a message with ``values`` gets here.
+
+        The topic's root, unless the message already replies to a
+        message of its chat. A reply in another chat is no such reply,
+        so it gets the root too, as the Bot API server reports it.
+        Only a supergroup's topic gives one: the server's
+        ``get_implicit_reply_to_message_id`` gives a private chat's
+        topic none.
+        """
+        root = self.root_message
+        private = self.chat is not None and self.chat.type == ChatType.PRIVATE
+        if root is None or private or values.get("reply_to_message") is not None:
+            return {}
+        return {"reply_to_message": root}
 
     @property
     def label(self) -> str:
@@ -522,6 +810,9 @@ class BusinessConnectionState:
     can_reply: bool = True
     rights: BusinessBotRights | None = None
     date: datetime.datetime = BASE_DATE
+    #: The account numbers messages in all its private chats from one
+    #: sequence, so its business messages never share an id.
+    last_message_id: int = 0
 
     def as_business_connection(self, user: User) -> BusinessConnection:
         # The rights are the world's own object, and a result gets mounted — see the note
@@ -556,8 +847,7 @@ class StickerSetState:
         for index, sticker in enumerate(self.stickers):
             if sticker.file_id == file_id:
                 return index
-        msg = f"Sticker {file_id!r} is not in set {self.name!r}"
-        raise ApiRejection(msg)
+        raise rejections.STICKER_NOT_IN_SET(file_id=file_id, name=self.name)
 
     def as_sticker_set(self) -> StickerSet:
         """
@@ -594,6 +884,9 @@ class ChargeState:
     is_subscription: bool = False
     is_refunded: bool = False
     is_subscription_canceled: bool = False
+    #: The invoice the charge paid, which tells a subscription's
+    #: first payment from its renewals.
+    invoice_payload: str | None = None
 
 
 @dataclass
@@ -604,9 +897,33 @@ class StarTransactionState:
     amount: int
     date: datetime.datetime
     charge_id: str | None = None
+    #: The user on the other side, for a payment or its refund.
+    partner_id: int | None = None
 
-    def as_star_transaction(self) -> StarTransaction:
-        return StarTransaction(id=self.id, amount=self.amount, date=self.date)
+    def as_star_transaction(self, partner: User | None = None) -> StarTransaction:
+        """
+        The transaction as the Bot API reports it.
+
+        A payment's id is its charge id, and a refund's is the
+        payment's. The amount is always positive: ``partner`` is the
+        source of an incoming transaction and the receiver of an
+        outgoing one.
+        """
+        other_side = (
+            None
+            if partner is None
+            else TransactionPartnerUser(
+                transaction_type=TransactionPartnerUserTransactionTypeEnum.INVOICE_PAYMENT,
+                user=partner,
+            )
+        )
+        return StarTransaction(
+            id=self.charge_id or self.id,
+            amount=abs(self.amount),
+            date=self.date,
+            source=other_side if self.amount > 0 else None,
+            receiver=None if self.amount > 0 else other_side,
+        )
 
 
 @dataclass
@@ -633,12 +950,14 @@ class StarLedger:
         amount: int,
         date: datetime.datetime,
         charge_id: str | None = None,
+        partner_id: int | None = None,
     ) -> StarTransactionState:
         transaction = StarTransactionState(
             id=transaction_id,
             amount=amount,
             date=date,
             charge_id=charge_id,
+            partner_id=partner_id,
         )
         self.transactions.append(transaction)
         return transaction
@@ -722,10 +1041,16 @@ class PollState:
     allows_multiple_answers: bool = False
     allows_revoting: bool = False
     members_only: bool = False
-    correct_option_id: int | None = None
+    correct_option_ids: list[int] | None = None
     explanation: str | None = None
     is_closed: bool = False
     votes: dict[int, list[int]] = field(default_factory=dict)
+    #: When the poll closes by itself, if it was sent with a schedule.
+    open_period: int | None = None
+    close_date: datetime.datetime | None = None
+    #: The chat the poll was sent to, if known. A vote cast as a chat
+    #: must be in its own poll.
+    chat_id: int | None = None
 
     def vote_count(self, option_id: int) -> int:
         return sum(1 for chosen in self.votes.values() if option_id in chosen)
@@ -745,12 +1070,70 @@ class PollState:
             allows_multiple_answers=self.allows_multiple_answers,
             allows_revoting=self.allows_revoting,
             members_only=self.members_only,
-            correct_option_id=self.correct_option_id,
-            correct_option_ids=None
-            if self.correct_option_id is None
-            else [self.correct_option_id],
+            # The deprecated single id can only say a lone answer.
+            correct_option_id=(
+                self.correct_option_ids[0]
+                if self.correct_option_ids is not None and len(self.correct_option_ids) == 1
+                else None
+            ),
+            correct_option_ids=(
+                None if self.correct_option_ids is None else list(self.correct_option_ids)
+            ),
             explanation=self.explanation,
+            open_period=self.open_period,
+            close_date=self.close_date,
         )
+
+
+def quiz_problem(
+    poll_type: str | None,
+    options: list[str],
+    correct_option_ids: list[int] | None,
+) -> ApiRejection | None:
+    """The refusal for a poll's invalid correct option ids, if any."""
+    if poll_type == PollType.QUIZ and not correct_option_ids:
+        return rejections.QUIZ_NEEDS_ANSWERS()
+    wrong = [i for i in correct_option_ids or [] if not 0 <= i < len(options)]
+    if wrong:
+        return rejections.QUIZ_ANSWER_RANGE(wrong=wrong, count=len(options))
+    return None
+
+
+def new_poll(
+    poll_id: str,
+    question: str,
+    options: list[str],
+    *,
+    poll_type: str | None = None,
+    is_anonymous: bool | None = None,
+    allows_multiple_answers: bool | None = None,
+    allows_revoting: bool | None = None,
+    correct_option_ids: list[int] | None = None,
+    **settings: Any,
+) -> PollState:
+    """
+    A poll with the defaults ``sendPoll`` documents.
+
+    A poll is regular and anonymous unless the request says otherwise,
+    and allows revoting by default unless it is a quiz. A quiz needs
+    its correct option ids, each one of its options. ``settings`` are
+    stored as given.
+    """
+    kind = poll_type or PollType.REGULAR
+    problem = quiz_problem(kind, options, correct_option_ids)
+    if problem is not None:
+        raise problem
+    return PollState(
+        id=poll_id,
+        question=question,
+        options=list(options),
+        is_anonymous=True if is_anonymous is None else is_anonymous,
+        type=kind,
+        allows_multiple_answers=bool(allows_multiple_answers),
+        allows_revoting=(kind != PollType.QUIZ if allows_revoting is None else allows_revoting),
+        correct_option_ids=correct_option_ids,
+        **settings,
+    )
 
 
 @dataclass
@@ -816,6 +1199,12 @@ class ChatState:
     #: message id -> user id -> that user's current reactions.
     reactions: dict[int, dict[int, list[ReactionTypeUnion]]] = field(default_factory=dict)
     last_message_id: int = 0
+    #: Ephemeral messages live apart from `messages`: Telegram shows
+    #: each to one user only. The bot's are keyed by receiver, users'
+    #: by sender, each list in send order; one counter numbers both.
+    sent_ephemeral: dict[int, list[Message]] = field(default_factory=dict)
+    received_ephemeral: dict[int, list[Message]] = field(default_factory=dict)
+    last_ephemeral_message_id: int = 0
     description: str | None = None
     permissions: ChatPermissions | None = None
     photo: ChatPhoto | None = None
@@ -823,6 +1212,9 @@ class ChatState:
     invite_links: list[InviteLinkState] = field(default_factory=list)
     is_forum: bool = False
     topics: dict[int, TopicState] = field(default_factory=dict)
+    #: Thread ids of the topics ``deleteForumTopic`` removed, so a
+    #: later call into one is refused as Telegram refuses it.
+    deleted_topic_ids: set[int] = field(default_factory=set)
     community_id: int | None = None
     general_topic: TopicState = field(
         default_factory=lambda: TopicState(message_thread_id=None, is_general=True),
@@ -834,6 +1226,9 @@ class ChatState:
 
     def __post_init__(self) -> None:
         self.general_topic.chat = self
+        if self.type in _RESERVED_FIRST_MESSAGE and self.last_message_id == 0:
+            # Message 1 is the chat's creation, which is not stored.
+            self.last_message_id = 1
 
     @property
     def bound_bot(self) -> Bot | None:
@@ -875,11 +1270,36 @@ class ChatState:
             username=self.username,
             first_name=self.first_name,
             last_name=self.last_name,
-            is_forum=self.is_forum or None,
+            is_forum=self.reported_forum,
         )
 
-    def allocate_message_id(self) -> int:
-        self.last_message_id += 1
+    @property
+    def reported_forum(self) -> bool | None:
+        """
+        ``is_forum`` as the Bot API reports it: for a supergroup only.
+
+        A private chat with topics keeps them in :attr:`is_forum`, but
+        the Bot API server renders the field for supergroups alone
+        (``JsonChat`` in Client.cpp), so every result says ``None``.
+        """
+        return (self.is_forum and self.type == ChatType.SUPERGROUP) or None
+
+    def allocate_message_id(
+        self,
+        connection: BusinessConnectionState | None = None,
+    ) -> int:
+        """
+        The next message id in this chat.
+
+        A business message is numbered by its ``connection`` too, so
+        two chats of one business account never share an id, which
+        ``deleteBusinessMessages`` relies on as it names no chat.
+        """
+        last = self.last_message_id
+        if connection is not None:
+            last = max(last, connection.last_message_id)
+            connection.last_message_id = last + 1
+        self.last_message_id = last + 1
         return self.last_message_id
 
     def add_message(self, message: Message) -> Message:
@@ -917,8 +1337,7 @@ class ChatState:
     def require_message(self, message_id: int) -> Message:
         message = self.find_message(message_id)
         if message is None:
-            msg = f"Message {message_id} does not exist in chat {self.id}"
-            raise ApiRejection(msg)
+            raise rejections.MESSAGE_NOT_FOUND(message_id=message_id, chat_id=self.id)
         return message
 
     def update_message(self, message_id: int, **changes: Any) -> Message:
@@ -928,6 +1347,12 @@ class ChatState:
         self.messages[self.messages.index(message)] = edited
         return self._bind(edited)
 
+    def replace_message(self, message: Message) -> Message:
+        """Store ``message`` in place of the one with its id."""
+        stored = self.require_message(message.message_id)
+        self.messages[self.messages.index(stored)] = message
+        return self._bind(message)
+
     def add_derived(self, original: Message, **changes: Any) -> Message:
         """Store a copy of ``original`` in this chat — see :func:`derive_message`."""
         return self.add_message(derive_message(original, changes, self.bound_bot))
@@ -936,6 +1361,93 @@ class ChatState:
         """Mount a message and everything new in it to the world's bot, if there is one."""
         if self.bound_bot is not None:
             mount(message, self.bound_bot)
+        return message
+
+    def allocate_ephemeral_message_id(self) -> int:
+        self.last_ephemeral_message_id += 1
+        return self.last_ephemeral_message_id
+
+    def ephemeral_messages(self, user: UserState | UserSpec | int) -> list[Message]:
+        """The bot's ephemeral messages to ``user``, oldest first."""
+        return list(self.sent_ephemeral.get(_user_id(user), ()))
+
+    def ephemeral_commands(self, user: UserState | UserSpec | int) -> list[Message]:
+        """The ephemeral messages ``user`` sent here, oldest first."""
+        return list(self.received_ephemeral.get(_user_id(user), ()))
+
+    def stored_messages(self) -> list[Message]:
+        """Every message the chat holds, ephemeral ones included."""
+        return [
+            *self.messages,
+            *(message for stored in self.sent_ephemeral.values() for message in stored),
+            *(message for stored in self.received_ephemeral.values() for message in stored),
+        ]
+
+    def add_ephemeral_message(self, message: Message) -> Message:
+        """Store a bot's ephemeral message, under its receiver."""
+        if message.receiver_user is None:
+            msg = "An ephemeral message the bot sends names its receiver_user"
+            raise ValueError(msg)
+        self.sent_ephemeral.setdefault(message.receiver_user.id, []).append(message)
+        return self._bind(message)
+
+    def add_ephemeral_command(self, message: Message) -> Message:
+        """Store an ephemeral message a user sent, under its sender."""
+        if message.from_user is None or message.ephemeral_message_id is None:
+            msg = "An incoming ephemeral message names its sender and its id"
+            raise ValueError(msg)
+        self.received_ephemeral.setdefault(message.from_user.id, []).append(message)
+        self.last_ephemeral_message_id = max(
+            self.last_ephemeral_message_id,
+            message.ephemeral_message_id,
+        )
+        return self._bind(message)
+
+    def find_ephemeral_message(self, receiver_id: int, ephemeral_id: int) -> Message | None:
+        return _find_ephemeral([self.sent_ephemeral.get(receiver_id, [])], ephemeral_id)
+
+    def find_any_ephemeral(self, ephemeral_id: int) -> Message | None:
+        """The ephemeral message ``ephemeral_id``, sent or received."""
+        return _find_ephemeral(
+            [*self.sent_ephemeral.values(), *self.received_ephemeral.values()],
+            ephemeral_id,
+        )
+
+    def find_ephemeral_command(self, ephemeral_id: int) -> Message | None:
+        return _find_ephemeral(self.received_ephemeral.values(), ephemeral_id)
+
+    def update_ephemeral_message(
+        self,
+        receiver_id: int,
+        ephemeral_id: int,
+        **changes: Any,
+    ) -> Message:
+        """Replace a stored ephemeral message with an edited copy."""
+        message = self._require_ephemeral(
+            receiver_id, ephemeral_id, rejections.MESSAGE_TO_EDIT_NOT_FOUND
+        )
+        edited = derive_message(message, changes, self.bound_bot)
+        stored = self.sent_ephemeral[receiver_id]
+        stored[stored.index(message)] = edited
+        return self._bind(edited)
+
+    def delete_ephemeral_message(self, receiver_id: int, ephemeral_id: int) -> None:
+        message = self._require_ephemeral(
+            receiver_id,
+            ephemeral_id,
+            rejections.MESSAGE_TO_DELETE_NOT_FOUND,
+        )
+        self.sent_ephemeral[receiver_id].remove(message)
+
+    def _require_ephemeral(
+        self,
+        receiver_id: int,
+        ephemeral_id: int,
+        error: Rejection,
+    ) -> Message:
+        message = self.find_ephemeral_message(receiver_id, ephemeral_id)
+        if message is None:
+            raise error()
         return message
 
     def delete_message(self, message_id: int) -> None:
@@ -952,6 +1464,7 @@ class ChatState:
         *,
         timeout: float | None = None,
         interval: float = 0.01,
+        receiver: UserState | UserSpec | int | None = None,
     ) -> Message:
         """
         Wait until a message matching ``predicate`` is in this chat, and return it.
@@ -989,16 +1502,46 @@ class ChatState:
         predicate raised and on which message, so a predicate that is simply buggy still
         fails visibly and with its real cause.
 
+        An ephemeral message is not in the chat's shared history: only
+        its receiver sees it. Pass ``receiver`` to wait among the bot's
+        ephemeral messages to that user instead::
+
+            await group.wait_for_message(receiver=alice)
+
         :raises aiogram.test.errors.WaitTimeoutError: if no such message ever appeared.
         """
+        wait = self.default_wait_timeout if timeout is None else timeout
+        if receiver is not None:
+            receiver_id = _user_id(receiver)
+            return await _wait_for_message(
+                lambda: self.ephemeral_messages(receiver_id),
+                predicate,
+                description,
+                noun="ephemeral view",
+                where=f"{self.label}, as seen by user {receiver_id}",
+                timeout=wait,
+                interval=interval,
+                kind="ephemeral message",
+            )
         return await _wait_for_message(
             lambda: self.messages,
             predicate,
             description,
             noun="chat",
             where=self.label,
-            timeout=self.default_wait_timeout if timeout is None else timeout,
+            timeout=wait,
             interval=interval,
+            hint=self._ephemeral_hint,
+        )
+
+    def _ephemeral_hint(self) -> str:
+        """A timeout's pointer to ephemeral messages, if any."""
+        receivers = sorted(user for user, sent in self.sent_ephemeral.items() if sent)
+        if not receivers:
+            return ""
+        return (
+            f" The bot also sent ephemeral messages to users {receivers}, which are "
+            f"not in the shared history; wait for one with receiver=<user>."
         )
 
     def describe_messages(self) -> str:
@@ -1009,8 +1552,7 @@ class ChatState:
         for link in self.invite_links:
             if link.invite_link == url:
                 return link
-        msg = f"Invite link {url} does not exist in chat {self.id}"
-        raise ApiRejection(msg)
+        raise rejections.INVITE_LINK_NOT_FOUND(url=url, chat_id=self.id)
 
     @property
     def primary_invite_link(self) -> InviteLinkState | None:
@@ -1080,20 +1622,84 @@ class ChatState:
         ]
 
     def topic(self, message_thread_id: int | None) -> TopicState:
+        """
+        The topic ``message_thread_id`` names, for a test or an actor.
+
+        An unknown id is a gap in the test, so it raises
+        :class:`WorldLookupError` naming the topics there are. A call
+        the bot makes goes through :meth:`topic_for_call` instead.
+        """
         if message_thread_id is None:
             return self.general_topic
         topic = self.topics.get(message_thread_id)
         if topic is None:
-            msg = f"Topic {message_thread_id} does not exist in chat {self.id}"
-            raise ApiRejection(msg)
+            raise WorldLookupError(self._missing_topic_message(message_thread_id))
         return topic
+
+    def topic_for_call(
+        self,
+        message_thread_id: int | None,
+        *,
+        sending: bool = False,
+    ) -> TopicState:
+        """
+        The topic a Bot API call names, refused in Telegram's words.
+
+        A message ``sending`` into a thread the chat does not have is
+        refused with ``message thread not found``, deleted or not: the
+        Bot API server looks the topic up first and answers its own
+        default (``check_message_topic`` in Client.cpp). So is one
+        into thread 1 of a forum supergroup, the General topic, which
+        a send names by passing no thread. A forum method naming a
+        deleted topic answers ``TOPIC_DELETED``, an MTProto error the
+        Bot API server passes through as the description. Any other
+        unknown id answers ``message thread not found``.
+        """
+        if message_thread_id is None:
+            return self.general_topic
+        general = self.type == ChatType.SUPERGROUP and message_thread_id == GENERAL_FORUM_TOPIC_ID
+        topic = self.topics.get(message_thread_id)
+        if topic is not None and not (sending and general):
+            return topic
+        if message_thread_id in self.deleted_topic_ids and not sending:
+            raise rejections.TOPIC_DELETED()
+        raise rejections.MESSAGE_THREAD_NOT_FOUND()
+
+    def _missing_topic_message(self, message_thread_id: int) -> str:
+        """Say which topics this chat has, and how to add one."""
+        if message_thread_id in self.deleted_topic_ids:
+            why = "was deleted by deleteForumTopic"
+        else:
+            why = "does not exist"
+        if self.topics:
+            names = ", ".join(
+                f"#{topic.message_thread_id} {topic.name!r}" for topic in self.topics.values()
+            )
+            known = f"Its topics: {names}."
+        else:
+            known = "It has no topics."
+        return (
+            f"Topic {message_thread_id} {why} in chat {self.id}. {known} "
+            f"Declare one with `blueprint.add_topic(chat, name)`, or "
+            f"pass `None` for the General topic."
+        )
 
     def member(self, user_id: int) -> MemberState:
         member = self.members.get(user_id)
         if member is None:
             member = MemberState(user_id=user_id, status=ChatMemberStatus.LEFT)
             self.members[user_id] = member
+        if self.world is not None:
+            member.settle(self.world.now)
         return member
+
+    def present_members(self) -> list[MemberState]:
+        """The members in the chat now, ended restrictions settled."""
+        return [
+            member
+            for member in (self.member(user_id) for user_id in list(self.members))
+            if member.is_present
+        ]
 
 
 #: Key of a stored command list: the scope's own fields plus the language code.
@@ -1194,9 +1800,11 @@ class ChatRegistry(dict[int, ChatState]):
                 f"Detaching is what says which of these you meant, and every one of them "
                 f"needs it — a chat straight out of `blueprint.build()` is owned by the "
                 f"world that built it, so handing it on undetached lands right back here:\n"
-                f"  # an independent copy, leaving the donor untouched\n"
-                f"  clone = copy.deepcopy(chat)\n"
-                f"  clone.world = None\n"
+                f"  # an independent copy, leaving the donor untouched: the memo stops\n"
+                f"  # the copy at the donor's world and bot, which a running\n"
+                f"  # environment cannot copy\n"
+                f"  memo = {{id(chat.world): None, id(chat.bound_bot): None}}\n"
+                f"  clone = copy.deepcopy(chat, memo)\n"
                 f"  world.chats[{chat.id}] = clone\n"
                 f"  # or a fresh chat of the same shape, from the declaration\n"
                 f"  clone = blueprint.build().chats[{chat.id}]\n"
@@ -1209,6 +1817,11 @@ class ChatRegistry(dict[int, ChatState]):
             )
             raise WorldLookupError(msg)
         chat.world = self.world
+        # A world still being built or copied has no bot yet.
+        bot = getattr(self.world, "bound_bot", None)
+        if bot is not None:
+            # What the chat already holds becomes usable here too.
+            mount(chat.stored_messages(), bot)
         super().__setitem__(chat_id, chat)
 
     def update(self, other: _Chats = (), /) -> None:  # type: ignore[override]
@@ -1243,6 +1856,9 @@ class World:
     profile: BotProfileState = field(default_factory=BotProfileState)
     #: Query ids issued by a trigger and not yet answered, by query kind.
     pending_queries: dict[str, str] = field(default_factory=dict)
+    #: Callback queries that came from an ephemeral message: those
+    #: cannot be answered by an ephemeral message replacing it.
+    ephemeral_callbacks: set[str] = field(default_factory=set)
     polls: dict[str, PollState] = field(default_factory=dict)
     #: Downloadable content by ``file_id``. Declared on a blueprint, or registered when a
     #: handler uploads a file whose input carries its bytes.
@@ -1252,6 +1868,14 @@ class World:
     sticker_sets: dict[str, StickerSetState] = field(default_factory=dict)
     last_update_id: int = 0
     last_query_id: int = 0
+    #: The number of the last file the world synthesized.
+    last_file_number: int = 0
+    #: The world's clock. It stands still unless a test moves it with
+    #: :meth:`aiogram.test.BotTestEnvironment.advance_time`.
+    now: datetime.datetime = field(default_factory=wall_clock)
+    #: When each pending query was issued, for the windows the Bot API
+    #: gives some of them to be answered in.
+    query_issued: dict[str, datetime.datetime] = field(default_factory=dict)
     #: The bot this world belongs to; see :meth:`bind`.
     bound_bot: Bot | None = field(default=None, compare=False, repr=False)
     #: How long the waiting helpers wait when the call does not say. Set by
@@ -1259,6 +1883,9 @@ class World:
     #: by every :meth:`ChatState.wait_for_message` in this world. Configuration rather than
     #: state, so two worlds that hold the same things still compare equal.
     default_wait_timeout: float = field(default=DEFAULT_WAIT_TIMEOUT, compare=False)
+    #: Whether the bot has Group Privacy on, which @BotFather sets.
+    #: ``getMe`` and the delivery of other bots' messages read it.
+    bot_group_privacy: bool = True
 
     def __setattr__(self, name: str, value: Any) -> None:
         """
@@ -1321,6 +1948,23 @@ class World:
             registry.update(value)
             value = registry
         super().__setattr__(name, value)
+        bot: Bot | None = getattr(self, "bound_bot", None)
+        if name == "bot_group_privacy" and bot is not None:
+            # What ``getMe`` reports changed, so the bot's cached answer
+            # must follow, or ``bot.me()`` and ``get_me()`` disagree.
+            bot._me = self.bot_me()
+
+    def bot_me(self) -> User:
+        """
+        The bot as ``getMe`` reports it.
+
+        ``can_read_all_group_messages`` is ``True`` when Group Privacy
+        is off, which only ``getMe`` reports, so a message's sender
+        lacks it.
+        """
+        return self.bot_user.as_user().model_copy(
+            update={"can_read_all_group_messages": not self.bot_group_privacy},
+        )
 
     def bind(self, bot: Bot) -> None:
         """
@@ -1342,7 +1986,7 @@ class World:
         """
         self.bound_bot = bot
         for chat in self.chats.values():
-            mount(chat.messages, bot)
+            mount(chat.stored_messages(), bot)
 
     def user(self, user_id: int) -> UserState:
         if user_id == self.bot_user.id:
@@ -1415,6 +2059,11 @@ class World:
         self.last_update_id += 1
         return self.last_update_id
 
+    def next_file_number(self) -> int:
+        """Number a synthesized file, so no two files share an id."""
+        self.last_file_number += 1
+        return self.last_file_number
+
     def sticker_set(self, name: str) -> StickerSetState:
         sticker_set = self.sticker_sets.get(name)
         if sticker_set is None:
@@ -1453,6 +2102,8 @@ class World:
         query_id = str(self.last_query_id)
         if kind is not None:
             self.pending_queries[query_id] = kind
+            if kind in ANSWER_WINDOWS:
+                self.query_issued[query_id] = self.now
         return query_id
 
     def answer_query(self, kind: str, query_id: str) -> None:
@@ -1462,15 +2113,76 @@ class World:
         Popping rather than marking answered makes "already answered" and "never issued"
         the same code path, which is also how Telegram reports them.
         """
-        if self.pending_queries.pop(query_id, None) != kind:
-            msg = (
-                "query is too old and response timeout expired or query ID is invalid "
-                f"({kind} {query_id!r} is not outstanding)"
-            )
-            raise ApiRejection(msg)
+        issued = self.query_issued.pop(query_id, self.now)
+        expired = kind in ANSWER_WINDOWS and self.now - issued > ANSWER_WINDOWS[kind]
+        if self.pending_queries.pop(query_id, None) != kind or expired:
+            raise rejections.QUERY_TOO_OLD()
 
     def next_date(self) -> datetime.datetime:
-        return BASE_DATE + datetime.timedelta(seconds=self.last_update_id)
+        """The date of something happening now: the clock's time."""
+        return self.now
+
+    def move_clock(self, moment: datetime.datetime) -> None:
+        """
+        Set the clock to ``moment`` and end what that ends.
+
+        Every restriction and ban whose end the clock reaches is settled
+        here, so ``chat.members`` and a ``MemberState`` a test already
+        holds read the same as :meth:`ChatState.member`.
+        """
+        self.now = moment
+        for chat in self.chats.values():
+            for member in chat.members.values():
+                member.settle(moment)
+
+
+def aware(moment: datetime.datetime) -> datetime.datetime:
+    """``moment`` made aware; a naive one is read as local time."""
+    if moment.tzinfo is None:
+        return datetime.datetime.fromtimestamp(moment.timestamp(), tz=datetime.timezone.utc)
+    return moment
+
+
+def _user_id(user: UserState | UserSpec | int) -> int:
+    return user if isinstance(user, int) else user.id
+
+
+def _find_ephemeral(stores: Iterable[list[Message]], ephemeral_id: int) -> Message | None:
+    """The message ``ephemeral_id`` in any of ``stores``."""
+    for messages in stores:
+        for message in messages:
+            if message.ephemeral_message_id == ephemeral_id:
+                return message
+    return None
+
+
+def group_anonymous_bot() -> User:
+    """
+    The user an anonymous administrator's messages are from.
+
+    A new object on every call, since a message binds what it carries.
+    """
+    return User(
+        id=GROUP_ANONYMOUS_BOT_ID,
+        is_bot=True,
+        first_name="Group",
+        username="GroupAnonymousBot",
+    )
+
+
+def posted_by(chat: ChatState, sender: User) -> dict[str, Any]:
+    """
+    Who a message ``sender`` posts in ``chat`` is from.
+
+    A channel post is the channel's: Telegram names the channel as its
+    sender chat and no user. A post from the anonymous administrators'
+    bot is the group's, which is its sender chat.
+    """
+    if chat.type == ChatType.CHANNEL:
+        return {"from_user": None, "sender_chat": chat.as_chat()}
+    if sender.id == GROUP_ANONYMOUS_BOT_ID:
+        return {"from_user": sender, "sender_chat": chat.as_chat()}
+    return {"from_user": sender, "sender_chat": None}
 
 
 def private_chat_shape(user: UserState | UserSpec) -> dict[str, Any]:
@@ -1499,8 +2211,9 @@ def resolve_topic(chat: ChatState, topic: TopicSpec | TopicState | int) -> Topic
 
     A topic can be addressed by any of the three, and every caller that accepts one accepts
     all three; an unknown thread id fails here rather than producing an untagged message.
+    A state is checked too, so a topic deleted since fails as one.
     """
-    if isinstance(topic, TopicState):
+    if isinstance(topic, TopicState) and topic.is_general:
         return topic
     thread_id = topic if isinstance(topic, int) else topic.message_thread_id
     return chat.topic(thread_id)
@@ -1514,22 +2227,26 @@ def create_topic(
     icon_color: int = DEFAULT_TOPIC_ICON_COLOR,
     icon_custom_emoji_id: str | None = None,
     from_user: User | None = None,
+    creator_id: int | None = None,
 ) -> TopicState:
     """
     Open a forum topic the way Telegram does.
 
     A topic is numbered by the message id of the ``forum_topic_created`` service message
     that opened it, so blueprint-declared topics and topics created through the API are
-    indistinguishable — both go through here.
+    indistinguishable — both go through here. ``creator_id`` is who
+    opened it, which the bot's rights read; see
+    :attr:`TopicState.creator_id`.
     """
     message_thread_id = chat.allocate_message_id()
     chat.is_forum = True
+    sender = {"from_user": None} if from_user is None else posted_by(chat, from_user)
     chat.add_message(
         Message(
             message_id=message_thread_id,
             date=date,
             chat=chat.as_chat(),
-            from_user=from_user,
+            **sender,
             message_thread_id=message_thread_id,
             is_topic_message=True,
             forum_topic_created=ForumTopicCreated(
@@ -1544,6 +2261,7 @@ def create_topic(
         name=name,
         icon_color=icon_color,
         icon_custom_emoji_id=icon_custom_emoji_id,
+        creator_id=creator_id,
         chat=chat,
     )
     chat.topics[message_thread_id] = topic

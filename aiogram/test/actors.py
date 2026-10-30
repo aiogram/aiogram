@@ -1,12 +1,17 @@
 from __future__ import annotations
 
+import dataclasses
+import datetime
+import functools
 import re
-from collections.abc import Callable, Iterable, Iterator
+from collections.abc import Awaitable, Callable, Iterable, Iterator
 from types import SimpleNamespace
-from typing import TYPE_CHECKING, Any, NamedTuple
+from typing import TYPE_CHECKING, Any, Concatenate, NamedTuple, ParamSpec, TypeVar
 from urllib.parse import parse_qs, urlsplit
 
-from aiogram.enums import ChatMemberStatus, ChatType
+from pydantic import BaseModel
+
+from aiogram.enums import BotSubscriptionUpdatedState, ChatMemberStatus, ChatType, ContentType
 from aiogram.types import (
     BotSubscriptionUpdated,
     BusinessMessagesDeleted,
@@ -23,6 +28,7 @@ from aiogram.types import (
     InlineQuery,
     ManagedBotUpdated,
     Message,
+    MessageGenerationStopped,
     MessageReactionCountUpdated,
     MessageReactionUpdated,
     PaidMediaPurchased,
@@ -30,24 +36,46 @@ from aiogram.types import (
     PreCheckoutQuery,
     ReactionTypeEmoji,
     ReactionTypeUnion,
+    RichMessageButton,
     ShippingQuery,
     SuccessfulPayment,
     Update,
+    User,
 )
 
+from .markup import bot_command_entities
+from .modeling import (
+    SUBSCRIPTION_PERIOD,
+    close_general,
+    close_topic,
+    delete_topic,
+    edit_stamp,
+    hide_general,
+    holds_right,
+    may_create_topics,
+    reopen_general,
+    reopen_topic,
+    unhide_general,
+)
 from .mounting import owned_or_copied
-from .synthesis import SynthesisContext, synthesize
+from .synthesis import synthesize
 from .world import (
+    DEFAULT_TOPIC_ICON_COLOR,
+    GROUP_ANONYMOUS_BOT_ID,
     BusinessConnectionState,
     ChargeState,
     ChatState,
     CommunityState,
     MemberState,
+    PollState,
     QueryKind,
     TopicState,
     UserState,
     WorldLookupError,
+    create_topic,
+    group_anonymous_bot,
     mask,
+    posted_by,
     resolve_topic,
 )
 
@@ -415,6 +443,16 @@ _START_PAYLOAD = re.compile(r"[A-Za-z0-9_-]{1,64}")
 #: itself, so `_change_membership`'s ``service_message`` only fires there.
 _MEMBER_SERVICE_MESSAGE_CHAT_TYPES = frozenset({ChatType.GROUP, ChatType.SUPERGROUP})
 
+#: The states ``BotSubscriptionUpdated.state`` can take.
+_SUBSCRIPTION_STATES = frozenset(state.value for state in BotSubscriptionUpdatedState)
+
+
+def _label(message: Message) -> str:
+    """Name ``message`` in an error, by the id that finds it."""
+    if message.ephemeral_message_id is not None:
+        return f"Ephemeral message {message.ephemeral_message_id}"
+    return f"Message {message.message_id}"
+
 
 def _rejection_message(url: str, deep_link: _DeepLink) -> str:
     return _LINK_KINDS[deep_link.kind].rejection.format(
@@ -537,6 +575,139 @@ def _validate_rights(rights: dict[str, bool]) -> None:
         raise TypeError(msg)
 
 
+#: A button a user can press: one on an inline keyboard, or one inside a
+#: message's rich content. Both carry ``callback_data`` and ``url``.
+Button = InlineKeyboardButton | RichMessageButton
+
+
+def _buttons_of(message: Message) -> Iterator[Button]:
+    """
+    Every button of a message, in the order a reader meets them.
+
+    The inline keyboard comes first, then the rich content, depth-first
+    in document order. The walk does not know which blocks hold buttons:
+    rich text nests buttons through formatting, list items, details and
+    table cells, and a block type a future Bot API version adds is
+    walked the same way. It is iterative, so deep nesting cannot reach
+    the recursion limit.
+    """
+    if message.reply_markup is not None:
+        for row in message.reply_markup.inline_keyboard:
+            yield from row
+    stack: list[Any] = [message.rich_message]
+    while stack:
+        current = stack.pop()
+        if isinstance(current, RichMessageButton):
+            yield current
+        elif isinstance(current, BaseModel):
+            stack.extend(reversed(current.__dict__.values()))
+        elif isinstance(current, list):
+            stack.extend(reversed(current))
+
+
+def _refuse_ephemeral(message: Message, action: str) -> None:
+    """
+    Refuse a user action on an ephemeral message.
+
+    The Bot API does not describe a user editing or replying to one,
+    so a test doing it would be guessing at behavior.
+    """
+    if message.ephemeral_message_id is not None:
+        msg = (
+            f"Ephemeral message {message.ephemeral_message_id} cannot be {action} by a "
+            "user actor: the Bot API does not describe what that does"
+        )
+        raise WorldLookupError(msg)
+
+
+#: The chats another bot's messages are checked for delivery in. A
+#: private chat refuses them up front, and a channel post is the
+#: channel's.
+_GROUP_TYPES = frozenset({ChatType.GROUP, ChatType.SUPERGROUP})
+_ADMINISTRATOR_STATUSES = frozenset({ChatMemberStatus.CREATOR, ChatMemberStatus.ADMINISTRATOR})
+
+
+#: What a message can carry when a user posts it; anything else is a
+#: service message. ``unknown`` is a message the test built bare.
+_POSTED_CONTENT = frozenset(
+    {
+        ContentType.TEXT,
+        ContentType.ANIMATION,
+        ContentType.AUDIO,
+        ContentType.DOCUMENT,
+        ContentType.LIVE_PHOTO,
+        ContentType.PAID_MEDIA,
+        ContentType.PHOTO,
+        ContentType.STICKER,
+        ContentType.STORY,
+        ContentType.VIDEO,
+        ContentType.VIDEO_NOTE,
+        ContentType.VOICE,
+        ContentType.CHECKLIST,
+        ContentType.CONTACT,
+        ContentType.DICE,
+        ContentType.GAME,
+        ContentType.POLL,
+        ContentType.VENUE,
+        ContentType.LOCATION,
+        ContentType.INVOICE,
+        ContentType.GIVEAWAY,
+        ContentType.RICH_MESSAGE,
+        ContentType.UNKNOWN,
+    },
+)
+
+
+def _is_service(message: Message) -> bool:
+    """Whether ``message`` is a service message rather than a post."""
+    return message.content_type not in _POSTED_CONTENT
+
+
+@dataclasses.dataclass(frozen=True)
+class Withheld:
+    """
+    What a trigger returns when its update did not reach the bot.
+
+    The world changed and stores what the trigger produced, exactly as
+    when the update is delivered; only the dispatcher never saw
+    ``update``. ``reason`` says why, in words: the test passed
+    ``deliver=False``, or Telegram would not deliver it.
+    """
+
+    update: Update
+    reason: str
+
+    def __repr__(self) -> str:
+        return (
+            f"Withheld(update_id={self.update.update_id}, "
+            f"kind={self.update.event_type!r}, reason={self.reason!r})"
+        )
+
+
+_P = ParamSpec("_P")
+_R = TypeVar("_R")
+
+
+def _trigger(
+    method: Callable[Concatenate[UserActor, _P], Awaitable[_R]],
+) -> Callable[Concatenate[UserActor, _P], Awaitable[_R]]:
+    """
+    Check an anonymous binding once, before the trigger changes anything.
+
+    A demotion ends the binding, so every trigger asks again. Asking
+    in the middle would reject the actor's own demotion after the
+    world had changed, with no update to announce it.
+    """
+
+    @functools.wraps(method)
+    async def checked(self: UserActor, *args: _P.args, **kwargs: _P.kwargs) -> _R:
+        if self.anonymous:
+            self._require_anonymous(self._bound_chat)
+        return await method(self, *args, **kwargs)
+
+    return checked
+
+
 def _detached(value: Any, bot: Bot) -> Any:
     """
     Copy what the caller handed a trigger, before an update carries it into the world.
@@ -565,6 +736,13 @@ class UserActor:
     :meth:`aiogram.dispatcher.dispatcher.Dispatcher.feed_update`, so filters, middlewares,
     dependency injection and FSM all run exactly as they do in production. Keyword
     arguments are passed through as handler dependencies.
+
+    Every trigger that feeds an update takes ``deliver``. With
+    ``deliver=False`` the world changes and stores what the trigger
+    produced, exactly as usual, and nothing is fed: the trigger
+    returns :class:`Withheld` instead of the handler's result. It
+    reproduces an update Telegram never delivered, such as a lost
+    ``forum_topic_closed``.
     """
 
     def __init__(
@@ -574,12 +752,16 @@ class UserActor:
         chat: ChatState | None = None,
         topic: TopicState | None = None,
         business: BusinessConnectionState | None = None,
+        anonymous: bool = False,
     ) -> None:
         self.environment = environment
         self.user = user
         self._chat = chat
         self.topic = topic
         self.business = business
+        #: Whether this actor posts as its supergroup, as an
+        #: anonymous administrator does.
+        self.anonymous = anonymous
 
     def in_(
         self,
@@ -587,12 +769,22 @@ class UserActor:
         *,
         topic: TopicSpec | TopicState | int | None = None,
         business: BusinessConnectionSpec | BusinessConnectionState | str | None = None,
+        anonymous: bool = False,
     ) -> UserActor:
         """
         Bind this user to a chat, optionally to a topic or a business connection.
 
         Returns a new actor, leaving this one untouched. The binding decides what the
         triggers produce: a plain message, a topic-tagged message, or a business message.
+
+        ``anonymous=True`` posts as the supergroup, as an anonymous
+        administrator does: every message and service message is from
+        ``GroupAnonymousBot``, with the group as ``sender_chat``. A
+        message, but no service message, is signed with the
+        administrator's custom title as ``author_signature``. The user
+        must be the owner or an administrator whose ``is_anonymous`` is
+        set, or the binding raises :class:`WorldLookupError`. Rights,
+        and the topics the actor opens, are still the user's own.
 
         Binding to the actor's own id is the one case an undeclared chat is still
         allowed: every Telegram user *can* open a private chat with the bot, the same
@@ -611,12 +803,15 @@ class UserActor:
                 if chat_id == self.user.id
                 else world.chat(chat_id)
             )
+        if anonymous:
+            self._require_anonymous(state)
         return UserActor(
             self.environment,
             self.user,
             state,
             topic=self._resolve_topic(state, topic),
             business=self.environment.business_connection(business) if business else None,
+            anonymous=anonymous,
         )
 
     @staticmethod
@@ -629,9 +824,21 @@ class UserActor:
         return resolve_topic(chat, topic)
 
     def state(self) -> FSMContext:
-        """FSM context for this actor's binding — the key the dispatcher itself would use."""
+        """
+        FSM context for this actor's binding.
+
+        The key is the one the dispatcher uses for this actor's
+        messages. Bound anonymously, those are from
+        ``GroupAnonymousBot``, and so are its service messages and
+        membership updates, so the key is that user's, shared by every
+        anonymous administrator of the chat. A click, an inline query
+        or a payment comes from the user themselves, as Telegram shows
+        whoever pressed; ``env.state(user, chat)`` or
+        ``user.in_(chat).state()`` reads that key. A reaction or a vote
+        made anonymously names the chat and no user.
+        """
         return self.environment.state(
-            self.user.id,
+            GROUP_ANONYMOUS_BOT_ID if self.anonymous else self.user.id,
             self.chat.id,
             topic=self.topic,
             business_connection=self.business,
@@ -648,18 +855,35 @@ class UserActor:
         is still required for anywhere else: the world cannot invent a group's title,
         type or membership from a bare id.
         """
+        if self.anonymous:
+            self._require_anonymous(self._bound_chat)
+        return self._bound_chat
+
+    @property
+    def _bound_chat(self) -> ChatState:
+        """
+        The chat this actor sends into, without checking the binding.
+
+        A trigger checks an anonymous binding once, when it starts, see
+        :func:`_trigger`, and reads the chat through this. Checking
+        again would also reject the actor's own demotion halfway
+        through, after the world had changed.
+        """
         if self._chat is not None:
             return self._chat
         return self.environment.world.ensure_private_chat(self.user)
 
     # -- triggers ---------------------------------------------------------------------
 
+    @_trigger
     async def send(
         self,
         text: str | None = None,
         *,
         fields: dict[str, Any] | None = None,
         reply_to: Message | int | None = None,
+        ephemeral: bool = False,
+        deliver: bool = True,
         **data: Any,
     ) -> Any:
         """
@@ -675,18 +899,73 @@ class UserActor:
         This trigger returns the handler's result, not the `Message` it sent — reach for
         ``self.chat.messages[-1]`` right after this call to get it, most of all when the
         next step is replying to it.
+
+        ``ephemeral=True`` sends an ephemeral message, such as a
+        command only the sender and the bot see. It has
+        ``message_id`` 0 and an ``ephemeral_message_id``, stays out
+        of the shared history, and is read back with
+        ``self.chat.ephemeral_commands(user)``. Telegram has them in
+        groups and supergroups only. An ``ephemeral_message_id`` in
+        ``fields`` sends one the same way.
         """
+        if ephemeral or (fields or {}).get("ephemeral_message_id") is not None:
+            return await self._send_ephemeral(text, fields, reply_to, data, deliver=deliver)
         message = self._build_message(text=text, fields=self._with_reply_to(fields, reply_to))
-        self.chat.add_message(message)
+        self._bound_chat.add_message(message)
         if self.business is not None:
             return await self._feed(
                 Update(update_id=self._next_update_id(), business_message=message),
                 data,
+                deliver=deliver,
             )
         update_id = self._next_update_id()
-        if self.chat.type == ChatType.CHANNEL:
-            return await self._feed(Update(update_id=update_id, channel_post=message), data)
-        return await self._feed(Update(update_id=update_id, message=message), data)
+        if self._bound_chat.type == ChatType.CHANNEL:
+            return await self._feed(
+                Update(update_id=update_id, channel_post=message), data, deliver=deliver
+            )
+        return await self._feed(
+            Update(update_id=update_id, message=message), data, deliver=deliver
+        )
+
+    async def _send_ephemeral(
+        self,
+        text: str | None,
+        fields: dict[str, Any] | None,
+        reply_to: Message | int | None,
+        data: dict[str, Any],
+        deliver: bool = True,
+    ) -> Any:
+        chat = self._bound_chat
+        if chat.type not in {ChatType.GROUP, ChatType.SUPERGROUP}:
+            msg = (
+                f"Ephemeral messages exist in groups and supergroups only, and chat "
+                f"{chat.id} is a {chat.type}; bind the actor with `.in_(group)`"
+            )
+            raise WorldLookupError(msg)
+        if self.business is not None:
+            msg = "A business connection does not carry ephemeral messages"
+            raise WorldLookupError(msg)
+        # Check the reply first, so a refused one uses up no id.
+        requested = self._with_reply_to(fields, reply_to) or {}
+        overrides = {"message_id": 0, **requested}
+        ephemeral_id = overrides.get("ephemeral_message_id")
+        if ephemeral_id is None:
+            overrides["ephemeral_message_id"] = chat.allocate_ephemeral_message_id()
+        elif chat.find_any_ephemeral(ephemeral_id) is not None:
+            # Refused before anything is stored, so the chat is left
+            # without a second message under the same id.
+            msg = (
+                f"Chat {chat.id} already holds an ephemeral message under ephemeral id "
+                f"{ephemeral_id}; leave ephemeral_message_id out to have one allocated"
+            )
+            raise WorldLookupError(msg)
+        message = self._build_message(text=text, fields=overrides)
+        chat.add_ephemeral_command(message)
+        return await self._feed(
+            Update(update_id=self._next_update_id(), message=message),
+            data,
+            deliver=deliver,
+        )
 
     async def reply(
         self,
@@ -694,6 +973,7 @@ class UserActor:
         text: str | None = None,
         *,
         fields: dict[str, Any] | None = None,
+        deliver: bool = True,
         **data: Any,
     ) -> Any:
         """
@@ -706,65 +986,130 @@ class UserActor:
             await alice.reply(question, "42")
             await bob.reply(alice.chat.messages[-1], "same here")
         """
-        return await self.send(text, fields=fields, reply_to=message, **data)
+        return await self.send(text, fields=fields, reply_to=message, deliver=deliver, **data)
 
+    @_trigger
     async def edit(
         self,
         message: Message,
         text: str | None = None,
         *,
         fields: dict[str, Any] | None = None,
+        deliver: bool = True,
         **data: Any,
     ) -> Any:
-        """Edit a message this user sent earlier."""
-        changes: dict[str, Any] = {"text": text, **_detached(fields or {}, self.environment.bot)}
-        edited = self.chat.update_message(message.message_id, **changes)
+        """
+        Edit a message this user sent earlier.
+
+        Only what is passed changes: ``text`` when given, and the raw
+        ``Message`` fields in ``fields``. The edit is dated with the
+        world's clock through ``edit_date``, unless ``fields`` sets it.
+
+        A user can edit only their own messages, so a message the
+        actor did not send is refused. A channel post is attributed to
+        the channel rather than to whoever published it, so an actor
+        bound to a channel can edit the channel's posts. A forward
+        shows another message's content, so no one can edit it.
+        """
+        _refuse_ephemeral(message, "edited")
+        self._require_in_chat(message)
+        stored = self._require_message(message.message_id)
+        self._require_own(stored)
+        if stored.forward_origin is not None:
+            msg = (
+                f"Message {stored.message_id} in chat {self._bound_chat.id} is a forward, and "
+                "a forward cannot be edited"
+            )
+            raise WorldLookupError(msg)
+        changes: dict[str, Any] = edit_stamp(self.environment)
+        if text is not None:
+            changes["text"] = text
+            if "entities" not in (fields or {}):
+                # The commands of the new text replace those of the old.
+                changes["entities"] = bot_command_entities(text) or None
+        changes.update(_detached(fields or {}, self.environment.bot))
+        edited = self._bound_chat.update_message(message.message_id, **changes)
         if self.business is not None:
             return await self._feed(
                 Update(update_id=self._next_update_id(), edited_business_message=edited),
                 data,
+                deliver=deliver,
             )
         update_id = self._next_update_id()
-        if self.chat.type == ChatType.CHANNEL:
+        if self._bound_chat.type == ChatType.CHANNEL:
             return await self._feed(
                 Update(update_id=update_id, edited_channel_post=edited),
                 data,
+                deliver=deliver,
             )
-        return await self._feed(Update(update_id=update_id, edited_message=edited), data)
+        return await self._feed(
+            Update(update_id=update_id, edited_message=edited), data, deliver=deliver
+        )
 
+    @_trigger
     async def click(
         self,
-        target: str | InlineKeyboardButton,
+        target: str | Button,
         *,
         message: Message | None = None,
+        deliver: bool = True,
         **data: Any,
     ) -> Any:
-        """Press an inline keyboard button of a message the bot actually sent."""
+        """
+        Press a button of a message the bot actually sent.
+
+        ``target`` is the button's ``callback_data`` or the button
+        itself, from an inline keyboard or from rich content.
+
+        ``message`` names the message to press it on. It is looked up
+        again in this actor's chat, by id or, for an ephemeral message
+        addressed to the actor, by ephemeral id. The button must be on
+        the stored version, which is the one the update carries, so a
+        copy the bot has edited since cannot press a button that is
+        gone.
+        """
+        self._refuse_bot("press buttons")
         callback_data = (
-            target.callback_data if isinstance(target, InlineKeyboardButton) else target
+            target.callback_data
+            if isinstance(target, (InlineKeyboardButton, RichMessageButton))
+            else target
         )
         if callback_data is None:
             msg = "The button carries no callback_data and cannot be clicked"
             raise WorldLookupError(msg)
-        source = message if message is not None else self._find_button_message(callback_data)
+        if message is not None:
+            self._require_visible(
+                message,
+                f"press callback_data={callback_data!r}",
+                callback_data,
+            )
+            source = self._stored_button_message(message, callback_data)
+        else:
+            source = self._find_button_message(callback_data)
+        world = self.environment.world
         query = CallbackQuery(
-            id=self.environment.world.next_query_id(QueryKind.CALLBACK),
+            id=world.next_query_id(QueryKind.CALLBACK),
             from_user=self.user.as_user(),
-            chat_instance=str(self.chat.id),
+            chat_instance=str(self._bound_chat.id),
             message=source,
             data=callback_data,
         )
+        if source.ephemeral_message_id is not None:
+            world.ephemeral_callbacks.add(query.id)
         return await self._feed(
             Update(update_id=self._next_update_id(), callback_query=query),
             data,
+            deliver=deliver,
         )
 
+    @_trigger
     async def follow_deep_link(
         self,
-        target: str | InlineKeyboardButton | None = None,
+        target: str | Button | None = None,
         *,
         message: Message | None = None,
         validate_payload: bool = True,
+        deliver: bool = True,
         **data: Any,
     ) -> Any:
         """
@@ -791,8 +1136,9 @@ class UserActor:
         in a test is what the escape hatch is for; the default stays strict, so a payload
         the bot itself built wrong is still named as the bug it is.
         """
+        self._refuse_bot("follow deep links")
         bot_username = self.bot_user.username or ""
-        if isinstance(target, InlineKeyboardButton):
+        if isinstance(target, (InlineKeyboardButton, RichMessageButton)):
             url = target.url
             if url is None:
                 msg = "The button carries no url and cannot be followed as a deep link"
@@ -800,9 +1146,15 @@ class UserActor:
         else:
             url = target
 
-        scope: Iterable[Message] = (
-            [message] if message is not None else reversed(self.chat.messages)
-        )
+        if message is not None:
+            self._require_visible(message, "follow its deep-link buttons")
+            # The link opens the private chat whichever chat showed
+            # it, so the message is resolved in its own chat. A message
+            # built by hand for a chat the world lacks is taken as is.
+            shown_in = self.environment.world.chats.get(message.chat.id)
+            if shown_in is not None:
+                message = self._stored_version(message, shown_in)
+        scope: Iterable[Message] = [message] if message is not None else self._visible_messages()
         deep_link: _DeepLink | None
         if url is None:
             url, deep_link = self._find_deep_link_url(scope, message, bot_username)
@@ -832,21 +1184,49 @@ class UserActor:
         # that for any unbound actor, the same as a plain `send()` from one, so this
         # just sends through a fresh actor for the same user rather than opening the
         # chat itself.
-        return await UserActor(self.environment, self.user).send(text, **data)
+        return await UserActor(self.environment, self.user).send(text, deliver=deliver, **data)
 
-    async def inline_query(self, query: str = "", *, offset: str = "", **data: Any) -> Any:
-        inline = InlineQuery(
-            id=self.environment.world.next_query_id(QueryKind.INLINE),
-            from_user=self.user.as_user(),
-            query=query,
-            offset=offset,
-        )
+    @_trigger
+    async def inline_query(
+        self,
+        query: str = "",
+        *,
+        offset: str = "",
+        fields: dict[str, Any] | None = None,
+        deliver: bool = True,
+        **data: Any,
+    ) -> Any:
+        """
+        Send an inline query, as this user, from the actor's chat.
+
+        ``chat_type`` is ``sender`` from the actor's own private chat
+        with the bot, which is where an unbound actor is, and the
+        chat's type otherwise. ``fields`` overrides raw
+        ``InlineQuery`` fields, such as ``location`` or a
+        ``chat_type`` the binding cannot express.
+        """
+        self._refuse_bot("use inline mode")
+        bound = self._chat
+        chat_type = "sender" if bound is None or bound.id == self.user.id else bound.type
+        values: dict[str, Any] = {
+            "id": self.environment.world.next_query_id(QueryKind.INLINE),
+            "from_user": self.user.as_user(),
+            "query": query,
+            "offset": offset,
+            "chat_type": chat_type,
+        }
+        values.update(_detached(fields or {}, self.environment.bot))
+        inline = InlineQuery(**values)
         return await self._feed(
             Update(update_id=self._next_update_id(), inline_query=inline),
             data,
+            deliver=deliver,
         )
 
-    async def join(self, *, service_message: bool = True, **data: Any) -> Any:
+    @_trigger
+    async def join(
+        self, *, service_message: bool = True, deliver: bool = True, **data: Any
+    ) -> Any:
         """
         Join this chat, producing `chat_member` — and, in a group, the
         `new_chat_members` service message a real join delivers alongside it.
@@ -854,15 +1234,44 @@ class UserActor:
         Pass ``service_message=False`` to get the old single-update behavior back.
         See :meth:`_change_membership` for why the group-only carve-out and the ordering
         between the two updates are what they are.
+
+        A banned user cannot join, so it raises until the ban ends.
         """
+        self._refuse_banned("join")
         return await self._change_membership(
-            ChatMemberStatus.MEMBER, data, service_message=service_message
+            ChatMemberStatus.MEMBER, data, deliver=deliver, service_message=service_message
         )
 
-    async def leave(self, **data: Any) -> Any:
-        return await self._change_membership(ChatMemberStatus.LEFT, data)
+    @_trigger
+    async def leave(self, *, deliver: bool = True, **data: Any) -> Any:
+        """Leave this chat. A banned user is not in it, so it raises."""
+        self._refuse_banned("leave")
+        return await self._change_membership(ChatMemberStatus.LEFT, data, deliver=deliver)
 
-    async def add_bot(self, *, service_message: bool = True, **data: Any) -> Any:
+    def _refuse_banned(self, action: str) -> None:
+        """
+        Refuse a move the user cannot make: only an unban ends a ban.
+
+        Joining or leaving is the user's own, never the group's, so an
+        actor bound anonymously cannot do it either.
+        """
+        if self.anonymous:
+            msg = (
+                f"An anonymous administrator cannot {action} chat {self._bound_chat.id} as the "
+                "group; bind the user without `anonymous=True`"
+            )
+            raise WorldLookupError(msg)
+        if self._bound_chat.member(self.user.id).status == ChatMemberStatus.KICKED:
+            msg = (
+                f"User {self.user.id} is banned from chat {self._bound_chat.id}, so they cannot "
+                f"{action} it; unban them first"
+            )
+            raise WorldLookupError(msg)
+
+    @_trigger
+    async def add_bot(
+        self, *, service_message: bool = True, deliver: bool = True, **data: Any
+    ) -> Any:
         """
         Add the bot to this chat, producing `my_chat_member` rather than `chat_member` —
         and, in a group, the `new_chat_members` service message a real add delivers
@@ -873,18 +1282,24 @@ class UserActor:
         return await self._change_membership(
             ChatMemberStatus.MEMBER,
             data,
+            deliver=deliver,
             subject=self.bot_user,
             service_message=service_message,
         )
 
-    async def remove_bot(self, **data: Any) -> Any:
-        return await self._change_membership(ChatMemberStatus.LEFT, data, subject=self.bot_user)
+    @_trigger
+    async def remove_bot(self, *, deliver: bool = True, **data: Any) -> Any:
+        return await self._change_membership(
+            ChatMemberStatus.LEFT, data, deliver=deliver, subject=self.bot_user
+        )
 
+    @_trigger
     async def promote(
         self,
         subject: UserSpec | UserState | int | None = None,
         *,
         data: dict[str, Any] | None = None,
+        deliver: bool = True,
         **rights: bool,
     ) -> Any:
         """
@@ -937,19 +1352,25 @@ class UserActor:
 
         def _promote(member: MemberState) -> None:
             member.rights = ChatAdministratorRights(**granted)
+            # The actor is now the promoter, so the bot may no longer
+            # edit rights it granted before.
+            member.promoted_by = self.user.id
 
         return await self._change_membership(
             ChatMemberStatus.ADMINISTRATOR,
             dict(data or {}),
+            deliver=deliver,
             subject=target,
             mutate=_promote,
         )
 
+    @_trigger
     async def demote(
         self,
         subject: UserSpec | UserState | int | None = None,
         *,
         data: dict[str, Any] | None = None,
+        deliver: bool = True,
     ) -> Any:
         """
         Demote an administrator back to a plain member.
@@ -965,6 +1386,10 @@ class UserActor:
         ``subject`` defaults to the bot itself, the same as `promote()`. Refuses to
         demote the chat's owner, exactly as `promoteChatMember` does.
 
+        Only an administrator can be demoted: a restricted, banned or
+        absent user is refused, since demoting is not a way to lift a
+        restriction or bring someone in.
+
         ``data`` is the dispatcher data to feed the update with, as a mapping rather than
         as ``**kwargs``. It used to be ``**data`` here and ``**rights`` on `promote`, so
         the same keyword on the two twins meant two different things — the one asymmetry in
@@ -974,6 +1399,13 @@ class UserActor:
         """
         target = self._resolve_member_subject(subject)
         self._guard_not_owner(target)
+        status = self._bound_chat.member(target.id).status
+        if status != ChatMemberStatus.ADMINISTRATOR:
+            msg = (
+                f"User {target.id} is {status} in chat {self._bound_chat.id}, not an "
+                "administrator, so there is nothing to demote"
+            )
+            raise WorldLookupError(msg)
 
         def _demote(member: MemberState) -> None:
             member.rights = None
@@ -982,20 +1414,26 @@ class UserActor:
         return await self._change_membership(
             ChatMemberStatus.MEMBER,
             dict(data or {}),
+            deliver=deliver,
             subject=target,
             mutate=_demote,
         )
 
-    async def enable_business_connection(self, **data: Any) -> Any:
-        return await self._business_connection_update(is_enabled=True, data=data)
+    @_trigger
+    async def enable_business_connection(self, *, deliver: bool = True, **data: Any) -> Any:
+        return await self._business_connection_update(is_enabled=True, data=data, deliver=deliver)
 
-    async def disable_business_connection(self, **data: Any) -> Any:
-        return await self._business_connection_update(is_enabled=False, data=data)
+    @_trigger
+    async def disable_business_connection(self, *, deliver: bool = True, **data: Any) -> Any:
+        return await self._business_connection_update(is_enabled=False, data=data, deliver=deliver)
 
-    async def delete_business_messages(self, message_ids: list[int], **data: Any) -> Any:
+    @_trigger
+    async def delete_business_messages(
+        self, message_ids: list[int], *, deliver: bool = True, **data: Any
+    ) -> Any:
         """The business account deletes messages — they leave the chat, as in production."""
         connection = self._require_business()
-        chat = self.chat
+        chat = self._bound_chat
         for message_id in message_ids:
             if chat.find_message(message_id) is not None:
                 chat.delete_message(message_id)
@@ -1007,41 +1445,328 @@ class UserActor:
         return await self._feed(
             Update(update_id=self._next_update_id(), deleted_business_messages=event),
             data,
+            deliver=deliver,
         )
 
+    @_trigger
+    async def set_topics(self, enabled: bool) -> None:
+        """
+        Turn the topics of this supergroup on or off, as its owner.
+
+        Only the owner may, as TDLib checks, and only in a supergroup.
+        Telegram delivers no update and no service message for it, so
+        the bot learns of it from ``chat.is_forum`` on what comes next.
+
+        Turning topics off keeps them, as a client does: turning them
+        on again brings back every topic as it was. While they are off,
+        a message the bot sends with a ``message_thread_id`` lands in
+        the chat untagged, since the Bot API server passes no topic for
+        a supergroup that is not a forum. Telegram does not document
+        that, so it is an assumption read from the server's source.
+        """
+        chat = self._bound_chat
+        if chat.type != ChatType.SUPERGROUP:
+            msg = (
+                f"Topics can be turned on in supergroups only, and chat {chat.id} is a {chat.type}"
+            )
+            raise WorldLookupError(msg)
+        if chat.member(self.user.id).status != ChatMemberStatus.CREATOR:
+            msg = (
+                f"Only the owner of chat {chat.id} can turn its topics on or off, and user "
+                f"{self.user.id} is not; declare them with "
+                f"`members={{user: ChatMemberStatus.CREATOR}}`"
+            )
+            raise WorldLookupError(msg)
+        chat.is_forum = enabled
+
+    @_trigger
+    async def create_topic(
+        self,
+        name: str,
+        *,
+        icon_color: int | None = None,
+        icon_custom_emoji_id: str | None = None,
+        deliver: bool = True,
+        **data: Any,
+    ) -> TopicState:
+        """
+        Create a topic in this forum, as a user who may manage topics.
+
+        What :code:`createForumTopic` does for the bot, done by this
+        user: the topic exists, and the ``forum_topic_created`` service
+        message that opens it, from this user, is stored and fed to the
+        dispatcher. It returns the new
+        :class:`~aiogram.test.world.TopicState`, to bind an actor to or
+        close later; the handler's result is not returned, and nor is
+        :class:`Withheld` when the message is withheld.
+
+        The chat has to be a forum, and the user has to hold
+        ``can_manage_topics``: as an administrator's right, or as the
+        chat's permission of that name, which members have unless the
+        chat or their restriction takes it away. Neither holding is
+        something Telegram would let a client work around, so a test
+        that lacks one has set the world up wrongly, and gets
+        :class:`~aiogram.test.WorldLookupError`.
+        """
+        chat = self._require_topic_manager(creating=True)
+        topic = create_topic(
+            chat,
+            name=name,
+            date=self.environment.world.next_date(),
+            icon_color=icon_color or DEFAULT_TOPIC_ICON_COLOR,
+            icon_custom_emoji_id=icon_custom_emoji_id,
+            from_user=self._sender(),
+            creator_id=self.user.id,
+        )
+        assert topic.root_message is not None
+        await self._feed_message(topic.root_message, data, deliver=deliver)
+        return topic
+
+    @_trigger
+    async def close_topic(
+        self,
+        topic: TopicSpec | TopicState | int | None = None,
+        *,
+        deliver: bool = True,
+        **data: Any,
+    ) -> Any:
+        """
+        Close a topic, as a user who may manage topics.
+
+        ``topic`` is the one to close and defaults to the topic this
+        actor is bound to. The topic closes, and the
+        ``forum_topic_closed`` service message, from this user, is
+        stored and fed. See :meth:`create_topic` for who may and what
+        happens when nobody does.
+        """
+        chat, target = self._managed_topic(topic, "close_general_topic")
+        return await self._feed_message(
+            close_topic(self.environment, chat, target, **self._service_sender()),
+            data,
+            deliver=deliver,
+        )
+
+    @_trigger
+    async def reopen_topic(
+        self,
+        topic: TopicSpec | TopicState | int | None = None,
+        *,
+        deliver: bool = True,
+        **data: Any,
+    ) -> Any:
+        """Reopen a topic, feeding ``forum_topic_reopened``.
+
+        See :meth:`close_topic`.
+        """
+        chat, target = self._managed_topic(topic, "reopen_general_topic")
+        return await self._feed_message(
+            reopen_topic(self.environment, chat, target, **self._service_sender()),
+            data,
+            deliver=deliver,
+        )
+
+    @_trigger
+    async def delete_topic(self, topic: TopicSpec | TopicState | int | None = None) -> None:
+        """
+        Delete a topic with all its messages, as a user who may manage
+        topics.
+
+        Telegram posts no service message for it and the Bot API has no
+        type for one, so nothing is fed: the bot learns of it only when
+        a call into the thread fails with ``message thread not found``.
+        The General topic cannot be deleted.
+        """
+        chat, target = self._managed_topic(topic, None)
+        delete_topic(chat, target)
+
+    @_trigger
+    async def hide_general_topic(self, *, deliver: bool = True, **data: Any) -> Any:
+        """
+        Hide the General topic, which closes it, as a manager.
+
+        The ``general_forum_topic_hidden`` service message, from this
+        user, is stored and fed.
+        """
+        chat = self._require_topic_manager()
+        return await self._feed_message(
+            hide_general(self.environment, chat, **self._service_sender()), data, deliver=deliver
+        )
+
+    @_trigger
+    async def unhide_general_topic(self, *, deliver: bool = True, **data: Any) -> Any:
+        """Unhide the General topic, feeding its service message."""
+        chat = self._require_topic_manager()
+        return await self._feed_message(
+            unhide_general(self.environment, chat, **self._service_sender()),
+            data,
+            deliver=deliver,
+        )
+
+    @_trigger
+    async def close_general_topic(self, *, deliver: bool = True, **data: Any) -> Any:
+        """
+        Close the General topic, as a user who may manage topics.
+
+        Like :code:`closeGeneralForumTopic`, it posts a
+        ``forum_topic_closed`` message, from this user, which is stored
+        and fed.
+        """
+        chat = self._require_topic_manager()
+        return await self._feed_message(
+            close_general(self.environment, chat, **self._service_sender()),
+            data,
+            deliver=deliver,
+        )
+
+    @_trigger
+    async def reopen_general_topic(self, *, deliver: bool = True, **data: Any) -> Any:
+        """Reopen and unhide the General topic, feeding the message."""
+        chat = self._require_topic_manager()
+        return await self._feed_message(
+            reopen_general(self.environment, chat, **self._service_sender()),
+            data,
+            deliver=deliver,
+        )
+
+    def _managed_topic(
+        self,
+        topic: TopicSpec | TopicState | int | None,
+        general_trigger: str | None,
+    ) -> tuple[ChatState, TopicState]:
+        """The forum and the topic this actor closes or deletes."""
+        self._require_topic_manager(opened=True)
+        chat = self._bound_chat
+        target = self._require_regular_topic(chat, topic, general_trigger)
+        if target.creator_id != self.user.id:
+            # The creator of a topic manages it without the right, as
+            # TDLib's ``is_outgoing`` check lets it.
+            self._require_topic_manager()
+        return chat, target
+
+    def _require_topic_manager(
+        self,
+        *,
+        creating: bool = False,
+        opened: bool = False,
+    ) -> ChatState:
+        """
+        The forum this actor manages the topics of, or a setup error.
+
+        ``creating`` asks whether the actor may open a topic, which a
+        chat permission allows too; see :func:`may_create_topics`.
+        ``opened`` checks only that the chat is a forum, for a topic
+        the actor may have opened itself.
+        """
+        chat = self._bound_chat
+        if not chat.is_forum:
+            msg = (
+                f"Chat {chat.id} is not a forum, so it has no topics to manage; declare it "
+                f"with `add_supergroup(..., is_forum=True)` or turn topics on with "
+                f"`owner.set_topics(True)`"
+            )
+            raise WorldLookupError(msg)
+        if opened:
+            return chat
+        allowed = (
+            may_create_topics(chat, self.user.id)
+            if creating
+            else holds_right(chat, self.user.id, "can_manage_topics")
+        )
+        if not allowed:
+            status = ChatMemberStatus(chat.member(self.user.id).status).value
+            msg = (
+                f"User {self.user.id} cannot manage the topics of chat {chat.id}: it takes "
+                f"`can_manage_topics`, and their status is {status}. A trigger arranges the "
+                f"world and does not refuse as Telegram would, so give them the right "
+                f"with `blueprint.set_member(chat, user, rights=administrator_rights())`, "
+                f"`members={{user: ChatMemberStatus.CREATOR}}`, or `promote(user, "
+                f"can_manage_topics=True)`"
+                + (", or grant it on the chat's `permissions`" if creating else "")
+            )
+            raise WorldLookupError(msg)
+        return chat
+
+    def _require_regular_topic(
+        self,
+        chat: ChatState,
+        topic: TopicSpec | TopicState | int | None,
+        general_trigger: str | None,
+    ) -> TopicState:
+        """The topic to act on: the one passed, else the bound one."""
+        target = self.topic if topic is None else resolve_topic(chat, topic)
+        if target is None:
+            msg = (
+                "No topic to act on: pass one, or bind this actor to one with "
+                "`.in_(chat, topic=...)`"
+            )
+            raise WorldLookupError(msg)
+        if target.is_general:
+            via = f"; `{general_trigger}()` is the General topic's" if general_trigger else ""
+            msg = f"The General topic of chat {chat.id} cannot be handled as a regular topic{via}"
+            raise WorldLookupError(msg)
+        return target
+
+    async def _feed_message(
+        self,
+        message: Message,
+        data: dict[str, Any],
+        deliver: bool = True,
+    ) -> Any:
+        """Feed a service message already stored, from this chat."""
+        return await self._feed(
+            Update(update_id=self._next_update_id(), message=message),
+            data,
+            deliver=deliver,
+        )
+
+    @_trigger
     async def add_chat_to_community(
         self,
         community: CommunitySpec | CommunityState | int,
+        *,
+        deliver: bool = True,
         **data: Any,
     ) -> Any:
         state = self.environment.community(community)
-        chat = self.chat
+        chat = self._bound_chat
         if chat.id not in state.chat_ids:
             state.chat_ids.append(chat.id)
         chat.community_id = state.id
         return await self._service_message(
             {"community_chat_added": CommunityChatAdded(community=state.as_community())},
             data,
+            deliver=deliver,
         )
 
+    @_trigger
     async def remove_chat_from_community(
         self,
         community: CommunitySpec | CommunityState | int,
+        *,
+        deliver: bool = True,
         **data: Any,
     ) -> Any:
         state = self.environment.community(community)
-        chat = self.chat
+        chat = self._bound_chat
         if chat.id in state.chat_ids:
             state.chat_ids.remove(chat.id)
         chat.community_id = None
         return await self._service_message(
             {"community_chat_removed": CommunityChatRemoved()},
             data,
+            deliver=deliver,
         )
 
-    async def request_join(self, **data: Any) -> Any:
-        """Ask to join this chat, producing a `chat_join_request` the bot can act on."""
-        chat = self.chat
+    @_trigger
+    async def request_join(self, *, deliver: bool = True, **data: Any) -> Any:
+        """
+        Ask to join this chat, producing a `chat_join_request` the bot can act on.
+
+        A banned user cannot ask to join, so it raises until the ban
+        ends, as `join()` does.
+        """
+        self._refuse_banned("ask to join")
+        chat = self._bound_chat
         chat.join_requests.add(self.user.id)
         event = ChatJoinRequest(
             chat=chat.as_chat(),
@@ -1052,21 +1777,31 @@ class UserActor:
         return await self._feed(
             Update(update_id=self._next_update_id(), chat_join_request=event),
             data,
+            deliver=deliver,
         )
 
+    @_trigger
     async def chosen_inline_result(
         self,
         result_id: str,
         query: str = "",
+        *,
+        deliver: bool = True,
         **data: Any,
     ) -> Any:
+        self._refuse_bot("use inline mode")
         event = self._event(ChosenInlineResult, result_id=result_id, query=query)
         return await self._feed(
             Update(update_id=self._next_update_id(), chosen_inline_result=event),
             data,
+            deliver=deliver,
         )
 
-    async def shipping_query(self, invoice_payload: str = "payload", **data: Any) -> Any:
+    @_trigger
+    async def shipping_query(
+        self, invoice_payload: str = "payload", *, deliver: bool = True, **data: Any
+    ) -> Any:
+        self._refuse_bot("ask for shipping")
         event = self._event(
             ShippingQuery,
             id=self.environment.world.next_query_id(QueryKind.SHIPPING),
@@ -1075,16 +1810,20 @@ class UserActor:
         return await self._feed(
             Update(update_id=self._next_update_id(), shipping_query=event),
             data,
+            deliver=deliver,
         )
 
+    @_trigger
     async def pre_checkout_query(
         self,
         invoice_payload: str = "payload",
         *,
         currency: str = "XTR",
         total_amount: int = 1,
+        deliver: bool = True,
         **data: Any,
     ) -> Any:
+        self._refuse_bot("confirm a checkout")
         event = self._event(
             PreCheckoutQuery,
             id=self.environment.world.next_query_id(QueryKind.PRE_CHECKOUT),
@@ -1095,8 +1834,10 @@ class UserActor:
         return await self._feed(
             Update(update_id=self._next_update_id(), pre_checkout_query=event),
             data,
+            deliver=deliver,
         )
 
+    @_trigger
     async def pay(
         self,
         invoice_payload: str = "payload",
@@ -1104,6 +1845,7 @@ class UserActor:
         currency: str = "XTR",
         total_amount: int = 1,
         is_subscription: bool = False,
+        deliver: bool = True,
         **data: Any,
     ) -> Any:
         """
@@ -1112,84 +1854,236 @@ class UserActor:
         The charge is recorded, so the handler can refund the id it was given rather than a
         fabricated one, and a star payment credits the bot's balance — see design decision
         D2 of `model-stars-and-gifts`.
+
+        A subscription payment carries its expiration date, one
+        subscription period from now, and ``is_first_recurring`` when
+        it is this user's first subscription payment for
+        ``invoice_payload``; a later one is a renewal.
         """
+        self._refuse_bot("pay")
         world = self.environment.world
+        renewal = is_subscription and any(
+            charge.is_subscription
+            and charge.user_id == self.user.id
+            and charge.invoice_payload == invoice_payload
+            for charge in world.stars.charges.values()
+        )
         charge_id = f"charge-{world.next_query_id()}"
         world.stars.charges[charge_id] = ChargeState(
             id=charge_id,
             user_id=self.user.id,
             amount=total_amount,
             is_subscription=is_subscription,
+            invoice_payload=invoice_payload,
         )
         if currency == "XTR":
-            world.stars.record(world.next_query_id(), total_amount, world.next_date(), charge_id)
+            world.stars.record(
+                world.next_query_id(),
+                total_amount,
+                world.next_date(),
+                charge_id,
+                partner_id=self.user.id,
+            )
+        subscription: dict[str, Any] = {
+            "is_recurring": None,
+            "is_first_recurring": None,
+            "subscription_expiration_date": None,
+        }
+        if is_subscription:
+            expires = world.next_date() + datetime.timedelta(seconds=SUBSCRIPTION_PERIOD)
+            subscription = {
+                "is_recurring": True,
+                "is_first_recurring": None if renewal else True,
+                "subscription_expiration_date": int(expires.timestamp()),
+            }
         payment = self._event(
             SuccessfulPayment,
             invoice_payload=invoice_payload,
             currency=currency,
             total_amount=total_amount,
             telegram_payment_charge_id=charge_id,
-            is_recurring=is_subscription or None,
+            **subscription,
         )
-        return await self._service_message({"successful_payment": payment}, data)
+        return await self._service_message({"successful_payment": payment}, data, deliver=deliver)
 
-    async def purchase_paid_media(self, payload: str = "payload", **data: Any) -> Any:
+    @_trigger
+    async def purchase_paid_media(
+        self, payload: str = "payload", *, deliver: bool = True, **data: Any
+    ) -> Any:
+        self._refuse_bot("buy paid media")
         event = self._event(PaidMediaPurchased, paid_media_payload=payload)
         return await self._feed(
             Update(update_id=self._next_update_id(), purchased_paid_media=event),
             data,
+            deliver=deliver,
         )
 
-    async def boost(self, **data: Any) -> Any:
+    @_trigger
+    async def boost(self, *, deliver: bool = True, **data: Any) -> Any:
+        self._refuse_bot("boost a chat")
         event = self._event(ChatBoostUpdated)
         return await self._feed(
             Update(update_id=self._next_update_id(), chat_boost=event),
             data,
+            deliver=deliver,
         )
 
-    async def remove_boost(self, **data: Any) -> Any:
+    @_trigger
+    async def remove_boost(self, *, deliver: bool = True, **data: Any) -> Any:
+        self._refuse_bot("withdraw a boost")
         event = self._event(ChatBoostRemoved)
         return await self._feed(
             Update(update_id=self._next_update_id(), removed_chat_boost=event),
             data,
+            deliver=deliver,
         )
 
-    async def guest_message(self, text: str | None = None, **data: Any) -> Any:
-        """A message from someone who is not a member — the bot sees it as a guest."""
-        message = self._build_message(text=text, fields=None)
-        self.chat.add_message(message)
+    @_trigger
+    async def stop_message_generation(
+        self, draft_id: int = 1, *, deliver: bool = True, **data: Any
+    ) -> Any:
+        """
+        The user taps the button that stops a draft's generation.
+
+        Telegram shows that button only on a draft sent with
+        ``can_stop=True`` (see
+        :meth:`~aiogram.client.bot.Bot.send_message_draft`). Drafts are
+        not tracked, so trigger this only where such a draft was sent.
+
+        ``sendMessageDraft`` targets private chats, so the update is
+        always about the user's own private chat with the bot, and the
+        dispatcher resolves its user from that chat. An actor bound to
+        any other chat raises instead. An actor bound to a topic of the
+        private chat reports that topic's thread, as a message does.
+        """
+        chat = self._bound_chat
+        if chat.id != self.user.id:
+            msg = (
+                "stop_message_generation() happens only in the user's own private chat "
+                "with the bot: sendMessageDraft targets private chats. Use the unbound "
+                "actor, or bind it with `.in_(user)`"
+            )
+            raise WorldLookupError(msg)
+        event = self._event(
+            MessageGenerationStopped,
+            draft_id=draft_id,
+            message_thread_id=(
+                self.topic.message_thread_id
+                if self.topic is not None and not self.topic.is_general
+                else None
+            ),
+        )
+        return await self._feed(
+            Update(update_id=self._next_update_id(), stopped_message_generation=event),
+            data,
+            deliver=deliver,
+        )
+
+    @_trigger
+    async def guest_message(
+        self,
+        text: str | None = None,
+        *,
+        fields: dict[str, Any] | None = None,
+        deliver: bool = True,
+        **data: Any,
+    ) -> Any:
+        """
+        A message from someone who is not a member, seen as a guest.
+
+        It carries a ``guest_query_id``, unique in the world, which
+        the bot answers with ``answerGuestQuery``. Answering is
+        recorded, not modeled. ``fields`` overrides raw ``Message``
+        fields.
+        """
+        overrides = {
+            "guest_query_id": self.environment.world.next_query_id(),
+            **(fields or {}),
+        }
+        message = self._build_message(text=text, fields=overrides)
+        self._bound_chat.add_message(message)
         return await self._feed(
             Update(update_id=self._next_update_id(), guest_message=message),
             data,
+            deliver=deliver,
         )
 
-    async def manage_bot(self, **data: Any) -> Any:
+    @_trigger
+    async def manage_bot(self, *, deliver: bool = True, **data: Any) -> Any:
         event = self._event(ManagedBotUpdated, user=self.user.as_user())
+        # A synthesized user is not a bot, and the managed one is.
+        event = event.model_copy(
+            update={"bot_user": event.bot_user.model_copy(update={"is_bot": True})},
+        )
         return await self._feed(
             Update(update_id=self._next_update_id(), managed_bot=event),
             data,
+            deliver=deliver,
         )
 
-    async def update_subscription(self, invoice_payload: str = "payload", **data: Any) -> Any:
+    @_trigger
+    async def update_subscription(
+        self,
+        invoice_payload: str = "payload",
+        *,
+        state: str = "active",
+        deliver: bool = True,
+        **data: Any,
+    ) -> Any:
+        """
+        The user's subscription to the bot changes ``state``.
+
+        The Bot API names three states: ``canceled`` when the user
+        cancels, ``active`` when they re-enable a cancelled
+        subscription, and ``failed`` when a payment fails. Any other
+        value is refused.
+        """
+        self._refuse_bot("subscribe to the bot")
+        if state not in _SUBSCRIPTION_STATES:
+            known = ", ".join(sorted(_SUBSCRIPTION_STATES))
+            msg = f"A subscription state is one of {known}, not {state!r}"
+            raise WorldLookupError(msg)
         event = self._event(
             BotSubscriptionUpdated,
             user=self.user.as_user(),
             invoice_payload=invoice_payload,
+            state=state,
         )
         return await self._feed(
             Update(update_id=self._next_update_id(), subscription=event),
             data,
+            deliver=deliver,
         )
 
-    async def vote(self, poll_id: str, options: list[int], **data: Any) -> Any:
+    @_trigger
+    async def vote(
+        self, poll_id: str, options: list[int], *, deliver: bool = True, **data: Any
+    ) -> Any:
         """
         Vote in a poll, producing `poll_answer` and recording the vote.
 
         An empty ``options`` retracts. Telegram never delivers an answer to a closed poll,
         so voting in one raises here — in the test's own code — rather than passing while
         asserting nothing (design decision D5).
+
+        The answer must be one the poll accepts: options it has, one
+        of them unless it allows multiple answers, and no change to an
+        earlier vote unless it allows revoting. Retracting changes the
+        vote, so it needs revoting too.
+
+        An actor bound anonymously votes as the chat: the answer has
+        ``voter_chat`` and no ``user``, as the Bot API documents for an
+        anonymous voter, and the vote is kept as the chat's.
         """
+        self._refuse_bot("vote in polls")
         poll = self.environment.world.poll(poll_id)
+        voter = self._bound_chat.id if self.anonymous else self.user.id
+        if self.anonymous and poll.chat_id not in {None, voter}:
+            msg = (
+                f"Poll {poll_id} belongs to chat {poll.chat_id}, so an administrator "
+                f"bound anonymously to chat {voter} cannot vote in it as the chat"
+            )
+            raise WorldLookupError(msg)
         if poll.is_closed:
             msg = f"Poll {poll_id} is closed and cannot be voted in"
             raise WorldLookupError(msg)
@@ -1199,33 +2093,41 @@ class UserActor:
                 f"for it; use `poll_update()` to trigger the aggregate `poll` update"
             )
             raise WorldLookupError(msg)
+        self._require_valid_vote(poll, options, voter)
         if options:
-            poll.votes[self.user.id] = list(options)
+            poll.votes[voter] = list(options)
         else:
-            poll.votes.pop(self.user.id, None)
+            poll.votes.pop(voter, None)
         answer = PollAnswer(
             poll_id=poll_id,
-            user=self.user.as_user(),
+            user=None if self.anonymous else self.user.as_user(),
+            voter_chat=self._bound_chat.as_chat() if self.anonymous else None,
             option_ids=list(options),
             option_persistent_ids=[str(option) for option in options],
         )
         return await self._feed(
             Update(update_id=self._next_update_id(), poll_answer=answer),
             data,
+            deliver=deliver,
         )
 
-    async def poll_update(self, poll_id: str, **data: Any) -> Any:
+    @_trigger
+    async def poll_update(self, poll_id: str, *, deliver: bool = True, **data: Any) -> Any:
         """The aggregate `poll` update, which is what an anonymous poll delivers."""
         poll = self.environment.world.poll(poll_id)
         return await self._feed(
             Update(update_id=self._next_update_id(), poll=poll.as_poll()),
             data,
+            deliver=deliver,
         )
 
+    @_trigger
     async def react(
         self,
         message: Message | int,
         reaction: list[ReactionTypeUnion] | str | None = None,
+        *,
+        deliver: bool = True,
         **data: Any,
     ) -> Any:
         """
@@ -1233,8 +2135,13 @@ class UserActor:
 
         ``old_reaction`` is read before the mutation and ``new_reaction`` after, which is
         the only way those fields can be truthful (design decision D3).
+
+        An actor bound anonymously reacts as the chat: the update has
+        ``actor_chat`` and no ``user``, as the Bot API documents for an
+        anonymous user, and the reaction is kept as the chat's.
         """
-        chat = self.chat
+        chat = self._bound_chat
+        reactor = chat.id if self.anonymous else self.user.id
         message_id = message if isinstance(message, int) else message.message_id
         if chat.find_message(message_id) is None:
             msg = f"Message {message_id} does not exist in chat {chat.id}"
@@ -1247,13 +2154,14 @@ class UserActor:
         # copied in: the update binds whatever it carries, and the world's own objects are
         # compared against plainly declared ones.
         old = _detached(
-            list(chat.reactions_for(message_id).get(self.user.id, [])), self.environment.bot
+            list(chat.reactions_for(message_id).get(reactor, [])), self.environment.bot
         )
-        chat.set_reaction(message_id, self.user.id, new_reaction)
+        chat.set_reaction(message_id, reactor, new_reaction)
         event = MessageReactionUpdated(
             chat=chat.as_chat(),
             message_id=message_id,
-            user=self.user.as_user(),
+            user=None if self.anonymous else self.user.as_user(),
+            actor_chat=chat.as_chat() if self.anonymous else None,
             date=self.environment.world.next_date(),
             old_reaction=old,
             new_reaction=new_reaction,
@@ -1261,11 +2169,15 @@ class UserActor:
         return await self._feed(
             Update(update_id=self._next_update_id(), message_reaction=event),
             data,
+            deliver=deliver,
         )
 
-    async def reaction_count(self, message: Message | int, **data: Any) -> Any:
+    @_trigger
+    async def reaction_count(
+        self, message: Message | int, *, deliver: bool = True, **data: Any
+    ) -> Any:
         """The aggregate reaction update, which is what an anonymous audience delivers."""
-        chat = self.chat
+        chat = self._bound_chat
         message_id = message if isinstance(message, int) else message.message_id
         event = MessageReactionCountUpdated(
             chat=chat.as_chat(),
@@ -1276,6 +2188,7 @@ class UserActor:
         return await self._feed(
             Update(update_id=self._next_update_id(), message_reaction_count=event),
             data,
+            deliver=deliver,
         )
 
     # -- internals --------------------------------------------------------------------
@@ -1287,15 +2200,40 @@ class UserActor:
         The parts a test does not care about come from the same synthesizer the outbound
         side uses, so a Bot API change to any of these types needs no work here.
         """
-        world = self.environment.world
-        context = SynthesisContext(
-            chat=self.chat.as_chat(),
+        context = dataclasses.replace(
+            self.environment.synthesis_context(),
+            chat=self._bound_chat.as_chat(),
             user=self.user.as_user(),
-            date=world.next_date(),
-            counter=world.last_update_id,
         )
         event = synthesize(event_type, context, name=event_type.__name__)
         return event.model_copy(update=overrides) if overrides else event
+
+    def _require_valid_vote(self, poll: PollState, options: list[int], voter: int) -> None:
+        """Refuse an answer Telegram would not deliver for ``poll``."""
+        unknown = [option for option in options if not 0 <= option < len(poll.options)]
+        if unknown:
+            msg = (
+                f"Poll {poll.id} has options 0-{len(poll.options) - 1}, so it has no "
+                f"option(s) {unknown}"
+            )
+            raise WorldLookupError(msg)
+        if len(options) > 1 and not poll.allows_multiple_answers:
+            msg = (
+                f"Poll {poll.id} does not allow multiple answers, so a vote for "
+                f"{len(options)} options cannot be cast"
+            )
+            raise WorldLookupError(msg)
+        previous = poll.votes.get(voter)
+        if (
+            previous is not None
+            and sorted(previous) != sorted(options)
+            and not poll.allows_revoting
+        ):
+            msg = (
+                f"Poll {poll.id} does not allow revoting, so voter {voter} "
+                f"cannot change their vote {previous} to {list(options)}"
+            )
+            raise WorldLookupError(msg)
 
     def _require_business(self) -> BusinessConnectionState:
         if self.business is None:
@@ -1306,51 +2244,274 @@ class UserActor:
             raise WorldLookupError(msg)
         return self.business
 
-    async def _business_connection_update(self, is_enabled: bool, data: dict[str, Any]) -> Any:
+    async def _business_connection_update(
+        self,
+        is_enabled: bool,
+        data: dict[str, Any],
+        deliver: bool = True,
+    ) -> Any:
         connection = self._require_business()
         connection.is_enabled = is_enabled
-        event = connection.as_business_connection(self.user.as_user())
+        # The connection names the account owner whoever toggles it:
+        # an actor bound to it may be a customer of that account.
+        owner = self.environment.world.user(connection.user_id)
+        event = connection.as_business_connection(owner.as_user())
         return await self._feed(
             Update(update_id=self._next_update_id(), business_connection=event),
             data,
+            deliver=deliver,
         )
 
-    async def _service_message(self, fields: dict[str, Any], data: dict[str, Any]) -> Any:
+    async def _service_message(
+        self,
+        fields: dict[str, Any],
+        data: dict[str, Any],
+        deliver: bool = True,
+    ) -> Any:
         message = self._build_message(text=None, fields=fields)
-        self.chat.add_message(message)
+        self._bound_chat.add_message(message)
         return await self._feed(
             Update(update_id=self._next_update_id(), message=message),
             data,
+            deliver=deliver,
         )
 
     def _next_update_id(self) -> int:
         return self.environment.world.next_update_id()
 
-    async def _feed(self, update: Update, data: dict[str, Any]) -> Any:
-        return await self.environment.feed(update, **data)
+    async def _feed(
+        self,
+        update: Update,
+        data: dict[str, Any],
+        *,
+        deliver: bool = True,
+    ) -> Any:
+        """
+        Feed ``update``, unless it is withheld.
+
+        ``deliver=False`` withholds it, and so does Telegram, for an
+        update it would not deliver. What is withheld is still in the
+        world, and the trigger returns :class:`Withheld` instead of
+        the handler's result. A withheld trigger still opens a route
+        scope of its own, left empty, so the route readers report it
+        rather than the trigger before it.
+        """
+        reason = (
+            "withheld by the test with deliver=False"
+            if not deliver
+            else self._withheld_by_telegram(update)
+        )
+        if reason is None:
+            return await self.environment.feed(update, **data)
+        with self.environment.trigger():
+            # Bound like a fed one, so `answer()` works on what a test
+            # picks out of it, and its task snapshot is taken.
+            return Withheld(self.environment.adopt(update), reason)
+
+    def _refuse_bot(self, action: str) -> None:
+        """
+        Refuse what only a person does.
+
+        A bot gets no buttons to press, no inline mode, no poll to vote
+        in and no way to pay, buy, boost or subscribe: the Bot API
+        gives it no method for any of them.
+        """
+        if self.user.is_bot:
+            msg = f"Bot {self.user.id} cannot {action}: only a person can"
+            raise WorldLookupError(msg)
+
+    def _is_other_bot(self) -> bool:
+        """Whether this actor is a bot posting as itself."""
+        return (
+            self.user.is_bot
+            and not self.anonymous
+            and self.user.id != self.environment.world.bot_user.id
+        )
+
+    def _withheld_by_telegram(self, update: Update) -> str | None:
+        """
+        Why Telegram would not deliver another bot's message, if not.
+
+        A service message is delivered unless the environment
+        withholds it; no public source says either way. A regular
+        message in a group follows Bot-to-Bot Communication Mode, see
+        :meth:`_reaches_bot`. Anything else is delivered.
+        """
+        message = update.message or update.edited_message
+        if message is None or not self._is_other_bot():
+            return None
+        if _is_service(message):
+            if self.environment.deliver_service_messages_from_bots:
+                return None
+            return (
+                f"a service message bot {self.user.id} caused, and the environment "
+                "withholds those (deliver_service_messages_from_bots=False)"
+            )
+        if message.chat.type not in _GROUP_TYPES or self._reaches_bot(message):
+            return None
+        return (
+            f"a message from bot {self.user.id}, which Telegram delivers to the bot only "
+            "with Bot-to-Bot Communication Mode on one side and a mention or reply, or "
+            "on the bot's side and the bot an administrator or out of privacy mode"
+        )
+
+    def _reaches_bot(self, message: Message) -> bool:
+        """
+        Whether another bot's group message reaches the bot.
+
+        Telegram's rule (core.telegram.org/bots/features): with
+        Bot-to-Bot Communication Mode on for either bot, a command
+        naming the bot or a direct reply to it gets through; with it on
+        for the bot, everything does while the bot is an administrator
+        or has Group Privacy Mode off.
+        """
+        bot = self.environment.world.bot_user
+        if (bot.bot_to_bot_mode or self.user.bot_to_bot_mode) and self._addresses_bot(message):
+            return True
+        if not bot.bot_to_bot_mode:
+            return False
+        status = self._bound_chat.member(bot.id).status
+        return status in _ADMINISTRATOR_STATUSES or not self.environment.world.bot_group_privacy
+
+    def _addresses_bot(self, message: Message) -> bool:
+        """
+        Whether ``message`` names the bot in a command or replies to it.
+
+        A topic's root, which every message in the topic replies to
+        when it replies to nothing else, does not count: Telegram
+        speaks of replying directly, and does not say whether an
+        implicit reply does.
+        """
+        bot = self.environment.world.bot_user
+        suffix = f"@{bot.username}".lower()
+        for text, entities in (
+            (message.text, message.entities),
+            (message.caption, message.caption_entities),
+        ):
+            for entity in entities or []:
+                if (
+                    entity.type == "bot_command"
+                    and text is not None
+                    and entity.extract_from(text).lower().endswith(suffix)
+                ):
+                    return True
+        reply = message.reply_to_message
+        if reply is None or reply.from_user is None or reply.from_user.id != bot.id:
+            return False
+        return not (message.is_topic_message and reply.message_id == message.message_thread_id)
+
+    def _require_anonymous(self, chat: ChatState) -> MemberState:
+        """The membership that lets the user post as ``chat``."""
+        if chat.type != ChatType.SUPERGROUP:
+            msg = (
+                f"Only a supergroup has anonymous administrators, and chat {chat.id} is a "
+                f"{chat.type}"
+            )
+            raise WorldLookupError(msg)
+        member = chat.member(self.user.id)
+        rights = member.rights
+        if (
+            member.status not in _ADMINISTRATOR_STATUSES
+            or rights is None
+            or not rights.is_anonymous
+        ):
+            msg = (
+                f"User {self.user.id} is not an anonymous administrator of chat {chat.id}, "
+                f"so they cannot post as it; declare them with `blueprint.set_member(chat, "
+                f"user, rights=administrator_rights(is_anonymous=True))` or "
+                f"`promote(user, is_anonymous=True)`"
+            )
+            raise WorldLookupError(msg)
+        return member
+
+    def _require_private_bot_to_bot(self, bot: UserState) -> None:
+        """
+        Refuse another bot's private message Telegram would not allow.
+
+        Two bots talk in private only with the mode on both sides. A
+        business chat asks it of the sending business bot alone; that
+        the bot under test receives another bot there once the sender
+        has it is an assumption, which no source states.
+        """
+        if self.business is not None:
+            if self.user.bot_to_bot_mode:
+                return
+            msg = (
+                f"Bot {self.user.id} cannot write into a business chat: the toolkit "
+                "lets a bot do that only with Bot-to-Bot Communication Mode on; declare "
+                "`add_user(..., is_bot=True, bot_to_bot_mode=True)`"
+            )
+            raise WorldLookupError(msg)
+        if self.user.bot_to_bot_mode and bot.bot_to_bot_mode:
+            return
+        msg = (
+            f"Bot {self.user.id} cannot write to the bot in private: Telegram allows "
+            "it only when both turn on Bot-to-Bot Communication Mode; declare "
+            "`add_user(..., is_bot=True, bot_to_bot_mode=True)` and "
+            "`Blueprint(bot_to_bot_mode=True)`"
+        )
+        raise WorldLookupError(msg)
+
+    def _sender(self) -> User:
+        """Who this actor's messages are from."""
+        return group_anonymous_bot() if self.anonymous else self.user.as_user()
+
+    def _signature(self) -> str | None:
+        """
+        The custom title an anonymous administrator signs with.
+
+        The trigger checked the binding when it started.
+        """
+        if not self.anonymous:
+            return None
+        return self._bound_chat.member(self.user.id).custom_title
+
+    def _service_sender(self) -> dict[str, Any]:
+        """Who a service message this actor causes is from."""
+        return {"by": self._sender()}
 
     def _build_message(self, text: str | None, fields: dict[str, Any] | None) -> Message:
-        chat = self.chat
+        chat = self._bound_chat
+        bot = self.environment.world.bot_user
+        if chat.type == ChatType.PRIVATE and self._is_other_bot():
+            self._require_private_bot_to_bot(bot)
         values: dict[str, Any] = {
-            "message_id": chat.allocate_message_id(),
             "date": self.environment.world.next_date(),
             "chat": chat.as_chat(),
-            "from_user": self.user.as_user(),
+            # A channel post is the channel's, whoever published it.
+            **posted_by(chat, self._sender()),
         }
+        if fields is None or "message_id" not in fields:
+            values["message_id"] = chat.allocate_message_id(self.business)
         if chat.type == ChatType.CHANNEL:
-            # A channel post is attributed to the channel, not to whoever published it.
-            values["from_user"] = None
-            values["sender_chat"] = chat.as_chat()
             values["author_signature"] = self.user.first_name
         if text is not None:
             values["text"] = text
-        if self.topic is not None and not self.topic.is_general:
+        if self.topic is not None:
+            # A topic deleted since the actor was bound is no place to
+            # post: this raises WorldLookupError naming it.
+            resolve_topic(chat, self.topic)
+        # With topics off, a client posts into the one flat chat.
+        if self.topic is not None and not self.topic.is_general and chat.is_forum:
             values["message_thread_id"] = self.topic.message_thread_id
             values["is_topic_message"] = True
+            # An explicit reply in `fields` replaces the root below.
+            values.update(self.topic.root_reply({}))
         if self.business is not None:
             values["business_connection_id"] = self.business.id
         values.update(_detached(fields or {}, self.environment.bot))
-        return Message(**values)
+        # A client marks the commands in a text, unless the test did.
+        for text_field, entities_field in (("text", "entities"), ("caption", "caption_entities")):
+            if entities_field not in (fields or {}):
+                entities = bot_command_entities(values.get(text_field))
+                if entities:
+                    values[entities_field] = entities
+        message = Message(**values)
+        signature = self._signature()
+        if signature is None or "author_signature" in values or _is_service(message):
+            return message
+        # A service message has no post author in Telegram's schema.
+        return message.model_copy(update={"author_signature": signature})
 
     def _with_reply_to(
         self,
@@ -1366,38 +2527,152 @@ class UserActor:
         ``reply_to_message`` a caller builds by hand from ``chat.messages``. Resolving it
         here rather than leaving the caller to look it up is the whole point of the
         keyword.
+
+        A replied message that replies to something itself, such as a
+        topic's root, is the one exception: a copy without its own
+        ``reply_to_message``, since the Bot API never nests one, as the
+        bot's sends store it.
         """
         if reply_to is None:
             return fields
         message = reply_to if isinstance(reply_to, Message) else self._require_message(reply_to)
+        _refuse_ephemeral(message, "replied to")
+        if message.reply_to_message is not None:
+            message = message.model_copy(update={"reply_to_message": None})
         return {"reply_to_message": message, **(fields or {})}
 
     def _require_message(self, message_id: int) -> Message:
-        message = self.chat.find_message(message_id)
+        message = self._bound_chat.find_message(message_id)
         if message is None:
-            msg = f"Message {message_id} does not exist in chat {self.chat.id}"
+            msg = f"Message {message_id} does not exist in chat {self._bound_chat.id}"
             raise WorldLookupError(msg)
         return message
 
+    def _require_own(self, message: Message) -> None:
+        """Refuse a user action on a message the user did not send."""
+        sender = message.from_user
+        if sender is not None and sender.id == self.user.id:
+            return
+        chat = self._bound_chat
+        sender_chat = message.sender_chat
+        # A channel post is the channel's, whoever published it.
+        if (
+            chat.type == ChatType.CHANNEL
+            and sender is None
+            and sender_chat is not None
+            and sender_chat.id == chat.id
+        ):
+            return
+        # A message posted as the group is an anonymous actor's.
+        if self.anonymous and sender_chat is not None and sender_chat.id == chat.id:
+            return
+        if sender is not None:
+            author = f"user {sender.id}"
+        elif sender_chat is not None:
+            author = f"chat {sender_chat.id}"
+        else:
+            author = "no one"
+        msg = (
+            f"Message {message.message_id} in chat {chat.id} was sent by {author}, not by "
+            f"user {self.user.id}, and a user can edit only their own messages"
+        )
+        raise WorldLookupError(msg)
+
     @staticmethod
-    def _iter_buttons(
-        scope: Iterable[Message],
-    ) -> Iterator[tuple[Message, InlineKeyboardButton]]:
-        """Walk message → markup → row → button once, front-to-back, for every searcher."""
+    def _iter_buttons(scope: Iterable[Message]) -> Iterator[tuple[Message, Button]]:
+        """Walk every button of every message, for every searcher."""
         for candidate in scope:
-            markup = candidate.reply_markup
-            if markup is None:
-                continue
-            for row in markup.inline_keyboard:
-                for button in row:
-                    yield candidate, button
+            for button in _buttons_of(candidate):
+                yield candidate, button
+
+    def _visible_messages(self) -> Iterator[Message]:
+        """
+        The messages this actor can press buttons on, newest first.
+
+        Its own ephemeral messages come first: they are addressed to it,
+        and with ``message_id`` 0 they cannot be ordered against the
+        shared history by id.
+        """
+        yield from reversed(self._bound_chat.ephemeral_messages(self.user.id))
+        yield from reversed(self._bound_chat.messages)
+
+    def _require_visible(
+        self,
+        message: Message,
+        action: str,
+        callback_data: str | None = None,
+    ) -> None:
+        """Refuse acting on someone else's ephemeral message."""
+        receiver = message.receiver_user
+        if message.ephemeral_message_id is None or (
+            receiver is not None and receiver.id == self.user.id
+        ):
+            return
+        # The message names its own receiver: scanning for the button
+        # could find another receiver's message with the same data.
+        hint = ""
+        if callback_data is not None and receiver is not None:
+            hint = (
+                f"; it is addressed to user {receiver.id} ({receiver.first_name!r}) "
+                "— click as that user"
+            )
+        msg = (
+            f"Ephemeral message {message.ephemeral_message_id} is not addressed to user "
+            f"{self.user.id}, so they cannot {action} on it{hint}"
+        )
+        raise WorldLookupError(msg)
+
+    def _require_in_chat(self, message: Message) -> None:
+        """Refuse a message from a chat other than the actor's."""
+        chat = self._bound_chat
+        if message.chat.id != chat.id:
+            msg = (
+                f"Message {message.message_id} is in chat {message.chat.id}, but this "
+                f"actor is bound to chat {chat.id}; bind it with `.in_(...)`"
+            )
+            raise WorldLookupError(msg)
+
+    def _stored_version(self, message: Message, chat: ChatState) -> Message:
+        """
+        The version of ``message`` that ``chat`` holds now.
+
+        Telegram acts on a message as the chat holds it, so a copy the
+        test kept is looked up again, by id or, for an ephemeral
+        message addressed to the actor, by ephemeral id.
+        """
+        if message.ephemeral_message_id is not None:
+            stored = chat.find_ephemeral_message(self.user.id, message.ephemeral_message_id)
+        else:
+            stored = chat.find_message(message.message_id)
+        if stored is None:
+            msg = f"{_label(message)} does not exist in chat {chat.id}"
+            raise WorldLookupError(msg)
+        return stored
+
+    def _stored_button_message(self, message: Message, callback_data: str) -> Message:
+        """The stored ``message``, which must carry the button."""
+
+        def carries(candidate: Message) -> bool:
+            return any(button.callback_data == callback_data for button in _buttons_of(candidate))
+
+        self._require_in_chat(message)
+        stored = self._stored_version(message, self._bound_chat)
+        if carries(stored):
+            return stored
+        msg = (
+            f"{_label(message)} in chat {self._bound_chat.id} carries no button with "
+            f"callback_data={callback_data!r}"
+        )
+        if stored is not message and carries(message):
+            msg += "; the copy passed does, but the message was edited since"
+        raise WorldLookupError(msg)
 
     def _find_button_message(self, callback_data: str) -> Message:
-        for candidate, button in self._iter_buttons(reversed(self.chat.messages)):
+        for candidate, button in self._iter_buttons(self._visible_messages()):
             if button.callback_data == callback_data:
                 return candidate
         msg = (
-            f"No message in chat {self.chat.id} carries a button with "
+            f"No message in chat {self._bound_chat.id} carries a button with "
             f"callback_data={callback_data!r}{self._misdirected_callback_hint(callback_data)}"
         )
         raise WorldLookupError(msg)
@@ -1413,7 +2688,10 @@ class UserActor:
         scans the rest of the world for the button before giving up, so the first case
         says so directly instead of leaving the search to whoever reads the failure.
         """
-        this_chat_id = self.chat.id
+        receiver = self._receiver_hint(callback_data)
+        if receiver:
+            return receiver
+        this_chat_id = self._bound_chat.id
         for chat_id, chat in self.environment.world.chats.items():
             if chat_id == this_chat_id:
                 continue
@@ -1423,6 +2701,20 @@ class UserActor:
                     return (
                         f"; a button with this callback_data exists in chat {chat_id} "
                         f"({title!r}) — bind the actor with `.in_(...)`"
+                    )
+        return ""
+
+    def _receiver_hint(self, callback_data: str) -> str:
+        """Name whom an ephemeral message with the button is for."""
+        for receiver_id, messages in self._bound_chat.sent_ephemeral.items():
+            if receiver_id == self.user.id:
+                continue
+            for _candidate, button in self._iter_buttons(reversed(messages)):
+                if button.callback_data == callback_data:
+                    name = self.environment.world.user(receiver_id).first_name
+                    return (
+                        f"; a button with this callback_data is on an ephemeral message "
+                        f"addressed to user {receiver_id} ({name!r}) — click as that user"
                     )
         return ""
 
@@ -1458,20 +2750,21 @@ class UserActor:
             details = "; ".join(_rejection_message(url, dl) for url, dl in candidates)
             if message is not None:
                 msg = (
-                    f"Message {message.message_id} carries no followable (`start`) "
+                    f"{_label(message)} carries no followable (`start`) "
                     f"deep-link button to @{bot_username}, only unfollowable ones: {details}"
                 )
             else:
                 msg = (
-                    f"No message in chat {self.chat.id} carries a followable (`start`) "
+                    f"No message in chat {self._bound_chat.id} carries a followable (`start`) "
                     f"deep-link button to @{bot_username}, only unfollowable ones: {details}"
                 )
             raise WorldLookupError(msg)
         if message is not None:
-            msg = f"Message {message.message_id} carries no deep-link button to @{bot_username}"
+            msg = f"{_label(message)} carries no deep-link button to @{bot_username}"
         else:
             msg = (
-                f"No message in chat {self.chat.id} carries a deep-link button to @{bot_username}"
+                f"No message in chat {self._bound_chat.id} carries a deep-link button "
+                f"to @{bot_username}"
             )
         raise WorldLookupError(msg)
 
@@ -1487,7 +2780,7 @@ class UserActor:
         if message is not None:
             msg = f"Message {message.message_id} does not carry a button with url={url!r}"
         else:
-            msg = f"No message in chat {self.chat.id} carries a button with url={url!r}"
+            msg = f"No message in chat {self._bound_chat.id} carries a button with url={url!r}"
         raise WorldLookupError(msg)
 
     @staticmethod
@@ -1624,7 +2917,7 @@ class UserActor:
         test meant to exercise. The wording stays identical to `handle_promote`'s, so the
         two failures still read alike.
         """
-        if self.chat.member(target.id).status == ChatMemberStatus.CREATOR:
+        if self._bound_chat.member(target.id).status == ChatMemberStatus.CREATOR:
             msg = (
                 "can't remove chat owner: this trigger arranges the world, and no "
                 "administrator can take the owner's standing away, so there is no state "
@@ -1641,6 +2934,7 @@ class UserActor:
         *,
         mutate: Callable[[MemberState], None] | None = None,
         service_message: bool = False,
+        deliver: bool = True,
     ) -> Any:
         """
         Change a membership, routing by whose it is.
@@ -1661,21 +2955,25 @@ class UserActor:
         way — the service message is fed but not awaited for its result, the same as any
         other update a trigger feeds only for its side effects.
         """
-        chat = self.chat
+        chat = self._bound_chat
         target = subject if subject is not None else self.user
         member = chat.member(target.id)
         user = target.as_user()
         # Read before the mutation and after it, off the one membership the world holds:
         # everything else it carries — a custom title, a tag, granted rights — survives a
         # join or a leave, and rebuilding the "new" side from a subset would drop it.
-        old = member.as_chat_member(user, chat.type)
-        member.status = status
-        if mutate is not None:
+        old = member.as_chat_member(user, chat.type, self.bot_user.id)
+        if mutate is None:
+            member.join_or_leave(status)
+        else:
+            member.set_status(status)
             mutate(member)
-        new = member.as_chat_member(user, chat.type)
+        new = member.as_chat_member(user, chat.type, self.bot_user.id)
         event = ChatMemberUpdated(
             chat=chat.as_chat(),
-            from_user=self.user.as_user(),
+            # GroupAnonymousBot for an anonymous administrator, which
+            # no source the toolkit read confirms.
+            from_user=self._sender(),
             date=self.environment.world.next_date(),
             old_chat_member=old,
             new_chat_member=new,
@@ -1687,9 +2985,10 @@ class UserActor:
         # `BotTestEnvironment.trigger`.
         with self.environment.trigger():
             if target.id == self.bot_user.id:
-                result = await self._feed(Update(update_id=update_id, my_chat_member=event), data)
+                update = Update(update_id=update_id, my_chat_member=event)
             else:
-                result = await self._feed(Update(update_id=update_id, chat_member=event), data)
+                update = Update(update_id=update_id, chat_member=event)
+            result = await self._feed(update, data, deliver=deliver)
             if service_message and chat.type in _MEMBER_SERVICE_MESSAGE_CHAT_TYPES:
-                await self._service_message({"new_chat_members": [user]}, data)
+                await self._service_message({"new_chat_members": [user]}, data, deliver)
         return result

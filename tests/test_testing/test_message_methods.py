@@ -2,9 +2,10 @@ from typing import get_args
 
 import pytest
 
+from aiogram.enums import ChatMemberStatus
 from aiogram.exceptions import TelegramBadRequest
 from aiogram.methods import EditMessageMedia, SendChatAction
-from aiogram.test import Blueprint, BotTestEnvironment, WorldLookupError
+from aiogram.test import Blueprint, BotTestEnvironment, WorldLookupError, modeling, rejections
 from aiogram.test.modeling import EDITABLE_MEDIA_FIELDS, media_field
 from aiogram.types import (
     InlineKeyboardButton,
@@ -17,6 +18,8 @@ from aiogram.types import (
     LabeledPrice,
     Message,
 )
+
+from .conftest import refused_with
 
 INPUT_MEDIA_MEMBERS = get_args(EditMessageMedia.model_fields["media"].annotation)
 
@@ -198,16 +201,14 @@ class TestEditingLiveLocation:
         assert stopped.message_id == original.message_id
         assert stopped.location.live_period is None
 
-    async def test_stopping_a_message_without_a_location(self, env, private):
+    async def test_stopping_a_message_without_a_location_fails(self, env, private):
         original = await env.bot.send_message(chat_id=private.id, text="hi")
 
-        stopped = await env.bot.stop_message_live_location(
-            chat_id=private.id,
-            message_id=original.message_id,
-        )
-
-        assert stopped.message_id == original.message_id
-        assert stopped.location is None
+        with refused_with(TelegramBadRequest, rejections.MESSAGE_CANT_BE_EDITED):
+            await env.bot.stop_message_live_location(
+                chat_id=private.id,
+                message_id=original.message_id,
+            )
 
 
 class TestEditingChecklist:
@@ -364,6 +365,31 @@ class TestBatchForwardAndCopy:
         assert len(result) == 1
 
     @pytest.mark.parametrize("method_name", ["forward_messages", "copy_messages"])
+    async def test_a_batch_checks_the_chat_and_thread_once(
+        self, env, private, team, alice, monkeypatch, method_name
+    ):
+        calls = []
+        for name in ("require_standing", "posting_topic"):
+            original = getattr(modeling, name)
+
+            def counted(*args, _name=name, _original=original, **kwargs):
+                calls.append(_name)
+                return _original(*args, **kwargs)
+
+            monkeypatch.setattr(modeling, name, counted)
+        for text in ("one", "two", "three"):
+            await alice.send(text)
+        source_ids = [message.message_id for message in private.messages]
+
+        await getattr(env.bot, method_name)(
+            chat_id=team.id,
+            from_chat_id=private.id,
+            message_ids=source_ids,
+        )
+
+        assert sorted(calls) == ["posting_topic", "require_standing"]
+
+    @pytest.mark.parametrize("method_name", ["forward_messages", "copy_messages"])
     async def test_an_unknown_source_chat_fails(self, env, team, method_name):
         with pytest.raises(WorldLookupError, match="not declared in the blueprint"):
             await getattr(env.bot, method_name)(
@@ -451,7 +477,7 @@ class TestUnpinningEverything:
     async def test_unpin_all_clears_the_pinned_list(self, env, private, alice):
         for text in ("one", "two"):
             await alice.send(text)
-        for message in private.messages:
+        for message in list(private.messages):
             await env.bot.pin_chat_message(chat_id=private.id, message_id=message.message_id)
         assert len(private.pinned_message_ids) == 2
 
@@ -513,14 +539,15 @@ class TestSeededAnswers:
         assert [message.text for message in result] == ["two", "three"]
 
     async def test_personal_chat_messages_for_an_unknown_user_fails(self, env):
-        with pytest.raises(TelegramBadRequest, match="user has no personal chat"):
+        with refused_with(TelegramBadRequest, rejections.NO_PERSONAL_CHAT):
             await env.bot.get_user_personal_chat_messages(user_id=424242, limit=5)
 
 
 class TestForwardingFromAChannel:
     async def test_a_channel_forward_carries_a_channel_origin(self, dp):
         blueprint = Blueprint()
-        channel = blueprint.add_channel("News")
+        # Posting into a channel takes an administrator.
+        channel = blueprint.add_channel("News", bot_status=ChatMemberStatus.ADMINISTRATOR)
         group = blueprint.add_supergroup("Team")
         env = BotTestEnvironment(blueprint=blueprint, dispatcher=dp)
         try:

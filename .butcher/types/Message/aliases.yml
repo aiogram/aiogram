@@ -14,9 +14,12 @@ reply:
     <<: *fill-answer
     reply_parameters: self.as_reply_parameters()
     # A reply to an ephemeral message must itself be an ephemeral message.
-    receiver_user_id: self.from_user.id if self.ephemeral_message_id and self.from_user else None
+    ephemeral_message_parameters: self.as_ephemeral_message_parameters()
   ignore: &ignore-reply
     - reply_to_message_id
+    # Superseded by the filled `ephemeral_message_parameters`. It was consumed by the
+    # fill before Bot API 10.3, so it was never part of the shortcut signature.
+    - receiver_user_id
 
 answer_rich:
   method: sendRichMessage
@@ -81,7 +84,11 @@ answer_game:
 reply_game:
   method: sendGame
   code: *assert-chat
-  fill: *fill-reply
+  # sendGame, sendInvoice, sendMediaGroup, sendPoll, sendDice and sendPaidMedia have
+  # no `ephemeral_message_parameters` parameter, so it must not be filled for them.
+  fill: &fill-reply-non-ephemeral
+    <<: *fill-answer
+    reply_parameters: self.as_reply_parameters()
   ignore: *ignore-reply
 
 answer_invoice:
@@ -92,7 +99,7 @@ answer_invoice:
 reply_invoice:
   method: sendInvoice
   code: *assert-chat
-  fill: *fill-reply
+  fill: *fill-reply-non-ephemeral
   ignore: *ignore-reply
 
 answer_location:
@@ -114,7 +121,7 @@ answer_media_group:
 reply_media_group:
   method: sendMediaGroup
   code: *assert-chat
-  fill: *fill-reply
+  fill: *fill-reply-non-ephemeral
   ignore: *ignore-reply
 
 answer_photo:
@@ -136,7 +143,7 @@ answer_poll:
 reply_poll:
   method: sendPoll
   code: *assert-chat
-  fill: *fill-reply
+  fill: *fill-reply-non-ephemeral
   ignore: *ignore-reply
 
 answer_dice:
@@ -147,7 +154,7 @@ answer_dice:
 reply_dice:
   method: sendDice
   code: *assert-chat
-  fill: *fill-reply
+  fill: *fill-reply-non-ephemeral
   ignore: *ignore-reply
 
 answer_sticker:
@@ -213,7 +220,7 @@ answer_paid_media:
 reply_paid_media:
   method: sendPaidMedia
   code: *assert-chat
-  fill: *fill-reply
+  fill: *fill-reply-non-ephemeral
   ignore: *ignore-reply
 
 copy_to:

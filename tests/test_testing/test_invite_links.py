@@ -3,9 +3,18 @@ import datetime
 import pytest
 
 from aiogram import Dispatcher
+from aiogram.enums import ChatMemberStatus
 from aiogram.exceptions import TelegramBadRequest
-from aiogram.test import Blueprint, BotTestEnvironment, WorldLookupError
+from aiogram.test import Blueprint, BotTestEnvironment, WorldLookupError, rejections
 from aiogram.test.modeling import SUBSCRIPTION_PERIOD
+
+from .conftest import refused_with
+
+
+@pytest.fixture
+def blueprint(blueprint, moderated):
+    """The bot manages the links of every chat here."""
+    return moderated(blueprint)
 
 
 def active_primaries(chat):
@@ -72,7 +81,9 @@ class TestSubscriptionLinks:
         assert link.subscription_period == SUBSCRIPTION_PERIOD
 
     async def test_an_unsupported_period_fails(self, env, team):
-        with pytest.raises(TelegramBadRequest, match="subscription period must be"):
+        with refused_with(
+            TelegramBadRequest, rejections.SUBSCRIPTION_PERIOD, period=SUBSCRIPTION_PERIOD
+        ):
             await env.bot.create_chat_subscription_invite_link(
                 chat_id=team.id,
                 subscription_period=60,
@@ -81,7 +92,9 @@ class TestSubscriptionLinks:
 
     async def test_a_datetime_is_not_a_period(self, env, team):
         """A period is a duration; passing an expiry date instead is a real mistake."""
-        with pytest.raises(TelegramBadRequest, match="subscription period must be"):
+        with refused_with(
+            TelegramBadRequest, rejections.SUBSCRIPTION_PERIOD, period=SUBSCRIPTION_PERIOD
+        ):
             await env.bot.create_chat_subscription_invite_link(
                 chat_id=team.id,
                 subscription_period=datetime.datetime(2026, 6, 1, tzinfo=datetime.timezone.utc),
@@ -109,7 +122,7 @@ class TestSubscriptionLinks:
     async def test_editing_an_ordinary_link_as_a_subscription_fails(self, env, team):
         link = await env.bot.create_chat_invite_link(chat_id=team.id)
 
-        with pytest.raises(TelegramBadRequest, match="not a subscription invite link"):
+        with refused_with(TelegramBadRequest, rejections.NOT_A_SUBSCRIPTION_LINK):
             await env.bot.edit_chat_subscription_invite_link(
                 chat_id=team.id,
                 invite_link=link.invite_link,
@@ -154,7 +167,7 @@ class TestEditingAndRevoking:
         ],
     )
     async def test_acting_on_an_unknown_link_fails(self, env, team, method_name, kwargs):
-        with pytest.raises(TelegramBadRequest, match="does not exist in chat"):
+        with refused_with(TelegramBadRequest, rejections.INVITE_LINK_NOT_FOUND):
             await getattr(env.bot, method_name)(
                 chat_id=team.id,
                 invite_link="https://t.me/+nope",
@@ -221,7 +234,7 @@ class TestDeclaredLinks:
     @pytest.fixture
     def declared(self, dp):
         blueprint = Blueprint()
-        chat = blueprint.add_supergroup("Team")
+        chat = blueprint.add_supergroup("Team", bot_status=ChatMemberStatus.ADMINISTRATOR)
         link = blueprint.add_invite_link(chat, name="Declared", member_limit=2)
         environment = BotTestEnvironment(blueprint=blueprint, dispatcher=dp)
         try:
@@ -252,7 +265,7 @@ class TestDeclaredLinks:
 
     async def test_links_are_isolated_between_environments(self, dp):
         blueprint = Blueprint()
-        chat = blueprint.add_supergroup("Team")
+        chat = blueprint.add_supergroup("Team", bot_status=ChatMemberStatus.ADMINISTRATOR)
         link = blueprint.add_invite_link(chat, name="Declared")
 
         first = BotTestEnvironment(blueprint=blueprint, dispatcher=dp)
