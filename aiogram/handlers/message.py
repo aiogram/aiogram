@@ -1,5 +1,5 @@
 from abc import ABC
-from typing import cast
+from typing import Any, cast
 
 from aiogram.filters import CommandObject
 from aiogram.handlers.base import BaseHandler, BaseHandlerMixin
@@ -22,7 +22,7 @@ class MessageHandler(BaseHandler[Message], ABC):
 
 class MessageHandlerCommandMixin(BaseHandlerMixin[Message]):
     @property
-    def command(self) -> CommandObject | None:
+    def command(self) -> CommandObject[Any] | None:
         if "command" in self.data:
-            return cast(CommandObject, self.data["command"])
+            return cast(CommandObject[Any], self.data["command"])
         return None

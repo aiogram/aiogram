@@ -4,9 +4,12 @@ import re
 from collections.abc import Iterable, Sequence
 from dataclasses import dataclass, field, replace
 from re import Match, Pattern
-from typing import TYPE_CHECKING, Any, cast
+from typing import TYPE_CHECKING, Any, Generic, TypeVar, cast
+
+from pydantic import BaseModel
 
 from aiogram.filters.base import Filter
+from aiogram.filters.command.data.codecs import PositionalCodec
 from aiogram.types import BotCommand, Message
 from aiogram.utils.deep_linking import decode_payload
 
@@ -14,15 +17,18 @@ if TYPE_CHECKING:
     from magic_filter import MagicFilter
 
     from aiogram import Bot
+    from aiogram.filters.command.data.codecs import ArgsCodec
 
 CommandPatternType = str | re.Pattern[str] | BotCommand
+
+T = TypeVar("T", bound=BaseModel)
 
 
 class CommandException(Exception):
     pass
 
 
-class Command(Filter):
+class Command(Filter, Generic[T]):
     """
     This filter can be helpful for handling commands from the text messages.
 
@@ -30,17 +36,25 @@ class Command(Filter):
     """
 
     __slots__ = (
+        "codec",
         "commands",
+        "data",
         "ignore_case",
         "ignore_mention",
         "magic",
         "prefix",
     )
 
+    if TYPE_CHECKING:
+        data: type[T] | None
+        codec: ArgsCodec | None
+
     def __init__(
         self,
         *values: CommandPatternType,
         commands: Sequence[CommandPatternType] | CommandPatternType | None = None,
+        data: type[T] | None = None,
+        codec: ArgsCodec | None = None,
         prefix: str = "/",
         ignore_case: bool = False,
         ignore_mention: bool = False,
@@ -58,36 +72,38 @@ class Command(Filter):
             bot can not handle commands intended for other bots
         :param magic: Validate command object via Magic filter after all checks done
         """
+        if codec is not None and data is None:
+            raise ValueError("codec= requires data= to be set")
+
         if commands is None:
             commands = []
         if isinstance(commands, (str, re.Pattern, BotCommand)):
             commands = [commands]
 
         if not isinstance(commands, Iterable):
-            msg = (
+            raise ValueError(
                 "Command filter only supports str, re.Pattern, BotCommand object or their Iterable"
             )
-            raise ValueError(msg)
 
         items = []
         for command in (*values, *commands):
             if isinstance(command, BotCommand):
                 command = command.command
             if not isinstance(command, (str, re.Pattern)):
-                msg = (
+                raise ValueError(
                     "Command filter only supports str, re.Pattern, BotCommand object"
                     " or their Iterable"
                 )
-                raise ValueError(msg)
             if ignore_case and isinstance(command, str):
                 command = command.casefold()
             items.append(command)
 
         if not items:
-            msg = "At least one command should be specified"
-            raise ValueError(msg)
+            raise ValueError("At least one command should be specified")
 
         self.commands = tuple(items)
+        self.data = data
+        self.codec = (codec or PositionalCodec(sep=" ")) if data else None
         self.prefix = prefix
         self.ignore_case = ignore_case
         self.ignore_mention = ignore_mention
@@ -96,6 +112,7 @@ class Command(Filter):
     def __str__(self) -> str:
         return self._signature_to_string(
             *self.commands,
+            data=self.data,
             prefix=self.prefix,
             ignore_case=self.ignore_case,
             ignore_mention=self.ignore_mention,
@@ -124,14 +141,13 @@ class Command(Filter):
         return result
 
     @classmethod
-    def extract_command(cls, text: str) -> CommandObject:
+    def extract_command(cls, text: str) -> CommandObject[T]:
         # First step: separate command with arguments
         # "/command@mention arg1 arg2" -> "/command@mention", ["arg1 arg2"]
         try:
             full_command, *args = text.split(maxsplit=1)
         except ValueError as e:
-            msg = "not enough values to unpack"
-            raise CommandException(msg) from e
+            raise CommandException("not enough values to unpack") from e
 
         # Separate command into valuable parts
         # "/command@mention" -> "/", ("command", "@", "mention")
@@ -143,19 +159,17 @@ class Command(Filter):
             args=args[0] if args else None,
         )
 
-    def validate_prefix(self, command: CommandObject) -> None:
+    def validate_prefix(self, command: CommandObject[T]) -> None:
         if command.prefix not in self.prefix:
-            msg = "Invalid command prefix"
-            raise CommandException(msg)
+            raise CommandException("Invalid command prefix")
 
-    async def validate_mention(self, bot: Bot, command: CommandObject) -> None:
+    async def validate_mention(self, bot: Bot, command: CommandObject[T]) -> None:
         if command.mention and not self.ignore_mention:
             me = await bot.me()
             if me.username and command.mention.lower() != me.username.lower():
-                msg = "Mention did not match"
-                raise CommandException(msg)
+                raise CommandException("Mention did not match")
 
-    def validate_command(self, command: CommandObject) -> CommandObject:
+    def validate_command(self, command: CommandObject[T]) -> CommandObject[T]:
         for allowed_command in cast(Sequence[CommandPatternType], self.commands):
             # Command can be presented as regexp pattern or raw string
             # then need to validate that in different ways
@@ -170,10 +184,30 @@ class Command(Filter):
 
             if command_name == allowed_command:  # String
                 return command
-        msg = "Command did not match pattern"
-        raise CommandException(msg)
+        raise CommandException("Command did not match pattern")
 
-    async def parse_command(self, text: str, bot: Bot) -> CommandObject:
+    def _has_data(self) -> bool:
+        return self.data is not None and self.codec is not None
+
+    def _parse_args(self, args: str) -> Any:
+        return self.codec.decode(args, self.data)  # type: ignore[union-attr, arg-type]
+
+    def do_magic(self, command: CommandObject[T]) -> CommandObject[T]:
+        if self._has_data():
+            try:
+                parsed = self._parse_args(command.args or "")
+            except Exception as e:
+                raise CommandException(f"Failed to parse command args: {e}") from e
+            command = replace(command, parsed=parsed)
+
+        if self.magic is None:
+            return command
+        result = self.magic.resolve(command)
+        if not result:
+            raise CommandException("Rejected via magic filter")
+        return replace(command, magic_result=result)
+
+    async def parse_command(self, text: str, bot: Bot) -> CommandObject[T]:
         """
         Extract command from the text and validate
 
@@ -184,25 +218,18 @@ class Command(Filter):
         command = self.extract_command(text)
         self.validate_prefix(command=command)
         await self.validate_mention(bot=bot, command=command)
-        command = self.validate_command(command)
-        command = self.do_magic(command=command)
-        return cast(CommandObject, command)
-
-    def do_magic(self, command: CommandObject) -> Any:
-        if self.magic is None:
-            return command
-        result = self.magic.resolve(command)
-        if not result:
-            msg = "Rejected via magic filter"
-            raise CommandException(msg)
-        return replace(command, magic_result=result)
+        command = self.validate_command(command=command)
+        return self.do_magic(command=command)
 
 
 @dataclass(frozen=True)
-class CommandObject:
+class CommandObject(Generic[T]):
     """
-    Instance of this object is always has command and it prefix.
-    Can be passed as keyword argument **command** to the handler
+    Instance of this object is always has command and its prefix.
+    Can be passed as keyword argument **command** to the handler.
+
+    When used with :class:`Command` and a typed ``data=`` model,
+    the :attr:`parsed` field will contain the deserialized typed arguments.
     """
 
     prefix: str = "/"
@@ -211,11 +238,14 @@ class CommandObject:
     """Command without prefix and mention"""
     mention: str | None = None
     """Mention (if available)"""
-    args: str | None = field(repr=False, default=None)
+    args: str | None = None
     """Command argument"""
     regexp_match: Match[str] | None = field(repr=False, default=None)
     """Will be presented match result if the command is presented as regexp in filter"""
     magic_result: Any | None = field(repr=False, default=None)
+    """Result returned by the magic filter"""
+    parsed: T | None = None
+    """Typed parsed arguments when :class:`~aiogram.filters.DeeplinkData` is used"""
 
     @property
     def mentioned(self) -> bool:
@@ -237,7 +267,12 @@ class CommandObject:
         return line
 
 
-class CommandStart(Command):
+class CommandStart(Command[Any]):
+    __slots__ = (
+        "deep_link",
+        "deep_link_encoded",
+    )
+
     def __init__(
         self,
         deep_link: bool | None = None,
@@ -265,7 +300,24 @@ class CommandStart(Command):
             deep_link_encoded=self.deep_link_encoded,
         )
 
-    async def parse_command(self, text: str, bot: Bot) -> CommandObject:
+    def validate_deeplink(self, command: CommandObject[Any]) -> CommandObject[Any]:
+        if self.deep_link is None:
+            return command
+        if self.deep_link is False:
+            if command.args:
+                raise CommandException("Deep-link was not expected")
+            return command
+        if not command.args:
+            raise CommandException("Deep-link was missing")
+        if self.deep_link_encoded:
+            try:
+                args = decode_payload(command.args)
+            except UnicodeDecodeError as e:
+                raise CommandException(f"Failed to decode Base64: {e}") from e
+            return replace(command, args=args)
+        return command
+
+    async def parse_command(self, text: str, bot: Bot) -> CommandObject[Any]:
         """
         Extract command from the text and validate
 
@@ -278,26 +330,4 @@ class CommandStart(Command):
         await self.validate_mention(bot=bot, command=command)
         command = self.validate_command(command)
         command = self.validate_deeplink(command=command)
-        command = self.do_magic(command=command)
-        return cast(CommandObject, command)
-
-    def validate_deeplink(self, command: CommandObject) -> CommandObject:
-        if self.deep_link is None:
-            return command
-        if self.deep_link is False:
-            if command.args:
-                msg = "Deep-link was not expected"
-                raise CommandException(msg)
-            return command
-        if not command.args:
-            msg = "Deep-link was missing"
-            raise CommandException(msg)
-        args = command.args
-        if self.deep_link_encoded:
-            try:
-                args = decode_payload(args)
-            except UnicodeDecodeError as e:
-                msg = f"Failed to decode Base64: {e}"
-                raise CommandException(msg) from e
-            return replace(command, args=args)
-        return command
+        return self.do_magic(command=command)
