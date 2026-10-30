@@ -1,7 +1,7 @@
-from enum import Enum
+from enum import StrEnum
 
 
-class ParseMode(str, Enum):
+class ParseMode(StrEnum):
     """
     Formatting options
 

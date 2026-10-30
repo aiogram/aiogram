@@ -149,8 +149,11 @@ class TestDefaultBotProperties:
         assert default_bot_properties["link_preview_prefer_large_media"] is True
         assert default_bot_properties["link_preview_show_above_text"] is True
 
-    @pytest.mark.skipif(sys.version_info < (3, 12), reason="requires python3.11 or higher")
-    def test_dataclass_creation_3_10_plus(self):
+    @pytest.mark.skipif(
+        sys.version_info < (3, 12),
+        reason="__dataclass_params__.slots/kw_only exist since Python 3.12",
+    )
+    def test_dataclass_params(self):
         params = DefaultBotProperties.__dataclass_params__
         assert params.slots is True
         assert params.kw_only is True

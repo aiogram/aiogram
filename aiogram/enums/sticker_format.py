@@ -1,7 +1,7 @@
-from enum import Enum
+from enum import StrEnum
 
 
-class StickerFormat(str, Enum):
+class StickerFormat(StrEnum):
     """
     Format of the sticker
 

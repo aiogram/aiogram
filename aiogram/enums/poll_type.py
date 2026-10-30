@@ -1,7 +1,7 @@
-from enum import Enum
+from enum import StrEnum
 
 
-class PollType(str, Enum):
+class PollType(StrEnum):
     """
     This object represents poll type
 
