@@ -1,0 +1,2 @@
+Avoid an unawaited update coroutine when polling is cancelled while waiting for
+capacity under ``tasks_concurrency_limit``.
