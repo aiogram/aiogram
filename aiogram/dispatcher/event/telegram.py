@@ -1,11 +1,13 @@
 from __future__ import annotations
 
+import functools
 from collections.abc import Callable
 from typing import TYPE_CHECKING, Any
 
 from aiogram.dispatcher.middlewares.manager import MiddlewareManager
 from aiogram.exceptions import UnsupportedKeywordArgument
 from aiogram.filters.base import Filter
+from aiogram.tracer import AbstractTracer, execute_with_tracing, tracer
 
 from .bases import UNHANDLED, MiddlewareType, SkipHandler
 from .handler import CallbackType, FilterObject, HandlerObject
@@ -108,20 +110,39 @@ class TelegramEventObserver:
     def check_root_filters(self, event: TelegramObject, **kwargs: Any) -> Any:
         return self._handler.check(event, **kwargs)
 
+    @staticmethod
+    async def call_handler_with_tracing(
+        tracer_instance: AbstractTracer,
+        handler: HandlerObject,
+        event: TelegramObject,
+        /,  # preventing shadowing from kwargs
+        **kwargs: Any,
+    ) -> Any:
+        return await execute_with_tracing(
+            tracer_instance.get_handler_span_manager(handler),
+            handler.call(event, **kwargs),
+        )
+
     async def trigger(self, event: TelegramObject, **kwargs: Any) -> Any:
         """
         Propagate event to handlers and stops propagation on first match.
         Handler will be called when all its filters are pass.
         """
+        tracer_instance = tracer.get()
         for handler in self.handlers:
             kwargs["handler"] = handler
             result, data = await handler.check(event, **kwargs)
             if result:
                 kwargs.update(data)
                 try:
+                    handler_call = handler.call
+                    if tracer_instance is not None:
+                        handler_call = functools.partial(
+                            self.call_handler_with_tracing, tracer_instance, handler
+                        )
                     wrapped_inner = self.outer_middleware.wrap_middlewares(
                         self._resolve_middlewares(),
-                        handler.call,
+                        handler_call,
                     )
                     return await wrapped_inner(event, kwargs)
                 except SkipHandler:
