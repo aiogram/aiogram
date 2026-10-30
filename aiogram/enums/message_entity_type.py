@@ -1,7 +1,7 @@
-from enum import Enum
+from enum import StrEnum
 
 
-class MessageEntityType(str, Enum):
+class MessageEntityType(StrEnum):
     """
     This object represents type of message entity
 

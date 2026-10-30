@@ -1,7 +1,7 @@
-from enum import Enum
+from enum import StrEnum
 
 
-class StickerType(str, Enum):
+class StickerType(StrEnum):
     """
     The part of the face relative to which the mask should be placed.
 

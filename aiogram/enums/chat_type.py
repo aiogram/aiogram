@@ -1,7 +1,7 @@
-from enum import Enum
+from enum import StrEnum
 
 
-class ChatType(str, Enum):
+class ChatType(StrEnum):
     """
     This object represents a chat type
 

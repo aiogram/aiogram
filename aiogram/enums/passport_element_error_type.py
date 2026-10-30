@@ -1,7 +1,7 @@
-from enum import Enum
+from enum import StrEnum
 
 
-class PassportElementErrorType(str, Enum):
+class PassportElementErrorType(StrEnum):
     """
     This object represents a passport element error type.
 
