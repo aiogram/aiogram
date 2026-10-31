@@ -1,7 +1,7 @@
-from enum import Enum
+from enum import StrEnum
 
 
-class ChatAction(str, Enum):
+class ChatAction(StrEnum):
     """
     This object represents bot actions.
 

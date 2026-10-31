@@ -1,7 +1,7 @@
-from enum import Enum
+from enum import StrEnum
 
 
-class BotSubscriptionUpdatedState(str, Enum):
+class BotSubscriptionUpdatedState(StrEnum):
     """
     This object contains information about changes to a user payment subscription toward the current bot.
 

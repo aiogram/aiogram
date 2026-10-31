@@ -3,8 +3,6 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Any
 
-from aiogram.utils.dataclass import dataclass_kwargs
-
 if TYPE_CHECKING:
     from aiogram.types import LinkPreviewOptions
 
@@ -37,7 +35,7 @@ class Default:
         return hash(self._name)
 
 
-@dataclass(**dataclass_kwargs(slots=True, kw_only=True))
+@dataclass(slots=True, kw_only=True)
 class DefaultBotProperties:
     """
     Default bot properties.

@@ -1,7 +1,7 @@
-from enum import Enum
+from enum import StrEnum
 
 
-class ChatMemberStatus(str, Enum):
+class ChatMemberStatus(StrEnum):
     """
     This object represents chat member status.
 

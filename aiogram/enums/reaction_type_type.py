@@ -1,7 +1,7 @@
-from enum import Enum
+from enum import StrEnum
 
 
-class ReactionTypeType(str, Enum):
+class ReactionTypeType(StrEnum):
     """
     This object represents reaction type.
 

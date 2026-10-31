@@ -1,7 +1,7 @@
-from enum import Enum
+from enum import StrEnum
 
 
-class RevenueWithdrawalStateType(str, Enum):
+class RevenueWithdrawalStateType(StrEnum):
     """
     This object represents a revenue withdrawal state type
 

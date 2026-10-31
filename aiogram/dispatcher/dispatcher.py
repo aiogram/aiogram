@@ -3,7 +3,6 @@ from __future__ import annotations
 import asyncio
 import contextvars
 import signal
-import sys
 import warnings
 from asyncio import CancelledError, Event, Future, Lock
 from collections.abc import AsyncGenerator, Awaitable
@@ -423,11 +422,12 @@ class Dispatcher(Router):
                 backoff_config=backoff_config,
                 allowed_updates=allowed_updates,
             ):
+                if handle_as_tasks and semaphore:
+                    # Wait for capacity before creating the update coroutine.
+                    await semaphore.acquire()
                 handle_update = self._process_update(bot=bot, update=update, **kwargs)
                 if handle_as_tasks:
                     if semaphore:
-                        # Use semaphore to limit concurrent tasks
-                        await semaphore.acquire()
                         handle_update_task = asyncio.create_task(
                             self._process_with_semaphore(handle_update, semaphore),
                         )
@@ -732,9 +732,5 @@ class Dispatcher(Router):
                 return asyncio.run(coro)
 
             else:
-                if sys.version_info >= (3, 11):
-                    with asyncio.Runner(loop_factory=uvloop.new_event_loop) as runner:
-                        return runner.run(coro)
-                else:  # pragma: no cover
-                    uvloop.install()
-                    return asyncio.run(coro)
+                with asyncio.Runner(loop_factory=uvloop.new_event_loop) as runner:
+                    return runner.run(coro)
