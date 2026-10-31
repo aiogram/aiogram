@@ -1,7 +1,7 @@
 from typing import Any
 from unittest.mock import sentinel
 
-from pydantic import BaseModel, ConfigDict, model_validator
+from pydantic import BaseModel, ConfigDict
 
 from aiogram.client.context_controller import BotContextController
 from aiogram.client.default import Default
@@ -19,16 +19,18 @@ class TelegramObject(BotContextController, BaseModel):
         protected_namespaces=(),
     )
 
-    @model_validator(mode="before")
     @classmethod
     def remove_unset(cls, values: dict[str, Any]) -> dict[str, Any]:
         """
-        Remove UNSET before fields validation.
+        Remove UNSET from a mapping before it is passed to field validation.
 
-        We use UNSET as a sentinel value for `parse_mode` and replace it to real value later.
-        It isn't a problem when it's just default value for a model field,
-        but UNSET might be passed to a model initialization from `Bot.method_name`,
-        so we must take care of it and remove it before fields validation.
+        Kept as a helper for external code, but no longer registered as a
+        ``model_validator(mode="before")``: Telegram never sends UNSET, and a
+        before-validator makes pydantic build an intermediate dict and call back
+        into Python for every model of a nested update, which also defeats
+        :meth:`pydantic.BaseModel.model_validate_json`. UNSET only reaches
+        outbound models, where :class:`aiogram.methods.base.TelegramMethod`
+        still strips it.
         """
         if not isinstance(values, dict):
             return values

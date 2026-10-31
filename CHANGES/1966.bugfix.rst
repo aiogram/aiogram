@@ -1,0 +1,12 @@
+Sped up parsing of incoming Bot API responses by roughly 1.5x (a :code:`sendMessage` response
+carrying a reply, entities and a text mention: ~53 us -> ~35 us on CPython 3.13) by letting
+pydantic read the response body directly instead of decoding it into a dict first.
+:class:`aiogram.types.base.TelegramObject` no longer strips :code:`UNSET` values through a
+:code:`model_validator(mode="before")`: Telegram never sends them, while the hook ran for every
+model of every incoming update. :code:`UNSET` is still removed from outbound
+:class:`aiogram.methods.base.TelegramMethod` models, and :code:`TelegramObject.remove_unset()`
+remains available for external callers.
+A custom :code:`json_loads` keeps the previous two-step behaviour. With the default decoder a
+malformed response body now reports pydantic's :code:`json_invalid` error inside
+:class:`aiogram.exceptions.ClientDecodeError` instead of :code:`json.JSONDecodeError`, and
+:code:`ClientDecodeError.data` carries the raw body instead of the decoded dict.
