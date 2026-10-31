@@ -208,13 +208,56 @@ class TestBaseSession:
         bot = MockedBot()
         method = DeleteMessage(chat_id=42, message_id=42)
 
-        with pytest.raises(ClientDecodeError, match="JSONDecodeError"):
+        # The default decoder lets pydantic parse the payload, so a malformed
+        # body surfaces as pydantic's json_invalid rather than JSONDecodeError.
+        with pytest.raises(ClientDecodeError, match="Failed to decode object") as exc_info:
             session.check_response(
                 bot=bot,
                 method=method,
                 status_code=200,
                 content="is not a JSON object",
             )
+        assert "json_invalid" in str(exc_info.value)
+
+    def test_check_response_json_decode_error_custom_loads(self):
+        session = CustomSession()
+        bot = MockedBot()
+        method = DeleteMessage(chat_id=42, message_id=42)
+
+        def failing_loads(value):
+            raise ValueError("nope")
+
+        session.json_loads = failing_loads
+
+        with pytest.raises(ClientDecodeError, match="ValueError") as exc_info:
+            session.check_response(
+                bot=bot,
+                method=method,
+                status_code=200,
+                content="is not a JSON object",
+            )
+        assert "Failed to decode object" in str(exc_info.value)
+
+    def test_check_response_custom_loads_is_honoured(self):
+        session = CustomSession()
+        bot = MockedBot()
+        method = DeleteMessage(chat_id=42, message_id=42)
+        calls = []
+
+        def counting_loads(value):
+            calls.append(value)
+            return json.loads(value)
+
+        session.json_loads = counting_loads
+        response = session.check_response(
+            bot=bot,
+            method=method,
+            status_code=200,
+            content='{"ok": true, "result": true}',
+        )
+
+        assert response.result is True
+        assert calls == ['{"ok": true, "result": true}']
 
     def test_check_response_validation_error(self):
         session = CustomSession()
