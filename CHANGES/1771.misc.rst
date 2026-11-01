@@ -1,0 +1,1 @@
+Removed the duplicated ``html_decoration`` test cases for ``url`` and ``text_link`` entities and added the missing ``markdown_decoration`` cases for them.

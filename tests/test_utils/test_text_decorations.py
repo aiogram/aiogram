@@ -50,7 +50,6 @@ class TestTextDecoration:
                 ),
                 '<a href="tg://user?id=42">test</a>',
             ],
-            [html_decoration, MessageEntity(type="url", offset=0, length=5), "test"],
             [
                 html_decoration,
                 MessageEntity(type="spoiler", offset=0, length=5),
@@ -60,11 +59,6 @@ class TestTextDecoration:
                 html_decoration,
                 MessageEntity(type="custom_emoji", offset=0, length=5, custom_emoji_id="42"),
                 '<tg-emoji emoji-id="42">test</tg-emoji>',
-            ],
-            [
-                html_decoration,
-                MessageEntity(type="text_link", offset=0, length=5, url="https://aiogram.dev"),
-                '<a href="https://aiogram.dev">test</a>',
             ],
             [
                 html_decoration,
@@ -86,6 +80,12 @@ class TestTextDecoration:
                     date_time_format="yMd",
                 ),
                 '<tg-time unix="42" format="yMd">test</tg-time>',
+            ],
+            [markdown_decoration, MessageEntity(type="url", offset=0, length=5), "test"],
+            [
+                markdown_decoration,
+                MessageEntity(type="text_link", offset=0, length=5, url="https://aiogram.dev"),
+                "[test](https://aiogram.dev)",
             ],
             [markdown_decoration, MessageEntity(type="bold", offset=0, length=5), "*test*"],
             [markdown_decoration, MessageEntity(type="italic", offset=0, length=5), "_\rtest_\r"],
