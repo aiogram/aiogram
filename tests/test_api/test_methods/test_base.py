@@ -1,52 +1,33 @@
-from unittest.mock import sentinel
-
 import pytest
 
 from aiogram.client.default import Default
 from aiogram.methods import GetMe, SendMessage, TelegramMethod
 from aiogram.types import Chat, TelegramObject, User
-from aiogram.types.base import UNSET
 from tests.mocked_bot import MockedBot
 
 
-class TestTelegramMethodRemoveUnset:
-    @pytest.mark.parametrize(
-        "values,names",
-        [
-            [{}, set()],
-            [{"foo": "bar"}, {"foo"}],
-            [{"foo": "bar", "baz": sentinel.DEFAULT}, {"foo"}],
-        ],
-    )
+class TestNoBeforeValidator:
+    # UNSET stopped reaching model initialization in #1392, when bot-wide defaults
+    # were reworked onto Default(...) sentinels. The before-validator that stripped
+    # it is gone, so pydantic can read a payload straight into the model.
     @pytest.mark.parametrize("obj", [TelegramMethod, TelegramObject])
-    def test_remove_unset(self, values, names, obj):
-        validated = obj.remove_unset(values)
-        assert set(validated.keys()) == names
+    def test_no_before_validator_is_registered(self, obj):
+        assert obj.__pydantic_decorators__.model_validators == {}
 
-    @pytest.mark.parametrize("obj", [TelegramMethod, TelegramObject])
-    def test_remove_unset_non_dict(self, obj):
-        assert obj.remove_unset("") == ""
-
-    def test_method_strips_unset_on_validation(self):
-        # UNSET can reach an outbound model through Bot.method_name, so
-        # TelegramMethod must keep stripping it before field validation.
-        method = SendMessage.model_validate({"chat_id": 42, "text": "test", "parse_mode": UNSET})
-
-        # UNSET is dropped, so the field falls back to its declared default
-        assert method.parse_mode == Default("parse_mode")
-
-    def test_object_keeps_unset_out_of_the_validation_path(self):
-        # Telegram never sends UNSET, so TelegramObject does not pay for a
-        # before-validator on every inbound model. The helper still exists for
-        # external callers, but it is not registered as a model validator.
-        assert "remove_unset" not in TelegramObject.__pydantic_decorators__.model_validators
-
-    def test_object_validates_from_json_without_intermediate_dict(self):
-        # Without a before-validator pydantic can read the payload itself,
-        # which is what aiogram's session relies on.
+    def test_type_validates_from_json(self):
         chat = Chat.model_validate_json('{"id": -42, "type": "supergroup"}')
 
         assert (chat.id, chat.type) == (-42, "supergroup")
+
+    def test_method_validates_from_json(self):
+        method = SendMessage.model_validate_json('{"chat_id": -42, "text": "test"}')
+
+        assert (method.chat_id, method.text) == (-42, "test")
+
+    def test_declared_defaults_still_apply(self):
+        method = SendMessage.model_validate({"chat_id": 42, "text": "test"})
+
+        assert method.parse_mode == Default("parse_mode")
 
 
 class TestTelegramMethodCall:

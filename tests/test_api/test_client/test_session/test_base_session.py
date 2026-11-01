@@ -69,7 +69,8 @@ class TestBaseSession:
     def test_default_props(self):
         session = CustomSession()
         assert session.api == PRODUCTION
-        assert session.json_loads == json.loads
+        # No decoder by default: pydantic reads the response body itself
+        assert session.json_loads is None
         assert session.json_dumps == json.dumps
 
         def custom_loads(*_):

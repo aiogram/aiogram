@@ -1,0 +1,5 @@
+Removed :code:`TelegramObject.remove_unset` and :code:`TelegramMethod.remove_unset`.
+They stripped the :code:`UNSET` sentinel before field validation, which stopped reaching model
+initialization in #1392 when bot-wide defaults moved to :code:`Default(...)`. Running as a
+:code:`model_validator(mode="before")` on every model also stopped pydantic from reading a
+payload without an intermediate dict.

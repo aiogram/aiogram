@@ -19,23 +19,6 @@ class TelegramObject(BotContextController, BaseModel):
         protected_namespaces=(),
     )
 
-    @classmethod
-    def remove_unset(cls, values: dict[str, Any]) -> dict[str, Any]:
-        """
-        Remove UNSET from a mapping before it is passed to field validation.
-
-        Kept as a helper for external code, but no longer registered as a
-        ``model_validator(mode="before")``: Telegram never sends UNSET, and a
-        before-validator makes pydantic build an intermediate dict and call back
-        into Python for every model of a nested update, which also defeats
-        :meth:`pydantic.BaseModel.model_validate_json`. UNSET only reaches
-        outbound models, where :class:`aiogram.methods.base.TelegramMethod`
-        still strips it.
-        """
-        if not isinstance(values, dict):
-            return values
-        return {k: v for k, v in values.items() if not isinstance(v, UNSET_TYPE)}
-
 
 class MutableTelegramObject(TelegramObject):
     model_config = ConfigDict(

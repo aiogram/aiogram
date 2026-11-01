@@ -54,14 +54,15 @@ class BaseSession(abc.ABC):
     def __init__(
         self,
         api: TelegramAPIServer = PRODUCTION,
-        json_loads: _JsonLoads = json.loads,
+        json_loads: _JsonLoads | None = None,
         json_dumps: _JsonDumps = json.dumps,
         timeout: float = DEFAULT_TIMEOUT,
     ) -> None:
         """
 
         :param api: Telegram Bot API URL patterns
-        :param json_loads: JSON loader
+        :param json_loads: JSON loader; when omitted, pydantic reads the response body
+            itself instead of decoding it into a dict first
         :param json_dumps: JSON dumper
         :param timeout: Session scope request timeout
         """
@@ -83,33 +84,29 @@ class BaseSession(abc.ABC):
         Check response status
         """
         response_type = Response[method.__returning__]  # type: ignore
-        if self.json_loads is json.loads:
-            # Let pydantic parse the JSON itself: it reads the payload straight
-            # into the model instead of building an intermediate dict first.
-            try:
-                response = response_type.model_validate_json(content, context={"bot": bot})
-            except ValidationError as e:
-                msg = (
-                    "Failed to decode object"
-                    if any(error["type"].startswith("json_") for error in e.errors())
-                    else "Failed to deserialize object"
-                )
-                raise ClientDecodeError(msg, e, content) from e
-        else:
-            try:
-                json_data = self.json_loads(content)
-            except Exception as e:  # noqa: BLE001
-                # Handled error type can't be classified as specific error
-                # in due to decoder can be customized and raise any exception
+        try:
+            if self.json_loads:
+                try:
+                    json_data = self.json_loads(content)
+                except Exception as e:  # noqa: BLE001
+                    # Handled error type can't be classified as specific error
+                    # in due to decoder can be customized and raise any exception
 
-                msg = "Failed to decode object"
-                raise ClientDecodeError(msg, e, content) from e
+                    msg = "Failed to decode object"
+                    raise ClientDecodeError(msg, e, content) from e
 
-            try:
                 response = response_type.model_validate(json_data, context={"bot": bot})
-            except ValidationError as e:
-                msg = "Failed to deserialize object"
-                raise ClientDecodeError(msg, e, json_data) from e
+            else:
+                # Let pydantic read the payload straight into the model instead of
+                # building an intermediate dict first.
+                response = response_type.model_validate_json(content, context={"bot": bot})
+        except ValidationError as e:
+            msg = (
+                "Failed to decode object"
+                if any(error["type"].startswith("json_") for error in e.errors())
+                else "Failed to deserialize object"
+            )
+            raise ClientDecodeError(msg, e, content) from e
 
         if HTTPStatus.OK <= status_code <= HTTPStatus.IM_USED and response.ok:
             return response
