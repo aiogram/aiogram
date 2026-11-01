@@ -1,7 +1,10 @@
 from __future__ import annotations
 
-from collections.abc import Generator
+from collections.abc import Generator, Iterator
 from typing import TYPE_CHECKING, Any, Final
+
+from aiogram.filters.command import Command
+from aiogram.types.bot_command import BotCommand
 
 from .event.bases import REJECTED, UNHANDLED
 from .event.event import EventObserver
@@ -155,6 +158,34 @@ class Router:
                     handlers_in_use.add(update_name)
 
         return sorted(handlers_in_use)
+
+    def _iter_command_filters(self, observer: TelegramEventObserver) -> Iterator[Command]:
+        """Yield :class:`Command` filter instances attached to the observer's handlers."""
+        for handler in observer.handlers:
+            for filt in handler.filters or ():
+                if isinstance(filt.callback, Command):
+                    yield filt.callback
+
+    def resolve_bot_commands(self, skip_events: set[str] | None = None) -> tuple[BotCommand, ...]:
+        """
+        Resolve :class:`BotCommand` objects passed to :class:`Command` filters
+        across this router and all of its sub-routers.
+
+        Is useful for bootstrapping :code:`bot.set_my_commands()` without keeping
+        a manually maintained list of commands in sync with the registered handlers.
+
+        :param skip_events: skip handlers registered on the specified event names
+        :return: flat tuple of collected bot commands, in registration order
+        """
+        skip_events = {*(skip_events or ()), *INTERNAL_UPDATE_TYPES}
+        bot_commands: list[BotCommand] = []
+        for router in self.chain_tail:
+            for update_name, observer in router.observers.items():
+                if update_name in skip_events:
+                    continue
+                for command_filter in self._iter_command_filters(observer):
+                    bot_commands.extend(command_filter.bot_commands)
+        return tuple(bot_commands)
 
     async def propagate_event(self, update_type: str, event: TelegramObject, **kwargs: Any) -> Any:
         kwargs.update(event_router=self)
