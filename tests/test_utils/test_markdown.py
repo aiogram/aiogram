@@ -57,6 +57,19 @@ class TestMarkdown:
                 None,
                 '<a href="https://aiogram.dev">&#8203;</a>',
             ],
+            [link, ("test", "https://a.b/x_(y)\\"), None, "[test](https://a.b/x_(y\\)\\\\)"],
+            [
+                hlink,
+                ("test", 'https://a.b/?q="><b>x</b>&c=1'),
+                None,
+                '<a href="https://a.b/?q=&quot;&gt;&lt;b&gt;x&lt;/b&gt;&amp;c=1">test</a>',
+            ],
+            [
+                hide_link,
+                ('https://a.b/"><b>x</b>',),
+                None,
+                '<a href="https://a.b/&quot;&gt;&lt;b&gt;x&lt;/b&gt;">&#8203;</a>',
+            ],
             [blockquote, ("spam", "eggs"), " ", ">spam eggs"],
             pytest.param(
                 blockquote,

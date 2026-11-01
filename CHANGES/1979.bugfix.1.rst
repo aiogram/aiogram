@@ -1,0 +1,4 @@
+Fixed HTML code blocks with a language (:code:`html_decoration.pre_language`,
+:class:`aiogram.utils.formatting.Pre`, :attr:`aiogram.types.message.Message.html_text`)
+being rendered as :code:`<code language="language-...">`, which Telegram ignores, so the
+language was dropped. They are rendered as :code:`<code class="language-...">` again.
