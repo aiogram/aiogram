@@ -250,7 +250,7 @@ class HtmlDecoration(TextDecoration):
     def pre_language(self, value: str, language: str) -> str:
         return self._tag(
             self.PRE_TAG,
-            self._tag(self.CODE_TAG, value, attrs={"language": f"language-{language}"}),
+            self._tag(self.CODE_TAG, value, attrs={"class": f"language-{language}"}),
         )
 
     def underline(self, value: str) -> str:

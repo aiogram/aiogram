@@ -30,7 +30,7 @@ class TestTextDecoration:
             [
                 html_decoration,
                 MessageEntity(type="pre", offset=0, length=5, language='py"><b>x</b>'),
-                '<pre><code language="language-py&quot;&gt;&lt;b&gt;x&lt;/b&gt;">test</code></pre>',
+                '<pre><code class="language-py&quot;&gt;&lt;b&gt;x&lt;/b&gt;">test</code></pre>',
             ],
             [
                 html_decoration,
@@ -44,7 +44,7 @@ class TestTextDecoration:
             [
                 html_decoration,
                 MessageEntity(type="pre", offset=0, length=5, language="python"),
-                '<pre><code language="language-python">test</code></pre>',
+                '<pre><code class="language-python">test</code></pre>',
             ],
             [html_decoration, MessageEntity(type="underline", offset=0, length=5), "<u>test</u>"],
             [
