@@ -1,0 +1,17 @@
+Fixed text decorations writing link URLs and other entity attributes into the markup
+unescaped. A URL passed to :func:`aiogram.utils.markdown.link`, :func:`aiogram.utils.markdown.hlink`,
+:func:`aiogram.utils.markdown.hide_link` or :class:`aiogram.utils.formatting.TextLink`, or received
+in a message entity and rendered by :attr:`aiogram.types.message.Message.md_text` /
+:attr:`aiogram.types.message.Message.html_text`, could close the link early and add its own
+formatting and links to the bot's message. URLs with ``)`` (e.g. Wikipedia ``..._(disambiguation)``
+pages) also produced invalid MarkdownV2.
+
+- MarkdownV2: ``)`` and ``\`` in link URLs are now escaped.
+- MarkdownV2: a code block language containing whitespace or a backtick is dropped
+  (rendered as a plain code block), because it cannot be escaped there.
+- HTML: all attribute values (``href``, code block language, ``emoji-id``, ``format``) are now
+  HTML-escaped, so ``&`` in a URL is sent as ``&amp;``.
+
+Pass raw URLs to these helpers; a URL that was escaped by hand before is now escaped twice.
+
+Reported by the Anthropic OSS Scanner (ANT-2026-OGEWIQ9J).
