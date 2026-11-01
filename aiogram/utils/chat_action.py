@@ -64,7 +64,7 @@ class ChatActionSender:
         return bool(self._task)
 
     async def _wait(self, interval: float) -> None:
-        with suppress(asyncio.TimeoutError):
+        with suppress(TimeoutError):
             await asyncio.wait_for(self._close_event.wait(), interval)
 
     async def _worker(self) -> None:

@@ -111,11 +111,7 @@ class TestCheckWebappSignatureInvalidHash:
 
     def test_percent_encoded_non_ascii_hash_returns_false(self):
         # %C3%A9 decodes to "é" - the attacker does not need to send raw bytes
-        assert (
-            check_webapp_signature("42:TEST", "id=1&hash=%C3%A9%C3%A9")
-            is False
-        )
+        assert check_webapp_signature("42:TEST", "id=1&hash=%C3%A9%C3%A9") is False
 
     def test_empty_hash_returns_false(self):
         assert check_webapp_signature("42:TEST", "id=1&hash=") is False
-

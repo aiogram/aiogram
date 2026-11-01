@@ -1,7 +1,7 @@
-from enum import Enum
+from enum import StrEnum
 
 
-class MaskPositionPoint(str, Enum):
+class MaskPositionPoint(StrEnum):
     """
     The part of the face relative to which the mask should be placed.
 

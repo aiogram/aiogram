@@ -1,7 +1,7 @@
-from enum import Enum
+from enum import StrEnum
 
 
-class StoryAreaTypeType(str, Enum):
+class StoryAreaTypeType(StrEnum):
     """
     This object represents input profile photo type
 

@@ -4,8 +4,6 @@ from dataclasses import dataclass
 from operator import itemgetter
 from typing import Any, NamedTuple, Protocol
 
-from aiogram.utils.dataclass import dataclass_kwargs
-
 
 class ClassAttrsResolver(Protocol):
     def __call__(self, cls: type) -> Generator[tuple[str, Any], None, None]: ...
@@ -53,7 +51,7 @@ class _Position(NamedTuple):
     in_class: int
 
 
-@dataclass(**dataclass_kwargs(slots=True))
+@dataclass(slots=True)
 class _AttributeContainer:
     position: _Position
     value: Any

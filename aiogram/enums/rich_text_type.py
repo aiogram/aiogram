@@ -1,7 +1,7 @@
-from enum import Enum
+from enum import StrEnum
 
 
-class RichTextType(str, Enum):
+class RichTextType(StrEnum):
     """
     This object represents the rich text type.
 

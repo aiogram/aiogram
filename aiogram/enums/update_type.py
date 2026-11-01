@@ -1,7 +1,7 @@
-from enum import Enum
+from enum import StrEnum
 
 
-class UpdateType(str, Enum):
+class UpdateType(StrEnum):
     """
     This object represents the complete list of allowed update types
 

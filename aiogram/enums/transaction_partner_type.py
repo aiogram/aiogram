@@ -1,7 +1,7 @@
-from enum import Enum
+from enum import StrEnum
 
 
-class TransactionPartnerType(str, Enum):
+class TransactionPartnerType(StrEnum):
     """
     This object represents a type of transaction partner.
 

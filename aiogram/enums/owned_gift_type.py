@@ -1,7 +1,7 @@
-from enum import Enum
+from enum import StrEnum
 
 
-class OwnedGiftType(str, Enum):
+class OwnedGiftType(StrEnum):
     """
     This object represents owned gift type
 

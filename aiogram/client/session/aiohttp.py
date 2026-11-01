@@ -3,13 +3,19 @@ from __future__ import annotations
 import asyncio
 import ssl
 from collections.abc import AsyncGenerator, Iterable
-from typing import TYPE_CHECKING, Any, cast
+from typing import TYPE_CHECKING, Any, Self, cast
 
 import certifi
-from aiohttp import BasicAuth, ClientError, ClientSession, FormData, TCPConnector
+from aiohttp import (
+    BasicAuth,
+    ClientError,
+    ClientSession,
+    ClientTimeout,
+    FormData,
+    TCPConnector,
+)
 from aiohttp.hdrs import USER_AGENT
 from aiohttp.http import SERVER_SOFTWARE
-from typing_extensions import Self
 
 from aiogram.__meta__ import __version__
 from aiogram.exceptions import TelegramNetworkError
@@ -167,10 +173,10 @@ class AiohttpSession(BaseSession):
             async with session.post(
                 url,
                 data=form,
-                timeout=self.timeout if timeout is None else timeout,
+                timeout=ClientTimeout(total=self.timeout if timeout is None else timeout),
             ) as resp:
                 raw_result = await resp.text()
-        except asyncio.TimeoutError as e:
+        except TimeoutError as e:
             raise TelegramNetworkError(method=method, message="Request timeout error") from e
         except ClientError as e:
             raise TelegramNetworkError(method=method, message=f"{type(e).__name__}: {e}") from e
@@ -197,7 +203,7 @@ class AiohttpSession(BaseSession):
 
         async with session.get(
             url,
-            timeout=timeout,
+            timeout=ClientTimeout(total=timeout),
             headers=headers,
             raise_for_status=raise_for_status,
         ) as resp:

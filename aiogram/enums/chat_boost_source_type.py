@@ -1,7 +1,7 @@
-from enum import Enum
+from enum import StrEnum
 
 
-class ChatBoostSourceType(str, Enum):
+class ChatBoostSourceType(StrEnum):
     """
     This object represents a type of chat boost source.
 

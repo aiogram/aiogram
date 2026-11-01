@@ -41,8 +41,6 @@ def pytest_configure(config):
 
     if sys.platform == "win32" and sys.version_info < (3, 14):
         asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
-    else:
-        asyncio.set_event_loop_policy(asyncio.DefaultEventLoopPolicy())
 
 
 @pytest.fixture()
@@ -193,10 +191,3 @@ def storage(request):
 @pytest.fixture()
 def isolation(request):
     return request.getfixturevalue(request.param)
-
-
-# @pytest.fixture(scope="session")
-# def event_loop_policy(request):
-#     if sys.platform == "win32":
-#         return asyncio.WindowsSelectorEventLoopPolicy()
-#     return asyncio.DefaultEventLoopPolicy()

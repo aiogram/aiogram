@@ -1,7 +1,7 @@
-from enum import Enum
+from enum import StrEnum
 
 
-class InputStoryContentType(str, Enum):
+class InputStoryContentType(StrEnum):
     """
     This object represents input story content photo type.
 

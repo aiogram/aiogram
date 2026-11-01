@@ -7,10 +7,9 @@ import secrets
 from collections.abc import AsyncGenerator, Callable
 from enum import Enum
 from http import HTTPStatus
-from typing import TYPE_CHECKING, Any, Final, cast
+from typing import TYPE_CHECKING, Any, Final, Self, cast
 
 from pydantic import ValidationError
-from typing_extensions import Self
 
 from aiogram.client.default import Default
 from aiogram.client.telegram import PRODUCTION, TelegramAPIServer

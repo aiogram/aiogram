@@ -1,0 +1,2 @@
+Documented the Windows signal-handling limitation for long-polling and how to stop
+polling programmatically so that registered shutdown callbacks run.

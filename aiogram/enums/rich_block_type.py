@@ -1,7 +1,7 @@
-from enum import Enum
+from enum import StrEnum
 
 
-class RichBlockType(str, Enum):
+class RichBlockType(StrEnum):
     """
     This object represents a block in a rich formatted message.
 

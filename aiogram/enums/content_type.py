@@ -1,7 +1,7 @@
-from enum import Enum
+from enum import StrEnum
 
 
-class ContentType(str, Enum):
+class ContentType(StrEnum):
     """
     This object represents a type of content in message
     """

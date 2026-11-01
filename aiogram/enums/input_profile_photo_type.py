@@ -1,7 +1,7 @@
-from enum import Enum
+from enum import StrEnum
 
 
-class InputProfilePhotoType(str, Enum):
+class InputProfilePhotoType(StrEnum):
     """
     This object represents input profile photo type
 

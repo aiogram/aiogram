@@ -1,7 +1,7 @@
-from enum import Enum
+from enum import StrEnum
 
 
-class EncryptedPassportElement(str, Enum):
+class EncryptedPassportElement(StrEnum):
     """
     This object represents type of encrypted passport element.
 

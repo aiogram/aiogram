@@ -6,7 +6,7 @@ build-backend = "hatchling.build"
 name = "aiogram"
 description = 'Modern and fully asynchronous framework for Telegram Bot API'
 readme = "README.rst"
-requires-python = ">=3.10,<3.15"
+requires-python = ">=3.11,<3.16"
 license = "MIT"
 authors = [
     { name = "Alex Root Junior", email = "jroot.junior@gmail.com" },
@@ -30,11 +30,11 @@ classifiers = [
     "Typing :: Typed",
     "Intended Audience :: Developers",
     "Intended Audience :: System Administrators",
-    "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
     "Programming Language :: Python :: 3.14",
+    "Programming Language :: Python :: 3.15",
     "Programming Language :: Python :: Implementation :: PyPy",
     "Topic :: Software Development :: Libraries :: Application Frameworks",
     "Topic :: Software Development :: Libraries :: Python Modules",
@@ -43,7 +43,7 @@ classifiers = [
 dependencies = [
     "magic-filter>=1.0.12,<1.1",
     "aiohttp>=3.9.0,<3.15",
-    "pydantic>=2.7.0,<2.14",
+    "pydantic>=2.7.0,<2.15",
     "aiofiles>=23.2.1,<26.0",
     "certifi>=2023.7.22",
     "typing-extensions>=4.7.0,<=5.0",
@@ -57,14 +57,14 @@ path = "aiogram/__meta__.py"
 fast = [
     "uvloop>=0.17.0; (sys_platform == 'darwin' or sys_platform == 'linux') and platform_python_implementation != 'PyPy' and python_version < '3.13'",
     "uvloop>=0.21.0; (sys_platform == 'darwin' or sys_platform == 'linux') and platform_python_implementation != 'PyPy' and python_version >= '3.13'",
-    "aiodns>=3.0.0",
+    "aiodns>=4.0.0",
 ]
 redis = [
     "redis[hiredis]>=6.2.0,<8",
 ]
 mongo = [
     "motor>=3.6.0,<3.8",
-    "pymongo>=4.9,<4.19",
+    "pymongo>=4.9,<4.20",
 ]
 proxy = [
     "aiohttp-socks>=0.10.1,<1.12.0",
@@ -95,7 +95,7 @@ docs = [
 [dependency-groups]
 dev = [
     "ruff~=0.15",
-    "mypy==2.0.0; platform_python_implementation != 'PyPy'",
+    "mypy==2.4.0; platform_python_implementation != 'PyPy'",
     "toml~=0.10.2",
     "pre-commit~=4.3",
     "packaging~=26.0",
@@ -238,7 +238,7 @@ exclude_lines = [
 
 [tool.mypy]
 plugins = "pydantic.mypy"
-python_version = "3.10"
+python_version = "3.11"
 show_error_codes = true
 show_error_context = true
 pretty = true

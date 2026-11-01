@@ -1,7 +1,7 @@
-from enum import Enum
+from enum import StrEnum
 
 
-class DiceEmoji(str, Enum):
+class DiceEmoji(StrEnum):
     """
     Emoji on which the dice throw animation is based
 

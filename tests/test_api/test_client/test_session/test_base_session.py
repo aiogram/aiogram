@@ -3,6 +3,7 @@ import json
 from collections.abc import AsyncGenerator
 from typing import Any, AsyncContextManager
 from unittest.mock import AsyncMock, patch
+from urllib.parse import urlparse
 
 import pytest
 from pytz import utc
@@ -90,7 +91,8 @@ class TestBaseSession:
         session = CustomSession()
         session.api = api
         assert session.api == api
-        assert "example.com" in session.api.base
+        parsed_base = urlparse(session.api.base)
+        assert parsed_base.hostname == "example.com"
 
     @pytest.mark.parametrize(
         "value,result",

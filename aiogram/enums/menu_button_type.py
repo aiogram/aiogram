@@ -1,7 +1,7 @@
-from enum import Enum
+from enum import StrEnum
 
 
-class MenuButtonType(str, Enum):
+class MenuButtonType(StrEnum):
     """
     This object represents an type of Menu button
 

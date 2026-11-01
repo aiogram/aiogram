@@ -17,7 +17,7 @@ Never introduce a new test dependency — that is explicit maintainer feedback.
 - `filterwarnings = ["error", …]` → any new warning (Deprecation, Resource, Pydantic)
   fails the suite. If your change emits one, fix the source, don't widen the filter.
 - `testpaths = ["tests"]`. Run a single file with `rtk test uv run pytest tests/... -q`.
-- CI runs the matrix on 3.10–3.14 × {ubuntu, macos, windows} plus PyPy 3.11 on
+- CI runs the matrix on 3.11–3.15 × {ubuntu, macos, windows} plus PyPy 3.11 on
   ubuntu and macos. Redis/MongoDB tests run only on Linux legs; on macOS/Windows
   they skip.
 

@@ -51,6 +51,15 @@ def i18n_fixture() -> I18n:
     return I18n(path=DATA_DIR / "locales")
 
 
+@pytest.fixture(name="custom_i18n")
+def custom_i18n_fixture() -> I18n:
+    class CustomI18n(I18n):
+        def gettext(self, *args: Any, **kwargs: Any) -> str:
+            return super().gettext(*args, **kwargs).upper()
+
+    return CustomI18n(path=DATA_DIR / "locales")
+
+
 class TestI18nCore:
     def test_init(self, i18n: I18n):
         assert set(i18n.available_locales) == {"en", "uk"}
@@ -84,6 +93,51 @@ class TestI18nCore:
 
         with i18n.context():
             assert get_i18n() == i18n
+
+    def test_subclass_context(self, custom_i18n: I18n):
+        lazy_text = lazy_gettext("test")
+
+        with custom_i18n.context() as current:
+            assert current is custom_i18n
+            assert get_i18n() is custom_i18n
+            assert custom_i18n.get_current(no_error=False) is custom_i18n
+            assert gettext("test") == "TEST"
+            assert str(lazy_text) == "TEST"
+
+        with pytest.raises(LookupError, match="I18n context is not set"):
+            get_i18n()
+        assert custom_i18n.get_current() is None
+
+    def test_nested_subclass_instances(self, custom_i18n: I18n):
+        inner_i18n = type(custom_i18n)(path=DATA_DIR / "locales")
+
+        with custom_i18n.context():
+            with inner_i18n.context():
+                assert get_i18n() is inner_i18n
+                assert custom_i18n.get_current(no_error=False) is inner_i18n
+            assert get_i18n() is custom_i18n
+            assert custom_i18n.get_current(no_error=False) is custom_i18n
+
+        assert custom_i18n.get_current() is None
+        with pytest.raises(LookupError, match="I18n context is not set"):
+            get_i18n()
+
+    def test_subclass_context_restores_outer_context(self, i18n: I18n, custom_i18n: I18n):
+        with i18n.context():
+            with pytest.raises(RuntimeError, match="handler failed"):
+                with custom_i18n.context():
+                    assert get_i18n() is custom_i18n
+                    with i18n.context():
+                        assert get_i18n() is i18n
+                    assert get_i18n() is custom_i18n
+                    raise RuntimeError("handler failed")
+
+            assert get_i18n() is i18n
+            assert gettext("test") == "test"
+            assert custom_i18n.get_current() is None
+
+        with pytest.raises(LookupError, match="I18n context is not set"):
+            get_i18n()
 
     @pytest.mark.parametrize(
         "locale,case,result",
@@ -125,6 +179,20 @@ async def next_call(event, data):
 
 
 class TestSimpleI18nMiddleware:
+    async def test_subclass_i18n(self, custom_i18n: I18n):
+        middleware = SimpleI18nMiddleware(i18n=custom_i18n)
+
+        result = await middleware(
+            next_call,
+            Update(update_id=42),
+            {"event_from_user": User(id=42, is_bot=False, language_code="uk", first_name="Test")},
+        )
+
+        assert result == "ТЕСТ"
+        assert custom_i18n.current_locale == "en"
+        with pytest.raises(LookupError, match="I18n context is not set"):
+            get_i18n()
+
     @pytest.mark.parametrize(
         "event_from_user,result",
         [

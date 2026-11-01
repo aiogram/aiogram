@@ -1,0 +1,3 @@
+Fixed global translation helpers raising ``LookupError`` or using an outer
+translation context when an ``I18n`` subclass is used with ``context()`` or
+i18n middleware.

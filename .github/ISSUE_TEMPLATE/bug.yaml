@@ -30,7 +30,7 @@ body:
     attributes:
       label: Python version
       description: (`python --version` inside your virtualenv)
-      placeholder: e.g. 3.10.1
+      placeholder: e.g. 3.11.1
     validations:
       required: true
 

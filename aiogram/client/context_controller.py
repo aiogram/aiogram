@@ -1,9 +1,8 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, Self
 
 from pydantic import BaseModel, PrivateAttr
-from typing_extensions import Self
 
 if TYPE_CHECKING:
     from aiogram.client.bot import Bot
