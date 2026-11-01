@@ -1,0 +1,5 @@
+Added message context support to :code:`aiogram.utils.i18n`:
+:code:`I18n.gettext` and :code:`I18n.lazy_gettext` accept a new :code:`context` argument
+(gettext :code:`msgctxt`), and new helpers :code:`pgettext`, :code:`npgettext`,
+:code:`lazy_pgettext`, :code:`lazy_npgettext` are exported for disambiguating identical
+source strings such as button labels.
