@@ -1,3 +1,4 @@
+import sys
 from typing import Literal, Optional, Union
 
 from .accepted_gift_types import AcceptedGiftTypes
@@ -907,11 +908,22 @@ _types_namespace = {
     **{name: globals()[name] for name in __all__},
 }
 
-for _entity_name in __all__:
-    _entity = globals()[_entity_name]
-    if hasattr(_entity, "model_rebuild"):
-        _entity.model_rebuild(_types_namespace=_types_namespace)
+# Model schemas are built lazily on first use (``defer_build=True``), and pydantic
+# resolves forward refs of a (possibly nested) model through its module globals.
+# Expose the namespace there instead of eagerly rebuilding every model on import.
+_entity_modules = {
+    globals()[_entity_name].__module__
+    for _entity_name in __all__
+    if hasattr(globals()[_entity_name], "model_rebuild")
+}
+for _module_name in _entity_modules:
+    _module_ns = vars(sys.modules[_module_name])
+    for _name, _value in _types_namespace.items():
+        _module_ns.setdefault(_name, _value)
 
-del _entity
-del _entity_name
+del _entity_modules
+del _module_name
+del _module_ns
+del _name
+del _value
 del _types_namespace
