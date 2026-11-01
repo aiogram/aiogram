@@ -157,7 +157,7 @@ def link(title: str, url: str) -> str:
     Format URL (Markdown)
 
     :param title:
-    :param url:
+    :param url: raw URL, escaped here; don't escape it beforehand
     :return:
     """
     return markdown_decoration.link(value=markdown_decoration.quote(title), link=url)
@@ -168,7 +168,7 @@ def hlink(title: str, url: str) -> str:
     Format URL (HTML)
 
     :param title:
-    :param url:
+    :param url: raw URL, escaped here; don't escape it beforehand
     :return:
     """
     return html_decoration.link(value=html_decoration.quote(title), link=url)
@@ -203,7 +203,7 @@ def hide_link(url: str) -> str:
     Hide URL (HTML only)
     Can be used for adding an image to a text message
 
-    :param url:
+    :param url: raw URL, escaped here; don't escape it beforehand
     :return:
     """
     return html_decoration.link(value="&#8203;", link=url)
