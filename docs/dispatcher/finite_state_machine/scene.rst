@@ -88,7 +88,8 @@ The :class:`~aiogram.fsm.scene.SceneRegistry` is attached to the Dispatcher so t
 provides ``scenes`` to both the global handlers and the Scene handlers.
 
 Keep handlers that should only run outside Scenes separate from global commands,
-and restrict them with :class:`~aiogram.filters.state.StateFilter`, for example ``StateFilter(None)``.
+and restrict them with a state filter, for example ``StateFilter(None)``
+(imported from ``aiogram.filters``).
 
 
 Scene Benefits
