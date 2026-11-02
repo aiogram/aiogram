@@ -19,9 +19,10 @@ This is where Scenes come into play.
 Understanding Scenes
 ====================
 
-A Scene in **aiogram** is like an abstract, isolated namespace or room that a user can be
-ushered into via the code. When a user is within a Scene, most other global commands or
-message handlers are bypassed, unless they are specifically designed to function outside of the Scenes.
+A Scene in **aiogram** groups handlers that are active in a particular FSM state.
+Handlers defined outside of a Scene can still handle events while the Scene is active,
+according to the usual handler and router order.
+See :ref:`scenes-global-handlers` for an example.
 This helps in creating an experience of focused interactions.
 Scenes provide a structure for more complex interactions,
 effectively isolating and managing contexts for different stages of the conversation.
@@ -51,9 +52,43 @@ allow for more streamlined and organized bot-user interactions.
 Scene Interactions
 ------------------
 
-Each Scene is like a self-contained world, with interactions defined within the scope of that Scene.
-As such, only the handlers defined within the specific Scene will react to user's input during
-the lifecycle of that Scene.
+Scene handlers react to events while their Scene is active.
+They share the event routing mechanism with handlers defined outside of the Scene,
+so a matching handler can stop an event from reaching the Scene or another router.
+
+
+.. _scenes-global-handlers:
+
+Using global handlers inside scenes
+-----------------------------------
+
+A global handler is an ordinary handler registered on a :class:`~aiogram.dispatcher.router.Router`
+or :class:`~aiogram.dispatcher.dispatcher.Dispatcher` outside a Scene class.
+Such handlers are not restricted to a particular FSM state unless you add a state filter,
+so the same command can work both inside and outside a Scene.
+
+The normal routing order still applies: handlers on a router are checked before its sub-routers,
+and sub-routers are checked in the order they were included.
+Processing stops at the first handler that handles the event.
+For example, a Scene's catch-all message handler can consume ``/help`` before a global handler
+gets a chance to process it if the Scene's router is included first.
+
+In the following example, the global command router is included before
+:meth:`~aiogram.fsm.scene.SceneRegistry.add` attaches the Scene's router:
+
+.. literalinclude:: ../../../examples/scene_global_handlers.py
+    :language: python
+    :caption: Global commands available inside and outside a Scene
+
+The ``/help`` handler answers without changing the active Scene.
+The ``/cancel`` handler uses :meth:`~aiogram.fsm.scene.ScenesManager.close` to exit the active
+Scene through its normal lifecycle, including exit actions.
+When no Scene is active, :meth:`~aiogram.fsm.scene.ScenesManager.close` does nothing.
+The :class:`~aiogram.fsm.scene.SceneRegistry` is attached to the Dispatcher so that its middleware
+provides ``scenes`` to both the global handlers and the Scene handlers.
+
+Keep handlers that should only run outside Scenes separate from global commands,
+and restrict them with :class:`~aiogram.filters.state.StateFilter`, for example ``StateFilter(None)``.
 
 
 Scene Benefits
