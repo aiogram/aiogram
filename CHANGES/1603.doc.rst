@@ -1,0 +1,2 @@
+Clarify how global handlers work inside Scenes, with an example of command routing order,
+help without leaving the Scene, and cancellation through the Scene lifecycle.
