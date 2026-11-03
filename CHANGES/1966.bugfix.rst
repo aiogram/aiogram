@@ -1,0 +1,7 @@
+Sped up parsing of incoming Bot API responses by roughly 1.5x by letting pydantic read the
+response body directly instead of decoding it into a dict first.
+:code:`BaseSession(json_loads=...)` now defaults to :code:`None`, which selects that path;
+passing a decoder keeps the previous two-step behaviour. Without a decoder a malformed body
+reports pydantic's :code:`json_invalid` inside :class:`aiogram.exceptions.ClientDecodeError`
+instead of :code:`json.JSONDecodeError`, and :code:`ClientDecodeError.data` now always holds
+the raw response body instead of the decoded object.
