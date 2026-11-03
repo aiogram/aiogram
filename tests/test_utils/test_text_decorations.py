@@ -20,6 +20,23 @@ class TestTextDecoration:
                 MessageEntity(type="text_link", offset=0, length=5, url="https://aiogram.dev"),
                 '<a href="https://aiogram.dev">test</a>',
             ],
+            [
+                html_decoration,
+                MessageEntity(
+                    type="text_link", offset=0, length=5, url='https://a.b/?q="><b>x</b>&lt=1'
+                ),
+                '<a href="https://a.b/?q=&quot;&gt;&lt;b&gt;x&lt;/b&gt;&amp;lt=1">test</a>',
+            ],
+            [
+                html_decoration,
+                MessageEntity(type="pre", offset=0, length=5, language='py"><b>x</b>'),
+                '<pre><code class="language-py&quot;&gt;&lt;b&gt;x&lt;/b&gt;">test</code></pre>',
+            ],
+            [
+                html_decoration,
+                MessageEntity(type="custom_emoji", offset=0, length=5, custom_emoji_id='1"><b>'),
+                '<tg-emoji emoji-id="1&quot;&gt;&lt;b&gt;">test</tg-emoji>',
+            ],
             [html_decoration, MessageEntity(type="bold", offset=0, length=5), "<b>test</b>"],
             [html_decoration, MessageEntity(type="italic", offset=0, length=5), "<i>test</i>"],
             [html_decoration, MessageEntity(type="code", offset=0, length=5), "<code>test</code>"],
@@ -27,7 +44,7 @@ class TestTextDecoration:
             [
                 html_decoration,
                 MessageEntity(type="pre", offset=0, length=5, language="python"),
-                '<pre><code language="language-python">test</code></pre>',
+                '<pre><code class="language-python">test</code></pre>',
             ],
             [html_decoration, MessageEntity(type="underline", offset=0, length=5), "<u>test</u>"],
             [
@@ -86,6 +103,26 @@ class TestTextDecoration:
                     date_time_format="yMd",
                 ),
                 '<tg-time unix="42" format="yMd">test</tg-time>',
+            ],
+            [
+                markdown_decoration,
+                MessageEntity(
+                    type="text_link",
+                    offset=0,
+                    length=5,
+                    url="https://a.b/x_(y))*b*[c](https://e/\\",
+                ),
+                "[test](https://a.b/x_(y\\)\\)*b*[c](https://e/\\\\)",
+            ],
+            [
+                markdown_decoration,
+                MessageEntity(type="pre", offset=0, length=5, language="py```[x](https://e/)```"),
+                "```\ntest\n```",
+            ],
+            [
+                markdown_decoration,
+                MessageEntity(type="pre", offset=0, length=5, language="py thon"),
+                "```\ntest\n```",
             ],
             [markdown_decoration, MessageEntity(type="bold", offset=0, length=5), "*test*"],
             [markdown_decoration, MessageEntity(type="italic", offset=0, length=5), "_\rtest_\r"],

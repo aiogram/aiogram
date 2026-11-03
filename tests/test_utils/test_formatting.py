@@ -96,7 +96,7 @@ class TestNode:
             ],
             [
                 Pre("test", language="python"),
-                '<pre><code language="language-python">test</code></pre>',
+                '<pre><code class="language-python">test</code></pre>',
             ],
             [
                 TextLink("test", url="https://example.com"),
