@@ -204,7 +204,10 @@ class TestBaseSession:
             if error.url:
                 assert error.url in string
 
-    def test_check_response_json_decode_error(self):
+    # An empty body is the malformed payload most likely to reach check_response
+    # in practice, so it is covered next to the garbage one.
+    @pytest.mark.parametrize("content", ["is not a JSON object", "", " "])
+    def test_check_response_json_decode_error(self, content: str):
         session = CustomSession()
         bot = MockedBot()
         method = DeleteMessage(chat_id=42, message_id=42)
@@ -216,9 +219,10 @@ class TestBaseSession:
                 bot=bot,
                 method=method,
                 status_code=200,
-                content="is not a JSON object",
+                content=content,
             )
         assert "json_invalid" in str(exc_info.value)
+        assert exc_info.value.data == content
 
     def test_check_response_json_decode_error_custom_loads(self):
         session = CustomSession()
@@ -238,6 +242,8 @@ class TestBaseSession:
                 content="is not a JSON object",
             )
         assert "Failed to decode object" in str(exc_info.value)
+        # The raw body is reported, not the decoder's (absent) output.
+        assert exc_info.value.data == "is not a JSON object"
 
     def test_check_response_custom_loads_is_honoured(self):
         session = CustomSession()
