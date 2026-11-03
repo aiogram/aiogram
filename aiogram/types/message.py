@@ -916,10 +916,16 @@ class Message(MaybeInaccessibleMessage):
         # other message there is nobody to address it to, so nothing is sent.
         # `callback_query_id` and `replace_callback_query_message` live on the callback
         # query, which a message holds no reference to, so they are passed in.
-        if not self.ephemeral_message_id or not self.from_user:
+        # The reply goes to the human side of the conversation: `receiver_user` for an
+        # ephemeral message sent by the bot, `from_user` for an incoming ephemeral command.
+        # Ephemeral messages are never shown to bots, so a bot `receiver_user` is skipped.
+        receiver_user = self.receiver_user
+        if receiver_user is None or receiver_user.is_bot:
+            receiver_user = self.from_user
+        if not self.ephemeral_message_id or not receiver_user:
             return None
         return EphemeralMessageParameters(
-            receiver_user_id=self.from_user.id,
+            receiver_user_id=receiver_user.id,
             callback_query_id=callback_query_id,
             replace_callback_query_message=replace_callback_query_message,
         )

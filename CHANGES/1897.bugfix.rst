@@ -1,0 +1,5 @@
+Fixed :meth:`aiogram.types.message.Message.as_ephemeral_message_parameters` and the
+:code:`reply_*` shortcuts addressing a reply to an ephemeral message sent by the bot
+to the bot itself: :code:`receiver_user_id` is now taken from
+:code:`Message.receiver_user`, matching the :code:`edit_ephemeral_*` shortcuts, and
+still falls back to :code:`from_user` for incoming ephemeral commands.
