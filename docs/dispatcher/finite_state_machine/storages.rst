@@ -30,6 +30,13 @@ MongoStorage
     :members: __init__, from_url
     :member-order: bysource
 
+SqliteStorage
+------------
+
+.. autoclass:: aiogram.fsm.storage.sqlite.SqliteStorage
+    :members: __init__, connect
+    :member-order: bysource
+
 KeyBuilder
 ------------
 

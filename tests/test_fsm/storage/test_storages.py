@@ -8,7 +8,7 @@ from aiogram.fsm.storage.base import BaseStorage, StorageKey
 
 @pytest.mark.parametrize(
     "storage",
-    ["memory_storage", "redis_storage", "mongo_storage", "pymongo_storage"],
+    ["memory_storage", "redis_storage", "mongo_storage", "pymongo_storage", "sqlite_storage"],
     indirect=True,
 )
 class TestStorages:
