@@ -1,3 +1,5 @@
+import importlib
+import pkgutil
 import subprocess
 import sys
 
@@ -48,8 +50,34 @@ def _models(module):
 class TestLazyModelBuild:
     @pytest.mark.parametrize("module", [types_module, methods_module])
     def test_forward_refs_are_resolvable(self, module):
-        unresolved = [name for name, entity in _models(module) if entity.model_rebuild() is False]
+        # raise_errors=False so every unresolved model is reported at once instead of
+        # failing on the first traceback.
+        unresolved = [
+            name
+            for name, entity in _models(module)
+            if entity.model_rebuild(raise_errors=False) is False
+        ]
+
         assert unresolved == []
+
+    def test_every_entity_module_is_reachable_through_all(self):
+        # The namespace is exposed in the globals of the modules reached through
+        # aiogram.types.__all__. A model defined in a module that exports nothing
+        # would be missed, and its forward refs would not resolve.
+        exposed = {entity.__module__ for _, entity in _models(types_module)}
+        unreachable = []
+        for module_info in pkgutil.iter_modules(types_module.__path__):
+            module = importlib.import_module(f"{types_module.__name__}.{module_info.name}")
+            defines_model = any(
+                isinstance(entity, type)
+                and issubclass(entity, BaseModel)
+                and entity.__module__ == module.__name__
+                for entity in vars(module).values()
+            )
+            if defines_model and module.__name__ not in exposed:
+                unreachable.append(module.__name__)
+
+        assert unreachable == []
 
     def test_nested_model_is_resolvable_from_foreign_model(self):
         # Models defined outside of aiogram resolve nested types through
@@ -81,4 +109,11 @@ class TestLazyModelBuild:
     def test_models_are_not_built_on_import(self):
         # Building every model schema on import costs seconds of startup time,
         # so schemas must stay deferred until the model is actually used.
-        subprocess.run([sys.executable, "-c", LAZY_BUILD_SCRIPT], check=True)
+        # -I keeps the child out of the current directory and the user site.
+        process = subprocess.run(
+            [sys.executable, "-I", "-c", LAZY_BUILD_SCRIPT],
+            capture_output=True,
+            text=True,
+        )
+
+        assert process.returncode == 0, process.stderr

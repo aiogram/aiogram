@@ -5,3 +5,5 @@ Every Telegram object and method model was rebuilt eagerly at import time, which
 :code:`defer_build` setting they are declared with. Forward references are now exposed through the
 globals of the type modules, so pydantic resolves them when a model is first used and a process only
 pays for the models it actually touches.
+As a consequence a model's schema, and therefore :code:`model_fields`, is only complete once the
+model has been used, and an unresolvable annotation is reported on first use instead of on import.
