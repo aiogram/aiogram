@@ -6,6 +6,7 @@ from ..client.default import Default
 from .base import TelegramObject
 
 if TYPE_CHECKING:
+    from .input_file_union import InputFileUnion
     from .message_entity import MessageEntity
 
 
@@ -18,7 +19,7 @@ class InputMediaVoiceNote(TelegramObject):
 
     type: Literal["voice_note"] = "voice_note"
     """Type of the media, must be *voice_note*"""
-    media: str
+    media: InputFileUnion
     """File to send. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass "attach://<file_attach_name>" to upload a new one using multipart/form-data under <file_attach_name> name. :ref:`More information on Sending Files » <sending-files>`"""
     caption: str | None = None
     """*Optional*. Caption of the voice message to be sent, 0-1024 characters after entities parsing"""
@@ -37,7 +38,7 @@ class InputMediaVoiceNote(TelegramObject):
             __pydantic__self__,
             *,
             type: Literal["voice_note"] = "voice_note",
-            media: str,
+            media: InputFileUnion,
             caption: str | None = None,
             parse_mode: str | Default | None = Default("parse_mode"),
             caption_entities: list[MessageEntity] | None = None,

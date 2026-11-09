@@ -436,6 +436,22 @@
         "required": false
       },
       {
+        "type": "TonWalletCard",
+        "description": "For private chats, the TON wallet card of the user, which is shown on their profile page",
+        "html_description": "<td><em>Optional</em>. For private chats, the TON wallet card of the user, which is shown on their profile page</td>",
+        "rst_description": "*Optional*. For private chats, the TON wallet card of the user, which is shown on their profile page\n",
+        "name": "ton_wallet_card",
+        "required": false
+      },
+      {
+        "type": "ChatShareTheme",
+        "description": "For private chats, supergroups and channels, the theme of the screen for sharing a link to the user or the chat; omitted if the default theme is used",
+        "html_description": "<td><em>Optional</em>. For private chats, supergroups and channels, the theme of the screen for sharing a link to the user or the chat; omitted if the default theme is used</td>",
+        "rst_description": "*Optional*. For private chats, supergroups and channels, the theme of the screen for sharing a link to the user or the chat; omitted if the default theme is used\n",
+        "name": "share_theme",
+        "required": false
+      },
+      {
         "type": "True",
         "description": "True, if gifts can be sent to the chat",
         "html_description": "<td><em>Optional</em>. <em>True</em>, if gifts can be sent to the chat</td>",

@@ -86,4 +86,7 @@ class ContentType(StrEnum):
     COMMUNITY_CHAT_ADDED = "community_chat_added"
     COMMUNITY_CHAT_REMOVED = "community_chat_removed"
     COMMUNITY_CHAT_JOINED = "community_chat_joined"
+    WIDGET = "widget"
+    PAID_MESSAGES_WAIVED = "paid_messages_waived"
+    TON_WALLET_TRANSFER = "ton_wallet_transfer"
     USER_SHARED = "user_shared"

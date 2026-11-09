@@ -34,30 +34,23 @@ from aiogram.types import Chat, Message, Update
 from tests.mocked_bot import MockedBot
 
 
+# Scene handlers can not be attached to the error observer: enter/leave/exit/back actions
+# are resolved by the update type, which is never "error".
+SCENE_OBSERVER_NAMES = sorted(set(Router().observers) - {"error"})
+
+
 class TestOnMarker:
-    @pytest.mark.parametrize(
-        "marker_name",
-        [
-            "message",
-            "edited_message",
-            "channel_post",
-            "edited_channel_post",
-            "inline_query",
-            "chosen_inline_result",
-            "callback_query",
-            "shipping_query",
-            "pre_checkout_query",
-            "poll",
-            "poll_answer",
-            "my_chat_member",
-            "chat_member",
-            "chat_join_request",
-        ],
-    )
+    @pytest.mark.parametrize("marker_name", SCENE_OBSERVER_NAMES)
     def test_marker_name(self, marker_name: str):
         attr = getattr(on, marker_name)
         assert isinstance(attr, ObserverMarker)
         assert attr.name == marker_name
+
+    def test_markers_cover_all_router_observers(self):
+        markers = {
+            name for name, value in vars(type(on)).items() if isinstance(value, ObserverMarker)
+        }
+        assert markers == set(SCENE_OBSERVER_NAMES)
 
 
 async def test_empty_handler():

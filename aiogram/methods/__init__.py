@@ -6,6 +6,7 @@ from .answer_inline_query import AnswerInlineQuery
 from .answer_pre_checkout_query import AnswerPreCheckoutQuery
 from .answer_shipping_query import AnswerShippingQuery
 from .answer_web_app_query import AnswerWebAppQuery
+from .answer_widget_query import AnswerWidgetQuery
 from .approve_chat_join_request import ApproveChatJoinRequest
 from .approve_suggested_post import ApproveSuggestedPost
 from .ban_chat_member import BanChatMember
@@ -25,6 +26,7 @@ from .create_new_sticker_set import CreateNewStickerSet
 from .decline_chat_join_request import DeclineChatJoinRequest
 from .decline_suggested_post import DeclineSuggestedPost
 from .delete_all_message_reactions import DeleteAllMessageReactions
+from .delete_business_account_gift import DeleteBusinessAccountGift
 from .delete_business_messages import DeleteBusinessMessages
 from .delete_chat_photo import DeleteChatPhoto
 from .delete_chat_sticker_set import DeleteChatStickerSet
@@ -52,6 +54,8 @@ from .edit_message_live_location import EditMessageLiveLocation
 from .edit_message_media import EditMessageMedia
 from .edit_message_reply_markup import EditMessageReplyMarkup
 from .edit_message_text import EditMessageText
+from .edit_message_widget_data import EditMessageWidgetData
+from .edit_shared_widget_data import EditSharedWidgetData
 from .edit_story import EditStory
 from .edit_user_star_subscription import EditUserStarSubscription
 from .export_chat_invite_link import ExportChatInviteLink
@@ -67,6 +71,7 @@ from .get_chat_gifts import GetChatGifts
 from .get_chat_member import GetChatMember
 from .get_chat_member_count import GetChatMemberCount
 from .get_chat_menu_button import GetChatMenuButton
+from .get_chat_share_theme_backdrops import GetChatShareThemeBackdrops
 from .get_custom_emoji_stickers import GetCustomEmojiStickers
 from .get_file import GetFile
 from .get_forum_topic_icon_stickers import GetForumTopicIconStickers
@@ -82,6 +87,7 @@ from .get_my_short_description import GetMyShortDescription
 from .get_my_star_balance import GetMyStarBalance
 from .get_star_transactions import GetStarTransactions
 from .get_sticker_set import GetStickerSet
+from .get_unique_gift import GetUniqueGift
 from .get_updates import GetUpdates
 from .get_user_chat_boosts import GetUserChatBoosts
 from .get_user_gifts import GetUserGifts
@@ -132,11 +138,13 @@ from .send_photo import SendPhoto
 from .send_poll import SendPoll
 from .send_rich_message import SendRichMessage
 from .send_rich_message_draft import SendRichMessageDraft
+from .send_shared_widget import SendSharedWidget
 from .send_sticker import SendSticker
 from .send_venue import SendVenue
 from .send_video import SendVideo
 from .send_video_note import SendVideoNote
 from .send_voice import SendVoice
+from .send_widget import SendWidget
 from .set_business_account_bio import SetBusinessAccountBio
 from .set_business_account_gift_settings import SetBusinessAccountGiftSettings
 from .set_business_account_name import SetBusinessAccountName
@@ -194,6 +202,7 @@ __all__ = (
     "AnswerPreCheckoutQuery",
     "AnswerShippingQuery",
     "AnswerWebAppQuery",
+    "AnswerWidgetQuery",
     "ApproveChatJoinRequest",
     "ApproveSuggestedPost",
     "BanChatMember",
@@ -212,6 +221,7 @@ __all__ = (
     "DeclineChatJoinRequest",
     "DeclineSuggestedPost",
     "DeleteAllMessageReactions",
+    "DeleteBusinessAccountGift",
     "DeleteBusinessMessages",
     "DeleteChatPhoto",
     "DeleteChatStickerSet",
@@ -239,6 +249,8 @@ __all__ = (
     "EditMessageMedia",
     "EditMessageReplyMarkup",
     "EditMessageText",
+    "EditMessageWidgetData",
+    "EditSharedWidgetData",
     "EditStory",
     "EditUserStarSubscription",
     "ExportChatInviteLink",
@@ -254,6 +266,7 @@ __all__ = (
     "GetChatMember",
     "GetChatMemberCount",
     "GetChatMenuButton",
+    "GetChatShareThemeBackdrops",
     "GetCustomEmojiStickers",
     "GetFile",
     "GetForumTopicIconStickers",
@@ -269,6 +282,7 @@ __all__ = (
     "GetMyStarBalance",
     "GetStarTransactions",
     "GetStickerSet",
+    "GetUniqueGift",
     "GetUpdates",
     "GetUserChatBoosts",
     "GetUserGifts",
@@ -321,11 +335,13 @@ __all__ = (
     "SendPoll",
     "SendRichMessage",
     "SendRichMessageDraft",
+    "SendSharedWidget",
     "SendSticker",
     "SendVenue",
     "SendVideo",
     "SendVideoNote",
     "SendVoice",
+    "SendWidget",
     "SetBusinessAccountBio",
     "SetBusinessAccountGiftSettings",
     "SetBusinessAccountName",

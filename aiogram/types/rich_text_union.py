@@ -30,6 +30,7 @@ from .rich_text_strikethrough import RichTextStrikethrough
 from .rich_text_subscript import RichTextSubscript
 from .rich_text_superscript import RichTextSuperscript
 from .rich_text_text_mention import RichTextTextMention
+from .rich_text_ton_address import RichTextTonAddress
 from .rich_text_underline import RichTextUnderline
 from .rich_text_url import RichTextUrl
 
@@ -54,6 +55,7 @@ if TYPE_CHECKING:
         | RichTextEmailAddress
         | RichTextPhoneNumber
         | RichTextBankCardNumber
+        | RichTextTonAddress
         | RichTextMention
         | RichTextHashtag
         | RichTextCashtag
@@ -97,6 +99,7 @@ else:
             | Annotated[RichTextEmailAddress, Tag(RichTextType.EMAIL_ADDRESS)]
             | Annotated[RichTextPhoneNumber, Tag(RichTextType.PHONE_NUMBER)]
             | Annotated[RichTextBankCardNumber, Tag(RichTextType.BANK_CARD_NUMBER)]
+            | Annotated[RichTextTonAddress, Tag(RichTextType.TON_ADDRESS)]
             | Annotated[RichTextMention, Tag(RichTextType.MENTION)]
             | Annotated[RichTextHashtag, Tag(RichTextType.HASHTAG)]
             | Annotated[RichTextCashtag, Tag(RichTextType.CASHTAG)]

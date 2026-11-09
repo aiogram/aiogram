@@ -25,7 +25,9 @@ if TYPE_CHECKING:
     from .poll import Poll
     from .poll_answer import PollAnswer
     from .pre_checkout_query import PreCheckoutQuery
+    from .shared_widget_query import SharedWidgetQuery
     from .shipping_query import ShippingQuery
+    from .widget_query import WidgetQuery
 
 
 class Update(TelegramObject):
@@ -93,6 +95,10 @@ class Update(TelegramObject):
     """*Optional*. User payment subscription has changed"""
     stopped_message_generation: MessageGenerationStopped | None = None
     """*Optional*. A user asked the bot to stop the generation of a message"""
+    widget_query: WidgetQuery | None = None
+    """*Optional*. New incoming query from a widget in a message sent by the bot or via the bot"""
+    shared_widget_query: SharedWidgetQuery | None = None
+    """*Optional*. New incoming query from a forwarded message with a shared widget"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!
@@ -129,6 +135,8 @@ class Update(TelegramObject):
             managed_bot: ManagedBotUpdated | None = None,
             subscription: BotSubscriptionUpdated | None = None,
             stopped_message_generation: MessageGenerationStopped | None = None,
+            widget_query: WidgetQuery | None = None,
+            shared_widget_query: SharedWidgetQuery | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!
@@ -164,6 +172,8 @@ class Update(TelegramObject):
                 managed_bot=managed_bot,
                 subscription=subscription,
                 stopped_message_generation=stopped_message_generation,
+                widget_query=widget_query,
+                shared_widget_query=shared_widget_query,
                 **__pydantic_kwargs,
             )
 
@@ -233,6 +243,10 @@ class Update(TelegramObject):
             return "subscription"
         if self.stopped_message_generation:
             return "stopped_message_generation"
+        if self.widget_query:
+            return "widget_query"
+        if self.shared_widget_query:
+            return "shared_widget_query"
 
         raise UpdateTypeLookupError("Update does not contain any known event type.")
 

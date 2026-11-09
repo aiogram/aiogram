@@ -22,6 +22,7 @@ class RichText(TelegramObject):
      - :class:`aiogram.types.rich_text_email_address.RichTextEmailAddress`
      - :class:`aiogram.types.rich_text_phone_number.RichTextPhoneNumber`
      - :class:`aiogram.types.rich_text_bank_card_number.RichTextBankCardNumber`
+     - :class:`aiogram.types.rich_text_ton_address.RichTextTonAddress`
      - :class:`aiogram.types.rich_text_mention.RichTextMention`
      - :class:`aiogram.types.rich_text_hashtag.RichTextHashtag`
      - :class:`aiogram.types.rich_text_cashtag.RichTextCashtag`

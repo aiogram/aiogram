@@ -30,9 +30,9 @@
       {
         "type": "Integer or String",
         "required": false,
-        "description": "Required if user_id is not specified. Unique identifier for the chat or username of the channel (in the format @username) that will receive the gift.",
-        "html_description": "<td>Required if <em>user_id</em> is not specified. Unique identifier for the chat or username of the channel (in the format <code>@username</code>) that will receive the gift.</td>",
-        "rst_description": "Required if *user_id* is not specified. Unique identifier for the chat or username of the channel (in the format :code:`@username`) that will receive the gift.\n",
+        "description": "Required if user_id is not specified. Unique identifier for the chat that will receive the gift or username of the channel in the format @username.",
+        "html_description": "<td>Required if <em>user_id</em> is not specified. Unique identifier for the chat that will receive the gift or username of the channel in the format <code>@username</code>.</td>",
+        "rst_description": "Required if *user_id* is not specified. Unique identifier for the chat that will receive the gift or username of the channel in the format :code:`@username`.\n",
         "name": "chat_id"
       },
       {

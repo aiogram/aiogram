@@ -29,7 +29,7 @@ class SendPoll(TelegramMethod[Message]):
     __api_method__ = "sendPoll"
 
     chat_id: ChatIdUnion
-    """Unique identifier for the target chat or username of the target bot, supergroup or channel in the format :code:`@username`. Polls can't be sent to channel direct messages chats"""
+    """Unique identifier for the target chat or username of the target bot, supergroup, or channel in the format :code:`@username`. Polls can't be sent to channel direct messages chats"""
     question: str
     """Poll question, 1-300 characters"""
     options: list[InputPollOptionUnion]

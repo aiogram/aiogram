@@ -57,6 +57,8 @@ class TestTextDecoration:
             [html_decoration, MessageEntity(type="bot_command", offset=0, length=5), "test"],
             [html_decoration, MessageEntity(type="email", offset=0, length=5), "test"],
             [html_decoration, MessageEntity(type="phone_number", offset=0, length=5), "test"],
+            [html_decoration, MessageEntity(type="bank_card_number", offset=0, length=5), "test"],
+            [html_decoration, MessageEntity(type="ton_address", offset=0, length=5), "test"],
             [
                 html_decoration,
                 MessageEntity(
@@ -148,11 +150,17 @@ class TestTextDecoration:
             [markdown_decoration, MessageEntity(type="bot_command", offset=0, length=5), "test"],
             [markdown_decoration, MessageEntity(type="email", offset=0, length=5), "test"],
             [markdown_decoration, MessageEntity(type="phone_number", offset=0, length=5), "test"],
+            [
+                markdown_decoration,
+                MessageEntity(type="bank_card_number", offset=0, length=5),
+                "test",
+            ],
+            [markdown_decoration, MessageEntity(type="ton_address", offset=0, length=5), "test"],
             [markdown_decoration, MessageEntity(type="spoiler", offset=0, length=5), "||test||"],
             [
                 markdown_decoration,
                 MessageEntity(type="custom_emoji", offset=0, length=5, custom_emoji_id="42"),
-                "![test](tg://emoji?emoji_id=42)",
+                "![test](tg://emoji?id=42)",
             ],
             [
                 markdown_decoration,
@@ -201,6 +209,16 @@ class TestTextDecoration:
         self, decorator: TextDecoration, entity: MessageEntity, result: str
     ):
         assert decorator.apply_entity(entity, "test") == result
+
+    @pytest.mark.parametrize("decorator", [html_decoration, markdown_decoration])
+    @pytest.mark.parametrize("entity_type", ["bank_card_number", "ton_address"])
+    def test_apply_unchanged_entity_is_not_escaped_again(
+        self, decorator: TextDecoration, entity_type: str
+    ):
+        # The text passed to apply_entity is already escaped by unparse
+        entity = MessageEntity(type=entity_type, offset=0, length=8)
+        assert decorator.apply_entity(entity, "EQ_ab-c&") == "EQ_ab-c&"
+        assert decorator.unparse("EQ_ab-c&", [entity]) == decorator.quote("EQ_ab-c&")
 
     @pytest.mark.parametrize(
         "decorator,date_time_format,expected",
@@ -414,6 +432,33 @@ class TestTextDecoration:
                     )
                 ],
                 '<tg-time unix="42" format="yMd">test</tg-time>',
+            ],
+            [
+                markdown_decoration,
+                "quoted word\nafter",
+                [
+                    MessageEntity(type="blockquote", offset=0, length=12),
+                    MessageEntity(type="italic", offset=7, length=4),
+                ],
+                ">quoted _\rword_\r\nafter",
+            ],
+            [
+                markdown_decoration,
+                "a\n\nafter",
+                [MessageEntity(type="blockquote", offset=0, length=3)],
+                ">a\n>\nafter",
+            ],
+            [
+                markdown_decoration,
+                "a\u2028b\nafter",
+                [MessageEntity(type="blockquote", offset=0, length=4)],
+                ">a\u2028b\nafter",
+            ],
+            [
+                markdown_decoration,
+                "a\nb\nafter",
+                [MessageEntity(type="expandable_blockquote", offset=0, length=4)],
+                ">a\n>b||\nafter",
             ],
         ],
     )

@@ -234,6 +234,22 @@
         "rst_description": "*Optional*. A user asked the bot to stop the generation of a message\n",
         "name": "stopped_message_generation",
         "required": false
+      },
+      {
+        "type": "WidgetQuery",
+        "description": "New incoming query from a widget in a message sent by the bot or via the bot",
+        "html_description": "<td><em>Optional</em>. New incoming query from a widget in a message sent by the bot or via the bot</td>",
+        "rst_description": "*Optional*. New incoming query from a widget in a message sent by the bot or via the bot\n",
+        "name": "widget_query",
+        "required": false
+      },
+      {
+        "type": "SharedWidgetQuery",
+        "description": "New incoming query from a forwarded message with a shared widget",
+        "html_description": "<td><em>Optional</em>. New incoming query from a forwarded message with a shared widget</td>",
+        "rst_description": "*Optional*. New incoming query from a forwarded message with a shared widget\n",
+        "name": "shared_widget_query",
+        "required": false
       }
     ],
     "category": "types"

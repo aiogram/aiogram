@@ -1,0 +1,33 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available methods",
+    "anchor": "available-methods"
+  },
+  "object": {
+    "anchor": "answerwidgetquery",
+    "name": "answerWidgetQuery",
+    "description": "Use this method to send an answer to a query from a widget. The query must be answered within 15 seconds. The answer is received only by the widget that sent the query and doesn't change data of the widget; use editMessageWidgetData or editSharedWidgetData to change it. On success, True is returned.",
+    "html_description": "<p>Use this method to send an answer to a query from a widget. The query must be answered within 15 seconds. The answer is received only by the widget that sent the query and doesn't change data of the widget; use <a href=\"#editmessagewidgetdata\">editMessageWidgetData</a> or <a href=\"#editsharedwidgetdata\">editSharedWidgetData</a> to change it. On success, <em>True</em> is returned.</p>",
+    "rst_description": "Use this method to send an answer to a query from a widget. The query must be answered within 15 seconds. The answer is received only by the widget that sent the query and doesn't change data of the widget; use :class:`aiogram.methods.edit_message_widget_data.EditMessageWidgetData` or :class:`aiogram.methods.edit_shared_widget_data.EditSharedWidgetData` to change it. On success, :code:`True` is returned.",
+    "annotations": [
+      {
+        "type": "String",
+        "required": true,
+        "description": "Unique identifier for the query to be answered",
+        "html_description": "<td>Unique identifier for the query to be answered</td>",
+        "rst_description": "Unique identifier for the query to be answered\n",
+        "name": "widget_query_id"
+      },
+      {
+        "type": "String",
+        "required": false,
+        "description": "Data to be returned to the widget, 0-1024 bytes",
+        "html_description": "<td>Data to be returned to the widget, 0-1024 bytes</td>",
+        "rst_description": "Data to be returned to the widget, 0-1024 bytes\n",
+        "name": "data"
+      }
+    ],
+    "category": "methods"
+  }
+}

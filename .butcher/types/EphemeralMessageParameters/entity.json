@@ -13,17 +13,17 @@
     "annotations": [
       {
         "type": "Integer",
-        "description": "Identifier of the user who will receive the message. It is not guaranteed that the user will receive the message, especially if they are offline. See here for more details.",
-        "html_description": "<td>Identifier of the user who will receive the message. It is not guaranteed that the user will receive the message, especially if they are offline. See <a href=\"#ephemeral-messages-and-commands\">here</a> for more details.</td>",
-        "rst_description": "Identifier of the user who will receive the message. It is not guaranteed that the user will receive the message, especially if they are offline. See `here <https://core.telegram.org/bots/api#ephemeral-messages-and-commands>`_ for more details.\n",
+        "description": "Identifier of the user who will receive the message; required unless the message is sent as an ephemeral reply to a callback query. If omitted, then the parameter chat_id of the method is ignored. If specified together with callback_query_id, then it must be the identifier of the user who pressed the button. Must be omitted for messages sent in chats where the bot isn't a member, unless the message is a reply to an ephemeral message. It is not guaranteed that the user will receive the message, especially if they are offline. See here for more details.",
+        "html_description": "<td><em>Optional</em>. Identifier of the user who will receive the message; required unless the message is sent as an ephemeral reply to a callback query. If omitted, then the parameter <em>chat_id</em> of the method is ignored. If specified together with <em>callback_query_id</em>, then it must be the identifier of the user who pressed the button. Must be omitted for messages sent in chats where the bot isn't a member, unless the message is a reply to an ephemeral message. It is not guaranteed that the user will receive the message, especially if they are offline. See <a href=\"#ephemeral-messages-and-commands\">here</a> for more details.</td>",
+        "rst_description": "*Optional*. Identifier of the user who will receive the message; required unless the message is sent as an ephemeral reply to a callback query. If omitted, then the parameter *chat_id* of the method is ignored. If specified together with *callback_query_id*, then it must be the identifier of the user who pressed the button. Must be omitted for messages sent in chats where the bot isn't a member, unless the message is a reply to an ephemeral message. It is not guaranteed that the user will receive the message, especially if they are offline. See `here <https://core.telegram.org/bots/api#ephemeral-messages-and-commands>`_ for more details.\n",
         "name": "receiver_user_id",
-        "required": true
+        "required": false
       },
       {
         "type": "String",
-        "description": "Identifier of the callback query which triggered the message, if any",
-        "html_description": "<td><em>Optional</em>. Identifier of the callback query which triggered the message, if any</td>",
-        "rst_description": "*Optional*. Identifier of the callback query which triggered the message, if any\n",
+        "description": "Identifier of the callback query which triggered the message, if any. If specified and receiver_user_id is omitted, then the message is sent as an ephemeral reply to the callback query and will be shown only to the user who pressed the button. Ephemeral replies can't be sent to callback queries from messages in channel direct messages chats. The bot must still answer the callback query using answerCallbackQuery.",
+        "html_description": "<td><em>Optional</em>. Identifier of the callback query which triggered the message, if any. If specified and <em>receiver_user_id</em> is omitted, then the message is sent as an ephemeral reply to the callback query and will be shown only to the user who pressed the button. Ephemeral replies can't be sent to callback queries from messages in channel direct messages chats. The bot must still answer the callback query using <a href=\"#answercallbackquery\">answerCallbackQuery</a>.</td>",
+        "rst_description": "*Optional*. Identifier of the callback query which triggered the message, if any. If specified and *receiver_user_id* is omitted, then the message is sent as an ephemeral reply to the callback query and will be shown only to the user who pressed the button. Ephemeral replies can't be sent to callback queries from messages in channel direct messages chats. The bot must still answer the callback query using :class:`aiogram.methods.answer_callback_query.AnswerCallbackQuery`.\n",
         "name": "callback_query_id",
         "required": false
       },

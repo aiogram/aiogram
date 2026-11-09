@@ -29,8 +29,8 @@ class SendDocument(TelegramMethod[Message]):
     __returning__ = Message
     __api_method__ = "sendDocument"
 
-    chat_id: ChatIdUnion
-    """Unique identifier for the target chat or username of the target bot, supergroup or channel in the format :code:`@username`"""
+    chat_id: ChatIdUnion | None = None
+    """Unique identifier for the target chat or username of the target bot, supergroup, or channel in the format :code:`@username`; required unless the message is sent as an ephemeral reply to a callback query"""
     document: InputFileUnion
     """File to send. Pass a file_id as String to send a file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. :ref:`More information on Sending Files » <sending-files>`"""
     business_connection_id: str | None = None
@@ -93,7 +93,7 @@ class SendDocument(TelegramMethod[Message]):
         def __init__(
             __pydantic__self__,
             *,
-            chat_id: ChatIdUnion,
+            chat_id: ChatIdUnion | None = None,
             document: InputFileUnion,
             business_connection_id: str | None = None,
             message_thread_id: int | None = None,

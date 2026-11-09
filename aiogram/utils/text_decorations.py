@@ -51,6 +51,8 @@ class TextDecoration(ABC):
             MessageEntityType.HASHTAG,
             MessageEntityType.CASHTAG,
             MessageEntityType.EMAIL,
+            MessageEntityType.BANK_CARD_NUMBER,
+            MessageEntityType.TON_ADDRESS,
         }:
             # These entities should not be changed
             return text
@@ -329,14 +331,23 @@ class MarkdownDecoration(TextDecoration):
         return re.sub(pattern=self.MARKDOWN_QUOTE_PATTERN, repl=r"\\\1", string=value)
 
     def custom_emoji(self, value: str, custom_emoji_id: str) -> str:
-        link = create_tg_link("emoji", emoji_id=custom_emoji_id)
+        link = create_tg_link("emoji", id=custom_emoji_id)
         return f"!{self.link(value=value, link=link)}"
 
+    @staticmethod
+    def _quote_lines(value: str) -> tuple[str, str]:
+        # Split on "\n" only: "\r" is the italic/underline separator, and a trailing
+        # newline belongs after the quote, not inside it as an empty quoted line.
+        body, newline = (value[:-1], "\n") if value.endswith("\n") else (value, "")
+        return "\n".join(f">{line}" for line in body.split("\n")), newline
+
     def blockquote(self, value: str) -> str:
-        return "\n".join(f">{line}" for line in value.splitlines())
+        quoted, newline = self._quote_lines(value)
+        return quoted + newline
 
     def expandable_blockquote(self, value: str) -> str:
-        return "\n".join(f">{line}" for line in value.splitlines()) + "||"
+        quoted, newline = self._quote_lines(value)
+        return quoted + "||" + newline
 
     def date_time(
         self,

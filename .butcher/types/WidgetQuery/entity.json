@@ -1,0 +1,97 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "widgetquery",
+    "name": "WidgetQuery",
+    "description": "This object represents an incoming query from a widget in a message sent by the bot or via the bot. Use answerWidgetQuery to answer the query. Each user can send at most 5 queries per 5 seconds to the bot from all its widgets.",
+    "html_description": "<p>This object represents an incoming query from a widget in a message sent by the bot or via the bot. Use <a href=\"#answerwidgetquery\">answerWidgetQuery</a> to answer the query. Each user can send at most 5 queries per 5 seconds to the bot from all its widgets.</p>",
+    "rst_description": "This object represents an incoming query from a widget in a message sent by the bot or via the bot. Use :class:`aiogram.methods.answer_widget_query.AnswerWidgetQuery` to answer the query. Each user can send at most 5 queries per 5 seconds to the bot from all its widgets.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Unique identifier for this query",
+        "html_description": "<td>Unique identifier for this query</td>",
+        "rst_description": "Unique identifier for this query\n",
+        "name": "id",
+        "required": true
+      },
+      {
+        "type": "User",
+        "description": "Sender",
+        "html_description": "<td>Sender</td>",
+        "rst_description": "Sender\n",
+        "name": "from",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "Global identifier, uniquely corresponding to the chat to which the message with the widget was sent",
+        "html_description": "<td>Global identifier, uniquely corresponding to the chat to which the message with the widget was sent</td>",
+        "rst_description": "Global identifier, uniquely corresponding to the chat to which the message with the widget was sent\n",
+        "name": "chat_instance",
+        "required": true
+      },
+      {
+        "type": "WidgetQueryType",
+        "description": "Type of the query",
+        "html_description": "<td>Type of the query</td>",
+        "rst_description": "Type of the query\n",
+        "name": "type",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "Data of the query, 1-64 bytes",
+        "html_description": "<td>Data of the query, 1-64 bytes</td>",
+        "rst_description": "Data of the query, 1-64 bytes\n",
+        "name": "data",
+        "required": true
+      },
+      {
+        "type": "Chat",
+        "description": "Chat with the message containing the widget; omitted if the widget is in an inline message",
+        "html_description": "<td><em>Optional</em>. Chat with the message containing the widget; omitted if the widget is in an inline message</td>",
+        "rst_description": "*Optional*. Chat with the message containing the widget; omitted if the widget is in an inline message\n",
+        "name": "chat",
+        "required": false
+      },
+      {
+        "type": "Integer",
+        "description": "Identifier of the message containing the widget; omitted if the widget is in an inline message",
+        "html_description": "<td><em>Optional</em>. Identifier of the message containing the widget; omitted if the widget is in an inline message</td>",
+        "rst_description": "*Optional*. Identifier of the message containing the widget; omitted if the widget is in an inline message\n",
+        "name": "message_id",
+        "required": false
+      },
+      {
+        "type": "String",
+        "description": "Identifier of the inline message containing the widget",
+        "html_description": "<td><em>Optional</em>. Identifier of the inline message containing the widget</td>",
+        "rst_description": "*Optional*. Identifier of the inline message containing the widget\n",
+        "name": "inline_message_id",
+        "required": false
+      },
+      {
+        "type": "String",
+        "description": "For widgets in inline messages, type of the chat to which the message was sent. Can be either 'sender' for a private chat with the inline query sender, 'private', 'group', 'supergroup', or 'channel'.",
+        "html_description": "<td><em>Optional</em>. For widgets in inline messages, type of the chat to which the message was sent. Can be either &#8220;sender&#8221; for a private chat with the inline query sender, &#8220;private&#8221;, &#8220;group&#8221;, &#8220;supergroup&#8221;, or &#8220;channel&#8221;.</td>",
+        "rst_description": "*Optional*. For widgets in inline messages, type of the chat to which the message was sent. Can be either 'sender' for a private chat with the inline query sender, 'private', 'group', 'supergroup', or 'channel'.\n",
+        "name": "chat_type",
+        "required": false
+      },
+      {
+        "type": "String",
+        "description": "Unique identifier of the shared widget, which sent the query; omitted if the widget isn't shared",
+        "html_description": "<td><em>Optional</em>. Unique identifier of the shared widget, which sent the query; omitted if the widget isn't shared</td>",
+        "rst_description": "*Optional*. Unique identifier of the shared widget, which sent the query; omitted if the widget isn't shared\n",
+        "name": "widget_id",
+        "required": false
+      }
+    ],
+    "category": "types"
+  }
+}

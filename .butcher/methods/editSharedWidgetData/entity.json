@@ -1,0 +1,41 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Updating messages",
+    "anchor": "updating-messages"
+  },
+  "object": {
+    "anchor": "editsharedwidgetdata",
+    "name": "editSharedWidgetData",
+    "description": "Use this method to edit public data of a shared widget created by the bot. A shared widget can be edited at most once per second. On success, True is returned.",
+    "html_description": "<p>Use this method to edit public data of a shared widget created by the bot. A shared widget can be edited at most once per second. On success, <em>True</em> is returned.</p>",
+    "rst_description": "Use this method to edit public data of a shared widget created by the bot. A shared widget can be edited at most once per second. On success, :code:`True` is returned.",
+    "annotations": [
+      {
+        "type": "String",
+        "required": true,
+        "description": "Unique identifier of the shared widget",
+        "html_description": "<td>Unique identifier of the shared widget</td>",
+        "rst_description": "Unique identifier of the shared widget\n",
+        "name": "widget_id"
+      },
+      {
+        "type": "String",
+        "required": true,
+        "description": "New public data of the widget, 0-1024 bytes; pass an empty string to remove the public data",
+        "html_description": "<td>New public data of the widget, 0-1024 bytes; pass an empty string to remove the public data</td>",
+        "rst_description": "New public data of the widget, 0-1024 bytes; pass an empty string to remove the public data\n",
+        "name": "public_data"
+      },
+      {
+        "type": "Integer",
+        "required": false,
+        "description": "The maximum amount of time in seconds that the public data of the widget may be cached client-side; 5-3600. If omitted, then the current value is kept, which is 30 by default.",
+        "html_description": "<td>The maximum amount of time in seconds that the public data of the widget may be cached client-side; 5-3600. If omitted, then the current value is kept, which is 30 by default.</td>",
+        "rst_description": "The maximum amount of time in seconds that the public data of the widget may be cached client-side; 5-3600. If omitted, then the current value is kept, which is 30 by default.\n",
+        "name": "cache_time"
+      }
+    ],
+    "category": "methods"
+  }
+}

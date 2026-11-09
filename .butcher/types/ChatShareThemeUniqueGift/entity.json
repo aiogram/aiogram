@@ -1,0 +1,33 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "chatsharethemeuniquegift",
+    "name": "ChatShareThemeUniqueGift",
+    "description": "The theme based on a unique gift owned by the user or the chat.",
+    "html_description": "<p>The theme based on a unique gift owned by the user or the chat.</p>",
+    "rst_description": "The theme based on a unique gift owned by the user or the chat.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Type of the theme, always 'unique_gift'",
+        "html_description": "<td>Type of the theme, always &#8220;unique_gift&#8221;</td>",
+        "rst_description": "Type of the theme, always 'unique_gift'\n",
+        "name": "type",
+        "required": true
+      },
+      {
+        "type": "UniqueGift",
+        "description": "The gift",
+        "html_description": "<td>The gift</td>",
+        "rst_description": "The gift\n",
+        "name": "gift",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

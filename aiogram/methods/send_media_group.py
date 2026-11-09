@@ -20,7 +20,7 @@ class SendMediaGroup(TelegramMethod[list[Message]]):
     __api_method__ = "sendMediaGroup"
 
     chat_id: ChatIdUnion
-    """Unique identifier for the target chat or username of the target bot, supergroup or channel in the format :code:`@username`"""
+    """Unique identifier for the target chat or username of the target bot, supergroup, or channel in the format :code:`@username`"""
     media: list[MediaUnion]
     """A JSON-serialized Array describing messages to be sent, must include 2-10 items"""
     business_connection_id: str | None = None

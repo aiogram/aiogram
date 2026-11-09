@@ -1,0 +1,4 @@
+answer:
+  method: answerWidgetQuery
+  fill:
+    widget_query_id: self.id

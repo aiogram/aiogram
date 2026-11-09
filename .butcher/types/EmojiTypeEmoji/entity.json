@@ -1,0 +1,33 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "emojitypeemoji",
+    "name": "EmojiTypeEmoji",
+    "description": "A regular emoji.",
+    "html_description": "<p>A regular emoji.</p>",
+    "rst_description": "A regular emoji.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Type of the emoji, always 'emoji'",
+        "html_description": "<td>Type of the emoji, always &#8220;emoji&#8221;</td>",
+        "rst_description": "Type of the emoji, always 'emoji'\n",
+        "name": "type",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "The emoji",
+        "html_description": "<td>The emoji</td>",
+        "rst_description": "The emoji\n",
+        "name": "emoji",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

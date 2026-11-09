@@ -35,3 +35,5 @@ class UpdateType(StrEnum):
     MANAGED_BOT = "managed_bot"
     SUBSCRIPTION = "subscription"
     STOPPED_MESSAGE_GENERATION = "stopped_message_generation"
+    WIDGET_QUERY = "widget_query"
+    SHARED_WIDGET_QUERY = "shared_widget_query"

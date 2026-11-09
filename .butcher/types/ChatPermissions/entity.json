@@ -77,9 +77,9 @@
       },
       {
         "type": "Boolean",
-        "description": "True, if the user is allowed to send animations, games, stickers and use inline bots",
-        "html_description": "<td><em>Optional</em>. <em>True</em>, if the user is allowed to send animations, games, stickers and use inline bots</td>",
-        "rst_description": "*Optional*. :code:`True`, if the user is allowed to send animations, games, stickers and use inline bots\n",
+        "description": "True, if the user is allowed to send animations, games, stickers, widgets and use inline bots",
+        "html_description": "<td><em>Optional</em>. <em>True</em>, if the user is allowed to send animations, games, stickers, widgets and use inline bots</td>",
+        "rst_description": "*Optional*. :code:`True`, if the user is allowed to send animations, games, stickers, widgets and use inline bots\n",
         "name": "can_send_other_messages",
         "required": false
       },

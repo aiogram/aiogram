@@ -12,7 +12,7 @@
     "rst_description": "Describes a clickable area on a story media.",
     "annotations": [
       {
-        "type": "StoryAreaPosition",
+        "type": "AreaPosition",
         "description": "Position of the area",
         "html_description": "<td>Position of the area</td>",
         "rst_description": "Position of the area\n",

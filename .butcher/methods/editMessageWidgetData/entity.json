@@ -1,0 +1,57 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Updating messages",
+    "anchor": "updating-messages"
+  },
+  "object": {
+    "anchor": "editmessagewidgetdata",
+    "name": "editMessageWidgetData",
+    "description": "Use this method to edit data of a widget in a message sent by the bot or via the bot (for inline bots). Public data of a shared widget can be changed at most once per second. On success, True is returned.",
+    "html_description": "<p>Use this method to edit data of a widget in a message sent by the bot or via the bot (for inline bots). Public data of a shared widget can be changed at most once per second. On success, <em>True</em> is returned.</p>",
+    "rst_description": "Use this method to edit data of a widget in a message sent by the bot or via the bot (for inline bots). Public data of a shared widget can be changed at most once per second. On success, :code:`True` is returned.",
+    "annotations": [
+      {
+        "type": "Integer or String",
+        "required": false,
+        "description": "Required if inline_message_id is not specified. Unique identifier for the target chat or username of the target supergroup in the format @username.",
+        "html_description": "<td>Required if <em>inline_message_id</em> is not specified. Unique identifier for the target chat or username of the target supergroup in the format <code>@username</code>.</td>",
+        "rst_description": "Required if *inline_message_id* is not specified. Unique identifier for the target chat or username of the target supergroup in the format :code:`@username`.\n",
+        "name": "chat_id"
+      },
+      {
+        "type": "Integer",
+        "required": false,
+        "description": "Required if inline_message_id is not specified. Identifier of the message with the widget.",
+        "html_description": "<td>Required if <em>inline_message_id</em> is not specified. Identifier of the message with the widget.</td>",
+        "rst_description": "Required if *inline_message_id* is not specified. Identifier of the message with the widget.\n",
+        "name": "message_id"
+      },
+      {
+        "type": "String",
+        "required": false,
+        "description": "Required if chat_id and message_id are not specified. Identifier of the inline message.",
+        "html_description": "<td>Required if <em>chat_id</em> and <em>message_id</em> are not specified. Identifier of the inline message.</td>",
+        "rst_description": "Required if *chat_id* and *message_id* are not specified. Identifier of the inline message.\n",
+        "name": "inline_message_id"
+      },
+      {
+        "type": "String",
+        "required": false,
+        "description": "New public data of the widget, 0-1024 bytes; pass an empty string to remove the public data. If omitted, then the public data isn't changed.",
+        "html_description": "<td>New public data of the widget, 0-1024 bytes; pass an empty string to remove the public data. If omitted, then the public data isn't changed.</td>",
+        "rst_description": "New public data of the widget, 0-1024 bytes; pass an empty string to remove the public data. If omitted, then the public data isn't changed.\n",
+        "name": "public_data"
+      },
+      {
+        "type": "String",
+        "required": false,
+        "description": "New data of the widget, which is specific to the message, 0-1024 bytes; pass an empty string to remove the data. If omitted, then the data isn't changed.",
+        "html_description": "<td>New data of the widget, which is specific to the message, 0-1024 bytes; pass an empty string to remove the data. If omitted, then the data isn't changed.</td>",
+        "rst_description": "New data of the widget, which is specific to the message, 0-1024 bytes; pass an empty string to remove the data. If omitted, then the data isn't changed.\n",
+        "name": "chat_data"
+      }
+    ],
+    "category": "methods"
+  }
+}

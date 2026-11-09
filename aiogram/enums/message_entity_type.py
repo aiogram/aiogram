@@ -15,6 +15,8 @@ class MessageEntityType(StrEnum):
     URL = "url"
     EMAIL = "email"
     PHONE_NUMBER = "phone_number"
+    BANK_CARD_NUMBER = "bank_card_number"
+    TON_ADDRESS = "ton_address"
     BOLD = "bold"
     ITALIC = "italic"
     UNDERLINE = "underline"
