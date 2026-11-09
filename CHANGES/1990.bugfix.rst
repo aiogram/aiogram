@@ -1,0 +1,3 @@
+Fixed MarkdownV2 custom emoji rendered by :class:`aiogram.utils.text_decorations.MarkdownDecoration`
+(``Message.md_text``, ``as_markdown()``) as ``tg://emoji?emoji_id=…``, which Telegram rejects;
+they are now rendered as the documented ``tg://emoji?id=…``.

@@ -329,7 +329,7 @@ class MarkdownDecoration(TextDecoration):
         return re.sub(pattern=self.MARKDOWN_QUOTE_PATTERN, repl=r"\\\1", string=value)
 
     def custom_emoji(self, value: str, custom_emoji_id: str) -> str:
-        link = create_tg_link("emoji", emoji_id=custom_emoji_id)
+        link = create_tg_link("emoji", id=custom_emoji_id)
         return f"!{self.link(value=value, link=link)}"
 
     def blockquote(self, value: str) -> str:
