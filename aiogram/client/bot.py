@@ -340,6 +340,7 @@ class Bot:
 
         self.__token = token
         self._me: User | None = None
+        self._usernames: tuple[str, ...] | None = None
 
     async def __aenter__(self) -> Bot:
         return self
@@ -388,6 +389,22 @@ class Bot:
         if self._me is None:  # pragma: no cover
             self._me = await self.get_me()
         return self._me
+
+    async def usernames(self) -> tuple[str, ...]:
+        """
+        Cached usernames of the bot, secondary ones included
+
+        getMe returns only one username, so the full list is taken
+        from :code:`active_usernames` of getChat on the bot itself
+
+        :return:
+        """
+        if self._usernames is None:
+            me = await self.me()
+            chat = await self.get_chat(chat_id=me.id)
+            usernames = [*([me.username] if me.username else []), *(chat.active_usernames or [])]
+            self._usernames = tuple(dict.fromkeys(usernames))
+        return self._usernames
 
     @classmethod
     async def __download_file_binary_io(

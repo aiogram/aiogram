@@ -151,8 +151,8 @@ class Command(Filter):
 
     async def validate_mention(self, bot: Bot, command: CommandObject) -> None:
         if command.mention and not self.ignore_mention:
-            me = await bot.me()
-            if me.username and command.mention.lower() != me.username.lower():
+            usernames = {username.lower() for username in await bot.usernames()}
+            if usernames and command.mention.lower() not in usernames:
                 msg = "Mention did not match"
                 raise CommandException(msg)
 

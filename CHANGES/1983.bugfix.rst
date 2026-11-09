@@ -1,0 +1,4 @@
+Fixed :class:`aiogram.filters.command.Command` rejecting commands addressed to a bot's
+secondary username (``/help@shop_ai``). ``getMe`` returns only one username, so the new cached
+:meth:`aiogram.client.bot.Bot.usernames` takes all of them from ``active_usernames`` of
+``getChat`` on the bot itself, and the filter checks a mention against it.

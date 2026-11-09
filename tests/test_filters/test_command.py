@@ -6,7 +6,8 @@ import pytest
 from aiogram import F
 from aiogram.filters import Command, CommandObject
 from aiogram.filters.command import CommandStart
-from aiogram.types import BotCommand, Chat, Message, User
+from aiogram.methods import GetChat
+from aiogram.types import AcceptedGiftTypes, BotCommand, Chat, ChatFullInfo, Message, User
 from tests.mocked_bot import MockedBot
 
 
@@ -64,6 +65,7 @@ class TestCommandFilter:
             ],
             ["!test", Command(commands=["test"], prefix="/"), False],
             ["/test@mention", Command(commands=["test"], prefix="/"), False],
+            ["/test@tbot_ai", Command(commands=["test"], prefix="/"), True],
             ["/tests", Command(commands=["test"], prefix="/"), False],
             ["/", Command(commands=["test"], prefix="/"), False],
             ["/ test", Command(commands=["test"], prefix="/"), False],
@@ -107,6 +109,24 @@ class TestCommandFilter:
 
         message = Message(
             message_id=0, text=text, chat=Chat(id=42, type="private"), date=datetime.datetime.now()
+        )
+        bot.add_result_for(
+            GetChat,
+            ok=True,
+            result=ChatFullInfo(
+                id=bot.id,
+                type="private",
+                accent_color_id=0,
+                max_reaction_count=0,
+                accepted_gift_types=AcceptedGiftTypes(
+                    unlimited_gifts=False,
+                    limited_gifts=False,
+                    unique_gifts=False,
+                    premium_subscription=False,
+                    gifts_from_channels=False,
+                ),
+                active_usernames=["tbot", "tbot_ai"],
+            ),
         )
 
         response = await command(message, bot)
