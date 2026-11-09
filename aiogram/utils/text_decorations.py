@@ -333,10 +333,19 @@ class MarkdownDecoration(TextDecoration):
         return f"!{self.link(value=value, link=link)}"
 
     def blockquote(self, value: str) -> str:
-        return "\n".join(f">{line}" for line in value.splitlines())
+        quoted, newline = self._quote_lines(value)
+        return quoted + newline
 
     def expandable_blockquote(self, value: str) -> str:
-        return "\n".join(f">{line}" for line in value.splitlines()) + "||"
+        quoted, newline = self._quote_lines(value)
+        return quoted + "||" + newline
+
+    @staticmethod
+    def _quote_lines(value: str) -> tuple[str, str]:
+        # Only "\n" separates lines: splitlines() would also split on the "\r" that italic and
+        # underline emit, and a trailing newline stays outside the quote
+        body, newline = (value[:-1], "\n") if value.endswith("\n") else (value, "")
+        return "\n".join(f">{line}" for line in body.split("\n")), newline
 
     def date_time(
         self,

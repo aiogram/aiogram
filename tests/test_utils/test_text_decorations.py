@@ -415,6 +415,27 @@ class TestTextDecoration:
                 ],
                 '<tg-time unix="42" format="yMd">test</tg-time>',
             ],
+            [
+                markdown_decoration,
+                "quoted word\nafter",
+                [
+                    MessageEntity(type="blockquote", offset=0, length=12),
+                    MessageEntity(type="italic", offset=7, length=4),
+                ],
+                ">quoted _\rword_\r\nafter",
+            ],
+            [
+                markdown_decoration,
+                "a\n\nafter",
+                [MessageEntity(type="blockquote", offset=0, length=3)],
+                ">a\n>\nafter",
+            ],
+            [
+                markdown_decoration,
+                "a\nb\nafter",
+                [MessageEntity(type="expandable_blockquote", offset=0, length=4)],
+                ">a\n>b||\nafter",
+            ],
         ],
     )
     def test_unparse(

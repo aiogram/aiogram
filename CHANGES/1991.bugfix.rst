@@ -1,0 +1,3 @@
+Fixed MarkdownV2 block quotations rendered by :class:`aiogram.utils.text_decorations.MarkdownDecoration`
+(``Message.md_text``, ``as_markdown()``) changing the text: an italic or underlined part of a quote
+no longer moves to its own line, and the line after a quote is no longer joined to it.
