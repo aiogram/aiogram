@@ -1,3 +1,4 @@
+import sys
 from typing import Literal, Optional, Union
 
 from .accepted_gift_types import AcceptedGiftTypes
@@ -897,21 +898,35 @@ from .sent_guest_message import SentGuestMessage
 from .user_profile_audios import UserProfileAudios
 from .video_quality import VideoQuality
 
-# Load typing forward refs for every TelegramObject
-_types_namespace = {
-    "List": list,
-    "Optional": Optional,
-    "Union": Union,
-    "Literal": Literal,
-    "Default": _Default,
-    **{name: globals()[name] for name in __all__},
-}
 
-for _entity_name in __all__:
-    _entity = globals()[_entity_name]
-    if hasattr(_entity, "model_rebuild"):
-        _entity.model_rebuild(_types_namespace=_types_namespace)
+def _expose_forward_ref_namespace() -> None:
+    """
+    Make the type namespace reachable for lazy forward-ref resolution.
 
-del _entity
-del _entity_name
-del _types_namespace
+    Model schemas are built on first use (``defer_build=True``), and pydantic resolves the
+    forward refs of a (possibly nested) model through the globals of the module that defines
+    it. Exposing the namespace there keeps the schemas deferred, where rebuilding every model
+    on import would discard ``defer_build`` and cost seconds of startup time.
+    """
+    namespace = {
+        "List": list,
+        "Optional": Optional,
+        "Union": Union,
+        "Literal": Literal,
+        "Default": _Default,
+        **{name: globals()[name] for name in __all__},
+    }
+    # Every entity module exports its model, so iterating __all__ reaches all of them.
+    # tests/test_api/test_types/test_lazy_model_build.py guards that invariant.
+    entity_modules = {
+        entity.__module__
+        for name in __all__
+        if hasattr(entity := globals()[name], "model_rebuild")
+    }
+    for module_name in entity_modules:
+        module_ns = vars(sys.modules[module_name])
+        for key, value in namespace.items():
+            module_ns.setdefault(key, value)
+
+
+_expose_forward_ref_namespace()
