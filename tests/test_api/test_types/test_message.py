@@ -1589,6 +1589,44 @@ class TestMessage:
         assert isinstance(method, SendMessage)
         assert method.link_preview_options is override
 
+    def test_send_copy_keeps_content(self):
+        dice = TEST_MESSAGE_DICE.send_copy(chat_id=42)
+        assert isinstance(dice, SendDice)
+        assert dice.emoji == "X"
+
+        photo = TEST_MESSAGE_PHOTO.model_copy(update={"has_media_spoiler": True})
+        assert photo.send_copy(chat_id=42).has_spoiler is True
+
+        caption_entities = [MessageEntity(type="bold", offset=0, length=4)]
+        voice = TEST_MESSAGE_VOICE.model_copy(
+            update={"caption": "test", "caption_entities": caption_entities}
+        ).send_copy(chat_id=42)
+        assert isinstance(voice, SendVoice)
+        assert voice.caption == "test"
+        assert voice.caption_entities == caption_entities
+
+        venue = TEST_MESSAGE_VENUE.model_copy(
+            update={
+                "venue": TEST_MESSAGE_VENUE.venue.model_copy(
+                    update={"google_place_id": "place", "google_place_type": "type"}
+                )
+            }
+        ).send_copy(chat_id=42)
+        assert isinstance(venue, SendVenue)
+        assert (venue.google_place_id, venue.google_place_type) == ("place", "type")
+
+        question_entities = [MessageEntity(type="italic", offset=0, length=1)]
+        poll = TEST_MESSAGE_POLL.model_copy(
+            update={
+                "poll": TEST_MESSAGE_POLL.poll.model_copy(
+                    update={"question_entities": question_entities}
+                )
+            }
+        ).send_copy(chat_id=42)
+        assert isinstance(poll, SendPoll)
+        assert poll.question_entities == question_entities
+        assert poll.question_parse_mode is None
+
     def test_edit_text(self):
         message = Message(
             message_id=42, chat=Chat(id=42, type="private"), date=datetime.datetime.now()

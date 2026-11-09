@@ -1,0 +1,4 @@
+Fixed :meth:`aiogram.types.message.Message.send_copy` dropping content: the dice emoji, the media
+spoiler of photos, videos and animations, the caption of voice messages, the Google Places
+data of venues and the entities of poll questions (the question was re-parsed with the default
+parse mode instead).

@@ -4041,6 +4041,7 @@ class Message(MaybeInaccessibleMessage):
                 animation=self.animation.file_id,
                 caption=self.caption,
                 caption_entities=self.caption_entities,
+                has_spoiler=self.has_media_spoiler,
                 **kwargs,
             ).as_(self._bot)
         if self.document:
@@ -4065,6 +4066,7 @@ class Message(MaybeInaccessibleMessage):
                 photo=self.photo[-1].file_id,
                 caption=self.caption,
                 caption_entities=self.caption_entities,
+                has_spoiler=self.has_media_spoiler,
                 **kwargs,
             ).as_(self._bot)
         if self.sticker:
@@ -4077,6 +4079,7 @@ class Message(MaybeInaccessibleMessage):
                 video=self.video.file_id,
                 caption=self.caption,
                 caption_entities=self.caption_entities,
+                has_spoiler=self.has_media_spoiler,
                 **kwargs,
             ).as_(self._bot)
         if self.video_note:
@@ -4087,6 +4090,8 @@ class Message(MaybeInaccessibleMessage):
         if self.voice:
             return SendVoice(
                 voice=self.voice.file_id,
+                caption=self.caption,
+                caption_entities=self.caption_entities,
                 **kwargs,
             ).as_(self._bot)
         if self.contact:
@@ -4105,6 +4110,8 @@ class Message(MaybeInaccessibleMessage):
                 address=self.venue.address,
                 foursquare_id=self.venue.foursquare_id,
                 foursquare_type=self.venue.foursquare_type,
+                google_place_id=self.venue.google_place_id,
+                google_place_type=self.venue.google_place_type,
                 **kwargs,
             ).as_(self._bot)
         if self.location:
@@ -4118,6 +4125,8 @@ class Message(MaybeInaccessibleMessage):
 
             return SendPoll(
                 question=self.poll.question,
+                question_entities=self.poll.question_entities,
+                question_parse_mode=None,
                 options=[
                     InputPollOption(
                         text=option.text,
@@ -4129,8 +4138,9 @@ class Message(MaybeInaccessibleMessage):
                 ],
                 **kwargs,
             ).as_(self._bot)
-        if self.dice:  # Dice value can't be controlled
+        if self.dice:  # Dice value can't be controlled, its emoji can
             return SendDice(
+                emoji=self.dice.emoji,
                 **kwargs,
             ).as_(self._bot)
         if self.story:
