@@ -1,0 +1,2 @@
+Removed a statement in :code:`ContextInstanceMixin.get_current` that assigned the
+context variable attribute to itself and had no effect.
