@@ -339,6 +339,8 @@ class MarkdownDecoration(TextDecoration):
         # Split on "\n" only: "\r" is the italic/underline separator, and a trailing
         # newline belongs after the quote, not inside it as an empty quoted line.
         body, newline = (value[:-1], "\n") if value.endswith("\n") else (value, "")
+        if not body:
+            return "", newline
         return "\n".join(f">{line}" for line in body.split("\n")), newline
 
     def blockquote(self, value: str) -> str:

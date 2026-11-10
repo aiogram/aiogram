@@ -460,6 +460,13 @@ class TestTextDecoration:
                 [MessageEntity(type="expandable_blockquote", offset=0, length=4)],
                 ">a\n>b||\nafter",
             ],
+            [markdown_decoration, "", [MessageEntity(type="blockquote", offset=0, length=0)], ""],
+            [
+                markdown_decoration,
+                "",
+                [MessageEntity(type="expandable_blockquote", offset=0, length=0)],
+                "||",
+            ],
         ],
     )
     def test_unparse(
