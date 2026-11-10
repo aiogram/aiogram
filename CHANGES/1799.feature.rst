@@ -1,0 +1,17 @@
+Emit a :class:`UserWarning` from :class:`~aiogram.utils.magic_filter.MagicFilter`
+when a non-filter value appears as the **left operand** of ``|`` or ``&``
+(i.e. ``__ror__`` / ``__rand__`` is called with a non-\ ``MagicFilter`` argument).
+
+This catches the common operator-precedence pitfall where an expression such as
+
+.. code-block:: python
+
+    F.text == "confirm" | F.text == "cancel"
+
+is silently parsed by Python as the chained comparison
+``F.text == ("confirm" | F.text) == "cancel"`` instead of the intended
+``(F.text == "confirm") | (F.text == "cancel")``.
+
+When that expression is evaluated, the warning includes the corrected
+parenthesised form. Runtime behaviour is fully preserved — the warning is
+non-breaking and can be silenced with :func:`warnings.filterwarnings` if needed.
