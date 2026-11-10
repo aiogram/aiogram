@@ -1,0 +1,41 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "chatsharethemebackdrop",
+    "name": "ChatShareThemeBackdrop",
+    "description": "This object describes a backdrop, which can be used as the background of a theme of the screen for sharing a link to a user or a chat.",
+    "html_description": "<p>This object describes a backdrop, which can be used as the background of a theme of the screen for sharing a link to a user or a chat.</p>",
+    "rst_description": "This object describes a backdrop, which can be used as the background of a theme of the screen for sharing a link to a user or a chat.",
+    "annotations": [
+      {
+        "type": "Integer",
+        "description": "Unique identifier of the backdrop",
+        "html_description": "<td>Unique identifier of the backdrop</td>",
+        "rst_description": "Unique identifier of the backdrop\n",
+        "name": "id",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "Name of the backdrop",
+        "html_description": "<td>Name of the backdrop</td>",
+        "rst_description": "Name of the backdrop\n",
+        "name": "name",
+        "required": true
+      },
+      {
+        "type": "UniqueGiftBackdropColors",
+        "description": "Colors of the backdrop",
+        "html_description": "<td>Colors of the backdrop</td>",
+        "rst_description": "Colors of the backdrop\n",
+        "name": "colors",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

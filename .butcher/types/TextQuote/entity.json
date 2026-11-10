@@ -13,17 +13,17 @@
     "annotations": [
       {
         "type": "String",
-        "description": "Text of the quoted part of a message that is replied to by the given message",
-        "html_description": "<td>Text of the quoted part of a message that is replied to by the given message</td>",
-        "rst_description": "Text of the quoted part of a message that is replied to by the given message\n",
+        "description": "Text of the quoted part of a message that is replied to by the given message; may be empty if the quote was chosen from a rich message",
+        "html_description": "<td>Text of the quoted part of a message that is replied to by the given message; may be empty if the quote was chosen from a rich message</td>",
+        "rst_description": "Text of the quoted part of a message that is replied to by the given message; may be empty if the quote was chosen from a rich message\n",
         "name": "text",
         "required": true
       },
       {
         "type": "Integer",
-        "description": "Approximate quote position in the original message in UTF-16 code units as specified by the sender",
-        "html_description": "<td>Approximate quote position in the original message in UTF-16 code units as specified by the sender</td>",
-        "rst_description": "Approximate quote position in the original message in UTF-16 code units as specified by the sender\n",
+        "description": "Approximate quote position in the original message in UTF-16 code units as specified by the sender. For quotes from rich messages, it is the position in the text formed by joining plain texts of all quotable texts of the message, separated by line feeds.",
+        "html_description": "<td>Approximate quote position in the original message in UTF-16 code units as specified by the sender. For quotes from rich messages, it is the position in the text formed by joining plain texts of all quotable texts of the message, separated by line feeds.</td>",
+        "rst_description": "Approximate quote position in the original message in UTF-16 code units as specified by the sender. For quotes from rich messages, it is the position in the text formed by joining plain texts of all quotable texts of the message, separated by line feeds.\n",
         "name": "position",
         "required": true
       },
@@ -41,6 +41,14 @@
         "html_description": "<td><em>Optional</em>. <em>True</em>, if the quote was chosen manually by the message sender. Otherwise, the quote was added automatically by the server.</td>",
         "rst_description": "*Optional*. :code:`True`, if the quote was chosen manually by the message sender. Otherwise, the quote was added automatically by the server.\n",
         "name": "is_manual",
+        "required": false
+      },
+      {
+        "type": "Array of RichText",
+        "description": "Rich text of the quote if it was chosen from a rich message. May contain only plain text, RichTextBold, RichTextItalic, RichTextUnderline, RichTextStrikethrough, RichTextSpoiler, RichTextSubscript, RichTextSuperscript, RichTextDateTime, RichTextCustomEmoji, RichTextMathematicalExpression, and arrays of them.",
+        "html_description": "<td><em>Optional</em>. Rich text of the quote if it was chosen from a <a href=\"#richmessage\">rich message</a>. May contain only plain text, <a href=\"#richtextbold\">RichTextBold</a>, <a href=\"#richtextitalic\">RichTextItalic</a>, <a href=\"#richtextunderline\">RichTextUnderline</a>, <a href=\"#richtextstrikethrough\">RichTextStrikethrough</a>, <a href=\"#richtextspoiler\">RichTextSpoiler</a>, <a href=\"#richtextsubscript\">RichTextSubscript</a>, <a href=\"#richtextsuperscript\">RichTextSuperscript</a>, <a href=\"#richtextdatetime\">RichTextDateTime</a>, <a href=\"#richtextcustomemoji\">RichTextCustomEmoji</a>, <a href=\"#richtextmathematicalexpression\">RichTextMathematicalExpression</a>, and arrays of them.</td>",
+        "rst_description": "*Optional*. Rich text of the quote if it was chosen from a `rich message <https://core.telegram.org/bots/api#richmessage>`_. May contain only plain text, :class:`aiogram.types.rich_text_bold.RichTextBold`, :class:`aiogram.types.rich_text_italic.RichTextItalic`, :class:`aiogram.types.rich_text_underline.RichTextUnderline`, :class:`aiogram.types.rich_text_strikethrough.RichTextStrikethrough`, :class:`aiogram.types.rich_text_spoiler.RichTextSpoiler`, :class:`aiogram.types.rich_text_subscript.RichTextSubscript`, :class:`aiogram.types.rich_text_superscript.RichTextSuperscript`, :class:`aiogram.types.rich_text_date_time.RichTextDateTime`, :class:`aiogram.types.rich_text_custom_emoji.RichTextCustomEmoji`, :class:`aiogram.types.rich_text_mathematical_expression.RichTextMathematicalExpression`, and arrays of them.\n",
+        "name": "rich_texts",
         "required": false
       }
     ],

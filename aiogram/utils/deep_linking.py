@@ -23,6 +23,7 @@ if TYPE_CHECKING:
 
 BAD_PATTERN = re.compile(r"[^a-zA-Z0-9-_]")
 DEEPLINK_PAYLOAD_LENGTH = 64
+STARTAPP_PAYLOAD_LENGTH = 512
 
 
 async def create_start_link(
@@ -127,7 +128,8 @@ def create_deep_link(
 
     :param username:
     :param link_type: `start`, `startgroup` or `startapp`
-    :param payload: any string-convertible data
+    :param payload: any string-convertible data, up to 64 characters
+        (512 for :code:`startapp`) after encoding
     :param app_name: if you want direct mini app link
     :param encode: encode payload with base64url or custom encoder
     :param encoder: custom encoder callable
@@ -146,8 +148,9 @@ def create_deep_link(
         )
         raise ValueError(msg)
 
-    if len(payload) > DEEPLINK_PAYLOAD_LENGTH:
-        msg = f"Payload must be up to {DEEPLINK_PAYLOAD_LENGTH} characters long."
+    max_length = STARTAPP_PAYLOAD_LENGTH if link_type == "startapp" else DEEPLINK_PAYLOAD_LENGTH
+    if len(payload) > max_length:
+        msg = f"Payload must be up to {max_length} characters long."
         raise ValueError(msg)
 
     if not app_name:

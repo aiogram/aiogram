@@ -122,7 +122,20 @@ class TestDeepLinking:
         link = await create_start_link(bot, payload)
         assert link
 
-    async def test_too_long_payload(self, bot: MockedBot):
+    @pytest.mark.parametrize("factory", [create_start_link, create_startgroup_link])
+    async def test_too_long_payload(self, bot: MockedBot, factory):
         payload = "p" * 65
-        with pytest.raises(ValueError):
-            await create_start_link(bot, payload)
+        with pytest.raises(ValueError, match="up to 64 characters"):
+            await factory(bot, payload)
+
+    @pytest.mark.parametrize("app_name", [None, "app"])
+    async def test_512_len_startapp_payload(self, bot: MockedBot, app_name):
+        payload = "p" * 512
+        link = await create_startapp_link(bot, payload, app_name=app_name)
+        assert link.endswith(f"?startapp={payload}")
+
+    @pytest.mark.parametrize("app_name", [None, "app"])
+    async def test_too_long_startapp_payload(self, bot: MockedBot, app_name):
+        payload = "p" * 513
+        with pytest.raises(ValueError, match="up to 512 characters"):
+            await create_startapp_link(bot, payload, app_name=app_name)

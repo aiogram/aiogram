@@ -23,7 +23,7 @@ class RichMessageButton(TelegramObject):
     text: RichTextUnion
     """Text of the button. May contain only plain text, :class:`aiogram.types.rich_text_custom_emoji.RichTextCustomEmoji` and :class:`aiogram.types.rich_text_date_time.RichTextDateTime` entities"""
     style: str | None = None
-    """*Optional*. Style of the button. Must be one of 'danger' (red), 'success' (green), 'primary' (blue) or 'link' (the button is shown as a regular link without borders). If omitted, then an app-specific style is used. The style 'link' is allowed only for callback buttons"""
+    """*Optional*. Style of the button. Must be one of 'danger', 'success', 'primary', or 'link' (the button is shown as a regular link without borders). Apps may use theme-specific colors for the button background and text based on the style. The style 'link' is allowed only for callback buttons"""
     url: str | None = None
     """*Optional*. HTTP or tg:// URL to be opened when the button is pressed. Links :code:`tg://user?id=<user_id>` can be used to mention a user by their identifier without using a username, if this is allowed by their privacy settings"""
     callback_data: str | None = None

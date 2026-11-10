@@ -37,7 +37,7 @@ class DeleteMessage(TelegramMethod[bool]):
     __api_method__ = "deleteMessage"
 
     chat_id: ChatIdUnion
-    """Unique identifier for the target chat or username of the target bot, supergroup or channel in the format :code:`@username`"""
+    """Unique identifier for the target chat or username of the target bot, supergroup, or channel in the format :code:`@username`"""
     message_id: int
     """Identifier of the message to delete"""
 

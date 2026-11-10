@@ -7,9 +7,9 @@
   "object": {
     "anchor": "richblockexpandableblockquotation",
     "name": "RichBlockExpandableBlockQuotation",
-    "description": "A block quotation, corresponding to the HTML tag <blockquote> with custom attribute \"collapsed\".",
-    "html_description": "<p>A block quotation, corresponding to the HTML tag <code>&lt;blockquote&gt;</code> with custom attribute <code>\"collapsed\"</code>.</p>",
-    "rst_description": "A block quotation, corresponding to the HTML tag :code:`<blockquote>` with custom attribute :code:`\"collapsed\"`.",
+    "description": "A block quotation, corresponding to the HTML tag <blockquote> with custom attribute \"expandable\".",
+    "html_description": "<p>A block quotation, corresponding to the HTML tag <code>&lt;blockquote&gt;</code> with custom attribute <code>\"expandable\"</code>.</p>",
+    "rst_description": "A block quotation, corresponding to the HTML tag :code:`<blockquote>` with custom attribute :code:`\"expandable\"`.",
     "annotations": [
       {
         "type": "String",

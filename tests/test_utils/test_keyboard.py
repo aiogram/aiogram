@@ -404,6 +404,36 @@ class TestKeyboardBuilder:
         builder = builder_type.from_markup(markup)
         assert len(builder.export()) == 2
         assert len(list(builder.buttons)) == 3
+        assert builder.as_markup() == markup
+
+    def test_from_markup_keeps_inline_options(self):
+        markup = InlineKeyboardMarkup(
+            inline_keyboard=[[InlineKeyboardButton(text="a", callback_data="a")]],
+            force_reply=True,
+        )
+        builder = InlineKeyboardBuilder.from_markup(markup)
+        assert builder.as_markup() == markup
+        assert builder.copy().as_markup() == markup
+        assert builder.as_markup(force_reply=False).force_reply is False
+
+    def test_from_markup_keeps_reply_options(self):
+        markup = ReplyKeyboardMarkup(
+            keyboard=[[KeyboardButton(text="a")]],
+            is_persistent=True,
+            resize_keyboard=True,
+            one_time_keyboard=True,
+            input_field_placeholder="placeholder",
+            selective=True,
+            force_reply=True,
+        )
+        builder = ReplyKeyboardBuilder.from_markup(markup)
+        assert builder.as_markup() == markup
+        assert builder.copy().as_markup() == markup
+
+        overridden = builder.as_markup(resize_keyboard=False, input_field_placeholder="other")
+        assert overridden.resize_keyboard is False
+        assert overridden.input_field_placeholder == "other"
+        assert overridden.one_time_keyboard is True
 
     def test_attach(self):
         builder = ReplyKeyboardBuilder(

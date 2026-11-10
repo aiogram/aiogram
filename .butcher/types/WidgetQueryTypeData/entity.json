@@ -1,0 +1,33 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "widgetquerytypedata",
+    "name": "WidgetQueryTypeData",
+    "description": "The query contains data for the bot.",
+    "html_description": "<p>The query contains data for the bot.</p>",
+    "rst_description": "The query contains data for the bot.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Type of the query, always 'data'",
+        "html_description": "<td>Type of the query, always &#8220;data&#8221;</td>",
+        "rst_description": "Type of the query, always 'data'\n",
+        "name": "type",
+        "required": true
+      },
+      {
+        "type": "TonWalletCard",
+        "description": "TON wallet card of the user who sent the query, if it was sent to the bot along with the query",
+        "html_description": "<td><em>Optional</em>. TON wallet card of the user who sent the query, if it was sent to the bot along with the query</td>",
+        "rst_description": "*Optional*. TON wallet card of the user who sent the query, if it was sent to the bot along with the query\n",
+        "name": "wallet_card",
+        "required": false
+      }
+    ],
+    "category": "types"
+  }
+}

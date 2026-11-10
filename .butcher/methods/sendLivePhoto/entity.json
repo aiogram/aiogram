@@ -13,11 +13,12 @@
     "annotations": [
       {
         "type": "Integer or String",
-        "required": true,
-        "description": "Unique identifier for the target chat or username of the target channel (in the format @channelusername)",
-        "html_description": "<td>Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)</td>",
-        "rst_description": "Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)\n",
-        "name": "chat_id"
+        "required": false,
+        "description": "Unique identifier for the target chat or username of the target bot, supergroup, or channel in the format @username; required unless the message is sent as an ephemeral reply to a callback query",
+        "html_description": "<td>Unique identifier for the target chat or username of the target bot, supergroup, or channel in the format <code>@username</code>; required unless the message is sent as an ephemeral reply to a callback query</td>",
+        "rst_description": "Unique identifier for the target chat or username of the target bot, supergroup, or channel in the format :code:`@username`; required unless the message is sent as an ephemeral reply to a callback query\n",
+        "name": "chat_id",
+        "keep_position": true
       },
       {
         "type": "InputFile or String",

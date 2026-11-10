@@ -1,0 +1,21 @@
+annotations:
+  media:
+    parsed_type:
+      type: union
+      items:
+        - type: std
+          name: str
+        - type: entity
+          references:
+            category: types
+            name: InputFile
+  photo:
+    parsed_type:
+      type: union
+      items:
+        - type: std
+          name: str
+        - type: entity
+          references:
+            category: types
+            name: InputFile

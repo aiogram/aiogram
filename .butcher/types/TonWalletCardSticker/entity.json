@@ -1,0 +1,33 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "tonwalletcardsticker",
+    "name": "TonWalletCardSticker",
+    "description": "This object describes a sticker on a TON wallet card.",
+    "html_description": "<p>This object describes a sticker on a TON wallet card.</p>",
+    "rst_description": "This object describes a sticker on a TON wallet card.",
+    "annotations": [
+      {
+        "type": "AreaPosition",
+        "description": "Position of the sticker on the card",
+        "html_description": "<td>Position of the sticker on the card</td>",
+        "rst_description": "Position of the sticker on the card\n",
+        "name": "position",
+        "required": true
+      },
+      {
+        "type": "TonNft",
+        "description": "The NFT shown as the sticker",
+        "html_description": "<td>The NFT shown as the sticker</td>",
+        "rst_description": "The NFT shown as the sticker\n",
+        "name": "nft",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

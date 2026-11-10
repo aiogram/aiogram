@@ -17,9 +17,11 @@ if TYPE_CHECKING:
     from .chat_location import ChatLocation
     from .chat_permissions import ChatPermissions
     from .chat_photo import ChatPhoto
+    from .chat_share_theme_union import ChatShareThemeUnion
     from .community import Community
     from .message import Message
     from .reaction_type_union import ReactionTypeUnion
+    from .ton_wallet_card import TonWalletCard
     from .unique_gift_colors import UniqueGiftColors
     from .user import User
     from .user_rating import UserRating
@@ -138,6 +140,10 @@ class ChatFullInfo(Chat):
     """*Optional*. The bot that processes join request queries in the chat. The field is only available to chat administrators"""
     community: Community | None = None
     """*Optional*. The :class:`aiogram.types.community.Community` to which the chat belongs"""
+    ton_wallet_card: TonWalletCard | None = None
+    """*Optional*. For private chats, the TON wallet card of the user, which is shown on their profile page"""
+    share_theme: ChatShareThemeUnion | None = None
+    """*Optional*. For private chats, supergroups and channels, the theme of the screen for sharing a link to the user or the chat; omitted if the default theme is used"""
     can_send_gift: bool | None = Field(None, json_schema_extra={"deprecated": True})
     """*Optional*. :code:`True`, if gifts can be sent to the chat
 
@@ -204,6 +210,8 @@ class ChatFullInfo(Chat):
             paid_message_star_count: int | None = None,
             guard_bot: User | None = None,
             community: Community | None = None,
+            ton_wallet_card: TonWalletCard | None = None,
+            share_theme: ChatShareThemeUnion | None = None,
             can_send_gift: bool | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
@@ -265,6 +273,8 @@ class ChatFullInfo(Chat):
                 paid_message_star_count=paid_message_star_count,
                 guard_bot=guard_bot,
                 community=community,
+                ton_wallet_card=ton_wallet_card,
+                share_theme=share_theme,
                 can_send_gift=can_send_gift,
                 **__pydantic_kwargs,
             )

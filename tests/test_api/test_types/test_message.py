@@ -4,6 +4,7 @@ from typing import Any
 
 import pytest
 
+from aiogram.client.default import Default
 from aiogram.enums import ParseMode
 from aiogram.methods import (
     AnswerGuestQuery,
@@ -23,6 +24,7 @@ from aiogram.methods import (
     PinChatMessage,
     SendAnimation,
     SendAudio,
+    SendChecklist,
     SendContact,
     SendDice,
     SendDocument,
@@ -69,6 +71,7 @@ from aiogram.types import (
     Contact,
     Dice,
     DirectMessagePriceChanged,
+    DirectMessagesTopic,
     Document,
     EncryptedCredentials,
     EphemeralMessageParameters,
@@ -88,6 +91,8 @@ from aiogram.types import (
     InlineKeyboardButton,
     InlineKeyboardMarkup,
     InlineQueryResultPhoto,
+    InputChecklist,
+    InputChecklistTask,
     InputMediaPhoto,
     InputPaidMediaPhoto,
     InputPollOption,
@@ -103,6 +108,7 @@ from aiogram.types import (
     PaidMediaInfo,
     PaidMediaPhoto,
     PaidMessagePriceChanged,
+    PaidMessagesWaived,
     PassportData,
     PhotoSize,
     Poll,
@@ -112,6 +118,7 @@ from aiogram.types import (
     ProximityAlertTriggered,
     ReactionTypeCustomEmoji,
     RefundedPayment,
+    ReplyParameters,
     RichBlockParagraph,
     RichMessage,
     SharedUser,
@@ -122,8 +129,10 @@ from aiogram.types import (
     SuggestedPostApproved,
     SuggestedPostDeclined,
     SuggestedPostPaid,
+    SuggestedPostParameters,
     SuggestedPostPrice,
     SuggestedPostRefunded,
+    TonWalletTransfer,
     UniqueGift,
     UniqueGiftBackdrop,
     UniqueGiftBackdropColors,
@@ -142,6 +151,7 @@ from aiogram.types import (
     VideoNote,
     Voice,
     WebAppData,
+    Widget,
     WriteAccessAllowed,
 )
 from aiogram.types.message import ContentType, Message
@@ -963,6 +973,31 @@ TEST_MESSAGE_COMMUNITY_CHAT_JOINED = Message(
         community=Community(id=42, name="Test community"),
     ),
 )
+TEST_MESSAGE_WIDGET = Message(
+    message_id=42,
+    date=datetime.datetime.now(),
+    chat=Chat(id=42, type="private"),
+    from_user=User(id=42, is_bot=False, first_name="Test"),
+    widget=Widget(html="<p>Test</p>"),
+)
+TEST_MESSAGE_TON_WALLET_TRANSFER = Message(
+    message_id=42,
+    date=datetime.datetime.now(),
+    chat=Chat(id=42, type="private"),
+    from_user=User(id=42, is_bot=False, first_name="Test"),
+    ton_wallet_transfer=TonWalletTransfer(
+        transaction_id="tx",
+        peer_address="EQ_address",
+        amount="1000000000",
+    ),
+)
+TEST_MESSAGE_PAID_MESSAGES_WAIVED = Message(
+    message_id=42,
+    date=datetime.datetime.now(),
+    chat=Chat(id=42, type="private"),
+    from_user=User(id=42, is_bot=False, first_name="Test"),
+    paid_messages_waived=PaidMessagesWaived(),
+)
 TEST_MESSAGE_EPHEMERAL = Message(
     # The API sends `message_id=0` for ephemeral messages; they are addressed
     # by `ephemeral_message_id` instead.
@@ -973,6 +1008,17 @@ TEST_MESSAGE_EPHEMERAL = Message(
     from_user=User(id=42, is_bot=True, first_name="Bot"),
     receiver_user=User(id=43, is_bot=False, first_name="Test"),
     ephemeral_message_id=7,
+)
+TEST_MESSAGE_BUSINESS_DIRECT_MESSAGES_TOPIC = Message(
+    # Every context a shortcut may fill at once: business, direct messages topic, forum topic.
+    message_id=42,
+    date=datetime.datetime.now(),
+    text="test",
+    chat=Chat(id=-42, type="supergroup", is_forum=True),
+    business_connection_id="test",
+    direct_messages_topic=DirectMessagesTopic(topic_id=77),
+    message_thread_id=7,
+    is_topic_message=True,
 )
 
 MESSAGES_AND_CONTENT_TYPES = [
@@ -1061,6 +1107,9 @@ MESSAGES_AND_CONTENT_TYPES = [
     [TEST_MESSAGE_COMMUNITY_CHAT_ADDED, ContentType.COMMUNITY_CHAT_ADDED],
     [TEST_MESSAGE_COMMUNITY_CHAT_REMOVED, ContentType.COMMUNITY_CHAT_REMOVED],
     [TEST_MESSAGE_COMMUNITY_CHAT_JOINED, ContentType.COMMUNITY_CHAT_JOINED],
+    [TEST_MESSAGE_WIDGET, ContentType.WIDGET],
+    [TEST_MESSAGE_TON_WALLET_TRANSFER, ContentType.TON_WALLET_TRANSFER],
+    [TEST_MESSAGE_PAID_MESSAGES_WAIVED, ContentType.PAID_MESSAGES_WAIVED],
     [TEST_MESSAGE_UNKNOWN, ContentType.UNKNOWN],
 ]
 
@@ -1141,12 +1190,53 @@ MESSAGES_AND_COPY_METHODS = [
     [TEST_MESSAGE_POLL_OPTION_ADDED, None],
     [TEST_MESSAGE_POLL_OPTION_DELETED, None],
     [TEST_MESSAGE_LIVE_PHOTO, SendLivePhoto],
-    [TEST_MESSAGE_RICH_MESSAGE, None],
+    [TEST_MESSAGE_RICH_MESSAGE, SendRichMessage],
     [TEST_MESSAGE_COMMUNITY_CHAT_ADDED, None],
     [TEST_MESSAGE_COMMUNITY_CHAT_REMOVED, None],
     [TEST_MESSAGE_COMMUNITY_CHAT_JOINED, None],
+    [TEST_MESSAGE_WIDGET, None],
+    [TEST_MESSAGE_TON_WALLET_TRANSFER, None],
+    [TEST_MESSAGE_PAID_MESSAGES_WAIVED, None],
     [TEST_MESSAGE_UNKNOWN, None],
 ]
+
+
+SEND_COPY_BASE: dict[str, Any] = {
+    "message_id": 42,
+    "date": 0,
+    "chat": {"id": 42, "type": "private"},
+}
+SEND_COPY_PHOTO = [{"file_id": "file id", "file_unique_id": "file id", "width": 1, "height": 1}]
+SEND_COPY_VIDEO = {
+    "file_id": "file id",
+    "file_unique_id": "file id",
+    "width": 1,
+    "height": 1,
+    "duration": 1,
+}
+SEND_COPY_POLL = {
+    "id": "poll id",
+    "question": "Is 1 < 2?",
+    "question_entities": [{"type": "bold", "offset": 0, "length": 2}],
+    "options": [
+        {
+            "persistent_id": "a",
+            "text": "yes",
+            "text_entities": [{"type": "bold", "offset": 0, "length": 3}],
+            "voter_count": 1,
+        },
+        {"persistent_id": "b", "text": "no", "voter_count": 0},
+    ],
+    "total_voter_count": 1,
+    "is_closed": False,
+    "is_anonymous": False,
+    "type": "regular",
+    "allows_multiple_answers": True,
+    "allows_revoting": True,
+    "members_only": False,
+    "description": "about",
+    "description_entities": [{"type": "italic", "offset": 0, "length": 5}],
+}
 
 
 # `reply_*` shortcuts whose target method declares no `ephemeral_message_parameters`
@@ -1190,6 +1280,67 @@ EPHEMERAL_ALIASES = [
     ["edit_ephemeral_reply_markup", {}, EditEphemeralMessageReplyMarkup],
     ["delete_ephemeral", {}, DeleteEphemeralMessage],
 ]
+
+REPLY_ANSWER_ALIASES = [
+    ["animation", {"animation": "animation"}, SendAnimation],
+    ["audio", {"audio": "audio"}, SendAudio],
+    ["contact", {"phone_number": "+000000000000", "first_name": "Test"}, SendContact],
+    ["document", {"document": "document"}, SendDocument],
+    ["game", {"game_short_name": "game"}, SendGame],
+    [
+        "invoice",
+        {
+            "title": "title",
+            "description": "description",
+            "payload": "payload",
+            "provider_token": "provider_token",
+            "start_parameter": "start_parameter",
+            "currency": "currency",
+            "prices": [],
+        },
+        SendInvoice,
+    ],
+    ["location", {"latitude": 0.42, "longitude": 0.42}, SendLocation],
+    ["media_group", {"media": []}, SendMediaGroup],
+    ["", {"text": "test"}, SendMessage],
+    ["photo", {"photo": "photo"}, SendPhoto],
+    ["poll", {"question": "Q?", "options": []}, SendPoll],
+    ["dice", {}, SendDice],
+    ["sticker", {"sticker": "sticker"}, SendSticker],
+    ["sticker", {"sticker": "sticker"}, SendSticker],
+    [
+        "venue",
+        {
+            "latitude": 0.42,
+            "longitude": 0.42,
+            "title": "title",
+            "address": "address",
+        },
+        SendVenue,
+    ],
+    ["video", {"video": "video"}, SendVideo],
+    ["video_note", {"video_note": "video_note"}, SendVideoNote],
+    ["voice", {"voice": "voice"}, SendVoice],
+    ["paid_media", {"media": [], "star_count": 42}, SendPaidMedia],
+    ["rich", {"rich_message": InputRichMessage(html="<p>Test</p>")}, SendRichMessage],
+]
+
+# Shortcuts that address an existing message (not a send); `delete` and `react` methods
+# have no `business_connection_id`, so they refuse business messages.
+MESSAGE_TARGET_ALIASES = [
+    ["edit_text", {"text": "test"}, EditMessageText],
+    ["edit_media", {"media": InputMediaPhoto(media="photo.jpg")}, EditMessageMedia],
+    ["edit_reply_markup", {}, EditMessageReplyMarkup],
+    ["delete_reply_markup", {}, EditMessageReplyMarkup],
+    ["edit_live_location", {"latitude": 0.42, "longitude": 0.42}, EditMessageLiveLocation],
+    ["stop_live_location", {}, StopMessageLiveLocation],
+    ["edit_caption", {"caption": "test"}, EditMessageCaption],
+    ["pin", {}, PinChatMessage],
+    ["unpin", {}, UnpinChatMessage],
+    ["delete", {}, DeleteMessage],
+    ["react", {}, SetMessageReaction],
+]
+BUSINESS_UNSUPPORTED_ALIASES = {"delete", "react"}
 
 
 class TestAllMessageTypesTested:
@@ -1262,6 +1413,30 @@ class TestMessage:
         reply_parameters = message.as_reply_parameters()
         assert reply_parameters.ephemeral_message_id == message.ephemeral_message_id
         assert reply_parameters.message_id is None
+        assert reply_parameters.chat_id is None
+
+    @pytest.mark.parametrize(
+        "message",
+        [
+            Message(
+                message_id=42,
+                chat=Chat(id=42, type="private"),
+                date=datetime.datetime.now(),
+                business_connection_id="test",
+            ),
+            Message(
+                message_id=42,
+                chat=Chat(id=-42, type="supergroup", is_direct_messages=True),
+                date=datetime.datetime.now(),
+            ),
+        ],
+        ids=["business", "direct_messages"],
+    )
+    def test_as_reply_parameters_without_chat_id(self, message: Message):
+        # `chat_id` is not supported for business messages and messages from channel
+        # direct messages chats: a business reply with it is delivered as a plain message.
+        reply_parameters = message.as_reply_parameters()
+        assert reply_parameters.message_id == message.message_id
         assert reply_parameters.chat_id is None
 
     def test_as_ephemeral_message_parameters(self):
@@ -1408,52 +1583,7 @@ class TestMessage:
         with pytest.raises(AssertionError, match="receiver_user"):
             getattr(message, alias_name)(**kwargs)
 
-    @pytest.mark.parametrize(
-        "alias_for_method,kwargs,method_class",
-        [
-            ["animation", {"animation": "animation"}, SendAnimation],
-            ["audio", {"audio": "audio"}, SendAudio],
-            ["contact", {"phone_number": "+000000000000", "first_name": "Test"}, SendContact],
-            ["document", {"document": "document"}, SendDocument],
-            ["game", {"game_short_name": "game"}, SendGame],
-            [
-                "invoice",
-                {
-                    "title": "title",
-                    "description": "description",
-                    "payload": "payload",
-                    "provider_token": "provider_token",
-                    "start_parameter": "start_parameter",
-                    "currency": "currency",
-                    "prices": [],
-                },
-                SendInvoice,
-            ],
-            ["location", {"latitude": 0.42, "longitude": 0.42}, SendLocation],
-            ["media_group", {"media": []}, SendMediaGroup],
-            ["", {"text": "test"}, SendMessage],
-            ["photo", {"photo": "photo"}, SendPhoto],
-            ["poll", {"question": "Q?", "options": []}, SendPoll],
-            ["dice", {}, SendDice],
-            ["sticker", {"sticker": "sticker"}, SendSticker],
-            ["sticker", {"sticker": "sticker"}, SendSticker],
-            [
-                "venue",
-                {
-                    "latitude": 0.42,
-                    "longitude": 0.42,
-                    "title": "title",
-                    "address": "address",
-                },
-                SendVenue,
-            ],
-            ["video", {"video": "video"}, SendVideo],
-            ["video_note", {"video_note": "video_note"}, SendVideoNote],
-            ["voice", {"voice": "voice"}, SendVoice],
-            ["paid_media", {"media": [], "star_count": 42}, SendPaidMedia],
-            ["rich", {"rich_message": InputRichMessage(html="<p>Test</p>")}, SendRichMessage],
-        ],
-    )
+    @pytest.mark.parametrize("alias_for_method,kwargs,method_class", REPLY_ANSWER_ALIASES)
     @pytest.mark.parametrize("alias_type", ["reply", "answer"])
     def test_reply_answer_aliases(
         self,
@@ -1483,7 +1613,10 @@ class TestMessage:
         ],
     ):
         message = Message(
-            message_id=42, chat=Chat(id=42, type="private"), date=datetime.datetime.now()
+            message_id=42,
+            chat=Chat(id=42, type="private"),
+            date=datetime.datetime.now(),
+            direct_messages_topic=DirectMessagesTopic(topic_id=77),
         )
         alias_name = "_".join(item for item in [alias_type, alias_for_method] if item)
 
@@ -1504,8 +1637,40 @@ class TestMessage:
         if hasattr(api_method, "reply_to_message_id"):
             assert api_method.reply_to_message_id is None
 
+        if "direct_messages_topic_id" in method_class.model_fields:
+            assert api_method.direct_messages_topic_id == 77
+            # Filled from the message, so it is not accepted as an argument anymore.
+            with pytest.raises(TypeError, match="direct_messages_topic_id"):
+                alias(**kwargs, direct_messages_topic_id=1)
+        else:
+            assert "direct_messages_topic_id" not in api_method.model_extra
+
         for key, value in kwargs.items():
             assert getattr(api_method, key) == value
+
+    @pytest.mark.parametrize(
+        "alias_name,kwargs,method_class",
+        [
+            ["_".join(item for item in [alias_type, alias_for_method] if item), kwargs, method]
+            for alias_for_method, kwargs, method in REPLY_ANSWER_ALIASES
+            for alias_type in ["answer", "reply"]
+        ]
+        + MESSAGE_TARGET_ALIASES,
+    )
+    def test_alias_does_not_fill_undeclared_fields(
+        self, alias_name: str, kwargs: dict[str, Any], method_class: type[TelegramMethod[Any]]
+    ):
+        # `TelegramMethod` tolerates extra fields, so a fill for a parameter the method
+        # does not declare would be carried into the request instead of failing.
+        message = TEST_MESSAGE_BUSINESS_DIRECT_MESSAGES_TOPIC
+        if alias_name in BUSINESS_UNSUPPORTED_ALIASES:
+            with pytest.raises(AssertionError, match="business messages"):
+                getattr(message, alias_name)(**kwargs)
+            message = message.model_copy(update={"business_connection_id": None})
+
+        method = getattr(message, alias_name)(**kwargs)
+        assert isinstance(method, method_class)
+        assert method.model_extra == {}
 
     def test_copy_to(self):
         message = Message(
@@ -1525,12 +1690,14 @@ class TestMessage:
         expected_method: type[TelegramMethod] | None,
     ):
         if expected_method is None:
-            with pytest.raises(TypeError, match="This type of message can't be copied."):
+            with pytest.raises(TypeError, match="can't be copied"):
                 message.send_copy(chat_id=42)
             return
 
         method = message.send_copy(chat_id=42)
         assert isinstance(method, expected_method)
+        # TelegramMethod accepts unknown fields, nothing undeclared must leak into the request
+        assert method.model_extra == {}
         if hasattr(method, "parse_mode"):
             # default parse mode in send_copy
             assert method.parse_mode is None
@@ -1588,6 +1755,366 @@ class TestMessage:
         method = message.send_copy(chat_id=42, link_preview_options=override)
         assert isinstance(method, SendMessage)
         assert method.link_preview_options is override
+
+    @pytest.mark.parametrize(
+        "content,expected_method,expected",
+        [
+            [{"dice": {"emoji": "🎳", "value": 3}}, SendDice, {"emoji": "🎳"}],
+            [
+                {"photo": SEND_COPY_PHOTO, "has_media_spoiler": True},
+                SendPhoto,
+                {
+                    "has_spoiler": True,
+                    "show_caption_above_media": Default("show_caption_above_media"),
+                },
+            ],
+            [
+                {"photo": SEND_COPY_PHOTO, "show_caption_above_media": True},
+                SendPhoto,
+                {"has_spoiler": None, "show_caption_above_media": True},
+            ],
+            [
+                {"video": SEND_COPY_VIDEO, "has_media_spoiler": True},
+                SendVideo,
+                {"has_spoiler": True},
+            ],
+            [
+                {
+                    "animation": SEND_COPY_VIDEO,
+                    "document": {"file_id": "file id", "file_unique_id": "file id"},
+                    "has_media_spoiler": True,
+                    "show_caption_above_media": True,
+                },
+                SendAnimation,
+                {"has_spoiler": True, "show_caption_above_media": True},
+            ],
+            [
+                {
+                    "live_photo": {**SEND_COPY_VIDEO, "photo": SEND_COPY_PHOTO},
+                    "has_media_spoiler": True,
+                },
+                SendLivePhoto,
+                {"has_spoiler": True},
+            ],
+            [
+                {
+                    "voice": {"file_id": "file id", "file_unique_id": "file id", "duration": 1},
+                    "caption": "hello",
+                    "caption_entities": [{"type": "bold", "offset": 0, "length": 5}],
+                },
+                SendVoice,
+                {
+                    "caption": "hello",
+                    "caption_entities": [MessageEntity(type="bold", offset=0, length=5)],
+                },
+            ],
+            [
+                {
+                    "location": {"latitude": 1.0, "longitude": 2.0},
+                    "venue": {
+                        "location": {"latitude": 1.0, "longitude": 2.0},
+                        "title": "Cafe",
+                        "address": "Street 1",
+                        "google_place_id": "place",
+                        "google_place_type": "cafe",
+                    },
+                },
+                SendVenue,
+                {"google_place_id": "place", "google_place_type": "cafe"},
+            ],
+            [
+                {
+                    "location": {
+                        "latitude": 1.0,
+                        "longitude": 2.0,
+                        "horizontal_accuracy": 5.0,
+                        "live_period": 60,
+                        "heading": 90,
+                    }
+                },
+                SendLocation,
+                {"horizontal_accuracy": 5.0, "live_period": None, "heading": None},
+            ],
+            [
+                {"poll": SEND_COPY_POLL},
+                SendPoll,
+                {
+                    "question_parse_mode": None,
+                    "question_entities": [
+                        MessageEntity(type="bold", offset=0, length=2),
+                    ],
+                    "allows_multiple_answers": True,
+                    "allows_revoting": True,
+                    "description": "about",
+                    "description_parse_mode": None,
+                    "description_entities": [MessageEntity(type="italic", offset=0, length=5)],
+                    "explanation_parse_mode": None,
+                    "type": None,
+                    "correct_option_ids": None,
+                    "is_anonymous": None,
+                },
+            ],
+            [
+                {
+                    "poll": {
+                        **SEND_COPY_POLL,
+                        "type": "quiz",
+                        "is_anonymous": False,
+                        "correct_option_ids": [0],
+                        "explanation": "because",
+                        "explanation_entities": [{"type": "bold", "offset": 0, "length": 7}],
+                    }
+                },
+                SendPoll,
+                {
+                    "type": "quiz",
+                    "correct_option_ids": [0],
+                    "explanation": "because",
+                    "explanation_parse_mode": None,
+                    "explanation_entities": [MessageEntity(type="bold", offset=0, length=7)],
+                    "is_anonymous": None,
+                },
+            ],
+            [
+                # correct options are unknown, so only a regular poll can be sent
+                {"poll": {**SEND_COPY_POLL, "type": "quiz", "explanation": "because"}},
+                SendPoll,
+                {"type": None, "correct_option_ids": None, "explanation": None},
+            ],
+        ],
+    )
+    def test_send_copy_preserves_content(
+        self,
+        content: dict[str, Any],
+        expected_method: type[TelegramMethod],
+        expected: dict[str, Any],
+    ):
+        message = Message.model_validate({**SEND_COPY_BASE, **content})
+        method = message.send_copy(chat_id=42)
+        assert isinstance(method, expected_method)
+        assert method.model_extra == {}
+        for key, value in expected.items():
+            assert getattr(method, key) == value, key
+
+    def test_send_copy_poll_options(self):
+        message = Message.model_validate({**SEND_COPY_BASE, "poll": SEND_COPY_POLL})
+        method = message.send_copy(chat_id=42)
+        assert method.options == [
+            InputPollOption(
+                text="yes",
+                text_entities=[MessageEntity(type="bold", offset=0, length=3)],
+                text_parse_mode=None,
+            ),
+            InputPollOption(text="no", text_parse_mode=None),
+        ]
+        assert all(option.model_extra == {} for option in method.options)
+
+    def test_send_copy_checklist(self):
+        message = Message.model_validate(
+            {
+                **SEND_COPY_BASE,
+                "checklist": {
+                    "title": "Groceries",
+                    "title_entities": [{"type": "bold", "offset": 0, "length": 9}],
+                    "tasks": [
+                        {
+                            "id": 1,
+                            "text": "milk",
+                            "text_entities": [{"type": "italic", "offset": 0, "length": 4}],
+                            "completion_date": 1,
+                        },
+                        {"id": 2, "text": "bread"},
+                    ],
+                    "others_can_add_tasks": True,
+                    "others_can_mark_tasks_as_done": False,
+                },
+            }
+        )
+        method = message.send_copy(chat_id=42, business_connection_id="bc")
+        assert isinstance(method, SendChecklist)
+        assert method.model_extra == {}
+        assert method.business_connection_id == "bc"
+        assert method.checklist == InputChecklist(
+            title="Groceries",
+            parse_mode=None,
+            title_entities=[MessageEntity(type="bold", offset=0, length=9)],
+            tasks=[
+                InputChecklistTask(
+                    id=1,
+                    text="milk",
+                    parse_mode=None,
+                    text_entities=[MessageEntity(type="italic", offset=0, length=4)],
+                ),
+                InputChecklistTask(id=2, text="bread", parse_mode=None),
+            ],
+            others_can_add_tasks=True,
+            others_can_mark_tasks_as_done=False,
+        )
+
+    def test_send_copy_checklist_requires_business_connection(self):
+        with pytest.raises(TypeError, match="business_connection_id"):
+            TEST_MESSAGE_CHECKLIST.send_copy(chat_id=42)
+
+    def test_send_copy_rich_message(self):
+        photo = [
+            {"file_id": "small", "file_unique_id": "small", "width": 1, "height": 1},
+            {"file_id": "big", "file_unique_id": "big", "width": 2, "height": 2},
+        ]
+        message = Message.model_validate(
+            {
+                **SEND_COPY_BASE,
+                "rich_message": {
+                    "is_rtl": True,
+                    "blocks": [
+                        {
+                            "type": "photo",
+                            "photo": photo,
+                            "has_spoiler": True,
+                            "caption": {"text": "caption"},
+                        },
+                        {
+                            "type": "details",
+                            "summary": "more",
+                            "blocks": [
+                                {"type": "video", "video": SEND_COPY_VIDEO, "has_spoiler": False},
+                                {"type": "animation", "animation": SEND_COPY_VIDEO},
+                                {
+                                    "type": "audio",
+                                    "audio": {
+                                        "file_id": "audio",
+                                        "file_unique_id": "audio",
+                                        "duration": 1,
+                                    },
+                                },
+                                {
+                                    "type": "document",
+                                    "document": {"file_id": "doc", "file_unique_id": "doc"},
+                                },
+                                {
+                                    "type": "list",
+                                    "items": [
+                                        {
+                                            "label": "1.",
+                                            "value": 1,
+                                            "type": "1",
+                                            "blocks": [
+                                                {
+                                                    "type": "voice_note",
+                                                    "voice_note": {
+                                                        "file_id": "voice",
+                                                        "file_unique_id": "voice",
+                                                        "duration": 1,
+                                                    },
+                                                },
+                                                {
+                                                    "type": "paragraph",
+                                                    "text": {"type": "bold", "text": "bold"},
+                                                },
+                                            ],
+                                        }
+                                    ],
+                                },
+                            ],
+                        },
+                    ],
+                },
+            }
+        )
+        method = message.send_copy(chat_id=42)
+        assert isinstance(method, SendRichMessage)
+        assert method.model_extra == {}
+        assert method.rich_message == InputRichMessage.model_validate(
+            {
+                "is_rtl": True,
+                "blocks": [
+                    {
+                        "type": "photo",
+                        "photo": {"media": "big", "has_spoiler": True},
+                        "caption": {"text": "caption"},
+                    },
+                    {
+                        "type": "details",
+                        "summary": "more",
+                        "blocks": [
+                            {
+                                "type": "video",
+                                "video": {"media": "file id", "has_spoiler": False},
+                            },
+                            {"type": "animation", "animation": {"media": "file id"}},
+                            {"type": "audio", "audio": {"media": "audio"}},
+                            {"type": "document", "document": {"media": "doc"}},
+                            {
+                                "type": "list",
+                                "items": [
+                                    {
+                                        "value": 1,
+                                        "type": "1",
+                                        "blocks": [
+                                            {
+                                                "type": "voice_note",
+                                                "voice_note": {"media": "voice"},
+                                            },
+                                            {
+                                                "type": "paragraph",
+                                                "text": {"type": "bold", "text": "bold"},
+                                            },
+                                        ],
+                                    }
+                                ],
+                            },
+                        ],
+                    },
+                ],
+            }
+        )
+
+    @pytest.mark.parametrize(
+        "message,expected_method",
+        [
+            [TEST_MESSAGE_TEXT, SendMessage],
+            [TEST_MESSAGE_PHOTO, SendPhoto],
+            [TEST_MESSAGE_DICE, SendDice],
+            [TEST_MESSAGE_STORY, ForwardMessage],
+            [TEST_MESSAGE_RICH_MESSAGE, SendRichMessage],
+        ],
+    )
+    def test_send_copy_direct_messages(
+        self, message: Message, expected_method: type[TelegramMethod]
+    ):
+        parameters = SuggestedPostParameters(price=SuggestedPostPrice(currency="XTR", amount=10))
+        method = message.send_copy(
+            chat_id=42, direct_messages_topic_id=3, suggested_post_parameters=parameters
+        )
+        assert isinstance(method, expected_method)
+        assert method.direct_messages_topic_id == 3
+        assert method.suggested_post_parameters is parameters
+
+    def test_send_copy_direct_messages_not_leaked_into_poll(self):
+        method = TEST_MESSAGE_POLL.send_copy(chat_id=42, direct_messages_topic_id=3)
+        assert isinstance(method, SendPoll)
+        assert method.model_extra == {}
+
+    def test_send_copy_direct_messages_parameters_are_keyword_only(self):
+        parameters = inspect.signature(Message.send_copy).parameters
+        assert parameters["direct_messages_topic_id"].kind is inspect.Parameter.KEYWORD_ONLY
+        assert parameters["suggested_post_parameters"].kind is inspect.Parameter.KEYWORD_ONLY
+
+    def test_send_copy_reply_to_message_id(self):
+        method = TEST_MESSAGE_LIVE_PHOTO.send_copy(
+            chat_id=42, reply_to_message_id=7, allow_sending_without_reply=True
+        )
+        assert isinstance(method, SendLivePhoto)
+        assert method.model_extra == {}
+        assert method.reply_parameters == ReplyParameters(
+            message_id=7, allow_sending_without_reply=True
+        )
+
+    def test_send_copy_reply_parameters_take_precedence(self):
+        reply_parameters = ReplyParameters(message_id=8)
+        method = TEST_MESSAGE_TEXT.send_copy(
+            chat_id=42, reply_to_message_id=7, reply_parameters=reply_parameters
+        )
+        assert method.reply_parameters is reply_parameters
 
     def test_edit_text(self):
         message = Message(
@@ -1704,6 +2231,18 @@ class TestMessage:
         assert isinstance(method, DeleteMessage)
         assert method.chat_id == message.chat.id
         assert method.message_id == message.message_id
+        assert method.model_extra == {}
+
+    def test_delete_business_message(self):
+        # deleteMessage has no `business_connection_id`; it used to leak into the request.
+        message = Message(
+            message_id=42,
+            chat=Chat(id=42, type="private"),
+            date=datetime.datetime.now(),
+            business_connection_id="test",
+        )
+        with pytest.raises(AssertionError, match="Bot.delete_business_messages"):
+            message.delete()
 
     def test_pin(self):
         message = Message(
@@ -1735,6 +2274,18 @@ class TestMessage:
         assert isinstance(method, SetMessageReaction)
         assert method.chat_id == message.chat.id
         assert method.reaction == [emoji_reaction]
+        assert method.model_extra == {}
+
+    def test_react_business_message(self):
+        # setMessageReaction has no `business_connection_id`; it used to leak into the request.
+        message = Message(
+            message_id=42,
+            chat=Chat(id=42, type="private"),
+            date=datetime.datetime.now(),
+            business_connection_id="test",
+        )
+        with pytest.raises(AssertionError, match="business messages"):
+            message.react(reaction=[ReactionTypeCustomEmoji(custom_emoji_id="qwerty")])
 
     @pytest.mark.parametrize(
         "text,entities,mode,expected_value",

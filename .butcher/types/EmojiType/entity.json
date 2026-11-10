@@ -1,0 +1,16 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "emojitype",
+    "name": "EmojiType",
+    "description": "This object describes an emoji. Currently, it can be one of\n - EmojiTypeEmoji\n - EmojiTypeCustomEmoji",
+    "html_description": "<p>This object describes an emoji. Currently, it can be one of</p><ul>\n<li><a href=\"#emojitypeemoji\">EmojiTypeEmoji</a></li>\n<li><a href=\"#emojitypecustomemoji\">EmojiTypeCustomEmoji</a></li>\n</ul>",
+    "rst_description": "This object describes an emoji. Currently, it can be one of\n\n - :class:`aiogram.types.emoji_type_emoji.EmojiTypeEmoji`\n - :class:`aiogram.types.emoji_type_custom_emoji.EmojiTypeCustomEmoji`",
+    "annotations": [],
+    "category": "types"
+  }
+}

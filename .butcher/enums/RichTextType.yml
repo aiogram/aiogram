@@ -33,3 +33,4 @@ multi_parse:
     - RichTextAnchorLink
     - RichTextReference
     - RichTextReferenceLink
+    - RichTextTonAddress

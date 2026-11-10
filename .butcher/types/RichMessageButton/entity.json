@@ -21,9 +21,9 @@
       },
       {
         "type": "String",
-        "description": "Style of the button. Must be one of 'danger' (red), 'success' (green), 'primary' (blue) or 'link' (the button is shown as a regular link without borders). If omitted, then an app-specific style is used. The style 'link' is allowed only for callback buttons.",
-        "html_description": "<td><em>Optional</em>. Style of the button. Must be one of &#8220;danger&#8221; (red), &#8220;success&#8221; (green), &#8220;primary&#8221; (blue) or &#8220;link&#8221; (the button is shown as a regular link without borders). If omitted, then an app-specific style is used. The style &#8220;link&#8221; is allowed only for callback buttons.</td>",
-        "rst_description": "*Optional*. Style of the button. Must be one of 'danger' (red), 'success' (green), 'primary' (blue) or 'link' (the button is shown as a regular link without borders). If omitted, then an app-specific style is used. The style 'link' is allowed only for callback buttons.\n",
+        "description": "Style of the button. Must be one of 'danger', 'success', 'primary', or 'link' (the button is shown as a regular link without borders). Apps may use theme-specific colors for the button background and text based on the style. The style 'link' is allowed only for callback buttons.",
+        "html_description": "<td><em>Optional</em>. Style of the button. Must be one of &#8220;danger&#8221;, &#8220;success&#8221;, &#8220;primary&#8221;, or &#8220;link&#8221; (the button is shown as a regular link without borders). Apps may use theme-specific colors for the button background and text based on the style. The style &#8220;link&#8221; is allowed only for callback buttons.</td>",
+        "rst_description": "*Optional*. Style of the button. Must be one of 'danger', 'success', 'primary', or 'link' (the button is shown as a regular link without borders). Apps may use theme-specific colors for the button background and text based on the style. The style 'link' is allowed only for callback buttons.\n",
         "name": "style",
         "required": false
       },

@@ -1,7 +1,12 @@
+from __future__ import annotations
+
 from typing import TYPE_CHECKING, Any, Literal
 
 from ..enums import InputPaidMediaType
 from .input_paid_media import InputPaidMedia
+
+if TYPE_CHECKING:
+    from .input_file_union import InputFileUnion
 
 
 class InputPaidMediaLivePhoto(InputPaidMedia):
@@ -13,9 +18,9 @@ class InputPaidMediaLivePhoto(InputPaidMedia):
 
     type: Literal[InputPaidMediaType.LIVE_PHOTO] = InputPaidMediaType.LIVE_PHOTO
     """Type of the media, must be *live_photo*"""
-    media: str
+    media: InputFileUnion
     """Video of the live photo to send. Pass a file_id to send a file that exists on the Telegram servers (recommended) or pass 'attach://<file_attach_name>' to upload a new one using multipart/form-data under <file_attach_name> name. :ref:`More information on Sending Files » <sending-files>`. Sending live photos by a URL is currently unsupported"""
-    photo: str
+    photo: InputFileUnion
     """The static photo to send. Pass a file_id to send a file that exists on the Telegram servers (recommended) or pass 'attach://<file_attach_name>' to upload a new one using multipart/form-data under <file_attach_name> name. :ref:`More information on Sending Files » <sending-files>`. Sending live photos by a URL is currently unsupported"""
 
     if TYPE_CHECKING:
@@ -26,8 +31,8 @@ class InputPaidMediaLivePhoto(InputPaidMedia):
             __pydantic__self__,
             *,
             type: Literal[InputPaidMediaType.LIVE_PHOTO] = InputPaidMediaType.LIVE_PHOTO,
-            media: str,
-            photo: str,
+            media: InputFileUnion,
+            photo: InputFileUnion,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

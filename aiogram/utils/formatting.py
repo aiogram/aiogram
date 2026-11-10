@@ -389,6 +389,28 @@ class PhoneNumber(Text):
     type = MessageEntityType.PHONE_NUMBER
 
 
+class BankCardNumber(Text):
+    """
+    Bank card number element.
+
+    Will be wrapped into :obj:`aiogram.types.message_entity.MessageEntity`
+    with type :obj:`aiogram.enums.message_entity_type.MessageEntityType.BANK_CARD_NUMBER`
+    """
+
+    type = MessageEntityType.BANK_CARD_NUMBER
+
+
+class TonAddress(Text):
+    """
+    TON blockchain address element.
+
+    Will be wrapped into :obj:`aiogram.types.message_entity.MessageEntity`
+    with type :obj:`aiogram.enums.message_entity_type.MessageEntityType.TON_ADDRESS`
+    """
+
+    type = MessageEntityType.TON_ADDRESS
+
+
 class Bold(Text):
     """
     Bold element.
@@ -561,6 +583,8 @@ NODE_TYPES: dict[str | None, type[Text]] = {
     Url.type: Url,
     Email.type: Email,
     PhoneNumber.type: PhoneNumber,
+    BankCardNumber.type: BankCardNumber,
+    TonAddress.type: TonAddress,
     Bold.type: Bold,
     Italic.type: Italic,
     Underline.type: Underline,

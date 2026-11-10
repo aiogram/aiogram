@@ -26,7 +26,7 @@ class SendDice(TelegramMethod[Message]):
     __api_method__ = "sendDice"
 
     chat_id: ChatIdUnion
-    """Unique identifier for the target chat or username of the target bot, supergroup or channel in the format :code:`@username`"""
+    """Unique identifier for the target chat or username of the target bot, supergroup, or channel in the format :code:`@username`"""
     business_connection_id: str | None = None
     """Unique identifier of the business connection on behalf of which the message will be sent"""
     message_thread_id: int | None = None

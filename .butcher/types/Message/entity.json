@@ -389,9 +389,9 @@
       },
       {
         "type": "String",
-        "description": "Caption for the animation, audio, document, paid media, photo, video or voice",
-        "html_description": "<td><em>Optional</em>. Caption for the animation, audio, document, paid media, photo, video or voice</td>",
-        "rst_description": "*Optional*. Caption for the animation, audio, document, paid media, photo, video or voice\n",
+        "description": "Caption for the animation, audio, document, live photo, paid media, photo, video, voice, or widget",
+        "html_description": "<td><em>Optional</em>. Caption for the animation, audio, document, live photo, paid media, photo, video, voice, or widget</td>",
+        "rst_description": "*Optional*. Caption for the animation, audio, document, live photo, paid media, photo, video, voice, or widget\n",
         "name": "caption",
         "required": false
       },
@@ -405,9 +405,9 @@
       },
       {
         "type": "True",
-        "description": "True, if the caption must be shown above the message media",
-        "html_description": "<td><em>Optional</em>. <em>True</em>, if the caption must be shown above the message media</td>",
-        "rst_description": "*Optional*. :code:`True`, if the caption must be shown above the message media\n",
+        "description": "True, if the caption must be shown above the message media or the widget",
+        "html_description": "<td><em>Optional</em>. <em>True</em>, if the caption must be shown above the message media or the widget</td>",
+        "rst_description": "*Optional*. :code:`True`, if the caption must be shown above the message media or the widget\n",
         "name": "show_caption_above_media",
         "required": false
       },
@@ -969,6 +969,30 @@
         "html_description": "<td><em>Optional</em>. Service message: chat was joined by a user from a <a href=\"#community\">Community</a></td>",
         "rst_description": "*Optional*. Service message: chat was joined by a user from a :class:`aiogram.types.community.Community`\n",
         "name": "community_chat_joined",
+        "required": false
+      },
+      {
+        "type": "Widget",
+        "description": "Message is an HTML widget, information about the widget",
+        "html_description": "<td><em>Optional</em>. Message is an HTML widget, information about the widget</td>",
+        "rst_description": "*Optional*. Message is an HTML widget, information about the widget\n",
+        "name": "widget",
+        "required": false
+      },
+      {
+        "type": "PaidMessagesWaived",
+        "description": "Service message: the sender of the message used a link of the other user, which allows sending messages to the user without paying Telegram Stars",
+        "html_description": "<td><em>Optional</em>. Service message: the sender of the message used a link of the other user, which allows sending messages to the user without paying Telegram Stars</td>",
+        "rst_description": "*Optional*. Service message: the sender of the message used a link of the other user, which allows sending messages to the user without paying Telegram Stars\n",
+        "name": "paid_messages_waived",
+        "required": false
+      },
+      {
+        "type": "TonWalletTransfer",
+        "description": "Service message: a transfer with a TON wallet",
+        "html_description": "<td><em>Optional</em>. Service message: a transfer with a TON wallet</td>",
+        "rst_description": "*Optional*. Service message: a transfer with a TON wallet\n",
+        "name": "ton_wallet_transfer",
         "required": false
       },
       {

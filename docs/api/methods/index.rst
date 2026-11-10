@@ -38,6 +38,7 @@ Available methods
     answer_chat_join_request_query
     answer_guest_query
     answer_web_app_query
+    answer_widget_query
     approve_chat_join_request
     ban_chat_member
     ban_chat_sender_chat
@@ -51,6 +52,7 @@ Available methods
     create_chat_subscription_invite_link
     create_forum_topic
     decline_chat_join_request
+    delete_business_account_gift
     delete_business_messages
     delete_chat_photo
     delete_chat_sticker_set
@@ -75,6 +77,7 @@ Available methods
     get_chat_member
     get_chat_member_count
     get_chat_menu_button
+    get_chat_share_theme_backdrops
     get_file
     get_forum_topic_icon_stickers
     get_managed_bot_access_settings
@@ -85,6 +88,7 @@ Available methods
     get_my_description
     get_my_name
     get_my_short_description
+    get_unique_gift
     get_user_chat_boosts
     get_user_gifts
     get_user_personal_chat_messages
@@ -127,10 +131,12 @@ Available methods
     send_paid_media
     send_photo
     send_poll
+    send_shared_widget
     send_venue
     send_video
     send_video_note
     send_voice
+    send_widget
     set_business_account_bio
     set_business_account_gift_settings
     set_business_account_name
@@ -189,6 +195,8 @@ Updating messages
     edit_message_media
     edit_message_reply_markup
     edit_message_text
+    edit_message_widget_data
+    edit_shared_widget_data
     stop_message_live_location
     stop_poll
 

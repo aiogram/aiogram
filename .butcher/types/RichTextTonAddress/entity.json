@@ -1,0 +1,41 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Rich messages",
+    "anchor": "rich-messages"
+  },
+  "object": {
+    "anchor": "richtexttonaddress",
+    "name": "RichTextTonAddress",
+    "description": "An address in the TON blockchain.",
+    "html_description": "<p>An address in the TON blockchain.</p>",
+    "rst_description": "An address in the TON blockchain.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Type of the rich text, always 'ton_address'",
+        "html_description": "<td>Type of the rich text, always &#8220;ton_address&#8221;</td>",
+        "rst_description": "Type of the rich text, always 'ton_address'\n",
+        "name": "type",
+        "required": true
+      },
+      {
+        "type": "RichText",
+        "description": "Text of the address",
+        "html_description": "<td>Text of the address</td>",
+        "rst_description": "Text of the address\n",
+        "name": "text",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "The address",
+        "html_description": "<td>The address</td>",
+        "rst_description": "The address\n",
+        "name": "address",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

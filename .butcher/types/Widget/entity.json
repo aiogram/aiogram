@@ -1,0 +1,65 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "widget",
+    "name": "Widget",
+    "description": "This object describes an HTML widget.",
+    "html_description": "<p>This object describes an <a href=\"/bots/widgets\">HTML widget</a>.</p>",
+    "rst_description": "This object describes an `HTML widget <https://core.telegram.org/bots/widgets>`_.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "HTML code of the widget",
+        "html_description": "<td>HTML code of the widget</td>",
+        "rst_description": "HTML code of the widget\n",
+        "name": "html",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "Unique identifier of the shared widget, which can be used to send the widget again using the method sendSharedWidget; omitted if the widget isn't shared",
+        "html_description": "<td><em>Optional</em>. Unique identifier of the shared widget, which can be used to send the widget again using the method <a href=\"#sendsharedwidget\">sendSharedWidget</a>; omitted if the widget isn't shared</td>",
+        "rst_description": "*Optional*. Unique identifier of the shared widget, which can be used to send the widget again using the method :class:`aiogram.methods.send_shared_widget.SendSharedWidget`; omitted if the widget isn't shared\n",
+        "name": "id",
+        "required": false
+      },
+      {
+        "type": "Integer",
+        "description": "Width of the widget in logical pixels; omitted if the widget must occupy the whole width of the message bubble",
+        "html_description": "<td><em>Optional</em>. Width of the widget in logical pixels; omitted if the widget must occupy the whole width of the message bubble</td>",
+        "rst_description": "*Optional*. Width of the widget in logical pixels; omitted if the widget must occupy the whole width of the message bubble\n",
+        "name": "width",
+        "required": false
+      },
+      {
+        "type": "Integer",
+        "description": "Height of the widget in logical pixels; omitted if the height of the widget isn't fixed",
+        "html_description": "<td><em>Optional</em>. Height of the widget in logical pixels; omitted if the height of the widget isn't fixed</td>",
+        "rst_description": "*Optional*. Height of the widget in logical pixels; omitted if the height of the widget isn't fixed\n",
+        "name": "height",
+        "required": false
+      },
+      {
+        "type": "String",
+        "description": "Public data of the widget, which is available wherever the widget is shown. All messages with a shared widget have the same public data.",
+        "html_description": "<td><em>Optional</em>. Public data of the widget, which is available wherever the widget is shown. All messages with a shared widget have the same public data.</td>",
+        "rst_description": "*Optional*. Public data of the widget, which is available wherever the widget is shown. All messages with a shared widget have the same public data.\n",
+        "name": "public_data",
+        "required": false
+      },
+      {
+        "type": "String",
+        "description": "Data of the widget, which is specific to the message",
+        "html_description": "<td><em>Optional</em>. Data of the widget, which is specific to the message</td>",
+        "rst_description": "*Optional*. Data of the widget, which is specific to the message\n",
+        "name": "chat_data",
+        "required": false
+      }
+    ],
+    "category": "types"
+  }
+}

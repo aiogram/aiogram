@@ -1,0 +1,49 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "widgetquerywallet",
+    "name": "WidgetQueryWallet",
+    "description": "This object describes a TON wallet of the user, which is used in a query from a widget.",
+    "html_description": "<p>This object describes a TON wallet of the user, which is used in a query from a widget.</p>",
+    "rst_description": "This object describes a TON wallet of the user, which is used in a query from a widget.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Address of the wallet",
+        "html_description": "<td>Address of the wallet</td>",
+        "rst_description": "Address of the wallet\n",
+        "name": "address",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "Balance of the wallet, in the smallest units of the cryptocurrency, as a decimal number",
+        "html_description": "<td>Balance of the wallet, in the <em>smallest units</em> of the cryptocurrency, as a decimal number</td>",
+        "rst_description": "Balance of the wallet, in the *smallest units* of the cryptocurrency, as a decimal number\n",
+        "name": "amount",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "Hex-encoded public key of the wallet; omitted if unknown",
+        "html_description": "<td><em>Optional</em>. Hex-encoded public key of the wallet; omitted if unknown</td>",
+        "rst_description": "*Optional*. Hex-encoded public key of the wallet; omitted if unknown\n",
+        "name": "public_key",
+        "required": false
+      },
+      {
+        "type": "String",
+        "description": "Base64-encoded serialized StateInit of the wallet contract; omitted if and only if public_key is omitted",
+        "html_description": "<td><em>Optional</em>. Base64-encoded serialized StateInit of the wallet contract; omitted if and only if <em>public_key</em> is omitted</td>",
+        "rst_description": "*Optional*. Base64-encoded serialized StateInit of the wallet contract; omitted if and only if *public_key* is omitted\n",
+        "name": "state_init",
+        "required": false
+      }
+    ],
+    "category": "types"
+  }
+}

@@ -19,6 +19,7 @@ class StorageKey:
     thread_id: int | None = None
     business_connection_id: str | None = None
     destiny: str = DEFAULT_DESTINY
+    is_guest: bool = False
 
 
 class KeyBuilder(ABC):
@@ -44,10 +45,13 @@ class DefaultKeyBuilder(KeyBuilder):
     Simple key builder with default prefix.
 
     Generates a colon-joined string with prefix, chat_id, user_id,
-    optional bot_id, business_connection_id, destiny and field.
+    optional bot_id, business_connection_id, guest marker, thread_id, destiny and field.
 
     Format:
-     :code:`<prefix>:<bot_id?>:<business_connection_id?>:<chat_id>:<user_id>:<destiny?>:<field?>`
+     :code:`<prefix>:<bot_id?>:<business_connection_id?>:<guest?>:<chat_id>:<thread_id?>:<user_id>:<destiny?>:<field?>`
+
+    The :code:`guest` part is added only for keys of guest chats
+    (:code:`StorageKey.is_guest`), so keys of regular chats are not affected by it.
     """
 
     def __init__(
@@ -58,6 +62,7 @@ class DefaultKeyBuilder(KeyBuilder):
         with_bot_id: bool = False,
         with_business_connection_id: bool = False,
         with_destiny: bool = False,
+        with_guest: bool = True,
     ) -> None:
         """
         :param prefix: prefix for all records
@@ -65,12 +70,15 @@ class DefaultKeyBuilder(KeyBuilder):
         :param with_bot_id: include Bot id in the key
         :param with_business_connection_id: include business connection id
         :param with_destiny: include destiny key
+        :param with_guest: add the :code:`guest` part to keys of guest chats,
+            so they don't share records with the bot's own chats that have the same id
         """
         self.prefix = prefix
         self.separator = separator
         self.with_bot_id = with_bot_id
         self.with_business_connection_id = with_business_connection_id
         self.with_destiny = with_destiny
+        self.with_guest = with_guest
 
     def build(
         self,
@@ -82,6 +90,8 @@ class DefaultKeyBuilder(KeyBuilder):
             parts.append(str(key.bot_id))
         if self.with_business_connection_id and key.business_connection_id:
             parts.append(str(key.business_connection_id))
+        if self.with_guest and key.is_guest:
+            parts.append("guest")
         parts.append(str(key.chat_id))
         if key.thread_id:
             parts.append(str(key.thread_id))

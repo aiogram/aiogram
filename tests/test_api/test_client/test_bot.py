@@ -1,3 +1,5 @@
+import datetime
+import inspect
 import io
 import os
 from pathlib import Path
@@ -11,8 +13,8 @@ from aresponses import ResponsesMockServer
 from aiogram import Bot
 from aiogram.client.session.aiohttp import AiohttpSession
 from aiogram.client.telegram import TelegramAPIServer
-from aiogram.methods import GetFile, GetMe
-from aiogram.types import File, PhotoSize
+from aiogram.methods import GetFile, GetMe, SendMessage
+from aiogram.types import Chat, EphemeralMessageParameters, File, Message, PhotoSize
 from tests.mocked_bot import MockedBot
 from tests.test_api.test_client.test_session.test_base_session import CustomSession
 
@@ -190,3 +192,36 @@ class TestBot:
             assert content.getvalue() == value
         finally:
             os.unlink(tmp)
+
+    @pytest.mark.parametrize(
+        "method_name,second_param",
+        [["send_message", "text"], ["send_photo", "photo"]],
+    )
+    def test_optional_chat_id_stays_first(self, method_name: str, second_param: str):
+        # Bot API 10.4 made `chat_id` optional, it must keep its positional slot
+        parameters = inspect.signature(getattr(Bot, method_name)).parameters
+        assert list(parameters)[1:3] == ["chat_id", second_param]
+        assert parameters["chat_id"].default is inspect.Parameter.empty
+
+    async def test_send_message_without_chat_id(self, mocked_bot: MockedBot):
+        mocked_bot.add_result_for(
+            SendMessage,
+            ok=True,
+            result=Message(
+                message_id=0,
+                date=datetime.datetime.now(),
+                text="hi",
+                chat=Chat(id=42, type="private"),
+            ),
+        )
+
+        await mocked_bot.send_message(
+            None,
+            "hi",
+            ephemeral_message_parameters=EphemeralMessageParameters(callback_query_id="cb"),
+        )
+        request = mocked_bot.get_request()
+        assert isinstance(request, SendMessage)
+        assert request.chat_id is None
+        assert request.text == "hi"
+        assert request.ephemeral_message_parameters.callback_query_id == "cb"

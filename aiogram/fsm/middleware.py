@@ -4,6 +4,7 @@ from typing import Any, cast
 from aiogram import Bot
 from aiogram.dispatcher.middlewares.base import BaseMiddleware
 from aiogram.dispatcher.middlewares.user_context import EVENT_CONTEXT_KEY, EventContext
+from aiogram.enums import ChatType
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.storage.base import (
     DEFAULT_DESTINY,
@@ -21,10 +22,21 @@ class FSMContextMiddleware(BaseMiddleware):
         storage: BaseStorage,
         events_isolation: BaseEventIsolation,
         strategy: FSMStrategy = FSMStrategy.USER_IN_CHAT,
+        key_on_sender_chat: bool = False,
     ) -> None:
+        """
+        :param storage: FSM storage
+        :param events_isolation: events isolation
+        :param strategy: FSM strategy
+        :param key_on_sender_chat: for messages sent on behalf of a chat
+            (anonymous group administrators, users posting as a channel)
+            use :code:`sender_chat.id` instead of the placeholder sender user id
+            as the user id of the FSM key
+        """
         self.storage = storage
         self.strategy = strategy
         self.events_isolation = events_isolation
+        self.key_on_sender_chat = key_on_sender_chat
 
     async def __call__(
         self,
@@ -50,13 +62,22 @@ class FSMContextMiddleware(BaseMiddleware):
         destiny: str = DEFAULT_DESTINY,
     ) -> FSMContext | None:
         event_context: EventContext = cast(EventContext, data.get(EVENT_CONTEXT_KEY))
+        user_id = event_context.user_id
+        if (
+            self.key_on_sender_chat
+            and event_context.sender_chat is not None
+            and event_context.chat is not None
+            and event_context.chat.type != ChatType.CHANNEL
+        ):
+            user_id = event_context.sender_chat.id
         return self.resolve_context(
             bot=bot,
             chat_id=event_context.chat_id,
-            user_id=event_context.user_id,
+            user_id=user_id,
             thread_id=event_context.thread_id,
             business_connection_id=event_context.business_connection_id,
             destiny=destiny,
+            is_guest=event_context.is_guest,
         )
 
     def resolve_context(
@@ -67,6 +88,7 @@ class FSMContextMiddleware(BaseMiddleware):
         thread_id: int | None = None,
         business_connection_id: str | None = None,
         destiny: str = DEFAULT_DESTINY,
+        is_guest: bool = False,
     ) -> FSMContext | None:
         if chat_id is None:
             chat_id = user_id
@@ -88,6 +110,7 @@ class FSMContextMiddleware(BaseMiddleware):
                 thread_id=thread_id,
                 business_connection_id=business_connection_id,
                 destiny=destiny,
+                is_guest=is_guest,
             )
         return None
 
@@ -99,6 +122,7 @@ class FSMContextMiddleware(BaseMiddleware):
         thread_id: int | None = None,
         business_connection_id: str | None = None,
         destiny: str = DEFAULT_DESTINY,
+        is_guest: bool = False,
     ) -> FSMContext:
         return FSMContext(
             storage=self.storage,
@@ -109,6 +133,7 @@ class FSMContextMiddleware(BaseMiddleware):
                 thread_id=thread_id,
                 business_connection_id=business_connection_id,
                 destiny=destiny,
+                is_guest=is_guest,
             ),
         )
 

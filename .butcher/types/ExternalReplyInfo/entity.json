@@ -218,6 +218,14 @@
         "rst_description": "*Optional*. Message is a venue, information about the venue\n",
         "name": "venue",
         "required": false
+      },
+      {
+        "type": "Widget",
+        "description": "Message is an HTML widget, information about the widget",
+        "html_description": "<td><em>Optional</em>. Message is an HTML widget, information about the widget</td>",
+        "rst_description": "*Optional*. Message is an HTML widget, information about the widget\n",
+        "name": "widget",
+        "required": false
       }
     ],
     "category": "types"

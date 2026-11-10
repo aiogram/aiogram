@@ -26,8 +26,8 @@ class SendLocation(TelegramMethod[Message]):
     __returning__ = Message
     __api_method__ = "sendLocation"
 
-    chat_id: ChatIdUnion
-    """Unique identifier for the target chat or username of the target bot, supergroup or channel in the format :code:`@username`"""
+    chat_id: ChatIdUnion | None = None
+    """Unique identifier for the target chat or username of the target bot, supergroup, or channel in the format :code:`@username`; required unless the message is sent as an ephemeral reply to a callback query"""
     latitude: float
     """Latitude of the location"""
     longitude: float
@@ -90,7 +90,7 @@ class SendLocation(TelegramMethod[Message]):
         def __init__(
             __pydantic__self__,
             *,
-            chat_id: ChatIdUnion,
+            chat_id: ChatIdUnion | None = None,
             latitude: float,
             longitude: float,
             business_connection_id: str | None = None,
