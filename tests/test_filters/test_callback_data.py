@@ -191,6 +191,33 @@ class TestCallbackData:
 
         assert TgData.unpack("tg:123:") == TgData(chat_id=123, thread_id=None)
 
+    @pytest.mark.parametrize(
+        "hint,default",
+        [
+            [int | None, 1],
+            [bool | None, True],
+            [MyStringEnum | None, MyStringEnum.FOO],
+            [str | None, "experiment"],
+            [Optional[int], 1],
+        ],
+    )
+    def test_unpack_explicit_none_with_default(self, hint, default):
+        """An explicit None must survive pack/unpack even when the default is not None."""
+
+        class MyCallback(CallbackData, prefix="test"):
+            foo: hint = default
+
+        callback = MyCallback(foo=None)
+        assert callback.pack() == "test:"
+        assert MyCallback.unpack(callback.pack()) == callback
+        assert MyCallback.unpack(MyCallback().pack()) == MyCallback()
+
+    def test_unpack_empty_part_not_optional_uses_default(self):
+        class MyCallback(CallbackData, prefix="test"):
+            foo: int = 1
+
+        assert MyCallback.unpack("test:") == MyCallback(foo=1)
+
     def test_build_filter(self):
         filter_object = MyCallback.filter(F.foo == "test")
         assert isinstance(filter_object.rule, MagicFilter)
