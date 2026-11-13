@@ -1,3 +1,5 @@
+import pytest
+
 from aiogram.methods import GetChat
 from aiogram.types import AcceptedGiftTypes, ChatFullInfo
 from tests.mocked_bot import MockedBot
@@ -28,7 +30,20 @@ class TestGetChat:
         bot.get_request()
         assert response == prepare_result.result
 
-    async def test_usernames_property(self, bot: MockedBot):
+    @pytest.mark.parametrize(
+        "active_usernames,usernames",
+        [
+            [["tbot_AI", "tbot"], ("tbot", "tbot_AI")],
+            [["TBot", "tbot_ai", "TBOT_AI"], ("tbot", "tbot_ai")],
+            [None, ("tbot",)],
+        ],
+    )
+    async def test_usernames(
+        self,
+        bot: MockedBot,
+        active_usernames: list[str] | None,
+        usernames: tuple[str, ...],
+    ):
         bot.add_result_for(
             GetChat,
             ok=True,
@@ -44,14 +59,14 @@ class TestGetChat:
                     premium_subscription=False,
                     gifts_from_channels=False,
                 ),
-                active_usernames=["tbot_AI", "tbot"],
+                active_usernames=active_usernames,
             ),
         )
 
-        assert await bot.usernames() == ("tbot", "tbot_AI")
+        assert await bot.usernames() == usernames
         request = bot.get_request()
         assert isinstance(request, GetChat)
         assert request.chat_id == bot.id
 
-        assert await bot.usernames() == ("tbot", "tbot_AI")
+        assert await bot.usernames() == usernames
         assert not bot.session.requests

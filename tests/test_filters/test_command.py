@@ -1,14 +1,43 @@
 import datetime
+import logging
 import re
 
 import pytest
 
 from aiogram import F
+from aiogram.client import bot as bot_module
 from aiogram.filters import Command, CommandObject
 from aiogram.filters.command import CommandStart
 from aiogram.methods import GetChat
 from aiogram.types import AcceptedGiftTypes, BotCommand, Chat, ChatFullInfo, Message, User
 from tests.mocked_bot import MockedBot
+
+
+def command_message(text: str) -> Message:
+    return Message(
+        message_id=0, text=text, chat=Chat(id=-42, type="supergroup"), date=datetime.datetime.now()
+    )
+
+
+def add_bot_chat(bot: MockedBot, active_usernames: list[str]) -> None:
+    bot.add_result_for(
+        GetChat,
+        ok=True,
+        result=ChatFullInfo(
+            id=bot.id,
+            type="private",
+            accent_color_id=0,
+            max_reaction_count=0,
+            accepted_gift_types=AcceptedGiftTypes(
+                unlimited_gifts=False,
+                limited_gifts=False,
+                unique_gifts=False,
+                premium_subscription=False,
+                gifts_from_channels=False,
+            ),
+            active_usernames=active_usernames,
+        ),
+    )
 
 
 class TestCommandFilter:
@@ -64,8 +93,6 @@ class TestCommandFilter:
                 True,
             ],
             ["!test", Command(commands=["test"], prefix="/"), False],
-            ["/test@mention", Command(commands=["test"], prefix="/"), False],
-            ["/test@tbot_ai", Command(commands=["test"], prefix="/"), True],
             ["/tests", Command(commands=["test"], prefix="/"), False],
             ["/", Command(commands=["test"], prefix="/"), False],
             ["/ test", Command(commands=["test"], prefix="/"), False],
@@ -109,24 +136,6 @@ class TestCommandFilter:
 
         message = Message(
             message_id=0, text=text, chat=Chat(id=42, type="private"), date=datetime.datetime.now()
-        )
-        bot.add_result_for(
-            GetChat,
-            ok=True,
-            result=ChatFullInfo(
-                id=bot.id,
-                type="private",
-                accent_color_id=0,
-                max_reaction_count=0,
-                accepted_gift_types=AcceptedGiftTypes(
-                    unlimited_gifts=False,
-                    limited_gifts=False,
-                    unique_gifts=False,
-                    premium_subscription=False,
-                    gifts_from_channels=False,
-                ),
-                active_usernames=["tbot", "tbot_ai"],
-            ),
         )
 
         response = await command(message, bot)
@@ -193,6 +202,58 @@ class TestCommandFilter:
     def test_str(self):
         cmd = Command(commands=["start"])
         assert str(cmd) == "Command('start', prefix='/', ignore_case=False, ignore_mention=False)"
+
+
+class TestCommandMention:
+    async def test_no_mention_makes_no_request(self, bot: MockedBot):
+        assert await Command("test")(command_message("/test"), bot)
+        assert not bot.session.requests
+
+    @pytest.mark.parametrize("text", ["/test@tbot", "/test@TBot"])
+    async def test_own_username_makes_no_request(self, bot: MockedBot, text: str):
+        assert await Command("test")(command_message(text), bot)
+        assert not bot.session.requests
+
+    async def test_secondary_username_is_fetched_once(self, bot: MockedBot):
+        add_bot_chat(bot, ["tbot", "tbot_ai"])
+
+        assert await Command("test")(command_message("/test@TBot_AI"), bot)
+        assert isinstance(bot.get_request(), GetChat)
+        assert not bot.session.requests
+
+        assert await Command("test")(command_message("/test@tbot_ai"), bot)
+        assert not bot.session.requests
+
+    @pytest.mark.parametrize("text", ["/test@mention", "/test@other_bot"])
+    async def test_foreign_username_is_rejected(self, bot: MockedBot, text: str):
+        add_bot_chat(bot, ["tbot", "tbot_ai"])
+
+        assert not await Command("test")(command_message(text), bot)
+        assert isinstance(bot.get_request(), GetChat)
+
+    async def test_get_chat_failure_rejects_mention_and_retries_later(
+        self, bot: MockedBot, caplog: pytest.LogCaptureFixture, monkeypatch: pytest.MonkeyPatch
+    ):
+        now = 1000.0
+        monkeypatch.setattr(bot_module, "monotonic", lambda: now)
+        command = Command("test")
+        bot.add_result_for(GetChat, ok=False, error_code=400, description="Bad Request")
+
+        with caplog.at_level(logging.WARNING, logger="aiogram.client.bot"):
+            assert not await command(command_message("/test@tbot_ai"), bot)
+            assert isinstance(bot.get_request(), GetChat)
+
+            # Within the retry window: no request and no second warning.
+            assert not await command(command_message("/test@tbot_ai"), bot)
+            assert not bot.session.requests
+            # The getMe username still works without getChat.
+            assert await command(command_message("/test@tbot"), bot)
+        assert len(caplog.records) == 1
+
+        now += bot_module.USERNAMES_RETRY_AFTER
+        add_bot_chat(bot, ["tbot", "tbot_ai"])
+        assert await command(command_message("/test@tbot_ai"), bot)
+        assert isinstance(bot.get_request(), GetChat)
 
 
 class TestCommandStart:
