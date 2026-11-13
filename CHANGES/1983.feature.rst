@@ -1,0 +1,3 @@
+Added :meth:`aiogram.client.bot.Bot.usernames`, which returns all of the bot's usernames,
+secondary ones included. ``getMe`` returns only one, so the rest are taken from
+``active_usernames`` of ``getChat`` on the bot itself and cached like :meth:`aiogram.client.bot.Bot.me`.
