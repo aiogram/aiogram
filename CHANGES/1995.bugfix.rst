@@ -1,0 +1,1 @@
+Fixed :func:`aiogram.utils.deep_linking.create_startapp_link` and :code:`create_deep_link(..., link_type="startapp")` rejecting payloads longer than 64 characters: the limit for :code:`startapp` links is now 512 characters, while :code:`start` and :code:`startgroup` links keep the 64-character limit.

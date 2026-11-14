@@ -46,10 +46,13 @@ from aiogram.types import (
     PreCheckoutQuery,
     ReactionCount,
     ReactionTypeCustomEmoji,
+    SharedWidgetQuery,
     ShippingAddress,
     ShippingQuery,
     Update,
     User,
+    WidgetQuery,
+    WidgetQueryTypeData,
 )
 from aiogram.types.error_event import ErrorEvent
 from tests.mocked_bot import MockedBot
@@ -755,6 +758,38 @@ class TestDispatcher:
                 ),
                 True,
                 False,
+            ),
+            pytest.param(
+                "widget_query",
+                Update(
+                    update_id=42,
+                    widget_query=WidgetQuery(
+                        id="id",
+                        from_user=User(id=42, is_bot=False, first_name="Test"),
+                        chat_instance="instance",
+                        type=WidgetQueryTypeData(),
+                        data="data",
+                        chat=Chat(id=42, type="private"),
+                        message_id=42,
+                    ),
+                ),
+                True,
+                True,
+            ),
+            pytest.param(
+                "shared_widget_query",
+                Update(
+                    update_id=42,
+                    shared_widget_query=SharedWidgetQuery(
+                        id="id",
+                        from_user=User(id=42, is_bot=False, first_name="Test"),
+                        type=WidgetQueryTypeData(),
+                        data="data",
+                        widget_id="widget",
+                    ),
+                ),
+                False,
+                True,
             ),
         ],
     )

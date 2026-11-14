@@ -1,0 +1,1 @@
+:meth:`aiogram.types.message.Message.get_url` now returns :code:`None` for ephemeral and scheduled messages, which have no real :code:`message_id` (it is :code:`0`), instead of a broken link.

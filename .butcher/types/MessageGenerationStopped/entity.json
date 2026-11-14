@@ -21,19 +21,19 @@
       },
       {
         "type": "Integer",
-        "description": "Unique identifier of the message thread in which the message is generated",
-        "html_description": "<td><em>Optional</em>. Unique identifier of the message thread in which the message is generated</td>",
-        "rst_description": "*Optional*. Unique identifier of the message thread in which the message is generated\n",
-        "name": "message_thread_id",
-        "required": false
-      },
-      {
-        "type": "Integer",
         "description": "Unique identifier of the message draft which was stopped",
         "html_description": "<td>Unique identifier of the message draft which was stopped</td>",
         "rst_description": "Unique identifier of the message draft which was stopped\n",
         "name": "draft_id",
         "required": true
+      },
+      {
+        "type": "Integer",
+        "description": "Unique identifier of the message thread in which the message is generated",
+        "html_description": "<td><em>Optional</em>. Unique identifier of the message thread in which the message is generated</td>",
+        "rst_description": "*Optional*. Unique identifier of the message thread in which the message is generated\n",
+        "name": "message_thread_id",
+        "required": false
       }
     ],
     "category": "types"

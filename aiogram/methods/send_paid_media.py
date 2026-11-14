@@ -26,7 +26,7 @@ class SendPaidMedia(TelegramMethod[Message]):
     __api_method__ = "sendPaidMedia"
 
     chat_id: ChatIdUnion
-    """Unique identifier for the target chat or username of the target bot, supergroup or channel in the format :code:`@username`. If the chat is a channel, all Telegram Star proceeds from this media will be credited to the chat's balance. Otherwise, they will be credited to the bot's balance"""
+    """Unique identifier for the target chat or username of the target bot, supergroup, or channel in the format :code:`@username`. If the chat is a channel, all Telegram Star proceeds from this media will be credited to the chat's balance. Otherwise, they will be credited to the bot's balance"""
     star_count: int
     """The number of Telegram Stars that must be paid to buy access to the media; 1-25000"""
     media: list[InputPaidMediaUnion]

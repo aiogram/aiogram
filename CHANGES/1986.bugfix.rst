@@ -1,0 +1,1 @@
+:meth:`aiogram.types.message.Message.as_reply_parameters` no longer sets :code:`chat_id` for business messages and messages from channel direct messages chats, where the Bot API does not support it. Before, :meth:`aiogram.types.message.Message.reply` and the other :code:`reply_*` shortcuts on a business message sent a plain message instead of a reply.

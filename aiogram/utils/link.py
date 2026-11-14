@@ -1,3 +1,4 @@
+import warnings
 from typing import Any
 from urllib.parse import urlencode, urljoin
 
@@ -42,33 +43,60 @@ def create_channel_bot_link(
     manage_video_chats: bool = False,
     anonymous: bool = False,
     manage_chat: bool = False,
+    manage_topics: bool = False,
+    post_stories: bool = False,
+    edit_stories: bool = False,
+    delete_stories: bool = False,
+    manage_direct_messages: bool = False,
+    manage_tags: bool = False,
 ) -> str:
-    params = {}
+    """
+    Create a link that adds the bot to a channel as an administrator:
+    :code:`https://t.me/<username>?startchannel&admin=<rights>`
+
+    Source: https://core.telegram.org/api/links#group-channel-bot-links
+
+    Telegram requires at least one administrator right for this flow;
+    without any rights the plain bot link :code:`https://t.me/<username>` is returned.
+
+    :param username: bot username
+    :param parameter: deprecated, channel links have no start parameter;
+        when passed, a group link :code:`?startgroup=<parameter>&admin=<rights>` is returned
+    :return: link
+    """
+    rights = (
+        ("change_info", change_info),
+        ("post_messages", post_messages),
+        ("edit_messages", edit_messages),
+        ("delete_messages", delete_messages),
+        ("restrict_members", restrict_members),
+        ("invite_users", invite_users),
+        ("pin_messages", pin_messages),
+        ("manage_topics", manage_topics),
+        ("promote_members", promote_members),
+        ("manage_video_chats", manage_video_chats),
+        ("anonymous", anonymous),
+        ("manage_chat", manage_chat),
+        ("post_stories", post_stories),
+        ("edit_stories", edit_stories),
+        ("delete_stories", delete_stories),
+        ("manage_direct_messages", manage_direct_messages),
+        ("manage_tags", manage_tags),
+    )
+    # The rights are joined with a literal "+", so they can't go through urlencode()
+    admin = "+".join(name for name, enabled in rights if enabled)
+
     if parameter is not None:
-        params["startgroup"] = parameter
-    permissions = []
-    if change_info:
-        permissions.append("change_info")
-    if post_messages:
-        permissions.append("post_messages")
-    if edit_messages:
-        permissions.append("edit_messages")
-    if delete_messages:
-        permissions.append("delete_messages")
-    if restrict_members:
-        permissions.append("restrict_members")
-    if invite_users:
-        permissions.append("invite_users")
-    if pin_messages:
-        permissions.append("pin_messages")
-    if promote_members:
-        permissions.append("promote_members")
-    if manage_video_chats:
-        permissions.append("manage_video_chats")
-    if anonymous:
-        permissions.append("anonymous")
-    if manage_chat:
-        permissions.append("manage_chat")
-    if permissions:
-        params["admin"] = "+".join(permissions)
-    return create_telegram_link(username, **params)
+        warnings.warn(
+            "The 'parameter' argument of create_channel_bot_link() is deprecated: "
+            "channel links have no start parameter, so a group link is created instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        link = create_telegram_link(username, startgroup=parameter)
+        return f"{link}&admin={admin}" if admin else link
+
+    if not admin:
+        # ponytail: kept for backward compatibility, Telegram needs a right for ?startchannel
+        return create_telegram_link(username)
+    return f"{create_telegram_link(username)}?startchannel&admin={admin}"

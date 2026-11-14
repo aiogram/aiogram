@@ -1,0 +1,92 @@
+Updated to `Bot API 10.4 <https://core.telegram.org/bots/api-changelog#november-9-2026>`_
+
+**Widgets**
+
+*New Methods:*
+
+- Added :class:`aiogram.methods.send_widget.SendWidget` method - sends a message with an HTML widget; in production widgets can only be sent to private chats, are always protected from forwarding and can't be copied
+- Added :class:`aiogram.methods.send_shared_widget.SendSharedWidget` method - sends again a shared widget created by the bot
+- Added :class:`aiogram.methods.answer_widget_query.AnswerWidgetQuery` method - answers a widget query, also available as :meth:`aiogram.types.widget_query.WidgetQuery.answer` and :meth:`aiogram.types.shared_widget_query.SharedWidgetQuery.answer` shortcuts
+- Added :class:`aiogram.methods.edit_message_widget_data.EditMessageWidgetData` method - changes the data of a widget in a message
+- Added :class:`aiogram.methods.edit_shared_widget_data.EditSharedWidgetData` method - changes the public data of a shared widget
+
+*New Types:*
+
+- Added :class:`aiogram.types.widget.Widget` type - an HTML widget in a message
+- Added :class:`aiogram.types.widget_query.WidgetQuery` type - a query from a widget in a message sent by the bot or via the bot
+- Added :class:`aiogram.types.shared_widget_query.SharedWidgetQuery` type - a query from a forwarded message with a shared widget
+- Added :class:`aiogram.types.widget_query_type.WidgetQueryType` type with :class:`aiogram.types.widget_query_type_data.WidgetQueryTypeData`, :class:`aiogram.types.widget_query_type_sign_data.WidgetQueryTypeSignData` and :class:`aiogram.types.widget_query_type_sent_transaction.WidgetQueryTypeSentTransaction` subtypes, and :class:`aiogram.types.widget_query_wallet.WidgetQueryWallet` - data for the bot, data signed by the user's TON wallet, or a transaction sent from it
+- Added :class:`aiogram.types.input_widget_message_content.InputWidgetMessageContent` and :class:`aiogram.types.input_shared_widget_message_content.InputSharedWidgetMessageContent` types - send widgets in response to inline queries (not yet available in production)
+
+*New Fields:*
+
+- Added :code:`widget` field to :class:`aiogram.types.message.Message` and :class:`aiogram.types.external_reply_info.ExternalReplyInfo`
+- Added :code:`widget_query` and :code:`shared_widget_query` fields to :class:`aiogram.types.update.Update`, with matching :code:`router.widget_query` and :code:`router.shared_widget_query` observers
+- The :code:`can_send_other_messages` right of :class:`aiogram.types.chat_permissions.ChatPermissions` and :class:`aiogram.types.chat_member_restricted.ChatMemberRestricted` now also allows sending widgets
+
+**Ephemeral Messages**
+
+*Changed:*
+
+- Ephemeral replies to callback queries can now be sent in any chat except channel direct messages chats by passing :code:`callback_query_id` without :code:`receiver_user_id` in :code:`ephemeral_message_parameters`
+- :code:`receiver_user_id` of :class:`aiogram.types.ephemeral_message_parameters.EphemeralMessageParameters` is now optional
+- :code:`chat_id` of :class:`aiogram.methods.send_message.SendMessage`, :class:`aiogram.methods.send_rich_message.SendRichMessage`, :class:`aiogram.methods.send_animation.SendAnimation`, :class:`aiogram.methods.send_audio.SendAudio`, :class:`aiogram.methods.send_contact.SendContact`, :class:`aiogram.methods.send_document.SendDocument`, :class:`aiogram.methods.send_live_photo.SendLivePhoto`, :class:`aiogram.methods.send_location.SendLocation`, :class:`aiogram.methods.send_photo.SendPhoto`, :class:`aiogram.methods.send_sticker.SendSticker`, :class:`aiogram.methods.send_venue.SendVenue`, :class:`aiogram.methods.send_video.SendVideo`, :class:`aiogram.methods.send_video_note.SendVideoNote` and :class:`aiogram.methods.send_voice.SendVoice` is now optional; the matching :class:`aiogram.client.bot.Bot` methods keep :code:`chat_id` as the first positional argument, so pass :code:`None` explicitly for an ephemeral reply without a chat
+
+**Quotes from Rich Messages**
+
+*New Fields:*
+
+- Added :code:`rich_texts` field to :class:`aiogram.types.text_quote.TextQuote` - a quote taken from a rich message
+- Added :code:`quote_rich_texts` field to :class:`aiogram.types.reply_parameters.ReplyParameters` - quotes a rich message
+
+**TON Wallet**
+
+*New Types:*
+
+- Added :class:`aiogram.types.ton_wallet_card.TonWalletCard`, :class:`aiogram.types.ton_wallet_card_sticker.TonWalletCardSticker`, :class:`aiogram.types.ton_nft.TonNft` and :class:`aiogram.types.ton_nft_attribute.TonNftAttribute` types - a TON wallet card shown on a user's profile
+- Added :class:`aiogram.types.ton_wallet_transfer.TonWalletTransfer` type - a service message about a transfer with a TON wallet
+- Added :class:`aiogram.types.area_position.AreaPosition` type - replaces :class:`aiogram.types.story_area_position.StoryAreaPosition`, which is now deprecated; :code:`position` of :class:`aiogram.types.story_area.StoryArea` now expects :class:`aiogram.types.area_position.AreaPosition` (or a dict), passing a :class:`aiogram.types.story_area_position.StoryAreaPosition` instance raises a validation error
+
+*New Fields:*
+
+- Added :code:`ton_wallet_card` field to :class:`aiogram.types.chat_full_info.ChatFullInfo`
+- Added :code:`ton_wallet_transfer` field to :class:`aiogram.types.message.Message`
+
+**Chat Share Themes**
+
+*New Methods:*
+
+- Added :class:`aiogram.methods.get_chat_share_theme_backdrops.GetChatShareThemeBackdrops` method - returns the backdrops available for chat share themes
+
+*New Types:*
+
+- Added :class:`aiogram.types.chat_share_theme.ChatShareTheme` type with :class:`aiogram.types.chat_share_theme_emoji.ChatShareThemeEmoji` and :class:`aiogram.types.chat_share_theme_unique_gift.ChatShareThemeUniqueGift` subtypes - the theme of the screen for sharing a link to a user or chat
+- Added :class:`aiogram.types.emoji_type.EmojiType` type with :class:`aiogram.types.emoji_type_emoji.EmojiTypeEmoji` and :class:`aiogram.types.emoji_type_custom_emoji.EmojiTypeCustomEmoji` subtypes
+- Added :class:`aiogram.types.chat_share_theme_backdrop.ChatShareThemeBackdrop` and :class:`aiogram.types.chat_share_theme_backdrops.ChatShareThemeBackdrops` types
+
+*New Fields:*
+
+- Added :code:`share_theme` field to :class:`aiogram.types.chat_full_info.ChatFullInfo`
+
+**Gifts**
+
+*New Methods:*
+
+- Added :class:`aiogram.methods.get_unique_gift.GetUniqueGift` method - returns information about a unique gift by its name
+- Added :class:`aiogram.methods.delete_business_account_gift.DeleteBusinessAccountGift` method - deletes a regular gift owned by a managed business account without receiving Telegram Stars for it
+
+**General**
+
+*New Types:*
+
+- Added :class:`aiogram.types.rich_text_ton_address.RichTextTonAddress` type - a TON blockchain address inside a rich message
+- Added :class:`aiogram.types.paid_messages_waived.PaidMessagesWaived` type - a service message about the sender using a link that allows sending messages without paying Telegram Stars
+
+*New Fields:*
+
+- Added :code:`paid_messages_waived` field to :class:`aiogram.types.message.Message`
+- Added :code:`WIDGET`, :code:`TON_WALLET_TRANSFER` and :code:`PAID_MESSAGES_WAIVED` members to :class:`aiogram.enums.content_type.ContentType`, :code:`WIDGET_QUERY` and :code:`SHARED_WIDGET_QUERY` to :class:`aiogram.enums.update_type.UpdateType`, and :code:`TON_ADDRESS` to :class:`aiogram.enums.rich_text_type.RichTextType`
+- Added :code:`ton_address` and :code:`bank_card_number` types to :class:`aiogram.enums.message_entity_type.MessageEntityType`; text decorations leave both unchanged, like :code:`phone_number`, and :class:`aiogram.utils.formatting.BankCardNumber` / :class:`aiogram.utils.formatting.TonAddress` nodes keep them when building or parsing formatted text
+- Added :code:`custom_description_parse_mode` and :code:`custom_description_entities` parameters to :class:`aiogram.methods.verify_user.VerifyUser` and :class:`aiogram.methods.verify_chat.VerifyChat`
+- :code:`suggested_username` of :class:`aiogram.types.keyboard_button_request_managed_bot.KeyboardButtonRequestManagedBot` can now be a secondary username ending in "agent", "ai", "app", "game" or "gay"
+- Links to topics in private chats with the bot can now be created as :code:`https://t.me/<bot_username>/<message_thread_id>`

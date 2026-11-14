@@ -46,6 +46,7 @@ class Dispatcher(Router):
         fsm_strategy: FSMStrategy = FSMStrategy.USER_IN_CHAT,
         events_isolation: BaseEventIsolation | None = None,
         disable_fsm: bool = False,
+        fsm_key_on_sender_chat: bool = False,
         name: str | None = None,
         **kwargs: Any,
     ) -> None:
@@ -57,6 +58,9 @@ class Dispatcher(Router):
         :param events_isolation: Events isolation
         :param disable_fsm: Disable FSM, note that if you disable FSM
             then you should not use storage and events isolation
+        :param fsm_key_on_sender_chat: Use :code:`sender_chat.id` as the user id of the FSM key
+            for messages sent on behalf of a chat in non-channel chats
+            (anonymous group administrators, users posting as a channel)
         :param kwargs: Other arguments, will be passed as keyword arguments to handlers
         """
         super().__init__(name=name)
@@ -88,6 +92,7 @@ class Dispatcher(Router):
             storage=storage or MemoryStorage(),
             strategy=fsm_strategy,
             events_isolation=events_isolation or DisabledEventIsolation(),
+            key_on_sender_chat=fsm_key_on_sender_chat,
         )
         if not disable_fsm:
             # Note that when FSM middleware is disabled, the event isolation is also disabled

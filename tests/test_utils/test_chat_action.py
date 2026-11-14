@@ -1,7 +1,7 @@
 import asyncio
 import time
 from datetime import datetime
-from unittest.mock import AsyncMock, patch
+from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
@@ -44,6 +44,11 @@ class TestChatActionSender:
         assert sender.action == action
         assert sender.chat_id == 42
         assert sender.bot is bot
+        assert sender.business_connection_id is None
+
+        sender = sender_factory(chat_id=42, bot=bot, business_connection_id="BC1")
+        assert sender.action == action
+        assert sender.business_connection_id == "BC1"
 
     async def test_worker(self, bot: Bot):
         with patch(
@@ -59,7 +64,28 @@ class TestChatActionSender:
                     action="typing",
                     chat_id=42,
                     message_thread_id=None,
+                    business_connection_id=None,
                 )
+
+    async def test_worker_business_connection(self, bot: Bot):
+        with patch(
+            "aiogram.client.bot.Bot.send_chat_action",
+            new_callable=AsyncMock,
+        ) as mocked_send_chat_action:
+            async with ChatActionSender.typing(
+                bot=bot,
+                chat_id=42,
+                interval=0.01,
+                initial_sleep=0,
+                business_connection_id="BC1",
+            ):
+                await asyncio.sleep(0.05)
+            mocked_send_chat_action.assert_awaited_with(
+                action="typing",
+                chat_id=42,
+                message_thread_id=None,
+                business_connection_id="BC1",
+            )
 
     async def test_contextmanager(self, bot: MockedBot):
         sender: ChatActionSender = ChatActionSender.typing(bot=bot, chat_id=42)
@@ -127,3 +153,30 @@ class TestChatActionMiddleware:
             assert result == "OK"
             mocked_run.assert_awaited()
             mocked_stop.assert_awaited()
+
+    @pytest.mark.parametrize("business_connection_id", [None, "BC1"])
+    async def test_business_connection_id(self, business_connection_id, bot: Bot):
+        async def handler(event, data):
+            return "OK"
+
+        message = Message(
+            chat=Chat(id=42, type="private", title="Test"),
+            from_user=User(id=42, is_bot=False, first_name="Test"),
+            date=datetime.now(),
+            message_id=42,
+            business_connection_id=business_connection_id,
+        )
+        data = {"handler": HandlerObject(callback=flags.chat_action(handler)), "bot": bot}
+        with patch(
+            "aiogram.utils.chat_action.ChatActionSender", new_callable=MagicMock
+        ) as mocked_sender:
+            result = await ChatActionMiddleware()(handler=handler, event=message, data=data)
+
+        assert result == "OK"
+        mocked_sender.assert_called_once_with(
+            bot=bot,
+            chat_id=42,
+            action="typing",
+            message_thread_id=None,
+            business_connection_id=business_connection_id,
+        )

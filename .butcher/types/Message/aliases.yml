@@ -2,10 +2,15 @@ answer:
   method: sendMessage
   code: &assert-chat |
     assert self.chat is not None, "This method can be used only if chat is present in the message."
+  # Every alias must fill only the fields its method declares: an undeclared field is
+  # not rejected by the method model, it leaks into the request. PyYAML merge keys can
+  # only add keys, so each variant is composed from the smaller anchors.
   fill: &fill-answer
-    chat_id: self.chat.id
-    message_thread_id: self.message_thread_id if self.is_topic_message else None
+    <<: &fill-chat-thread
+      chat_id: self.chat.id
+      message_thread_id: self.message_thread_id if self.is_topic_message else None
     business_connection_id: self.business_connection_id
+    direct_messages_topic_id: self.direct_messages_topic.topic_id if self.direct_messages_topic else None
 
 reply:
   method: sendMessage
@@ -79,27 +84,35 @@ reply_document:
 answer_game:
   method: sendGame
   code: *assert-chat
-  fill: *fill-answer
+  # sendGame and sendPoll have no `direct_messages_topic_id` parameter.
+  fill: &fill-answer-game
+    <<: *fill-chat-thread
+    business_connection_id: self.business_connection_id
 
 reply_game:
   method: sendGame
   code: *assert-chat
   # sendGame, sendInvoice, sendMediaGroup, sendPoll, sendDice and sendPaidMedia have
   # no `ephemeral_message_parameters` parameter, so it must not be filled for them.
-  fill: &fill-reply-non-ephemeral
-    <<: *fill-answer
+  fill: &fill-reply-game
+    <<: *fill-answer-game
     reply_parameters: self.as_reply_parameters()
   ignore: *ignore-reply
 
 answer_invoice:
   method: sendInvoice
   code: *assert-chat
-  fill: *fill-answer
+  # sendInvoice has no `business_connection_id` parameter.
+  fill: &fill-answer-invoice
+    <<: *fill-chat-thread
+    direct_messages_topic_id: self.direct_messages_topic.topic_id if self.direct_messages_topic else None
 
 reply_invoice:
   method: sendInvoice
   code: *assert-chat
-  fill: *fill-reply-non-ephemeral
+  fill:
+    <<: *fill-answer-invoice
+    reply_parameters: self.as_reply_parameters()
   ignore: *ignore-reply
 
 answer_location:
@@ -121,7 +134,9 @@ answer_media_group:
 reply_media_group:
   method: sendMediaGroup
   code: *assert-chat
-  fill: *fill-reply-non-ephemeral
+  fill: &fill-reply-non-ephemeral
+    <<: *fill-answer
+    reply_parameters: self.as_reply_parameters()
   ignore: *ignore-reply
 
 answer_photo:
@@ -138,12 +153,12 @@ reply_photo:
 answer_poll:
   method: sendPoll
   code: *assert-chat
-  fill: *fill-answer
+  fill: *fill-answer-game
 
 reply_poll:
   method: sendPoll
   code: *assert-chat
-  fill: *fill-reply-non-ephemeral
+  fill: *fill-reply-game
   ignore: *ignore-reply
 
 answer_dice:
@@ -279,8 +294,13 @@ edit_caption:
 
 delete:
   method: deleteMessage
-  code: *assert-chat
-  fill: *message-target
+  # deleteMessage has no `business_connection_id` parameter.
+  code: |
+    assert self.chat is not None, "This method can be used only if chat is present in the message."
+    assert self.business_connection_id is None, "This method can't be used for business messages, use `Bot.delete_business_messages` instead."
+  fill: &chat-message-target
+    chat_id: self.chat.id
+    message_id: self.message_id
 
 edit_ephemeral_text:
   method: editEphemeralMessageText
@@ -325,8 +345,11 @@ unpin:
 
 react:
   method: setMessageReaction
-  code: *assert-chat
-  fill: *message-target
+  # setMessageReaction has no `business_connection_id` parameter.
+  code: |
+    assert self.chat is not None, "This method can be used only if chat is present in the message."
+    assert self.business_connection_id is None, "Reactions can't be set on business messages."
+  fill: *chat-message-target
 
 answer_guest_query:
   method: answerGuestQuery

@@ -168,6 +168,12 @@ Available elements
 .. autoclass:: aiogram.utils.formatting.PhoneNumber
     :show-inheritance:
 
+.. autoclass:: aiogram.utils.formatting.BankCardNumber
+    :show-inheritance:
+
+.. autoclass:: aiogram.utils.formatting.TonAddress
+    :show-inheritance:
+
 .. autoclass:: aiogram.utils.formatting.Bold
     :show-inheritance:
 

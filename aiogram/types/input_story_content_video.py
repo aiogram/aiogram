@@ -6,6 +6,9 @@ from aiogram.enums import InputStoryContentType
 
 from .input_story_content import InputStoryContent
 
+if TYPE_CHECKING:
+    from .input_file_union import InputFileUnion
+
 
 class InputStoryContentVideo(InputStoryContent):
     """
@@ -16,7 +19,7 @@ class InputStoryContentVideo(InputStoryContent):
 
     type: Literal[InputStoryContentType.VIDEO] = InputStoryContentType.VIDEO
     """Type of the content, must be *video*"""
-    video: str
+    video: InputFileUnion
     """The video to post as a story. The video must be of the size 720x1280, streamable, encoded with H.265 codec, with key frames added each second in the MPEG4 format, and must not exceed 30 MB. The video can't be reused and can only be uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the video was uploaded using multipart/form-data under <file_attach_name>. :ref:`More information on Sending Files » <sending-files>`"""
     duration: float | None = None
     """*Optional*. Precise duration of the video in seconds; 0-60"""
@@ -33,7 +36,7 @@ class InputStoryContentVideo(InputStoryContent):
             __pydantic__self__,
             *,
             type: Literal[InputStoryContentType.VIDEO] = InputStoryContentType.VIDEO,
-            video: str,
+            video: InputFileUnion,
             duration: float | None = None,
             cover_frame_timestamp: float | None = None,
             is_animation: bool | None = None,

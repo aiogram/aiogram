@@ -1,0 +1,41 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "chatsharethemeemoji",
+    "name": "ChatShareThemeEmoji",
+    "description": "The theme with emoji placed on a background.",
+    "html_description": "<p>The theme with emoji placed on a background.</p>",
+    "rst_description": "The theme with emoji placed on a background.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Type of the theme, always 'emoji'",
+        "html_description": "<td>Type of the theme, always &#8220;emoji&#8221;</td>",
+        "rst_description": "Type of the theme, always 'emoji'\n",
+        "name": "type",
+        "required": true
+      },
+      {
+        "type": "Array of EmojiType",
+        "description": "The emoji; 0-6 regular or custom emoji",
+        "html_description": "<td>The emoji; 0-6 regular or custom emoji</td>",
+        "rst_description": "The emoji; 0-6 regular or custom emoji\n",
+        "name": "emojis",
+        "required": true
+      },
+      {
+        "type": "Integer",
+        "description": "Identifier of the backdrop used as the background; omitted if the default background is used. Use getChatShareThemeBackdrops to get details about the backdrop.",
+        "html_description": "<td><em>Optional</em>. Identifier of the backdrop used as the background; omitted if the default background is used. Use <a href=\"#getchatsharethemebackdrops\">getChatShareThemeBackdrops</a> to get details about the backdrop.</td>",
+        "rst_description": "*Optional*. Identifier of the backdrop used as the background; omitted if the default background is used. Use :class:`aiogram.methods.get_chat_share_theme_backdrops.GetChatShareThemeBackdrops` to get details about the backdrop.\n",
+        "name": "background_backdrop_id",
+        "required": false
+      }
+    ],
+    "category": "types"
+  }
+}
