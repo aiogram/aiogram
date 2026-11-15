@@ -6,7 +6,7 @@ from uuid import UUID
 
 import pytest
 from magic_filter import MagicFilter
-from pydantic import ValidationError
+from pydantic import Field, ValidationError
 
 from aiogram import F
 from aiogram.filters.callback_data import CallbackData
@@ -217,6 +217,13 @@ class TestCallbackData:
             foo: int = 1
 
         assert MyCallback.unpack("test:") == MyCallback(foo=1)
+
+    def test_unpack_empty_part_optional_with_default_factory(self):
+        class MyCallback(CallbackData, prefix="test"):
+            foo: int | None = Field(default_factory=lambda: 1)
+
+        assert MyCallback.unpack("test:") == MyCallback(foo=None)
+        assert MyCallback.unpack(MyCallback().pack()) == MyCallback()
 
     def test_build_filter(self):
         filter_object = MyCallback.filter(F.foo == "test")
