@@ -13,6 +13,7 @@ they are the ones verified against this project's toolchain:
 | Lint | `rtk ruff check --show-fixes --preview aiogram examples` |
 | Format | `rtk ruff format aiogram tests scripts examples` |
 | Types | `rtk mypy aiogram` |
+| Workflow lint | `rtk proxy make lint-workflows` |
 | git / gh | `rtk git <sub>` / `rtk gh <sub>` |
 | anything else | `rtk proxy <cmd>` (unfiltered but tracked) |
 

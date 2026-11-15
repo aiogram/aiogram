@@ -28,7 +28,7 @@ clean:
 
 .PHONY: install
 install: clean
-	uv sync --all-extras --group dev --group test
+	uv sync --locked --all-extras --group dev --group test
 	uv run pre-commit install
 
 # =================================================================================================
@@ -37,9 +37,19 @@ install: clean
 
 .PHONY: lint
 lint:
-	uv run ruff format --check --diff $(package_dir)
+	uv run ruff format --check --diff $(package_dir) $(tests_dir) $(scripts_dir) $(examples_dir)
 	uv run ruff check --show-fixes --preview $(package_dir) $(examples_dir)
 	uv run mypy --native-parser --num-workers 8 $(package_dir)
+	# aiogram/types/custom.py has a `sys.platform == "win32"` branch that mypy prunes as
+	# unreachable on Linux; this second pass type-checks it.
+	uv run mypy --native-parser --num-workers 8 --platform win32 $(package_dir)
+	uv run pre-commit run --all-files --show-diff-on-failure
+
+.PHONY: lint-workflows
+lint-workflows:
+	uv run scripts/check_action_refs.py
+	uvx zizmor --config .github/zizmor.yml .
+	uvx --from actionlint-py actionlint
 
 .PHONY: reformat
 reformat:
@@ -55,12 +65,12 @@ test-run-services:
 
 .PHONY: test
 test: test-run-services
-	uv run pytest --cov=aiogram --cov-config .coveragerc tests/ --redis $(redis_connection) --mongo $(mongo_connection)
+	uv run pytest --cov=aiogram tests/ --redis $(redis_connection) --mongo $(mongo_connection)
 
 .PHONY: test-coverage
 test-coverage: test-run-services
 	mkdir -p $(reports_dir)/tests/
-	uv run pytest --cov=aiogram --cov-config .coveragerc --html=$(reports_dir)/tests/index.html tests/ --redis $(redis_connection) --mongo $(mongo_connection)
+	uv run pytest --cov=aiogram --html=$(reports_dir)/tests/index.html tests/ --redis $(redis_connection) --mongo $(mongo_connection)
 	uv run coverage html -d $(reports_dir)/coverage
 
 .PHONY: test-coverage-view

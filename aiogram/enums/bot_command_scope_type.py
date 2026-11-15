@@ -1,7 +1,7 @@
-from enum import Enum
+from enum import StrEnum
 
 
-class BotCommandScopeType(str, Enum):
+class BotCommandScopeType(StrEnum):
     """
     This object represents the scope to which bot commands are applied.
 

@@ -14,7 +14,7 @@ For example :code:`sendMessage` named :code:`send_message` and has the same spec
     A full list of methods can be found in the appropriate section of the documentation
 
 .. autoclass:: aiogram.client.bot.Bot
-    :members: __init__,token,id,context,me,download_file,download
+    :members: __init__,token,id,context,me,usernames,download_file,download
     :show-inheritance:
     :member-order: bysource
     :special-members: __init__

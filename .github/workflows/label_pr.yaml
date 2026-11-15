@@ -1,5 +1,9 @@
 name: Label new pull request
 
+# pull_request_target is required: under pull_request a fork PR gets a
+# read-only token and cannot add labels. Safe here because this job
+# never checks out or runs PR content; actions/labeler reads
+# .github/labeler.yml from the base branch via the API.
 on:
   pull_request_target:
     types:
@@ -7,11 +11,18 @@ on:
     branches:
       - dev-3.x
 
+permissions: {}
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
+
 jobs:
   put-label:
+    name: Add version label
     runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read       # actions/labeler reads .github/labeler.yml through the API
+      pull-requests: write # add the label
     steps:
-      - name: Add 3.x label
-        uses: andymckay/labeler@master
-        with:
-          add-labels: 3.x
+      - uses: actions/labeler@v7

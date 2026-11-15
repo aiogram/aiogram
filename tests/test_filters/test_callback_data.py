@@ -1,4 +1,3 @@
-import sys
 from decimal import Decimal
 from enum import Enum, auto
 from fractions import Fraction
@@ -7,7 +6,7 @@ from uuid import UUID
 
 import pytest
 from magic_filter import MagicFilter
-from pydantic import ValidationError
+from pydantic import Field, ValidationError
 
 from aiogram import F
 from aiogram.filters.callback_data import CallbackData
@@ -183,7 +182,6 @@ class TestCallbackData:
 
         assert TgData.unpack("tg:123:") == TgData(chat_id=123, thread_id=None)
 
-    @pytest.mark.skipif(sys.version_info < (3, 10), reason="UnionType is added in Python 3.10")
     def test_unpack_optional_wo_default_union_type(self):
         """Test CallbackData without default optional."""
 
@@ -192,6 +190,40 @@ class TestCallbackData:
             thread_id: int | None
 
         assert TgData.unpack("tg:123:") == TgData(chat_id=123, thread_id=None)
+
+    @pytest.mark.parametrize(
+        "hint,default",
+        [
+            [int | None, 1],
+            [bool | None, True],
+            [MyStringEnum | None, MyStringEnum.FOO],
+            [str | None, "experiment"],
+            [Optional[int], 1],
+        ],
+    )
+    def test_unpack_explicit_none_with_default(self, hint, default):
+        """An explicit None must survive pack/unpack even when the default is not None."""
+
+        class MyCallback(CallbackData, prefix="test"):
+            foo: hint = default
+
+        callback = MyCallback(foo=None)
+        assert callback.pack() == "test:"
+        assert MyCallback.unpack(callback.pack()) == callback
+        assert MyCallback.unpack(MyCallback().pack()) == MyCallback()
+
+    def test_unpack_empty_part_not_optional_uses_default(self):
+        class MyCallback(CallbackData, prefix="test"):
+            foo: int = 1
+
+        assert MyCallback.unpack("test:") == MyCallback(foo=1)
+
+    def test_unpack_empty_part_optional_with_default_factory(self):
+        class MyCallback(CallbackData, prefix="test"):
+            foo: int | None = Field(default_factory=lambda: 1)
+
+        assert MyCallback.unpack("test:") == MyCallback(foo=None)
+        assert MyCallback.unpack(MyCallback().pack()) == MyCallback()
 
     def test_build_filter(self):
         filter_object = MyCallback.filter(F.foo == "test")

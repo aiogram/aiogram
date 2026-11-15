@@ -1,7 +1,7 @@
-from enum import Enum
+from enum import StrEnum
 
 
-class MessageOriginType(str, Enum):
+class MessageOriginType(StrEnum):
     """
     This object represents origin of a message.
 

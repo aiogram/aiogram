@@ -14,9 +14,9 @@
       {
         "type": "Integer or String",
         "required": true,
-        "description": "Unique identifier for the target chat or username of the target bot, supergroup or channel in the format @username. Channel direct messages chats can't be verified.",
-        "html_description": "<td>Unique identifier for the target chat or username of the target bot, supergroup or channel in the format <code>@username</code>. Channel direct messages chats can't be verified.</td>",
-        "rst_description": "Unique identifier for the target chat or username of the target bot, supergroup or channel in the format :code:`@username`. Channel direct messages chats can't be verified.\n",
+        "description": "Unique identifier for the target chat or username of the target bot, supergroup, or channel in the format @username. Channel direct messages chats can't be verified.",
+        "html_description": "<td>Unique identifier for the target chat or username of the target bot, supergroup, or channel in the format <code>@username</code>. Channel direct messages chats can't be verified.</td>",
+        "rst_description": "Unique identifier for the target chat or username of the target bot, supergroup, or channel in the format :code:`@username`. Channel direct messages chats can't be verified.\n",
         "name": "chat_id"
       },
       {
@@ -26,6 +26,22 @@
         "html_description": "<td>Custom description for the verification; 0-70 characters. Must be empty if the organization isn't allowed to provide a custom verification description.</td>",
         "rst_description": "Custom description for the verification; 0-70 characters. Must be empty if the organization isn't allowed to provide a custom verification description.\n",
         "name": "custom_description"
+      },
+      {
+        "type": "String",
+        "required": false,
+        "description": "Mode for parsing entities in the custom description. See formatting options for more details. Only 'text_link' entities are supported.",
+        "html_description": "<td>Mode for parsing entities in the custom description. See <a href=\"#formatting-options\">formatting options</a> for more details. Only &#8220;text_link&#8221; entities are supported.</td>",
+        "rst_description": "Mode for parsing entities in the custom description. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details. Only 'text_link' entities are supported.\n",
+        "name": "custom_description_parse_mode"
+      },
+      {
+        "type": "Array of MessageEntity",
+        "required": false,
+        "description": "A JSON-serialized list of special entities that appear in the custom description, which can be specified instead of custom_description_parse_mode. Only 'text_link' entities are supported.",
+        "html_description": "<td>A JSON-serialized list of special entities that appear in the custom description, which can be specified instead of <em>custom_description_parse_mode</em>. Only &#8220;text_link&#8221; entities are supported.</td>",
+        "rst_description": "A JSON-serialized list of special entities that appear in the custom description, which can be specified instead of *custom_description_parse_mode*. Only 'text_link' entities are supported.\n",
+        "name": "custom_description_entities"
       }
     ],
     "category": "methods"

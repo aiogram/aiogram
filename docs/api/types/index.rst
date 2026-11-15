@@ -13,6 +13,7 @@ Available types
 
     accepted_gift_types
     animation
+    area_position
     audio
     background_fill
     background_fill_freeform_gradient
@@ -73,6 +74,11 @@ Available types
     chat_owner_left
     chat_permissions
     chat_photo
+    chat_share_theme
+    chat_share_theme_backdrop
+    chat_share_theme_backdrops
+    chat_share_theme_emoji
+    chat_share_theme_unique_gift
     chat_shared
     checklist
     checklist_task
@@ -89,6 +95,9 @@ Available types
     direct_messages_topic
     disabled_button
     document
+    emoji_type
+    emoji_type_custom_emoji
+    emoji_type_emoji
     ephemeral_message_parameters
     external_reply_info
     file
@@ -181,6 +190,7 @@ Available types
     paid_media_preview
     paid_media_video
     paid_message_price_changed
+    paid_messages_waived
     photo_size
     poll
     poll_answer
@@ -203,6 +213,7 @@ Available types
     sent_guest_message
     sent_web_app_message
     shared_user
+    shared_widget_query
     star_amount
     story
     story_area
@@ -223,6 +234,11 @@ Available types
     suggested_post_refunded
     switch_inline_query_chosen_chat
     text_quote
+    ton_nft
+    ton_nft_attribute
+    ton_wallet_card
+    ton_wallet_card_sticker
+    ton_wallet_transfer
     unique_gift
     unique_gift_backdrop
     unique_gift_backdrop_colors
@@ -248,6 +264,13 @@ Available types
     voice
     web_app_data
     web_app_info
+    widget
+    widget_query
+    widget_query_type
+    widget_query_type_data
+    widget_query_type_sent_transaction
+    widget_query_type_sign_data
+    widget_query_wallet
     write_access_allowed
 
 Inline mode
@@ -285,8 +308,10 @@ Inline mode
     input_location_message_content
     input_message_content
     input_rich_message_content
+    input_shared_widget_message_content
     input_text_message_content
     input_venue_message_content
+    input_widget_message_content
 
 Rich messages
 =============
@@ -377,6 +402,7 @@ Rich messages
     rich_text_subscript
     rich_text_superscript
     rich_text_text_mention
+    rich_text_ton_address
     rich_text_underline
     rich_text_url
 

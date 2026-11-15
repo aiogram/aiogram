@@ -20,6 +20,23 @@ class TestTextDecoration:
                 MessageEntity(type="text_link", offset=0, length=5, url="https://aiogram.dev"),
                 '<a href="https://aiogram.dev">test</a>',
             ],
+            [
+                html_decoration,
+                MessageEntity(
+                    type="text_link", offset=0, length=5, url='https://a.b/?q="><b>x</b>&lt=1'
+                ),
+                '<a href="https://a.b/?q=&quot;&gt;&lt;b&gt;x&lt;/b&gt;&amp;lt=1">test</a>',
+            ],
+            [
+                html_decoration,
+                MessageEntity(type="pre", offset=0, length=5, language='py"><b>x</b>'),
+                '<pre><code class="language-py&quot;&gt;&lt;b&gt;x&lt;/b&gt;">test</code></pre>',
+            ],
+            [
+                html_decoration,
+                MessageEntity(type="custom_emoji", offset=0, length=5, custom_emoji_id='1"><b>'),
+                '<tg-emoji emoji-id="1&quot;&gt;&lt;b&gt;">test</tg-emoji>',
+            ],
             [html_decoration, MessageEntity(type="bold", offset=0, length=5), "<b>test</b>"],
             [html_decoration, MessageEntity(type="italic", offset=0, length=5), "<i>test</i>"],
             [html_decoration, MessageEntity(type="code", offset=0, length=5), "<code>test</code>"],
@@ -27,7 +44,7 @@ class TestTextDecoration:
             [
                 html_decoration,
                 MessageEntity(type="pre", offset=0, length=5, language="python"),
-                '<pre><code language="language-python">test</code></pre>',
+                '<pre><code class="language-python">test</code></pre>',
             ],
             [html_decoration, MessageEntity(type="underline", offset=0, length=5), "<u>test</u>"],
             [
@@ -40,6 +57,8 @@ class TestTextDecoration:
             [html_decoration, MessageEntity(type="bot_command", offset=0, length=5), "test"],
             [html_decoration, MessageEntity(type="email", offset=0, length=5), "test"],
             [html_decoration, MessageEntity(type="phone_number", offset=0, length=5), "test"],
+            [html_decoration, MessageEntity(type="bank_card_number", offset=0, length=5), "test"],
+            [html_decoration, MessageEntity(type="ton_address", offset=0, length=5), "test"],
             [
                 html_decoration,
                 MessageEntity(
@@ -87,6 +106,26 @@ class TestTextDecoration:
                 ),
                 '<tg-time unix="42" format="yMd">test</tg-time>',
             ],
+            [
+                markdown_decoration,
+                MessageEntity(
+                    type="text_link",
+                    offset=0,
+                    length=5,
+                    url="https://a.b/x_(y))*b*[c](https://e/\\",
+                ),
+                "[test](https://a.b/x_(y\\)\\)*b*[c](https://e/\\\\)",
+            ],
+            [
+                markdown_decoration,
+                MessageEntity(type="pre", offset=0, length=5, language="py```[x](https://e/)```"),
+                "```\ntest\n```",
+            ],
+            [
+                markdown_decoration,
+                MessageEntity(type="pre", offset=0, length=5, language="py thon"),
+                "```\ntest\n```",
+            ],
             [markdown_decoration, MessageEntity(type="bold", offset=0, length=5), "*test*"],
             [markdown_decoration, MessageEntity(type="italic", offset=0, length=5), "_\rtest_\r"],
             [markdown_decoration, MessageEntity(type="code", offset=0, length=5), "`test`"],
@@ -111,11 +150,17 @@ class TestTextDecoration:
             [markdown_decoration, MessageEntity(type="bot_command", offset=0, length=5), "test"],
             [markdown_decoration, MessageEntity(type="email", offset=0, length=5), "test"],
             [markdown_decoration, MessageEntity(type="phone_number", offset=0, length=5), "test"],
+            [
+                markdown_decoration,
+                MessageEntity(type="bank_card_number", offset=0, length=5),
+                "test",
+            ],
+            [markdown_decoration, MessageEntity(type="ton_address", offset=0, length=5), "test"],
             [markdown_decoration, MessageEntity(type="spoiler", offset=0, length=5), "||test||"],
             [
                 markdown_decoration,
                 MessageEntity(type="custom_emoji", offset=0, length=5, custom_emoji_id="42"),
-                "![test](tg://emoji?emoji_id=42)",
+                "![test](tg://emoji?id=42)",
             ],
             [
                 markdown_decoration,
@@ -164,6 +209,16 @@ class TestTextDecoration:
         self, decorator: TextDecoration, entity: MessageEntity, result: str
     ):
         assert decorator.apply_entity(entity, "test") == result
+
+    @pytest.mark.parametrize("decorator", [html_decoration, markdown_decoration])
+    @pytest.mark.parametrize("entity_type", ["bank_card_number", "ton_address"])
+    def test_apply_unchanged_entity_is_not_escaped_again(
+        self, decorator: TextDecoration, entity_type: str
+    ):
+        # The text passed to apply_entity is already escaped by unparse
+        entity = MessageEntity(type=entity_type, offset=0, length=8)
+        assert decorator.apply_entity(entity, "EQ_ab-c&") == "EQ_ab-c&"
+        assert decorator.unparse("EQ_ab-c&", [entity]) == decorator.quote("EQ_ab-c&")
 
     @pytest.mark.parametrize(
         "decorator,date_time_format,expected",
@@ -377,6 +432,40 @@ class TestTextDecoration:
                     )
                 ],
                 '<tg-time unix="42" format="yMd">test</tg-time>',
+            ],
+            [
+                markdown_decoration,
+                "quoted word\nafter",
+                [
+                    MessageEntity(type="blockquote", offset=0, length=12),
+                    MessageEntity(type="italic", offset=7, length=4),
+                ],
+                ">quoted _\rword_\r\nafter",
+            ],
+            [
+                markdown_decoration,
+                "a\n\nafter",
+                [MessageEntity(type="blockquote", offset=0, length=3)],
+                ">a\n>\nafter",
+            ],
+            [
+                markdown_decoration,
+                "a\u2028b\nafter",
+                [MessageEntity(type="blockquote", offset=0, length=4)],
+                ">a\u2028b\nafter",
+            ],
+            [
+                markdown_decoration,
+                "a\nb\nafter",
+                [MessageEntity(type="expandable_blockquote", offset=0, length=4)],
+                ">a\n>b||\nafter",
+            ],
+            [markdown_decoration, "", [MessageEntity(type="blockquote", offset=0, length=0)], ""],
+            [
+                markdown_decoration,
+                "",
+                [MessageEntity(type="expandable_blockquote", offset=0, length=0)],
+                "||",
             ],
         ],
     )

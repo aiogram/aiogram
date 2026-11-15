@@ -1,0 +1,26 @@
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    cooldown:
+      default-days: 7  # a compromised tag is usually yanked within days
+    labels:
+      - "dependencies"
+      - "github_actions"
+      - "skip news"   # CI-only bumps never need a changelog fragment
+    groups:
+      github-actions:
+        patterns:
+          - "*"
+  # Lock-file only: security updates still open PRs, version updates are disabled.
+  - package-ecosystem: uv
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 0
+    labels:
+      - "dependencies"
+      - "python:uv"
+      - "skip news"  # uv.lock bumps don't change aiogram's published requirements

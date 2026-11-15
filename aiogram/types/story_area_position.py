@@ -9,6 +9,9 @@ class StoryAreaPosition(TelegramObject):
     """
     Describes the position of a clickable area within a story.
 
+    .. deprecated:: API:10.4
+       https://core.telegram.org/bots/api-changelog#november-9-2026
+
     Source: https://core.telegram.org/bots/api#storyareaposition
     """
 

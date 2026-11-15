@@ -12,7 +12,7 @@ from aiogram.types import (
     ChatMemberRestricted,
     User,
 )
-from aiogram.utils.chat_member import ChatMemberAdapter
+from aiogram.utils.chat_member import MEMBERS, ChatMemberAdapter, is_chat_member
 
 USER = User(
     id=42,
@@ -95,3 +95,26 @@ CHAT_MEMBER_RESTRICTED = ChatMemberRestricted(
 def test_chat_member_resolution(data: dict, resolved_type: type[ChatMember]) -> None:
     chat_member = ChatMemberAdapter.validate_python(data)
     assert isinstance(chat_member, resolved_type)
+
+
+@pytest.mark.parametrize(
+    ("data", "expected"),
+    [
+        (CHAT_MEMBER_ADMINISTRATOR, True),
+        (CHAT_MEMBER_BANNED, False),
+        (CHAT_MEMBER_LEFT, False),
+        (CHAT_MEMBER_MEMBER, True),
+        (CHAT_MEMBER_OWNER, True),
+        (CHAT_MEMBER_RESTRICTED, True),
+        ({**CHAT_MEMBER_RESTRICTED, "is_member": False}, False),
+    ],
+)
+def test_is_chat_member(data: dict, expected: bool) -> None:
+    chat_member = ChatMemberAdapter.validate_python(data)
+    assert is_chat_member(chat_member) is expected
+
+
+def test_members_includes_restricted_who_left() -> None:
+    # MEMBERS is kept as is: it checks the status only, see is_chat_member()
+    chat_member = ChatMemberAdapter.validate_python({**CHAT_MEMBER_RESTRICTED, "is_member": False})
+    assert isinstance(chat_member, MEMBERS)
