@@ -1,4 +1,5 @@
 import asyncio
+import json
 import secrets
 from abc import ABC, abstractmethod
 from asyncio import Transport
@@ -145,7 +146,7 @@ class BaseRequestHandler(ABC):
         feed_update_task = asyncio.create_task(
             self._background_feed_update(
                 bot=bot,
-                update=await request.json(loads=bot.session.json_loads),
+                update=await request.json(loads=bot.session.json_loads or json.loads),
             ),
         )
         self._background_feed_update_tasks.add(feed_update_task)
@@ -192,7 +193,7 @@ class BaseRequestHandler(ABC):
     async def _handle_request(self, bot: Bot, request: web.Request) -> web.Response:
         result: TelegramMethod[Any] | None = await self.dispatcher.feed_webhook_update(
             bot,
-            await request.json(loads=bot.session.json_loads),
+            await request.json(loads=bot.session.json_loads or json.loads),
             **self.data,
         )
         return web.Response(body=self._build_response_writer(bot=bot, result=result))

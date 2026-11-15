@@ -13,6 +13,8 @@ class InputMessageContent(MutableTelegramObject):
      - :class:`aiogram.types.input_venue_message_content.InputVenueMessageContent`
      - :class:`aiogram.types.input_contact_message_content.InputContactMessageContent`
      - :class:`aiogram.types.input_invoice_message_content.InputInvoiceMessageContent`
+     - :class:`aiogram.types.input_widget_message_content.InputWidgetMessageContent`
+     - :class:`aiogram.types.input_shared_widget_message_content.InputSharedWidgetMessageContent`
 
     Source: https://core.telegram.org/bots/api#inputmessagecontent
     """

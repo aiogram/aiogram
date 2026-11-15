@@ -27,7 +27,7 @@ class SendInvoice(TelegramMethod[Message]):
     __api_method__ = "sendInvoice"
 
     chat_id: ChatIdUnion
-    """Unique identifier for the target chat or username of the target bot, supergroup or channel in the format :code:`@username`"""
+    """Unique identifier for the target chat or username of the target bot, supergroup, or channel in the format :code:`@username`"""
     title: str
     """Product name, 1-32 characters"""
     description: str

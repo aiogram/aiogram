@@ -1,0 +1,33 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "tonnftattribute",
+    "name": "TonNftAttribute",
+    "description": "This object represents an attribute of an NFT in the TON blockchain.",
+    "html_description": "<p>This object represents an attribute of an NFT in the TON blockchain.</p>",
+    "rst_description": "This object represents an attribute of an NFT in the TON blockchain.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Trait type of the attribute",
+        "html_description": "<td>Trait type of the attribute</td>",
+        "rst_description": "Trait type of the attribute\n",
+        "name": "trait_type",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "Value of the attribute",
+        "html_description": "<td>Value of the attribute</td>",
+        "rst_description": "Value of the attribute\n",
+        "name": "value",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

@@ -9,6 +9,7 @@ from .input_poll_media import InputPollMedia
 from .input_poll_option_media import InputPollOptionMedia
 
 if TYPE_CHECKING:
+    from .input_file_union import InputFileUnion
     from .message_entity import MessageEntity
 
 
@@ -21,9 +22,9 @@ class InputMediaLivePhoto(InputMedia, InputPollMedia, InputPollOptionMedia):
 
     type: Literal[InputMediaType.LIVE_PHOTO] = InputMediaType.LIVE_PHOTO
     """Type of the media, must be *live_photo*"""
-    media: str
+    media: InputFileUnion
     """Video of the live photo to send. Pass a file_id to send a file that exists on the Telegram servers (recommended) or pass 'attach://<file_attach_name>' to upload a new one using multipart/form-data under <file_attach_name> name. :ref:`More information on Sending Files » <sending-files>`. Sending live photos by a URL is currently unsupported"""
-    photo: str
+    photo: InputFileUnion
     """The static photo to send. Pass a file_id to send a file that exists on the Telegram servers (recommended) or pass 'attach://<file_attach_name>' to upload a new one using multipart/form-data under <file_attach_name> name. :ref:`More information on Sending Files » <sending-files>`. Sending live photos by a URL is currently unsupported"""
     caption: str | None = None
     """*Optional*. Caption of the live photo to be sent, 0-1024 characters after entities parsing"""
@@ -44,8 +45,8 @@ class InputMediaLivePhoto(InputMedia, InputPollMedia, InputPollOptionMedia):
             __pydantic__self__,
             *,
             type: Literal[InputMediaType.LIVE_PHOTO] = InputMediaType.LIVE_PHOTO,
-            media: str,
-            photo: str,
+            media: InputFileUnion,
+            photo: InputFileUnion,
             caption: str | None = None,
             parse_mode: str | Default | None = Default("parse_mode"),
             caption_entities: list[MessageEntity] | None = None,

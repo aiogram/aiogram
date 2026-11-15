@@ -337,6 +337,7 @@ __all__ = (
     "AcceptedGiftTypes",
     "AffiliateInfo",
     "Animation",
+    "AreaPosition",
     "Audio",
     "BackgroundFill",
     "BackgroundFillFreeformGradient",
@@ -405,6 +406,12 @@ __all__ = (
     "ChatOwnerLeft",
     "ChatPermissions",
     "ChatPhoto",
+    "ChatShareTheme",
+    "ChatShareThemeBackdrop",
+    "ChatShareThemeBackdrops",
+    "ChatShareThemeEmoji",
+    "ChatShareThemeUnion",
+    "ChatShareThemeUniqueGift",
     "ChatShared",
     "Checklist",
     "ChecklistTask",
@@ -426,6 +433,10 @@ __all__ = (
     "DisabledButton",
     "Document",
     "Downloadable",
+    "EmojiType",
+    "EmojiTypeCustomEmoji",
+    "EmojiTypeEmoji",
+    "EmojiTypeUnion",
     "EncryptedCredentials",
     "EncryptedPassportElement",
     "EphemeralMessageParameters",
@@ -546,6 +557,7 @@ __all__ = (
     "InputRichMessageContent",
     "InputRichMessageMedia",
     "InputRichMessageMediaUnion",
+    "InputSharedWidgetMessageContent",
     "InputSticker",
     "InputStoryContent",
     "InputStoryContentPhoto",
@@ -553,6 +565,7 @@ __all__ = (
     "InputStoryContentVideo",
     "InputTextMessageContent",
     "InputVenueMessageContent",
+    "InputWidgetMessageContent",
     "Invoice",
     "KeyboardButton",
     "KeyboardButtonPollType",
@@ -606,6 +619,7 @@ __all__ = (
     "PaidMediaUnion",
     "PaidMediaVideo",
     "PaidMessagePriceChanged",
+    "PaidMessagesWaived",
     "PassportData",
     "PassportElementError",
     "PassportElementErrorDataField",
@@ -705,12 +719,14 @@ __all__ = (
     "RichTextSubscript",
     "RichTextSuperscript",
     "RichTextTextMention",
+    "RichTextTonAddress",
     "RichTextUnderline",
     "RichTextUnion",
     "RichTextUrl",
     "SentGuestMessage",
     "SentWebAppMessage",
     "SharedUser",
+    "SharedWidgetQuery",
     "ShippingAddress",
     "ShippingOption",
     "ShippingQuery",
@@ -741,6 +757,11 @@ __all__ = (
     "SwitchInlineQueryChosenChat",
     "TelegramObject",
     "TextQuote",
+    "TonNft",
+    "TonNftAttribute",
+    "TonWalletCard",
+    "TonWalletCardSticker",
+    "TonWalletTransfer",
     "TransactionPartner",
     "TransactionPartnerAffiliateProgram",
     "TransactionPartnerChat",
@@ -779,17 +800,36 @@ __all__ = (
     "WebAppData",
     "WebAppInfo",
     "WebhookInfo",
+    "Widget",
+    "WidgetQuery",
+    "WidgetQueryType",
+    "WidgetQueryTypeData",
+    "WidgetQueryTypeSentTransaction",
+    "WidgetQueryTypeSignData",
+    "WidgetQueryTypeUnion",
+    "WidgetQueryWallet",
     "WriteAccessAllowed",
 )
 
 from ..client.default import Default as _Default
+from .area_position import AreaPosition
 from .bot_access_settings import BotAccessSettings
 from .bot_subscription_updated import BotSubscriptionUpdated
 from .chat_owner_changed import ChatOwnerChanged
 from .chat_owner_left import ChatOwnerLeft
+from .chat_share_theme import ChatShareTheme
+from .chat_share_theme_backdrop import ChatShareThemeBackdrop
+from .chat_share_theme_backdrops import ChatShareThemeBackdrops
+from .chat_share_theme_emoji import ChatShareThemeEmoji
+from .chat_share_theme_union import ChatShareThemeUnion
+from .chat_share_theme_unique_gift import ChatShareThemeUniqueGift
 from .community import Community
 from .community_chat_added import CommunityChatAdded
 from .community_chat_removed import CommunityChatRemoved
+from .emoji_type import EmojiType
+from .emoji_type_custom_emoji import EmojiTypeCustomEmoji
+from .emoji_type_emoji import EmojiTypeEmoji
+from .emoji_type_union import EmojiTypeUnion
 from .input_media_link import InputMediaLink
 from .input_media_live_photo import InputMediaLivePhoto
 from .input_media_location import InputMediaLocation
@@ -829,12 +869,15 @@ from .input_rich_message import InputRichMessage
 from .input_rich_message_content import InputRichMessageContent
 from .input_rich_message_media import InputRichMessageMedia
 from .input_rich_message_media_union import InputRichMessageMediaUnion
+from .input_shared_widget_message_content import InputSharedWidgetMessageContent
+from .input_widget_message_content import InputWidgetMessageContent
 from .keyboard_button_request_managed_bot import KeyboardButtonRequestManagedBot
 from .link import Link
 from .live_photo import LivePhoto
 from .managed_bot_created import ManagedBotCreated
 from .managed_bot_updated import ManagedBotUpdated
 from .paid_media_live_photo import PaidMediaLivePhoto
+from .paid_messages_waived import PaidMessagesWaived
 from .poll_media import PollMedia
 from .poll_option_added import PollOptionAdded
 from .poll_option_deleted import PollOptionDeleted
@@ -890,12 +933,27 @@ from .rich_text_strikethrough import RichTextStrikethrough
 from .rich_text_subscript import RichTextSubscript
 from .rich_text_superscript import RichTextSuperscript
 from .rich_text_text_mention import RichTextTextMention
+from .rich_text_ton_address import RichTextTonAddress
 from .rich_text_underline import RichTextUnderline
 from .rich_text_union import RichTextUnion
 from .rich_text_url import RichTextUrl
 from .sent_guest_message import SentGuestMessage
+from .shared_widget_query import SharedWidgetQuery
+from .ton_nft import TonNft
+from .ton_nft_attribute import TonNftAttribute
+from .ton_wallet_card import TonWalletCard
+from .ton_wallet_card_sticker import TonWalletCardSticker
+from .ton_wallet_transfer import TonWalletTransfer
 from .user_profile_audios import UserProfileAudios
 from .video_quality import VideoQuality
+from .widget import Widget
+from .widget_query import WidgetQuery
+from .widget_query_type import WidgetQueryType
+from .widget_query_type_data import WidgetQueryTypeData
+from .widget_query_type_sent_transaction import WidgetQueryTypeSentTransaction
+from .widget_query_type_sign_data import WidgetQueryTypeSignData
+from .widget_query_type_union import WidgetQueryTypeUnion
+from .widget_query_wallet import WidgetQueryWallet
 
 # Load typing forward refs for every TelegramObject
 _types_namespace = {

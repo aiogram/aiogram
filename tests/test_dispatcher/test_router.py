@@ -76,6 +76,9 @@ class TestRouter:
         assert router.observers["managed_bot"] == router.managed_bot
         assert router.observers["guest_message"] == router.guest_message
         assert router.observers["subscription"] == router.subscription
+        assert router.observers["stopped_message_generation"] == router.stopped_message_generation
+        assert router.observers["widget_query"] == router.widget_query
+        assert router.observers["shared_widget_query"] == router.shared_widget_query
 
     async def test_emit_startup(self):
         router1 = Router()

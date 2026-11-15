@@ -16,6 +16,282 @@ Changelog
 
 .. towncrier release notes start
 
+3.32.0 (2026-11-15)
+====================
+
+Features
+--------
+
+- Added support for Python 3.15.
+  `#1949 <https://github.com/aiogram/aiogram/issues/1949>`_
+- Added the :code:`tasks_shutdown_timeout` parameter to
+  :meth:`aiogram.dispatcher.dispatcher.Dispatcher.start_polling` and
+  :meth:`aiogram.dispatcher.dispatcher.Dispatcher.run_polling`.
+  When it is set, stopping polling by :code:`stop_polling()` or by a SIGINT/SIGTERM handled
+  by the dispatcher waits up to that many seconds for updates that are still being handled,
+  before shutdown callbacks run and bot sessions are closed; handlers still running after
+  the timeout are cancelled.
+  The default, :code:`None`, keeps the previous behaviour of not waiting for them.
+  `#1955 <https://github.com/aiogram/aiogram/issues/1955>`_
+- Enums in :mod:`aiogram.enums` are now :class:`enum.StrEnum` (:class:`enum.IntEnum` for :class:`aiogram.enums.topic_icon_color.TopicIconColor`), so :code:`str()`, f-strings and :class:`aiogram.utils.formatting.Text` render the member value, e.g. :code:`f"{ParseMode.HTML}"` gives :code:`HTML` instead of :code:`ParseMode.HTML`. Comparison with plain values and serialization are unchanged.
+  `#1976 <https://github.com/aiogram/aiogram/issues/1976>`_
+- Added :meth:`aiogram.client.bot.Bot.usernames`, which returns all of the bot's usernames,
+  secondary ones included. ``getMe`` returns only one, so the rest are taken from
+  ``active_usernames`` of ``getChat`` on the bot itself and cached like :meth:`aiogram.client.bot.Bot.me`.
+  `#1983 <https://github.com/aiogram/aiogram/issues/1983>`_
+- Added :code:`sender_chat` to :class:`aiogram.dispatcher.middlewares.user_context.EventContext` for :code:`message`, :code:`edited_message`, :code:`business_message` and :code:`edited_business_message` updates, and the opt-in :code:`fsm_key_on_sender_chat` parameter of :class:`aiogram.dispatcher.dispatcher.Dispatcher` (:code:`key_on_sender_chat` of :class:`aiogram.fsm.middleware.FSMContextMiddleware`).
+  When it is enabled, messages sent on behalf of a chat in non-channel chats (anonymous group administrators, users posting as a channel) use :code:`sender_chat.id` instead of the placeholder sender user as the user id of the FSM key, so different channels no longer share one state.
+  It is disabled by default, so existing keys are unchanged; enabling it moves the states of such messages to new keys.
+  `#1997 <https://github.com/aiogram/aiogram/issues/1997>`_
+
+
+Bugfixes
+--------
+
+- Fixed :code:`InlineKeyboardBuilder.as_markup()` silently dropping the options passed to it, so :code:`as_markup(force_reply=True)` now sets the field on the resulting :code:`InlineKeyboardMarkup`. The :code:`as_markup()` methods of :code:`InlineKeyboardBuilder` and :code:`ReplyKeyboardBuilder` now also declare the markup options (:code:`is_persistent`, :code:`resize_keyboard`, :code:`one_time_keyboard`, :code:`input_field_placeholder`, :code:`selective`, :code:`force_reply`) as explicit typed keyword arguments, so IDEs and type checkers can complete and validate them.
+  `#1423 <https://github.com/aiogram/aiogram/issues/1423>`_
+- Fixed global translation helpers raising ``LookupError`` or using an outer
+  translation context when an ``I18n`` subclass is used with ``context()`` or
+  i18n middleware.
+  `#1691 <https://github.com/aiogram/aiogram/issues/1691>`_
+- Fixed detection of asynchronous callable objects: an instance whose :code:`__call__` is a coroutine function is now recognized as awaitable, so such handlers and filters are awaited instead of returning a never-awaited coroutine.
+  `#1721 <https://github.com/aiogram/aiogram/issues/1721>`_
+- Fixed detection of async callable objects as awaitable handlers: an instance whose :code:`__call__` is a coroutine function is now recognized as awaitable (via :code:`type(callback).__call__`), so such handlers and filters are awaited instead of being dispatched to a thread and returning a never-awaited coroutine.
+  `#1858 <https://github.com/aiogram/aiogram/issues/1858>`_
+- Corrected the declared minimum versions of runtime dependencies, which were too low to actually work:
+  ``pydantic`` is now ``>=2.7.0`` (older releases fail to build the discriminated-union models and
+  raise ``KeyError`` on ``import aiogram``), and the ``mongo`` extra now requires ``motor>=3.6.0`` with
+  ``pymongo>=4.9`` (``AsyncMongoClient``, used by ``PyMongoStorage``, appeared only in PyMongo 4.9).
+  `#1894 <https://github.com/aiogram/aiogram/issues/1894>`_
+- Fixed :class:`aiogram.dispatcher.middlewares.user_context.UserContextMiddleware`
+  not resolving a user for the ``stopped_message_generation`` update, so handlers
+  received neither ``event_from_user`` nor FSM ``state``. The user is now derived
+  from the private chat (``chat.id`` is the user id for message drafts).
+  `#1899 <https://github.com/aiogram/aiogram/issues/1899>`_
+- Fixed :code:`check_webapp_signature` raising ``TypeError`` instead of returning ``False`` when the client-supplied hash contains non-ASCII characters.
+  `#1903 <https://github.com/aiogram/aiogram/issues/1903>`_
+- Fixed an exponential slowdown (a CPU hang that froze the event loop) when validating updates with nested rich text, such as bold inside italic inside spoiler.
+  ``RichTextUnion`` is now a discriminated union keyed on ``type``, with plain strings and arrays tagged by their Python type.
+  `#1925 <https://github.com/aiogram/aiogram/issues/1925>`_
+- Use ``hmac.compare_digest`` for validating Login Widget data to prevent timing attacks.
+  `#1939 <https://github.com/aiogram/aiogram/issues/1939>`_
+- Avoid an unawaited update coroutine when polling is cancelled while waiting for
+  capacity under ``tasks_concurrency_limit``.
+  `#1958 <https://github.com/aiogram/aiogram/issues/1958>`_
+- Fixed :class:`aiogram.filters.command.CommandStart` with :code:`deep_link_encoded=True`
+  raising ``binascii.Error`` instead of rejecting the message when the deep-link payload
+  is not valid base64url (e.g. ``/start a`` or a truncated referral link). The error escaped
+  the filter, so the remaining handlers, such as a plain :code:`CommandStart()` fallback,
+  were never tried.
+  `#1963 <https://github.com/aiogram/aiogram/issues/1963>`_
+- Sped up parsing of incoming Bot API responses by roughly 1.5x by letting pydantic read the
+  response body directly instead of decoding it into a dict first.
+  :code:`BaseSession(json_loads=...)` now defaults to :code:`None`, which selects that path;
+  passing a decoder keeps the previous two-step behaviour. Without a decoder a malformed body
+  reports pydantic's :code:`json_invalid` inside :class:`aiogram.exceptions.ClientDecodeError`
+  instead of :code:`json.JSONDecodeError`, and :code:`ClientDecodeError.data` now always holds
+  the raw response body instead of the decoded object.
+  `#1966 <https://github.com/aiogram/aiogram/issues/1966>`_
+- Fixed HTML code blocks with a language (:code:`html_decoration.pre_language`,
+  :class:`aiogram.utils.formatting.Pre`, :attr:`aiogram.types.message.Message.html_text`)
+  being rendered as :code:`<code language="language-...">`, which Telegram ignores, so the
+  language was dropped. They are rendered as :code:`<code class="language-...">` again.
+  `#1979 <https://github.com/aiogram/aiogram/issues/1979>`_
+- Fixed text decorations writing link URLs and other entity attributes into the markup
+  unescaped. A URL passed to :func:`aiogram.utils.markdown.link`, :func:`aiogram.utils.markdown.hlink`,
+  :func:`aiogram.utils.markdown.hide_link` or :class:`aiogram.utils.formatting.TextLink`, or received
+  in a message entity and rendered by :attr:`aiogram.types.message.Message.md_text` /
+  :attr:`aiogram.types.message.Message.html_text`, could close the link early and add its own
+  formatting and links to the bot's message. URLs with ``)`` (e.g. Wikipedia ``..._(disambiguation)``
+  pages) also produced invalid MarkdownV2.
+
+  - MarkdownV2: ``)`` and ``\`` in link URLs are now escaped.
+  - MarkdownV2: a code block language containing whitespace or a backtick is dropped
+    (rendered as a plain code block), because it cannot be escaped there.
+  - HTML: all attribute values (``href``, code block language, ``emoji-id``, ``format``) are now
+    HTML-escaped, so ``&`` in a URL is sent as ``&amp;``.
+
+  Pass raw URLs to these helpers; a URL that was escaped by hand before is now escaped twice.
+
+  Reported by the Anthropic OSS Scanner (ANT-2026-OGEWIQ9J).
+  `#1979 <https://github.com/aiogram/aiogram/issues/1979>`_
+- Fixed :class:`aiogram.filters.command.Command` rejecting commands addressed to a bot's
+  secondary username (``/help@shop_ai``). A mention that is not the ``getMe`` username is now
+  checked against :meth:`aiogram.client.bot.Bot.usernames`; commands addressed to the ``getMe``
+  username still make no extra request.
+  `#1983 <https://github.com/aiogram/aiogram/issues/1983>`_
+- :class:`aiogram.types.input_story_content_photo.InputStoryContentPhoto`, :class:`aiogram.types.input_story_content_video.InputStoryContentVideo`, :class:`aiogram.types.input_media_live_photo.InputMediaLivePhoto`, :class:`aiogram.types.input_paid_media_live_photo.InputPaidMediaLivePhoto`, :class:`aiogram.types.input_media_sticker.InputMediaSticker` and :class:`aiogram.types.input_media_voice_note.InputMediaVoiceNote` now accept an :class:`aiogram.types.input_file.InputFile` (e.g. :class:`aiogram.types.input_file.BufferedInputFile`) for their file fields, which is uploaded as an attached file, instead of only a string.
+  `#1985 <https://github.com/aiogram/aiogram/issues/1985>`_
+- :meth:`aiogram.types.message.Message.as_reply_parameters` no longer sets :code:`chat_id` for business messages and messages from channel direct messages chats, where the Bot API does not support it. Before, :meth:`aiogram.types.message.Message.reply` and the other :code:`reply_*` shortcuts on a business message sent a plain message instead of a reply.
+  `#1986 <https://github.com/aiogram/aiogram/issues/1986>`_
+- :meth:`aiogram.types.message.Message.delete`, :meth:`aiogram.types.message.Message.react`, :meth:`aiogram.types.message.Message.answer_invoice` and :meth:`aiogram.types.message.Message.reply_invoice` no longer send :code:`business_connection_id`, which their Bot API methods do not accept. :meth:`aiogram.types.message.Message.delete` and :meth:`aiogram.types.message.Message.react` now raise :code:`AssertionError` for business messages: use :meth:`aiogram.client.bot.Bot.delete_business_messages` to delete them; reactions can't be set on business messages.
+  `#1987 <https://github.com/aiogram/aiogram/issues/1987>`_
+- Added the :code:`business_connection_id` argument to :class:`aiogram.utils.chat_action.ChatActionSender` and all its factory methods (:meth:`typing`, :meth:`upload_photo`, ...), and :class:`aiogram.utils.chat_action.ChatActionMiddleware` now passes :code:`business_connection_id` of the message, so chat actions for :code:`business_message` handlers are sent on behalf of the business account instead of failing in the background.
+  `#1988 <https://github.com/aiogram/aiogram/issues/1988>`_
+- The :code:`answer_*` and :code:`reply_*` shortcuts of :class:`aiogram.types.message.Message` now fill :code:`direct_messages_topic_id` from :code:`Message.direct_messages_topic`, so answers to a message in a channel direct messages chat go to the same topic (except :code:`answer_game`, :code:`reply_game`, :code:`answer_poll` and :code:`reply_poll`, whose methods have no such parameter). Since the value is filled automatically, passing :code:`direct_messages_topic_id` to these shortcuts now raises :code:`TypeError`; call the :class:`aiogram.client.bot.Bot` method directly to send to another topic. The parameter is also gone from the positional arguments: it came right after the required arguments, so optional arguments passed positionally shift by one, e.g. :code:`message.reply_animation(animation, 7)` now passes :code:`7` as :code:`duration`; pass these arguments by keyword.
+  `#1989 <https://github.com/aiogram/aiogram/issues/1989>`_
+- Fixed MarkdownV2 custom emoji rendering: :meth:`aiogram.utils.text_decorations.MarkdownDecoration.custom_emoji` (and therefore :code:`Message.md_text` and :class:`aiogram.utils.formatting.CustomEmoji` via :code:`as_markdown()`) now produces :code:`![👍](tg://emoji?id=...)` as documented by Telegram instead of :code:`tg://emoji?emoji_id=...`, which Telegram rejected with "Invalid tg://emoji or tg://time URL specified".
+  `#1990 <https://github.com/aiogram/aiogram/issues/1990>`_
+- Fixed MarkdownV2 blockquote rendering changing the message text: :meth:`aiogram.utils.text_decorations.MarkdownDecoration.blockquote` and :meth:`~aiogram.utils.text_decorations.MarkdownDecoration.expandable_blockquote` (used by :code:`Message.md_text`, :class:`aiogram.utils.formatting.BlockQuote`, :class:`aiogram.utils.formatting.ExpandableBlockQuote` and :func:`aiogram.utils.markdown.blockquote`) now split lines on :code:`\n` only, so italic/underline inside a quote and Unicode line separators such as :code:`U+2028` no longer start a new quoted line, and a trailing newline of the quote is kept after it instead of being dropped.
+  `#1991 <https://github.com/aiogram/aiogram/issues/1991>`_
+- :meth:`aiogram.types.message.Message.send_copy` no longer drops content of the source message: the dice emoji, media spoilers and :code:`show_caption_above_media` of photos, videos, animations and live photos, voice captions with their entities, the Google Places venue fields, the location :code:`horizontal_accuracy`, and the poll question entities, description, explanation, :code:`allows_multiple_answers` and :code:`allows_revoting` are now copied, and poll texts are no longer re-parsed with the bot's default :code:`parse_mode`. A quiz is copied as a quiz only when its :code:`correct_option_ids` are known, otherwise as a regular poll; :code:`is_anonymous` is not copied and keeps the API default. Parameters the target method doesn't declare (for example :code:`voter_count` of poll options or :code:`reply_markup` of a forwarded story) are no longer sent, and a legacy :code:`reply_to_message_id` is now passed as :code:`reply_parameters`.
+  `#1992 <https://github.com/aiogram/aiogram/issues/1992>`_
+- :meth:`aiogram.types.message.Message.send_copy` can now copy rich messages (via :class:`aiogram.methods.send_rich_message.SendRichMessage`, re-sending the media of the blocks by :code:`file_id`) and checklists (via :class:`aiogram.methods.send_checklist.SendChecklist`; a checklist can be copied only on behalf of a business account, so :code:`business_connection_id` is required and a :code:`TypeError` is raised without it), and accepts the keyword-only :code:`direct_messages_topic_id` and :code:`suggested_post_parameters` parameters to copy into channel direct messages chats; they are ignored for polls and checklists, which can't be sent there. Widget messages still can't be copied.
+  `#1993 <https://github.com/aiogram/aiogram/issues/1993>`_
+- Fixed :func:`aiogram.utils.link.create_channel_bot_link` building links that do not open the add-to-channel flow: it now returns :code:`https://t.me/<bot>?startchannel&admin=<right1>+<right2>` with a literal :code:`+` separator (previously :code:`?admin=<right1>%2B<right2>` without :code:`startchannel`), and accepts the missing :code:`manage_topics`, :code:`post_stories`, :code:`edit_stories`, :code:`delete_stories`, :code:`manage_direct_messages` and :code:`manage_tags` rights. Without any rights it still returns the plain :code:`https://t.me/<bot>` link, since Telegram requires at least one right for the add-to-channel flow. The :code:`parameter` argument is deprecated and emits :code:`DeprecationWarning`; with it, a group link :code:`?startgroup=<parameter>&admin=...` is returned as before, now with a literal :code:`+` separator.
+  `#1994 <https://github.com/aiogram/aiogram/issues/1994>`_
+- Fixed :func:`aiogram.utils.deep_linking.create_startapp_link` and :code:`create_deep_link(..., link_type="startapp")` rejecting payloads longer than 64 characters: the limit for :code:`startapp` links is now 512 characters, while :code:`start` and :code:`startgroup` links keep the 64-character limit.
+  `#1995 <https://github.com/aiogram/aiogram/issues/1995>`_
+- FSM states of guest chats (:code:`guest_message` updates) no longer share storage keys with the bot's own chats that have the same id, which let a guest summon read, overwrite or clear another user's state under the :code:`CHAT` and :code:`CHAT_TOPIC` strategies.
+  :class:`aiogram.dispatcher.middlewares.user_context.EventContext` and :class:`aiogram.fsm.storage.base.StorageKey` got an :code:`is_guest` flag, :meth:`aiogram.fsm.middleware.FSMContextMiddleware.get_context` accepts :code:`is_guest=True`, and :class:`aiogram.fsm.storage.base.DefaultKeyBuilder` adds a :code:`guest` part to keys of guest chats (:code:`with_guest=True` by default); keys of regular chats are unchanged.
+  States saved for guest chats before this change are not found anymore; pass :code:`with_guest=False` to :class:`aiogram.fsm.storage.base.DefaultKeyBuilder` to keep the old Redis/Mongo keys.
+  `#1996 <https://github.com/aiogram/aiogram/issues/1996>`_
+- Scenes :code:`on.*` markers now cover every update type the router handles: :code:`message_reaction`, :code:`message_reaction_count`, :code:`chat_boost`, :code:`removed_chat_boost`, business updates, :code:`purchased_paid_media`, :code:`managed_bot`, :code:`guest_message`, :code:`subscription`, :code:`stopped_message_generation`, :code:`widget_query` and :code:`shared_widget_query`. The router and :code:`MagicData` docs list them too.
+  `#1998 <https://github.com/aiogram/aiogram/issues/1998>`_
+- Added :func:`aiogram.utils.chat_member.is_chat_member`, which checks whether the user is actually in the chat: unlike :code:`isinstance(member, MEMBERS)`, it returns :code:`False` for a restricted user who has left the chat (:code:`is_member=False`). :code:`MEMBERS` is unchanged and still matches every restricted user; the migration guide now uses :code:`is_chat_member()` as the replacement for 2.x :code:`is_chat_member()`.
+  `#1999 <https://github.com/aiogram/aiogram/issues/1999>`_
+- :meth:`aiogram.types.message.Message.get_url` now returns :code:`None` for ephemeral and scheduled messages, which have no real :code:`message_id` (it is :code:`0`), instead of a broken link.
+  `#2000 <https://github.com/aiogram/aiogram/issues/2000>`_
+- Fixed :meth:`InlineKeyboardBuilder.from_markup` and :meth:`ReplyKeyboardBuilder.from_markup` dropping the markup options: :code:`force_reply` (and, for reply keyboards, :code:`is_persistent`, :code:`resize_keyboard`, :code:`one_time_keyboard`, :code:`input_field_placeholder` and :code:`selective`) are now kept, carried over by :code:`copy()` and used by :code:`as_markup()`, where explicitly passed values take precedence. Note that :code:`ReplyKeyboardBuilder.from_markup(markup).as_markup()` now returns a markup with the same :code:`resize_keyboard`, :code:`one_time_keyboard`, etc. as :code:`markup` instead of resetting them.
+  `#2000 <https://github.com/aiogram/aiogram/issues/2000>`_
+- Fixed :class:`aiogram.filters.callback_data.CallbackData` turning an explicit :code:`None` into the field default on unpack when an optional field has a non-:code:`None` default.
+  An empty part now unpacks to :code:`None` for every field whose type accepts :code:`None`, whatever its default.
+  Callback data built by hand or by an older version, such as :code:`"test:"`, now gives :code:`None` for such a field instead of its default.
+  `#2005 <https://github.com/aiogram/aiogram/issues/2005>`_
+
+
+Improved Documentation
+----------------------
+
+- Documented the Windows signal-handling limitation for long-polling and how to stop
+  polling programmatically so that registered shutdown callbacks run.
+  `#1410 <https://github.com/aiogram/aiogram/issues/1410>`_
+
+
+Deprecations and Removals
+-------------------------
+
+- Dropped support for Python 3.10; the minimum supported version is now Python 3.11.
+  The internal helper :code:`aiogram.utils.dataclass.dataclass_kwargs` was removed, and the :code:`fast` extra now requires :code:`aiodns>=4.0.0` (older versions don't work with :code:`pycares` 5).
+  `#1936 <https://github.com/aiogram/aiogram/issues/1936>`_
+- Removed :code:`TelegramObject.remove_unset` and :code:`TelegramMethod.remove_unset`.
+  They stripped the :code:`UNSET` sentinel before field validation, which stopped reaching model
+  initialization in #1392 when bot-wide defaults moved to :code:`Default(...)`. Running as a
+  :code:`model_validator(mode="before")` on every model also stopped pydantic from reading a
+  payload without an intermediate dict.
+  `#1966 <https://github.com/aiogram/aiogram/issues/1966>`_
+
+
+Misc
+----
+
+- Fixed the changelog-presence CI check failing for pull requests from forks: the ``towncrier`` check now runs on the unprivileged ``pull_request`` event, and the PR comment is posted by a separate privileged workflow that never checks out contributed code.
+  `#1884 <https://github.com/aiogram/aiogram/issues/1884>`_
+- Moved every GitHub Action used by CI to a release that runs on Node 24, ahead of GitHub removing Node 20 from its runners on 2026-09-23: ``actions/checkout`` v7, ``codecov/codecov-action`` v7, ``actions/upload-artifact`` v7, ``actions/download-artifact`` v8, ``peter-evans/find-comment`` v4 and ``peter-evans/create-or-update-comment`` v5; ``actions/setup-python`` is dropped in favour of ``astral-sh/setup-uv`` v10, which installs the interpreter itself, and the archived ``andymckay/labeler`` is replaced by ``actions/labeler`` v7.
+  `#1906 <https://github.com/aiogram/aiogram/issues/1906>`_
+- Hardened the GitHub Actions workflows after a ``zizmor`` audit: every workflow now declares least-privilege ``permissions``, checkouts no longer persist the token, the release workflow no longer interpolates ``github.ref`` into a shell command nor restores a shared cache, and a new ``Workflow lint`` job (``zizmor``, ``actionlint`` and a version-tag pin check, also available locally as ``make lint-workflows``) together with Dependabot for actions keeps it that way.
+  `#1907 <https://github.com/aiogram/aiogram/issues/1907>`_
+- Added Claude Code GitHub Actions workflows: ``@claude`` mentions in issues and pull requests, and automated pull request review.
+  `#1940 <https://github.com/aiogram/aiogram/issues/1940>`_
+- Updated dependencies: allowed :code:`pymongo` up to 4.18 in the :code:`mongo` extra and refreshed locked versions of :code:`anyio`, :code:`multidict`, :code:`urllib3` and :code:`virtualenv`.
+  `#1945 <https://github.com/aiogram/aiogram/issues/1945>`_
+- Added a security policy (:code:`SECURITY.md`) describing how to report vulnerabilities privately, and enrolled the project in Anthropic OSS Scanner (:code:`.oss-scanner/` build and threat model).
+  `#1967 <https://github.com/aiogram/aiogram/issues/1967>`_
+- Updated to `Bot API 10.4 <https://core.telegram.org/bots/api-changelog#november-9-2026>`_
+
+  **Widgets**
+
+  *New Methods:*
+
+  - Added :class:`aiogram.methods.send_widget.SendWidget` method - sends a message with an HTML widget; in production widgets can only be sent to private chats, are always protected from forwarding and can't be copied
+  - Added :class:`aiogram.methods.send_shared_widget.SendSharedWidget` method - sends again a shared widget created by the bot
+  - Added :class:`aiogram.methods.answer_widget_query.AnswerWidgetQuery` method - answers a widget query, also available as :meth:`aiogram.types.widget_query.WidgetQuery.answer` and :meth:`aiogram.types.shared_widget_query.SharedWidgetQuery.answer` shortcuts
+  - Added :class:`aiogram.methods.edit_message_widget_data.EditMessageWidgetData` method - changes the data of a widget in a message
+  - Added :class:`aiogram.methods.edit_shared_widget_data.EditSharedWidgetData` method - changes the public data of a shared widget
+
+  *New Types:*
+
+  - Added :class:`aiogram.types.widget.Widget` type - an HTML widget in a message
+  - Added :class:`aiogram.types.widget_query.WidgetQuery` type - a query from a widget in a message sent by the bot or via the bot
+  - Added :class:`aiogram.types.shared_widget_query.SharedWidgetQuery` type - a query from a forwarded message with a shared widget
+  - Added :class:`aiogram.types.widget_query_type.WidgetQueryType` type with :class:`aiogram.types.widget_query_type_data.WidgetQueryTypeData`, :class:`aiogram.types.widget_query_type_sign_data.WidgetQueryTypeSignData` and :class:`aiogram.types.widget_query_type_sent_transaction.WidgetQueryTypeSentTransaction` subtypes, and :class:`aiogram.types.widget_query_wallet.WidgetQueryWallet` - data for the bot, data signed by the user's TON wallet, or a transaction sent from it
+  - Added :class:`aiogram.types.input_widget_message_content.InputWidgetMessageContent` and :class:`aiogram.types.input_shared_widget_message_content.InputSharedWidgetMessageContent` types - send widgets in response to inline queries (not yet available in production)
+
+  *New Fields:*
+
+  - Added :code:`widget` field to :class:`aiogram.types.message.Message` and :class:`aiogram.types.external_reply_info.ExternalReplyInfo`
+  - Added :code:`widget_query` and :code:`shared_widget_query` fields to :class:`aiogram.types.update.Update`, with matching :code:`router.widget_query` and :code:`router.shared_widget_query` observers
+  - The :code:`can_send_other_messages` right of :class:`aiogram.types.chat_permissions.ChatPermissions` and :class:`aiogram.types.chat_member_restricted.ChatMemberRestricted` now also allows sending widgets
+
+  **Ephemeral Messages**
+
+  *Changed:*
+
+  - Ephemeral replies to callback queries can now be sent in any chat except channel direct messages chats by passing :code:`callback_query_id` without :code:`receiver_user_id` in :code:`ephemeral_message_parameters`
+  - :code:`receiver_user_id` of :class:`aiogram.types.ephemeral_message_parameters.EphemeralMessageParameters` is now optional
+  - :code:`chat_id` of :class:`aiogram.methods.send_message.SendMessage`, :class:`aiogram.methods.send_rich_message.SendRichMessage`, :class:`aiogram.methods.send_animation.SendAnimation`, :class:`aiogram.methods.send_audio.SendAudio`, :class:`aiogram.methods.send_contact.SendContact`, :class:`aiogram.methods.send_document.SendDocument`, :class:`aiogram.methods.send_live_photo.SendLivePhoto`, :class:`aiogram.methods.send_location.SendLocation`, :class:`aiogram.methods.send_photo.SendPhoto`, :class:`aiogram.methods.send_sticker.SendSticker`, :class:`aiogram.methods.send_venue.SendVenue`, :class:`aiogram.methods.send_video.SendVideo`, :class:`aiogram.methods.send_video_note.SendVideoNote` and :class:`aiogram.methods.send_voice.SendVoice` is now optional; the matching :class:`aiogram.client.bot.Bot` methods keep :code:`chat_id` as the first positional argument, so pass :code:`None` explicitly for an ephemeral reply without a chat
+
+  **Quotes from Rich Messages**
+
+  *New Fields:*
+
+  - Added :code:`rich_texts` field to :class:`aiogram.types.text_quote.TextQuote` - a quote taken from a rich message
+  - Added :code:`quote_rich_texts` field to :class:`aiogram.types.reply_parameters.ReplyParameters` - quotes a rich message
+
+  **TON Wallet**
+
+  *New Types:*
+
+  - Added :class:`aiogram.types.ton_wallet_card.TonWalletCard`, :class:`aiogram.types.ton_wallet_card_sticker.TonWalletCardSticker`, :class:`aiogram.types.ton_nft.TonNft` and :class:`aiogram.types.ton_nft_attribute.TonNftAttribute` types - a TON wallet card shown on a user's profile
+  - Added :class:`aiogram.types.ton_wallet_transfer.TonWalletTransfer` type - a service message about a transfer with a TON wallet
+  - Added :class:`aiogram.types.area_position.AreaPosition` type - replaces :class:`aiogram.types.story_area_position.StoryAreaPosition`, which is now deprecated; :code:`position` of :class:`aiogram.types.story_area.StoryArea` now expects :class:`aiogram.types.area_position.AreaPosition` (or a dict), passing a :class:`aiogram.types.story_area_position.StoryAreaPosition` instance raises a validation error
+
+  *New Fields:*
+
+  - Added :code:`ton_wallet_card` field to :class:`aiogram.types.chat_full_info.ChatFullInfo`
+  - Added :code:`ton_wallet_transfer` field to :class:`aiogram.types.message.Message`
+
+  **Chat Share Themes**
+
+  *New Methods:*
+
+  - Added :class:`aiogram.methods.get_chat_share_theme_backdrops.GetChatShareThemeBackdrops` method - returns the backdrops available for chat share themes
+
+  *New Types:*
+
+  - Added :class:`aiogram.types.chat_share_theme.ChatShareTheme` type with :class:`aiogram.types.chat_share_theme_emoji.ChatShareThemeEmoji` and :class:`aiogram.types.chat_share_theme_unique_gift.ChatShareThemeUniqueGift` subtypes - the theme of the screen for sharing a link to a user or chat
+  - Added :class:`aiogram.types.emoji_type.EmojiType` type with :class:`aiogram.types.emoji_type_emoji.EmojiTypeEmoji` and :class:`aiogram.types.emoji_type_custom_emoji.EmojiTypeCustomEmoji` subtypes
+  - Added :class:`aiogram.types.chat_share_theme_backdrop.ChatShareThemeBackdrop` and :class:`aiogram.types.chat_share_theme_backdrops.ChatShareThemeBackdrops` types
+
+  *New Fields:*
+
+  - Added :code:`share_theme` field to :class:`aiogram.types.chat_full_info.ChatFullInfo`
+
+  **Gifts**
+
+  *New Methods:*
+
+  - Added :class:`aiogram.methods.get_unique_gift.GetUniqueGift` method - returns information about a unique gift by its name
+  - Added :class:`aiogram.methods.delete_business_account_gift.DeleteBusinessAccountGift` method - deletes a regular gift owned by a managed business account without receiving Telegram Stars for it
+
+  **General**
+
+  *New Types:*
+
+  - Added :class:`aiogram.types.rich_text_ton_address.RichTextTonAddress` type - a TON blockchain address inside a rich message
+  - Added :class:`aiogram.types.paid_messages_waived.PaidMessagesWaived` type - a service message about the sender using a link that allows sending messages without paying Telegram Stars
+
+  *New Fields:*
+
+  - Added :code:`paid_messages_waived` field to :class:`aiogram.types.message.Message`
+  - Added :code:`WIDGET`, :code:`TON_WALLET_TRANSFER` and :code:`PAID_MESSAGES_WAIVED` members to :class:`aiogram.enums.content_type.ContentType`, :code:`WIDGET_QUERY` and :code:`SHARED_WIDGET_QUERY` to :class:`aiogram.enums.update_type.UpdateType`, and :code:`TON_ADDRESS` to :class:`aiogram.enums.rich_text_type.RichTextType`
+  - Added :code:`ton_address` and :code:`bank_card_number` types to :class:`aiogram.enums.message_entity_type.MessageEntityType`; text decorations leave both unchanged, like :code:`phone_number`, and :class:`aiogram.utils.formatting.BankCardNumber` / :class:`aiogram.utils.formatting.TonAddress` nodes keep them when building or parsing formatted text
+  - Added :code:`custom_description_parse_mode` and :code:`custom_description_entities` parameters to :class:`aiogram.methods.verify_user.VerifyUser` and :class:`aiogram.methods.verify_chat.VerifyChat`
+  - :code:`suggested_username` of :class:`aiogram.types.keyboard_button_request_managed_bot.KeyboardButtonRequestManagedBot` can now be a secondary username ending in "agent", "ai", "app", "game" or "gay"
+  - Links to topics in private chats with the bot can now be created as :code:`https://t.me/<bot_username>/<message_thread_id>`
+  `#1981 <https://github.com/aiogram/aiogram/issues/1981>`_
+
+
 3.31.0 (2026-08-26)
 ====================
 

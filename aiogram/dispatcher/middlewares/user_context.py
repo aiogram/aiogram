@@ -25,6 +25,8 @@ class EventContext:
     user: User | None = None
     thread_id: int | None = None
     business_connection_id: str | None = None
+    is_guest: bool = False
+    sender_chat: Chat | None = None
 
     @property
     def user_id(self) -> int | None:
@@ -69,6 +71,7 @@ class UserContextMiddleware(BaseMiddleware):
                 thread_id=(
                     event.message.message_thread_id if event.message.is_topic_message else None
                 ),
+                sender_chat=event.message.sender_chat,
             )
         if event.edited_message:
             return EventContext(
@@ -79,6 +82,7 @@ class UserContextMiddleware(BaseMiddleware):
                     if event.edited_message.is_topic_message
                     else None
                 ),
+                sender_chat=event.edited_message.sender_chat,
             )
         if event.channel_post:
             return EventContext(chat=event.channel_post.chat)
@@ -167,6 +171,7 @@ class UserContextMiddleware(BaseMiddleware):
                     else None
                 ),
                 business_connection_id=event.business_message.business_connection_id,
+                sender_chat=event.business_message.sender_chat,
             )
         if event.edited_business_message:
             return EventContext(
@@ -178,6 +183,7 @@ class UserContextMiddleware(BaseMiddleware):
                     else None
                 ),
                 business_connection_id=event.edited_business_message.business_connection_id,
+                sender_chat=event.edited_business_message.sender_chat,
             )
         if event.purchased_paid_media:
             return EventContext(
@@ -194,6 +200,7 @@ class UserContextMiddleware(BaseMiddleware):
                     if event.guest_message.is_topic_message
                     else None
                 ),
+                is_guest=True,
             )
         if event.subscription:
             return EventContext(user=event.subscription.user)
@@ -213,4 +220,9 @@ class UserContextMiddleware(BaseMiddleware):
                 ),
                 thread_id=stopped.message_thread_id,
             )
+        if event.widget_query:
+            # chat is missing for widgets in inline messages
+            return EventContext(chat=event.widget_query.chat, user=event.widget_query.from_user)
+        if event.shared_widget_query:
+            return EventContext(user=event.shared_widget_query.from_user)
         return EventContext()

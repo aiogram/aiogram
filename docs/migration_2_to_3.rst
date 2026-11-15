@@ -912,13 +912,19 @@ ChatMember tools
   .. code-block:: python
 
       # Version 3.x
-      from aiogram.utils.chat_member import ADMINS, MEMBERS
+      from aiogram.utils.chat_member import ADMINS, is_chat_member
 
       if isinstance(chat_member, ADMINS):
           print("ChatMember is chat admin")
 
-      if isinstance(chat_member, MEMBERS):
+      if is_chat_member(chat_member):
           print("ChatMember is in the chat")
+
+  .. note::
+    :code:`isinstance(chat_member, MEMBERS)` is also :code:`True` for a restricted user
+    who has left the chat, because such a user keeps the :code:`restricted` status.
+    :code:`is_chat_member()` checks :code:`is_member` of restricted users
+    (:code:`is_chat_member()` was added in aiogram **3.32**).
 
   .. note::
     You also can independently create group similar to ADMINS that fits the logic of your application.

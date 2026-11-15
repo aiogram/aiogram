@@ -14,17 +14,17 @@
       {
         "type": "Integer or String",
         "required": true,
-        "description": "Unique identifier for the target chat or username of the target bot, supergroup or channel in the format @username",
-        "html_description": "<td>Unique identifier for the target chat or username of the target bot, supergroup or channel in the format <code>@username</code></td>",
-        "rst_description": "Unique identifier for the target chat or username of the target bot, supergroup or channel in the format :code:`@username`\n",
+        "description": "Unique identifier for the target chat or username of the target bot, supergroup, or channel in the format @username",
+        "html_description": "<td>Unique identifier for the target chat or username of the target bot, supergroup, or channel in the format <code>@username</code></td>",
+        "rst_description": "Unique identifier for the target chat or username of the target bot, supergroup, or channel in the format :code:`@username`\n",
         "name": "chat_id"
       },
       {
         "type": "Integer or String",
         "required": true,
-        "description": "Unique identifier for the chat where the original messages were sent (or username of the target bot, supergroup or channel in the format @username)",
-        "html_description": "<td>Unique identifier for the chat where the original messages were sent (or username of the target bot, supergroup or channel in the format <code>@username</code>)</td>",
-        "rst_description": "Unique identifier for the chat where the original messages were sent (or username of the target bot, supergroup or channel in the format :code:`@username`)\n",
+        "description": "Unique identifier for the chat where the original messages were sent (or username of the target bot, supergroup, or channel in the format @username)",
+        "html_description": "<td>Unique identifier for the chat where the original messages were sent (or username of the target bot, supergroup, or channel in the format <code>@username</code>)</td>",
+        "rst_description": "Unique identifier for the chat where the original messages were sent (or username of the target bot, supergroup, or channel in the format :code:`@username`)\n",
         "name": "from_chat_id"
       },
       {

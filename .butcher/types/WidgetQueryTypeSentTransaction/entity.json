@@ -1,0 +1,41 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "widgetquerytypesenttransaction",
+    "name": "WidgetQueryTypeSentTransaction",
+    "description": "The query notifies the bot about a transaction sent from a TON wallet of the user who sent the query.",
+    "html_description": "<p>The query notifies the bot about a transaction sent from a TON wallet of the user who sent the query.</p>",
+    "rst_description": "The query notifies the bot about a transaction sent from a TON wallet of the user who sent the query.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Type of the query, always 'sent_transaction'",
+        "html_description": "<td>Type of the query, always &#8220;sent_transaction&#8221;</td>",
+        "rst_description": "Type of the query, always 'sent_transaction'\n",
+        "name": "type",
+        "required": true
+      },
+      {
+        "type": "WidgetQueryWallet",
+        "description": "The wallet from which the transaction was sent",
+        "html_description": "<td>The wallet from which the transaction was sent</td>",
+        "rst_description": "The wallet from which the transaction was sent\n",
+        "name": "wallet",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "Value of msg_hash of the transaction",
+        "html_description": "<td>Value of <em>msg_hash</em> of the transaction</td>",
+        "rst_description": "Value of *msg_hash* of the transaction\n",
+        "name": "msg_hash",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

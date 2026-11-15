@@ -204,6 +204,105 @@ Remove chat boost
     async def removed_chat_boost_handler(removed_chat_boost: types.ChatBoostRemoved) -> Any: pass
 
 
+Deleted business messages
+-------------------------
+
+.. code-block:: python
+
+    @router.deleted_business_messages()
+    async def deleted_business_messages_handler(deleted_business_messages: types.BusinessMessagesDeleted) -> Any: pass
+
+
+Business connection
+-------------------
+
+.. code-block:: python
+
+    @router.business_connection()
+    async def business_connection_handler(business_connection: types.BusinessConnection) -> Any: pass
+
+
+Edited business message
+-----------------------
+
+.. code-block:: python
+
+    @router.edited_business_message()
+    async def edited_business_message_handler(edited_business_message: types.Message) -> Any: pass
+
+
+Business message
+----------------
+
+.. code-block:: python
+
+    @router.business_message()
+    async def business_message_handler(business_message: types.Message) -> Any: pass
+
+
+Purchased paid media
+--------------------
+
+.. code-block:: python
+
+    @router.purchased_paid_media()
+    async def purchased_paid_media_handler(purchased_paid_media: types.PaidMediaPurchased) -> Any: pass
+
+
+Managed bot
+-----------
+
+.. code-block:: python
+
+    @router.managed_bot()
+    async def managed_bot_handler(managed_bot: types.ManagedBotUpdated) -> Any: pass
+
+
+Guest message
+-------------
+
+.. code-block:: python
+
+    @router.guest_message()
+    async def guest_message_handler(guest_message: types.Message) -> Any: pass
+
+
+Subscription
+------------
+
+.. code-block:: python
+
+    @router.subscription()
+    async def subscription_handler(subscription: types.BotSubscriptionUpdated) -> Any: pass
+
+
+Stopped message generation
+--------------------------
+
+.. code-block:: python
+
+    @router.stopped_message_generation()
+    async def stopped_message_generation_handler(stopped_message_generation: types.MessageGenerationStopped) -> Any: pass
+
+
+Widget query
+------------
+
+.. code-block:: python
+
+    @router.widget_query()
+    async def widget_query_handler(widget_query: types.WidgetQuery) -> Any: pass
+
+
+Shared widget query
+-------------------
+
+.. code-block:: python
+
+    @router.shared_widget_query()
+    async def shared_widget_query_handler(shared_widget_query: types.SharedWidgetQuery) -> Any: pass
+
+
 Errors
 ------
 
