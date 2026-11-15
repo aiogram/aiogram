@@ -1,0 +1,4 @@
+Fixed :class:`aiogram.filters.command.Command` rejecting commands addressed to a bot's
+secondary username (``/help@shop_ai``). A mention that is not the ``getMe`` username is now
+checked against :meth:`aiogram.client.bot.Bot.usernames`; commands addressed to the ``getMe``
+username still make no extra request.
