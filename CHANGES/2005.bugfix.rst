@@ -1,0 +1,3 @@
+Fixed :class:`aiogram.filters.callback_data.CallbackData` turning an explicit :code:`None` into the field default on unpack when an optional field has a non-:code:`None` default.
+An empty part now unpacks to :code:`None` for every field whose type accepts :code:`None`, whatever its default.
+Callback data built by hand or by an older version, such as :code:`"test:"`, now gives :code:`None` for such a field instead of its default.
