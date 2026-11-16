@@ -45,7 +45,10 @@ def check_webapp_signature(
     message = data_check_string.encode()
 
     padding = "=" * (-len(signature_b64) % 4)
-    signature = base64.urlsafe_b64decode(signature_b64 + padding)
+    try:
+        signature = base64.urlsafe_b64decode(signature_b64 + padding)
+    except ValueError:  # not valid base64url (binascii.Error is a ValueError)
+        return False
 
     public_key = Ed25519PublicKey.from_public_bytes(public_key_bytes)
 
