@@ -69,7 +69,7 @@ Inline Keyboard
 
         Add new inline button to markup
 
-    .. method:: as_markup() -> aiogram.types.inline_keyboard_markup.InlineKeyboardMarkup
+    .. method:: as_markup(force_reply: Optional[bool] = None, **kwargs: Any) -> aiogram.types.inline_keyboard_markup.InlineKeyboardMarkup
         :noindex:
 
         Construct an InlineKeyboardMarkup
@@ -85,7 +85,7 @@ Reply Keyboard
 
         Add new button to markup
 
-    .. method:: as_markup() -> aiogram.types.reply_keyboard_markup.ReplyKeyboardMarkup
+    .. method:: as_markup(is_persistent: Optional[bool] = None, resize_keyboard: Optional[bool] = None, one_time_keyboard: Optional[bool] = None, input_field_placeholder: Optional[str] = None, selective: Optional[bool] = None, force_reply: Optional[bool] = None, **kwargs: Any) -> aiogram.types.reply_keyboard_markup.ReplyKeyboardMarkup
         :noindex:
 
         Construct an ReplyKeyboardMarkup

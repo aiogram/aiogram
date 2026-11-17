@@ -1,7 +1,7 @@
-from enum import Enum
+from enum import StrEnum
 
 
-class ContentType(str, Enum):
+class ContentType(StrEnum):
     """
     This object represents a type of content in message
     """
@@ -86,4 +86,7 @@ class ContentType(str, Enum):
     COMMUNITY_CHAT_ADDED = "community_chat_added"
     COMMUNITY_CHAT_REMOVED = "community_chat_removed"
     COMMUNITY_CHAT_JOINED = "community_chat_joined"
+    WIDGET = "widget"
+    PAID_MESSAGES_WAIVED = "paid_messages_waived"
+    TON_WALLET_TRANSFER = "ton_wallet_transfer"
     USER_SHARED = "user_shared"

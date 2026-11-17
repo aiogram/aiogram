@@ -11,7 +11,7 @@ if TYPE_CHECKING:
 
 class InputRichBlockExpandableBlockQuotation(InputRichBlock):
     """
-    A block quotation, corresponding to the HTML tag :code:`<blockquote>` with custom attribute :code:`"collapsed"`.
+    A block quotation, corresponding to the HTML tag :code:`<blockquote>` with custom attribute :code:`"expandable"`.
 
     Source: https://core.telegram.org/bots/api#inputrichblockexpandableblockquotation
     """

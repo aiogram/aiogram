@@ -1,0 +1,16 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "chatsharetheme",
+    "name": "ChatShareTheme",
+    "description": "This object describes the theme of the screen for sharing a link to a user or a chat. Currently, it can be one of\n - ChatShareThemeEmoji\n - ChatShareThemeUniqueGift",
+    "html_description": "<p>This object describes the theme of the screen for sharing a link to a user or a chat. Currently, it can be one of</p><ul>\n<li><a href=\"#chatsharethemeemoji\">ChatShareThemeEmoji</a></li>\n<li><a href=\"#chatsharethemeuniquegift\">ChatShareThemeUniqueGift</a></li>\n</ul>",
+    "rst_description": "This object describes the theme of the screen for sharing a link to a user or a chat. Currently, it can be one of\n\n - :class:`aiogram.types.chat_share_theme_emoji.ChatShareThemeEmoji`\n - :class:`aiogram.types.chat_share_theme_unique_gift.ChatShareThemeUniqueGift`",
+    "annotations": [],
+    "category": "types"
+  }
+}

@@ -14,8 +14,13 @@ from aiogram.types import (
     ChatBoostSourceGiveaway,
     ChatBoostSourcePremium,
     ChatBoostUpdated,
+    Message,
+    MessageGenerationStopped,
+    SharedWidgetQuery,
     Update,
     User,
+    WidgetQuery,
+    WidgetQueryTypeData,
 )
 
 
@@ -86,3 +91,124 @@ class TestUserContextMiddleware:
         event_context = data["event_context"]
         assert isinstance(event_context, EventContext)
         assert event_context.user == expected_user
+
+    async def test_stopped_message_generation_resolves_user(self):
+        middleware = UserContextMiddleware()
+
+        chat = Chat(
+            id=42,
+            type="private",
+            first_name="Test",
+            last_name="User",
+            username="testuser",
+        )
+        update = Update(
+            update_id=1,
+            stopped_message_generation=MessageGenerationStopped(chat=chat, draft_id=7),
+        )
+        data = {}
+        await middleware(next_handler, update, data)
+
+        event_context = data["event_context"]
+        assert isinstance(event_context, EventContext)
+        assert event_context.chat is chat
+        assert event_context.user == User(
+            id=42,
+            is_bot=False,
+            first_name="Test",
+            last_name="User",
+            username="testuser",
+        )
+        assert event_context.user_id == 42
+        assert data["event_from_user"] == event_context.user
+
+    async def test_stopped_message_generation_resolves_user_without_chat_names(self):
+        middleware = UserContextMiddleware()
+
+        chat = Chat(id=42, type="private")
+        update = Update(
+            update_id=1,
+            stopped_message_generation=MessageGenerationStopped(chat=chat, draft_id=7),
+        )
+        data = {}
+        await middleware(next_handler, update, data)
+
+        assert data["event_from_user"] == User(id=42, is_bot=False, first_name="")
+
+    @pytest.mark.parametrize("chat", [Chat(id=42, type="private"), None])
+    async def test_widget_query(self, chat: Chat | None):
+        user = User(id=42, is_bot=False, first_name="Test")
+        update = Update(
+            update_id=1,
+            widget_query=WidgetQuery(
+                id="id",
+                from_user=user,
+                chat_instance="instance",
+                type=WidgetQueryTypeData(),
+                data="data",
+                chat=chat,
+            ),
+        )
+        data = {}
+        await UserContextMiddleware()(next_handler, update, data)
+
+        event_context = data["event_context"]
+        assert event_context.chat is chat
+        assert event_context.user is user
+
+    async def test_shared_widget_query(self):
+        user = User(id=42, is_bot=False, first_name="Test")
+        update = Update(
+            update_id=1,
+            shared_widget_query=SharedWidgetQuery(
+                id="id",
+                from_user=user,
+                type=WidgetQueryTypeData(),
+                data="data",
+                widget_id="widget",
+            ),
+        )
+        data = {}
+        await UserContextMiddleware()(next_handler, update, data)
+
+        event_context = data["event_context"]
+        assert event_context.chat is None
+        assert event_context.user is user
+
+    async def test_guest_message_is_guest(self):
+        message = Message(
+            message_id=1,
+            date=datetime.now(),
+            chat=Chat(id=200, type="private"),
+            from_user=User(id=100, is_bot=False, first_name="Test"),
+            guest_query_id="gq",
+        )
+        guest_context = UserContextMiddleware.resolve_event_context(
+            Update(update_id=1, guest_message=message)
+        )
+        own_context = UserContextMiddleware.resolve_event_context(
+            Update(update_id=2, message=message)
+        )
+
+        assert guest_context.is_guest is True
+        assert own_context.is_guest is False
+
+    @pytest.mark.parametrize(
+        "update_type",
+        ["message", "edited_message", "business_message", "edited_business_message"],
+    )
+    async def test_sender_chat(self, update_type: str):
+        sender_chat = Chat(id=-2001, type="channel", title="Channel")
+        message = Message(
+            message_id=1,
+            date=datetime.now(),
+            chat=Chat(id=-1001, type="supergroup", title="Group"),
+            from_user=User(id=136817688, is_bot=True, first_name="Channel"),
+            sender_chat=sender_chat,
+        )
+        event_context = UserContextMiddleware.resolve_event_context(
+            Update(update_id=1, **{update_type: message})
+        )
+
+        assert event_context.sender_chat is sender_chat
+        assert event_context.user_id == 136817688

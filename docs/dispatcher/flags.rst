@@ -9,7 +9,7 @@ or special `utilities <#use-in-utilities>`_ to make classification of the handle
 
 Flags can be added to the handler via `decorators <#via-decorators>`_,
 `handlers registration <#via-handler-registration-method>`_ or
-`filters <via-filters>`_.
+`filters <#via-filters>`_.
 
 Via decorators
 ==============

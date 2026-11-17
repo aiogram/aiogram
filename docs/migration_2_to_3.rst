@@ -63,9 +63,9 @@ Dependencies
   `pydantic v1 -> v2 migration guide <https://docs.pydantic.dev/latest/migration/>`_.
 
 - Recent aiogram releases pin an **upper** Python bound as well (e.g.
-  :code:`>=3.10,<3.15` — check the current project metadata). With Poetry, a caret
+  :code:`>=3.11,<3.16` — check the current project metadata). With Poetry, a caret
   constraint like :code:`python = "^3.11"` (which means :code:`<4.0`) then fails to
-  lock; use an explicitly bounded range such as :code:`>=3.11,<3.15`.
+  lock; use an explicitly bounded range such as :code:`>=3.11,<3.16`.
 
 
 Bot
@@ -912,13 +912,19 @@ ChatMember tools
   .. code-block:: python
 
       # Version 3.x
-      from aiogram.utils.chat_member import ADMINS, MEMBERS
+      from aiogram.utils.chat_member import ADMINS, is_chat_member
 
       if isinstance(chat_member, ADMINS):
           print("ChatMember is chat admin")
 
-      if isinstance(chat_member, MEMBERS):
+      if is_chat_member(chat_member):
           print("ChatMember is in the chat")
+
+  .. note::
+    :code:`isinstance(chat_member, MEMBERS)` is also :code:`True` for a restricted user
+    who has left the chat, because such a user keeps the :code:`restricted` status.
+    :code:`is_chat_member()` checks :code:`is_member` of restricted users
+    (:code:`is_chat_member()` was added in aiogram **3.32**).
 
   .. note::
     You also can independently create group similar to ADMINS that fits the logic of your application.

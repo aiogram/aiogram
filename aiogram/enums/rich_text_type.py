@@ -1,7 +1,7 @@
-from enum import Enum
+from enum import StrEnum
 
 
-class RichTextType(str, Enum):
+class RichTextType(StrEnum):
     """
     This object represents the rich text type.
 
@@ -34,3 +34,4 @@ class RichTextType(str, Enum):
     ANCHOR_LINK = "anchor_link"
     REFERENCE = "reference"
     REFERENCE_LINK = "reference_link"
+    TON_ADDRESS = "ton_address"

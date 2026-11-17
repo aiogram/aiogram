@@ -1,7 +1,7 @@
-from enum import Enum
+from enum import StrEnum
 
 
-class InputPaidMediaType(str, Enum):
+class InputPaidMediaType(StrEnum):
     """
     This object represents the type of a media in a paid message.
 

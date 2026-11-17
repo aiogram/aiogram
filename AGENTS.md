@@ -5,7 +5,7 @@ This file defines how coding agents should contribute to `aiogram` on `dev-3.x`.
 ## Scope and defaults
 
 - Base branch: `dev-3.x`
-- Python: `>=3.10`
+- Python: `>=3.11`
 - Main tooling: `uv`, `ruff`, `mypy`, `pytest`, `towncrier`, `butcher`
 - Keep diffs focused; avoid unrelated refactors/reformatting.
 
@@ -18,6 +18,8 @@ uv run pre-commit install
 
 Note: `uv run pre-commit install` writes hooks to the shared repository `.git/hooks`
 (common for all worktrees), not only for the current worktree.
+
+`orca.yaml` runs the same `uv sync` as the setup hook for new worktrees opened in [Orca](https://onorca.dev); it is excluded from the sdist.
 
 ## Codebase Navigation
 

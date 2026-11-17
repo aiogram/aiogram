@@ -1,0 +1,16 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available methods",
+    "anchor": "available-methods"
+  },
+  "object": {
+    "anchor": "getchatsharethemebackdrops",
+    "name": "getChatShareThemeBackdrops",
+    "description": "Use this method to get the list of backdrops, which can be used as the background of a theme of the screen for sharing a link to a user or a chat. Requires no parameters. Returns a ChatShareThemeBackdrops object.",
+    "html_description": "<p>Use this method to get the list of backdrops, which can be used as the background of a theme of the screen for sharing a link to a user or a chat. Requires no parameters. Returns a <a href=\"#chatsharethemebackdrops\">ChatShareThemeBackdrops</a> object.</p>",
+    "rst_description": "Use this method to get the list of backdrops, which can be used as the background of a theme of the screen for sharing a link to a user or a chat. Requires no parameters. Returns a :class:`aiogram.types.chat_share_theme_backdrops.ChatShareThemeBackdrops` object.",
+    "annotations": [],
+    "category": "methods"
+  }
+}

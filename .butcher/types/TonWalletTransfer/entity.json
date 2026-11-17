@@ -1,0 +1,49 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "tonwallettransfer",
+    "name": "TonWalletTransfer",
+    "description": "Describes a service message about a transfer with a TON wallet.",
+    "html_description": "<p>Describes a service message about a transfer with a TON wallet.</p>",
+    "rst_description": "Describes a service message about a transfer with a TON wallet.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Unique identifier of the transaction; may be empty if the transfer hasn't been sent yet",
+        "html_description": "<td>Unique identifier of the transaction; may be empty if the transfer hasn't been sent yet</td>",
+        "rst_description": "Unique identifier of the transaction; may be empty if the transfer hasn't been sent yet\n",
+        "name": "transaction_id",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "Address of the transfer peer in the TON blockchain",
+        "html_description": "<td>Address of the transfer peer in the TON blockchain</td>",
+        "rst_description": "Address of the transfer peer in the TON blockchain\n",
+        "name": "peer_address",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "The amount of transferred cryptocurrency, in the smallest units of the cryptocurrency, as a decimal number; negative for outgoing transfers",
+        "html_description": "<td>The amount of transferred cryptocurrency, in the <em>smallest units</em> of the cryptocurrency, as a decimal number; negative for outgoing transfers</td>",
+        "rst_description": "The amount of transferred cryptocurrency, in the *smallest units* of the cryptocurrency, as a decimal number; negative for outgoing transfers\n",
+        "name": "amount",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "Comment added to the transfer; omitted if the comment is encrypted",
+        "html_description": "<td><em>Optional</em>. Comment added to the transfer; omitted if the comment is encrypted</td>",
+        "rst_description": "*Optional*. Comment added to the transfer; omitted if the comment is encrypted\n",
+        "name": "comment",
+        "required": false
+      }
+    ],
+    "category": "types"
+  }
+}

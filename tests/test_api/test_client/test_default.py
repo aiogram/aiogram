@@ -1,5 +1,6 @@
 import inspect
 import sys
+import warnings
 
 import pytest
 from pydantic import BaseModel
@@ -64,7 +65,12 @@ def _default_fields():
 
 def _default_params():
     for path, model in [("aiogram.Bot", Bot), *_telegram_models()]:
-        for method_name, method in inspect.getmembers(model, inspect.isfunction):
+        # ``getmembers`` reads pydantic's deprecated ``__fields__``, and
+        # warnings are errors in this suite, so mute them here.
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore", DeprecationWarning)
+            members = inspect.getmembers(model, inspect.isfunction)
+        for method_name, method in members:
             if method_name.startswith("_"):
                 continue
             if (model.__name__, method_name) in EXCLUDED_METHODS:
@@ -143,8 +149,11 @@ class TestDefaultBotProperties:
         assert default_bot_properties["link_preview_prefer_large_media"] is True
         assert default_bot_properties["link_preview_show_above_text"] is True
 
-    @pytest.mark.skipif(sys.version_info < (3, 12), reason="requires python3.11 or higher")
-    def test_dataclass_creation_3_10_plus(self):
+    @pytest.mark.skipif(
+        sys.version_info < (3, 12),
+        reason="__dataclass_params__.slots/kw_only exist since Python 3.12",
+    )
+    def test_dataclass_params(self):
         params = DefaultBotProperties.__dataclass_params__
         assert params.slots is True
         assert params.kw_only is True

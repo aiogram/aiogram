@@ -51,6 +51,8 @@ class TextDecoration(ABC):
             MessageEntityType.HASHTAG,
             MessageEntityType.CASHTAG,
             MessageEntityType.EMAIL,
+            MessageEntityType.BANK_CARD_NUMBER,
+            MessageEntityType.TON_ADDRESS,
         }:
             # These entities should not be changed
             return text
@@ -221,7 +223,8 @@ class HtmlDecoration(TextDecoration):
     ) -> str:
         prepared_attrs: list[str] = []
         if attrs:
-            prepared_attrs.extend(f'{k}="{v}"' for k, v in attrs.items())
+            # Telegram decodes &amp; &quot; &lt; &gt; and numeric entities in attribute values
+            prepared_attrs.extend(f'{k}="{html.escape(str(v))}"' for k, v in attrs.items())
         if flags:
             prepared_attrs.extend(f"{flag}" for flag in flags)
 
@@ -249,7 +252,7 @@ class HtmlDecoration(TextDecoration):
     def pre_language(self, value: str, language: str) -> str:
         return self._tag(
             self.PRE_TAG,
-            self._tag(self.CODE_TAG, value, attrs={"language": f"language-{language}"}),
+            self._tag(self.CODE_TAG, value, attrs={"class": f"language-{language}"}),
         )
 
     def underline(self, value: str) -> str:
@@ -293,6 +296,8 @@ class MarkdownDecoration(TextDecoration):
     MARKDOWN_QUOTE_PATTERN: Pattern[str] = re.compile(r"([_*\[\]()~`>#+\-=|{}.!\\])")
 
     def link(self, value: str, link: str) -> str:
+        # Inside (...) of an inline link only "\" and ")" have to be escaped
+        link = link.replace("\\", "\\\\").replace(")", "\\)")
         return f"[{value}]({link})"
 
     def bold(self, value: str) -> str:
@@ -308,6 +313,9 @@ class MarkdownDecoration(TextDecoration):
         return f"```\n{value}\n```"
 
     def pre_language(self, value: str, language: str) -> str:
+        if re.search(r"[\s\x00`]", language):
+            # The language ends at the first whitespace or "`" and can't be escaped
+            return self.pre(value=value)
         return f"```{language}\n{value}\n```"
 
     def underline(self, value: str) -> str:
@@ -323,20 +331,26 @@ class MarkdownDecoration(TextDecoration):
         return re.sub(pattern=self.MARKDOWN_QUOTE_PATTERN, repl=r"\\\1", string=value)
 
     def custom_emoji(self, value: str, custom_emoji_id: str) -> str:
-        link = create_tg_link("emoji", emoji_id=custom_emoji_id)
+        link = create_tg_link("emoji", id=custom_emoji_id)
         return f"!{self.link(value=value, link=link)}"
 
+    @staticmethod
+    def _quote_lines(value: str) -> tuple[str, str]:
+        # Split on "\n" only: "\r" is the italic/underline separator, and a trailing
+        # newline belongs after the quote, not inside it as an empty quoted line.
+        body, newline = (value[:-1], "\n") if value.endswith("\n") else (value, "")
+        if not body:
+            return "", newline
+        return "\n".join(f">{line}" for line in body.split("\n")), newline
+
     def blockquote(self, value: str) -> str:
-        return "\n".join(f">{line}" for line in value.splitlines())
+        quoted, newline = self._quote_lines(value)
+        return quoted + newline
 
     def expandable_blockquote(self, value: str) -> str:
-        return (
-            "\n".join(
-                f"**>{line}" if index == 0 else f">{line}"
-                for index, line in enumerate(value.splitlines())
-            )
-            + "||"
-        )
+        quoted, newline = self._quote_lines(value)
+        # "**" on the first line is the expandability mark
+        return ("**" if quoted else "") + quoted + "||" + newline
 
     def date_time(
         self,

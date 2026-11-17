@@ -1,7 +1,7 @@
-from enum import Enum
+from enum import StrEnum
 
 
-class ButtonStyle(str, Enum):
+class ButtonStyle(StrEnum):
     """
     This object represents a button style (inline- or reply-keyboard).
 

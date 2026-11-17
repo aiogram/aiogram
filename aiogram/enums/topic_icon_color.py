@@ -1,7 +1,7 @@
-from enum import Enum
+from enum import IntEnum
 
 
-class TopicIconColor(int, Enum):
+class TopicIconColor(IntEnum):
     """
     Color of the topic icon in RGB format.
 

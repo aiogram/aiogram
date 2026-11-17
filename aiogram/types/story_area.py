@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, Any
 from .base import TelegramObject
 
 if TYPE_CHECKING:
-    from .story_area_position import StoryAreaPosition
+    from .area_position import AreaPosition
     from .story_area_type_union import StoryAreaTypeUnion
 
 
@@ -16,7 +16,7 @@ class StoryArea(TelegramObject):
     Source: https://core.telegram.org/bots/api#storyarea
     """
 
-    position: StoryAreaPosition
+    position: AreaPosition
     """Position of the area"""
     type: StoryAreaTypeUnion
     """Type of the area"""
@@ -28,7 +28,7 @@ class StoryArea(TelegramObject):
         def __init__(
             __pydantic__self__,
             *,
-            position: StoryAreaPosition,
+            position: AreaPosition,
             type: StoryAreaTypeUnion,
             **__pydantic_kwargs: Any,
         ) -> None:
