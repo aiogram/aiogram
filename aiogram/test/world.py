@@ -3,7 +3,7 @@ from __future__ import annotations
 import datetime
 from collections.abc import Callable, Iterable, Mapping
 from dataclasses import dataclass, field
-from enum import Enum
+from enum import StrEnum
 from typing import TYPE_CHECKING, Any, TypeAlias, cast
 
 from pydantic import BaseModel
@@ -64,7 +64,7 @@ BASE_DATE: datetime.datetime = datetime.datetime(
     1,
     12,
     0,
-    tzinfo=datetime.timezone.utc,
+    tzinfo=datetime.UTC,
 )
 """
 A fixed moment for a world's clock to start at, for dates that are the
@@ -75,11 +75,11 @@ default a clock starts at the real time instead.
 
 def wall_clock() -> datetime.datetime:
     """The real time, in UTC, to the second: where a clock starts."""
-    return datetime.datetime.now(datetime.timezone.utc).replace(microsecond=0)
+    return datetime.datetime.now(datetime.UTC).replace(microsecond=0)
 
 
 #: How the Bot API reports a restriction or ban with no end: Unix 0.
-UNTIL_FOREVER: datetime.datetime = datetime.datetime(1970, 1, 1, tzinfo=datetime.timezone.utc)
+UNTIL_FOREVER: datetime.datetime = datetime.datetime(1970, 1, 1, tzinfo=datetime.UTC)
 
 DEFAULT_TOPIC_ICON_COLOR = 0x6FB9F0
 GENERAL_TOPIC_NAME = "General"
@@ -307,7 +307,7 @@ def default_chat_permissions() -> ChatPermissions:
     return ChatPermissions(**dict.fromkeys(ChatPermissions.model_fields, True))
 
 
-class QueryKind(str, Enum):
+class QueryKind(StrEnum):
     """Kinds of query a trigger can issue and an answer method must consume."""
 
     CALLBACK = "callback query"
@@ -2139,7 +2139,7 @@ class World:
 def aware(moment: datetime.datetime) -> datetime.datetime:
     """``moment`` made aware; a naive one is read as local time."""
     if moment.tzinfo is None:
-        return datetime.datetime.fromtimestamp(moment.timestamp(), tz=datetime.timezone.utc)
+        return datetime.datetime.fromtimestamp(moment.timestamp(), tz=datetime.UTC)
     return moment
 
 

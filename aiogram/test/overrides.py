@@ -2,9 +2,7 @@ from __future__ import annotations
 
 import inspect
 from dataclasses import dataclass, field
-from typing import TYPE_CHECKING, Any, TypeAlias
-
-from typing_extensions import Self
+from typing import TYPE_CHECKING, Any, Self, TypeAlias
 
 from aiogram import methods
 from aiogram.exceptions import (

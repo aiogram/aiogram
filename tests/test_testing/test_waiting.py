@@ -101,6 +101,27 @@ class TestWaitFor:
 
         assert loop.time() - started < 0.5
 
+    async def test_a_blocking_async_predicate_is_bound_by_the_timeout(self, env):
+        """An awaitable predicate that never resolves still times out instead of hanging."""
+        never = asyncio.Event()
+
+        with pytest.raises(WaitTimeoutError, match="the event"):
+            await asyncio.wait_for(
+                env.wait_for(never.wait, timeout=0.05, description="the event"),
+                timeout=2.0,
+            )
+
+    async def test_a_timeout_error_from_the_predicate_propagates(self, env):
+        """Only the wait's own deadline becomes a `WaitTimeoutError`."""
+
+        async def broken():
+            raise TimeoutError("inner")
+
+        with pytest.raises(TimeoutError, match="inner") as exc_info:
+            await env.wait_for(broken, timeout=5.0)
+
+        assert not isinstance(exc_info.value, WaitTimeoutError)
+
     async def test_a_predicate_without_a_name_falls_back_to_its_repr(self, env):
         class NeverReady:
             def __call__(self):
@@ -941,10 +962,13 @@ class TestThePlayersListIsTheVocabularyToo:
         task = asyncio.create_task(self.deal(table, [player.id for player in players]))
 
         try:
+            # Three sleeps are ~47ms on Windows (15.6ms timer), too close to
+            # the table's 0.05s default.
             keyboards = await table.wait_for_message_in(
                 players,
                 lambda m: m.text == "Night falls",
                 "the night keyboard",
+                timeout=1.0,
             )
         finally:
             await task

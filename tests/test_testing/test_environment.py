@@ -868,6 +868,25 @@ class TestDrain:
         env.dispose_sync()
         assert loop.get_task_factory() is original
 
+    async def test_disposing_out_of_order_restores_the_original_factory(self, blueprint):
+        """
+        The outer environment going first leaves its factory chained under the inner
+        one; the inner one's restore must skip it, not reinstall a disposed factory.
+        """
+        loop = asyncio.get_running_loop()
+        original = loop.get_task_factory()
+
+        outer = BotTestEnvironment(blueprint=blueprint, dispatcher=Dispatcher())
+        inner = BotTestEnvironment(blueprint=blueprint, dispatcher=Dispatcher())
+        try:
+            await outer.user(blueprint.users[0]).send("hi")
+            await inner.user(blueprint.users[0]).send("hi")
+        finally:
+            outer.dispose_sync()
+            inner.dispose_sync()
+
+        assert loop.get_task_factory() is original
+
     async def test_dispose_does_not_drain(self, blueprint, dp):
         """
         Deliberately not automatic: ``dispose_sync`` cannot await anything at all, so an

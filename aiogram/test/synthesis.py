@@ -124,8 +124,7 @@ def annotation_accepts(annotation: Any, target: type) -> bool:
         return annotation_accepts(annotation.__value__, target)
     if get_origin(annotation) is Annotated:
         return annotation_accepts(get_args(annotation)[0], target)
-    # Python 3.10 reports a generic such as `list[X]` as a type.
-    if isinstance(annotation, type) and get_origin(annotation) is None:
+    if isinstance(annotation, type):
         return issubclass(target, annotation)
     if get_origin(annotation) in {UnionType, Union}:
         return any(annotation_accepts(member, target) for member in _union_members(annotation))

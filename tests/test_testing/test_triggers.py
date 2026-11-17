@@ -54,6 +54,8 @@ TRIGGERS = {
         lambda actor: actor.reaction_count(actor.chat.messages[-1]),
     ),
     "stopped_message_generation": ("plain", lambda actor: actor.stop_message_generation()),
+    "widget_query": ("plain", lambda actor: actor.widget_query()),
+    "shared_widget_query": ("plain", lambda actor: actor.shared_widget_query()),
 }
 
 

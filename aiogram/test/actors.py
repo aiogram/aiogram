@@ -37,10 +37,12 @@ from aiogram.types import (
     ReactionTypeEmoji,
     ReactionTypeUnion,
     RichMessageButton,
+    SharedWidgetQuery,
     ShippingQuery,
     SuccessfulPayment,
     Update,
     User,
+    WidgetQuery,
 )
 
 from .markup import bot_command_entities
@@ -1809,6 +1811,55 @@ class UserActor:
         )
         return await self._feed(
             Update(update_id=self._next_update_id(), shipping_query=event),
+            data,
+            deliver=deliver,
+        )
+
+    @_trigger
+    async def widget_query(
+        self, query_data: str = "data", *, deliver: bool = True, **data: Any
+    ) -> Any:
+        """
+        Send a query from a widget in a message in the actor's chat.
+
+        ``answerWidgetQuery`` is not modeled, so the query is not tracked for an answer.
+        """
+        self._refuse_bot("query a widget")
+        event = self._event(
+            WidgetQuery,
+            id=self.environment.world.next_query_id(),
+            data=query_data,
+            chat=self._bound_chat.as_chat(),
+        )
+        return await self._feed(
+            Update(update_id=self._next_update_id(), widget_query=event),
+            data,
+            deliver=deliver,
+        )
+
+    @_trigger
+    async def shared_widget_query(
+        self,
+        widget_id: str = "widget",
+        query_data: str = "data",
+        *,
+        deliver: bool = True,
+        **data: Any,
+    ) -> Any:
+        """
+        Send a query from a shared widget in a forwarded message.
+
+        ``answerWidgetQuery`` is not modeled, so the query is not tracked for an answer.
+        """
+        self._refuse_bot("query a widget")
+        event = self._event(
+            SharedWidgetQuery,
+            id=self.environment.world.next_query_id(),
+            widget_id=widget_id,
+            data=query_data,
+        )
+        return await self._feed(
+            Update(update_id=self._next_update_id(), shared_widget_query=event),
             data,
             deliver=deliver,
         )

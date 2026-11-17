@@ -91,3 +91,17 @@ class TestAgreesWithPrepareValue:
         assert session.prepare_value(getattr(resolved, field), bot=bot, files={}) == (
             session.prepare_value(getattr(instance, field), bot=bot, files={})
         )
+
+
+def test_environments_sharing_a_blueprint_do_not_share_its_defaults():
+    blueprint = Blueprint(default=DefaultBotProperties(parse_mode="HTML"))
+    first = build_environment(blueprint)
+    second = build_environment(blueprint)
+    try:
+        first.bot.default.parse_mode = "MarkdownV2"
+
+        assert second.bot.default.parse_mode == "HTML"
+        assert blueprint.default.parse_mode == "HTML"
+    finally:
+        first.dispose_sync()
+        second.dispose_sync()

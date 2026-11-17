@@ -51,7 +51,16 @@ async def poll_until(
     while True:
         result = predicate()
         if inspect.isawaitable(result):
-            result = await result
+            # A predicate that never resolves is bound by the same deadline; only this
+            # scope's own expiry becomes a WaitTimeoutError, not one the predicate raised.
+            scope = asyncio.timeout_at(deadline)
+            try:
+                async with scope:
+                    result = await result
+            except TimeoutError:
+                if scope.expired():
+                    raise WaitTimeoutError(describe_timeout()) from None
+                raise
         if result:
             return result
         remaining = deadline - loop.time()

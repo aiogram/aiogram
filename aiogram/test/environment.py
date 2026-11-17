@@ -3,6 +3,7 @@ from __future__ import annotations
 import asyncio
 import contextlib
 import contextvars
+import copy
 import datetime
 import functools
 import heapq
@@ -660,7 +661,9 @@ class BotTestEnvironment:
         self.bot = Bot(
             token=self.blueprint.token,
             session=self.session,
-            default=self.blueprint.default,
+            # Copied, so mutating one bot's defaults never reaches the blueprint or the
+            # other environments built from it.
+            default=copy.deepcopy(self.blueprint.default),
         )
         self.bot._me = self.world.bot_me()
         # From here on everything the world stores is bound to this bot, so a message a
@@ -2207,6 +2210,7 @@ class BotTestEnvironment:
             self._remember_task(cast("asyncio.Task[Any]", task), creator)
             return task
 
+        factory._aiogram_test_owner = self  # type: ignore[attr-defined]
         self._tracking_loop = loop
         self._previous_task_factory = previous
         self._installed_task_factory = factory
@@ -2253,8 +2257,17 @@ class BotTestEnvironment:
         installed = self._installed_task_factory
         self._tracking_loop = None
         self._installed_task_factory = None
-        if loop is not None and loop.get_task_factory() is installed:
-            loop.set_task_factory(self._previous_task_factory)
+        if loop is None or loop.get_task_factory() is not installed:
+            # Another environment's factory chains over ours. Keep the link we replaced,
+            # so that environment's restore can skip past ours to it.
+            return
+        previous = self._previous_task_factory
+        # Skip factories of environments disposed out of order, rather than reinstall one.
+        while (owner := getattr(previous, "_aiogram_test_owner", None)) is not None and (
+            owner._disposed
+        ):
+            previous = owner._previous_task_factory
+        loop.set_task_factory(previous)
         self._previous_task_factory = None
 
     def resolve_addressing(self, value: Any) -> Any:
