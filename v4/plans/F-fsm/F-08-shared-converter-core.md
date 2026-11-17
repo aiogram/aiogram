@@ -128,7 +128,12 @@ make lint
     stays in F-11. UUID packs as hex (as in 3.x), bool packs as `"1"`/`"0"` and reads pydantic's lax set.
     `Literal` takes only `str`/`int`/`bool`/`None` values.
   - Rejected at class creation: unions other than `X | None`, `Any`, bare `list`/`dict`, fixed-length tuples,
-    `set`, non-`str` dict keys.
+    `set`, non-`str` dict keys, enums whose values are not JSON scalars (`str`/`int`/`float`/`bool`/`None`), and
+    dataclasses with a required `InitVar` (loading cannot supply it).
+  - A `Literal` or `Enum` whose values share a flat text (`1` and `"1"`, `True` and `1`) keeps its JSON codec but
+    has no flat-string form, so it is rejected for callback data instead of changing values on a round trip.
+  - `register_converter` matches the annotation as written, so `Annotated[float, "celsius"]` can be registered
+    apart from `float`.
 - **Forward references:** a name not yet defined when the class is created defers compilation to first use, where
   an unresolved name raises `NameError` (mutual recursion relies on this). A class defined in a function body under
   `from __future__ import annotations` that refers to another local class is deferred the same way, so its

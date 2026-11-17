@@ -360,6 +360,65 @@ class TestUnsupported:
             Dangling.__converter__.from_json({"missing": 1})
 
 
+class Mixed(Enum):
+    ONE = 1
+    TEXT = "1"
+
+
+class DecimalValued(Enum):
+    HALF = Decimal("0.5")
+
+
+class TupleValued(Enum):
+    ORIGIN = (0, 0)
+
+
+@dataclasses.dataclass
+class NeedsSeed:
+    value: int
+    seed: dataclasses.InitVar[int]
+
+
+@dataclasses.dataclass
+class OptionalSeed:
+    value: int
+    seed: dataclasses.InitVar[int] = 0
+
+
+class TestCodexFindings:
+    @pytest.mark.parametrize(
+        ("tp", "values"),
+        [(Literal[1, "1"], [1, "1"]), (Literal[True, 1], [True, 1]), (Mixed, list(Mixed))],
+    )
+    def test_ambiguous_flat_text_has_no_flat_form(self, tp, values):
+        converter = converter_for(tp)
+        assert not converter.flat
+        for value in values:
+            assert converter.from_json(converter.to_json(value)) == value
+            with pytest.raises(TypeError, match="no flat-string form"):
+                converter.to_str(value)
+        with pytest.raises(TypeError, match="no flat-string form"):
+            converter.from_str("1")
+
+    @pytest.mark.parametrize("tp", [DecimalValued, TupleValued])
+    def test_enum_values_must_be_json_scalars(self, tp):
+        with pytest.raises(TypeError, match="JSON"):
+            converter_for(tp)
+
+    def test_required_initvar_rejected(self):
+        with pytest.raises(TypeError, match=r"NeedsSeed\.seed: required InitVar"):
+            converter_for(NeedsSeed)
+        assert model_converter(OptionalSeed).from_json({"value": 1}) == OptionalSeed(1)
+
+    def test_register_converter_for_annotated(self, monkeypatch):
+        monkeypatch.setattr(_converters, "_extra", {})
+        custom = CelsiusConverter()
+        register_converter(Annotated[float, "celsius"], custom)
+        assert converter_for(Annotated[float, "celsius"]) is custom
+        assert converter_for(Annotated[float, "other"]) is converter_for(float)
+        assert converter_for(Annotated[int, {"unhashable": []}]) is converter_for(int)
+
+
 class TestModels:
     def test_flat_load(self):
         form = Flat.__converter__.from_json({"id": 1, "name": "x", "kind": "a", "extra": 0})

@@ -245,8 +245,14 @@ class _Enum(Converter):
     flat = True
 
     def __init__(self, tp: type[Enum]) -> None:
+        for member in tp:
+            if type(member.value) not in _JSON_SCALARS:
+                msg = f"{tp.__name__}.{member.name} value {member.value!r} is not a JSON scalar"
+                raise TypeError(msg)
         self.tp = tp
         self._by_text = {str(member.value): member for member in tp}
+        # Values with the same text (1 and "1") cannot round-trip through a flat string.
+        self.flat = len(self._by_text) == len(tp)
 
     def _check(self, value: Any) -> Enum:
         if isinstance(value, self.tp):
@@ -263,13 +269,20 @@ class _Enum(Converter):
             raise _expected(f"a {self.tp.__name__} value", value) from None
 
     def to_str(self, value: Any) -> str:
+        if not self.flat:
+            return super().to_str(value)
         return str(self._check(value).value)
 
     def from_str(self, value: str) -> Any:
+        if not self.flat:
+            return super().from_str(value)
         try:
             return self._by_text[value]
         except KeyError:
             raise _expected(f"a {self.tp.__name__} value", value) from None
+
+
+_JSON_SCALARS = {str, int, float, bool, types.NoneType}
 
 
 def _literal_text(value: Any) -> str:
@@ -292,6 +305,7 @@ class _Literal(Converter):
         # Keyed by type too, so True does not match Literal[1].
         self._json = {(type(value), value) for value in values}
         self._text = {_literal_text(value): value for value in values}
+        self.flat = len(self._text) == len(values)  # Literal[1, "1"]: same text
 
     def to_json(self, value: Any) -> Any:
         try:
@@ -304,9 +318,13 @@ class _Literal(Converter):
     from_json = to_json
 
     def to_str(self, value: Any) -> str:
+        if not self.flat:
+            return super().to_str(value)
         return _literal_text(self.to_json(value))
 
     def from_str(self, value: str) -> Any:
+        if not self.flat:
+            return super().from_str(value)
         try:
             return self._text[value]
         except KeyError:
@@ -543,9 +561,15 @@ def converter_for(tp: Any) -> Converter:
         msg = f"unresolved forward reference {tp!r}"
         raise NameError(msg)
     origin = get_origin(tp)
+    try:
+        converter = _extra.get(tp)
+    except TypeError:  # Annotated with unhashable metadata
+        converter = None
+    if converter is not None:
+        return converter
     if origin is Annotated:
         return converter_for(get_args(tp)[0])
-    if (converter := _extra.get(tp) or _SCALARS.get(tp)) is not None:
+    if (converter := _SCALARS.get(tp)) is not None:
         return converter
     args = get_args(tp)
     if origin in _UNION_TYPES:
@@ -583,6 +607,11 @@ def _compile(cls: type) -> tuple[FieldSpec, ...]:
     )
     items: list[tuple[str, Any, Any]]
     if dataclasses.is_dataclass(cls):
+        for name, hint in hints.items():
+            if isinstance(hint, dataclasses.InitVar) and getattr(cls, name, MISSING) is MISSING:
+                # Loading cannot supply it: dataclasses.fields() leaves InitVars out.
+                msg = f"{cls.__qualname__}.{name}: required InitVar is not supported"
+                raise TypeError(msg)
         items = [
             (field.name, field.default, field.default_factory)
             for field in dataclasses.fields(cls)
