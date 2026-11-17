@@ -56,6 +56,7 @@ path = "aiogram/__meta__.py"
 [tool.hatch.build.targets.sdist]
 exclude = [
     "/orca.yaml",
+    "/v4",
 ]
 
 [project.optional-dependencies]

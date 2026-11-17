@@ -112,6 +112,14 @@ These patterns repeatedly appeared in maintainer feedback and should be treated 
 - Preserve framework contracts (e.g., dispatcher/workflow data passed to startup/shutdown callbacks).
 - When fixing generated API metadata/docs, update the source mapping in `.butcher` so future regenerations keep the fix.
 
+## 4.0 planning tree (`v4/`)
+
+- `v4/research/` and `v4/plans/` hold the aiogram 4.0 research and plans; `v4/plans/README.md` is the index and
+  holds the `dev-3.x` → `dev-4.x` sync policy. `v4/` is excluded from the sdist (`pyproject.toml`).
+- The repository is public: never add text to `v4/` that names or describes an unreleased security fix. Plans for
+  such fixes stay out of the tree (listed as "(held back)" in the indexes) until the fix is released.
+- The pre-commit `end-of-file-fixer` strips trailing blank lines from copied plan files; that is expected.
+
 ## Documentation work
 
 For docs changes:
