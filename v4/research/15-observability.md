@@ -69,7 +69,7 @@
   `\d{5,}:[A-Za-z0-9_-]{30,}` as `<id>:***` in message and args, and rewrites a record only when a token matches, to
   keep Sentry grouping. Opt out with `aiogram.loggers.redact_tokens(False)`.
 - **Exception text never contains a token** (PD-14): aiogram never builds token-bearing exception text. URLs are
-  rendered with `/bot<id>:***/`, and aiohttp errors are wrapped `from None` in the same exception type, with the
+  rendered with `/bot<id>:***/`, and aiohttp errors are wrapped in `TelegramNetworkError` `from None`, with the
   original kept on `.original` (not `__cause__`, which a formatted traceback would print). That wrapping is owned by
   D-03 in the client; milestone H owns only the log filters on this page (H-02).
 - **Access logs**: a handler-level filter is exported for user handlers and attached to `aiohttp.access` /

@@ -102,7 +102,7 @@ Handlers can read new fields before aiogram supports them (`message.raw.get("new
   which removes the "stuck forever" failure. The boundaries are the owner-signed record in
   [A-03](../plans/A-contracts/A-03-poison-update-decision.md); its "emit to `errors`" decision (Q6) feeds a synthetic
   `ErrorEvent(update=Update(update_id=<id>), exception=<ValidationError>)` through `dp.errors` with the usual
-  kwargs, the 3.x precursor of `phase=DECODE` (D49). Webhook poison updates are 3x-02 (held back).
+  kwargs, the 3.x precursor of `phase=DECODE` (D49). See also 3x-02 (held back).
 - **Unknown union tags** ([3x-18](../plans/3x-quick-wins/3x-18-unknown-union-fallback.md), 09 #23): a callable
   `Discriminator` with a fallback tag mapped to a generic `UnknownTelegramObject(extra="allow")` variant, emitted
   through the `.butcher` templates. Optional, larger change.
