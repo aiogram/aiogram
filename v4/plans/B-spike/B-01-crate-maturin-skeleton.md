@@ -2,7 +2,7 @@
 
 | Field | Value |
 |---|---|
-| Status | `todo` |
+| Status | `in-progress` |
 | Story | B — Model spike |
 | Target branch | `dev-4.x` |
 | Depends on | [A-01](../A-contracts/A-01-bootstrap-dev-4x.md) |
