@@ -55,15 +55,15 @@ layer (the B gate) or on pydantic, so F-09 can ship whatever the gate decides.
 
 ## Checklist
 
-- [ ] Decide `Fraction` support (**proposed default:** support `Fraction` in both codecs, encoded as `str(value)`
+- [x] Decide `Fraction` support (**proposed default:** support `Fraction` in both codecs, encoded as `str(value)`
       (`"1/3"`) and decoded with `Fraction(text)`, because 3.x `CallbackData._encode_value` accepts it and dropping it
       would be an unlisted break; 11 §4's list omits it) — record in Notes and flag to owner.
-- [ ] Compiler + field specs; class-creation errors.
-- [ ] Converters for every type in Scope; flat-string subset enforced (non-flat types rejected for `to_str`).
-- [ ] Default/mutable-default/`exclude_unset` support.
-- [ ] Extension hook for extra converters (used by F-12), keyed by exact type, checked before the built-ins.
-- [ ] Contract suite (R16) and a micro-benchmark (A-05 harness): load of a 5-field flat class from JSON-shaped dict.
-- [ ] Tests (100% coverage of new code)
+- [x] Compiler + field specs; class-creation errors.
+- [x] Converters for every type in Scope; flat-string subset enforced (non-flat types rejected for `to_str`).
+- [x] Default/mutable-default/`exclude_unset` support.
+- [x] Extension hook for extra converters (used by F-12), keyed by exact type, checked before the built-ins.
+- [x] Contract suite (R16) and a micro-benchmark (A-05 harness): load of a 5-field flat class from JSON-shaped dict.
+- [x] Tests (100% coverage of new code)
 
 ## Acceptance criteria
 
@@ -96,3 +96,42 @@ make lint
 - Parallel with F-01, F-02, F-04. F-09 and F-11 both build on it; keep the field-spec API stable once merged.
 
 ## Notes
+
+- **Decide `Fraction` (default taken, flag to owner):** supported in both codecs, `str(value)` (`"1/3"`) and
+  `Fraction(text)`, because 3.x `CallbackData._encode_value` accepts it.
+- **Benchmark:** A-05 has not landed, so `scripts/bench_converters.py` stands in (A-05 method: warm-up, GC off,
+  loops ≥ 0.2 s, median of 7); move it to `benchmarks/cases/fsm.py` with A-05. Measured 2026-11-18 on Apple M2 Pro,
+  CPython 3.14.2: `from_json` of the 5-field flat class **1.45 µs**; 3.x pydantic `CallbackData.unpack` 3.81 µs in
+  the same session (the 2.9 µs above is from another machine). No A-05 reference machine is defined yet.
+- **API for F-09 / F-11 / F-12** (`aiogram/utils/_converters.py`):
+  - `register_model(cls)` from `__init_subclass__` returns a `ModelConverter` with `fields` (tuple of
+    `FieldSpec(name, converter, default, default_factory)`), `from_json`, `to_json`, `dump(obj, exclude_unset=)`
+    and `init(instance, kwargs)` (the `__init__` body);
+  - `converter_for(annotation)` returns a `Converter` (`flat`, `to_str`/`from_str`, `to_json`/`from_json`);
+  - `model_converter(tp)` covers stdlib dataclasses too; `register_converter(tp, converter)` is the F-12 hook
+    (exact type, checked before the built-ins, affects classes compiled afterwards);
+  - errors: `ConversionError(ValueError)` with `.path`, `.value`, `.reason`. The set-fields record is the instance
+    attribute `FIELDS_SET` (`"__fields_set__"`).
+- **Semantics chosen here** (F-09 / F-11 may tighten them):
+  - `to_json` is strict and is the validation step for Python values: an `int` field rejects `"1"` and `True`, and
+    `Decimal` rejects `int`. `from_json` accepts JSON shapes: `float` also takes `int`, `list`/`tuple` take
+    either, and `Decimal`/`UUID`/`Fraction`/`datetime`/`date` take `str` only. A `date` field rejects `datetime`.
+  - `init` stores kwargs unconverted; whether the `FSMData` constructor validates is F-09's decision.
+  - On load, unknown keys are ignored and keys present in the input count as set. `exclude_unset` applies at the
+    top level only; a nested dataclass has no set record, so all its fields are dumped.
+  - Registered models are built without `__init__` (they need an instance `__dict__`). Dataclasses are built with
+    `cls(**values)`, so `__post_init__` runs, and a `ValueError` there becomes a `ConversionError`.
+  - Mutable default = unhashable default (`[]`, `{}`, `set()`, non-frozen dataclass), deep-copied per instance.
+    `dataclasses.field(default=/default_factory=)` is honoured on plain classes. Names starting with `_` and
+    `ClassVar` fields are skipped.
+  - Flat codec: `X | None` maps `None` to `""` and `""` to `None`. The 3.x rule for `str | None` with default `""`
+    stays in F-11. UUID packs as hex (as in 3.x), bool packs as `"1"`/`"0"` and reads pydantic's lax set.
+    `Literal` takes only `str`/`int`/`bool`/`None` values.
+  - Rejected at class creation: unions other than `X | None`, `Any`, bare `list`/`dict`, fixed-length tuples,
+    `set`, non-`str` dict keys.
+- **Forward references:** a name not yet defined when the class is created defers compilation to first use, where
+  an unresolved name raises `NameError` (mutual recursion relies on this). A class defined in a function body under
+  `from __future__ import annotations` that refers to another local class is deferred the same way, so its
+  annotation errors surface on first use, not at creation. On Python 3.14+ an unquoted self-reference needs
+  `get_type_hints(format=FORWARDREF)`; the default format raises `NameError` even with `localns`.
+- The `-X importtime` test is skipped on PyPy, which ignores the flag.

@@ -51,6 +51,16 @@ make lint-workflows
 
 Without a GitHub token zizmor runs in offline mode and skips its online audits (known-vulnerable-actions and friends), which CI does run. To reproduce CI exactly, prefix `make lint-workflows` with `GH_TOKEN=$(gh auth token)`.
 
+To run a test file on another interpreter of the CI matrix (3.11–3.15, `pypy3.11`) without touching `.venv`:
+
+```bash
+UV_PROJECT_ENVIRONMENT=/tmp/venv-3.11 uv run -p 3.11 --all-extras --group test pytest tests/<path>
+```
+
+PyPy ignores `-X importtime`; skip tests that rely on it there. On Python 3.14+ `typing.get_type_hints` inside
+`__init_subclass__` raises `NameError` for an unquoted reference to the class itself unless it is called with
+`format=annotationlib.Format.FORWARDREF`.
+
 Full loop (run before final review request):
 
 ```bash
