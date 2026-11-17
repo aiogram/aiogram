@@ -228,7 +228,7 @@ Verification method and results: [_VERIFICATION.md](_VERIFICATION.md).
 | [F-05](F-fsm/F-05-storage-record-batch-api.md) | Storage record and batch API (`get_records` / `apply_writes`) with fallbacks | `todo` | no | M | F-01 |
 | [F-06](F-fsm/F-06-redis-storage-legacy-layout.md) | `RedisStorage`: 3.x layout, pipelined reads/writes, single-loop detection | `todo` | no | M | A-11, F-05 |
 | [F-07](F-fsm/F-07-mongo-remove-motor-key-validation.md) | Mongo: remove motor `MongoStorage`; `PyMongoStorage` key validation, batching, single-loop | `todo` | no | M | A-11, F-05 |
-| [F-08](F-fsm/F-08-shared-converter-core.md) | Shared converter core (FSMData + CallbackData) | `todo` | no | L | A-01 |
+| [F-08](F-fsm/F-08-shared-converter-core.md) | Shared converter core (FSMData + CallbackData) | `in-progress` | no | L | A-01 |
 | [F-09](F-fsm/F-09-fsmdata-typed-fsmcontext.md) | `FSMData` and the typed `FSMContext` API (typed patches, adapters protocol) | `todo` | no | L | F-08 |
 | [F-10](F-fsm/F-10-pydantic-attrs-msgspec-adapters.md) | Optional `PydanticAdapter`, `AttrsAdapter`, `MsgspecAdapter` | `todo` | no | M | F-09 |
 | [F-11](F-fsm/F-11-callbackdata-without-pydantic.md) | `CallbackData` without pydantic (D14) | `todo` | yes * | M | A-11, B-13, F-08 |
