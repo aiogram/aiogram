@@ -32,6 +32,7 @@ So, you can use both of them with *aiogram*.
     long_polling
     finite_state_machine/index
     middlewares
+    tracing
     errors
     flags
     webhook
