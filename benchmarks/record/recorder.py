@@ -26,6 +26,7 @@ from typing import Any, TextIO
 
 from aiogram import Bot, Dispatcher, __api_version__, __version__
 from aiogram.client.session.aiohttp import AiohttpSession
+from aiogram.client.telegram import PRODUCTION, TelegramAPIServer
 from aiogram.methods import TelegramMethod
 from aiogram.methods.base import Response, TelegramType
 from aiogram.types import (
@@ -39,6 +40,7 @@ from aiogram.types import (
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
 RAW_DIR = Path(__file__).parent / "raw"
+DRAIN_TIMEOUT = 30.0  # seconds to let in-flight replies finish on stop
 
 
 class RecordingSession(AiohttpSession):
@@ -82,7 +84,12 @@ class RecordingSession(AiohttpSession):
         return super().check_response(bot, method, status_code, content)
 
 
-async def record(token: str, output: Path, limit: int) -> None:
+async def record(
+    token: str,
+    output: Path,
+    limit: int,
+    api: TelegramAPIServer = PRODUCTION,
+) -> None:
     output.parent.mkdir(parents=True, exist_ok=True)
     with output.open("w", encoding="utf-8") as sink:
         provenance = {
@@ -94,22 +101,26 @@ async def record(token: str, output: Path, limit: int) -> None:
         }
         sink.write(json.dumps({"provenance": provenance}) + "\n")
 
-        bot = Bot(token, session=RecordingSession(sink))
+        bot = Bot(token, session=RecordingSession(sink, api=api))
         dp = Dispatcher()
         seen = 0
+        stopping: asyncio.Task[None] | None = None
 
         async def count(
             handler: Callable[[TelegramObject, dict[str, Any]], Awaitable[Any]],
             event: TelegramObject,
             data: dict[str, Any],
         ) -> Any:
-            nonlocal seen
+            nonlocal seen, stopping
             seen += 1
-            try:
-                return await handler(event, data)
-            finally:
-                if seen == limit:
-                    await dp.stop_polling()
+            if seen > limit:  # fetched in the same batch as the last one: recorded, not answered
+                return None
+            if seen == limit:
+                # Decided before awaiting the handler, so concurrent handlers can't all miss it.
+                # In its own task, so this handler is drained like the others instead of being
+                # the one that waits for shutdown.
+                stopping = asyncio.create_task(dp.stop_polling())
+            return await handler(event, data)
 
         dp.update.outer_middleware(count)
 
@@ -131,7 +142,15 @@ async def record(token: str, output: Path, limit: int) -> None:
             await query.answer([], cache_time=0)
 
         allowed = [name for name in Update.model_fields if name != "update_id"]
-        await dp.start_polling(bot, allowed_updates=allowed)
+        # Replies still in flight finish (bounded) before the session closes, and the sink
+        # closes only after start_polling has returned.
+        await dp.start_polling(
+            bot,
+            allowed_updates=allowed,
+            tasks_shutdown_timeout=DRAIN_TIMEOUT,
+        )
+        if stopping is not None:
+            await stopping
 
 
 def main() -> None:

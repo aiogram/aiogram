@@ -1,12 +1,15 @@
 """Recorder and redactor for real traces (benchmarks/record, A-04)."""
 
+import asyncio
 import io
 import json
 import re
 
 import pytest
+from aiohttp import web
 
 from aiogram import Bot
+from aiogram.client.telegram import TelegramAPIServer
 from aiogram.exceptions import ClientDecodeError
 from aiogram.methods import SendMessage, SendPhoto
 from aiogram.types import BufferedInputFile
@@ -133,3 +136,42 @@ def test_recording_session_writes_raw_exchange():
     assert ok["files"][key] == "red.png"
     assert ok["response"] == {"ok": True, "result": json.loads(message)}
     assert broken["raw"] == "not json"
+
+
+async def test_record_stops_once_and_drains_replies(aiohttp_server, tmp_path):
+    """Two concurrent messages with limit=1: polling stops, and the in-flight reply is recorded."""
+    chat = {"id": 1, "type": "private"}
+    sent = {"message_id": 10, "date": 1, "chat": chat, "text": "recorded"}
+    batches = [[{"update_id": n, "message": {**sent, "message_id": n}} for n in (1, 2)]]
+
+    async def bot_api(request: web.Request) -> web.Response:
+        method = request.match_info["method"]
+        if method == "getMe":
+            result = {"id": 42, "is_bot": True, "first_name": "Recorder"}
+        elif method == "getUpdates":
+            await asyncio.sleep(0.05)
+            result = batches.pop() if batches else []
+        else:
+            await asyncio.sleep(0.2)  # still in flight when the stop starts
+            result = sent
+        return web.json_response({"ok": True, "result": result})
+
+    app = web.Application()
+    app.router.add_post("/bot{token}/{method}", bot_api)
+    server = await aiohttp_server(app)
+    output = tmp_path / "trace.jsonl"
+
+    await asyncio.wait_for(
+        recorder.record(
+            "42:TEST",
+            output,
+            limit=1,
+            api=TelegramAPIServer.from_base(f"http://{server.host}:{server.port}"),
+        ),
+        timeout=10,
+    )
+
+    records = [json.loads(line) for line in output.read_text(encoding="utf-8").splitlines()]
+    replies = [r for r in records if r.get("method") == "sendMessage"]
+    assert len(replies) == 1
+    assert replies[0]["response"] == {"ok": True, "result": sent}

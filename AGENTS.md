@@ -115,7 +115,7 @@ These patterns repeatedly appeared in maintainer feedback and should be treated 
 ## Benchmark corpus (`benchmarks/corpus/`)
 
 - Pinned inputs for benchmarks and differential oracles; schema in `benchmarks/corpus/README.md`. `benchmarks/` is dev tooling, excluded from the sdist and wheel.
-- Append-only: never edit a pinned file, add a new id. Every file needs a `MANIFEST.toml` entry with its sha256; `tests/test_corpus_manifest.py` enforces this and rejects anything matching a bot-token pattern.
+- Append-only: never edit a pinned file, add a new id. Every file needs a `MANIFEST.toml` entry with its sha256; `tests/test_corpus_manifest.py` enforces this and rejects anything matching a bot-token pattern. Corpus files are `-text` in `.gitattributes` so Windows checkouts keep the hashed bytes; keep new corpus paths under that rule rather than normalising line endings in the hash.
 - `on_3x` records whether current 3.x decodes each update/response input. A change that makes 3.x accept or reject one (e.g. a forward-compat fallback) updates that field in the same PR.
 - Real traces: record with `benchmarks/record/recorder.py` into the gitignored `benchmarks/record/raw/`, commit only the output of `benchmarks/record/redact.py`, after a manual review.
 
