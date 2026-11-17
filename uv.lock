@@ -10,8 +10,8 @@ resolution-markers = [
     "(python_full_version == '3.12.*' and platform_python_implementation != 'PyPy' and sys_platform == 'darwin') or (python_full_version == '3.12.*' and platform_python_implementation != 'PyPy' and sys_platform == 'linux')",
     "(python_full_version >= '3.12' and python_full_version < '3.14' and platform_python_implementation == 'PyPy') or (python_full_version >= '3.12' and python_full_version < '3.14' and sys_platform != 'darwin' and sys_platform != 'linux')",
     "(python_full_version >= '3.11.5' and python_full_version < '3.12' and platform_python_implementation != 'PyPy' and sys_platform == 'darwin') or (python_full_version >= '3.11.5' and python_full_version < '3.12' and platform_python_implementation != 'PyPy' and sys_platform == 'linux')",
-    "(python_full_version < '3.11.5' and platform_python_implementation != 'PyPy' and sys_platform == 'darwin') or (python_full_version < '3.11.5' and platform_python_implementation != 'PyPy' and sys_platform == 'linux')",
     "(python_full_version >= '3.11.5' and python_full_version < '3.12' and platform_python_implementation == 'PyPy') or (python_full_version >= '3.11.5' and python_full_version < '3.12' and sys_platform != 'darwin' and sys_platform != 'linux')",
+    "(python_full_version < '3.11.5' and platform_python_implementation != 'PyPy' and sys_platform == 'darwin') or (python_full_version < '3.11.5' and platform_python_implementation != 'PyPy' and sys_platform == 'linux')",
     "(python_full_version < '3.11.5' and platform_python_implementation == 'PyPy') or (python_full_version < '3.11.5' and sys_platform != 'darwin' and sys_platform != 'linux')",
 ]
 
@@ -38,6 +38,7 @@ wheels = [
 
 [[package]]
 name = "aiogram"
+version = "3.32.0"
 source = { editable = "." }
 dependencies = [
     { name = "aiofiles" },
@@ -137,7 +138,7 @@ requires-dist = [
     { name = "uvloop", marker = "(python_full_version >= '3.13' and platform_python_implementation != 'PyPy' and sys_platform == 'darwin' and extra == 'fast') or (python_full_version >= '3.13' and platform_python_implementation != 'PyPy' and sys_platform == 'linux' and extra == 'fast')", specifier = ">=0.21.0" },
     { name = "uvloop", marker = "(python_full_version < '3.13' and platform_python_implementation != 'PyPy' and sys_platform == 'darwin' and extra == 'fast') or (python_full_version < '3.13' and platform_python_implementation != 'PyPy' and sys_platform == 'linux' and extra == 'fast')", specifier = ">=0.17.0" },
 ]
-provides-extras = ["cli", "docs", "fast", "i18n", "mongo", "proxy", "redis", "signature"]
+provides-extras = ["fast", "redis", "mongo", "proxy", "i18n", "cli", "signature", "docs"]
 
 [package.metadata.requires-dev]
 dev = [

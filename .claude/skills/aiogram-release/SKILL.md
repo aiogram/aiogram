@@ -29,7 +29,9 @@ rtk proxy make bump args=patch            # or minor | major | to:3.31.0
 
 Runs both scripts:
 
-- `scripts/bump_version.py <part>` → `aiogram/__meta__.py::__version__`
+- `scripts/bump_version.py <part>` → `aiogram/__meta__.py::__version__`; on `dev-4.x` also the static
+  copies in `pyproject.toml` and `crates/aiogram-core/Cargo.toml`, after which the target refreshes
+  `Cargo.lock` (`cargo update --workspace`) and `uv.lock` (`uv lock`)
 - `scripts/bump_versions.py` → reads `.butcher/schema/schema.json` `api.version`, writes
   `.apiversion`, `__meta__.py::__api_version__`, the `API-<ver>-blue.svg` badge and the
   "Supports `Telegram Bot API …`" line in `README.rst`, and the badge in `docs/index.rst`
@@ -38,6 +40,8 @@ Verify all five landed:
 
 ```bash
 rtk git diff --stat -- aiogram/__meta__.py .apiversion README.rst docs/index.rst
+# dev-4.x: the version copies and both lock files move too
+rtk git diff --stat -- pyproject.toml crates/aiogram-core/Cargo.toml Cargo.lock uv.lock
 ```
 
 ## 3. Build the changelog

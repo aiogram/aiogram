@@ -120,6 +120,19 @@ These patterns repeatedly appeared in maintainer feedback and should be treated 
   such fixes stay out of the tree (listed as "(held back)" in the indexes) until the fix is released.
 - The pre-commit `end-of-file-fixer` strips trailing blank lines from copied plan files; that is expected.
 
+## Native extension (`dev-4.x`)
+
+- The build backend is maturin: `crates/aiogram-core` builds `aiogram._core`, so `uv sync` needs `rustup`
+  (`rust-toolchain.toml` pins the toolchain). `uv run` rebuilds it (release profile) when a `crates/**` file
+  changes; `make dev` installs a fast debug build, `make bench` a release one. Nothing on the 3.x import path
+  loads `_core` (`tests/test_core/test_build.py` checks it).
+- Rust checks: `cargo fmt --all --check`, `cargo clippy --workspace --all-targets -- -D warnings` (`unwrap`,
+  `expect`, `panic!`, `todo!`, `unimplemented!` are denied), `cargo test --workspace`. CI: `.github/workflows/core.yml`.
+- The version lives in `aiogram/__meta__.py` and is copied, static, into `pyproject.toml` and
+  `crates/aiogram-core/Cargo.toml`. Only change it with `make bump`: it writes both copies and refreshes
+  `Cargo.lock` and `uv.lock` (`uv sync --locked` fails otherwise). `test_build.py` asserts they match.
+- `tests/typing/` holds mypy-only `assert_type` files, never collected by pytest; run them with `make typing`.
+
 ## Documentation work
 
 For docs changes:

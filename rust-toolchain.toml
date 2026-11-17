@@ -1,0 +1,4 @@
+[toolchain]
+# latest stable - 2 minors (v4/research/08 §3); bump together with `rust-version` in Cargo.toml
+channel = "1.98.0"
+components = ["rustfmt", "clippy"]
