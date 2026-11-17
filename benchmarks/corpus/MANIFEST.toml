@@ -1,0 +1,335 @@
+# Pinned benchmark / oracle corpus. Schema: benchmarks/corpus/README.md.
+# Append-only once a baseline is recorded on an input: a changed input gets a new id.
+schema = 1
+
+[[input]]
+id = "update.text.small"
+kind = "update"
+path = "wire/update.text.small.json"
+sha256 = "5b39ea05f51ac43ee67f86891967af291add8dc510699306f299305af87940ed"
+on_3x = "ok"
+provenance = { source = "hand", date = "2026-11-18", aiogram = "3.32.0", bot_api = "10.4", author = "JRoot Junior" }
+notes = "Private-chat text message: Update, Message, User, Chat (4 models, 321 B)."
+
+[[input]]
+id = "update.realistic"
+kind = "update"
+path = "wire/update.realistic.json"
+sha256 = "2ffc2757fdfe7b680f2b44700b12f954960beba4bcf87f55f45e9a7b5edc18fe"
+on_3x = "ok"
+provenance = { source = "hand", date = "2026-11-18", aiogram = "3.32.0", bot_api = "10.4", author = "JRoot Junior" }
+notes = "Forum supergroup photo reply with quote, 6 caption entities and a 3x2 inline keyboard: 2 509 B, 29 models (01 §1 shape)."
+
+[[input]]
+id = "update.message.wide-sparse"
+kind = "update"
+path = "wire/update.message.wide-sparse.json"
+sha256 = "52a31fbedf012a53bd4d7ec79bff8d14143de0d054b3c72776581abbc71b79d7"
+on_3x = "ok"
+provenance = { source = "hand", date = "2026-11-18", aiogram = "3.32.0", bot_api = "10.4", author = "JRoot Junior" }
+notes = "Message with 29 distinct top-level fields set, each shallow (12 models): exercises Message's width, not depth."
+
+[[input]]
+id = "update.media.large"
+kind = "update"
+path = "wire/update.media.large.json"
+sha256 = "b6adada4f95faad21a703a6e47b8ab9ad43141697f73445646dac2a84a7725df"
+on_3x = "ok"
+provenance = { source = "hand", date = "2026-11-18", aiogram = "3.32.0", bot_api = "10.4", author = "JRoot Junior" }
+notes = "Channel post: 10 photo sizes, 1 017-char caption with 120 entities (7 992 B, 134 models)."
+
+[[input]]
+id = "update.richtext"
+kind = "update"
+path = "wire/update.richtext.json"
+sha256 = "0bae476fb40b1155b6758ac9dcded8559d57b9aeb6de9e1c942e9c57c501248a"
+on_3x = "ok"
+provenance = { source = "hand", date = "2026-11-18", aiogram = "3.32.0", bot_api = "10.4", author = "JRoot Junior" }
+notes = "rich_message with heading, nested paragraph runs, list, pre and blockquote (22 models; callable RichText discriminator)."
+
+[[input]]
+id = "update.callback"
+kind = "update"
+path = "wire/update.callback.json"
+sha256 = "ddf9a4d00f128391ae3de1c0bfe13c2cbe3ca7531ee9ee54f221d4016d5b023a"
+on_3x = "ok"
+provenance = { source = "hand", date = "2026-11-18", aiogram = "3.32.0", bot_api = "10.4", author = "JRoot Junior" }
+notes = "Callback query on a bot message with an inline keyboard."
+
+[[input]]
+id = "update.inline-query"
+kind = "update"
+path = "wire/update.inline-query.json"
+sha256 = "c1aa71125e61146ca86561ae6f24dfe471bace5d40466d02a7d5f2344f0f53d2"
+on_3x = "ok"
+provenance = { source = "hand", date = "2026-11-18", aiogram = "3.32.0", bot_api = "10.4", author = "JRoot Junior" }
+notes = "Inline query with location."
+
+[[input]]
+id = "update.unknown-tag"
+kind = "update"
+path = "wire/update.unknown-tag.json"
+sha256 = "89b039dda5347e2d5850563a89bde59c430fdc2fcf3634a0fa5cdf917ec6a5aa"
+on_3x = "ValidationError"
+provenance = { source = "hand", date = "2026-11-18", aiogram = "3.32.0", bot_api = "10.4", author = "JRoot Junior" }
+notes = "Forward-compat: chat_member with ChatMember status \"superadmin\". 3.32.0: ValidationError (union_tag_invalid)."
+
+[[input]]
+id = "update.unknown-type"
+kind = "update"
+path = "wire/update.unknown-type.json"
+sha256 = "5ee417c418f64a8792e146486d9440f29052cdf022ff55bc0060f012ab04b909"
+on_3x = "UpdateTypeLookupError"
+provenance = { source = "hand", date = "2026-11-18", aiogram = "3.32.0", bot_api = "10.4", author = "JRoot Junior" }
+notes = "Forward-compat: unknown top-level update key. 3.32.0: decodes, then Update.event_type raises UpdateTypeLookupError."
+
+[[input]]
+id = "update.unknown-field"
+kind = "update"
+path = "wire/update.unknown-field.json"
+sha256 = "59c5514806acf621ff452be7bdeaf6cec10efc4065f2efc344404450fc07b292"
+on_3x = "ok"
+provenance = { source = "hand", date = "2026-11-18", aiogram = "3.32.0", bot_api = "10.4", author = "JRoot Junior" }
+notes = "Forward-compat: unknown fields on Message and User. 3.32.0: decodes, the fields are kept in model_extra (not rejected)."
+
+[[input]]
+id = "update.unknown-enum"
+kind = "update"
+path = "wire/update.unknown-enum.json"
+sha256 = "e5e3ff24985058839f8941eed305ff52f09ddad9348cfb4b7bb71caa18b34985"
+on_3x = "ValidationError"
+provenance = { source = "hand", date = "2026-11-18", aiogram = "3.32.0", bot_api = "10.4", author = "JRoot Junior" }
+notes = "Forward-compat: refunded_payment.currency \"USD\" (Literal[\"XTR\"]). 3.32.0: ValidationError (literal_error)."
+
+[[input]]
+id = "update.malformed-member"
+kind = "update"
+path = "wire/update.malformed-member.json"
+sha256 = "f1d5d21aa34f0ceb622a59771eb20dac43e3b70337f34bfa4877cabd5143360a"
+on_3x = "ValidationError"
+provenance = { source = "hand", date = "2026-11-18", aiogram = "3.32.0", bot_api = "10.4", author = "JRoot Junior" }
+notes = "Forward-compat: forward_origin with known tag \"user\" but no sender_user. 3.32.0: ValidationError (missing)."
+
+[[input]]
+id = "update.deep-nesting"
+kind = "update"
+path = "wire/update.deep-nesting.json"
+sha256 = "12b1f57c1fd1fd69903eee758fd61fd3de6de79c4d28e13c1b578c27f3a5236e"
+on_3x = "ValidationError"
+provenance = { source = "synthesised", date = "2026-11-18", aiogram = "3.32.0", bot_api = "10.4", author = "JRoot Junior" }
+notes = "Robustness: 200-deep pinned_message chain. 3.32.0: model_validate_json raises ValidationError (json_invalid, recursion limit exceeded); json.loads + model_validate (webhook path) decodes."
+
+[[input]]
+id = "response.getUpdates.100"
+kind = "response"
+path = "wire/response.getUpdates.100.json"
+sha256 = "8ff5466572c5a91c1b59b280e1912b6144ce9d29f1db11af19fb5ee0f2288147"
+method = "getUpdates"
+status = 200
+on_3x = "ok"
+provenance = { source = "synthesised", date = "2026-11-18", aiogram = "3.32.0", bot_api = "10.4", author = "JRoot Junior" }
+notes = "getUpdates envelope, 100 updates from the 7 decode inputs in a fixed 20-slot pattern (update_id 30001..30100; media.large 5 times)."
+
+[[input]]
+id = "response.sendMessage"
+kind = "response"
+path = "wire/response.sendMessage.json"
+sha256 = "af6ac87382c5be27193243a2dd830108c6d5dbe4f786dbd762ed745a3a683119"
+method = "sendMessage"
+status = 200
+on_3x = "ok"
+provenance = { source = "hand", date = "2026-11-18", aiogram = "3.32.0", bot_api = "10.4", author = "JRoot Junior" }
+notes = "sendMessage success envelope."
+
+[[input]]
+id = "response.error.400"
+kind = "response"
+path = "wire/response.error.400.json"
+sha256 = "6a2a4360c79ce929350e1d87ff8ffcc8ed0a3ee21410803a6a23bc8a3ebacaff"
+method = "sendMessage"
+status = 400
+on_3x = "TelegramBadRequest"
+provenance = { source = "hand", date = "2026-11-18", aiogram = "3.32.0", bot_api = "10.4", author = "JRoot Junior" }
+notes = "400 Bad Request envelope."
+
+[[input]]
+id = "response.error.429"
+kind = "response"
+path = "wire/response.error.429.json"
+sha256 = "55f1daa20fa4d0e127a7595ee2a4b7b9f8ba23371484acc85e7191f26dbf53be"
+method = "sendMessage"
+status = 429
+on_3x = "TelegramRetryAfter"
+provenance = { source = "hand", date = "2026-11-18", aiogram = "3.32.0", bot_api = "10.4", author = "JRoot Junior" }
+notes = "429 envelope with parameters.retry_after = 5."
+
+[[input]]
+id = "response.ok-null-result"
+kind = "response"
+path = "wire/response.ok-null-result.json"
+sha256 = "32adcb5c91865620c27bc81d61ecdf31cf5240e511789592f10d8cd167a5486a"
+method = "sendMessage"
+status = 200
+on_3x = "ok"
+provenance = { source = "hand", date = "2026-11-18", aiogram = "3.32.0", bot_api = "10.4", author = "JRoot Junior" }
+notes = "ok = true with result = null. 3.32.0: accepted, sendMessage returns None."
+
+[[input]]
+id = "routing.1-handler"
+kind = "routing"
+path = "routing/routing.1-handler.toml"
+sha256 = "78a81807ecbd293e00ea0f27585a40da87505c19d11cf3f2bedb5341efc6c5a1"
+provenance = { source = "hand", date = "2026-11-18", aiogram = "3.32.0", bot_api = "10.4", author = "JRoot Junior" }
+notes = "13 §1."
+
+[[input]]
+id = "routing.20-ftext"
+kind = "routing"
+path = "routing/routing.20-ftext.toml"
+sha256 = "1d715cf41d99b6cab6a68363c6a719f885913326648e2a199bb1c45177c27354"
+provenance = { source = "synthesised", date = "2026-11-18", aiogram = "3.32.0", bot_api = "10.4", author = "JRoot Junior" }
+notes = "13 §1."
+
+[[input]]
+id = "routing.100-commands"
+kind = "routing"
+path = "routing/routing.100-commands.toml"
+sha256 = "014215e09262783c478cb21a986dec6646d9e063ff09c920c822b7c3942a0e05"
+provenance = { source = "synthesised", date = "2026-11-18", aiogram = "3.32.0", bot_api = "10.4", author = "JRoot Junior" }
+notes = "13 §1."
+
+[[input]]
+id = "routing.5routers-30handlers"
+kind = "routing"
+path = "routing/routing.5routers-30handlers.toml"
+sha256 = "ce2210f116f0fefd018aba6d7f728bb7fee40308c6b83c459eaf5b50d1235b0a"
+provenance = { source = "synthesised", date = "2026-11-18", aiogram = "3.32.0", bot_api = "10.4", author = "JRoot Junior" }
+notes = "13 §1."
+
+[[input]]
+id = "routing.52-handlers"
+kind = "routing"
+path = "routing/routing.52-handlers.toml"
+sha256 = "7aae9cc1b857164d0ac69eceed95a3f8001f2336afcdecf48790479fd8c53aac"
+provenance = { source = "synthesised", date = "2026-11-18", aiogram = "3.32.0", bot_api = "10.4", author = "JRoot Junior" }
+notes = "03 §2 topology; events hit first / mid (r2) / last (r3) / unhandled."
+
+[[input]]
+id = "request.sendMessage.plain"
+kind = "request"
+path = "requests/request.sendMessage.plain.toml"
+sha256 = "9cf3c9f280b6d796418cccade96474a7eac5d015914601819c7019158035379d"
+provenance = { source = "hand", date = "2026-11-18", aiogram = "3.32.0", bot_api = "10.4", author = "JRoot Junior" }
+
+[[input]]
+id = "request.sendMessage.defaults"
+kind = "request"
+path = "requests/request.sendMessage.defaults.toml"
+sha256 = "712930b1dabe8727edf47377402200295ed0fc6cf957d6ee15e4b0e8926b3809"
+provenance = { source = "hand", date = "2026-11-18", aiogram = "3.32.0", bot_api = "10.4", author = "JRoot Junior" }
+notes = "parse_mode, link_preview_is_disabled and protect_content come from bot defaults."
+
+[[input]]
+id = "request.sendPhoto.upload"
+kind = "request"
+path = "requests/request.sendPhoto.upload.toml"
+sha256 = "6794e00affab439e0b99e2dd354ec1b23b6373fefc43ff215d21de22abc88296"
+provenance = { source = "hand", date = "2026-11-18", aiogram = "3.32.0", bot_api = "10.4", author = "JRoot Junior" }
+notes = "Top-level upload of files/red.png."
+
+[[input]]
+id = "request.sendMediaGroup.files"
+kind = "request"
+path = "requests/request.sendMediaGroup.files.toml"
+sha256 = "cf3d6834d5492be14a0ca050dea948578c57f1a285969b07087ec0006b733639"
+provenance = { source = "hand", date = "2026-11-18", aiogram = "3.32.0", bot_api = "10.4", author = "JRoot Junior" }
+notes = "Two uploads nested in InputMediaPhoto.media."
+
+[[input]]
+id = "request.raw-extra-kwargs"
+kind = "request"
+path = "requests/request.raw-extra-kwargs.toml"
+sha256 = "abc6012ef691e712a61ee59cde81f5c22b14966a70e50817a5d07ff4d10f11c3"
+provenance = { source = "hand", date = "2026-11-18", aiogram = "3.32.0", bot_api = "10.4", author = "JRoot Junior" }
+notes = "Params outside the pinned schema ([extra]) passed through to the wire."
+
+[[input]]
+id = "file.red-png"
+kind = "file"
+path = "files/red.png"
+sha256 = "293f3f7f37816496159bae7be00aee7962ddab6246ffd81952c9e0ae0b451286"
+provenance = { source = "synthesised", date = "2026-11-18", aiogram = "3.32.0", bot_api = "10.4", author = "JRoot Junior" }
+notes = "16x16 RGB PNG."
+
+[[input]]
+id = "file.blue-png"
+kind = "file"
+path = "files/blue.png"
+sha256 = "a2438e7d2ddd9e5f5ebd56d62dfc7d93b33f5f87b6d61e7e51f1f2e5ee45a1f4"
+provenance = { source = "synthesised", date = "2026-11-18", aiogram = "3.32.0", bot_api = "10.4", author = "JRoot Junior" }
+notes = "16x16 RGB PNG."
+
+[[input]]
+id = "keyboard.inline.30"
+kind = "keyboard"
+path = "wire/keyboard.inline.30.json"
+sha256 = "46147aa9067687e761257d3bbb6114116ceb0cfbe3b77a229f7e6eb3d48c78e4"
+provenance = { source = "synthesised", date = "2026-11-18", aiogram = "3.32.0", bot_api = "10.4", author = "JRoot Junior" }
+notes = "InlineKeyboardMarkup, 30 callback buttons in rows of 3: the expected output of building them with adjust(3)."
+
+[[input]]
+id = "keyboard.inline.100"
+kind = "keyboard"
+path = "wire/keyboard.inline.100.json"
+sha256 = "8f0776b9a8c4bd132dbbbeee0ee150876fd268641b78bac2853be899ed597f21"
+provenance = { source = "synthesised", date = "2026-11-18", aiogram = "3.32.0", bot_api = "10.4", author = "JRoot Junior" }
+notes = "InlineKeyboardMarkup, 100 callback buttons in rows of 3."
+
+[[input]]
+id = "formatting.nested"
+kind = "entities"
+path = "wire/formatting.nested.json"
+sha256 = "62fad05a1e0afad8c29d87bd1e790320192ff41a13f71a9ba604aa6562093924"
+provenance = { source = "hand", date = "2026-11-18", aiogram = "3.32.0", bot_api = "10.4", author = "JRoot Junior" }
+notes = "text + 6 nested entities, two starting at the same offset. 3.32.0: Text.from_entities(...).as_html() differs from html_decoration.unparse on this input (same-offset nesting)."
+
+[[input]]
+id = "entities.unparse"
+kind = "entities"
+path = "wire/entities.unparse.json"
+sha256 = "e614ed14728011943ffd82f27c5007dfe35ae8be99bee6b47fe1fb264d7396f5"
+provenance = { source = "hand", date = "2026-11-18", aiogram = "3.32.0", bot_api = "10.4", author = "JRoot Junior" }
+notes = "text + entities: blockquote over mention, custom emoji (surrogate pair), code, bold over HTML-special text, url."
+
+[[input]]
+id = "callback_data.filter.miss"
+kind = "callback_data"
+path = "utils/callback_data.filter.miss.toml"
+sha256 = "5936616584bdd35a35b64b41eb5985d80cde86b3e7b8af55be3299de29b0ef96"
+provenance = { source = "synthesised", date = "2026-11-18", aiogram = "3.32.0", bot_api = "10.4", author = "JRoot Junior" }
+notes = "21 CallbackData classes; data matches only the last (3x-14)."
+
+[[input]]
+id = "utils.deserialize"
+kind = "case"
+uses = ["request.sendMessage.defaults"]
+provenance = { source = "hand", date = "2026-11-18", aiogram = "3.32.0", bot_api = "10.4", author = "JRoot Junior" }
+notes = "deserialize_telegram_object of a small SendMessage with defaults (3x-13)."
+
+[[input]]
+id = "fsm.memory.stateless-read"
+kind = "case"
+provenance = { source = "hand", date = "2026-11-18", aiogram = "3.32.0", bot_api = "10.4", author = "JRoot Junior" }
+notes = "MemoryStorage get_state/get_data for a key that was never written; no data."
+
+[[input]]
+id = "isolation.simple.lock"
+kind = "case"
+provenance = { source = "hand", date = "2026-11-18", aiogram = "3.32.0", bot_api = "10.4", author = "JRoot Junior" }
+notes = "SimpleEventIsolation lock enter/exit for one key; no data."
+
+[[input]]
+id = "import.aiogram"
+kind = "case"
+provenance = { source = "hand", date = "2026-11-18", aiogram = "3.32.0", bot_api = "10.4", author = "JRoot Junior" }
+notes = "Cold `import aiogram` in a subprocess; no data."

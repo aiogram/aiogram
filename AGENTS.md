@@ -36,7 +36,7 @@ Prefer Serena's symbol tools over `Read`/`Grep` for source code exploration. Onl
 
 Code style/lint in this repository is enforced via Ruff (`ruff check` + `ruff format`).
 
-Quick loop (recommended for most PR iterations). `make lint` runs ruff, both mypy passes and the pre-commit hooks exactly as CI does. The pre-commit hooks include fixers (`trailing-whitespace`, `end-of-file-fixer`, `ruff-format`), so `make lint` may modify files in the working tree; review `git diff` afterwards.
+Quick loop (recommended for most PR iterations). `make lint` runs ruff, both mypy passes and the pre-commit hooks exactly as CI does. The pre-commit hooks include fixers (`trailing-whitespace`, `end-of-file-fixer`, `ruff-format`), so `make lint` may modify files in the working tree; review `git diff` afterwards. `pre-commit run --all-files` only sees files git tracks: `git add` new files before `make lint`, or the hooks (`check-json`, `check-toml`, ruff) skip them.
 
 ```bash
 make lint
@@ -111,6 +111,13 @@ These patterns repeatedly appeared in maintainer feedback and should be treated 
 - Keep test style consistent with existing suite; avoid introducing new dependencies for small tests.
 - Preserve framework contracts (e.g., dispatcher/workflow data passed to startup/shutdown callbacks).
 - When fixing generated API metadata/docs, update the source mapping in `.butcher` so future regenerations keep the fix.
+
+## Benchmark corpus (`benchmarks/corpus/`)
+
+- Pinned inputs for benchmarks and differential oracles; schema in `benchmarks/corpus/README.md`. `benchmarks/` is dev tooling, excluded from the sdist and wheel.
+- Append-only: never edit a pinned file, add a new id. Every file needs a `MANIFEST.toml` entry with its sha256; `tests/test_corpus_manifest.py` enforces this and rejects anything matching a bot-token pattern.
+- `on_3x` records whether current 3.x decodes each update/response input. A change that makes 3.x accept or reject one (e.g. a forward-compat fallback) updates that field in the same PR.
+- Real traces: record with `benchmarks/record/recorder.py` into the gitignored `benchmarks/record/raw/`, commit only the output of `benchmarks/record/redact.py`, after a manual review.
 
 ## Documentation work
 
