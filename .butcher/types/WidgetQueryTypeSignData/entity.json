@@ -1,0 +1,41 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "widgetquerytypesigndata",
+    "name": "WidgetQueryTypeSignData",
+    "description": "The query contains data signed by a TON wallet of the user who sent the query. The data is signed for the domain bot<bot_id>, where <bot_id> is the identifier of the bot.",
+    "html_description": "<p>The query contains data signed by a TON wallet of the user who sent the query. The data is signed for the domain <code>bot&lt;bot_id&gt;</code>, where <code>&lt;bot_id&gt;</code> is the identifier of the bot.</p>",
+    "rst_description": "The query contains data signed by a TON wallet of the user who sent the query. The data is signed for the domain :code:`bot<bot_id>`, where :code:`<bot_id>` is the identifier of the bot.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Type of the query, always 'sign_data'",
+        "html_description": "<td>Type of the query, always &#8220;sign_data&#8221;</td>",
+        "rst_description": "Type of the query, always 'sign_data'\n",
+        "name": "type",
+        "required": true
+      },
+      {
+        "type": "WidgetQueryWallet",
+        "description": "The wallet that signed the data",
+        "html_description": "<td>The wallet that signed the data</td>",
+        "rst_description": "The wallet that signed the data\n",
+        "name": "wallet",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "JSON-serialized signed data",
+        "html_description": "<td>JSON-serialized signed data</td>",
+        "rst_description": "JSON-serialized signed data\n",
+        "name": "sign_data",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

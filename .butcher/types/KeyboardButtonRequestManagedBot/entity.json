@@ -29,9 +29,9 @@
       },
       {
         "type": "String",
-        "description": "Suggested username for the bot",
-        "html_description": "<td><em>Optional</em>. Suggested username for the bot</td>",
-        "rst_description": "*Optional*. Suggested username for the bot\n",
+        "description": "Suggested username for the bot. The username must end with 'bot'. If the user creating the bot has a Telegram Premium subscription, then the username can also end with 'agent', 'ai', 'app', 'game', or 'gay'; in this case, the username will be assigned to the bot as a secondary username, and a regular username ending with 'bot' will be assigned to the bot automatically.",
+        "html_description": "<td><em>Optional</em>. Suggested username for the bot. The username must end with &#8220;bot&#8221;. If the user creating the bot has a Telegram Premium subscription, then the username can also end with &#8220;agent&#8221;, &#8220;ai&#8221;, &#8220;app&#8221;, &#8220;game&#8221;, or &#8220;gay&#8221;; in this case, the username will be assigned to the bot as a secondary username, and a regular username ending with &#8220;bot&#8221; will be assigned to the bot automatically.</td>",
+        "rst_description": "*Optional*. Suggested username for the bot. The username must end with 'bot'. If the user creating the bot has a Telegram Premium subscription, then the username can also end with 'agent', 'ai', 'app', 'game', or 'gay'; in this case, the username will be assigned to the bot as a secondary username, and a regular username ending with 'bot' will be assigned to the bot automatically.\n",
         "name": "suggested_username",
         "required": false
       }

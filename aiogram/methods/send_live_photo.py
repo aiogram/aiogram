@@ -28,8 +28,8 @@ class SendLivePhoto(TelegramMethod[Message]):
     __returning__ = Message
     __api_method__ = "sendLivePhoto"
 
-    chat_id: ChatIdUnion
-    """Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)"""
+    chat_id: ChatIdUnion | None = None
+    """Unique identifier for the target chat or username of the target bot, supergroup, or channel in the format :code:`@username`; required unless the message is sent as an ephemeral reply to a callback query"""
     live_photo: InputFileUnion
     """Live photo video to send. The video must be no longer than 10 seconds and must not exceed 10 MB in size. Pass a file_id as String to send a video that exists on the Telegram servers (recommended) or upload a new video using multipart/form-data. :ref:`More information on Sending Files » <sending-files>`. Sending live photos by a URL is currently unsupported"""
     photo: InputFileUnion
@@ -84,7 +84,7 @@ class SendLivePhoto(TelegramMethod[Message]):
         def __init__(
             __pydantic__self__,
             *,
-            chat_id: ChatIdUnion,
+            chat_id: ChatIdUnion | None = None,
             live_photo: InputFileUnion,
             photo: InputFileUnion,
             business_connection_id: str | None = None,

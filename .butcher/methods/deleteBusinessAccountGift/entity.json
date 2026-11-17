@@ -1,0 +1,33 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available methods",
+    "anchor": "available-methods"
+  },
+  "object": {
+    "anchor": "deletebusinessaccountgift",
+    "name": "deleteBusinessAccountGift",
+    "description": "Deletes a regular gift owned by a managed business account without receiving Telegram Stars for it. Requires the can_convert_gifts_to_stars business bot right. The gift can be deleted only if it isn't limited (the field total_count of the Gift is omitted) and wasn't refunded. Returns True on success.",
+    "html_description": "<p>Deletes a regular gift owned by a managed business account without receiving Telegram Stars for it. Requires the <em>can_convert_gifts_to_stars</em> business bot right. The gift can be deleted only if it isn't limited (the field <em>total_count</em> of the <a href=\"#gift\">Gift</a> is omitted) and wasn't refunded. Returns <em>True</em> on success.</p>",
+    "rst_description": "Deletes a regular gift owned by a managed business account without receiving Telegram Stars for it. Requires the *can_convert_gifts_to_stars* business bot right. The gift can be deleted only if it isn't limited (the field *total_count* of the :class:`aiogram.types.gift.Gift` is omitted) and wasn't refunded. Returns :code:`True` on success.",
+    "annotations": [
+      {
+        "type": "String",
+        "required": true,
+        "description": "Unique identifier of the business connection",
+        "html_description": "<td>Unique identifier of the business connection</td>",
+        "rst_description": "Unique identifier of the business connection\n",
+        "name": "business_connection_id"
+      },
+      {
+        "type": "String",
+        "required": true,
+        "description": "Unique identifier of the regular gift that should be deleted",
+        "html_description": "<td>Unique identifier of the regular gift that should be deleted</td>",
+        "rst_description": "Unique identifier of the regular gift that should be deleted\n",
+        "name": "owned_gift_id"
+      }
+    ],
+    "category": "methods"
+  }
+}

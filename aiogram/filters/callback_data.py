@@ -5,12 +5,11 @@ import typing
 from decimal import Decimal
 from enum import Enum
 from fractions import Fraction
-from typing import TYPE_CHECKING, Any, ClassVar, Literal, TypeVar
+from typing import TYPE_CHECKING, Any, ClassVar, Literal, Self, TypeVar
 from uuid import UUID
 
 from pydantic import BaseModel
 from pydantic_core import PydanticUndefined
-from typing_extensions import Self
 
 from aiogram.filters.base import Filter
 from aiogram.types import CallbackQuery
@@ -134,7 +133,12 @@ class CallbackData(BaseModel):
                 and _check_field_is_nullable(field)
                 and field.default != ""
             ):
-                parsed_value = field.default if field.default is not PydanticUndefined else None
+                # pack() writes None as an empty part, so an empty part means None
+                # when the field accepts it, even if its default is something else.
+                if _annotation_allows_none(field) or field.default is PydanticUndefined:
+                    parsed_value = None
+                else:
+                    parsed_value = field.default
             payload[k] = parsed_value
         return cls(**payload)
 
@@ -205,6 +209,16 @@ def _check_field_is_nullable(field: FieldInfo) -> bool:
     if not field.is_required():
         return True
 
+    return _annotation_allows_none(field)
+
+
+def _annotation_allows_none(field: FieldInfo) -> bool:
+    """
+    Check if the type annotation of the given field accepts None.
+
+    :param field: The FieldInfo object representing the field to check.
+    :return: True if the annotation is a union that includes None, False otherwise.
+    """
     return typing.get_origin(field.annotation) in _UNION_TYPES and type(None) in typing.get_args(
         field.annotation,
     )

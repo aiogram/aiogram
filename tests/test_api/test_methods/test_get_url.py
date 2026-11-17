@@ -103,3 +103,14 @@ class TestGetMessageUrl:
             force_private=force_private, include_thread_id=include_thread_id
         )
         assert actual_result == expected_result
+
+    def test_get_url_without_message_id(self, bot: MockedBot):
+        # Ephemeral and scheduled messages come with `message_id=0`: there is no link.
+        fake_message = Message(
+            message_id=0,
+            date=datetime.datetime.now(),
+            text="test",
+            chat=Chat(id=-1001234567890, username="username", type="channel"),
+        )
+        assert fake_message.get_url() is None
+        assert fake_message.get_url(force_private=True, include_thread_id=True) is None

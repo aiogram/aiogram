@@ -92,6 +92,11 @@ class Router:
             router=self,
             event_name="stopped_message_generation",
         )
+        self.widget_query = TelegramEventObserver(router=self, event_name="widget_query")
+        self.shared_widget_query = TelegramEventObserver(
+            router=self,
+            event_name="shared_widget_query",
+        )
 
         self.errors = self.error = TelegramEventObserver(router=self, event_name="error")
 
@@ -126,6 +131,8 @@ class Router:
             "guest_message": self.guest_message,
             "subscription": self.subscription,
             "stopped_message_generation": self.stopped_message_generation,
+            "widget_query": self.widget_query,
+            "shared_widget_query": self.shared_widget_query,
             "error": self.errors,
         }
 

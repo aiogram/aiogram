@@ -1,7 +1,7 @@
-from enum import Enum
+from enum import StrEnum
 
 
-class InputMediaType(str, Enum):
+class InputMediaType(StrEnum):
     """
     This object represents input media type
 

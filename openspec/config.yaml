@@ -1,7 +1,7 @@
 schema: spec-driven
 
 context: |
-  aiogram — asynchronous Telegram Bot API framework for Python >= 3.10.
+  aiogram — asynchronous Telegram Bot API framework for Python >= 3.11.
   Base branch: dev-3.x. Tooling: uv, ruff, mypy, pytest, towncrier, butcher.
 
   Layers:

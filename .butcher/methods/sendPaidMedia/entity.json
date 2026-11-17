@@ -14,9 +14,9 @@
       {
         "type": "Integer or String",
         "required": true,
-        "description": "Unique identifier for the target chat or username of the target bot, supergroup or channel in the format @username. If the chat is a channel, all Telegram Star proceeds from this media will be credited to the chat's balance. Otherwise, they will be credited to the bot's balance.",
-        "html_description": "<td>Unique identifier for the target chat or username of the target bot, supergroup or channel in the format <code>@username</code>. If the chat is a channel, all Telegram Star proceeds from this media will be credited to the chat's balance. Otherwise, they will be credited to the bot's balance.</td>",
-        "rst_description": "Unique identifier for the target chat or username of the target bot, supergroup or channel in the format :code:`@username`. If the chat is a channel, all Telegram Star proceeds from this media will be credited to the chat's balance. Otherwise, they will be credited to the bot's balance.\n",
+        "description": "Unique identifier for the target chat or username of the target bot, supergroup, or channel in the format @username. If the chat is a channel, all Telegram Star proceeds from this media will be credited to the chat's balance. Otherwise, they will be credited to the bot's balance.",
+        "html_description": "<td>Unique identifier for the target chat or username of the target bot, supergroup, or channel in the format <code>@username</code>. If the chat is a channel, all Telegram Star proceeds from this media will be credited to the chat's balance. Otherwise, they will be credited to the bot's balance.</td>",
+        "rst_description": "Unique identifier for the target chat or username of the target bot, supergroup, or channel in the format :code:`@username`. If the chat is a channel, all Telegram Star proceeds from this media will be credited to the chat's balance. Otherwise, they will be credited to the bot's balance.\n",
         "name": "chat_id"
       },
       {

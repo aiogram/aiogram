@@ -54,6 +54,8 @@ class KeyboardBuilder(ABC, Generic[ButtonType]):
         else:
             markup = []
         self._markup: list[list[ButtonType]] = markup
+        # Non-button markup options (force_reply, resize_keyboard, ...) kept by from_markup()
+        self._markup_options: dict[str, Any] = {}
 
     @property
     def buttons(self) -> Generator[ButtonType, None, None]:
@@ -252,11 +254,16 @@ class KeyboardBuilder(ABC, Generic[ButtonType]):
         return self.add(button)
 
     def as_markup(self, **kwargs: Any) -> InlineKeyboardMarkup | ReplyKeyboardMarkup:
+        # Explicitly passed options take precedence over the ones kept by from_markup()
+        kwargs = {
+            **self._markup_options,
+            **{key: value for key, value in kwargs.items() if value is not None},
+        }
         if self._button_type is KeyboardButton:
             keyboard = cast(list[list[KeyboardButton]], self.export())  # type: ignore
             return ReplyKeyboardMarkup(keyboard=keyboard, **kwargs)
         inline_keyboard = cast(list[list[InlineKeyboardButton]], self.export())  # type: ignore
-        return InlineKeyboardMarkup(inline_keyboard=inline_keyboard)
+        return InlineKeyboardMarkup(inline_keyboard=inline_keyboard, **kwargs)
 
     def attach(self, builder: KeyboardBuilder[ButtonType]) -> KeyboardBuilder[ButtonType]:
         if not isinstance(builder, KeyboardBuilder):
@@ -337,20 +344,30 @@ class InlineKeyboardBuilder(KeyboardBuilder[InlineKeyboardButton]):
             ),
         )
 
-    def as_markup(self, **kwargs: Any) -> InlineKeyboardMarkup:
+    def as_markup(
+        self,
+        *,
+        force_reply: bool | None = None,
+        **kwargs: Any,
+    ) -> InlineKeyboardMarkup:
         """Construct an InlineKeyboardMarkup"""
-        return cast(InlineKeyboardMarkup, super().as_markup(**kwargs))
+        return cast(
+            InlineKeyboardMarkup,
+            super().as_markup(force_reply=force_reply, **kwargs),
+        )
 
     def __init__(self, markup: list[list[InlineKeyboardButton]] | None = None) -> None:
         super().__init__(button_type=InlineKeyboardButton, markup=markup)
 
     def copy(self: InlineKeyboardBuilder) -> InlineKeyboardBuilder:
         """
-        Make full copy of current builder with markup
+        Make full copy of current builder with markup and markup options
 
         :return:
         """
-        return InlineKeyboardBuilder(markup=self.export())
+        builder = InlineKeyboardBuilder(markup=self.export())
+        builder._markup_options = self._markup_options.copy()
+        return builder
 
     @classmethod
     def from_markup(
@@ -360,10 +377,15 @@ class InlineKeyboardBuilder(KeyboardBuilder[InlineKeyboardButton]):
         """
         Create builder from existing markup
 
+        Markup options other than buttons (e.g. :code:`force_reply`) are kept
+        and used by :meth:`as_markup` unless passed there explicitly.
+
         :param markup:
         :return:
         """
-        return cls(markup=markup.inline_keyboard)
+        builder = cls(markup=markup.inline_keyboard)
+        builder._markup_options = markup.model_dump(exclude={"inline_keyboard"}, exclude_none=True)
+        return builder
 
 
 class ReplyKeyboardBuilder(KeyboardBuilder[KeyboardButton]):
@@ -405,27 +427,55 @@ class ReplyKeyboardBuilder(KeyboardBuilder[KeyboardButton]):
             ),
         )
 
-    def as_markup(self, **kwargs: Any) -> ReplyKeyboardMarkup:
+    def as_markup(
+        self,
+        *,
+        is_persistent: bool | None = None,
+        resize_keyboard: bool | None = None,
+        one_time_keyboard: bool | None = None,
+        input_field_placeholder: str | None = None,
+        selective: bool | None = None,
+        force_reply: bool | None = None,
+        **kwargs: Any,
+    ) -> ReplyKeyboardMarkup:
         """Construct a ReplyKeyboardMarkup"""
-        return cast(ReplyKeyboardMarkup, super().as_markup(**kwargs))
+        return cast(
+            ReplyKeyboardMarkup,
+            super().as_markup(
+                is_persistent=is_persistent,
+                resize_keyboard=resize_keyboard,
+                one_time_keyboard=one_time_keyboard,
+                input_field_placeholder=input_field_placeholder,
+                selective=selective,
+                force_reply=force_reply,
+                **kwargs,
+            ),
+        )
 
     def __init__(self, markup: list[list[KeyboardButton]] | None = None) -> None:
         super().__init__(button_type=KeyboardButton, markup=markup)
 
     def copy(self: ReplyKeyboardBuilder) -> ReplyKeyboardBuilder:
         """
-        Make full copy of current builder with markup
+        Make full copy of current builder with markup and markup options
 
         :return:
         """
-        return ReplyKeyboardBuilder(markup=self.export())
+        builder = ReplyKeyboardBuilder(markup=self.export())
+        builder._markup_options = self._markup_options.copy()
+        return builder
 
     @classmethod
     def from_markup(cls, markup: ReplyKeyboardMarkup) -> ReplyKeyboardBuilder:
         """
         Create builder from existing markup
 
+        Markup options other than buttons (e.g. :code:`force_reply`) are kept
+        and used by :meth:`as_markup` unless passed there explicitly.
+
         :param markup:
         :return:
         """
-        return cls(markup=markup.keyboard)
+        builder = cls(markup=markup.keyboard)
+        builder._markup_options = markup.model_dump(exclude={"keyboard"}, exclude_none=True)
+        return builder

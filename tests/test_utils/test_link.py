@@ -1,6 +1,4 @@
-from itertools import product
 from typing import Any
-from urllib.parse import parse_qs
 
 import pytest
 
@@ -41,43 +39,50 @@ class TestLink:
         assert docs_url("test.html") == f"https://docs.aiogram.dev/en/{BRANCH}/test.html"
 
 
+RIGHTS = [
+    "change_info",
+    "post_messages",
+    "edit_messages",
+    "delete_messages",
+    "restrict_members",
+    "invite_users",
+    "pin_messages",
+    "manage_topics",
+    "promote_members",
+    "manage_video_chats",
+    "anonymous",
+    "manage_chat",
+    "post_stories",
+    "edit_stories",
+    "delete_stories",
+    "manage_direct_messages",
+    "manage_tags",
+]
+
+
 class TestCreateChannelBotLink:
-    def test_without_params(self):
+    def test_without_rights(self):
         assert create_channel_bot_link("test_bot") == "https://t.me/test_bot"
 
-    def test_parameter(self):
+    @pytest.mark.parametrize("right", RIGHTS)
+    def test_single_right(self, right: str):
         assert (
-            create_channel_bot_link("test_bot", parameter="parameter in group")
-            == "https://t.me/test_bot?startgroup=parameter+in+group"
+            create_channel_bot_link("test_bot", **{right: True})
+            == f"https://t.me/test_bot?startchannel&admin={right}"
         )
 
-    def test_permissions(self):
-        # Is bad idea to put over 2k cases into parameterized test,
-        # so I've preferred to implement it inside the test
+    def test_all_rights(self):
+        link = create_channel_bot_link("test_bot", **dict.fromkeys(RIGHTS, True))
+        assert link == "https://t.me/test_bot?startchannel&admin=" + "+".join(RIGHTS)
 
-        params = {
-            "change_info",
-            "post_messages",
-            "edit_messages",
-            "delete_messages",
-            "restrict_members",
-            "invite_users",
-            "pin_messages",
-            "promote_members",
-            "manage_video_chats",
-            "anonymous",
-            "manage_chat",
-        }
+    def test_parameter_deprecated(self):
+        with pytest.warns(DeprecationWarning, match="'parameter'"):
+            link = create_channel_bot_link("test_bot", parameter="parameter in group")
+        assert link == "https://t.me/test_bot?startgroup=parameter+in+group"
 
-        variants = product([True, False], repeat=len(params))
-        for _index, variants in enumerate(variants):
-            kwargs = {k: v for k, v in zip(params, variants, strict=False) if v}
-            if not kwargs:
-                # Variant without additional arguments is already covered
-                continue
-
-            link = create_channel_bot_link("test", **kwargs)
-            query = parse_qs(link.split("?", maxsplit=1)[-1], max_num_fields=1)
-            assert "admin" in query
-            admin = query["admin"][0]
-            assert set(admin.split("+")) == set(kwargs)
+    def test_parameter_with_rights_deprecated(self):
+        with pytest.warns(DeprecationWarning):
+            link = create_channel_bot_link(
+                "test_bot", parameter="ref", post_messages=True, edit_messages=True
+            )
+        assert link == "https://t.me/test_bot?startgroup=ref&admin=post_messages+edit_messages"

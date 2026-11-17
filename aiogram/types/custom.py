@@ -1,5 +1,5 @@
 import sys
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from typing import Annotated
 
 from pydantic import PlainSerializer
@@ -7,7 +7,7 @@ from pydantic import PlainSerializer
 if sys.platform == "win32":  # pragma: no cover
 
     def _datetime_serializer(value: datetime) -> int:
-        tz = timezone.utc if value.tzinfo else None
+        tz = UTC if value.tzinfo else None
 
         # https://github.com/aiogram/aiogram/issues/349
         # https://github.com/aiogram/aiogram/pull/880

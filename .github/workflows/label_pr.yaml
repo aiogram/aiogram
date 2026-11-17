@@ -10,6 +10,7 @@ on:
       - opened
     branches:
       - dev-3.x
+      - dev-4.x
 
 permissions: {}
 

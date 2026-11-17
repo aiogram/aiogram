@@ -1,4 +1,5 @@
 import asyncio
+import json
 import time
 from asyncio import Event
 from dataclasses import dataclass
@@ -74,6 +75,33 @@ class TestSimpleRequestHandler:
                 },
             },
         )
+
+    async def test_custom_json_loads_is_used_for_the_update(self, bot: MockedBot, aiohttp_client):
+        # The session decoder is optional now, so the handler falls back to
+        # json.loads; a custom one must still be honoured.
+        app = Application()
+        dp = Dispatcher()
+        seen: list[str] = []
+
+        def counting_loads(value):
+            seen.append(value)
+            return json.loads(value)
+
+        bot.session.json_loads = counting_loads
+
+        @dp.message(F.text == "test")
+        def handle_message(msg: Message):
+            return msg.answer(text="PASS")
+
+        handler = SimpleRequestHandler(dispatcher=dp, bot=bot, handle_in_background=False)
+        handler.register(app, path="/webhook")
+        client: TestClient = await aiohttp_client(app)
+
+        resp = await self.make_reqest(client=client)
+
+        assert resp.status == 200
+        assert len(seen) == 1
+        assert "update_id" in seen[0]
 
     async def test_reply_into_webhook_file(self, bot: MockedBot, aiohttp_client):
         app = Application()

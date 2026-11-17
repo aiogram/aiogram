@@ -1,0 +1,25 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "chatsharethemebackdrops",
+    "name": "ChatShareThemeBackdrops",
+    "description": "This object contains a list of backdrops, which can be used as the background of a theme of the screen for sharing a link to a user or a chat.",
+    "html_description": "<p>This object contains a list of backdrops, which can be used as the background of a theme of the screen for sharing a link to a user or a chat.</p>",
+    "rst_description": "This object contains a list of backdrops, which can be used as the background of a theme of the screen for sharing a link to a user or a chat.",
+    "annotations": [
+      {
+        "type": "Array of ChatShareThemeBackdrop",
+        "description": "The list of backdrops",
+        "html_description": "<td>The list of backdrops</td>",
+        "rst_description": "The list of backdrops\n",
+        "name": "backdrops",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

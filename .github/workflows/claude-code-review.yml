@@ -12,6 +12,8 @@ on:
 
 jobs:
   claude-review:
+    # Bot PRs (dependabot) get no repository secrets, so the action can't run there.
+    if: github.event.pull_request.user.type != 'Bot'
     # Optional: Filter by PR author
     # if: |
     #   github.event.pull_request.user.login == 'external-contributor' ||
