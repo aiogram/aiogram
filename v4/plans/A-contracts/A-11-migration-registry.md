@@ -182,3 +182,6 @@ uv build && unzip -l dist/aiogram-*.whl | grep registry.toml
   - The SkipHandler data-reliance example in 16 §2: D38 keeps the 3.x semantics, so nothing breaks.
   - 4.0-only additions that start a 4.x deprecation (e.g. D105 unknown-field attributes, PD-08 session JSON
     hooks): their own plans add the entries on `dev-4.x` (PD-13).
+- **CI history (Codex review).** The `tests` and `lowest-deps` jobs now check out with `fetch-depth: 0`, so the
+  append-only check can see the previous release tag. Under `CI`, the test fails instead of skipping when no tag
+  is reachable. It still skips outside a git checkout (an unpacked sdist), and when the tag predates the file.

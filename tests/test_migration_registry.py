@@ -1,5 +1,6 @@
 """Schema and id rules of aiogram/_migration/registry.toml (A-11, PD-13, PD-33)."""
 
+import os
 import re
 import subprocess
 import sys
@@ -153,9 +154,15 @@ def _git(*args: str) -> str | None:
 
 
 def test_append_only_against_previous_release():
+    if _git("rev-parse", "--git-dir") is None:
+        pytest.skip("not a git checkout (e.g. an unpacked sdist)")
     tag = _git("describe", "--tags", "--abbrev=0", "--match", "v[0-9]*")
     if tag is None:
-        pytest.skip("no release tag available")
+        if os.environ.get("CI"):
+            pytest.fail(
+                "no release tag reachable: the CI checkout needs full history (fetch-depth: 0)"
+            )
+        pytest.skip("no release tag reachable (shallow clone or no tags fetched)")
     old_text = _git("show", f"{tag.strip()}:{REGISTRY_PATH.as_posix()}")
     if old_text is None:
         pytest.skip(f"{tag.strip()} has no {REGISTRY_PATH.as_posix()}")

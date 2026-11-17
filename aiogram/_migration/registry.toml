@@ -403,10 +403,10 @@ title = "UNSET_PARSE_MODE, UNSET_DISABLE_WEB_PAGE_PREVIEW and UNSET_PROTECT_CONT
 decisions = ["D2", "D74"]
 area = "client"
 change = "removed"
-replacement = "Default(\"parse_mode\"), Default(\"link_preview_is_disabled\"), Default(\"protect_content\")"
+replacement = "Default(\"parse_mode\") and Default(\"protect_content\"); link_preview_options / DefaultBotProperties(link_preview=...) instead of the disable_web_page_preview default"
 detection = "definite"
 confidence = "high"
-codemod = "full"
+codemod = "partial"
 suppress = "aiogram: ignore[AG4021]"
 gate = false
 breaking_change = 11
