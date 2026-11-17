@@ -59,7 +59,8 @@ workflow_data: MappingProxyType
   middlewares of the routers **on its path**. Outer middlewares of routers that hold no matching candidate are
   **skipped**, although in 3.x they run for every update reaching them. Routing keys are computed once per update,
   so an outer middleware that replaces the event doesn't change routing. Continuation-called-twice and
-  short-circuit still work on the path. README breaking change 24. The scene state index (04 §8) is a skip
+  short-circuit still work on the path. "Matched candidate" (PD-19): a router's outer chain is entered iff at
+  least one candidate in its subtree survives the compiled rejectors. README breaking change 24. The scene state index (04 §8) is a skip
   optimisation under the same rule: it keeps wildcard/general handlers and DFS precedence.
 - **Command index** is only a *skip* optimisation. It covers the exact `Command` class with plain-string
   commands. Regex, `ignore_case`, subclasses and custom prefixes stay in the normal path. The command is
@@ -90,7 +91,9 @@ workflow_data: MappingProxyType
   construction. Changes after start apply **on restart or `runner.refresh()`**; a one-time warning fires when
   someone mutates a graph that a running snapshot references. Nothing raises. Readers take the snapshot reference
   once per update. The snapshot captures structure, not object state: filter and middleware instances are shared,
-  and their thread safety is the user's.
+  and their thread safety is the user's. `dp.tracers`, `dp.param_resolvers`, `dp.dependency_overrides` and
+  `workflow_data` are **epoch-bumping containers** (PD-18): mutating one invalidates cached snapshots and triggers
+  the D114 warning, like a router change.
 
 Expected: worst case 220 → ≈60–90 µs, fixed 22 → ≈12–15 µs *est.*
 
@@ -166,7 +169,7 @@ And each thread hop costs about 43 µs. The thread behaviour was never documente
 | # | Decision |
 |---|---|
 | **D47** | **API errors: a reason enum, no new classes.** The 3.x classes stay as they are (`TelegramBadRequest`, `TelegramForbiddenError`, …; `RestartingTelegram` removed). A generated `ErrorReason` `StrEnum` (from `errors.json`, 945 messages) is exposed as `e.reason`, or `None` for messages that aren't known yet; `e.reason_args` holds the values captured from the 37 `%s`/`%d` templates. Member names come from the MTProto code where one exists (`ADMINS_TOO_MUCH`), otherwise from a normalised slug, with overlay overrides for stable names (`MESSAGE_NOT_MODIFIED`, `BOT_BLOCKED`). Matching is lazy on first access: exact lookup, then the template regexes. Usage: `except TelegramBadRequest as e: if e.reason is ErrorReason.MESSAGE_NOT_MODIFIED`, or `@router.errors(F.exception.reason == ErrorReason.BOT_BLOCKED)` |
-| **D48** | **Error handlers bubble.** An error raised while handling an update goes first to the `errors` observer of the router where it was raised (the matched handler's router, or the router whose middleware or filter failed). If that is `UNHANDLED`, it goes to the parent, and so on up to the dispatcher. Sibling routers no longer see each other's errors (README breaking change 17). The snapshot stores each handler's router path, so bubbling costs nothing when there is no error |
+| **D48** | **Error handlers bubble.** An error raised while handling an update goes first to the `errors` observer of the router where it was raised (the matched handler's router, or the router whose middleware or filter failed). If that is `UNHANDLED`, it goes to the parent, and so on up to the dispatcher. Sibling routers no longer see each other's errors (README breaking change 17). The snapshot stores each handler's router path, so bubbling costs nothing when there is no error. At snapshot compile a **warning** fires when a router has `errors` handlers but no handler routers beneath it, and the migration checker flags the same pattern (PD-05) |
 | **D49** | **`ErrorEvent` enriched**: it becomes a frozen dataclass (not a Bot API type) with `update`, `exception`, `bot`, `router`, `handler` (`HandlerObject \| None` before matching) and `phase` (`ErrorPhase` `StrEnum`: `OUTER_MIDDLEWARE`, `FILTER`, `INNER_MIDDLEWARE`, `HANDLER`, `DECODE`, plus `DEPENDENCY` and `TEARDOWN`, D112). Decode failures (10 §3, the `Update` shell with `decode_error`) arrive with `phase=DECODE` |
 | **D50** | **`dp.runtime_errors` observer** for errors that happen outside update handling: polling fetch failures, startup/shutdown hooks, `bot_added`/`bot_removed` hooks, webhook background replies, `Depends` teardown (D32, phase `TEARDOWN`, D112) and RetryMiddleware giving up in the background. It receives `RuntimeErrorEvent(exception, phase, bot \| None, update \| None)`. When nothing handles the event it is logged as today. An exception raised inside a `runtime_errors` handler is only logged, so there is no recursion |
 
@@ -196,7 +199,7 @@ class DispatchTracer(Protocol):
     def span(self, kind: SpanKind, **attrs: Any) -> ContextManager[Span | None]: ...
 
 # SpanKind: UPDATE, ROUTER, OUTER_MIDDLEWARE, FILTER, INNER_MIDDLEWARE, HANDLER, API_CALL, TEARDOWN
-dp.tracers.append(MyTracer())            # picked up at snapshot compile (D114)
+dp.tracers.append(MyTracer())            # picked up at snapshot compile (D114); bumps the epoch (PD-18)
 ```
 
 - Attributes include `update_id`, `update_type`, `bot_id`, `router`, `handler`, `middleware`, `filter`, `method`, and
@@ -207,20 +210,21 @@ dp.tracers.append(MyTracer())            # picked up at snapshot compile (D114)
   return value is ignored and the original exception re-raised, so a tracer can never suppress or replace an app
   error (R23). `Span` is a small `set_attribute` protocol.
 - Callback-style consumers (the testing toolkit's route diagnostics) use a small `CallbackTracer` adapter.
-- `API_CALL` spans come from a request middleware that the integration installs (05).
+- `API_CALL` spans come from a request middleware that the integration installs (05). They are **per attempt**,
+  inside `RetryMiddleware`, which exposes the attempt number (PD-17).
 
 Full observability design: [15](15-observability.md).
 
 ### Dependencies: resolver hook + minimal `Depends` (D32)
 
-Additive (4.x; can ship in 4.0 if ready). The gain is per-handler resources: a DB session is opened only for
+Ships in 4.0 and blocks GA, like the rest of the D121 feature set (PD-01). The gain is per-handler resources: a DB session is opened only for
 handlers that declare it, instead of by a middleware on every update. It also brings teardown and test overrides,
 and typed parameters through `Annotated`.
 
 ```python
 async def get_session(db: Database) -> AsyncIterator[Session]:   # `db` comes from data, as kwargs DI
     async with db.session() as s:
-        yield s                                                  # teardown after the whole update
+        yield s                                                  # teardown inside the isolation scope (PD-04)
 
 SessionDep = Annotated[Session, Depends(get_session)]
 
@@ -250,8 +254,10 @@ class IsRegistered(Filter):
   while matching), flag callables, error handlers. **Middlewares** use `session = await resolve(get_session, data)`
   (`aiogram.dispatcher.di.resolve`), which shares the same cache and teardown. The `(handler, event, data)`
   signature is unchanged.
-- **Teardown after the whole update**: generators are closed in reverse setup order once `feed_update` has
-  finished, after all outer middlewares. **Providers always see the exception (D112)**: the exception that escaped
+- **Teardown inside the isolation scope (PD-04)**: generators are closed in reverse setup order after the `errors`
+  handlers have run and **before the FSM isolation lock is released**, so a provider's commit or rollback finishes
+  before the next update of the same key starts (PD-04 revises D112's "after the whole update"). **Providers always
+  see the exception (D112)**: the exception that escaped
   the handler chain is recorded and thrown into every yield-provider (`athrow` / `throw`) regardless of later
   handling by `errors` handlers, so transactions roll back; a provider that swallows it doesn't suppress it.
   Teardown errors go **only** to `dp.runtime_errors` (phase `TEARDOWN`) and are never re-raised from

@@ -58,8 +58,9 @@ For genuinely breaking changes, e.g. a required field missing or a field changin
   `dp.update` outer middlewares still see them. If nothing handles them, they're logged and dropped. In addition, the
   `errors` observer receives each decode failure as an `ErrorEvent` with `phase=DECODE` and the `UpdateDecodeError`
   (D49), so existing error handlers notice. `dp.runtime_errors` (D50) is only for errors outside update handling.
-- **Method responses**: the call returns the decoded value when Layer 1 suffices. When it doesn't, it raises
-  `TelegramDecodeError`, which carries the raw `result` (`e.raw`). Telegram did succeed, so callers can recover from raw.
+- **Method responses**: the call returns the decoded value when Layer 1 suffices. When it doesn't, it raises the 3.x
+  `ClientDecodeError`, which gains `.raw` with the raw `result`; there is no new `TelegramDecodeError` class (PD-29;
+  D47: no new exception classes). Telegram did succeed, so callers can recover from raw.
 
 ### Layer 3: raw access everywhere
 
@@ -71,7 +72,7 @@ The Rust tree already keeps the raw buffer for laziness (01 §3.1), so raw acces
 | `obj.raw` (any object, incl. nested) | a **fresh `dict` on every access**, decoded from its slice (D108); mutating it changes nothing |
 | `obj.raw_json` | `bytes` slice of that object for wire objects; canonical `to_json()` bytes for constructed or `replace()`d objects (D108) |
 | `UnknownX.raw` / `UnknownEvent.raw` / `UpdateDecodeError.raw` | same, for the degraded case |
-| `TelegramDecodeError.raw` | raw `result` of a method call |
+| `ClientDecodeError.raw` | raw `result` of a method call (PD-29) |
 
 Handlers can read new fields before aiogram supports them (`message.raw.get("new_field")`), and
 `model_extra` stays as a deprecated alias returning the unknown fields only (`{}` when none) for one window (D91, R06).
@@ -95,7 +96,13 @@ Handlers can read new fields before aiogram supports them (`message.raw.get("new
 
 ## 5. 3.x mitigation (pure Python, see 09)
 
-- **Per-update isolation in polling**: decode `getUpdates` as `list[dict]` (raw JSON), validate each `Update`
-  separately, and on failure log, emit to `errors`, and **advance the offset**. Removes the "stuck forever" failure.
-- **Unknown union tags**: a callable `Discriminator` with a fallback tag mapped to a generic
-  `UnknownTelegramObject(extra="allow")` variant, emitted through the `.butcher` templates. Optional, larger change.
+- **Per-update isolation in polling** ([3x-01](../plans/3x-quick-wins/3x-01-polling-poison-isolation.md), 09 #21):
+  the batch keeps its fast path; only when `bot(GetUpdates)` raises `ClientDecodeError` is `result` decoded as raw
+  JSON and each `Update` validated separately (PD-28). A poison update is logged and the offset **advances** past it,
+  which removes the "stuck forever" failure. The boundaries are the owner-signed record in
+  [A-03](../plans/A-contracts/A-03-poison-update-decision.md); its "emit to `errors`" decision (Q6) feeds a synthetic
+  `ErrorEvent(update=Update(update_id=<id>), exception=<ValidationError>)` through `dp.errors` with the usual
+  kwargs, the 3.x precursor of `phase=DECODE` (D49). Webhook poison updates are 3x-02 (held back).
+- **Unknown union tags** ([3x-18](../plans/3x-quick-wins/3x-18-unknown-union-fallback.md), 09 #23): a callable
+  `Discriminator` with a fallback tag mapped to a generic `UnknownTelegramObject(extra="allow")` variant, emitted
+  through the `.butcher` templates. Optional, larger change.

@@ -57,7 +57,7 @@ API versions), or that is meaningless once types stop being pydantic models. Eve
 | `ContextInstanceMixin`, `DataMixin` | `utils/mixins.py` | **remove**; `I18n` uses one module-level `ContextVar` |
 | deprecated `parameter=` of `create_channel_bot_link` | `utils/link.py:63-97` | **remove** |
 | `deep_linking` re-exports of `create_telegram_link`/`encode_payload`/`decode_payload` | `utils/deep_linking.py:3-11` | **remove** |
-| `force_reply` kwarg on `as_markup` (neither markup has that field; leaks through `extra="allow"`) | `utils/keyboard.py:350, 438` | **remove** (a bug, not compat) |
+
 | `ChatMemberAdapter` (pydantic `TypeAdapter`) | `utils/chat_member.py` | **replace** with the Rust union decoder |
 | `serialization.py` (fake Bot + `model_dump`) | `utils/serialization.py` | **replace** implementation, keep the API |
 | `WebAppUser`/`WebAppChat`/`WebAppInitData` hand-written pydantic models | `utils/web_app.py` | **replace**: frozen dataclasses (not Bot API types, so not butcher) |
@@ -109,7 +109,7 @@ Replies stay JSON for methods without files and multipart otherwise (R18).
   `migration_3_to_4.rst` listing everything in this doc plus README "Breaking changes".
 - `tests/deprecated.py` `check_deprecated`: 0 callers, so **remove**.
 - Compat-only tests are deleted with their features: `test_mixins.py`, `test_mongo.py` + `test_mongo_mock.py`,
-  the `force_reply` cases in `test_keyboard.py`, the bot-kwargs cases (`test_bot.py:64-66`), the deprecated-param cases
+  the bot-kwargs cases (`test_bot.py:64-66`), the deprecated-param cases
   in `test_link.py`, the Recommendation case in `test_handler.py`, the `event_from_user` cases in `test_user_context.py`,
   and the `UNSET_*` cases in `test_base_session.py` / `test_default.py`.
 
@@ -122,4 +122,6 @@ Replies stay JSON for methods without files and multipart otherwise (R18).
 `get_url`, `html_text`/`md_text`, `ChatActionSender`, `CallbackAnswerMiddleware`, `MediaGroupBuilder`, keyboard builders,
 `deep_linking.create_*`, `auth_widget`, `web_app_signature`, the `I18n` middlewares, `backoff`, `loggers`;
 `aiogram/__init__.py` exports (`html`, `md`, `F`, `flags`); `Default` + `DefaultBotProperties` (the 3.4 replacement);
+`force_reply` on the keyboard builders' `as_markup` (a real field of `InlineKeyboardMarkup` and `ReplyKeyboardMarkup`
+since Bot API 10.4, aiogram 3.32, #1954; PD-32);
 `Dispatcher.storage`, `parent_router` (single parent; with several parents use `parent_routers`, D56); `Bot.context()` (used in multi-bot setups).

@@ -65,7 +65,7 @@ end users. Branch `origin/feature/testing` (Wave 2, #1951, 2026-10-31) is unmerg
   decision id and a narrow assertion) or newly supported; 4.0's intended changes are approved differences, not
   snapshot exclusions.
 - **Free-threading:** documented as **single-loop only**; the `World` has no locks.
-- **Branch:** rebase onto dev-3.x first, then port during roadmap phase 4.
+- **Branch:** rebase onto dev-3.x first, then port during milestone H.
 - **Dogfooding (D88):** `MockedBot` stays for unit tests of single components. New end-to-end integration tests
   (dispatcher + FSM + scenes + filters + errors) use the toolkit. There is no mass rewrite.
 - **OpenSpec (D89):** all OpenSpec files (`openspec/**`, about 22k lines) are **dropped** from the merge and stay in

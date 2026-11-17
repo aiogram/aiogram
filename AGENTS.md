@@ -119,6 +119,11 @@ These patterns repeatedly appeared in maintainer feedback and should be treated 
 - The repository is public: never add text to `v4/` that names or describes an unreleased security fix. Plans for
   such fixes stay out of the tree (listed as "(held back)" in the indexes) until the fix is released.
 - The pre-commit `end-of-file-fixer` strips trailing blank lines from copied plan files; that is expected.
+- The A-02 link-check script (in `v4/plans/A-contracts/A-02-apply-resolutions.md`, *Validation*) reports 9 known
+  broken links in files no plan may edit: `v4/research/codex-review.md` (`../../../aiogram/...`) and
+  `v4/plans/_TEMPLATE.md` (paths relative to a story folder). Any other hit is yours.
+- A public plan's checklist may still point at work that belongs to a held-back plan. Skip such an item rather than
+  paraphrasing it, and keep the *Notes* entry neutral ("left to the owner"); explain it only in the private report.
 
 ## Documentation work
 
