@@ -2,7 +2,7 @@
 
 | Field | Value |
 |---|---|
-| Status | `in-progress` |
+| Status | `done` |
 | Story | H — Testing & observability |
 | Target branch | `dev-4.x` |
 | Depends on | [A-01](../A-contracts/A-01-bootstrap-dev-4x.md) |
@@ -62,18 +62,18 @@ switch, so the port isolates that dependency behind one seam **before** D-11 swa
 
 ## Checklist
 
-- [ ] Rewrite `MockedSession` / `MockedBot` per Scope, keeping the public test API.
-- [ ] Single wire-serialisation helper with the C-13 switch comment.
-- [ ] Guard: no `pydantic` import in `tests/mocked_bot.py`.
-- [ ] Self-tests for `MockedBot`:
-  - [ ] success result;
-  - [ ] `ok=False` with `error_code=400` raises `TelegramBadRequest`;
-  - [ ] `retry_after` raises `TelegramRetryAfter`;
-  - [ ] `migrate_to_chat_id` raises `TelegramMigrateToChat`;
-  - [ ] requests are recorded in order.
-- [ ] Run the full suite unchanged (no call-site edits).
-- [ ] `AGENTS.md` testing section + contributor docs paragraph.
-- [ ] No changelog (test-only), no registry entry.
+- [x] Rewrite `MockedSession` / `MockedBot` per Scope, keeping the public test API.
+- [x] Single wire-serialisation helper with the C-13 switch comment.
+- [x] Guard: no `pydantic` import in `tests/mocked_bot.py`.
+- [x] Self-tests for `MockedBot`:
+  - [x] success result;
+  - [x] `ok=False` with `error_code=400` raises `TelegramBadRequest`;
+  - [x] `retry_after` raises `TelegramRetryAfter`;
+  - [x] `migrate_to_chat_id` raises `TelegramMigrateToChat`;
+  - [x] requests are recorded in order.
+- [x] Run the full suite unchanged (no call-site edits).
+- [x] `AGENTS.md` testing section + contributor docs paragraph.
+- [x] No changelog (test-only), no registry entry.
 
 ## Acceptance criteria
 
@@ -107,3 +107,13 @@ make lint
   directly.
 
 ## Notes
+
+- The plan has no open `Decide` items. Implementation choices made inside the Scope:
+  - `make_request` returns the recorded `result` object after the envelope passes `check_response`, as 3.x did; the
+    decoded copy is discarded. Tests that compare against `prepare_result.result` keep identity.
+  - `add_result_for` returns a `MockedResponse` dataclass (the plain record). The call sites read only `.result`.
+  - 3.x `Response[T]` coerced `result` at `add_result_for` time; the record now keeps it as passed, and a wrong
+    `result` type now fails in `check_response` instead.
+  - The envelope always carries `parameters` with both keys (`null` when unset), as the 3.x dump did.
+  - Self-tests and the no-`pydantic` guard live in `tests/test_mocked_bot.py`.
+- `make dev` from *Validation* was skipped: B-01 has not landed on `dev-4.x` and the Makefile has no `dev` target.
