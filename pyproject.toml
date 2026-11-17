@@ -57,6 +57,7 @@ path = "aiogram/__meta__.py"
 exclude = [
     "/orca.yaml",
     "/benchmarks",
+    "/v4",
 ]
 
 [project.optional-dependencies]
