@@ -2,7 +2,7 @@
 
 | Field | Value |
 |---|---|
-| Status | `in-progress` |
+| Status | `done` |
 | Story | H — Testing & observability |
 | Target branch | `dev-4.x` |
 | Depends on | [A-01](../A-contracts/A-01-bootstrap-dev-4x.md) |
@@ -68,29 +68,29 @@ a fixed interface.
 
 ## Checklist
 
-- [ ] `tracing.py`: `SpanKind`, `Span`, `DispatchTracer`, `CallbackTracer`, and the internal enter/exit helper
+- [x] `tracing.py`: `SpanKind`, `Span`, `DispatchTracer`, `CallbackTracer`, and the internal enter/exit helper
       (sync, no allocation beyond one small list per stage when tracers exist).
-- [ ] **Decide the SpanKind gaps** (proposed default: no new kinds in 4.0. Decode failures appear on the `UPDATE`
+- [x] **Decide the SpanKind gaps** (proposed default: no new kinds in 4.0. Decode failures appear on the `UPDATE`
       span as `exception` plus `phase="decode"`. `Depends` provider resolution gets no span of its own; TEARDOWN
       covers teardown. Isolation lock wait (D28/D110) is recorded as an `isolation_wait_ms` attribute on `UPDATE`.
       New kinds can be added in a 4.x minor because `SpanKind` is a `StrEnum`). Record the decision in *Notes* and
       flag it to the owner.
-- [ ] Tracer-failure matrix tests, each with 1 and 3 tracers. Cases:
-  - [ ] `span()` raises;
-  - [ ] `__enter__` raises;
-  - [ ] `__exit__` raises;
-  - [ ] `__exit__` returns `True` while the stage raises (the exception still propagates);
-  - [ ] `__exit__` raises a different exception (the original propagates);
-  - [ ] `set_attribute` raises;
-  - [ ] the stage raises `CancelledError`;
-  - [ ] span returns `None`.
+- [x] Tracer-failure matrix tests, each with 1 and 3 tracers. Cases:
+  - [x] `span()` raises;
+  - [x] `__enter__` raises;
+  - [x] `__exit__` raises;
+  - [x] `__exit__` returns `True` while the stage raises (the exception still propagates);
+  - [x] `__exit__` raises a different exception (the original propagates);
+  - [x] `set_attribute` raises;
+  - [x] the stage raises `CancelledError`;
+  - [x] span returns `None`.
 
       Each case checks reverse exit order, that only entered tracers exit, that the original exception's identity
       is preserved, and that one log record is written per failure.
-- [ ] `CallbackTracer` tests (enter/exit callbacks get kind, attrs, result/exception).
-- [ ] Microbenchmark in the PR description: helper cost with 1 and 3 no-op tracers per stage.
-- [ ] Docs: "Tracing" reference (protocol, calling rules, attribute keys, a `CallbackTracer` example).
-- [ ] Changelog fragment (new public API).
+- [x] `CallbackTracer` tests (enter/exit callbacks get kind, attrs, result/exception).
+- [x] Microbenchmark in the PR description: helper cost with 1 and 3 no-op tracers per stage.
+- [x] Docs: "Tracing" reference (protocol, calling rules, attribute keys, a `CallbackTracer` example).
+- [x] Changelog fragment (new public API).
 
 ## Acceptance criteria
 
@@ -129,3 +129,19 @@ make lint
 
 - Coordinator default (reconciliation, K10): pure interface, no E-03 dependency; `dp.tracers` epoch integration is
   E-03 + H-06.
+- **Decided (default taken, flagged to the owner): SpanKind gaps.** No new kinds in 4.0. Decode failures appear on
+  the `UPDATE` span as `exception` plus `phase="decode"`; `Depends` provider resolution gets no span of its own;
+  `TEARDOWN` covers teardown; the isolation lock wait is an `isolation_wait_ms` attribute on `UPDATE`. `phase` and
+  `isolation_wait_ms` are added to the documented attribute keys.
+- Implementation (#2024): the helper is two sync functions, `enter_spans(tracers, kind, attrs) -> list` and
+  `exit_spans(entered, result=..., exception=...)` in `aiogram/dispatcher/tracing.py`, not re-exported from
+  `aiogram.dispatcher`. Stages are async, so a sync helper cannot run the stage itself: rule 5 is the caller pattern
+  in the module docstring (`except BaseException: exit_spans(...); raise`). `exit_spans` never raises.
+- Tracer failures are contained as `BaseException`, not `Exception`: a tracer that re-raises the stage's
+  `CancelledError` from `__exit__` would otherwise skip the remaining exits. Ceiling: a tracer's own
+  `KeyboardInterrupt`/`SystemExit` is logged and dropped.
+- A stage that raises `SkipHandler` gets `result="skip"` (no `exception` attribute); the exception is still passed to
+  `__exit__` and re-raised. `UNHANDLED` → `"unhandled"`, `REJECTED` → `"rejected"`, anything else → its type name.
+- A tracer that re-raises the original exception from `__exit__` is logged as a failure, and the exception's
+  `__traceback__` is restored to what it was before the exits.
+- Validation: `make dev` does not exist in the Makefile; the environment came from `uv sync` (AGENTS.md setup).
