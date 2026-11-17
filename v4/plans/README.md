@@ -129,7 +129,7 @@ Verification method and results: [_VERIFICATION.md](_VERIFICATION.md).
 | [3x-23](3x-quick-wins/3x-23-mutation-ledger-warnings.md) | Mutation warnings and Bot API ledger-field warnings | `todo` | no | L | 3x-20, A-05, A-11, C-26 |
 | [3x-24](3x-quick-wins/3x-24-migration-baseline-release.md) | Name and cut the migration-baseline 3.x release; "Preparing for 4.0" page | `todo` | no | M | 3x-20, 3x-21, 3x-22, 3x-23, A-11, C-26 |
 | [A-01](A-contracts/A-01-bootstrap-dev-4x.md) | Bootstrap `dev-4.x`, commit the planning tree, define the sync policy | `in-progress` | no | S | — |
-| [A-02](A-contracts/A-02-apply-resolutions.md) | Apply the review resolutions (19) and planning decisions (PD-01..PD-34) to the research pages | `todo` | no | M | A-01 |
+| [A-02](A-contracts/A-02-apply-resolutions.md) | Apply the review resolutions (19) and planning decisions (PD-01..PD-34) to the research pages | `in-progress` | no | M | A-01 |
 | [A-03](A-contracts/A-03-poison-update-decision.md) | Decision record: 3.x poison-update boundaries (owner sign-off required) | `done` | no | S | — |
 | [A-04](A-contracts/A-04-pinned-corpus.md) | Pinned corpus and payload manifest | `in-progress` | no | M | — |
 | [A-05](A-contracts/A-05-bench-harness.md) | Benchmark harness and method | `todo` | no | M | A-04 |

@@ -2,7 +2,7 @@
 
 | Field | Value |
 |---|---|
-| Status | `todo` |
+| Status | `in-progress` |
 | Story | A — Contracts & baselines |
 | Target branch | `dev-3.x` (where `v4/` is tracked, A-01; merged forward) |
 | Depends on | [A-01](A-01-bootstrap-dev-4x.md) |
