@@ -19,6 +19,8 @@ uv run pre-commit install
 Note: `uv run pre-commit install` writes hooks to the shared repository `.git/hooks`
 (common for all worktrees), not only for the current worktree.
 
+`orca.yaml` runs the same `uv sync` as the setup hook for new worktrees opened in [Orca](https://onorca.dev); it is excluded from the sdist.
+
 ## Codebase Navigation
 
 Use **Serena MCP** for all codebase navigation tasks. Serena provides semantic, symbol-aware tools that are more efficient than raw file reads:
