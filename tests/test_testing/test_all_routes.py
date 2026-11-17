@@ -238,6 +238,8 @@ class TestPluginCheck:
                 "-q",
                 "-p",
                 "no:cacheprovider",
+                "-p",
+                "aiogram.test.plugin",
                 "-o",
                 "asyncio_mode=auto",
             ],

@@ -12,8 +12,18 @@ call is applied to — and answered from — an isolated in-memory world.
 
     pip install aiogram[test]
 
-Installing the extra is the only setup step: the fixtures are registered through a
-``pytest11`` entry point, so no ``conftest.py`` boilerplate is needed.
+The plugin that provides the fixtures is opt-in: installing aiogram does not load it into
+every pytest session. Enable it on the command line or in your pytest configuration:
+
+.. code-block:: bash
+
+    pytest -p aiogram.test.plugin
+
+or in the root ``conftest.py`` of your suite (pytest accepts ``pytest_plugins`` only there):
+
+.. code-block:: python
+
+    pytest_plugins = ["aiogram.test.plugin"]
 
 .. warning::
 
@@ -488,6 +498,8 @@ version adds one without a trigger:
     await user.manage_bot()                  # managed_bot
     await user.update_subscription()         # subscription
     await user.stop_message_generation()     # stopped_message_generation
+    await user.widget_query()                # widget_query
+    await user.shared_widget_query()         # shared_widget_query
 
 ``update_subscription(state=...)`` takes one of the states the Bot API names for
 ``BotSubscriptionUpdated``: ``active`` (the default), ``canceled`` or ``failed``; anything
@@ -2019,7 +2031,7 @@ reached, with no real delay:
 
     pip install looptime
 
-No conftest is required — ``looptime`` registers itself the same way the toolkit does, and
+No conftest is required — ``looptime`` registers itself through a pytest entry point, and
 marking one test is enough to run it on the fake clock:
 
 .. code-block:: python
@@ -2156,6 +2168,8 @@ The tests then scale that one helper down, here a thousandfold:
     from aiogram import Dispatcher
     from aiogram.test import detach_router
     from game import clock, engine
+
+    pytest_plugins = ["aiogram.test.plugin"]
 
     real_sleep = asyncio.sleep
 

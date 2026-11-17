@@ -366,7 +366,7 @@ class TestImportGraph:
 
 
 class TestPluginDiscovery:
-    """The plugin must reach a project through the entry point, with no conftest."""
+    """The plugin reaches a project through ``-p aiogram.test.plugin``, with no conftest."""
 
     def test_fixtures_resolve_in_a_clean_project(self, tmp_path):
         test_file = tmp_path / "test_generated.py"
@@ -382,7 +382,17 @@ class TestPluginDiscovery:
         )
 
         result = subprocess.run(
-            [sys.executable, "-m", "pytest", str(test_file), "-q", "-p", "no:cacheprovider"],
+            [
+                sys.executable,
+                "-m",
+                "pytest",
+                str(test_file),
+                "-q",
+                "-p",
+                "no:cacheprovider",
+                "-p",
+                "aiogram.test.plugin",
+            ],
             capture_output=True,
             text=True,
             cwd=tmp_path,
@@ -413,7 +423,17 @@ class TestPluginDiscovery:
         )
 
         result = subprocess.run(
-            [sys.executable, "-m", "pytest", str(test_file), "-q", "-p", "no:cacheprovider"],
+            [
+                sys.executable,
+                "-m",
+                "pytest",
+                str(test_file),
+                "-q",
+                "-p",
+                "no:cacheprovider",
+                "-p",
+                "aiogram.test.plugin",
+            ],
             capture_output=True,
             text=True,
             cwd=tmp_path,
@@ -446,7 +466,17 @@ class TestPluginDiscovery:
         )
 
         result = subprocess.run(
-            [sys.executable, "-m", "pytest", str(test_file), "-q", "-p", "no:cacheprovider"],
+            [
+                sys.executable,
+                "-m",
+                "pytest",
+                str(test_file),
+                "-q",
+                "-p",
+                "no:cacheprovider",
+                "-p",
+                "aiogram.test.plugin",
+            ],
             capture_output=True,
             text=True,
             cwd=tmp_path,
@@ -454,3 +484,29 @@ class TestPluginDiscovery:
         )
 
         assert result.returncode == 0, result.stdout + result.stderr
+
+    def test_plugin_is_not_auto_loaded(self, tmp_path):
+        """Installing aiogram does not put the plugin into every pytest session."""
+        test_file = tmp_path / "test_generated.py"
+        test_file.write_text(
+            textwrap.dedent(
+                """
+                def test_needs_the_plugin(bot_env):
+                    pass
+                """,
+            ),
+        )
+
+        result = subprocess.run(
+            [sys.executable, "-m", "pytest", str(test_file), "-p", "no:cacheprovider"]
+            + ["--trace-config"],
+            capture_output=True,
+            text=True,
+            cwd=tmp_path,
+            check=False,
+        )
+
+        output = result.stdout + result.stderr
+        assert result.returncode == 1, output
+        assert "fixture 'bot_env' not found" in output
+        assert "aiogram.test.plugin" not in output

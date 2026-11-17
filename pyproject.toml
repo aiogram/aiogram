@@ -122,9 +122,6 @@ test = [
     "pycryptodomex==3.23.0",
 ]
 
-[project.entry-points.pytest11]
-aiogram = "aiogram.test.plugin"
-
 [project.urls]
 Homepage = "https://aiogram.dev/"
 Documentation = "https://docs.aiogram.dev/"
@@ -214,10 +211,6 @@ known-first-party = [
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
-# aiogram ships its own pytest plugin (aiogram.test.plugin). Loading it here would
-# import aiogram/test/** before coverage starts, leaving that package unmeasured;
-# its fixtures are tested explicitly instead, including in a real subprocess run.
-addopts = "-p no:aiogram"
 testpaths = [
     "tests",
 ]

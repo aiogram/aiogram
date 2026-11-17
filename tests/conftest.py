@@ -21,6 +21,10 @@ from aiogram.fsm.storage.pymongo import PyMongoStorage
 from aiogram.fsm.storage.redis import RedisStorage
 from tests.mocked_bot import MockedBot
 
+# The toolkit's pytest plugin is opt-in (no ``pytest11`` entry point), so the suite enables it
+# here; ``pytest_plugins`` is only accepted in the root conftest.
+pytest_plugins = ["aiogram.test.plugin"]
+
 DATA_DIR = Path(__file__).parent / "data"
 
 CHAT_ID = -42
