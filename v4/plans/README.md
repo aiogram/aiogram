@@ -276,7 +276,7 @@ Verification method and results: [_VERIFICATION.md](_VERIFICATION.md).
 | [H-16](H-testing-observability/H-16-fake-fidelity.md) | Fake fidelity: modelled vs synthesised, trace replay, difference manifests | `todo` | yes | M | A-04, A-07, D-15, H-02, H-12 |
 | [H-17](H-testing-observability/H-17-toolkit-feature-interop.md) | Toolkit interop with 4.0 features (flood/retry, Unknown, ErrorReason, i18n) | `todo` | yes | M | C-19, D-02, E-05, F-03, G-02, G-06, G-13, G-14, H-12, H-14 |
 | [H-18](H-testing-observability/H-18-toolkit-docs.md) | Toolkit and observability docs (4.0 structure) | `todo` | no | M | H-14, H-15, H-17, I-10 |
-| [H-19](H-testing-observability/H-19-mockedbot-port.md) | Port `MockedBot` / `MockedSession` and the suite strategy | `todo` | no | M | A-01 |
+| [H-19](H-testing-observability/H-19-mockedbot-port.md) | Port `MockedBot` / `MockedSession` and the suite strategy | `in-progress` | no | M | A-01 |
 | [H-20](H-testing-observability/H-20-integration-layer-exit-gate.md) | Integration test layer, examples smoke harness, H exit gate | `todo` | yes | M | E-21, F-16, H-02, H-05, H-13, H-14, H-15, H-16, H-17, H-18, H-19 |
 | [I-01](I-distribution/I-01-packaging-hardening.md) | Packaging hardening of the single `aiogram` distribution | `todo` | no | M | B-01 |
 | [I-02](I-distribution/I-02-tier1-wheel-matrix-release.md) | Tier-1 wheel matrix and release workflow | `todo` | no | L | C-02, C-18, I-01, I-05 |
