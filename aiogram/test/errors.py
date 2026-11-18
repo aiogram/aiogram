@@ -175,7 +175,7 @@ def raise_api_error(
     if (retry_after is None) == (error_code == HTTPStatus.TOO_MANY_REQUESTS):
         msg = "a 429 carries retry_after, and nothing else does"
         raise ValueError(msg)
-    response: Response[Any] = Response[method.__returning__](  # type: ignore
+    response: Response[Any] = Response[method.__returning__](  # type: ignore[name-defined]
         ok=False,
         error_code=error_code,
         description=description,

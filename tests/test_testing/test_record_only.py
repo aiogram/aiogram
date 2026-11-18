@@ -6,7 +6,7 @@ import pytest
 from aiogram.methods import SetPassportDataErrors, TelegramMethod
 from aiogram.test.modeling import RECORD_ONLY, REGISTRY
 
-MODELING = Path("aiogram/test/modeling.py")
+MODELING = Path(__file__).parents[2] / "aiogram" / "test" / "modeling.py"
 
 
 def all_method_types():

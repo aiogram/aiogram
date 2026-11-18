@@ -10,6 +10,7 @@ from aiogram.dispatcher.dispatcher import Dispatcher
 from aiogram.methods import TelegramMethod
 from aiogram.types import Message, TelegramObject
 
+from .actors import UserActor
 from .blueprint import Blueprint, default_blueprint
 from .environment import BotTestEnvironment
 from .flood import RateLimits
@@ -22,6 +23,11 @@ __all__ = (
     "bot_dispatcher",
     "bot_env",
     "bot_env_assert_updates_handled",
+    "bot_env_clock_start",
+    "bot_env_deliver_service_messages_from_bots",
+    "bot_env_enforce_bot_rights",
+    "bot_env_perturb_rejection_descriptions",
+    "bot_env_rate_limits",
     "bot_env_wait_timeout",
     "bot_user",
     "pytest_assertrepr_compare",
@@ -167,7 +173,7 @@ def bot_chat(bot_env: BotTestEnvironment) -> ChatState:
 
 
 @pytest.fixture
-def bot_user(bot_env: BotTestEnvironment) -> Any:
+def bot_user(bot_env: BotTestEnvironment) -> UserActor:
     """An actor for the first user declared by the blueprint, bound to the first chat."""
     actor = bot_env.user(bot_env.blueprint.users[0].id)
     if bot_env.blueprint.chats:
@@ -232,11 +238,12 @@ def _differ_only_in_binding(left: object, right: object) -> bool:
     """
     Same type, same payload, different bot — the only thing left to disagree about.
 
-    The dump is guarded because this hook runs on **every** failing ``==`` in every project
-    that installs aiogram, whether or not it uses the toolkit: pydantic-core's serializer
-    gives up on a deep graph and reports the depth as a circular reference, and an
-    explanation that raises replaces the user's real assertion failure with its own
-    traceback. A comparison this cannot explain is one it declines to explain.
+    The dump is guarded because this hook runs on **every** failing ``==`` in a project
+    that enables the plugin, whether or not the comparison involves the toolkit:
+    pydantic-core's serializer gives up on a deep graph and reports the depth as a
+    circular reference, and an explanation that raises replaces the user's real
+    assertion failure with its own traceback. A comparison this cannot explain is one it
+    declines to explain.
     """
     if not isinstance(left, TelegramObject) or not isinstance(right, TelegramObject):
         return False

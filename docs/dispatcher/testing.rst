@@ -12,7 +12,10 @@ call is applied to — and answered from — an isolated in-memory world.
 
 .. code-block:: bash
 
-    pip install aiogram[test]
+    pip install "aiogram[test]"
+
+The toolkit's tests are ``async def``, so the suite also needs an async test runner such as
+``pytest-asyncio`` or ``anyio``; see `Requirements and gotchas`_.
 
 The plugin that provides the fixtures is opt-in: installing aiogram does not load it into
 every pytest session. Enable it on the command line or in your pytest configuration:
