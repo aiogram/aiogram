@@ -60,7 +60,7 @@ class TestTheLedger:
         assert (await env.bot.get_my_star_balance()).amount == 1000
 
     async def test_the_balance_always_equals_the_transactions(self, shop):
-        """The invariant behind design decision D1 — derived, never stored."""
+        """The invariant behind design decision TW-71 — derived, never stored."""
         env, customer = shop
         await customer.pay("a", total_amount=100)
         await customer.pay("b", total_amount=40)

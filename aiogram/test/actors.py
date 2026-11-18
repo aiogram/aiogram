@@ -1904,7 +1904,7 @@ class UserActor:
 
         The charge is recorded, so the handler can refund the id it was given rather than a
         fabricated one, and a star payment credits the bot's balance — see design decision
-        D2 of `model-stars-and-gifts`.
+        TW-72.
 
         A subscription payment carries its expiration date, one
         subscription period from now, and ``is_first_recurring`` when
@@ -2115,7 +2115,7 @@ class UserActor:
 
         An empty ``options`` retracts. Telegram never delivers an answer to a closed poll,
         so voting in one raises here — in the test's own code — rather than passing while
-        asserting nothing (design decision D5).
+        asserting nothing (design decision TW-61).
 
         The answer must be one the poll accepts: options it has, one
         of them unless it allows multiple answers, and no change to an
@@ -2185,7 +2185,7 @@ class UserActor:
         React to a stored message, or remove this user's reaction with no ``reaction``.
 
         ``old_reaction`` is read before the mutation and ``new_reaction`` after, which is
-        the only way those fields can be truthful (design decision D3).
+        the only way those fields can be truthful (design decision TW-59).
 
         An actor bound anonymously reacts as the chat: the update has
         ``actor_chat`` and no ``user``, as the Bot API documents for an

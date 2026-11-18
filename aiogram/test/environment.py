@@ -2385,7 +2385,7 @@ class BotTestEnvironment:
         method: TelegramMethod[TelegramType],
     ) -> Any:
         """
-        Override, then model, then synthesize — see design decision D3.
+        Override, then model, then synthesize — see design decision TW-3.
 
         This is also the toolkit's **copy-in choke point**. The call log records the object
         the caller actually built, and everything downstream gets a

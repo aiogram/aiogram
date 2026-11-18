@@ -60,7 +60,7 @@ class FakeTelegramSession(BaseSession):
 
         Yielding empty bytes instead would be indistinguishable from "the file was empty",
         a state real bots handle — so a download the environment cannot answer would
-        silently exercise the wrong branch of every test. See design decision D1.
+        silently exercise the wrong branch of every test. See design decision TW-79.
         """
         # `file_url` appends the path, and `getFile` mints the path as the file id.
         file_id = url.rsplit("/", 1)[-1]

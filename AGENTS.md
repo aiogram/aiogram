@@ -120,6 +120,12 @@ These patterns repeatedly appeared in maintainer feedback and should be treated 
   such fixes stay out of the tree (listed as "(held back)" in the indexes) until the fix is released.
 - The pre-commit `end-of-file-fixer` strips trailing blank lines from copied plan files; that is expected.
 
+## Developer design notes (`design/`)
+
+- `design/testing-toolkit/` holds the architecture, invariants and decision log of `aiogram.test`. Read it before
+  changing the toolkit, and update it in the same PR. Code cites decisions as "design decision TW-<n>".
+- `design/` is excluded from the sdist and is not part of the Sphinx docs.
+
 ## Documentation work
 
 For docs changes:

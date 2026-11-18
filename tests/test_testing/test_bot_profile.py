@@ -52,7 +52,7 @@ def scope_members():
 class TestScopeKeys:
     @pytest.mark.parametrize("member", scope_members(), ids=lambda item: item.__name__)
     def test_every_scope_member_produces_a_key(self, member):
-        """Guard for design decision D5: keys come from the member's own fields."""
+        """Guard for design decision TW-67: keys come from the member's own fields."""
         required = {name: 1 for name, field in member.model_fields.items() if field.is_required()}
 
         assert scope_key(member(**required), None)

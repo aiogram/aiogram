@@ -25,7 +25,7 @@ def all_method_types():
 class TestTheBoundaryIsADecision:
     def test_record_only_and_modeled_do_not_overlap(self):
         """
-        The guard for design decision D1.
+        The guard for design decision TW-14.
 
         This asserts the two sets are disjoint. It is deliberately **not** a completeness
         check over every unmodeled method: a Bot API bump adds methods, and a guard that

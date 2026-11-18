@@ -70,7 +70,7 @@ def update_variants():
 
 
 class TestEveryUpdateKindIsReachable:
-    """The guard that keeps this change true as the Bot API grows — design decision D1."""
+    """The guard that keeps this change true as the Bot API grows — design decision TW-18."""
 
     @pytest.fixture
     def trigger_env(self, dp):

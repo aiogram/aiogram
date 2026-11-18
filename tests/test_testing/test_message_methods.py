@@ -129,7 +129,7 @@ class TestEditingMedia:
         ids=lambda item: item.__name__,
     )
     def test_every_input_media_member_maps_to_a_message_field(self, member):
-        """Guard for design decision D2: the derived mapping must cover the whole union."""
+        """Guard for design decision TW-28: the derived mapping must cover the whole union."""
         required = {
             name: "file-id" for name, field in member.model_fields.items() if field.is_required()
         }

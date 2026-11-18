@@ -835,7 +835,7 @@ class StickerSetState:
 
     Stickers are stored as the generated ``Sticker`` type directly: nothing in this cluster
     edits one, so a parallel state class would be a wrapper with no fields of its own — see
-    design decision D2.
+    design decision TW-77.
     """
 
     name: str
@@ -933,7 +933,7 @@ class StarLedger:
 
     The balance is *derived* from the transactions and never stored beside them — an
     aggregate kept next to its source drifts the first time a path updates one and not the
-    other, and money is the worst place to allow that. See design decision D1.
+    other, and money is the worst place to allow that. See design decision TW-71.
     """
 
     opening_balance: int = 0
@@ -977,7 +977,7 @@ class OwnedGiftState:
 
     The owner is a field rather than the key of a per-owner mapping, so transferring is a
     write instead of a move between containers, and the three readers differ only by which
-    owner they filter on — see design decision D4.
+    owner they filter on — see design decision TW-73.
     """
 
     owned_gift_id: str
@@ -994,7 +994,7 @@ class InviteLinkState:
     One invite link of a chat.
 
     ``is_primary`` lives on the link rather than in a separate pointer, so "the primary
-    link" is a filter that cannot dangle after a revoke — see design decision D1.
+    link" is a filter that cannot dangle after a revoke — see design decision TW-62.
     """
 
     invite_link: str
@@ -1030,7 +1030,7 @@ class PollState:
 
     ``votes`` is the single source of truth: per-option counts are computed on conversion
     rather than stored alongside, so they cannot drift out of step with the voters — see
-    design decision D1.
+    design decision TW-57.
     """
 
     id: str
@@ -1712,7 +1712,7 @@ def scope_key(scope: Any, language_code: str | None) -> ScopeKey:
 
     Built from every field the scope member declares rather than a hand-read list, so a
     future variant carrying a new identifying field keys correctly instead of colliding
-    with its siblings — see design decision D5.
+    with its siblings — see design decision TW-67.
 
     An omitted scope keys identically to an explicit ``BotCommandScopeDefault``, because
     the Bot API treats them as the same scope.
@@ -1729,7 +1729,7 @@ class BotProfileState:
     The bot's own configuration: what ``setMy*`` writes and ``getMy*`` reads back.
 
     Commands are keyed exactly; the localized texts and the menu button fall back to their
-    default entry, matching what the Bot API documents for each — see design decision D2.
+    default entry, matching what the Bot API documents for each — see design decision TW-68.
     """
 
     commands: dict[ScopeKey, list[BotCommand]] = field(default_factory=dict)

@@ -367,7 +367,7 @@ EDITABLE_MEDIA_FIELDS: tuple[str, ...] = tuple(
 #: `tests/test_testing/test_record_only.py` asserts they never quietly become modeled.
 #:
 #: This list is deliberately *not* exhaustive over unmodeled methods — see design
-#: decision D1 of `specify-record-only-boundary`. Clusters whose modeling is merely
+#: decision TW-14. Clusters whose modeling is merely
 #: deferred (stories, business account profile) are absent on purpose: "not yet" is not
 #: the same answer as "no".
 RECORD_ONLY: frozenset[type[TelegramMethod[Any]]] = frozenset(
@@ -2144,7 +2144,7 @@ def media_field(input_media: Any) -> str:
     ``InputMediaLivePhoto`` -> ``live_photo``: the field the edited message will carry.
 
     Derived from the member's own name rather than a hand-kept table, so a future
-    ``InputMedia`` variant needs no change here — see design decision D2. A variant whose
+    ``InputMedia`` variant needs no change here — see design decision TW-28. A variant whose
     name does not map is a build break in aiogram's CI, not a silent wrong field.
     """
     stem = type(input_media).__name__.removeprefix("InputMedia")
@@ -2535,7 +2535,7 @@ def handle_get_file(env: BotTestEnvironment, method: GetFile) -> File:
 
     ``file_path`` *is* the ``file_id``: the download URL ends with the path, so this is
     what lets :meth:`FakeTelegramSession.stream_content` find the content — see design
-    decision D2. This deliberately does not fail for an id with no content, because a bot
+    decision TW-80. This deliberately does not fail for an id with no content, because a bot
     often calls ``getFile`` for the size or path and never downloads.
     """
     synthesized: File = synthesize(File, env.synthesis_context(), name="file")
@@ -2814,7 +2814,7 @@ def _sticker_from_input(env: BotTestEnvironment, sticker: InputSticker) -> Stick
 
     A ``str`` input is a file id the caller already holds — from `uploadStickerFile`, or
     from a sticker it received — so it is used as-is. Anything else is an upload, which
-    gets a minted id; no image data exists either way (design decision D4).
+    gets a minted id; no image data exists either way (design decision TW-78).
     """
     file_id = sticker.sticker if isinstance(sticker.sticker, str) else _next_sticker_file_id(env)
     return Sticker(
@@ -2897,7 +2897,7 @@ def handle_upload_sticker_file(env: BotTestEnvironment, method: UploadStickerFil
     Mint a stable id the set methods can reference, registering no content.
 
     Deliberately unlike a document upload, which *does* register its bytes: a bot uploads a
-    sticker to put it in a pack and never downloads it back (design decision D4).
+    sticker to put it in a pack and never downloads it back (design decision TW-78).
     """
     file_id = _next_sticker_file_id(env)
     synthesized: File = synthesize(File, env.synthesis_context(), name="file")
@@ -2936,7 +2936,7 @@ def handle_get_custom_emoji_stickers(
 #: A small, fixed catalogue of gifts a test can pick from deterministically.
 #:
 #: Hard-coded rather than synthesized because ``gifts[0].id`` is the first thing any gift
-#: test reads, and synthesis would make it differ between runs — see design decision D5.
+#: test reads, and synthesis would make it differ between runs — see design decision TW-74.
 #: These identifiers are invented; they are not real Telegram gifts.
 GIFT_CATALOGUE: tuple[tuple[str, int], ...] = (
     ("gift-star", 15),
@@ -3021,7 +3021,7 @@ def _spend(
     Debit the ledger.
 
     Affordability is deliberately not checked: a negative balance is visible to a test,
-    whereas a silent rejection is not — see design decision D6.
+    whereas a silent rejection is not — see design decision TW-75.
     """
     env.world.stars.record(
         env.world.next_query_id(),
@@ -3042,7 +3042,7 @@ def handle_get_star_transactions(
     env: BotTestEnvironment,
     method: GetStarTransactions,
 ) -> StarTransactions:
-    """Every recorded transaction; `offset` and `limit` are not modeled (design open question)."""
+    """Every recorded transaction; `offset` and `limit` are not modeled (not modeled yet)."""
     return StarTransactions(
         transactions=[
             item.as_star_transaction(
@@ -3174,7 +3174,7 @@ def handle_transfer_business_stars(
 
 # -- invite links ----------------------------------------------------------------------
 
-#: The Bot API states this as a fixed value, not a range — see design decision D5.
+#: The Bot API states this as a fixed value, not a range — see design decision TW-66.
 SUBSCRIPTION_PERIOD = 2592000
 
 
@@ -3364,7 +3364,7 @@ def handle_get_chat_administrators(
     The chat's administrators, creator first.
 
     Telegram omits bots other than the caller unless ``return_bots`` is passed — modeling
-    that keeps a test with a second bot in the chat honest (design decision D6).
+    that keeps a test with a second bot in the chat honest (design decision TW-47).
     """
     chat = resolve_chat(env, method.chat_id)
     admins = [
@@ -3456,7 +3456,7 @@ def handle_get_my_commands(env: BotTestEnvironment, method: GetMyCommands) -> li
     """
     Exactly what was set for this scope and language, or nothing.
 
-    The Bot API does not fall back to a broader scope here — see design decision D2. The
+    The Bot API does not fall back to a broader scope here — see design decision TW-68. The
     commands come back as copies, for the reason :func:`handle_get_chat` gives.
     """
     key = scope_key(method.scope, method.language_code)
