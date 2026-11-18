@@ -1,3 +1,5 @@
+.. _testing-toolkit:
+
 =======
 Testing
 =======
@@ -27,10 +29,32 @@ or in the root ``conftest.py`` of your suite (pytest accepts ``pytest_plugins`` 
 
 .. warning::
 
-    **This toolkit is a proof of concept.** Everything on this page — the module name, the
-    fixture names, the blueprint and actor APIs, the world model and which Bot API methods
-    it models — is subject to change, and may change incompatibly between releases while
-    the design settles. Feedback on the shape of the API is exactly what it is for.
+    **This toolkit is experimental (provisional API).** It may change incompatibly in minor
+    releases while the design settles, and it is exempt from the usual compatibility
+    promise of the 3.x line. Feedback on the shape of the API is welcome.
+
+    The parts we intend to keep stable, including in aiogram 4.0, are:
+
+    - the module ``aiogram.test``, the plugin module ``aiogram.test.plugin`` and the
+      ``aiogram[test]`` extra;
+    - the fixtures ``bot_env``, ``bot_chat``, ``bot_user``, ``bot_blueprint``,
+      ``bot_dispatcher`` and the ``bot_env_*`` configuration fixtures;
+    - :class:`~aiogram.test.BotTestEnvironment`, :class:`~aiogram.test.Blueprint` and its
+      ``*Spec`` declarations, :class:`~aiogram.test.UserActor`,
+      :class:`~aiogram.test.ChatState`, :class:`~aiogram.test.CallLog`,
+      ``BotTestEnvironment.on(...)``, ``advance_time()`` and ``now``, and the error
+      classes (:class:`~aiogram.test.WaitTimeoutError`,
+      :class:`~aiogram.test.NoFileContentError`, :class:`~aiogram.test.WorldLookupError`,
+      …);
+    - the routing diagnostics as data: :class:`~aiogram.test.RouteRecord`, ``last_route``,
+      ``routes``, ``all_routes`` and ``assert_handled_by()``;
+    - inside a handler, a sent message is the same object as ``chat.messages[-1]``;
+    - methods the toolkit does not model are recorded and answered with a result
+      synthesized from their return type.
+
+    Everything else may change. In particular, ``detach_router()``, how background tasks
+    are tracked, how routes are recorded, and positional arguments to constructors are
+    expected to change in 4.0.
 
 Quick start
 ===========
@@ -1287,7 +1311,7 @@ That distinction is the whole reason there are two types. Reporting a missing de
 a Bad Request would hand it straight to the bot's own error handling, which would swallow it
 and quietly exercise the wrong branch — the test would pass while testing nothing. The chat
 case is where that bites hardest: "chat not found" is the branch a bot writes for the user
-who blocked it, so a missing declaration used to run the blocked-user path and pass while
+who blocked it, so a missing declaration would run the blocked-user path and pass while
 asserting on it. A test that genuinely wants that branch declares the refusal instead of
 starving the world of a chat:
 
@@ -1445,7 +1469,7 @@ filled in — and they are AND-ed:
 
 Both rules stand at once. A message to a *third* chat in between consumes neither —
 **a rule whose matcher rejects a call is skipped without its ``times`` budget moving** — so
-"these two players blocked the bot" no longer depends on which order the engine happens to
+"these two players blocked the bot" does not depend on which order the engine happens to
 message them in, the way a single untargeted ``.raises(times=1)`` would.
 
 ``.where(predicate)`` is the escape hatch for anything a field equality cannot say — a
@@ -1735,8 +1759,8 @@ fails the update, and the route names that handler with the exception.
 
 One thing a test does is often more than one update. A real join delivers a ``chat_member``
 transition *and* the group's own ``new_chat_members`` service message (see `Joining and
-leaving`_), and a bot that handles the first and ignores the second used to make
-``bot_env.assert_handled_by("on_user_joined")`` fail — "the last update" was the service
+leaving`_), and if only the last update counted, a bot that handles the first and ignores
+the second would make ``bot_env.assert_handled_by("on_user_joined")`` fail — "the last update" was the service
 message nobody claimed, even though the join was handled correctly. So ``last_route``,
 ``routes`` and ``assert_handled_by`` all reason about a **trigger scope**, one thing the test
 did, rather than one update — which is what lets a multi-update trigger like ``join()`` /
@@ -2745,7 +2769,7 @@ server unchecked, so the call meets the topic's refusal whatever the bot holds.
 Not checked: granting a right the bot does not hold itself. What users do through actors is
 never checked either. The test decides what users do.
 
-A suite written against the permissive fake can turn the checks off while it migrates:
+A suite that does not test the bot's own rights can turn the checks off:
 
 .. code-block:: python
 
@@ -3072,7 +3096,7 @@ into the one flat chat.
     source, which passes no topic for a group that is not a forum: the message lands in the
     chat with no thread id, as a message that is not a topic message.
 
-A user manages topics through the actor, so a test no longer edits the world and posts the
+A user manages topics through the actor, so a test does not edit the world and post the
 service message by hand. Each trigger does what the matching bot method does to the world and
 feeds the service message Telegram posts, from that user:
 
@@ -3582,7 +3606,7 @@ Fixtures
 
 ``bot_env_enforce_bot_rights``
     Whether ``bot_env`` checks the bot's own calls against its rights. ``True`` by
-    default; override it to return ``False`` while migrating.
+    default; override it to return ``False`` to skip the checks.
 
 ``bot_env_deliver_service_messages_from_bots``
     Whether ``bot_env`` delivers the service messages other bots cause. ``True`` by
