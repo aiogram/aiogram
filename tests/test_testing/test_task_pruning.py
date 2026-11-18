@@ -156,9 +156,13 @@ class TestAFailureIsStillReported:
 
         await asyncio.create_task(handle())
         await ticks()
-        gc.collect()
 
         assert await started.wait_for_background_tasks() == 0
+        # Collect after the wait released the failure: on PyPy the failed
+        # task sits in a cycle (exception -> traceback -> the pure-Python
+        # Task.__step frame -> task), so only a collection frees it and,
+        # with it, its weakly keyed link to the creator.
+        gc.collect()
         assert held(started) == set()
 
     async def test_a_failure_during_a_wait_is_kept_for_the_report(self, started):

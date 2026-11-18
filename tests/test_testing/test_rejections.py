@@ -224,7 +224,7 @@ class TestTheRegistry:
         for path in sorted((ROOT / "aiogram" / "test").glob("*.py")):
             if path.name in allowed:
                 continue
-            for node in ast.walk(ast.parse(path.read_text())):
+            for node in ast.walk(ast.parse(path.read_text(encoding="utf-8"))):
                 if (
                     isinstance(node, ast.Call)
                     and isinstance(node.func, ast.Name)
@@ -235,7 +235,7 @@ class TestTheRegistry:
         assert not offenders, "declare these in aiogram/test/rejections.py"
 
     def test_the_documentation_dates_the_sources(self):
-        docs = (ROOT / "docs" / "dispatcher" / "testing.rst").read_text()
+        docs = (ROOT / "docs" / "dispatcher" / "testing.rst").read_text(encoding="utf-8")
 
         assert f"``{SOURCES_CHECKED}``" in docs
 

@@ -3,7 +3,6 @@ from __future__ import annotations
 import asyncio
 import contextlib
 import contextvars
-import copy
 import datetime
 import functools
 import heapq
@@ -43,6 +42,7 @@ from .blueprint import (
     UserRef,
     UserSpec,
     chat_state,
+    copy_default,
     default_blueprint,
     user_ref_id,
     user_state,
@@ -663,7 +663,7 @@ class BotTestEnvironment:
             session=self.session,
             # Copied, so mutating one bot's defaults never reaches the blueprint or the
             # other environments built from it.
-            default=copy.deepcopy(self.blueprint.default),
+            default=copy_default(self.blueprint.default),
         )
         self.bot._me = self.world.bot_me()
         # From here on everything the world stores is bound to this bot, so a message a

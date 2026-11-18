@@ -62,8 +62,10 @@ def test_the_recipe_runs_and_keeps_the_loop_clock_real(tmp_path):
                 loop = asyncio.get_running_loop()
                 started, wall = loop.time(), time.monotonic()
                 await asyncio.sleep(0.05)
-                assert loop.time() - started >= 0.05
-                assert time.monotonic() - wall >= 0.05
+                # A real sleep, not a scaled one; Windows' ~15.6ms clock can
+                # wake a timer slightly early, so allow one tick of slack.
+                assert loop.time() - started >= 0.03
+                assert time.monotonic() - wall >= 0.03
             """,
         ),
         encoding="utf-8",
@@ -81,6 +83,8 @@ def test_the_recipe_runs_and_keeps_the_loop_clock_real(tmp_path):
             "-o",
             "asyncio_mode=auto",
             "--durations=0",
+            # pytest hides durations under 5ms by default, and a fast run is one.
+            "--durations-min=0",
         ],
         capture_output=True,
         text=True,

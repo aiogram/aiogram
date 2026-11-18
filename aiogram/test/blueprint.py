@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import copy
+import dataclasses
 import datetime
 from collections.abc import Collection, Mapping
 from dataclasses import dataclass, field
@@ -731,7 +732,8 @@ class Blueprint:
         The world's clock starts at ``start``, or at the real time, to
         the second, when none is given.
         """
-        spec = copy.deepcopy(self)
+        # The defaults are copied apart; see `copy_default`.
+        spec = copy.deepcopy(self, {id(self.default): copy_default(self.default)})
         world = World(
             now=aware(start) if start is not None else wall_clock(),
             bot_user=user_state(spec.bot),
@@ -879,6 +881,20 @@ def user_state(spec: UserSpec) -> UserState:
         username=spec.username,
         language_code=spec.language_code,
         bot_to_bot_mode=spec.bot_to_bot_mode,
+    )
+
+
+def copy_default(default: DefaultBotProperties) -> DefaultBotProperties:
+    """
+    A copy of bot defaults that shares no state with ``default``.
+
+    Built field by field: :mod:`copy` goes through the dataclass's reduce
+    protocol, which crashes PyPy 3.11 on macOS arm64.
+    """
+    preview = default.link_preview
+    return dataclasses.replace(
+        default,
+        link_preview=preview.model_copy(deep=True) if preview is not None else None,
     )
 
 
