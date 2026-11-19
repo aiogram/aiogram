@@ -1,1 +1,0 @@
-:code:`and_f(...)` now passes the data returned by a filter on to the next filters, as filters registered in a row already do. Previously a later filter in :code:`and_f` did not see it, and a negated check on that value always passed. Reported by the Anthropic OSS Scanner (ANT-2026-RO3G83HJ).

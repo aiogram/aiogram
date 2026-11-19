@@ -1,1 +1,0 @@
-Fixed ``aiogram.test.flood.FloodControl`` float noise in the age of a send: ``retry_after`` could add a second to an exact whole-second wait, and a send exactly one window old could be kept instead of forgotten, on coarse clocks (e.g. Windows on Python 3.11).

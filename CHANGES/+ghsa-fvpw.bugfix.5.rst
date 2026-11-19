@@ -1,1 +1,0 @@
-Passing filters to a Scene entry point, :code:`on.<event>.enter(...)`, now emits a :code:`DeprecationWarning`: these filters were never checked when entering the scene. Put access checks on the handler that enters the scene instead. Reported by the Anthropic OSS Scanner (ANT-2026-9QFTXU7P).
