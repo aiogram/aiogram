@@ -256,6 +256,18 @@ class TestFloodControl:
 
         assert list(control.sent[1]) == [5.0]
 
+    def test_a_clock_that_did_not_move_waits_the_whole_window(self):
+        """
+        A coarse clock (Windows on 3.11) reads the same time for the sends and the
+        refusal; float rounding of ``oldest + window - now`` must not add a second.
+        """
+        now = 254.83787681536361  # (now + 60) - now rounds to just above 60
+        control = FloodControl(RateLimits(per_chat=None))
+
+        control.record(1, "supergroup", now, messages=20)
+
+        assert control.retry_after(1, "supergroup", now) == 60
+
 
 class TestRecipe:
     async def test_a_declared_flood_refusal(self, make_env):

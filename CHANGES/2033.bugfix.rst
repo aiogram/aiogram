@@ -1,0 +1,1 @@
+Fixed ``aiogram.test.flood.FloodControl.retry_after`` rounding a full window up by one second when the clock has not moved (coarse clocks, e.g. Windows on Python 3.11).

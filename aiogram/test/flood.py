@@ -91,7 +91,9 @@ class FloodControl:
             recent = [stamp for stamp in stamps if now - stamp < limit.seconds]
             if len(recent) >= limit.messages:
                 oldest = recent[len(recent) - limit.messages]
-                wait = max(wait, oldest + limit.seconds - now)
+                # Elapsed first: subtracting two close clock readings is exact, while
+                # `oldest + seconds - now` can round a full window up past a second.
+                wait = max(wait, limit.seconds - (now - oldest))
         if wait <= 0:
             return None
         return max(1, math.ceil(wait))
