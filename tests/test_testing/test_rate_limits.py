@@ -268,6 +268,15 @@ class TestFloodControl:
 
         assert control.retry_after(1, "supergroup", now) == 60
 
+    def test_float_noise_in_the_age_does_not_add_a_second(self):
+        """``(now + 9) - now`` is just under 9 here, so 10 - age is just over 1."""
+        start = 126.13670881738115
+        control = FloodControl(RateLimits(per_chat=None, per_group=RateLimit(1, 10)))
+
+        control.record(1, "supergroup", start)
+
+        assert control.retry_after(1, "supergroup", start + 9.0) == 1
+
 
 class TestRecipe:
     async def test_a_declared_flood_refusal(self, make_env):
