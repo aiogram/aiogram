@@ -30,6 +30,10 @@ RATE_LIMITED_METHODS: frozenset[type[TelegramMethod[Any]]] = frozenset(SENDING_M
 _AGE_DIGITS = 6
 
 
+def _age(now: float, stamp: float) -> float:
+    return round(now - stamp, _AGE_DIGITS)
+
+
 @dataclass(frozen=True)
 class RateLimit:
     """At most ``messages`` sends into one chat in any ``seconds``."""
@@ -93,7 +97,7 @@ class FloodControl:
         wait = 0.0
         for limit in self.limits.for_chat(chat_type):
             # Elapsed first: `oldest + seconds - now` can round a full window up past a second.
-            ages = [round(now - stamp, _AGE_DIGITS) for stamp in stamps]
+            ages = [_age(now, stamp) for stamp in stamps]
             recent = [age for age in ages if age < limit.seconds]
             if len(recent) >= limit.messages:
                 oldest = recent[len(recent) - limit.messages]
@@ -110,5 +114,5 @@ class FloodControl:
             (limit.seconds for limit in self.limits.for_chat(chat_type)),
             default=0.0,
         )
-        while stamps and now - stamps[0] >= horizon:
+        while stamps and _age(now, stamps[0]) >= horizon:
             stamps.popleft()
