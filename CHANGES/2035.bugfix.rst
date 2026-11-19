@@ -1,0 +1,1 @@
+Raised the minimum ``typing-extensions`` to 4.12.1: with 4.12.0 and Pydantic older than 2.10, ``import aiogram`` failed with ``TypeError: unhashable type: 'FailFast'``.
