@@ -10,8 +10,8 @@ they are the ones verified against this project's toolchain:
 | Task | Command |
 |---|---|
 | Tests | `rtk test uv run pytest tests -q` |
-| Lint | `rtk ruff check --show-fixes --preview aiogram examples` |
-| Format | `rtk ruff format aiogram tests scripts examples` |
+| Lint | `rtk proxy uv run ruff check --show-fixes --preview aiogram examples` |
+| Format | `rtk proxy uv run ruff format aiogram tests scripts examples` |
 | Types | `rtk mypy aiogram` |
 | Workflow lint | `rtk proxy make lint-workflows` |
 | git / gh | `rtk git <sub>` / `rtk gh <sub>` |
@@ -24,7 +24,8 @@ they are the ones verified against this project's toolchain:
 - `rtk mypy` truncates the error text after `file:line: error:`. When you need the full
   message, rerun as `rtk proxy uv run mypy aiogram`.
 - `rtk test`/`rtk err` accept a full command, so `uv run …` stays intact — which is what
-  AGENTS.md mandates. `rtk ruff` / `rtk mypy` call the tool directly from the venv.
+  AGENTS.md mandates. `rtk ruff` / `rtk mypy` call the tool directly from the venv
+  and fail (`Failed to run ruff`) when the venv is not on `PATH`; keep ruff under `uv run`.
 - `rtk git push` can print nothing for a push that pushed nothing, for example when the branch
   tracks `origin/dev-3.x`. Create branches with `git switch --no-track -c <b> origin/dev-3.x`,
   and after every push check that `git rev-parse origin/<b>` equals `git rev-parse HEAD`.

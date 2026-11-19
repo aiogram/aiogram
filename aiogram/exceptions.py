@@ -74,9 +74,13 @@ class TelegramAPIError(DetailedAiogramError):
 class TelegramNetworkError(TelegramAPIError):
     """
     Base exception for all Telegram network errors.
+
+    Its message never contains the bot token. The underlying HTTP client error is kept
+    on :attr:`original` instead of being chained, because it may contain the token.
     """
 
     label = "HTTP Client says"
+    original: BaseException | None = None
 
 
 class TelegramRetryAfter(TelegramAPIError):

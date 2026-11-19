@@ -28,6 +28,16 @@ If you specify errors handler for dispatcher - it will be used for all handlers 
         ...
 
 
+Network errors and the bot token
+================================
+
+Request URLs of the Bot API contain the bot token. Network errors never contain it:
+:class:`~aiogram.exceptions.TelegramNetworkError` and the :code:`aiohttp` errors raised by
+:meth:`Bot.download_file() <aiogram.client.bot.Bot.download_file>` and
+:meth:`Bot.download() <aiogram.client.bot.Bot.download>` show it as :code:`<bot id>:***`
+in their message and traceback, and keep their type, so existing :code:`except` clauses still work.
+The original exception is available as :code:`.original` and may contain the token — don't log it.
+
 .. _error-event:
 
 ErrorEvent
