@@ -1,0 +1,1 @@
+The ``aiogram[test]`` extra now requires only ``pytest>=8``, with no upper version cap.

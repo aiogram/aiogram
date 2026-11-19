@@ -64,27 +64,29 @@ The model-API port happens later (H-12, gate-conditional), so this part doesn't 
 
 ## Checklist
 
-- [ ] Path-limited import of the files listed above, with OpenSpec and the squashed dev-3.x changes excluded.
-- [ ] `pyproject.toml`: no `pytest11` entry point, no `-p no:aiogram`, `test = ["pytest>=8"]`.
-- [ ] Root `tests/conftest.py` loads the plugin. Coverage report shows `aiogram/test/*` measured.
-- [ ] Make the imported suite green against `dev-4.x` HEAD (drift fixes only, listed in the PR body).
-- [ ] **Decide #1887's shipping status in 3.x** (proposed default: #1887 does **not** merge into `dev-3.x`; the
+- [x] ~~Path-limited import of the files listed above, with OpenSpec and the squashed dev-3.x changes excluded.~~
+      The toolkit came with #1887 through the `dev-3.x` sync, without OpenSpec.
+- [x] `pyproject.toml`: ~~no `pytest11` entry point, no `-p no:aiogram`,~~ *(superseded 2026-11-19, see Notes)* `test = ["pytest>=8"]`.
+- [x] Root `tests/conftest.py` loads the plugin. Coverage report shows `aiogram/test/*` measured.
+- [x] Make the imported suite green against `dev-4.x` HEAD (drift fixes only, listed in the PR body).
+- [x] **Decide #1887's shipping status in 3.x** *(answered 2026-11-19: shipped in 3.x with the entry point, not a break; see Notes)* (proposed default: #1887 does **not** merge into `dev-3.x`; the
       toolkit first ships in 4.0, so the opt-in plugin is not a break). If the owner ships it in 3.x with the
       entry point, this plan adds a migration-registry entry (PD-13, `removal-4.0`: "the `aiogram` pytest plugin is
       no longer auto-loaded; add `-p aiogram.test.plugin`") and a README breaking-change item request to A-02.
       Record the decision in *Notes* and flag it to the owner.
-- [ ] Note in the PR body that PR #1887 is superseded on `dev-4.x` by this import.
-- [ ] Changelog fragment (new `aiogram.test` toolkit, opt-in plugin).
+- [x] ~~Note in the PR body that PR #1887 is superseded on `dev-4.x` by this import.~~ *(superseded 2026-11-19:
+      #1887 itself reached `dev-4.x`)*
+- [x] Changelog fragment: the toolkit's is #1887's; this plan adds `CHANGES/2029.misc.rst` for the `test` extra.
 
 ## Acceptance criteria
 
 - `git diff --stat` of the PR touches only `aiogram/test/**`, `tests/test_testing/**`, `tests/conftest.py`,
   `docs/dispatcher/testing.rst`, `pyproject.toml`, `uv.lock`, `CHANGES/*`, plus drift fixes listed in the PR body.
-- No `openspec/` directory and no `pytest11` entry point on `dev-4.x`.
+- No `openspec/` directory ~~and no `pytest11` entry point~~ *(superseded 2026-11-19, see Notes)* on `dev-4.x`.
 - `uv run pytest tests` passes, including about 1 880 toolkit tests. Coverage stays at 100% with `aiogram/test/**`
   measured.
-- A fresh project with `aiogram[test]` installed and no `-p aiogram.test.plugin` does **not** load the plugin
-  (`pytest --trace-config` shows it absent).
+- ~~A fresh project with `aiogram[test]` installed and no `-p aiogram.test.plugin` does **not** load the plugin
+  (`pytest --trace-config` shows it absent).~~ *(superseded 2026-11-19, see Notes)* The plugin loads on its own; `-p no:aiogram` turns it off.
 
 ## Rejected alternatives
 

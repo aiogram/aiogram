@@ -2,7 +2,8 @@
 
 **Goal:**
 - Port the Testing World toolkit (PR #1887) to 4.0 as `aiogram.test`, with its pytest plugin auto-loaded through the lazy `pytest11` entry-point shim that #1887 shipped in 3.x
-  (D51 as revised 2026-11-19, D52–D54, D88, D89).
+  (TW-188; D51 revised by the owner on 2026-11-19, recorded in H-10's Notes until A-02 updates the research; D52–D54,
+  D88, D89).
 - Ship the official trace hook as sync span context managers (D63, R23) and opt-in OpenTelemetry traces and metrics
   (D64).
 - Ship structured logging and a consistent logger hierarchy (D65).
@@ -72,7 +73,6 @@ toolkit:         H-10 ─▶ H-14 ─▶ H-15
 | SpanKind gaps: DECODE/DEPENDENCY kinds, isolation wait. Proposed: attributes, no new kinds | H-05 |
 | Default `exclude` for OTel. Proposed: FILTER spans off by default | H-08 |
 | `router` metric label for unnamed routers | H-09 |
-| #1887 shipping status in 3.x. Proposed: not shipped in 3.x | H-10 |
 | `BOT_RIGHTS` stays hand-written, guarded | H-11 |
 | Per-receiving-bot identity scope | H-13 |
 | Sync `bot_env` fixture vs async lifecycle. Proposed: sync + `async with env.running()` | H-14 |
