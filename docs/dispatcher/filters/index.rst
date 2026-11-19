@@ -41,6 +41,21 @@ and should return bool or dict.
 If the dictionary is passed as result of filter - resulted data will be propagated to the next
 filters and handler as keywords arguments.
 
+A filter must either be declared with :code:`async def` (or be an object with an
+:code:`async def __call__`, like :class:`aiogram.filters.base.Filter`), or be synchronous and
+return a bool or a dict. aiogram does not await the result of a synchronous callable: a filter
+that returns a coroutine or any other awaitable, such as :code:`lambda event: check(event)` where
+:code:`check` is async, raises :code:`TypeError`. Write it as :code:`async def` instead.
+
+.. note::
+
+    The same applies to wrappers. :code:`functools.partial(async_fn)` works, but a
+    :code:`functools.partial` over an object with an async :code:`__call__` (for example a
+    :class:`Filter` instance) and an :code:`async def` wrapper around a synchronous function
+    built with :code:`functools.wraps` (for example :code:`aiofiles.os.wrap`) are called as
+    synchronous functions, so they also raise :code:`TypeError`. Wrap such filters in a plain
+    :code:`async def` function.
+
 Base class for own filters
 --------------------------
 

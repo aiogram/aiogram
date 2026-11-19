@@ -47,7 +47,9 @@ rtk git status --short -- aiogram/          # new files = new types/methods/enum
 - **Hand-written enumeration sites** butcher never touches. A new `Update.<field>`
   needs `aiogram/types/update.py::event_type` and
   `aiogram/dispatcher/middlewares/user_context.py::resolve_event_context`; new message
-  content needs `aiogram/enums/content_type.py` and `Message.content_type`. Details and
+  content needs `aiogram/enums/content_type.py` and `Message.content_type`. A new `Update`
+  field also needs a `UserActor` trigger (`aiogram/test/actors.py`) and a `TRIGGERS` row
+  (`tests/test_testing/test_triggers.py`); the every-variant-has-a-trigger guard fails otherwise. Details and
   the grep to find the rest: skill `test-bot-api-codegen`, step 2.
 - **Enums scraped by regexp** from a doc sentence can silently contain another enum's
   members. Eyeball every new `aiogram/enums/*.py` against its source docstring.
