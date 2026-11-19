@@ -1,0 +1,2 @@
+The source distribution no longer includes the contributor tooling directories ``.claude/``,
+``openspec/`` and ``.oss-scanner/``.
