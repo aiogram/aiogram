@@ -25,6 +25,7 @@ PHONE = "+15551234567"
 FILE_ID = "AgACAgIAAxkBAAIBY2ZsecretFileId"
 UNIQUE_ID = "AQADsecretUniq"
 TEXT = f"call @jane_doe at {PHONE} or tg://user?id={USER_ID}"
+QUERY_ID = str(USER_ID << 32 | 7)  # Telegram puts the sender's id in the high 32 bits
 
 
 def user():
@@ -69,6 +70,7 @@ TRACE = [
                             "first_name": "Jane",
                             "user_id": USER_ID,
                         },
+                        "location": {"latitude": 50.4501, "longitude": 30.5234},
                         "photo": [
                             {
                                 "file_id": FILE_ID,
@@ -88,6 +90,31 @@ TRACE = [
         "status": 200,
         "response": {"ok": True, "result": True},
     },
+    {
+        "method": "getUpdates",
+        "params": {},
+        "status": 200,
+        "response": {
+            "ok": True,
+            "result": [
+                {
+                    "update_id": 3,
+                    "callback_query": {
+                        "id": QUERY_ID,
+                        "from": user(),
+                        "chat_instance": "1",
+                        "data": "x",
+                    },
+                }
+            ],
+        },
+    },
+    {
+        "method": "answerCallbackQuery",
+        "params": {"callback_query_id": QUERY_ID},
+        "status": 200,
+        "response": {"ok": True, "result": True},
+    },
 ]
 
 
@@ -95,7 +122,8 @@ def test_redact_trace():
     result = redact.redact_trace(json.loads(json.dumps(TRACE)))
     dumped = json.dumps(result)
 
-    for secret in (TOKEN, BOT_ID, str(USER_ID), str(GROUP_ID), PHONE[1:], "jane_doe", "Jane"):
+    secrets = (TOKEN, BOT_ID, str(USER_ID), str(GROUP_ID), PHONE[1:], "jane_doe", "Jane", QUERY_ID)
+    for secret in secrets:
         assert secret not in dumped, secret
     assert FILE_ID not in dumped
     assert UNIQUE_ID not in dumped
@@ -116,6 +144,10 @@ def test_redact_trace():
     assert len(first["text"]) == len(TEXT)
     assert first["text"][5:14] == "@" + first["from"]["username"]
     assert result[3]["params"]["photo"] == second["photo"][0]["file_id"]
+    assert second["location"] == {"latitude": 0.001, "longitude": 0.001}
+    query_id = result[4]["response"]["result"][0]["callback_query"]["id"]
+    assert int(query_id) >> 32 != USER_ID
+    assert query_id == result[5]["params"]["callback_query_id"]
 
 
 def test_recording_session_writes_raw_exchange():

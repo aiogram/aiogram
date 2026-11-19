@@ -333,3 +333,11 @@ id = "import.aiogram"
 kind = "case"
 provenance = { source = "hand", date = "2026-11-18", aiogram = "3.32.0", bot_api = "10.4", author = "JRoot Junior" }
 notes = "Cold `import aiogram` in a subprocess; no data."
+
+[[input]]
+id = "trace.2026-11-20"
+kind = "trace"
+path = "traces/trace.2026-11-20.jsonl"
+sha256 = "69ea2f047a635099db3a18f61f17cdaa2a060d916f386804ce0ef17f75018dfc"
+provenance = { source = "recorded", date = "2026-11-20", aiogram = "3.33.0", bot_api = "10.4", author = "JRoot Junior" }
+notes = "recorded + redacted: 200 updates from a test bot (134 message, 18 callback_query, 13 inline_query, 12 channel_post, 6 edited_message, 5 message_reaction, 5 my_chat_member, 5 chat_member, 2 edited_channel_post) in private, forum supergroup and channel chats; 451 exchanges incl. one 403 sendMessage."

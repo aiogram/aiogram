@@ -14,9 +14,12 @@ What is replaced, consistently within one trace (the same input always maps to t
 - usernames become same-length placeholders, also as ``@mentions`` inside strings;
 - phone numbers become same-length digit runs, also inside strings;
 - first / last names, author signatures and chat titles become placeholders;
+- numeric string ids (``id``, ``*_query_id``: callback / inline query ids embed the sender's user
+  id) become same-length digit runs, matching between the update and the answering request;
 - file ids and unique file ids become ``file-N`` / ``uniq-N``, also where a request passes one as a
   parameter value;
-- e-mail addresses, vCards and invite links become ``<redacted>``; coordinates are rounded to 0.1°.
+- e-mail addresses, vCards and invite links become ``<redacted>``; each distinct coordinate becomes
+  a placeholder (0.001, 0.002, …), so a trace places nothing on a real map.
 
 Message text is not rewritten beyond the above: review the output by hand before committing it.
 """
@@ -113,6 +116,11 @@ class Redactor:
                 self.number(obj.lstrip("+"))
             elif key in FILE_KEYS:
                 self.string(FILE_KEYS[key], obj, FILE_KEYS[key] + "-{:06d}")
+            elif (
+                (key == "id" or key.endswith("_query_id")) and obj.isdigit() and int(obj) >= MIN_ID
+            ):
+                # Callback / inline query ids carry the sender's user id in their high 32 bits.
+                self.number(obj)
             for match in TOKEN_RE.finditer(obj):
                 self.number(match.group(1))
 
@@ -132,10 +140,10 @@ class Redactor:
             return [self.rewrite(v, key) for v in obj]
         if isinstance(obj, bool):
             return obj
+        if isinstance(obj, (int, float)) and key in COORD_KEYS:
+            return float(self.string(key, str(obj), "0.{:03d}"))
         if isinstance(obj, int):
             return int(self.numbers.get(str(obj), obj))
-        if isinstance(obj, float) and key in COORD_KEYS:
-            return round(obj, 1)
         if not isinstance(obj, str):
             return obj
         if key in SECRET_KEYS:
