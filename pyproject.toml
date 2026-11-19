@@ -55,6 +55,7 @@ path = "aiogram/__meta__.py"
 
 [tool.hatch.build.targets.sdist]
 exclude = [
+    "/design",
     "/orca.yaml",
     "/v4",
 ]
@@ -83,6 +84,9 @@ cli = [
 ]
 signature = [
     "cryptography>=46.0.0",
+]
+test = [
+    "pytest>=8,<10",
 ]
 docs = [
     "Sphinx~=8.0.2",
@@ -118,6 +122,9 @@ test = [
     "pytz>=2026,<2027",
     "pycryptodomex==3.23.0",
 ]
+
+[project.entry-points.pytest11]
+aiogram = "aiogram.test._autoload"
 
 [project.urls]
 Homepage = "https://aiogram.dev/"
@@ -208,6 +215,9 @@ known-first-party = [
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
+# The pytest11 entry point would import aiogram before coverage starts, leaving it
+# unmeasured; tests/conftest.py enables the plugin instead, after coverage starts.
+addopts = "-p no:aiogram"
 testpaths = [
     "tests",
 ]
