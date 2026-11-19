@@ -123,13 +123,15 @@ class StatesGroupMeta(type):
         account the name of current parent.
         """
         child.__parent__ = cls  # type: ignore[assignment]
-        child.__all_states_names__ = child._get_all_states_names()
+        # Deeper descendants also get a new full name, so refresh them as well
+        for group in (child, *child.__all_childs__):
+            group.__all_states_names__ = group._get_all_states_names()
         return child
 
     def _get_all_childs(cls) -> tuple[type["StatesGroup"], ...]:
         result = cls.__childs__
         for child in cls.__childs__:
-            result += child.__childs__
+            result += child.__all_childs__
         return result
 
     def _get_all_states(cls) -> tuple[State, ...]:
