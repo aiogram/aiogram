@@ -17,8 +17,12 @@ call is applied to — and answered from — an isolated in-memory world.
 The toolkit's tests are ``async def``, so the suite also needs an async test runner such as
 ``pytest-asyncio`` or ``anyio``; see `Requirements and gotchas`_.
 
-The plugin that provides the fixtures is opt-in: installing aiogram does not load it into
-every pytest session. Enable it on the command line or in your pytest configuration:
+The fixtures come from a pytest plugin that pytest loads on its own through a ``pytest11``
+entry point, so there is no ``conftest.py`` boilerplate. To turn it off for a suite, pass
+``-p no:aiogram``, for example in ``addopts``.
+
+Where plugin autoloading is disabled (``PYTEST_DISABLE_PLUGIN_AUTOLOAD``), enable it
+explicitly, either on the command line:
 
 .. code-block:: bash
 
@@ -29,6 +33,8 @@ or in the root ``conftest.py`` of your suite (pytest accepts ``pytest_plugins`` 
 .. code-block:: python
 
     pytest_plugins = ["aiogram.test.plugin"]
+
+Both forms are safe alongside the entry point: the plugin is loaded once.
 
 .. warning::
 
@@ -2058,7 +2064,7 @@ reached, with no real delay:
 
     pip install looptime
 
-No conftest is required — ``looptime`` registers itself through a pytest entry point, and
+No conftest is required — ``looptime`` registers itself the same way the toolkit does, and
 marking one test is enough to run it on the fake clock:
 
 .. code-block:: python
@@ -2195,8 +2201,6 @@ The tests then scale that one helper down, here a thousandfold:
     from aiogram import Dispatcher
     from aiogram.test import detach_router
     from game import clock, engine
-
-    pytest_plugins = ["aiogram.test.plugin"]
 
     real_sleep = asyncio.sleep
 

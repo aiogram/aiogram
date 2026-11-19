@@ -1094,6 +1094,14 @@ Format: **Decision**, **Why**, **Rejected** (alternatives the design considered)
 **Why:** Waiting exactly `retry_after`, by either clock, must be enough. The FAQ speaks of messages; counting every album item is the cautious reading. An album of ten could never fit one per second otherwise.
 **Code:** `aiogram/test/flood.py` `RateLimits`, `FloodControl`, `RATE_LIMITED_METHODS`; `aiogram/test/environment.py` `rate_clock`, `admit_send`, `handle_call` · **Source:** 2026-10-16-model-forum-topics-and-bot-rights, 2026-10-17-address-testing-toolkit-review
 
+## Plugin loading
+
+### TW-188 The plugin loads on its own, through a shim entry point
+**Decision:** `pyproject.toml` declares `[project.entry-points.pytest11] aiogram = "aiogram.test._autoload"`. The shim holds only `pytest_plugins = ["aiogram.test.plugin"]`, empty before pytest 8. `-p no:aiogram` turns it off. aiogram's own suite blocks the entry point in `addopts` and enables the plugin from `tests/conftest.py`.
+**Why:** Most users are new to pytest, and `fixture 'bot_env' not found` does not say what to do. Pointing the entry point straight at `aiogram.test.plugin` makes `-p aiogram.test.plugin` or `pytest_plugins` fail with "Plugin already registered under a different name". Through the shim, pytest registers the plugin under its module name and the explicit forms do nothing. That keeps them valid where autoloading is disabled (`PYTEST_DISABLE_PLUGIN_AUTOLOAD`). The suite's block is there because the entry point imports aiogram before coverage starts.
+**Rejected:** Opt-in only (the 3.x draft of this PR, and D51 in the 4.x plan H-10). It needs a setup step for every user to save projects whose tests never import aiogram about 1.3 s of `import aiogram` at startup. The owner judged those projects rare. A lazy shim outside the `aiogram` package would make startup free but would duplicate every fixture signature.
+**Code:** `aiogram/test/_autoload.py`; `pyproject.toml` `pytest11`, `addopts`; `tests/conftest.py`; `tests/test_testing/test_plugin.py` `TestPluginDiscovery` · **Source:** the owner's decision, 2026-11-19 (not in the archive)
+
 ## Non-goals and known limits
 
 - The toolkit does not run the webhook HTTP layer or the polling loop. Both reduce to `feed_update`; webhook and `getUpdates` methods are record-only.
@@ -1171,7 +1179,7 @@ Decisions the archived change sets made that the code does not follow, with the 
 - "`Blueprint` and its members are frozen dataclasses" (add-bot-testing-toolkit D6): `Blueprint` is a mutable builder; isolation comes from deep-copying in `build()`.
 - "The world stores `MessageRecord`s" (add-bot-testing-toolkit D5): stored messages are `aiogram.types.Message` objects.
 - "`detach_router` clears parents recursively" (add-bot-testing-toolkit D7): it clears only the given router's `_parent_router`.
-- "A `pytest11` entry point auto-loads the plugin" (add-bot-testing-toolkit D9): the plugin is opt-in; `pyproject.toml` has no `pytest11` entry.
+- "The `pytest11` entry point names `aiogram.test.plugin`" (add-bot-testing-toolkit D9): it names a shim (TW-188).
 - "`start` wins whenever present" (follow-deep-links D3, wave-2 D2): only a non-empty `start` wins.
 - "`_QUERY_PARAM_KINDS` is the complement of `_PATH_DERIVED_KINDS`" (follow-deep-links D2, D6): replaced by `_QUERY_KIND_LOOKUP` and `_LinkKindPolicy.match_by`.
 - "`addresses_username` marks the family of a link kind" (classify-links-per-spec D1): replaced by `match_by`, which also handles `attach` naming the bot in its payload.

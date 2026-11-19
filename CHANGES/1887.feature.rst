@@ -19,8 +19,8 @@ fake Telegram answers every Bot API call and applies it to an isolated in-memory
   synthesized from their return type. ``BotTestEnvironment.on()`` overrides any call per
   test.
 
-The pytest plugin is opt-in: enable it with ``-p aiogram.test.plugin`` or with
-``pytest_plugins = ["aiogram.test.plugin"]`` in the root ``conftest.py``.
+The pytest plugin loads on its own through a ``pytest11`` entry point; ``-p no:aiogram``
+turns it off.
 
 The API is provisional and may change incompatibly in minor releases. The parts intended
 to stay stable are listed in :ref:`the toolkit documentation <testing-toolkit>`.

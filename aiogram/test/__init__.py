@@ -7,8 +7,7 @@ Scenes all run — while every Bot API call is answered from, and applied to, an
 in-memory world.
 
 Nothing here imports :mod:`pytest`; the fixtures live in :mod:`aiogram.test.plugin`,
-an opt-in pytest plugin: enable it with ``-p aiogram.test.plugin`` or
-``pytest_plugins = ["aiogram.test.plugin"]`` in the root ``conftest.py``.
+which pytest loads through the ``pytest11`` entry point (``-p no:aiogram`` turns it off).
 """
 
 from . import rejections

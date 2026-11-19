@@ -1,3 +1,4 @@
+import importlib
 import subprocess
 import sys
 import textwrap
@@ -366,7 +367,7 @@ class TestImportGraph:
 
 
 class TestPluginDiscovery:
-    """The plugin reaches a project through ``-p aiogram.test.plugin``, with no conftest."""
+    """The plugin reaches a project through the ``pytest11`` entry point, with no conftest."""
 
     def test_fixtures_resolve_in_a_clean_project(self, tmp_path):
         test_file = tmp_path / "test_generated.py"
@@ -381,23 +382,7 @@ class TestPluginDiscovery:
             ),
         )
 
-        result = subprocess.run(
-            [
-                sys.executable,
-                "-m",
-                "pytest",
-                str(test_file),
-                "-q",
-                "-p",
-                "no:cacheprovider",
-                "-p",
-                "aiogram.test.plugin",
-            ],
-            capture_output=True,
-            text=True,
-            cwd=tmp_path,
-            check=False,
-        )
+        result = run_pytest(tmp_path, test_file)
 
         assert result.returncode == 0, result.stdout + result.stderr
 
@@ -422,23 +407,7 @@ class TestPluginDiscovery:
             ),
         )
 
-        result = subprocess.run(
-            [
-                sys.executable,
-                "-m",
-                "pytest",
-                str(test_file),
-                "-q",
-                "-p",
-                "no:cacheprovider",
-                "-p",
-                "aiogram.test.plugin",
-            ],
-            capture_output=True,
-            text=True,
-            cwd=tmp_path,
-            check=False,
-        )
+        result = run_pytest(tmp_path, test_file)
 
         assert result.returncode == 0, result.stdout + result.stderr
 
@@ -465,48 +434,57 @@ class TestPluginDiscovery:
             ),
         )
 
-        result = subprocess.run(
-            [
-                sys.executable,
-                "-m",
-                "pytest",
-                str(test_file),
-                "-q",
-                "-p",
-                "no:cacheprovider",
-                "-p",
-                "aiogram.test.plugin",
-            ],
-            capture_output=True,
-            text=True,
-            cwd=tmp_path,
-            check=False,
-        )
+        result = run_pytest(tmp_path, test_file)
 
         assert result.returncode == 0, result.stdout + result.stderr
 
-    def test_plugin_is_not_auto_loaded(self, tmp_path):
-        """Installing aiogram does not put the plugin into every pytest session."""
+    @pytest.mark.parametrize("explicit", ["option", "conftest"])
+    def test_enabling_it_explicitly_as_well_loads_it_once(self, tmp_path, explicit):
+        """
+        The entry point registers the plugin under its module name, so the explicit forms
+        are no-ops instead of "Plugin already registered under a different name".
+        """
         test_file = tmp_path / "test_generated.py"
-        test_file.write_text(
-            textwrap.dedent(
-                """
-                def test_needs_the_plugin(bot_env):
-                    pass
-                """,
-            ),
-        )
+        test_file.write_text("def test_fixtures_are_available(bot_env):\n    assert bot_env\n")
+        args = []
+        if explicit == "option":
+            args = ["-p", "aiogram.test.plugin"]
+        else:
+            (tmp_path / "conftest.py").write_text('pytest_plugins = ["aiogram.test.plugin"]\n')
 
-        result = subprocess.run(
-            [sys.executable, "-m", "pytest", str(test_file), "-p", "no:cacheprovider"]
-            + ["--trace-config"],
-            capture_output=True,
-            text=True,
-            cwd=tmp_path,
-            check=False,
-        )
+        result = run_pytest(tmp_path, test_file, *args)
+
+        assert result.returncode == 0, result.stdout + result.stderr
+
+    def test_p_no_aiogram_turns_it_off(self, tmp_path):
+        test_file = tmp_path / "test_generated.py"
+        test_file.write_text("def test_needs_the_plugin(bot_env):\n    pass\n")
+
+        result = run_pytest(tmp_path, test_file, "-p", "no:aiogram")
 
         output = result.stdout + result.stderr
         assert result.returncode == 1, output
         assert "fixture 'bot_env' not found" in output
-        assert "aiogram.test.plugin" not in output
+
+    def test_the_entry_point_registers_nothing_before_pytest_8(self, monkeypatch):
+        """A session on an older pytest never asked for the toolkit and must not break on it."""
+        from aiogram.test import _autoload
+
+        try:
+            monkeypatch.setattr(pytest, "version_tuple", (7, 4, 4))
+            assert importlib.reload(_autoload).pytest_plugins == []
+            monkeypatch.undo()
+            assert importlib.reload(_autoload).pytest_plugins == ["aiogram.test.plugin"]
+        finally:
+            monkeypatch.undo()
+            importlib.reload(_autoload)
+
+
+def run_pytest(cwd, test_file, *args):
+    return subprocess.run(
+        [sys.executable, "-m", "pytest", str(test_file), "-q", "-p", "no:cacheprovider", *args],
+        capture_output=True,
+        text=True,
+        cwd=cwd,
+        check=False,
+    )

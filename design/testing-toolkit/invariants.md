@@ -447,7 +447,7 @@ Terms used below:
 
 ## pytest plugin and fixtures
 
-- The plugin is opt-in. There is no `pytest11` entry point; a project enables it with `-p aiogram.test.plugin` or `pytest_plugins = ["aiogram.test.plugin"]`. [test_plugin.py]
+- The plugin loads through the `pytest11` entry point `aiogram`, which points at the shim `aiogram/test/_autoload.py`, not at the plugin (TW-188). `-p no:aiogram` turns it off. Enabling it explicitly as well (`-p aiogram.test.plugin` or `pytest_plugins`) loads it once. Before pytest 8 the shim registers nothing. [test_plugin.py]
 - Importing `aiogram` or `aiogram.test` never imports pytest. [test_plugin.py]
 - Fixtures: `bot_blueprint`, `bot_dispatcher`, `bot_env`, `bot_chat`, `bot_user`, plus value fixtures `bot_env_wait_timeout`, `bot_env_clock_start`, `bot_env_enforce_bot_rights`, `bot_env_rate_limits`, `bot_env_deliver_service_messages_from_bots`, `bot_env_perturb_rejection_descriptions`, `bot_env_assert_updates_handled`. [test_plugin.py]
 - Value fixtures are overridable at any scope; `bot_env` and everything derived from it are function-scoped. [test_plugin.py]
@@ -463,7 +463,7 @@ Terms used below:
 
 ## Differences from the archived spec
 
-- Plugin registration. The spec said a `pytest11` entry point loads the plugin automatically and that installing `aiogram[test]` is the only setup step. The code has no entry point (`pyproject.toml` has none); the plugin is opt-in through `-p aiogram.test.plugin` or `pytest_plugins` (`aiogram/test/__init__.py`, `CHANGES/1887.feature.rst`).
+- Plugin registration. The spec pointed the `pytest11` entry point straight at `aiogram.test.plugin`. It points at a shim instead (TW-188), so the explicit forms do not fail on double registration.
 - Fixture set. The spec listed a fixture for "the bot". `aiogram/test/plugin.py` has no bot fixture; the bot is `bot_env.bot`. The plugin also has value fixtures the spec never mentions: `bot_env_clock_start`, `bot_env_enforce_bot_rights`, `bot_env_rate_limits`, `bot_env_deliver_service_messages_from_bots`. The spec covers `bot_env_perturb_rejection_descriptions` and `bot_env_assert_updates_handled` only in the environment spec.
 - Undeclared chats. Several older requirements said an unknown chat raises `TelegramBadRequest`: batch forward/copy from an unknown chat, `sendChatAction`, administering a chat, `getChatMemberCount` / `getChatAdministrators`. The later setup-gap rule wins in code and tests (`test_message_methods.py`, `test_chat_administration.py`): all of these raise `WorldLookupError` ("not declared in the blueprint").
 - Star/business rights. "Star rights are not enforced" said this matches "the toolkit not enforcing rights anywhere". The bot's own chat rights are enforced by default (`enforce_bot_rights=True`). Only business-connection rights are unenforced (docs/dispatcher/testing.rst).

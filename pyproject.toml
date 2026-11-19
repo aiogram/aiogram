@@ -123,6 +123,9 @@ test = [
     "pycryptodomex==3.23.0",
 ]
 
+[project.entry-points.pytest11]
+aiogram = "aiogram.test._autoload"
+
 [project.urls]
 Homepage = "https://aiogram.dev/"
 Documentation = "https://docs.aiogram.dev/"
@@ -212,6 +215,9 @@ known-first-party = [
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
+# The pytest11 entry point would import aiogram before coverage starts, leaving it
+# unmeasured; tests/conftest.py enables the plugin instead, after coverage starts.
+addopts = "-p no:aiogram"
 testpaths = [
     "tests",
 ]

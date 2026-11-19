@@ -58,7 +58,7 @@ declared, raises `WorldLookupError` instead. The bot cannot catch that by mistak
 | Module | Role |
 |---|---|
 | `__init__.py` | Public exports. Does not import pytest. |
-| `plugin.py` | The opt-in pytest plugin: the `bot_*` fixtures, the `bot_env_*` knobs, the post-test `assert_updates_handled` hook, and `pytest_assertrepr_compare` for world and call objects. |
+| `plugin.py` | The pytest plugin: the `bot_*` fixtures, the `bot_env_*` knobs, the post-test `assert_updates_handled` hook, and `pytest_assertrepr_compare` for world and call objects. |
 | `environment.py` | `BotTestEnvironment`: owns the `World`, `Bot`, `Dispatcher`, `CallLog`, `OverrideRegistry` and clock. Holds `feed`/`adopt`, `handle_call`, the waits (`wait_for`, `wait_for_message_in`), background-task tracking and draining (the loop task factory), and routing diagnostics (`RouteRecord`, scopes, `last_route`/`routes`/`all_routes`/`assert_handled_by`). |
 | `blueprint.py` | `Blueprint` and the `*Spec` declarations. Immutable descriptions that every test materializes into a fresh `World`. `default_blueprint()` is one user in a private chat. |
 | `world.py` | The world's state: `World`, `ChatRegistry`, `ChatState`, `UserState`, `MemberState`, `TopicState`, `PollState`, `InviteLinkState`, `StarLedger`, `BotProfileState`, …. Also rights and permission helpers, the world clock, and `WorldLookupError`. |
