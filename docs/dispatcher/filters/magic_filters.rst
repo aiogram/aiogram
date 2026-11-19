@@ -92,7 +92,9 @@ Regexp
 Custom function
 ---------------
 
-Accepts any callable. Callback will be called when filter checks result
+Accepts any synchronous callable. Callback will be called when filter checks result.
+Async functions are not supported here, because magic filters never await anything.
+Use an async function filter instead.
 
 .. code-block:: python
 
@@ -148,6 +150,30 @@ This part is not available in *magic-filter* directly but can be used with *aiog
     @router.message(F.text.regexp(r"^(\d+)$").as_("digits"))
     async def any_digits_handler(message: Message, digits: Match[str]):
         await message.answer(html.quote(str(digits)))
+
+:code:`.as_()` only decides whether there is a value to pass on, it is not a check:
+
+- :code:`None` and empty collections (:code:`""`, :code:`[]`, :code:`{}`, ...) mean "no value":
+  the filter does not match;
+- any other value, including :code:`False`, :code:`0` and :code:`0.0`, is a match, and the
+  handler receives it as the named argument.
+
+So a comparison or a combination such as :code:`(F.from_user.id == ADMIN_ID) & F.text` that
+evaluates to :code:`False` **still matches** when :code:`.as_()` is applied to it as a whole,
+and the handler receives :code:`False`. Keep the check and the value apart instead:
+
+.. code-block:: python
+
+    # the check rejects; .as_() only names the value
+    @router.message(F.from_user.id == ADMIN_ID, F.text.as_("text"))
+    # or, in one expression, apply .as_() to the value operand only
+    @router.message((F.from_user.id == ADMIN_ID) & F.text.as_("text"))
+
+If you do want :code:`False` itself to reject, turn it into :code:`None` before :code:`.as_()`:
+
+.. code-block:: python
+
+    F.from_user.is_premium.func(lambda value: None if value is False else value).as_("premium")
 
 Usage in *aiogram*
 ==================

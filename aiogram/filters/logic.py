@@ -36,6 +36,8 @@ class _AndFilter(_LogicFilter):
                 return False
             if isinstance(result, dict):
                 final_result.update(result)
+                # Pass the result on to the next targets, as handler filters do
+                kwargs.update(result)
 
         if final_result:
             return final_result

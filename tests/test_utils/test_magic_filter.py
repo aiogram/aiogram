@@ -33,3 +33,18 @@ class TestMagicFilter:
 
         result = magic.resolve([])
         assert result is None
+
+    def test_operation_as_false_is_a_match(self):
+        # Documented: only `None` and empty collections are "no match" for `.as_()`
+        magic = (F.text == "secret").as_("value")
+
+        assert magic.resolve(MyObject(text="test")) == {"value": False}
+        assert magic.resolve(MyObject(text="secret")) == {"value": True}
+
+    def test_operation_as_false_rejected_explicitly(self):
+        magic = (
+            (F.text == "secret").func(lambda value: None if value is False else value).as_("value")
+        )
+
+        assert magic.resolve(MyObject(text="test")) is None
+        assert magic.resolve(MyObject(text="secret")) == {"value": True}

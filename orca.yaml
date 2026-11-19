@@ -1,0 +1,4 @@
+# Orca workspace hooks. Only used when the repository is opened in Orca.
+scripts:
+  setup: |
+    uv sync --locked --all-extras --group dev --group test
