@@ -106,6 +106,15 @@ uv run --extra cli butcher refresh
 uv run --extra cli butcher apply all
 ```
 
+- `butcher` is not shipped by the `cli` extra (`aiogram-cli` has no `butcher` script): it is the
+  separate [aiogram/butcher](https://github.com/aiogram/butcher) repo. Install it into its own
+  environment and run it from this repository root (`python -m butcher.shell.main apply all`).
+  A fix that needs new generator behaviour lands in butcher first, then in `.butcher` config here.
+- butcher formats with black, the repository with ruff, so raw `apply all` output differs from the
+  committed files. Run `ruff check --fix aiogram/types aiogram/methods` (import order) and
+  `ruff format aiogram` afterwards; on a clean tree that sequence yields an empty `git diff`, which
+  is the check that a `.butcher` change survives regeneration.
+
 For maintainers preparing an API/version bump only:
 
 ```bash

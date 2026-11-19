@@ -124,7 +124,7 @@ requires-dist = [
     { name = "magic-filter", specifier = ">=1.0.12,<1.1" },
     { name = "markdown-include", marker = "extra == 'docs'", specifier = "~=0.8.1" },
     { name = "motor", marker = "extra == 'mongo'", specifier = ">=3.6.0,<3.8" },
-    { name = "pydantic", specifier = ">=2.7.0,<2.15" },
+    { name = "pydantic", specifier = ">=2.8.0,<2.15" },
     { name = "pygments", marker = "extra == 'docs'", specifier = ">=2.18,<2.21" },
     { name = "pymdown-extensions", marker = "extra == 'docs'", specifier = ">=10.3,<12.0" },
     { name = "pymongo", marker = "extra == 'mongo'", specifier = ">=4.9,<4.20" },

@@ -28,6 +28,30 @@ If you specify errors handler for dispatcher - it will be used for all handlers 
         ...
 
 
+Updates that can't be validated
+-------------------------------
+
+An update received through a webhook (or passed to :code:`Dispatcher.feed_raw_update`
+and :code:`Dispatcher.feed_webhook_update` as a dict) that fails validation is skipped:
+the webhook answers it with 200 so Telegram does not redeliver it, and the update is lost.
+The skip is logged on :code:`aiogram.webhook` with the number of validation errors
+(the raw update goes to the same logger at :code:`DEBUG`).
+
+When the raw update has an integer :code:`update_id`, errors handlers also receive an
+:code:`ErrorEvent` with the :code:`pydantic.ValidationError` as :code:`event.exception`.
+Its :code:`event.update` carries only :code:`update_id`, so every event field
+(:code:`event.update.message` and the others) is :code:`None`.
+An exception raised by such an errors handler is logged and does not change the answer.
+
+.. code-block:: python
+
+    from pydantic import ValidationError
+
+    @router.error(ExceptionTypeFilter(ValidationError))
+    async def skipped_update_handler(event: ErrorEvent):
+        logger.warning("Update %d was skipped", event.update.update_id)
+
+
 Network errors and the bot token
 ================================
 
