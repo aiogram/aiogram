@@ -25,6 +25,10 @@ from tests.mocked_bot import MockedBot
 # mypy-only files, run by `make typing`
 collect_ignore = ["typing"]
 
+# The suite blocks the plugin's entry point (``-p no:aiogram`` in pyproject.toml) and enables
+# it here, after coverage starts; ``pytest_plugins`` is only accepted in the root conftest.
+pytest_plugins = ["aiogram.test.plugin"]
+
 DATA_DIR = Path(__file__).parent / "data"
 
 CHAT_ID = -42

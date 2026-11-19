@@ -203,3 +203,25 @@ class TestStatesGroup:
 
         assert str(MyGroup()) == "StatesGroup MyGroup"
         assert str(MyGroup.MyNestedGroup()) == "StatesGroup MyGroup.MyNestedGroup"
+
+    def test_deeply_nested_group(self):
+        class A(StatesGroup):
+            class B(StatesGroup):
+                class C(StatesGroup):
+                    state1 = State()
+
+                    class D(StatesGroup):
+                        state1 = State()
+
+        assert A.__all_childs__ == (A.B, A.B.C, A.B.C.D)
+        assert A.B.C.__all_states_names__ == ("A.B.C:state1", "A.B.C.D:state1")
+        assert A.B.C.D.__all_states_names__ == ("A.B.C.D:state1",)
+
+        for group in (A, A.B, A.B.C):
+            assert "A.B.C.D:state1" in group
+            assert group()(None, "A.B.C.D:state1")
+        assert A.B.C.D()(None, "A.B.C.D:state1")
+        assert A.B.C.D in A
+
+        assert "B.C:state1" not in A.B.C
+        assert not A.B.C.D()(None, "C.D:state1")

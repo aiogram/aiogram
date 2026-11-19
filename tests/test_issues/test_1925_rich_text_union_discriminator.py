@@ -130,3 +130,9 @@ def test_nested_rich_text_validation_is_not_exponential():
         signal.signal(signal.SIGALRM, previous_handler)
 
     assert elapsed < 1.0
+
+
+def test_rich_text_array_stops_at_first_invalid_item():
+    with pytest.raises(ValidationError) as exc_info:
+        RICH_TEXT.validate_python([1] * 1000)
+    assert exc_info.value.error_count() == 1

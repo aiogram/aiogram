@@ -91,6 +91,31 @@ class TestCallbackData:
 
         assert MyCallback(foo="test", bar=42).pack() == "test:test:42"
 
+    @pytest.mark.parametrize(
+        "sep,values",
+        [
+            ["--", {"note": "rent-", "amount": "50"}],
+            ["::", {"note": "bob:", "amount": "user"}],
+            ["-=-", {"note": "x-=", "amount": "y"}],
+        ],
+    )
+    def test_pack_multichar_separator_across_values(self, sep, values):
+        class Withdraw(CallbackData, prefix="withdraw", sep=sep):
+            note: str
+            amount: str
+
+        with pytest.raises(ValueError, match="can not be formed across the values"):
+            Withdraw(**values).pack()
+
+    def test_pack_multichar_separator_roundtrip(self):
+        class Withdraw(CallbackData, prefix="withdraw", sep="--"):
+            note: str
+            amount: int
+
+        packed = Withdraw(note="a-b", amount=-5).pack()
+        assert packed == "withdraw--a-b---5"
+        assert Withdraw.unpack(packed) == Withdraw(note="a-b", amount=-5)
+
     def test_pack_uuid(self):
         class MyCallbackWithUUID(CallbackData, prefix="test"):
             foo: str

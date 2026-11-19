@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, cast
 
-from ..utils.mypy_hacks import lru_cache
 from .base import TelegramObject
 
 if TYPE_CHECKING:
@@ -181,7 +180,6 @@ class Update(TelegramObject):
         return hash((type(self), self.update_id))
 
     @property
-    @lru_cache()
     def event_type(self) -> str:
         """
         Detect update type

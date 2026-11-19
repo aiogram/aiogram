@@ -38,7 +38,7 @@ wheels = [
 
 [[package]]
 name = "aiogram"
-version = "3.32.0"
+version = "3.33.0"
 source = { editable = "." }
 dependencies = [
     { name = "aiofiles" },
@@ -86,6 +86,9 @@ redis = [
 signature = [
     { name = "cryptography" },
 ]
+test = [
+    { name = "pytest" },
+]
 
 [package.dev-dependencies]
 dev = [
@@ -122,10 +125,11 @@ requires-dist = [
     { name = "magic-filter", specifier = ">=1.0.12,<1.1" },
     { name = "markdown-include", marker = "extra == 'docs'", specifier = "~=0.8.1" },
     { name = "motor", marker = "extra == 'mongo'", specifier = ">=3.6.0,<3.8" },
-    { name = "pydantic", specifier = ">=2.7.0,<2.15" },
+    { name = "pydantic", specifier = ">=2.8.0,<2.15" },
     { name = "pygments", marker = "extra == 'docs'", specifier = ">=2.18,<2.21" },
     { name = "pymdown-extensions", marker = "extra == 'docs'", specifier = ">=10.3,<12.0" },
     { name = "pymongo", marker = "extra == 'mongo'", specifier = ">=4.9,<4.20" },
+    { name = "pytest", marker = "extra == 'test'", specifier = ">=8,<10" },
     { name = "redis", extras = ["hiredis"], marker = "extra == 'redis'", specifier = ">=6.2.0,<8" },
     { name = "sphinx", marker = "extra == 'docs'", specifier = "~=8.0.2" },
     { name = "sphinx-autobuild", marker = "extra == 'docs'", specifier = "~=2024.9.3" },
@@ -134,11 +138,11 @@ requires-dist = [
     { name = "sphinx-substitution-extensions", marker = "extra == 'docs'", specifier = "~=2024.8.6" },
     { name = "sphinxcontrib-towncrier", marker = "extra == 'docs'", specifier = "~=0.4.0a0" },
     { name = "towncrier", marker = "extra == 'docs'", specifier = "~=24.8.0" },
-    { name = "typing-extensions", specifier = ">=4.7.0,<=5.0" },
+    { name = "typing-extensions", specifier = ">=4.12.1,<=5.0" },
     { name = "uvloop", marker = "(python_full_version >= '3.13' and platform_python_implementation != 'PyPy' and sys_platform == 'darwin' and extra == 'fast') or (python_full_version >= '3.13' and platform_python_implementation != 'PyPy' and sys_platform == 'linux' and extra == 'fast')", specifier = ">=0.21.0" },
     { name = "uvloop", marker = "(python_full_version < '3.13' and platform_python_implementation != 'PyPy' and sys_platform == 'darwin' and extra == 'fast') or (python_full_version < '3.13' and platform_python_implementation != 'PyPy' and sys_platform == 'linux' and extra == 'fast')", specifier = ">=0.17.0" },
 ]
-provides-extras = ["fast", "redis", "mongo", "proxy", "i18n", "cli", "signature", "docs"]
+provides-extras = ["fast", "redis", "mongo", "proxy", "i18n", "cli", "signature", "test", "docs"]
 
 [package.metadata.requires-dev]
 dev = [

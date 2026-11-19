@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import inspect
+import warnings
 from collections import defaultdict
 from collections.abc import Mapping
 from dataclasses import dataclass, replace
@@ -919,6 +920,14 @@ class ObserverMarker:
         )
 
     def enter(self, *filters: CallbackType) -> ObserverDecorator:
+        if filters:
+            warnings.warn(
+                f"Filters passed to on.{self.name}.enter() are not checked when "
+                "the scene is entered and will be rejected in a future version. "
+                "Put them on the handler that enters the scene instead.",
+                DeprecationWarning,
+                stacklevel=2,
+            )
         return ObserverDecorator(self.name, filters, action=SceneAction.enter)
 
     def leave(self) -> ObserverDecorator:
