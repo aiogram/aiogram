@@ -25,6 +25,14 @@ from .modeling import SENDING_METHODS
 #: modeled later is counted with no edit here.
 RATE_LIMITED_METHODS: frozenset[type[TelegramMethod[Any]]] = frozenset(SENDING_METHODS)
 
+#: Digits an age is rounded to: the clock is a float sum, so ``now - stamp`` carries noise
+#: far below a microsecond that ``math.ceil`` would otherwise turn into a whole second.
+_AGE_DIGITS = 6
+
+
+def _age(now: float, stamp: float) -> float:
+    return round(now - stamp, _AGE_DIGITS)
+
 
 @dataclass(frozen=True)
 class RateLimit:
@@ -88,12 +96,12 @@ class FloodControl:
         stamps = self.sent.get(chat_id, deque())
         wait = 0.0
         for limit in self.limits.for_chat(chat_type):
-            recent = [stamp for stamp in stamps if now - stamp < limit.seconds]
+            # Elapsed first: `oldest + seconds - now` can round a full window up past a second.
+            ages = [_age(now, stamp) for stamp in stamps]
+            recent = [age for age in ages if age < limit.seconds]
             if len(recent) >= limit.messages:
                 oldest = recent[len(recent) - limit.messages]
-                # Elapsed first: subtracting two close clock readings is exact, while
-                # `oldest + seconds - now` can round a full window up past a second.
-                wait = max(wait, limit.seconds - (now - oldest))
+                wait = max(wait, limit.seconds - oldest)
         if wait <= 0:
             return None
         return max(1, math.ceil(wait))
@@ -106,5 +114,5 @@ class FloodControl:
             (limit.seconds for limit in self.limits.for_chat(chat_type)),
             default=0.0,
         )
-        while stamps and now - stamps[0] >= horizon:
+        while stamps and _age(now, stamps[0]) >= horizon:
             stamps.popleft()

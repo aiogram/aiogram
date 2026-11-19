@@ -268,6 +268,25 @@ class TestFloodControl:
 
         assert control.retry_after(1, "supergroup", now) == 60
 
+    def test_float_noise_in_the_age_does_not_add_a_second(self):
+        """``(now + 9) - now`` is just under 9 here, so 10 - age is just over 1."""
+        start = 126.13670881738115
+        control = FloodControl(RateLimits(per_chat=None, per_group=RateLimit(1, 10)))
+
+        control.record(1, "supergroup", start)
+
+        assert control.retry_after(1, "supergroup", start + 9.0) == 1
+
+    def test_float_noise_in_the_age_does_not_keep_a_forgotten_send(self):
+        """``(start + 60) - start`` is just under 60, which must still forget the send."""
+        start = 233.593
+        control = FloodControl(RateLimits(per_chat=None))
+
+        control.record(1, "supergroup", start, messages=5)
+        control.record(1, "supergroup", start + 60.0, messages=5)
+
+        assert list(control.sent[1]) == [start + 60.0] * 5
+
 
 class TestRecipe:
     async def test_a_declared_flood_refusal(self, make_env):
