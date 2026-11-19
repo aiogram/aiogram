@@ -1,0 +1,1 @@
+Fixed ``aiogram.test.flood.FloodControl.retry_after`` adding a second to the wait when float noise in the clock made an exact whole-second wait come out a hair above it.
