@@ -25,6 +25,11 @@ they are the ones verified against this project's toolchain:
   message, rerun as `rtk proxy uv run mypy aiogram`.
 - `rtk test`/`rtk err` accept a full command, so `uv run …` stays intact — which is what
   AGENTS.md mandates. `rtk ruff` / `rtk mypy` call the tool directly from the venv.
+- `rtk git push` can print nothing for a push that pushed nothing, for example when the branch
+  tracks `origin/dev-3.x`. Create branches with `git switch --no-track -c <b> origin/dev-3.x`,
+  and after every push check that `git rev-parse origin/<b>` equals `git rev-parse HEAD`.
+- rtk mangles `grep` with `\|` inside a pipeline. Use `grep -E 'a|b'` or wrap the whole
+  pipeline in `rtk proxy bash -c "…"`.
 
 ## graphify
 

@@ -8,6 +8,11 @@ This file defines how coding agents should contribute to `aiogram` on `dev-3.x`.
 - Python: `>=3.11`
 - Main tooling: `uv`, `ruff`, `mypy`, `pytest`, `towncrier`, `butcher`
 - Keep diffs focused; avoid unrelated refactors/reformatting.
+- Sync `dev-3.x` into a long-lived feature branch with a real merge, never a squash: a
+  squash drops the ancestry, and the next sync then conflicts on everything since. To
+  repair a lost base, run `git merge-tree --write-tree --merge-base=<real base> HEAD origin/dev-3.x`,
+  then `git commit-tree -S <printed tree> -p HEAD -p origin/dev-3.x -m <message>`. `commit-tree` ignores
+  `commit.gpgsign`, so always pass `-S`.
 
 ## Setup
 
@@ -41,6 +46,15 @@ Quick loop (recommended for most PR iterations). `make lint` runs ruff, both myp
 ```bash
 make lint
 uv run pytest tests
+```
+
+PyPy 3.11 on macOS arm64 segfaults on `copy` / `deepcopy` of `DefaultBotProperties`, and CI
+does not reproduce it. Before pushing a change that copies or pickles models, run the
+touched tests on a local PyPy, in a separate environment so `.venv` is left alone:
+
+```bash
+UV_PROJECT_ENVIRONMENT=/tmp/aiogram-pypy uv sync --locked --all-extras --group test --python pypy3.11
+UV_PROJECT_ENVIRONMENT=/tmp/aiogram-pypy uv run --no-sync python -m pytest <touched tests> -p no:cacheprovider
 ```
 
 When touching `.github/**`, also run:
