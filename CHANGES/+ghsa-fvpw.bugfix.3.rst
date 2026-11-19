@@ -1,1 +1,0 @@
-:code:`StateFilter(Group)`, :code:`Group()` and :code:`"..." in Group` now match the states of a :code:`StatesGroup` nested three or more levels deep. Reported by the Anthropic OSS Scanner (ANT-2026-664Y7GWN).
