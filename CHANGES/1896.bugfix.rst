@@ -1,0 +1,10 @@
+Fixed :class:`aiogram.utils.i18n.SimpleI18nMiddleware` falling back to the default locale for
+script-qualified Telegram language codes such as ``zh-hans`` or ``sr-latn`` (regression in 3.31.0):
+the bare language directory (``zh``, ``sr``) is used again when no ``zh_Hans``/``sr_Latn``
+translations exist, and for codes carrying a territory the ``zh_CN``-style directory is tried
+before the ``zh_Hans``-style one and the bare language. Locales already cached in FSM storage by
+:class:`aiogram.utils.i18n.FSMI18nMiddleware` are not re-resolved; clear the stored key or call
+``set_locale`` for affected users.
+
+Malformed or underscore-form ``language_code`` values (``en_US``, an empty string) no longer raise
+an error that dropped the whole update and now resolve to the default locale.
