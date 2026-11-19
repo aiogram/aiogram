@@ -265,6 +265,42 @@ class TestDispatcher:
         )
         assert result is dispatcher
 
+    @pytest.mark.parametrize("allowed", [True, False])
+    async def test_feed_update_checks_update_root_filters(self, bot: MockedBot, allowed: bool):
+        dp = Dispatcher()
+        calls = []
+
+        @dp.update.outer_middleware()
+        async def outer(handler, event, data):
+            calls.append("outer")
+            return await handler(event, data)
+
+        dp.update.filter(lambda update: {"role": "owner"} if allowed else False)
+
+        @dp.message()
+        async def my_handler(message: Message, role: str):
+            calls.append(role)
+            return message.text
+
+        result = await dp.feed_update(bot=bot, update=UPDATE)
+        if allowed:
+            assert result == "test"
+            assert calls == ["outer", "owner"]
+        else:
+            assert result is UNHANDLED
+            assert calls == ["outer"]
+
+    @pytest.mark.parametrize("allowed", [True, False])
+    async def test_update_root_filters_polling_and_webhook(self, bot: MockedBot, allowed: bool):
+        dp = Dispatcher()
+        dp.update.filter(lambda update: allowed)
+        dp.message.register(simple_message_handler)
+
+        assert await dp._process_update(bot=bot, update=UPDATE, call_answer=False) is allowed
+
+        response = await dp.feed_webhook_update(bot, RAW_UPDATE)
+        assert isinstance(response, TelegramMethod) is allowed
+
     async def test_listen_updates(self, bot: MockedBot):
         dispatcher = Dispatcher()
         bot.add_result_for(

@@ -1,0 +1,1 @@
+:code:`CallbackData.pack()` now refuses values that would not unpack back unchanged with a self-overlapping multi-character separator (such as :code:`"--"`), instead of letting the end of one value shift into the next field. Reported by the Anthropic OSS Scanner (ANT-2026-0M5J1VQ7).

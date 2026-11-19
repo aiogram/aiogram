@@ -166,7 +166,7 @@ class Dispatcher(Router):
 
         try:
             response = await self.update.wrap_outer_middleware(
-                self.update.trigger,
+                self._trigger_update,
                 update,
                 {
                     "dispatcher": self,
@@ -187,6 +187,15 @@ class Dispatcher(Router):
                 duration,
                 bot.id,
             )
+
+    async def _trigger_update(self, update: Update, **kwargs: Any) -> Any:
+        # `dp.update` is not reached through `_propagate_event`,
+        # so its root filters are checked here, the same way
+        result, data = await self.update.check_root_filters(update, **kwargs)
+        if not result:
+            return UNHANDLED
+        kwargs.update(data)
+        return await self.update.trigger(update, **kwargs)
 
     async def feed_raw_update(self, bot: Bot, update: dict[str, Any], **kwargs: Any) -> Any:
         """
