@@ -2,7 +2,7 @@
 
 | Field | Value |
 |---|---|
-| Status | `todo` |
+| Status | `done` |
 | Story | H — Testing & observability |
 | Target branch | `dev-4.x` |
 | Depends on | [A-01](../A-contracts/A-01-bootstrap-dev-4x.md) |
@@ -113,3 +113,17 @@ make lint
 - I-07 later moves `test` into the final extras list without changing its meaning.
 
 ## Notes
+
+- 2026-11-18 — first pass (#2018): path-limited import from `origin/feature/testing@9134b74e` with an opt-in
+  plugin, as this plan specifies. The drift fixes (Bot API 10.4 `widget_query` / `shared_widget_query` triggers,
+  ruff UP017/UP035/UP042) and three review fixes in the imported code were folded back into #1887.
+- 2026-11-19 — **the shipping-status decision is reversed.** The owner merged #1887 into `dev-3.x` (`52faf0ff`,
+  ships in 3.x) with the plugin auto-loaded through a lazy `pytest11` entry-point shim (`aiogram/test/_autoload.py`,
+  TW-188 in `design/testing-toolkit/decisions.md`), and revised D51 for 4.x to match. So the opt-in items in
+  *Scope*, *Checklist*, *Acceptance criteria* and the `pytest11` row of *Rejected alternatives* are superseded:
+  `dev-4.x` keeps the entry point and `addopts = "-p no:aiogram"`; no plugin-loading break, no PD-13
+  `removal-4.0` entry, no README request to A-02.
+- 2026-11-19 — the toolkit reaches `dev-4.x` through the regular `dev-3.x` → `dev-4.x` sync (owner's choice: one
+  sync after 3.33.0), not through an import. This plan keeps only the 4.x-specific part: the `test` extra is
+  `pytest>=8` without the `<10` cap (D70).
+- D51's text in `v4/research/` still says opt-in; that page belongs to A-02.

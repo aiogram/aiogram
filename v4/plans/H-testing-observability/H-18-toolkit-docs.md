@@ -40,7 +40,8 @@ It must move into the D80 (Diátaxis) structure and describe 4.0 behaviour.
     limitation.
 - Rewrite all examples:
   - keyword-only calls (D100);
-  - plugin enablement via `-p aiogram.test.plugin` / `pytest_plugins` (D51);
+  - the plugin loads on its own through the `pytest11` entry-point shim; `-p no:aiogram` turns it off (D51 as
+    revised 2026-11-19);
   - no `detach_router`;
   - diagnostics via the trace hook.
 - Every code block in the toolkit docs is a test. Use the existing docs-doctest mechanism if I-10 provides one;

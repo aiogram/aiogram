@@ -129,7 +129,7 @@ requires-dist = [
     { name = "pygments", marker = "extra == 'docs'", specifier = ">=2.18,<2.21" },
     { name = "pymdown-extensions", marker = "extra == 'docs'", specifier = ">=10.3,<12.0" },
     { name = "pymongo", marker = "extra == 'mongo'", specifier = ">=4.9,<4.20" },
-    { name = "pytest", marker = "extra == 'test'", specifier = ">=8,<10" },
+    { name = "pytest", marker = "extra == 'test'", specifier = ">=8" },
     { name = "redis", extras = ["hiredis"], marker = "extra == 'redis'", specifier = ">=6.2.0,<8" },
     { name = "sphinx", marker = "extra == 'docs'", specifier = "~=8.0.2" },
     { name = "sphinx-autobuild", marker = "extra == 'docs'", specifier = "~=2024.9.3" },
