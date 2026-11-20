@@ -1,0 +1,11 @@
+# sendMessage with parameters that are not in the pinned Bot API schema; they must reach the wire.
+schema = 1
+method = "sendMessage"
+
+[params]
+chat_id = 100000001
+text = "hello"
+
+[extra]
+future_param = "x"
+future_flag = true

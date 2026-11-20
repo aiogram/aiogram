@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Annotated, Any, TypeAlias
 
-from pydantic import Discriminator, Tag
+from pydantic import Discriminator, FailFast, Tag
 from typing_extensions import TypeAliasType
 
 from ..enums import RichTextType
@@ -81,7 +81,7 @@ else:
         "RichTextUnion",
         Annotated[
             Annotated[str, Tag("str")]
-            | Annotated[list["RichTextUnion"], Tag("list")]
+            | Annotated[list["RichTextUnion"], FailFast(), Tag("list")]
             | Annotated[RichTextBold, Tag(RichTextType.BOLD)]
             | Annotated[RichTextItalic, Tag(RichTextType.ITALIC)]
             | Annotated[RichTextUnderline, Tag(RichTextType.UNDERLINE)]

@@ -1,0 +1,202 @@
+# Five sibling routers under the root, six handlers each, Command and text == alternating (13 §1).
+schema = 1
+
+[variants]
+fsm = ["on", "off"]
+
+[[router]]
+name = "dp"
+
+[[router]]
+name = "r1"
+parent = "dp"
+
+[[router.handler]]
+id = "h0"
+event = "message"
+filters = [{ kind = "command", commands = ["c0"] }]
+
+[[router.handler]]
+id = "h1"
+event = "message"
+filters = [{ kind = "text_eq", value = "t1" }]
+
+[[router.handler]]
+id = "h2"
+event = "message"
+filters = [{ kind = "command", commands = ["c2"] }]
+
+[[router.handler]]
+id = "h3"
+event = "message"
+filters = [{ kind = "text_eq", value = "t3" }]
+
+[[router.handler]]
+id = "h4"
+event = "message"
+filters = [{ kind = "command", commands = ["c4"] }]
+
+[[router.handler]]
+id = "h5"
+event = "message"
+filters = [{ kind = "text_eq", value = "t5" }]
+
+[[router]]
+name = "r2"
+parent = "dp"
+
+[[router.handler]]
+id = "h6"
+event = "message"
+filters = [{ kind = "command", commands = ["c6"] }]
+
+[[router.handler]]
+id = "h7"
+event = "message"
+filters = [{ kind = "text_eq", value = "t7" }]
+
+[[router.handler]]
+id = "h8"
+event = "message"
+filters = [{ kind = "command", commands = ["c8"] }]
+
+[[router.handler]]
+id = "h9"
+event = "message"
+filters = [{ kind = "text_eq", value = "t9" }]
+
+[[router.handler]]
+id = "h10"
+event = "message"
+filters = [{ kind = "command", commands = ["c10"] }]
+
+[[router.handler]]
+id = "h11"
+event = "message"
+filters = [{ kind = "text_eq", value = "t11" }]
+
+[[router]]
+name = "r3"
+parent = "dp"
+
+[[router.handler]]
+id = "h12"
+event = "message"
+filters = [{ kind = "command", commands = ["c12"] }]
+
+[[router.handler]]
+id = "h13"
+event = "message"
+filters = [{ kind = "text_eq", value = "t13" }]
+
+[[router.handler]]
+id = "h14"
+event = "message"
+filters = [{ kind = "command", commands = ["c14"] }]
+
+[[router.handler]]
+id = "h15"
+event = "message"
+filters = [{ kind = "text_eq", value = "t15" }]
+
+[[router.handler]]
+id = "h16"
+event = "message"
+filters = [{ kind = "command", commands = ["c16"] }]
+
+[[router.handler]]
+id = "h17"
+event = "message"
+filters = [{ kind = "text_eq", value = "t17" }]
+
+[[router]]
+name = "r4"
+parent = "dp"
+
+[[router.handler]]
+id = "h18"
+event = "message"
+filters = [{ kind = "command", commands = ["c18"] }]
+
+[[router.handler]]
+id = "h19"
+event = "message"
+filters = [{ kind = "text_eq", value = "t19" }]
+
+[[router.handler]]
+id = "h20"
+event = "message"
+filters = [{ kind = "command", commands = ["c20"] }]
+
+[[router.handler]]
+id = "h21"
+event = "message"
+filters = [{ kind = "text_eq", value = "t21" }]
+
+[[router.handler]]
+id = "h22"
+event = "message"
+filters = [{ kind = "command", commands = ["c22"] }]
+
+[[router.handler]]
+id = "h23"
+event = "message"
+filters = [{ kind = "text_eq", value = "t23" }]
+
+[[router]]
+name = "r5"
+parent = "dp"
+
+[[router.handler]]
+id = "h24"
+event = "message"
+filters = [{ kind = "command", commands = ["c24"] }]
+
+[[router.handler]]
+id = "h25"
+event = "message"
+filters = [{ kind = "text_eq", value = "t25" }]
+
+[[router.handler]]
+id = "h26"
+event = "message"
+filters = [{ kind = "command", commands = ["c26"] }]
+
+[[router.handler]]
+id = "h27"
+event = "message"
+filters = [{ kind = "text_eq", value = "t27" }]
+
+[[router.handler]]
+id = "h28"
+event = "message"
+filters = [{ kind = "command", commands = ["c28"] }]
+
+[[router.handler]]
+id = "h29"
+event = "message"
+filters = [{ kind = "text_eq", value = "t29" }]
+
+[[event]]
+name = "first"
+update = "update.text.small"
+patch = { "message.text" = "/c0" }
+expect = "h0"
+
+[[event]]
+name = "mid"
+update = "update.text.small"
+patch = { "message.text" = "/c14" }
+expect = "h14"
+
+[[event]]
+name = "last"
+update = "update.text.small"
+patch = { "message.text" = "t29" }
+expect = "h29"
+
+[[event]]
+name = "unhandled"
+update = "update.text.small"
+patch = { "message.text" = "nope" }
+expect = "unhandled"

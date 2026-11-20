@@ -1,0 +1,1 @@
+{"update_id":10007,"inline_query":{"id":"8341294812948120","from":{"id":100000001,"is_bot":false,"first_name":"Alice","last_name":"Example","username":"alice_example","language_code":"en"},"query":"release 42","offset":"","chat_type":"sender","location":{"latitude":50.45,"longitude":30.52}}}

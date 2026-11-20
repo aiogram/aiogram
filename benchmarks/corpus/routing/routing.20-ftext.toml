@@ -1,0 +1,132 @@
+# Twenty `text == "tN"` handlers on the root router (13 §1).
+schema = 1
+
+[variants]
+fsm = ["on", "off"]
+
+[[router]]
+name = "dp"
+
+[[router.handler]]
+id = "h0"
+event = "message"
+filters = [{ kind = "text_eq", value = "t0" }]
+
+[[router.handler]]
+id = "h1"
+event = "message"
+filters = [{ kind = "text_eq", value = "t1" }]
+
+[[router.handler]]
+id = "h2"
+event = "message"
+filters = [{ kind = "text_eq", value = "t2" }]
+
+[[router.handler]]
+id = "h3"
+event = "message"
+filters = [{ kind = "text_eq", value = "t3" }]
+
+[[router.handler]]
+id = "h4"
+event = "message"
+filters = [{ kind = "text_eq", value = "t4" }]
+
+[[router.handler]]
+id = "h5"
+event = "message"
+filters = [{ kind = "text_eq", value = "t5" }]
+
+[[router.handler]]
+id = "h6"
+event = "message"
+filters = [{ kind = "text_eq", value = "t6" }]
+
+[[router.handler]]
+id = "h7"
+event = "message"
+filters = [{ kind = "text_eq", value = "t7" }]
+
+[[router.handler]]
+id = "h8"
+event = "message"
+filters = [{ kind = "text_eq", value = "t8" }]
+
+[[router.handler]]
+id = "h9"
+event = "message"
+filters = [{ kind = "text_eq", value = "t9" }]
+
+[[router.handler]]
+id = "h10"
+event = "message"
+filters = [{ kind = "text_eq", value = "t10" }]
+
+[[router.handler]]
+id = "h11"
+event = "message"
+filters = [{ kind = "text_eq", value = "t11" }]
+
+[[router.handler]]
+id = "h12"
+event = "message"
+filters = [{ kind = "text_eq", value = "t12" }]
+
+[[router.handler]]
+id = "h13"
+event = "message"
+filters = [{ kind = "text_eq", value = "t13" }]
+
+[[router.handler]]
+id = "h14"
+event = "message"
+filters = [{ kind = "text_eq", value = "t14" }]
+
+[[router.handler]]
+id = "h15"
+event = "message"
+filters = [{ kind = "text_eq", value = "t15" }]
+
+[[router.handler]]
+id = "h16"
+event = "message"
+filters = [{ kind = "text_eq", value = "t16" }]
+
+[[router.handler]]
+id = "h17"
+event = "message"
+filters = [{ kind = "text_eq", value = "t17" }]
+
+[[router.handler]]
+id = "h18"
+event = "message"
+filters = [{ kind = "text_eq", value = "t18" }]
+
+[[router.handler]]
+id = "h19"
+event = "message"
+filters = [{ kind = "text_eq", value = "t19" }]
+
+[[event]]
+name = "first"
+update = "update.text.small"
+patch = { "message.text" = "t0" }
+expect = "h0"
+
+[[event]]
+name = "mid"
+update = "update.text.small"
+patch = { "message.text" = "t10" }
+expect = "h10"
+
+[[event]]
+name = "last"
+update = "update.text.small"
+patch = { "message.text" = "t19" }
+expect = "h19"
+
+[[event]]
+name = "unhandled"
+update = "update.text.small"
+patch = { "message.text" = "nope" }
+expect = "unhandled"

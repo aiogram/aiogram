@@ -73,6 +73,13 @@ rtk git diff dev-3.x...HEAD --stat && rtk git diff dev-3.x...HEAD
   fixtures skip. A test whose assertion exists only under `--redis`/`--mongo` is
   effectively untested on macOS and Windows.
 - `pytest filterwarnings = ["error", …]` — any newly emitted warning fails.
+- Patterns that pass on Linux CPython and fail elsewhere. Flag them in new or changed tests:
+  - `read_text()` / `write_text()` / `open()` with no `encoding=`. Windows before 3.15
+    defaults to cp1252.
+  - A timing assert tighter than about 16 ms. The Windows timer ticks every 15.6 ms.
+  - A weakref or "object was freed" assert with no `gc.collect()` after the point that
+    releases the object. On PyPy a failed task sits in a traceback cycle until a
+    collection.
 - Optional extras (`redis`, `mongo`, `i18n`, `proxy`, `fast`, `signature`, `cli`) must
   stay optional: no unconditional import of an extra's package from `aiogram/`.
 

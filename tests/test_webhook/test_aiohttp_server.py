@@ -225,6 +225,81 @@ class TestSimpleRequestHandler:
         result = await resp.json()
         assert not result
 
+    @pytest.mark.parametrize("handle_in_background", [True, False])
+    async def test_invalid_update_is_answered_with_200(
+        self, bot: MockedBot, aiohttp_client, caplog, handle_in_background: bool
+    ):
+        app = Application()
+        dp = Dispatcher()
+        handled = Event()
+
+        @dp.message(F.text == "test")
+        async def handle_message(msg: Message):
+            handled.set()
+
+        handler = SimpleRequestHandler(
+            dispatcher=dp, bot=bot, handle_in_background=handle_in_background
+        )
+        handler.register(app, path="/webhook")
+        client: TestClient = await aiohttp_client(app)
+
+        resp = await client.post(
+            "/webhook",
+            json={
+                "update_id": 1,
+                "message": {
+                    "message_id": 1,
+                    "date": 1,
+                    "chat": {"id": 42, "type": "private"},
+                    "photo": [{}] * 100,
+                },
+            },
+        )
+        assert resp.status == 200
+        assert await resp.json() == {}
+        tasks = list(handler._background_feed_update_tasks)
+        await asyncio.gather(*tasks)  # re-raises if a background task failed
+        assert not handled.is_set()
+        [record] = [r for r in caplog.records if r.name == "aiogram.webhook"]
+        assert "Update id=1 is skipped" in record.getMessage()
+
+        # The next valid update is handled as usual
+        resp = await self.make_reqest(client=client)
+        assert resp.status == 200
+        await asyncio.wait_for(handled.wait(), timeout=3)
+
+    @pytest.mark.parametrize("handle_in_background", [True, False])
+    @pytest.mark.parametrize("charset", ["utf-16", "punycode"])
+    async def test_request_charset_is_ignored(
+        self, bot: MockedBot, aiohttp_client, handle_in_background: bool, charset: str
+    ):
+        app = Application()
+        dp = Dispatcher()
+        handled = Event()
+
+        @dp.message(F.text == "é")
+        async def handle_message(msg: Message):
+            handled.set()
+
+        handler = SimpleRequestHandler(
+            dispatcher=dp, bot=bot, handle_in_background=handle_in_background
+        )
+        handler.register(app, path="/webhook")
+        client: TestClient = await aiohttp_client(app)
+
+        update = {
+            "update_id": 1,
+            "message": {"message_id": 1, "date": 1, "chat": {"id": 42, "type": "private"}},
+        }
+        update["message"]["text"] = "é"
+        resp = await client.post(
+            "/webhook",
+            data=json.dumps(update, ensure_ascii=False).encode(),
+            headers={"Content-Type": f"application/json; charset={charset}"},
+        )
+        assert resp.status == 200
+        await asyncio.wait_for(handled.wait(), timeout=3)
+
     async def test_verify_secret(self, bot: MockedBot, aiohttp_client):
         app = Application()
         dp = Dispatcher()

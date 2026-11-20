@@ -8,6 +8,11 @@ This file defines how coding agents should contribute to `aiogram` on `dev-3.x`.
 - Python: `>=3.11`
 - Main tooling: `uv`, `ruff`, `mypy`, `pytest`, `towncrier`, `butcher`
 - Keep diffs focused; avoid unrelated refactors/reformatting.
+- Sync `dev-3.x` into a long-lived feature branch with a real merge, never a squash: a
+  squash drops the ancestry, and the next sync then conflicts on everything since. To
+  repair a lost base, run `git merge-tree --write-tree --merge-base=<real base> HEAD origin/dev-3.x`,
+  then `git commit-tree -S <printed tree> -p HEAD -p origin/dev-3.x -m <message>`. `commit-tree` ignores
+  `commit.gpgsign`, so always pass `-S`.
 
 ## Setup
 
@@ -36,11 +41,20 @@ Prefer Serena's symbol tools over `Read`/`Grep` for source code exploration. Onl
 
 Code style/lint in this repository is enforced via Ruff (`ruff check` + `ruff format`).
 
-Quick loop (recommended for most PR iterations). `make lint` runs ruff, both mypy passes and the pre-commit hooks exactly as CI does. The pre-commit hooks include fixers (`trailing-whitespace`, `end-of-file-fixer`, `ruff-format`), so `make lint` may modify files in the working tree; review `git diff` afterwards.
+Quick loop (recommended for most PR iterations). `make lint` runs ruff, both mypy passes and the pre-commit hooks exactly as CI does. The pre-commit hooks include fixers (`trailing-whitespace`, `end-of-file-fixer`, `ruff-format`), so `make lint` may modify files in the working tree; review `git diff` afterwards. `pre-commit run --all-files` only sees files git tracks: `git add` new files before `make lint`, or the hooks (`check-json`, `check-toml`, ruff) skip them.
 
 ```bash
 make lint
 uv run pytest tests
+```
+
+PyPy 3.11 on macOS arm64 segfaults on `copy` / `deepcopy` of `DefaultBotProperties`, and CI
+does not reproduce it. Before pushing a change that copies or pickles models, run the
+touched tests on a local PyPy, in a separate environment so `.venv` is left alone:
+
+```bash
+UV_PROJECT_ENVIRONMENT=/tmp/aiogram-pypy uv sync --locked --all-extras --group test --python pypy3.11
+UV_PROJECT_ENVIRONMENT=/tmp/aiogram-pypy uv run --no-sync python -m pytest <touched tests> -p no:cacheprovider
 ```
 
 When touching `.github/**`, also run:
@@ -92,6 +106,15 @@ uv run --extra cli butcher refresh
 uv run --extra cli butcher apply all
 ```
 
+- `butcher` is not shipped by the `cli` extra (`aiogram-cli` has no `butcher` script): it is the
+  separate [aiogram/butcher](https://github.com/aiogram/butcher) repo. Install it into its own
+  environment and run it from this repository root (`python -m butcher.shell.main apply all`).
+  A fix that needs new generator behaviour lands in butcher first, then in `.butcher` config here.
+- butcher formats with black, the repository with ruff, so raw `apply all` output differs from the
+  committed files. Run `ruff check --fix aiogram/types aiogram/methods` (import order) and
+  `ruff format aiogram` afterwards; on a clean tree that sequence yields an empty `git diff`, which
+  is the check that a `.butcher` change survives regeneration.
+
 For maintainers preparing an API/version bump only:
 
 ```bash
@@ -111,6 +134,16 @@ These patterns repeatedly appeared in maintainer feedback and should be treated 
 - Keep test style consistent with existing suite; avoid introducing new dependencies for small tests.
 - Preserve framework contracts (e.g., dispatcher/workflow data passed to startup/shutdown callbacks).
 - When fixing generated API metadata/docs, update the source mapping in `.butcher` so future regenerations keep the fix.
+- Pytest runs with `filterwarnings = ["error", ...]`: a new `warnings.warn(...)` in library code (e.g. a
+  `DeprecationWarning`) fails every existing test that reaches it. Find those tests first, then either stop
+  them from triggering it or assert it with `pytest.warns`.
+
+## Benchmark corpus (`benchmarks/corpus/`)
+
+- Pinned inputs for benchmarks and differential oracles; schema in `benchmarks/corpus/README.md`. `benchmarks/` is dev tooling, excluded from the sdist and wheel.
+- Append-only: never edit a pinned file, add a new id. Every file needs a `MANIFEST.toml` entry with its sha256; `tests/test_corpus_manifest.py` enforces this and rejects anything matching a bot-token pattern. Corpus files are `-text` in `.gitattributes` so Windows checkouts keep the hashed bytes; keep new corpus paths under that rule rather than normalising line endings in the hash.
+- `on_3x` records whether current 3.x decodes each update/response input. A change that makes 3.x accept or reject one (e.g. a forward-compat fallback) updates that field in the same PR.
+- Real traces: record with `benchmarks/record/recorder.py` into the gitignored `benchmarks/record/raw/`, commit only the output of `benchmarks/record/redact.py`, after a manual review.
 
 ## 4.0 planning tree (`v4/`)
 
@@ -124,6 +157,16 @@ These patterns repeatedly appeared in maintainer feedback and should be treated 
   `v4/plans/_TEMPLATE.md` (paths relative to a story folder). Any other hit is yours.
 - A public plan's checklist may still point at work that belongs to a held-back plan. Skip such an item rather than
   paraphrasing it, and keep the *Notes* entry neutral ("left to the owner"); explain it only in the private report.
+- `aiogram/_migration/registry.toml` is the migration registry (PD-13), plain data that is never imported. Its ids are
+  append-only and sorted, and each kind stays in its PD-33 block: on `dev-3.x`, new hand-written entries go in
+  AG4700–AG4799 and generated `api-ledger` entries in AG4800–AG4999. AG4001–AG4699 are allocated on `dev-4.x`
+  only. The schema is documented in the file header, and `tests/test_migration_registry.py` enforces it.
+
+## Developer design notes (`design/`)
+
+- `design/testing-toolkit/` holds the architecture, invariants and decision log of `aiogram.test`. Read it before
+  changing the toolkit, and update it in the same PR. Code cites decisions as "design decision TW-<n>".
+- `design/` is excluded from the sdist and is not part of the Sphinx docs.
 
 ## Documentation work
 
