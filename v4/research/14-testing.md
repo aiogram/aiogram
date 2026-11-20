@@ -1,7 +1,8 @@
 # 14 — Testing toolkit ("Testing World", PR #1887) in 4.0
 
 PR #1887 adds `aiogram.test`, an integration-testing toolkit for bots, both for the framework's own suite and for
-end users. Branch `origin/feature/testing` (Wave 2, #1951, 2026-10-31) is unmerged and behind dev-3.x.
+end users. It merged into `dev-3.x` and shipped in 3.33.0 as an experimental (provisional-API) toolkit. The sizes
+below are from the branch `origin/feature/testing` (Wave 2, #1951, 2026-10-31), before the merge.
 
 **Size:**
 - 17 006 lines of source in `aiogram/test/**` (20 files) and 26 235 lines of tests (about 1 880 tests).
@@ -29,7 +30,7 @@ end users. Branch `origin/feature/testing` (Wave 2, #1951, 2026-10-31) is unmerg
 
 | # | Decision |
 |---|---|
-| **D51** | **Part of the core distribution, with an opt-in plugin.** `aiogram.test` ships inside the single `aiogram` wheel (D17), because its generated parts must match the installed API. There is **no `pytest11` entry point**: users enable it with `-p aiogram.test.plugin` or `pytest_plugins = ["aiogram.test.plugin"]`. The `aiogram[test]` extra pulls in pytest. aiogram's own suite then needs no `-p no:aiogram` workaround |
+| **D51** | **Part of the core distribution; the plugin loads on its own.** `aiogram.test` ships inside the single `aiogram` wheel (D17), because its generated parts must match the installed API. The `pytest11` entry point `aiogram` names a lazy shim, `aiogram.test._autoload`, which only sets `pytest_plugins = ["aiogram.test.plugin"]`, so users need no setup step. `-p no:aiogram` turns it off. `-p aiogram.test.plugin` and `pytest_plugins` stay valid where autoloading is disabled. aiogram's own suite blocks the entry point in `addopts` and enables the plugin from `tests/conftest.py`. The `aiogram[test]` extra pulls in pytest. 3.x (since 3.33.0) and 4.0 behave the same, so this is not a 4.0 break and has no migration-registry entry. *Revised by the owner, 2026-11-19; it was "opt-in, no entry point". See [TW-188](../../design/testing-toolkit/decisions.md)* |
 | **D52** | **Calls are intercepted at the typed level (as today)**: the fake receives method objects and never runs the Rust encoder/decoder. Codec fidelity is covered by the codec's own tests and the request differential harness (08 §5, 13 B8) |
 | **D53** | **Identity through cache seeding** (01 §3.1). A Rust constructor puts the objects passed to it into the child wrapper cache, so `Update(message=m).message is m` holds for unbound construction. Scope revised by D103: identity holds **within one view**, not across `as_()`. The world therefore builds updates **already bound** to the target bot, so the dispatcher never remounts them, and the toolkit keeps its promise that `message is chat.messages[-1]` inside handlers. Mechanism conditional on the spike gate (D104) |
 | **D54** | **An official dispatcher trace hook** (span context managers, D63; the toolkit uses the callback adapter) (03 §5, "Instrumentation") replaces the toolkit's middleware injection for route diagnostics. The OpenTelemetry PR #1787 and logging use the same hook. For per-test setup, use a fresh `Dispatcher` per environment, or mutate it and call `runner.refresh()` (or restart), since each Runner routes on a snapshot (D114). There is no swapping of `dp.fsm.storage` / `workflow_data` while running |
@@ -65,7 +66,7 @@ end users. Branch `origin/feature/testing` (Wave 2, #1951, 2026-10-31) is unmerg
   decision id and a narrow assertion) or newly supported; 4.0's intended changes are approved differences, not
   snapshot exclusions.
 - **Free-threading:** documented as **single-loop only**; the `World` has no locks.
-- **Branch:** rebase onto dev-3.x first, then port during roadmap phase 4.
+- **Branch:** rebase onto dev-3.x first, then port during milestone H.
 - **Dogfooding (D88):** `MockedBot` stays for unit tests of single components. New end-to-end integration tests
   (dispatcher + FSM + scenes + filters + errors) use the toolkit. There is no mass rewrite.
 - **OpenSpec (D89):** all OpenSpec files (`openspec/**`, about 22k lines) are **dropped** from the merge and stay in

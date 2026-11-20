@@ -35,11 +35,13 @@ body = _core.encode(method, defaults=bot.default)   # -> JsonBody(bytes) | Multi
 ```
 
 - Walks the Rust method struct directly: no `model_dump`, no Python recursion.
-- Resolves `Default(...)` against `DefaultBotProperties` (converted to a Rust struct once per bot).
-- Value rules (B17, also 01 §3.1): `timedelta` as seconds, naive datetimes as local time, half-even rounding;
-  `timeout <= 0` means no deadline.
-- Lazy text (D117) is rendered once per request snapshot with the i18n context captured when the method was
-  created or returned; text **and** entities come from that one render, and retries reuse it.
+- Resolves `Default(...)` against `DefaultBotProperties`, which becomes `frozen` (PD-20), so it is converted to a
+  Rust struct once per bot.
+- Value rules (B17, also 01 §3.1): a `timedelta` encodes as the absolute unix time `now + delta`, as 3.x does
+  (PD-11), naive datetimes as local time, half-even rounding; `timeout <= 0` means no deadline.
+- Lazy text (D117) is rendered once per request snapshot with the i18n context captured when a handler returns the
+  method or when `bot(method)` is called; method constructors stay i18n-free (PD-07). Text **and** entities come
+  from that one render, and retries reuse it.
 - No files → **`application/json` body** (the Bot API accepts it; the schema documents JSON bodies for all
   methods). Files → multipart: the schema's `encoding` map tells which parts are JSON-encoded. `InputFile`
   objects are returned to Python as `(name, InputFile)` pairs, and Python streams them (`InputFile.read()`
@@ -56,6 +58,8 @@ result = _core.decode_response(method_cls, raw_bytes, bot)   # Response[T] witho
   `mediaTypes`, e.g. `MessageOrTrueResult`). Bot is bound once in the root view (D103, 01 §3.2).
 - `{"ok": false, …}` → `(error_code, description, parameters)` handed to Python, which maps them to the 3.x
   exception classes with `e.reason` (`ErrorReason`, D47).
+- A body that can't be decoded raises the 3.x `ClientDecodeError`, which gains `.raw` (the received bytes)
+  instead of a new `TelegramDecodeError` class (PD-29; D47: no new classes).
 - `getUpdates` decodes the array into a tuple of `Update` in one call.
 - **No intermediate tree (13 B22)**: the envelope is parsed by borrowing `result` as a raw byte slice, and the
   typed decode reads it in place (unions lex their slice twice, 01 §3.1). For `getUpdates`, each element's slice is
@@ -67,14 +71,17 @@ result = _core.decode_response(method_cls, raw_bytes, bot)   # Response[T] witho
 
 - `make_request`, `stream_content`, `close` stay abstract. Users' httpx/other sessions keep working.
 - `prepare_value` / `check_response` stay overridable. The Rust fast path is used only when
-  `type(session).prepare_value is BaseSession.prepare_value` and the JSON hooks are defaults; otherwise the
-  old Python path runs, so subclasses don't break.
-- `json_loads` / `json_dumps` hooks stay. Default `json_dumps` → Rust core (`_core.to_json`) that understands
-  aiogram types; `json_loads=None` keeps meaning "decode in core". JSON hooks may return `str` or `bytes` (R18).
+  `type(session).prepare_value is BaseSession.prepare_value`; otherwise the old Python path runs, so subclasses
+  don't break.
+- Session `json_loads` / `json_dumps` **do not affect the Bot API wire** (PD-08): requests, responses and update
+  decoding always use the Rust codec. The parameters are still accepted but deprecated, and documented as ignored
+  for API traffic. FSM storages keep their own codec hooks (04 §3).
 - `TelegramMethod.to_json()` is the model representation (unresolved `Default` omitted) and raises for
   `InputFile` values; the ready request is built only by the encoder (R18).
 - Request middlewares (`RequestMiddlewareManager`) keep their API; the chain is prebuilt and rebuilt only on
   `register`/`unregister`.
+- **Token-safe errors** (R22, PD-14): aiogram never builds token-bearing exception text; aiohttp errors are wrapped
+  `from None`, with the original on `.original` (D-03). The log redaction filters are H's (15 §5).
 - `TelegramAPIServer` (local Bot API) unchanged.
 
 ### 2.4 Webhook
@@ -91,13 +98,13 @@ result = _core.decode_response(method_cls, raw_bytes, bot)   # Response[T] witho
 
 | # | Decision |
 |---|---|
-| **D43** | **Opt-in `RetryMiddleware`** (request middleware, `aiogram.client.session.middlewares`): `bot.session.middleware(RetryMiddleware(max_retries=3, max_wait=30))`. **429** is retried after `retry_after`, which is always safe because Telegram didn't execute the request. If `retry_after > max_wait`, it raises immediately. **Network errors / 5xx** are retried with `backoff` only for methods marked `idempotent` in the generated metadata (plus user overrides, `retry_methods=`), not by a `get*` prefix; `getUpdates` is excluded (the Poller owns it), and sends are never retried (risk of duplicates). `RetryMiddleware` is outermost. Uploads are retried only when every `InputFile` is `replayable` (True for built-ins). Lazy text is rendered once per request snapshot (R19). Nothing changes unless it is installed |
+| **D43** | **Opt-in `RetryMiddleware`** (request middleware, `aiogram.client.session.middlewares`): `bot.session.middleware(RetryMiddleware(max_retries=3, max_wait=30))`. **429** is retried after `retry_after`, which is always safe because Telegram didn't execute the request. If `retry_after > max_wait`, it raises immediately. **Network errors / 5xx** are retried with `backoff` only for methods marked `idempotent` in the generated metadata (plus user overrides, `retry_methods=`), not by a `get*` prefix; `getUpdates` is excluded (the Poller owns it), and sends are never retried (risk of duplicates). New methods default to non-idempotent and `butcher check` requires an explicit decision; raw `bot.call` retries only 429 (PD-25, 02 §3). `RetryMiddleware` is outermost and exposes the attempt number; `API_CALL` spans are **per attempt**, inside it (PD-17). Uploads are retried only when every `InputFile` is `replayable` (True for built-ins). Lazy text is rendered once per request snapshot (R19). Nothing changes unless it is installed |
 | **D44** | **Opt-in `RateLimitMiddleware`**: token buckets per event loop, `global_rps=30`, `per_chat_rps=1`, `per_group_per_minute=20`, all configurable because Telegram's limits are approximate and can change. It waits instead of sending. The chat key comes from the method's `chat_id`; methods without one count only against the global bucket. It sits inside `RetryMiddleware` and charges **every attempt**, refunding tokens on cancel-while-waiting (R19). Under free-threading the buckets are per loop, so a multi-thread setup divides the limits explicitly (documented) |
 | **D45** | **Sessions stay per bot** (3.x). The docs show sharing one session across many bots, plus `close_bot_session=False` / `Runner.add_bot(..., close_session=False)` (12 §5) |
-| **D46** | **Downloads**: `timeout` becomes per-phase (`connect`, `sock_read` idle) with no total cap by default and an optional `total=`. New `async for chunk in bot.stream(file_or_path, chunk_size=…)`. Typed overloads: a path destination returns `None`; `BinaryIO` / `None` returns `BinaryIO`. Old kwargs are still accepted; an int `timeout=` maps to `total=` for compatibility. The stream is closed on every path, which fixes the traceback leak (13 §4) |
+| **D46** | **Downloads**: `timeout` becomes per-phase (`connect`, `sock_read` idle) with no total cap by default and an optional `total=`. New `async for chunk in bot.stream(file_or_path, chunk_size=…)`. Typed overloads: a path destination returns `None`; `BinaryIO` / `None` returns `BinaryIO`. Old kwargs are still accepted; an int `timeout=` maps to `total=` for compatibility. The stream is closed on every path, which fixes the traceback leak (13 §3 B9) |
 
 Defaults unchanged: request middlewares, proxies (`aiohttp_socks`), `TelegramAPIServer` / local mode,
-`bot.me()` caching. `bot.id` is computed once at init.
+`bot.me()` caching. `bot.id` is computed once at init. `DefaultBotProperties` becomes `frozen` (PD-20).
 
 ## 3. Rejected
 

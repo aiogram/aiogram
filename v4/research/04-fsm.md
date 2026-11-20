@@ -33,26 +33,30 @@ Path: `fsm/middleware.py:46-53` (`bot.id` re-parses the token each call) → `re
 
 ## 3. v4 design
 
-- **`MemoryStorage`**: sharded (e.g. 64 shards) `dict` + `threading.Lock` per shard. Read paths use `.get()`
-  (no record creation). `update_data` is one critical section. Data copies are made inside the shard lock.
-  `HistoryManager` copies the history list before mutating.
+- **`MemoryStorage`**: **one `dict` + one `threading.Lock`** (PD-21); no shards until contention is measured.
+  Read paths use `.get()` (no record creation). `update_data` is one critical section. Data copies are made inside
+  the lock. `HistoryManager` copies the history list before mutating.
 - **Isolation**: new lock table that works across threads and loops: per key `{held, waiters: deque[(loop, future)]}`
   under a shard lock. Hand-off on release via `waiter_loop.call_soon_threadsafe(fut.set_result, None)`,
   or a direct `set_result` when on the same loop (keeps the single-loop fast path). Cancelled waiters pass the
   hand-off on. Entries are pruned when there is no holder and no waiters. `DisabledEventIsolation.lock` returns a shared
-  `nullcontext()`.
+  `nullcontext()`. **Re-entrant acquisition** of the same key in the same task raises `RuntimeError` (PD-26), so the
+  breaking-change-15 deadlock becomes an error.
 - **`StorageKey`**: `slots=True`. Keep it frozen (users rely on `dataclasses.replace`, `scene.py:36`);
   `slots` alone saves memory, and the speedup comes from building fewer keys (cache per update).
 - **Middleware**: cache `bot.id`; `StateFilter` precomputes a `frozenset` of state strings; `State.state`
   is computed once at class creation.
 - **Redis**: 4.0 ships the legacy `RedisStorage` layout only (D113, revises D29; §6). It gets batched
-  `HistoryManager` ops and a pipelined state+data read, with no Lua and no multi-key scripts. Document "one Redis storage per loop" unless redis-py pool sharing across loops is
-  verified safe.
+  `HistoryManager` ops and a pipelined state+data read, with no Lua and no multi-key scripts. It is **single-loop**
+  in 4.0 (PD-09): use from a second loop raises a clear error, and multi-Runner or sharded deployments with Redis are
+  documented as unsupported in 4.0.
 - **Mongo**: remove the deprecated `MongoStorage` (motor, no free-threaded wheels); `PyMongoStorage` (PyMongo
   async, already in 3.x) is the only Mongo backend ([11](11-removals.md) §5). Data keys containing `.`, a leading
-  `$` or the empty string are rejected with a clear error (D113; dotted-path bug in 3.x).
-- JSON hooks stay; default `json_dumps` → the Rust core encoder, which handles
-  aiogram types natively (pydantic is not a dependency, D14).
+  `$` or the empty string are rejected with a clear error (D113; dotted-path bug in 3.x). Single-loop like Redis
+  (PD-09).
+- JSON hooks stay, and the default codec stays **stdlib `json`** (PD-22). The Rust core encoder, which handles
+  aiogram types natively (pydantic is not a dependency, D14), is opt-in. Session `json_*` params are a separate,
+  deprecated mechanism that never reaches FSM storages (PD-08, 05 §2.3).
 
 ## 4. Decisions (D27–D30)
 
@@ -63,7 +67,7 @@ Path: `fsm/middleware.py:46-53` (`bot.id` re-parses the token each call) → `re
 | **D29** | ~~Two Redis storages side by side~~ (revised by D113, see 19): 4.0 ships the legacy `RedisStorage` layout only; `RedisHashStorage` and its migration tooling are deferred to a 4.x minor (§6) |
 | **D30** | **Typed FSM data** (§7): `FSMData` classes in `CallbackData` style with nested types, plus pluggable adapters for pydantic, attrs and msgspec. The dict API stays |
 
-`update_data` is **atomic** in every built-in storage: one shard-lock section for Memory, isolation (D28) for
+`update_data` is **atomic** in every built-in storage: one lock section for Memory (PD-21), isolation (D28) for
 Redis (D113: no Lua, user codec hooks unchanged), and `$set` on `data.<k>` for PyMongo, which already keeps one
 document per key and returns an atomic post-update snapshot. `BaseStorage.update_data` keeps its get+set fallback
 for custom storages, now documented as non-atomic.
