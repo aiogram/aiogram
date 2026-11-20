@@ -67,11 +67,12 @@ later (H-12, gate-conditional), so this part doesn't wait for B. This plan holds
       Record the decision in *Notes* and flag it to the owner.
       *Answered 2026-11-19: shipped in 3.33.0 with the entry-point shim, which 4.x keeps; no break, no PD-13 entry,
       no README request.*
-- [x] Changelog fragment `CHANGES/2029.misc.rst` for the `test` extra. The toolkit's own fragment shipped in 3.33.0.
+- [x] No changelog fragment: the PR carries `skip news`, I-07 writes the 4.0 extras fragment, and the toolkit's own
+      fragment shipped in 3.33.0.
 
 ## Acceptance criteria
 
-- `git diff --stat origin/dev-4.x` of the PR touches only `pyproject.toml`, `uv.lock`, `CHANGES/*` and `v4/plans/**`.
+- `git diff --stat origin/dev-4.x` of the PR touches only `pyproject.toml`, `uv.lock` and `v4/plans/**`.
 - `origin/dev-4.x` contains `52faf0ff`. No `openspec/` directory.
 - `uv run pytest tests` passes, including about 2 900 toolkit tests. Coverage stays at 100% with `aiogram/test/**`
   measured.
@@ -125,3 +126,5 @@ make lint
 - 2026-11-20 — re-plan (owner): *Motivation*, *Scope*, *Checklist*, *Acceptance criteria* and *Rejected
   alternatives* are rewritten to the real mechanism (the `dev-3.x` sync and the TW-188 shim). The opt-in text the
   2026-11-19 notes call superseded is in this file's history.
+- 2026-11-20 — owner: no changelog fragment for the `test` extra cap (too small for the 4.0 notes; I-07 writes the
+  extras fragment). #2018 carries `skip news`.
