@@ -40,8 +40,9 @@ It must move into the D80 (Diátaxis) structure and describe 4.0 behaviour.
     limitation.
 - Rewrite all examples:
   - keyword-only calls (D100);
-  - the plugin loads on its own through the `pytest11` entry-point shim; `-p no:aiogram` turns it off (TW-188;
-    D51 as revised 2026-11-19, see H-10's Notes, which win over D51's research text until A-02 updates it);
+  - no plugin setup step: the plugin loads on its own through the `pytest11` entry-point shim, and examples that
+    show the switch use `-p no:aiogram` to turn it off, never `-p aiogram.test.plugin` (TW-188; D51 as revised
+    2026-11-19, see H-10's Notes);
   - no `detach_router`;
   - diagnostics via the trace hook.
 - Every code block in the toolkit docs is a test. Use the existing docs-doctest mechanism if I-10 provides one;
