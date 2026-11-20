@@ -324,7 +324,8 @@ Each line is a `Decide …` checklist item with its proposed default. Owner answ
 - **Decide the `router` label for unnamed routers.** 3.x `Router(name=None)` defaults to `hex(id(self))`,
 
 ## [H-10](H-testing-observability/H-10-testing-world-import.md) — Testing World import + packaging
-- **Decide #1887's shipping status in 3.x** (proposed default: #1887 does **not** merge into `dev-3.x`; the
+- **#1887's shipping status in 3.x: decided.** #1887 shipped in 3.33.0, with the plugin auto-loaded through a lazy
+  entry-point shim (TW-188). D51 is revised to match, so 4.0 is not a break and needs no PD-13 entry.
 
 ## [H-11](H-testing-observability/H-11-generated-toolkit-tables.md) — Generated toolkit tables + fake-coverage guard
 - **Decide `BOT_RIGHTS`.** Admin rights per method are not in the IR (proposed default: it stays hand-written

@@ -1,7 +1,8 @@
 # 14 — Testing toolkit ("Testing World", PR #1887) in 4.0
 
 PR #1887 adds `aiogram.test`, an integration-testing toolkit for bots, both for the framework's own suite and for
-end users. Branch `origin/feature/testing` (Wave 2, #1951, 2026-10-31) is unmerged and behind dev-3.x.
+end users. It merged into `dev-3.x` and shipped in 3.33.0 as an experimental (provisional-API) toolkit. The sizes
+below are from the branch `origin/feature/testing` (Wave 2, #1951, 2026-10-31), before the merge.
 
 **Size:**
 - 17 006 lines of source in `aiogram/test/**` (20 files) and 26 235 lines of tests (about 1 880 tests).

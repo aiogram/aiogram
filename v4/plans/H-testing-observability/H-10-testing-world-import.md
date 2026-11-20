@@ -68,11 +68,9 @@ The model-API port happens later (H-12, gate-conditional), so this part doesn't 
 - [ ] `pyproject.toml`: no `pytest11` entry point, no `-p no:aiogram`, `test = ["pytest>=8"]`.
 - [ ] Root `tests/conftest.py` loads the plugin. Coverage report shows `aiogram/test/*` measured.
 - [ ] Make the imported suite green against `dev-4.x` HEAD (drift fixes only, listed in the PR body).
-- [ ] **Decide #1887's shipping status in 3.x** (proposed default: #1887 does **not** merge into `dev-3.x`; the
-      toolkit first ships in 4.0, so the opt-in plugin is not a break). If the owner ships it in 3.x with the
-      entry point, this plan adds a migration-registry entry (PD-13, `removal-4.0`: "the `aiogram` pytest plugin is
-      no longer auto-loaded; add `-p aiogram.test.plugin`") and a README breaking-change item request to A-02.
-      Record the decision in *Notes* and flag it to the owner.
+- [x] **#1887's shipping status in 3.x: decided.** #1887 shipped in 3.33.0 with the plugin auto-loaded through a
+      lazy entry-point shim (TW-188), and D51 is revised to match, so 4.0 keeps auto-loading: no break, no PD-13
+      entry. The import scope above predates this decision; see *Notes*.
 - [ ] Note in the PR body that PR #1887 is superseded on `dev-4.x` by this import.
 - [ ] Changelog fragment (new `aiogram.test` toolkit, opt-in plugin).
 
@@ -113,3 +111,9 @@ make lint
 - I-07 later moves `test` into the final extras list without changing its meaning.
 
 ## Notes
+
+- 2026-11-20 (A-02): #1887 merged into `dev-3.x` and shipped in 3.33.0, and the owner revised D51: the plugin
+  auto-loads through the `pytest11` shim `aiogram.test._autoload` (TW-188 in `design/testing-toolkit/`). The
+  toolkit now reaches `dev-4.x` through the `dev-3.x` sync, so the path-limited import, "no `pytest11` entry
+  point", the "does not load the plugin" acceptance check, the opt-in changelog wording and the `pytest11`
+  rejected alternative are out of date. Left to the owner to re-plan before this plan starts.

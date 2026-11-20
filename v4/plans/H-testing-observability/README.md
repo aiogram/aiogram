@@ -71,7 +71,7 @@ toolkit:         H-10 ─▶ H-14 ─▶ H-15
 | SpanKind gaps: DECODE/DEPENDENCY kinds, isolation wait. Proposed: attributes, no new kinds | H-05 |
 | Default `exclude` for OTel. Proposed: FILTER spans off by default | H-08 |
 | `router` metric label for unnamed routers | H-09 |
-| #1887 shipping status in 3.x. Proposed: not shipped in 3.x | H-10 |
+| #1887 shipping status in 3.x. Decided: shipped in 3.33.0, plugin auto-loaded (D51 revised); no PD-13 entry | H-10 |
 | `BOT_RIGHTS` stays hand-written, guarded | H-11 |
 | Per-receiving-bot identity scope | H-13 |
 | Sync `bot_env` fixture vs async lifecycle. Proposed: sync + `async with env.running()` | H-14 |
