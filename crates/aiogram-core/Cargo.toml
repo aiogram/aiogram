@@ -1,0 +1,19 @@
+[package]
+name = "aiogram-core"
+version = "3.33.0"
+publish = false
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[lib]
+name = "_core"
+crate-type = ["cdylib"]
+
+[dependencies]
+pyo3.workspace = true
+jiter.workspace = true
+
+[lints]
+workspace = true

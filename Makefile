@@ -45,6 +45,11 @@ lint:
 	uv run mypy --native-parser --num-workers 8 --platform win32 $(package_dir)
 	uv run pre-commit run --all-files --show-diff-on-failure
 
+# tests/typing/ holds mypy-only `assert_type` cases (never collected by pytest)
+.PHONY: typing
+typing:
+	uv run mypy $(package_dir) $(tests_dir)/typing
+
 .PHONY: lint-workflows
 lint-workflows:
 	uv run scripts/check_action_refs.py
@@ -104,6 +109,15 @@ $(locale_targets): docs-serve-%:
 # Project
 # =================================================================================================
 
+# the native extension (crates/aiogram-core): `dev` is a fast debug build, `bench` the release one
+.PHONY: dev
+dev:
+	uvx --from 'maturin>=1.14,<2' maturin develop --uv
+
+.PHONY: bench
+bench:
+	uvx --from 'maturin>=1.14,<2' maturin develop --uv --release
+
 .PHONY: build
 build: clean
 	uv build
@@ -112,6 +126,8 @@ build: clean
 bump:
 	uv run python scripts/bump_version.py $(args)
 	uv run python scripts/bump_versions.py
+	cargo update --workspace
+	uv lock
 
 update-api:
 	uv run --extra cli butcher parse

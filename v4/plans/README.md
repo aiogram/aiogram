@@ -140,7 +140,7 @@ Verification method and results: [_VERIFICATION.md](_VERIFICATION.md).
 | [A-10](A-contracts/A-10-routing-oracle.md) | Routing oracle, 3.x side | `todo` | no | L | A-04, A-07 |
 | [A-11](A-contracts/A-11-migration-registry.md) | Migration registry: `registry.toml` schema, id allocation, seed | `todo` | no | M | A-01 |
 | [B-00](B-spike/B-00-freeze-gate-spec.md) | Freeze the gate spec | `todo` | no | M | A-04, A-05, A-06 |
-| [B-01](B-spike/B-01-crate-maturin-skeleton.md) | Crate + maturin skeleton + minimal CI | `todo` | no | M | A-01 |
+| [B-01](B-spike/B-01-crate-maturin-skeleton.md) | Crate + maturin skeleton + minimal CI | `done` | no | M | A-01 |
 | [B-02](B-spike/B-02-bench-adapter-memory-estimator.md) | Bench harness 4.0 adapter + memory estimator | `todo` | no | M | A-04, A-05, A-06, B-00, B-01 |
 | [B-03](B-spike/B-03-decode-runtime.md) | Decode runtime core: field tables, value kinds, sparse layout | `todo` | no | M | B-01 |
 | [B-04](B-spike/B-04-spike-type-set.md) | Spike type set (hand-written in emitted shape) | `todo` | no | L | B-00, B-03, B-14 |

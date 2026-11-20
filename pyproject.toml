@@ -1,6 +1,6 @@
 [build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
+requires = ["maturin>=1.14,<2"]
+build-backend = "maturin"
 
 [project]
 name = "aiogram"
@@ -48,19 +48,31 @@ dependencies = [
     "certifi>=2023.7.22",
     "typing-extensions>=4.12.1,<=5.0",
 ]
-dynamic = ["version"]
+# aiogram/__meta__.py is the source of truth; scripts/bump_version.py writes this copy and the
+# crate version in crates/aiogram-core/Cargo.toml, tests/test_core/test_build.py checks they match
+version = "3.33.0"
 
-[tool.hatch.version]
-path = "aiogram/__meta__.py"
-
-[tool.hatch.build.targets.sdist]
+[tool.maturin]
+python-source = "."
+module-name = "aiogram._core"
+manifest-path = "crates/aiogram-core/Cargo.toml"
 exclude = [
-    "/.claude",
-    "/.oss-scanner",
-    "/design",
-    "/openspec",
-    "/orca.yaml",
-    "/v4",
+    { path = ".claude/**/*", format = "sdist" },
+    { path = ".oss-scanner/**/*", format = "sdist" },
+    { path = "design/**/*", format = "sdist" },
+    { path = "openspec/**/*", format = "sdist" },
+    { path = "orca.yaml", format = "sdist" },
+    { path = "v4/**/*", format = "sdist" },
+]
+
+[tool.uv]
+# rebuild the extension on `uv sync` / `uv run` when the Rust sources change (v4/research/08 §6)
+cache-keys = [
+    { file = "pyproject.toml" },
+    { file = "Cargo.toml" },
+    { file = "Cargo.lock" },
+    { file = "crates/**/Cargo.toml" },
+    { file = "crates/**/*.rs" },
 ]
 
 [project.optional-dependencies]

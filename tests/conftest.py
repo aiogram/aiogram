@@ -1,5 +1,6 @@
 import asyncio
 import sys
+import sysconfig
 from pathlib import Path
 
 import pytest
@@ -21,6 +22,9 @@ from aiogram.fsm.storage.pymongo import PyMongoStorage
 from aiogram.fsm.storage.redis import RedisStorage
 from tests.mocked_bot import MockedBot
 
+# mypy-only files, run by `make typing`
+collect_ignore = ["typing"]
+
 # The suite blocks the plugin's entry point (``-p no:aiogram`` in pyproject.toml) and enables
 # it here, after coverage starts; ``pytest_plugins`` is only accepted in the root conftest.
 pytest_plugins = ["aiogram.test.plugin"]
@@ -29,6 +33,9 @@ DATA_DIR = Path(__file__).parent / "data"
 
 CHAT_ID = -42
 USER_ID = 42
+
+FREE_THREADED = bool(sysconfig.get_config_var("Py_GIL_DISABLED"))
+GIL_ENABLED_MESSAGE = "the GIL is enabled on a free-threaded build {when}"
 
 SKIP_MESSAGE_PATTERN = 'Need "--{db}" option with {db} URI to run'
 INVALID_URI_PATTERN = "Invalid {db} URI {uri!r}: {err}"
@@ -45,6 +52,21 @@ def pytest_configure(config):
 
     if sys.platform == "win32" and sys.version_info < (3, 14):
         asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+
+    if FREE_THREADED:
+        import aiogram._core  # noqa: F401
+
+        if sys._is_gil_enabled():
+            raise pytest.UsageError(
+                GIL_ENABLED_MESSAGE.format(when="after `import aiogram._core`")
+            )
+
+
+def pytest_sessionfinish(session, exitstatus):
+    # an extension imported by a test can re-enable the GIL too (unless PYTHON_GIL=0 forbids it)
+    if FREE_THREADED and sys._is_gil_enabled():
+        print(GIL_ENABLED_MESSAGE.format(when="at the end of the session"), file=sys.stderr)
+        session.exitstatus = pytest.ExitCode.TESTS_FAILED
 
 
 @pytest.fixture()
