@@ -2,7 +2,7 @@
 
 | Field | Value |
 |---|---|
-| Status | `in-progress` |
+| Status | `done` |
 | Story | A — Contracts & baselines |
 | Target branch | `dev-3.x` (merged forward to `dev-4.x`, PD-12) |
 | Depends on | — |
