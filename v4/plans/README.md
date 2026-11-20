@@ -140,7 +140,7 @@ Verification method and results: [_VERIFICATION.md](_VERIFICATION.md).
 | [A-10](A-contracts/A-10-routing-oracle.md) | Routing oracle, 3.x side | `todo` | no | L | A-04, A-07 |
 | [A-11](A-contracts/A-11-migration-registry.md) | Migration registry: `registry.toml` schema, id allocation, seed | `todo` | no | M | A-01 |
 | [B-00](B-spike/B-00-freeze-gate-spec.md) | Freeze the gate spec | `todo` | no | M | A-04, A-05, A-06 |
-| [B-01](B-spike/B-01-crate-maturin-skeleton.md) | Crate + maturin skeleton + minimal CI | `todo` | no | M | A-01 |
+| [B-01](B-spike/B-01-crate-maturin-skeleton.md) | Crate + maturin skeleton + minimal CI | `done` | no | M | A-01 |
 | [B-02](B-spike/B-02-bench-adapter-memory-estimator.md) | Bench harness 4.0 adapter + memory estimator | `todo` | no | M | A-04, A-05, A-06, B-00, B-01 |
 | [B-03](B-spike/B-03-decode-runtime.md) | Decode runtime core: field tables, value kinds, sparse layout | `todo` | no | M | B-01 |
 | [B-04](B-spike/B-04-spike-type-set.md) | Spike type set (hand-written in emitted shape) | `todo` | no | L | B-00, B-03, B-14 |
@@ -262,12 +262,12 @@ Verification method and results: [_VERIFICATION.md](_VERIFICATION.md).
 | [H-01](H-testing-observability/H-01-logger-hierarchy.md) | Logger hierarchy + structured log context | `todo` | no | M | A-01, A-11 |
 | [H-02](H-testing-observability/H-02-token-redaction-filter.md) | Token redaction filter | `todo` | no | M | D-03, H-01 |
 | [H-04](H-testing-observability/H-04-access-log-redaction.md) | Access-log redaction wiring | `todo` | no | S | E-16, E-17, H-02 |
-| [H-05](H-testing-observability/H-05-trace-hook-core.md) | Trace hook core (protocol, calling rules, adapter) | `todo` | no | M | A-01 |
+| [H-05](H-testing-observability/H-05-trace-hook-core.md) | Trace hook core (protocol, calling rules, adapter) | `done` | no | M | A-01 |
 | [H-06](H-testing-observability/H-06-tracing-in-executor.md) | Tracing in the snapshot executor | `todo` | no | L | A-05, E-02, E-03, G-02, H-01, H-05 |
 | [H-07](H-testing-observability/H-07-api-call-spans.md) | API_CALL spans (per attempt, inside Retry) | `todo` | no | S | D-02, D-06, D-11, G-13, H-05, H-19 |
 | [H-08](H-testing-observability/H-08-otel-traces.md) | `aiogram[otel]`: traces | `todo` | no | M | E-23, H-06, H-07, I-07 |
 | [H-09](H-testing-observability/H-09-otel-metrics.md) | `aiogram[otel]`: metrics with bounded labels | `todo` | no | M | H-08 |
-| [H-10](H-testing-observability/H-10-testing-world-import.md) | Testing World import + packaging | `todo` | no | M | A-01 |
+| [H-10](H-testing-observability/H-10-testing-world-import.md) | Testing World import + packaging | `done` | no | M | A-01 |
 | [H-11](H-testing-observability/H-11-generated-toolkit-tables.md) | Generated toolkit tables + fake-coverage guard | `todo` | no | M | C-01, C-08, C-16, D-13, H-10 |
 | [H-12](H-testing-observability/H-12-toolkit-model-api-migration.md) | Model-API migration inside the toolkit | `todo` | yes | L | B-06, C-13, C-18, D-10, D-12, H-10, H-11 |
 | [H-13](H-testing-observability/H-13-binding-identity-rewrite.md) | Binding and identity rewrite (bound views) | `todo` | yes | M | B-05, B-07, B-13, H-12 |
@@ -276,7 +276,7 @@ Verification method and results: [_VERIFICATION.md](_VERIFICATION.md).
 | [H-16](H-testing-observability/H-16-fake-fidelity.md) | Fake fidelity: modelled vs synthesised, trace replay, difference manifests | `todo` | yes | M | A-04, A-07, D-15, H-02, H-12 |
 | [H-17](H-testing-observability/H-17-toolkit-feature-interop.md) | Toolkit interop with 4.0 features (flood/retry, Unknown, ErrorReason, i18n) | `todo` | yes | M | C-19, D-02, E-05, F-03, G-02, G-06, G-13, G-14, H-12, H-14 |
 | [H-18](H-testing-observability/H-18-toolkit-docs.md) | Toolkit and observability docs (4.0 structure) | `todo` | no | M | H-14, H-15, H-17, I-10 |
-| [H-19](H-testing-observability/H-19-mockedbot-port.md) | Port `MockedBot` / `MockedSession` and the suite strategy | `todo` | no | M | A-01 |
+| [H-19](H-testing-observability/H-19-mockedbot-port.md) | Port `MockedBot` / `MockedSession` and the suite strategy | `done` | no | M | A-01 |
 | [H-20](H-testing-observability/H-20-integration-layer-exit-gate.md) | Integration test layer, examples smoke harness, H exit gate | `todo` | yes | M | E-21, F-16, H-02, H-05, H-13, H-14, H-15, H-16, H-17, H-18, H-19 |
 | [I-01](I-distribution/I-01-packaging-hardening.md) | Packaging hardening of the single `aiogram` distribution | `todo` | no | M | B-01 |
 | [I-02](I-distribution/I-02-tier1-wheel-matrix-release.md) | Tier-1 wheel matrix and release workflow | `todo` | no | L | C-02, C-18, I-01, I-05 |

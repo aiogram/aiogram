@@ -2,7 +2,7 @@
 
 | Field | Value |
 |---|---|
-| Status | `todo` |
+| Status | `done` |
 | Story | B — Model spike |
 | Target branch | `dev-4.x` |
 | Depends on | [A-01](../A-contracts/A-01-bootstrap-dev-4x.md) |
@@ -63,22 +63,22 @@ from day one (D8).
 
 ## Checklist
 
-- [ ] Switch the build backend to maturin; check that `uv build` produces a wheel that contains the same Python files
+- [x] Switch the build backend to maturin; check that `uv build` produces a wheel that contains the same Python files
   as the hatchling wheel (diff the file lists).
-- [ ] Decide the version source (proposed default: keep `aiogram/__meta__.py` as the source of truth that
+- [x] Decide the version source (proposed default: keep `aiogram/__meta__.py` as the source of truth that
   `make update-api` / the release skill bump. maturin reads a static `version` in `pyproject.toml`, which the bump
   script updates in the same commit; a test asserts both are equal). Record in Notes and flag to owner. I-01 hardens
   this.
-- [ ] Add the Cargo workspace, crate, `rust-toolchain.toml`, release profile and lint table.
-- [ ] Add a `#[pymodule]` with `__version__` and `build_info()`; update `aiogram/_core.pyi`.
-- [ ] Export the `_core` build metadata G-15's `aiogram info` reports: `build_info()` returns at least `version`,
+- [x] Add the Cargo workspace, crate, `rust-toolchain.toml`, release profile and lint table.
+- [x] Add a `#[pymodule]` with `__version__` and `build_info()`; update `aiogram/_core.pyi`.
+- [x] Export the `_core` build metadata G-15's `aiogram info` reports: `build_info()` returns at least `version`,
   `profile` and `target` (plus the pyo3 version), typed in `aiogram/_core.pyi`.
-- [ ] Add `[tool.uv] cache-keys`, and the Makefile `dev` / `bench` / `typing` targets; create `tests/typing/`.
-- [ ] Add the CI workflow. `make lint-workflows` (zizmor) must pass.
-- [ ] Add the conftest free-threading guard.
-- [ ] Tests: `tests/test_core/test_build.py` checks import, `build_info()` fields, the version equality, and the
+- [x] Add `[tool.uv] cache-keys`, and the Makefile `dev` / `bench` / `typing` targets; create `tests/typing/`.
+- [x] Add the CI workflow. `make lint-workflows` (zizmor) must pass.
+- [x] Add the conftest free-threading guard.
+- [x] Tests: `tests/test_core/test_build.py` checks import, `build_info()` fields, the version equality, and the
   GIL-disabled check on free-threaded builds (100% of new Python).
-- [ ] No changelog or registry entry (internal; the Rust toolchain requirement for sdist is breaking change 7, which
+- [x] No changelog or registry entry (internal; the Rust toolchain requirement for sdist is breaking change 7, which
   I-01 owns).
 
 ## Acceptance criteria
@@ -127,3 +127,21 @@ make lint-workflows
 - Can run in parallel with B-00.
 
 ## Notes
+
+- **Version source (Decide, proposed default taken; flag to owner).** `aiogram/__meta__.py` stays the source of
+  truth. `scripts/bump_version.py` also writes the static `version` in `pyproject.toml` (read by maturin) and in
+  `crates/aiogram-core/Cargo.toml` (`_core.__version__` is `CARGO_PKG_VERSION`); `make bump` then refreshes
+  `Cargo.lock` and `uv.lock`, because a static project version is recorded in `uv.lock` and `uv sync --locked`
+  fails on a mismatch. `tests/test_core/test_build.py` asserts all copies are equal. Only `X.Y.Z` versions are
+  handled (as before); I-01 hardens this, including PEP 440 → semver for pre-releases.
+- **`build_info()`** returns `version`, `pyo3_version`, `profile`, `lto` and `target`. `build.rs` reads the pyo3
+  version from `Cargo.lock` and the `lto` value of the active profile from the workspace `Cargo.toml` (or a
+  `CARGO_PROFILE_<P>_LTO` override); cargo does not expose LTO to build scripts, so this is the configured value.
+- **sdist content changed.** maturin's sdist holds only the crate, the `aiogram/` package, `pyproject.toml`,
+  `README.rst` and `LICENSE`; hatchling's also carried `tests/`, `docs/`, `.butcher/` and other repo files. The
+  wheel file list is identical to the hatchling one plus `aiogram/_core.*.so`. Left to I-01 (sdist hardening).
+- **CI.** `core.yml` builds with `maturin develop --uv --release` (08 §5) after a `--no-install-project` sync.
+  The 3.14t leg runs with `PYTHON_GIL=0`: `hiredis` re-enables the GIL at import otherwise (07 §4). The existing
+  `tests.yml` legs on `dev-4.x` now compile the extension through `uv sync` too (runners ship `rustup`).
+- **Not done here:** Dependabot `cargo` ecosystem (I-05), a release workflow for platform wheels (I-02;
+  `pypi-release.yml` only fires on `v3.*` tags).

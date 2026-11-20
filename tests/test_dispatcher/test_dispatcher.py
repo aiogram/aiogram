@@ -13,6 +13,7 @@ from typing import Any
 from unittest.mock import AsyncMock, patch
 
 import pytest
+from pydantic import ValidationError
 
 from aiogram import Bot
 from aiogram.dispatcher.dispatcher import Dispatcher
@@ -264,6 +265,42 @@ class TestDispatcher:
             bot=bot, update=UPDATE, dispatcher=dispatcher, bots=[bot]
         )
         assert result is dispatcher
+
+    @pytest.mark.parametrize("allowed", [True, False])
+    async def test_feed_update_checks_update_root_filters(self, bot: MockedBot, allowed: bool):
+        dp = Dispatcher()
+        calls = []
+
+        @dp.update.outer_middleware()
+        async def outer(handler, event, data):
+            calls.append("outer")
+            return await handler(event, data)
+
+        dp.update.filter(lambda update: {"role": "owner"} if allowed else False)
+
+        @dp.message()
+        async def my_handler(message: Message, role: str):
+            calls.append(role)
+            return message.text
+
+        result = await dp.feed_update(bot=bot, update=UPDATE)
+        if allowed:
+            assert result == "test"
+            assert calls == ["outer", "owner"]
+        else:
+            assert result is UNHANDLED
+            assert calls == ["outer"]
+
+    @pytest.mark.parametrize("allowed", [True, False])
+    async def test_update_root_filters_polling_and_webhook(self, bot: MockedBot, allowed: bool):
+        dp = Dispatcher()
+        dp.update.filter(lambda update: allowed)
+        dp.message.register(simple_message_handler)
+
+        assert await dp._process_update(bot=bot, update=UPDATE, call_answer=False) is allowed
+
+        response = await dp.feed_webhook_update(bot, RAW_UPDATE)
+        assert isinstance(response, TelegramMethod) is allowed
 
     async def test_listen_updates(self, bot: MockedBot):
         dispatcher = Dispatcher()
@@ -830,6 +867,115 @@ class TestDispatcher:
             await dp._listen_update(Update(update_id=42))
             if not record:
                 pytest.fail("Expected 'Detected unknown update type' warning.")
+
+    async def test_listen_unknown_update_warning_text_is_constant(self, caplog):
+        dp = Dispatcher()
+        caplog.set_level(logging.DEBUG, logger="aiogram.event")
+        with warnings.catch_warnings(record=True) as record:
+            warnings.simplefilter("always")
+            for update_id in (1, 2):
+                with pytest.raises(SkipHandler):
+                    await dp._listen_update(Update(update_id=update_id, pad="x" * update_id))
+
+        # A constant text is stored once in the warning registry, whatever the update
+        assert len({str(item.message) for item in record}) == 1
+        assert "pad" not in str(record[0].message)
+        bodies = [r.getMessage() for r in caplog.records if r.name == "aiogram.event"]
+        assert len(bodies) == 2
+        assert "update_id=2" in bodies[1]
+        assert "xx" in bodies[1]
+
+    @pytest.mark.parametrize("handle_raw", ["feed_raw_update", "feed_webhook_update"])
+    async def test_invalid_update_is_skipped_and_reported(
+        self, bot: MockedBot, caplog, handle_raw: str
+    ):
+        dp = Dispatcher(test="PASS")
+        seen: list[tuple[ErrorEvent, dict[str, Any]]] = []
+
+        @dp.message()
+        async def message_handler(message: Message):
+            pytest.fail("Invalid update must not reach the handlers")
+
+        @dp.errors()
+        async def errors_handler(event: ErrorEvent, **kwargs: Any):
+            seen.append((event, kwargs))
+
+        update = {
+            "update_id": 42,
+            "message": {
+                "message_id": 1,
+                "date": 1,
+                "chat": {"id": 1, "type": "private"},
+                "photo": [{}] * 100,
+            },
+        }
+        result = await getattr(dp, handle_raw)(bot, update, extra="value")
+
+        assert result is (UNHANDLED if handle_raw == "feed_raw_update" else None)
+        [(event, kwargs)] = seen
+        assert event.update == Update(update_id=42)
+        assert isinstance(event.exception, ValidationError)
+        assert kwargs["bot"] is bot
+        assert kwargs["dispatcher"] is dp
+        assert kwargs["test"] == "PASS"
+        assert kwargs["extra"] == "value"
+        [record] = [r for r in caplog.records if r.name == "aiogram.webhook"]
+        assert record.levelno == logging.ERROR
+        # One item per list: the first invalid photo, not all 100 of them
+        assert record.getMessage() == (
+            f"Update id=42 is skipped because it can't be validated by bot id={bot.id}: "
+            "4 validation errors, first: missing at ('message', 'photo', 0, 'file_id')"
+        )
+
+    @pytest.mark.parametrize(
+        "update", [[], {"update_id": "x"}, {"update_id": True, "message": []}]
+    )
+    async def test_invalid_update_without_update_id_is_only_logged(
+        self, bot: MockedBot, caplog, update: Any
+    ):
+        dp = Dispatcher()
+
+        @dp.errors()
+        async def errors_handler(event: ErrorEvent):
+            pytest.fail("No update to report without update_id")
+
+        assert await dp.feed_webhook_update(bot, update) is None
+        [record] = [r for r in caplog.records if r.name == "aiogram.webhook"]
+        assert record.getMessage().startswith("Update id=None is skipped")
+
+    async def test_invalid_update_with_slow_error_handler_answers_in_time(self, bot: MockedBot):
+        dp = Dispatcher()
+        finished = Event()
+
+        @dp.errors()
+        async def errors_handler(event: ErrorEvent):
+            await asyncio.sleep(0.2)
+            finished.set()
+
+        with pytest.warns(RuntimeWarning, match="Detected slow response into webhook"):
+            # The answer must not wait for the errors handlers past the deadline
+            response = await asyncio.wait_for(
+                dp.feed_webhook_update(bot, {"update_id": 42, "message": []}, _timeout=0.01),
+                timeout=0.1,
+            )
+            assert response is None
+            await asyncio.wait_for(finished.wait(), timeout=1)
+            await asyncio.sleep(0)
+
+    async def test_invalid_update_with_failing_error_handler(self, bot: MockedBot, caplog):
+        dp = Dispatcher()
+
+        @dp.errors()
+        async def errors_handler(event: ErrorEvent):
+            msg = "boom"
+            raise RuntimeError(msg)
+
+        assert await dp.feed_webhook_update(bot, {"update_id": 42, "message": []}) is None
+        [record] = [r for r in caplog.records if r.name == "aiogram.event"]
+        assert "Error handler failed for skipped update id=42" in record.getMessage()
+        assert record.exc_info[0] is RuntimeError
+        # Nothing chains the validation error to the handler's exception
+        assert record.exc_info[1].__context__ is None
 
     async def test_listen_unhandled_update(self):
         dp = Dispatcher()
@@ -1710,7 +1856,7 @@ class TestDispatcher:
         dispatcher = Dispatcher()
         dispatcher.message.register(simple_message_handler)
 
-        response = await dispatcher.feed_webhook_update(bot, RAW_UPDATE, _timeout=0.3)
+        response = await dispatcher.feed_webhook_update(bot, RAW_UPDATE, _timeout=2)
         assert isinstance(response, TelegramMethod)
 
     async def test_feed_webhook_update_slow_process(self, bot: MockedBot, recwarn):

@@ -236,6 +236,16 @@ you should use :code:`on.message` or :code:`on.inline_query` marker:
         async def on_enter(self, callback_query: types.CallbackQuery):
             pass
 
+.. warning::
+
+    Entry points do not take filters: filters passed to :code:`on.<event>.enter(...)`
+    are not checked when the scene is entered, and passing them emits a
+    :code:`DeprecationWarning`. Put access checks on the handler that enters the scene instead:
+
+    .. code-block:: python
+
+        router.message.register(MyScene.as_handler(), Command("staff"), IsStaff())
+
 
 Scene has only three points for transitions:
 

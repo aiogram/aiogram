@@ -6,6 +6,21 @@ import sys
 from pathlib import Path
 
 
+# static copies of the version: maturin reads pyproject.toml, `aiogram._core.__version__` comes
+# from the crate (tests/test_core/test_build.py checks they all match __meta__.py)
+VERSION_COPIES = (Path("pyproject.toml"), Path("crates/aiogram-core/Cargo.toml"))
+
+
+def write_version_copies(version: str) -> None:
+    for path in VERSION_COPIES:
+        content, count = re.subn(
+            r'^version = ".+"$', f'version = "{version}"', path.read_text(), count=1, flags=re.M
+        )
+        if not count:
+            raise ValueError(f"Could not find version in {path}")
+        path.write_text(content)
+
+
 def bump_version(part: str) -> str:
     """Bump version in __meta__.py."""
     meta_path = Path("aiogram/__meta__.py")
@@ -34,6 +49,7 @@ def bump_version(part: str) -> str:
             r'__version__ = "\d+\.\d+\.\d+"', f'__version__ = "{new_version}"', content
         )
         meta_path.write_text(content)
+        write_version_copies(new_version)
         return new_version
     else:
         raise ValueError(f"Unknown part: {part}. Use major, minor, patch, or to:X.Y.Z")
@@ -41,6 +57,7 @@ def bump_version(part: str) -> str:
     new_version = f"{major}.{minor}.{patch}"
     content = re.sub(r'__version__ = "\d+\.\d+\.\d+"', f'__version__ = "{new_version}"', content)
     meta_path.write_text(content)
+    write_version_copies(new_version)
     return new_version
 
 

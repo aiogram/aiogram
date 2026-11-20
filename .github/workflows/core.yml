@@ -1,0 +1,160 @@
+name: Core
+
+# The native extension (crates/aiogram-core, imported as `aiogram._core`): Rust checks, the 3.x
+# suite against a `maturin develop` build, and a Windows build + import smoke.
+
+on:
+  push:
+    branches:
+      - dev-4.x
+  pull_request:
+    branches:
+      - dev-4.x
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+env:
+  # the environment is synced explicitly in each job; do not let `uv run` re-sync it
+  UV_NO_SYNC: "1"
+  # incremental builds and debuginfo only cost cache space in CI (v4/research/13 B12)
+  CARGO_INCREMENTAL: "0"
+  CARGO_PROFILE_DEV_DEBUG: "0"
+  CARGO_TERM_COLOR: always
+
+defaults:
+  run:
+    # Windows defaults to PowerShell; every script below is bash
+    shell: bash
+
+jobs:
+  rust:
+    name: Rust (fmt, clippy, test)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      PYO3_ENVIRONMENT_SIGNATURE: ubuntu-3.13
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - uses: astral-sh/setup-uv@v10.3.3
+        with:
+          python-version: "3.13"
+
+      - name: Install the Rust toolchain
+        # no arguments: installs the channel and components pinned in rust-toolchain.toml
+        run: rustup toolchain install
+
+      - uses: Swatinem/rust-cache@v2.9.3
+        with:
+          # PYO3_* in the key: a cache built against another interpreter replays a stale
+          # libpython path (v4/research/13 B12)
+          env-vars: "CARGO CC CFLAGS CXX CMAKE RUST PYO3"
+
+      - name: Point pyo3 at the uv interpreter
+        # `cargo test` links libpython; the test binary finds it through LD_LIBRARY_PATH
+        # setup-uv only selects the version; `uv python find` never downloads one
+        run: |
+          uv python install 3.13
+          python="$(uv python find 3.13)"
+          echo "PYO3_PYTHON=${python}" >> "$GITHUB_ENV"
+          echo "LD_LIBRARY_PATH=$("$python" -c 'import sysconfig; print(sysconfig.get_config_var("LIBDIR"))')" >> "$GITHUB_ENV"
+
+      - name: cargo fmt
+        run: cargo fmt --all --check
+
+      - name: cargo clippy
+        run: cargo clippy --locked --workspace --all-targets -- -D warnings
+
+      - name: cargo test
+        run: cargo test --locked --workspace
+
+  tests:
+    name: Tests
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-latest
+          - macos-latest
+        python-version:
+          - "3.11"
+          - "3.13"
+          - "3.14t"
+    env:
+      PYO3_ENVIRONMENT_SIGNATURE: ${{ matrix.os }}-${{ matrix.python-version }}
+      FREE_THREADED: ${{ endsWith(matrix.python-version, 't') }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - uses: astral-sh/setup-uv@v10.3.3
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install the Rust toolchain
+        run: rustup toolchain install
+
+      - uses: Swatinem/rust-cache@v2.9.3
+        with:
+          env-vars: "CARGO CC CFLAGS CXX CMAKE RUST PYO3"
+
+      - name: Install dependencies
+        # the project itself is built by maturin below, not by uv
+        run: uv sync --locked --all-extras --no-extra docs --no-group dev --group test --no-install-project
+
+      - name: Build the extension
+        run: uvx --from 'maturin>=1.14,<2' maturin develop --uv --release --locked
+
+      - name: Run tests
+        # free-threaded: PYTHON_GIL=0 keeps the GIL off while 3.x dependencies without
+        # free-threading support (hiredis) load; tests/conftest.py fails the session if the GIL
+        # is on after `import aiogram._core`, and test_build.py checks it without PYTHON_GIL
+        run: |
+          if [[ "$FREE_THREADED" == "true" ]]; then
+            export PYTHON_GIL=0
+          fi
+          uv run pytest
+
+  windows-smoke:
+    name: Windows build + import smoke
+    runs-on: windows-latest
+    timeout-minutes: 20
+    env:
+      PYO3_ENVIRONMENT_SIGNATURE: windows-3.13
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - uses: astral-sh/setup-uv@v10.3.3
+        with:
+          python-version: "3.13"
+
+      - name: Install the Rust toolchain
+        run: rustup toolchain install
+
+      - uses: Swatinem/rust-cache@v2.9.3
+        with:
+          env-vars: "CARGO CC CFLAGS CXX CMAKE RUST PYO3"
+
+      - name: Build wheel
+        run: uv build --wheel
+
+      - name: Import smoke
+        run: |
+          venv="${RUNNER_TEMP}/smoke"
+          uv venv --clear "$venv"
+          uv pip install --python "$venv/Scripts/python.exe" dist/*.whl
+          # -P keeps the checkout's own aiogram/ off sys.path, so this imports what was just installed
+          "$venv/Scripts/python.exe" -P -c "import aiogram._core as core; print(core.build_info())"

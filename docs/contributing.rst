@@ -227,6 +227,11 @@ Or use Makefile:
 
     make test
 
+Unit tests of a single component use ``tests.mocked_bot.MockedBot``: queue the API replies with
+``bot.add_result_for(...)`` and inspect the sent requests with ``bot.get_request()``.
+New end-to-end scenarios (dispatcher, FSM, scenes, filters and errors together) use the ``aiogram.test``
+toolkit. Existing tests are not rewritten onto the toolkit, and the 100% coverage rule still applies.
+
 Also if you are doing something with Redis-storage or/and MongoDB-storage,
 you will need to test everything works with Redis or/and MongoDB:
 

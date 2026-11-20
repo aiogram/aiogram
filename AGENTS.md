@@ -8,6 +8,11 @@ This file defines how coding agents should contribute to `aiogram` on `dev-3.x`.
 - Python: `>=3.11`
 - Main tooling: `uv`, `ruff`, `mypy`, `pytest`, `towncrier`, `butcher`
 - Keep diffs focused; avoid unrelated refactors/reformatting.
+- Sync `dev-3.x` into a long-lived feature branch with a real merge, never a squash: a
+  squash drops the ancestry, and the next sync then conflicts on everything since. To
+  repair a lost base, run `git merge-tree --write-tree --merge-base=<real base> HEAD origin/dev-3.x`,
+  then `git commit-tree -S <printed tree> -p HEAD -p origin/dev-3.x -m <message>`. `commit-tree` ignores
+  `commit.gpgsign`, so always pass `-S`.
 
 ## Setup
 
@@ -41,6 +46,15 @@ Quick loop (recommended for most PR iterations). `make lint` runs ruff, both myp
 ```bash
 make lint
 uv run pytest tests
+```
+
+PyPy 3.11 on macOS arm64 segfaults on `copy` / `deepcopy` of `DefaultBotProperties`, and CI
+does not reproduce it. Before pushing a change that copies or pickles models, run the
+touched tests on a local PyPy, in a separate environment so `.venv` is left alone:
+
+```bash
+UV_PROJECT_ENVIRONMENT=/tmp/aiogram-pypy uv sync --locked --all-extras --group test --python pypy3.11
+UV_PROJECT_ENVIRONMENT=/tmp/aiogram-pypy uv run --no-sync python -m pytest <touched tests> -p no:cacheprovider
 ```
 
 When touching `.github/**`, also run:
@@ -80,6 +94,21 @@ uv run pytest --mongo mongodb://<user>:<password>@<host>:<port> tests
 Run these only if you have accessible Redis/Mongo instances in your environment.
 
 
+## Testing
+
+Suite strategy (4.0, D88):
+
+- `tests.mocked_bot.MockedBot` for unit tests of one component: queue replies with `bot.add_result_for(...)`, inspect
+  `bot.get_request()` / `bot.session.requests`.
+- The `aiogram.test` toolkit for new end-to-end scenarios (dispatcher + FSM + scenes + filters + errors).
+- No mass rewrite of existing tests onto the toolkit.
+- The 100% coverage rule is unchanged.
+
+`MockedSession` builds the JSON wire envelope and runs it through `BaseSession.check_response`, so unit tests keep
+exercising the real error mapping (`TelegramBadRequest`, `TelegramRetryAfter`, ...). Its only model-layer dependency is
+the `_wire_default` helper. `tests/mocked_bot.py` must not mention `pydantic` at all, not even in a comment: a guard
+test (`tests/test_mocked_bot.py`) greps the source.
+
 ## Changelog rules (CI-gated)
 
 - Add `CHANGES/<issue-or-pr>.<category>.rst` unless PR has `skip news` label.
@@ -102,6 +131,15 @@ uv run --extra cli butcher refresh
 uv run --extra cli butcher apply all
 ```
 
+- `butcher` is not shipped by the `cli` extra (`aiogram-cli` has no `butcher` script): it is the
+  separate [aiogram/butcher](https://github.com/aiogram/butcher) repo. Install it into its own
+  environment and run it from this repository root (`python -m butcher.shell.main apply all`).
+  A fix that needs new generator behaviour lands in butcher first, then in `.butcher` config here.
+- butcher formats with black, the repository with ruff, so raw `apply all` output differs from the
+  committed files. Run `ruff check --fix aiogram/types aiogram/methods` (import order) and
+  `ruff format aiogram` afterwards; on a clean tree that sequence yields an empty `git diff`, which
+  is the check that a `.butcher` change survives regeneration.
+
 For maintainers preparing an API/version bump only:
 
 ```bash
@@ -121,6 +159,9 @@ These patterns repeatedly appeared in maintainer feedback and should be treated 
 - Keep test style consistent with existing suite; avoid introducing new dependencies for small tests.
 - Preserve framework contracts (e.g., dispatcher/workflow data passed to startup/shutdown callbacks).
 - When fixing generated API metadata/docs, update the source mapping in `.butcher` so future regenerations keep the fix.
+- Pytest runs with `filterwarnings = ["error", ...]`: a new `warnings.warn(...)` in library code (e.g. a
+  `DeprecationWarning`) fails every existing test that reaches it. Find those tests first, then either stop
+  them from triggering it or assert it with `pytest.warns`.
 
 ## 4.0 planning tree (`v4/`)
 
@@ -129,6 +170,25 @@ These patterns repeatedly appeared in maintainer feedback and should be treated 
 - The repository is public: never add text to `v4/` that names or describes an unreleased security fix. Plans for
   such fixes stay out of the tree (listed as "(held back)" in the indexes) until the fix is released.
 - The pre-commit `end-of-file-fixer` strips trailing blank lines from copied plan files; that is expected.
+
+## Native extension (`dev-4.x`)
+
+- The build backend is maturin: `crates/aiogram-core` builds `aiogram._core`, so `uv sync` needs `rustup`
+  (`rust-toolchain.toml` pins the toolchain). `uv run` rebuilds it (release profile) when a `crates/**` file
+  changes; `make dev` installs a fast debug build, `make bench` a release one. Nothing on the 3.x import path
+  loads `_core` (`tests/test_core/test_build.py` checks it).
+- Rust checks: `cargo fmt --all --check`, `cargo clippy --workspace --all-targets -- -D warnings` (`unwrap`,
+  `expect`, `panic!`, `todo!`, `unimplemented!` are denied), `cargo test --workspace`. CI: `.github/workflows/core.yml`.
+- The version lives in `aiogram/__meta__.py` and is copied, static, into `pyproject.toml` and
+  `crates/aiogram-core/Cargo.toml`. Only change it with `make bump`: it writes both copies and refreshes
+  `Cargo.lock` and `uv.lock` (`uv sync --locked` fails otherwise). `test_build.py` asserts they match.
+- `tests/typing/` holds mypy-only `assert_type` files, never collected by pytest; run them with `make typing`.
+
+## Developer design notes (`design/`)
+
+- `design/testing-toolkit/` holds the architecture, invariants and decision log of `aiogram.test`. Read it before
+  changing the toolkit, and update it in the same PR. Code cites decisions as "design decision TW-<n>".
+- `design/` is excluded from the sdist and is not part of the Sphinx docs.
 
 ## Documentation work
 

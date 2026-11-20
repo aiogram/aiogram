@@ -1,0 +1,4 @@
+Added the trace hook interface in :code:`aiogram.dispatcher`: :class:`~aiogram.dispatcher.tracing.SpanKind`, the :class:`~aiogram.dispatcher.tracing.Span` and
+:class:`~aiogram.dispatcher.tracing.DispatchTracer` protocols, and the :class:`~aiogram.dispatcher.tracing.CallbackTracer` adapter. A tracer's failure is logged on
+:code:`aiogram.dispatcher` and can never suppress or replace an application error.
+See :ref:`Tracing <tracing>`.

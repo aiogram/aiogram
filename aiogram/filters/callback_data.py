@@ -97,6 +97,13 @@ class CallbackData(BaseModel):
                 raise ValueError(msg)
             result.append(encoded)
         callback_data = self.__separator__.join(result)
+        # A multi-character separator can be formed across the border of two values
+        if len(self.__separator__) > 1 and callback_data.split(self.__separator__) != result:
+            msg = (
+                f"Separator symbol {self.__separator__!r} can not be formed "
+                f"across the values in {callback_data!r}"
+            )
+            raise ValueError(msg)
         if len(callback_data.encode()) > MAX_CALLBACK_LENGTH:
             msg = (
                 f"Resulted callback data is too long! "
