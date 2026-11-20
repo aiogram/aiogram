@@ -84,6 +84,21 @@ uv run pytest --mongo mongodb://<user>:<password>@<host>:<port> tests
 Run these only if you have accessible Redis/Mongo instances in your environment.
 
 
+## Testing
+
+Suite strategy (4.0, D88):
+
+- `tests.mocked_bot.MockedBot` for unit tests of one component: queue replies with `bot.add_result_for(...)`, inspect
+  `bot.get_request()` / `bot.session.requests`.
+- The `aiogram.test` toolkit for new end-to-end scenarios (dispatcher + FSM + scenes + filters + errors).
+- No mass rewrite of existing tests onto the toolkit.
+- The 100% coverage rule is unchanged.
+
+`MockedSession` builds the JSON wire envelope and runs it through `BaseSession.check_response`, so unit tests keep
+exercising the real error mapping (`TelegramBadRequest`, `TelegramRetryAfter`, ...). Its only model-layer dependency is
+the `_wire_default` helper. `tests/mocked_bot.py` must not mention `pydantic` at all, not even in a comment: a guard
+test (`tests/test_mocked_bot.py`) greps the source.
+
 ## Changelog rules (CI-gated)
 
 - Add `CHANGES/<issue-or-pr>.<category>.rst` unless PR has `skip news` label.

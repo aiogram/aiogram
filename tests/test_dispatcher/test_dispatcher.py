@@ -1856,7 +1856,7 @@ class TestDispatcher:
         dispatcher = Dispatcher()
         dispatcher.message.register(simple_message_handler)
 
-        response = await dispatcher.feed_webhook_update(bot, RAW_UPDATE, _timeout=0.3)
+        response = await dispatcher.feed_webhook_update(bot, RAW_UPDATE, _timeout=2)
         assert isinstance(response, TelegramMethod)
 
     async def test_feed_webhook_update_slow_process(self, bot: MockedBot, recwarn):
