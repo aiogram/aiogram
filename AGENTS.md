@@ -152,6 +152,10 @@ These patterns repeatedly appeared in maintainer feedback and should be treated 
 - The repository is public: never add text to `v4/` that names or describes an unreleased security fix. Plans for
   such fixes stay out of the tree (listed as "(held back)" in the indexes) until the fix is released.
 - The pre-commit `end-of-file-fixer` strips trailing blank lines from copied plan files; that is expected.
+- `aiogram/_migration/registry.toml` is the migration registry (PD-13), plain data that is never imported. Its ids are
+  append-only and sorted, and each kind stays in its PD-33 block: on `dev-3.x`, new hand-written entries go in
+  AG4700–AG4799 and generated `api-ledger` entries in AG4800–AG4999. AG4001–AG4699 are allocated on `dev-4.x`
+  only. The schema is documented in the file header, and `tests/test_migration_registry.py` enforces it.
 
 ## Developer design notes (`design/`)
 

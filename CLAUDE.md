@@ -21,6 +21,10 @@ they are the ones verified against this project's toolchain:
   tests fail — it masks failures. Always go through `rtk test uv run pytest …`, which
   keeps the project's `uv` environment and reports failures correctly. It is denied in
   `.claude/settings.json`.
+- The rtk hook rewrites `cat a b c` and `… | grep pat` into its own read/grep commands. A multi-file `cat` then
+  fails (`read: not a valid identifier`), and `unzip -l x.whl | grep pat` greps the whole repository. Use the
+  Read tool, or `rtk proxy` on each stage of the pipe, e.g. for the wheel check:
+  `rtk proxy unzip -l dist/*.whl > out.txt; rtk proxy awk '/registry.toml/' out.txt`.
 - `rtk mypy` truncates the error text after `file:line: error:`. When you need the full
   message, rerun as `rtk proxy uv run mypy aiogram`.
 - `rtk test`/`rtk err` accept a full command, so `uv run …` stays intact — which is what
