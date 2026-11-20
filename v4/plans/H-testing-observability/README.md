@@ -1,7 +1,7 @@
 # Story H — Testing & observability
 
 **Goal:**
-- Port the Testing World toolkit (PR #1887) to 4.0 as `aiogram.test`, with an opt-in plugin (D51–D54, D88, D89).
+- Port the Testing World toolkit (PR #1887) to 4.0 as `aiogram.test`, with the auto-loaded plugin (D51–D54, D88, D89).
 - Ship the official trace hook as sync span context managers (D63, R23) and opt-in OpenTelemetry traces and metrics
   (D64).
 - Ship structured logging and a consistent logger hierarchy (D65).
