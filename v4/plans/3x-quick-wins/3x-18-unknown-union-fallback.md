@@ -5,7 +5,7 @@
 | Status | `todo` |
 | Story | 3x — 3.x quick wins & migration baseline |
 | Target branch | `dev-3.x` |
-| Depends on | [3x-01](3x-01-polling-poison-isolation.md), 3x-02 (held back) (the poison-update paths exist first), [A-08](../A-contracts/A-08-model-oracle.md), [A-11](../A-contracts/A-11-migration-registry.md) |
+| Depends on | [3x-01](3x-01-polling-poison-isolation.md), [3x-02](3x-02-webhook-poison-200.md) (the poison-update paths exist first), [A-08](../A-contracts/A-08-model-oracle.md), [A-11](../A-contracts/A-11-migration-registry.md) |
 | Blocks | — |
 | Gate-conditional | no |
 | Decisions | D10 (3.x mitigation, "optional, larger change") |

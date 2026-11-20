@@ -76,7 +76,7 @@ uv run python -m benchmarks compare --base HEAD~1 --head HEAD --cases routing.1-
 
 ## Workflow notes
 
-- If `State.state` caching interacts with 3x-15 (held back), land 3x-15 first and record it.
+- If `State.state` caching interacts with [3x-15](3x-15-dp-update-root-filters.md), land 3x-15 first and record it.
 - F-04 reworks the 4.0 FSM hot paths.
 
 ## Notes

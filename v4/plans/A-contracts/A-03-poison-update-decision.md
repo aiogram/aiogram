@@ -6,7 +6,7 @@
 | Story | A — Contracts & baselines |
 | Target branch | `dev-3.x` (decision recorded in this plan file; no code) |
 | Depends on | — |
-| Blocks | [3x-01](../3x-quick-wins/3x-01-polling-poison-isolation.md), 3x-02 (held back) |
+| Blocks | [3x-01](../3x-quick-wins/3x-01-polling-poison-isolation.md), [3x-02](../3x-quick-wins/3x-02-webhook-poison-200.md) |
 | Gate-conditional | no |
 | Decisions | D10 (3.x mitigation), D120 ("apply the best-effort policy only once decoding/error/status boundaries are specified"), R13, R27, PD-28, PD-29 |
 | Sources | [09 #21–22](../../research/09-3x-quick-wins.md), [10 Layer 2, §5](../../research/10-forward-compatibility.md), [19 R13](../../research/19-review-resolutions.md), [codex-review R27](../../research/codex-review.md) |
@@ -80,4 +80,4 @@ Signed off by owner, 2026-11-18 (orchestration session):
 - Q1, Q2, Q4, Q5, Q9, Q10: default accepted.
 - Q3: default accepted (`limit=1` isolation, then backoff without advancing).
 - Q6: default accepted (synthetic `ErrorEvent` through `dp.errors`); 3x-01 scope unchanged.
-- Q7, Q8: signed off; recorded with 3x-02 (held back).
+- Q7, Q8: signed off; recorded with [3x-02](../3x-quick-wins/3x-02-webhook-poison-200.md).
