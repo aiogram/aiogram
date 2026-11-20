@@ -267,7 +267,7 @@ Verification method and results: [_VERIFICATION.md](_VERIFICATION.md).
 | [H-07](H-testing-observability/H-07-api-call-spans.md) | API_CALL spans (per attempt, inside Retry) | `todo` | no | S | D-02, D-06, D-11, G-13, H-05, H-19 |
 | [H-08](H-testing-observability/H-08-otel-traces.md) | `aiogram[otel]`: traces | `todo` | no | M | E-23, H-06, H-07, I-07 |
 | [H-09](H-testing-observability/H-09-otel-metrics.md) | `aiogram[otel]`: metrics with bounded labels | `todo` | no | M | H-08 |
-| [H-10](H-testing-observability/H-10-testing-world-import.md) | Testing World import + packaging | `todo` | no | M | A-01 |
+| [H-10](H-testing-observability/H-10-testing-world-import.md) | Testing World import + packaging | `done` | no | M | A-01 |
 | [H-11](H-testing-observability/H-11-generated-toolkit-tables.md) | Generated toolkit tables + fake-coverage guard | `todo` | no | M | C-01, C-08, C-16, D-13, H-10 |
 | [H-12](H-testing-observability/H-12-toolkit-model-api-migration.md) | Model-API migration inside the toolkit | `todo` | yes | L | B-06, C-13, C-18, D-10, D-12, H-10, H-11 |
 | [H-13](H-testing-observability/H-13-binding-identity-rewrite.md) | Binding and identity rewrite (bound views) | `todo` | yes | M | B-05, B-07, B-13, H-12 |

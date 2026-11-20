@@ -101,7 +101,7 @@ signature = [
     "cryptography>=46.0.0",
 ]
 test = [
-    "pytest>=8,<10",
+    "pytest>=8",
 ]
 docs = [
     "Sphinx~=8.0.2",
