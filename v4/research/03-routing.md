@@ -141,7 +141,7 @@ middlewares, and `AiogramData`, extending it with `state`, `raw_state`, `event_r
 middlewares, filters and handlers. Keys that only some paths set are declared `NotRequired[...]`; subclassing with
 `total=False` would not make the inherited keys optional. This is docs only; no runtime change.
 
-### Filters (D34–D37)
+### Filters (D34–D37, D122)
 
 | # | Decision |
 |---|---|
@@ -149,6 +149,7 @@ middlewares, filters and handlers. Keys that only some paths set are declared `N
 | **D35** | No `&` / `\|` on `Filter`; `and_f` / `or_f` / `~` stay the only combinators (no operator-precedence surprises such as `&` binding tighter than `==`) |
 | **D36** | When a filter's dict result overwrites a key that already exists in `data`, a **`RuntimeWarning`** fires once per (filter, key). The merge itself is unchanged (later wins) |
 | **D37** | `magic-filter` stays an **external dependency**. At snapshot compile aiogram compiles each `F` expression into a specialised Python closure by reading its operation tuples (≈0.77 µs → ≈0.2 µs *est.*, no API change); compile support can move upstream later |
+| **D122** | **A sync filter that returns an awaitable fails closed.** An awaitable is truthy, so it must never pass as a match: the filter call raises `TypeError` ("returned an awaitable instead of a result"). Nothing is awaited or cancelled; a coroutine is closed, so it leaves no "never awaited" warning. Async filters are still detected as in 3.x (`async def`, or an async `__call__`). Filter compilation at snapshot compile (D37 closures, compiled rejectors) keeps the check, in both `SyncFilterMode`s. 3.x has the same contract since 3.33.0 ([3x-15](../plans/3x-quick-wins/3x-15-dp-update-root-filters.md)). *Owner, 2026-11-18* |
 
 Why D34: many filters run per update while only one handler runs. Sync filters share the default thread pool
 (`min(32, cpu+4)` workers) with sync handlers, so blocking handlers could stall routing for every update.
