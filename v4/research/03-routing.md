@@ -49,7 +49,7 @@ DispatchTable (immutable)
 EventPlan
   candidates: tuple[(router, HandlerObject, inner_chain), ...]   # DFS order == today's order
   command_index: dict[str, tuple[int, ...]]   # positions of handlers whose plain Command matches name
-  root_filters: tuple[...]                    # per router, incl. dp.update.filter
+  root_filters: tuple[...]                    # per router, incl. dp.update.filter (fixes ANT-2026-EZKREY5K)
 workflow_data: MappingProxyType
 ```
 
