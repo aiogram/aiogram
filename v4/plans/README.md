@@ -262,7 +262,7 @@ Verification method and results: [_VERIFICATION.md](_VERIFICATION.md).
 | [H-01](H-testing-observability/H-01-logger-hierarchy.md) | Logger hierarchy + structured log context | `todo` | no | M | A-01, A-11 |
 | [H-02](H-testing-observability/H-02-token-redaction-filter.md) | Token redaction filter | `todo` | no | M | D-03, H-01 |
 | [H-04](H-testing-observability/H-04-access-log-redaction.md) | Access-log redaction wiring | `todo` | no | S | E-16, E-17, H-02 |
-| [H-05](H-testing-observability/H-05-trace-hook-core.md) | Trace hook core (protocol, calling rules, adapter) | `todo` | no | M | A-01 |
+| [H-05](H-testing-observability/H-05-trace-hook-core.md) | Trace hook core (protocol, calling rules, adapter) | `done` | no | M | A-01 |
 | [H-06](H-testing-observability/H-06-tracing-in-executor.md) | Tracing in the snapshot executor | `todo` | no | L | A-05, E-02, E-03, G-02, H-01, H-05 |
 | [H-07](H-testing-observability/H-07-api-call-spans.md) | API_CALL spans (per attempt, inside Retry) | `todo` | no | S | D-02, D-06, D-11, G-13, H-05, H-19 |
 | [H-08](H-testing-observability/H-08-otel-traces.md) | `aiogram[otel]`: traces | `todo` | no | M | E-23, H-06, H-07, I-07 |

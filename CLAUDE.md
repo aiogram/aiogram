@@ -12,7 +12,7 @@ they are the ones verified against this project's toolchain:
 | Tests | `rtk test uv run pytest tests -q` |
 | Lint | `rtk proxy uv run ruff check --show-fixes --preview aiogram examples` |
 | Format | `rtk proxy uv run ruff format aiogram tests scripts examples` |
-| Types | `rtk mypy aiogram` |
+| Types | `rtk proxy make lint` (runs both mypy passes exactly as CI) |
 | Workflow lint | `rtk proxy make lint-workflows` |
 | git / gh | `rtk git <sub>` / `rtk gh <sub>` |
 | anything else | `rtk proxy <cmd>` (unfiltered but tracked) |
@@ -21,11 +21,11 @@ they are the ones verified against this project's toolchain:
   tests fail — it masks failures. Always go through `rtk test uv run pytest …`, which
   keeps the project's `uv` environment and reports failures correctly. It is denied in
   `.claude/settings.json`.
-- `rtk mypy` truncates the error text after `file:line: error:`. When you need the full
-  message, rerun as `rtk proxy uv run mypy aiogram`.
+- **Don't use bare `rtk ruff` / `rtk mypy`.** They look the tool up on `PATH`, not in the
+  `uv` venv: `rtk ruff` fails with "Failed to run ruff", and `rtk mypy aiogram` printed
+  "No issues found" for an error that `make lint` (strict, project config) reports.
 - `rtk test`/`rtk err` accept a full command, so `uv run …` stays intact — which is what
-  AGENTS.md mandates. `rtk ruff` / `rtk mypy` call the tool directly from the venv
-  and fail (`Failed to run ruff`) when the venv is not on `PATH`; keep ruff under `uv run`.
+  AGENTS.md mandates.
 - `rtk git push` can print nothing for a push that pushed nothing, for example when the branch
   tracks `origin/dev-3.x`. Create branches with `git switch --no-track -c <b> origin/dev-3.x`,
   and after every push check that `git rev-parse origin/<b>` equals `git rev-parse HEAD`.
