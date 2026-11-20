@@ -25,3 +25,6 @@ dev/
 
 # graphify — generated knowledge graph output (caches, embeddings, rendered graph)
 graphify-out/
+
+# benchmarks/record: unredacted recorder output, never committed
+benchmarks/record/raw/

@@ -60,6 +60,7 @@ exclude = [
     "/design",
     "/openspec",
     "/orca.yaml",
+    "/benchmarks",
     "/v4",
 ]
 

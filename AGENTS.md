@@ -41,7 +41,7 @@ Prefer Serena's symbol tools over `Read`/`Grep` for source code exploration. Onl
 
 Code style/lint in this repository is enforced via Ruff (`ruff check` + `ruff format`).
 
-Quick loop (recommended for most PR iterations). `make lint` runs ruff, both mypy passes and the pre-commit hooks exactly as CI does. The pre-commit hooks include fixers (`trailing-whitespace`, `end-of-file-fixer`, `ruff-format`), so `make lint` may modify files in the working tree; review `git diff` afterwards.
+Quick loop (recommended for most PR iterations). `make lint` runs ruff, both mypy passes and the pre-commit hooks exactly as CI does. The pre-commit hooks include fixers (`trailing-whitespace`, `end-of-file-fixer`, `ruff-format`), so `make lint` may modify files in the working tree; review `git diff` afterwards. `pre-commit run --all-files` only sees files git tracks: `git add` new files before `make lint`, or the hooks (`check-json`, `check-toml`, ruff) skip them.
 
 ```bash
 make lint
@@ -137,6 +137,13 @@ These patterns repeatedly appeared in maintainer feedback and should be treated 
 - Pytest runs with `filterwarnings = ["error", ...]`: a new `warnings.warn(...)` in library code (e.g. a
   `DeprecationWarning`) fails every existing test that reaches it. Find those tests first, then either stop
   them from triggering it or assert it with `pytest.warns`.
+
+## Benchmark corpus (`benchmarks/corpus/`)
+
+- Pinned inputs for benchmarks and differential oracles; schema in `benchmarks/corpus/README.md`. `benchmarks/` is dev tooling, excluded from the sdist and wheel.
+- Append-only: never edit a pinned file, add a new id. Every file needs a `MANIFEST.toml` entry with its sha256; `tests/test_corpus_manifest.py` enforces this and rejects anything matching a bot-token pattern. Corpus files are `-text` in `.gitattributes` so Windows checkouts keep the hashed bytes; keep new corpus paths under that rule rather than normalising line endings in the hash.
+- `on_3x` records whether current 3.x decodes each update/response input. A change that makes 3.x accept or reject one (e.g. a forward-compat fallback) updates that field in the same PR.
+- Real traces: record with `benchmarks/record/recorder.py` into the gitignored `benchmarks/record/raw/`, commit only the output of `benchmarks/record/redact.py`, after a manual review.
 
 ## 4.0 planning tree (`v4/`)
 

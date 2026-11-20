@@ -1,0 +1,532 @@
+# One hundred Command handlers on the root router (13 §1).
+schema = 1
+
+[variants]
+fsm = ["on", "off"]
+
+[[router]]
+name = "dp"
+
+[[router.handler]]
+id = "h0"
+event = "message"
+filters = [{ kind = "command", commands = ["c0"] }]
+
+[[router.handler]]
+id = "h1"
+event = "message"
+filters = [{ kind = "command", commands = ["c1"] }]
+
+[[router.handler]]
+id = "h2"
+event = "message"
+filters = [{ kind = "command", commands = ["c2"] }]
+
+[[router.handler]]
+id = "h3"
+event = "message"
+filters = [{ kind = "command", commands = ["c3"] }]
+
+[[router.handler]]
+id = "h4"
+event = "message"
+filters = [{ kind = "command", commands = ["c4"] }]
+
+[[router.handler]]
+id = "h5"
+event = "message"
+filters = [{ kind = "command", commands = ["c5"] }]
+
+[[router.handler]]
+id = "h6"
+event = "message"
+filters = [{ kind = "command", commands = ["c6"] }]
+
+[[router.handler]]
+id = "h7"
+event = "message"
+filters = [{ kind = "command", commands = ["c7"] }]
+
+[[router.handler]]
+id = "h8"
+event = "message"
+filters = [{ kind = "command", commands = ["c8"] }]
+
+[[router.handler]]
+id = "h9"
+event = "message"
+filters = [{ kind = "command", commands = ["c9"] }]
+
+[[router.handler]]
+id = "h10"
+event = "message"
+filters = [{ kind = "command", commands = ["c10"] }]
+
+[[router.handler]]
+id = "h11"
+event = "message"
+filters = [{ kind = "command", commands = ["c11"] }]
+
+[[router.handler]]
+id = "h12"
+event = "message"
+filters = [{ kind = "command", commands = ["c12"] }]
+
+[[router.handler]]
+id = "h13"
+event = "message"
+filters = [{ kind = "command", commands = ["c13"] }]
+
+[[router.handler]]
+id = "h14"
+event = "message"
+filters = [{ kind = "command", commands = ["c14"] }]
+
+[[router.handler]]
+id = "h15"
+event = "message"
+filters = [{ kind = "command", commands = ["c15"] }]
+
+[[router.handler]]
+id = "h16"
+event = "message"
+filters = [{ kind = "command", commands = ["c16"] }]
+
+[[router.handler]]
+id = "h17"
+event = "message"
+filters = [{ kind = "command", commands = ["c17"] }]
+
+[[router.handler]]
+id = "h18"
+event = "message"
+filters = [{ kind = "command", commands = ["c18"] }]
+
+[[router.handler]]
+id = "h19"
+event = "message"
+filters = [{ kind = "command", commands = ["c19"] }]
+
+[[router.handler]]
+id = "h20"
+event = "message"
+filters = [{ kind = "command", commands = ["c20"] }]
+
+[[router.handler]]
+id = "h21"
+event = "message"
+filters = [{ kind = "command", commands = ["c21"] }]
+
+[[router.handler]]
+id = "h22"
+event = "message"
+filters = [{ kind = "command", commands = ["c22"] }]
+
+[[router.handler]]
+id = "h23"
+event = "message"
+filters = [{ kind = "command", commands = ["c23"] }]
+
+[[router.handler]]
+id = "h24"
+event = "message"
+filters = [{ kind = "command", commands = ["c24"] }]
+
+[[router.handler]]
+id = "h25"
+event = "message"
+filters = [{ kind = "command", commands = ["c25"] }]
+
+[[router.handler]]
+id = "h26"
+event = "message"
+filters = [{ kind = "command", commands = ["c26"] }]
+
+[[router.handler]]
+id = "h27"
+event = "message"
+filters = [{ kind = "command", commands = ["c27"] }]
+
+[[router.handler]]
+id = "h28"
+event = "message"
+filters = [{ kind = "command", commands = ["c28"] }]
+
+[[router.handler]]
+id = "h29"
+event = "message"
+filters = [{ kind = "command", commands = ["c29"] }]
+
+[[router.handler]]
+id = "h30"
+event = "message"
+filters = [{ kind = "command", commands = ["c30"] }]
+
+[[router.handler]]
+id = "h31"
+event = "message"
+filters = [{ kind = "command", commands = ["c31"] }]
+
+[[router.handler]]
+id = "h32"
+event = "message"
+filters = [{ kind = "command", commands = ["c32"] }]
+
+[[router.handler]]
+id = "h33"
+event = "message"
+filters = [{ kind = "command", commands = ["c33"] }]
+
+[[router.handler]]
+id = "h34"
+event = "message"
+filters = [{ kind = "command", commands = ["c34"] }]
+
+[[router.handler]]
+id = "h35"
+event = "message"
+filters = [{ kind = "command", commands = ["c35"] }]
+
+[[router.handler]]
+id = "h36"
+event = "message"
+filters = [{ kind = "command", commands = ["c36"] }]
+
+[[router.handler]]
+id = "h37"
+event = "message"
+filters = [{ kind = "command", commands = ["c37"] }]
+
+[[router.handler]]
+id = "h38"
+event = "message"
+filters = [{ kind = "command", commands = ["c38"] }]
+
+[[router.handler]]
+id = "h39"
+event = "message"
+filters = [{ kind = "command", commands = ["c39"] }]
+
+[[router.handler]]
+id = "h40"
+event = "message"
+filters = [{ kind = "command", commands = ["c40"] }]
+
+[[router.handler]]
+id = "h41"
+event = "message"
+filters = [{ kind = "command", commands = ["c41"] }]
+
+[[router.handler]]
+id = "h42"
+event = "message"
+filters = [{ kind = "command", commands = ["c42"] }]
+
+[[router.handler]]
+id = "h43"
+event = "message"
+filters = [{ kind = "command", commands = ["c43"] }]
+
+[[router.handler]]
+id = "h44"
+event = "message"
+filters = [{ kind = "command", commands = ["c44"] }]
+
+[[router.handler]]
+id = "h45"
+event = "message"
+filters = [{ kind = "command", commands = ["c45"] }]
+
+[[router.handler]]
+id = "h46"
+event = "message"
+filters = [{ kind = "command", commands = ["c46"] }]
+
+[[router.handler]]
+id = "h47"
+event = "message"
+filters = [{ kind = "command", commands = ["c47"] }]
+
+[[router.handler]]
+id = "h48"
+event = "message"
+filters = [{ kind = "command", commands = ["c48"] }]
+
+[[router.handler]]
+id = "h49"
+event = "message"
+filters = [{ kind = "command", commands = ["c49"] }]
+
+[[router.handler]]
+id = "h50"
+event = "message"
+filters = [{ kind = "command", commands = ["c50"] }]
+
+[[router.handler]]
+id = "h51"
+event = "message"
+filters = [{ kind = "command", commands = ["c51"] }]
+
+[[router.handler]]
+id = "h52"
+event = "message"
+filters = [{ kind = "command", commands = ["c52"] }]
+
+[[router.handler]]
+id = "h53"
+event = "message"
+filters = [{ kind = "command", commands = ["c53"] }]
+
+[[router.handler]]
+id = "h54"
+event = "message"
+filters = [{ kind = "command", commands = ["c54"] }]
+
+[[router.handler]]
+id = "h55"
+event = "message"
+filters = [{ kind = "command", commands = ["c55"] }]
+
+[[router.handler]]
+id = "h56"
+event = "message"
+filters = [{ kind = "command", commands = ["c56"] }]
+
+[[router.handler]]
+id = "h57"
+event = "message"
+filters = [{ kind = "command", commands = ["c57"] }]
+
+[[router.handler]]
+id = "h58"
+event = "message"
+filters = [{ kind = "command", commands = ["c58"] }]
+
+[[router.handler]]
+id = "h59"
+event = "message"
+filters = [{ kind = "command", commands = ["c59"] }]
+
+[[router.handler]]
+id = "h60"
+event = "message"
+filters = [{ kind = "command", commands = ["c60"] }]
+
+[[router.handler]]
+id = "h61"
+event = "message"
+filters = [{ kind = "command", commands = ["c61"] }]
+
+[[router.handler]]
+id = "h62"
+event = "message"
+filters = [{ kind = "command", commands = ["c62"] }]
+
+[[router.handler]]
+id = "h63"
+event = "message"
+filters = [{ kind = "command", commands = ["c63"] }]
+
+[[router.handler]]
+id = "h64"
+event = "message"
+filters = [{ kind = "command", commands = ["c64"] }]
+
+[[router.handler]]
+id = "h65"
+event = "message"
+filters = [{ kind = "command", commands = ["c65"] }]
+
+[[router.handler]]
+id = "h66"
+event = "message"
+filters = [{ kind = "command", commands = ["c66"] }]
+
+[[router.handler]]
+id = "h67"
+event = "message"
+filters = [{ kind = "command", commands = ["c67"] }]
+
+[[router.handler]]
+id = "h68"
+event = "message"
+filters = [{ kind = "command", commands = ["c68"] }]
+
+[[router.handler]]
+id = "h69"
+event = "message"
+filters = [{ kind = "command", commands = ["c69"] }]
+
+[[router.handler]]
+id = "h70"
+event = "message"
+filters = [{ kind = "command", commands = ["c70"] }]
+
+[[router.handler]]
+id = "h71"
+event = "message"
+filters = [{ kind = "command", commands = ["c71"] }]
+
+[[router.handler]]
+id = "h72"
+event = "message"
+filters = [{ kind = "command", commands = ["c72"] }]
+
+[[router.handler]]
+id = "h73"
+event = "message"
+filters = [{ kind = "command", commands = ["c73"] }]
+
+[[router.handler]]
+id = "h74"
+event = "message"
+filters = [{ kind = "command", commands = ["c74"] }]
+
+[[router.handler]]
+id = "h75"
+event = "message"
+filters = [{ kind = "command", commands = ["c75"] }]
+
+[[router.handler]]
+id = "h76"
+event = "message"
+filters = [{ kind = "command", commands = ["c76"] }]
+
+[[router.handler]]
+id = "h77"
+event = "message"
+filters = [{ kind = "command", commands = ["c77"] }]
+
+[[router.handler]]
+id = "h78"
+event = "message"
+filters = [{ kind = "command", commands = ["c78"] }]
+
+[[router.handler]]
+id = "h79"
+event = "message"
+filters = [{ kind = "command", commands = ["c79"] }]
+
+[[router.handler]]
+id = "h80"
+event = "message"
+filters = [{ kind = "command", commands = ["c80"] }]
+
+[[router.handler]]
+id = "h81"
+event = "message"
+filters = [{ kind = "command", commands = ["c81"] }]
+
+[[router.handler]]
+id = "h82"
+event = "message"
+filters = [{ kind = "command", commands = ["c82"] }]
+
+[[router.handler]]
+id = "h83"
+event = "message"
+filters = [{ kind = "command", commands = ["c83"] }]
+
+[[router.handler]]
+id = "h84"
+event = "message"
+filters = [{ kind = "command", commands = ["c84"] }]
+
+[[router.handler]]
+id = "h85"
+event = "message"
+filters = [{ kind = "command", commands = ["c85"] }]
+
+[[router.handler]]
+id = "h86"
+event = "message"
+filters = [{ kind = "command", commands = ["c86"] }]
+
+[[router.handler]]
+id = "h87"
+event = "message"
+filters = [{ kind = "command", commands = ["c87"] }]
+
+[[router.handler]]
+id = "h88"
+event = "message"
+filters = [{ kind = "command", commands = ["c88"] }]
+
+[[router.handler]]
+id = "h89"
+event = "message"
+filters = [{ kind = "command", commands = ["c89"] }]
+
+[[router.handler]]
+id = "h90"
+event = "message"
+filters = [{ kind = "command", commands = ["c90"] }]
+
+[[router.handler]]
+id = "h91"
+event = "message"
+filters = [{ kind = "command", commands = ["c91"] }]
+
+[[router.handler]]
+id = "h92"
+event = "message"
+filters = [{ kind = "command", commands = ["c92"] }]
+
+[[router.handler]]
+id = "h93"
+event = "message"
+filters = [{ kind = "command", commands = ["c93"] }]
+
+[[router.handler]]
+id = "h94"
+event = "message"
+filters = [{ kind = "command", commands = ["c94"] }]
+
+[[router.handler]]
+id = "h95"
+event = "message"
+filters = [{ kind = "command", commands = ["c95"] }]
+
+[[router.handler]]
+id = "h96"
+event = "message"
+filters = [{ kind = "command", commands = ["c96"] }]
+
+[[router.handler]]
+id = "h97"
+event = "message"
+filters = [{ kind = "command", commands = ["c97"] }]
+
+[[router.handler]]
+id = "h98"
+event = "message"
+filters = [{ kind = "command", commands = ["c98"] }]
+
+[[router.handler]]
+id = "h99"
+event = "message"
+filters = [{ kind = "command", commands = ["c99"] }]
+
+[[event]]
+name = "first"
+update = "update.text.small"
+patch = { "message.text" = "/c0" }
+expect = "h0"
+
+[[event]]
+name = "mid"
+update = "update.text.small"
+patch = { "message.text" = "/c50" }
+expect = "h50"
+
+[[event]]
+name = "last"
+update = "update.text.small"
+patch = { "message.text" = "/c99" }
+expect = "h99"
+
+[[event]]
+name = "unhandled"
+update = "update.text.small"
+patch = { "message.text" = "/nope" }
+expect = "unhandled"
