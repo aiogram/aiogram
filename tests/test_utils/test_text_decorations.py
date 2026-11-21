@@ -180,7 +180,7 @@ class TestTextDecoration:
             [
                 markdown_decoration,
                 MessageEntity(type="expandable_blockquote", offset=0, length=5),
-                ">test||",
+                "**>test||",
             ],
             [
                 markdown_decoration,
@@ -209,6 +209,13 @@ class TestTextDecoration:
         self, decorator: TextDecoration, entity: MessageEntity, result: str
     ):
         assert decorator.apply_entity(entity, "test") == result
+
+    def test_markdown_expandable_blockquote_multiline(self):
+        # Only the first line carries the ``**>`` expandability mark; the
+        # remaining lines use ``>`` like a normal blockquote, and the closing
+        # ``||`` follows the last line.
+        result = markdown_decoration.expandable_blockquote("line1\nline2\nline3")
+        assert result == "**>line1\n>line2\n>line3||"
 
     @pytest.mark.parametrize("decorator", [html_decoration, markdown_decoration])
     @pytest.mark.parametrize("entity_type", ["bank_card_number", "ton_address"])
@@ -458,7 +465,7 @@ class TestTextDecoration:
                 markdown_decoration,
                 "a\nb\nafter",
                 [MessageEntity(type="expandable_blockquote", offset=0, length=4)],
-                ">a\n>b||\nafter",
+                "**>a\n>b||\nafter",
             ],
             [markdown_decoration, "", [MessageEntity(type="blockquote", offset=0, length=0)], ""],
             [

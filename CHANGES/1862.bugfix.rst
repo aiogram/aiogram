@@ -1,0 +1,1 @@
+Fixed :code:`MarkdownDecoration.expandable_blockquote` not emitting the ``**>`` expandability mark, so it produced invalid MarkdownV2 (a lone trailing ``||``) that Telegram rejected instead of a valid expandable block quotation.

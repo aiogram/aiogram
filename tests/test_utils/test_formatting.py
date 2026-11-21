@@ -239,7 +239,7 @@ class TestNode:
 
     def test_as_markdown_expandable_blockquote(self):
         node = Text(ExpandableBlockQuote("a\n\n"), "after")
-        assert node.as_markdown() == ">a\n>||\nafter"
+        assert node.as_markdown() == "**>a\n>||\nafter"
 
     def test_replace(self):
         node0 = Text("test0", param0="test1")
