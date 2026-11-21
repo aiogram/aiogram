@@ -1,6 +1,6 @@
 //! `from_json`: JSON-shaped Python values -> converted values.
 
-use pyo3::exceptions::{PyArithmeticError, PyOverflowError, PyValueError};
+use pyo3::exceptions::{PyArithmeticError, PyOverflowError, PyRuntimeError, PyValueError};
 use pyo3::prelude::*;
 use pyo3::sync::PyOnceLock;
 use pyo3::types::{PyBool, PyDict, PyFloat, PyInt, PyList, PyString, PyTuple, PyType};
@@ -155,18 +155,25 @@ fn enum_member<'py>(
     enumeration: &Enumeration,
     value: &Bound<'py, PyAny>,
 ) -> PyResult<Bound<'py, PyAny>> {
-    match enumeration
+    let miss = || expected(py, &format!("a {} value", enumeration.name), value);
+    if let Ok(Some(member)) = enumeration
         .by_json
         .bind(py)
         .get_item(type_and_value(value)?)
     {
-        Ok(Some(member)) => Ok(member),
-        _ => Err(expected(
-            py,
-            &format!("a {} value", enumeration.name),
-            value,
-        )), // a miss or unhashable
+        return Ok(member);
     }
+    if !enumeration.has_missing {
+        return Err(miss()); // a miss, or an unhashable value
+    }
+    // a tolerant enum: `tp(value)` runs its _missing_ hook; a ValueError is still a miss
+    enumeration.tp.bind(py).call1((value,)).map_err(|error| {
+        if error.is_instance_of::<PyValueError>(py) {
+            miss()
+        } else {
+            error
+        }
+    })
 }
 
 /// `_Literal`: `(type(value), value) in _json`; an unhashable value is a miss.
@@ -254,12 +261,6 @@ impl<'py> Getter<'py> {
     }
 }
 
-fn field_required(py: Python<'_>, key: &str) -> PyErr {
-    at(py, errors::conversion(py, "field required", None), || {
-        Ok(format!(".{key}"))
-    })
-}
-
 /// `_TypedDict._convert`: a plain dict of the declared keys present, in declaration order.
 pub(crate) fn typed_dict<'py>(
     py: Python<'py>,
@@ -281,7 +282,7 @@ pub(crate) fn typed_dict<'py>(
                     .map_err(|e| at(py, e, || Ok(format!(".{}", field.key))))?;
                 out.set_item(name, converted)?;
             }
-            None if field.required => return Err(field_required(py, &field.key)),
+            None if field.required => return Err(errors::field_required(py, &field.key)),
             None => {}
         }
     }
@@ -296,8 +297,8 @@ pub(crate) fn ordered<'a>(
     tp: &Bound<'_, PyType>,
     json: bool,
 ) -> PyResult<Vec<&'a Kind>> {
-    let mut exact = Vec::new();
-    let mut rest = Vec::new();
+    let mut order = Vec::with_capacity(union.members.len());
+    let mut exact = 0;
     for member in &union.members {
         let types = if json {
             &member.json_types
@@ -305,13 +306,13 @@ pub(crate) fn ordered<'a>(
             &member.python_types
         };
         if types.bind(py).contains(tp)? {
-            exact.push(&member.kind);
+            order.insert(exact, &member.kind);
+            exact += 1;
         } else {
-            rest.push(&member.kind);
+            order.push(&member.kind);
         }
     }
-    exact.extend(rest);
-    Ok(exact)
+    Ok(order)
 }
 
 /// The first member that accepts `value`; only a `ConversionError` moves to the next one.
@@ -359,9 +360,8 @@ fn discriminated<'py>(
     depth: u32,
 ) -> PyResult<Bound<'py, PyAny>> {
     let field = discriminator.field.bind(py);
-    let key: String = field.extract()?;
     let Some(tag) = Getter::new(py, value)?.get(field)? else {
-        return Err(field_required(py, &key));
+        return Err(errors::field_required(py, &field.extract::<String>()?));
     };
     let (table, label) = crate::conv::kind::once(&discriminator.table, || -> PyResult<_> {
         let table = converter
@@ -376,17 +376,21 @@ fn discriminated<'py>(
     })?;
     let member = match table.bind(py).get_item(type_and_value(&tag)?) {
         Ok(Some(member)) => member,
-        _ => return Err(at(py, expected(py, label, &tag), || Ok(format!(".{key}")))),
+        _ => {
+            let error = expected(py, label, &tag);
+            return Err(at(py, error, || {
+                Ok(format!(".{}", field.extract::<String>()?))
+            }));
+        }
     };
+    // the tag table maps to the union's own member converters
     let kind = union
         .members
         .iter()
         .map(|member| &member.kind)
-        .find(|kind| kind.converter.bind(py).is(&member));
-    match kind {
-        Some(kind) => load(py, value, kind, depth),
-        None => member.call_method1(pyo3::intern!(py, "from_json"), (value,)),
-    }
+        .find(|kind| kind.converter.bind(py).is(&member))
+        .ok_or_else(|| PyRuntimeError::new_err("discriminator tag maps to a foreign converter"))?;
+    load(py, value, kind, depth)
 }
 
 #[cfg(test)]

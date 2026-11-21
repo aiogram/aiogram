@@ -1189,6 +1189,44 @@ class TestReviewFindings:
         with pytest.raises(TypeError, match="unhashable set item"):
             converter_for(tp)
 
+    def test_tolerant_enum_missing_hook(self):
+        class Status(StrEnum):
+            ACTIVE = "active"
+            UNKNOWN = "unknown"
+
+            @classmethod
+            def _missing_(cls, value):
+                return cls.UNKNOWN if isinstance(value, str) else None
+
+        converter = converter_for(Status)
+        assert converter.from_json("new-telegram-value") is Status.UNKNOWN
+        with pytest.raises(ConversionError, match="expected a Status value"):
+            converter.from_json(1)
+
+    def test_hand_written_hash_set_items(self):
+        @dataclasses.dataclass(frozen=True)
+        class Keyed:
+            key: int
+            tags: list[str] = dataclasses.field(default_factory=list)
+
+            def __hash__(self):
+                return hash(self.key)
+
+        assert converter_for(set[Keyed]).from_json([{"key": 1, "tags": ["a"]}]) == {
+            Keyed(1, ["a"])
+        }
+
+    def test_load_json_text_subclasses(self):
+        class Raw(bytes):
+            pass
+
+        class Text(str):
+            pass
+
+        assert Address.__converter__.load_json(Raw(b'{"city": "a"}')).city == "a"
+        assert Address.__converter__.load_json(Text('{"city": "b"}')).city == "b"
+        assert Address.__converter__.load_json('{"city": "\ud800"}').city == "\ud800"
+
     def test_used_converters_are_collected(self):
         refs = []
         for _ in range(20):

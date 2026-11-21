@@ -30,14 +30,23 @@ pub(crate) fn load_document<'py>(
 ) -> PyResult<Bound<'py, PyAny>> {
     let owned: Vec<u8>;
     let encoded; // a temporary copy: `to_str` would cache UTF-8 on the str for its lifetime
-    let text: &[u8] = if let Ok(bytes) = data.cast_exact::<PyBytes>() {
+    let text: &[u8] = if let Ok(bytes) = data.cast::<PyBytes>() {
         bytes.as_bytes()
-    } else if let Ok(array) = data.cast_exact::<PyByteArray>() {
+    } else if let Ok(array) = data.cast::<PyByteArray>() {
         owned = array.to_vec();
         &owned
-    } else if let Ok(string) = data.cast_exact::<PyString>() {
-        encoded = string.encode_utf8()?;
-        encoded.as_bytes()
+    } else if let Ok(string) = data.cast::<PyString>() {
+        match string.encode_utf8() {
+            Ok(bytes) => {
+                encoded = bytes;
+                encoded.as_bytes()
+            }
+            // lone surrogates: not UTF-8, but json.loads takes such a str
+            Err(_) => {
+                let value = py.import("json")?.call_method1("loads", (string,))?;
+                return schema.load(py, &value, 0);
+            }
+        }
     } else {
         let name = data.get_type().name()?;
         return Err(PyTypeError::new_err(format!(
@@ -284,10 +293,7 @@ fn walk<'py>(
             for (field, value) in fields.iter().zip(values) {
                 match value {
                     Some(value) => out.set_item(field.name.bind(py), value)?,
-                    None if field.required => {
-                        let error = errors::conversion(py, "field required", None);
-                        return Err(at(py, error, || Ok(format!(".{}", field.key))));
-                    }
+                    None if field.required => return Err(errors::field_required(py, &field.key)),
                     None => {}
                 }
             }

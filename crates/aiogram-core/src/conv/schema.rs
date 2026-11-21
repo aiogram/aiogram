@@ -63,11 +63,7 @@ impl ModelSchema {
         match (&field.default, &field.factory) {
             (Some(default), _) => Ok(default.bind(py).clone()),
             (None, Some(factory)) => factory.bind(py).call0(),
-            (None, None) => Err(field_at(
-                py,
-                errors::conversion(py, "field required", None),
-                field,
-            )),
+            (None, None) => Err(errors::field_required(py, &field.key)),
         }
     }
 

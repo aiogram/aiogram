@@ -27,8 +27,14 @@ pub(crate) fn missing(py: Python<'_>) -> PyResult<Bound<'_, PyAny>> {
     module(py)?.getattr("MISSING")
 }
 
+static ERROR_TYPE: PyOnceLock<Py<PyAny>> = PyOnceLock::new();
+
 fn error_type(py: Python<'_>) -> PyResult<Bound<'_, PyAny>> {
-    module(py)?.getattr("ConversionError")
+    ERROR_TYPE
+        .get_or_try_init(py, || {
+            module(py)?.getattr("ConversionError").map(Bound::unbind)
+        })
+        .map(|cls| cls.bind(py).clone())
 }
 
 /// `ConversionError(reason)` or `ConversionError(reason, value)`.
@@ -54,9 +60,7 @@ pub(crate) fn at(
     error: PyErr,
     segment: impl FnOnce() -> PyResult<String>,
 ) -> PyErr {
-    let is_conversion =
-        error_type(py).is_ok_and(|cls| error.value(py).is_instance(&cls).unwrap_or(false));
-    if is_conversion {
+    if is_conversion(py, &error) {
         match segment() {
             Ok(segment) => {
                 if let Err(failure) = error.value(py).call_method1("_at", (segment,)) {
@@ -72,6 +76,13 @@ pub(crate) fn at(
 /// Whether `error` is a `ConversionError` (a union member that did not accept the value).
 pub(crate) fn is_conversion(py: Python<'_>, error: &PyErr) -> bool {
     error_type(py).is_ok_and(|cls| error.value(py).is_instance(&cls).unwrap_or(false))
+}
+
+/// `ConversionError("field required")` at `.key`.
+pub(crate) fn field_required(py: Python<'_>, key: &str) -> PyErr {
+    at(py, conversion(py, "field required", None), || {
+        Ok(format!(".{key}"))
+    })
 }
 
 pub(crate) fn check_depth(depth: u32) -> PyResult<()> {

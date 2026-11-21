@@ -2,12 +2,15 @@
 
 use pyo3::exceptions::PyValueError;
 use pyo3::prelude::*;
+use pyo3::sync::PyOnceLock;
 use pyo3::types::{PyBool, PyDict, PyFloat, PyInt, PyString};
 
 use super::dump::check_text;
 use super::errors::{self, expected, no_flat_form};
 use super::kind::{Data, Kind};
 use super::load::{boolean, float, int, literal_value, parse_text, string};
+
+static BOOL_TEXT: PyOnceLock<Py<PyDict>> = PyOnceLock::new();
 
 pub(crate) fn from_str<'py>(
     py: Python<'py>,
@@ -35,10 +38,14 @@ pub(crate) fn from_str<'py>(
             _ => {
                 // the lax set ("true", "Off", ...) is `_BOOL_TEXT[value.lower()]`
                 let lowered = part.call_method0(pyo3::intern!(py, "lower"))?;
-                let table = errors::module(py)?
-                    .getattr("_BOOL_TEXT")?
-                    .cast_into::<PyDict>()?;
+                let table = BOOL_TEXT.get_or_try_init(py, || -> PyResult<_> {
+                    Ok(errors::module(py)?
+                        .getattr("_BOOL_TEXT")?
+                        .cast_into::<PyDict>()?
+                        .unbind())
+                })?;
                 table
+                    .bind(py)
                     .get_item(lowered)?
                     .ok_or_else(|| expected(py, "a boolean", part))
             }

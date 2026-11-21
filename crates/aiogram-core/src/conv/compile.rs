@@ -64,6 +64,7 @@ pub(crate) fn kind(converter: &Bound<'_, PyAny>, native: bool) -> PyResult<Kind>
                 } else {
                     None
                 },
+                has_missing: attr("has_missing")?.extract()?,
             }))
         }
         "literal" => Data::Literal(Box::new(Literal {

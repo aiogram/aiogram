@@ -61,6 +61,8 @@ pub(crate) struct Enumeration {
     /// `_Enum._by_text`, `None` when the enum has no flat-string form
     pub(crate) by_text: Option<Py<PyDict>>,
     pub(crate) name: String,
+    /// The enum overrides `_missing_`: a miss calls `tp(value)`
+    pub(crate) has_missing: bool,
 }
 
 pub(crate) struct Literal {
