@@ -35,8 +35,9 @@ they are the ones verified against this project's toolchain:
 - `rtk git push` can print nothing for a push that pushed nothing, for example when the branch
   tracks `origin/dev-3.x`. Create branches with `git switch --no-track -c <b> origin/dev-3.x`,
   and after every push check that `git rev-parse origin/<b>` equals `git rev-parse HEAD`.
-- rtk mangles `grep` with `\|` inside a pipeline. Use `grep -E 'a|b'` or wrap the whole
-  pipeline in `rtk proxy bash -c "…"`.
+- rtk mangles a plain `grep` inside a pipeline: with `\|` in the pattern, or when another command follows
+  after `;` (`git status --short | grep -v '^A ' ; …` becomes a search of the whole repository for `^A `).
+  Always write `grep -E` in a pipeline, or wrap the whole pipeline in `rtk proxy bash -c "…"`.
 
 ## graphify
 
