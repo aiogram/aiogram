@@ -132,7 +132,7 @@ Verification method and results: [_VERIFICATION.md](_VERIFICATION.md).
 | [A-02](A-contracts/A-02-apply-resolutions.md) | Apply the review resolutions (19) and planning decisions (PD-01..PD-34) to the research pages | `done` | no | M | A-01 |
 | [A-03](A-contracts/A-03-poison-update-decision.md) | Decision record: 3.x poison-update boundaries (owner sign-off required) | `done` | no | S | — |
 | [A-04](A-contracts/A-04-pinned-corpus.md) | Pinned corpus and payload manifest | `done` | no | M | — |
-| [A-05](A-contracts/A-05-bench-harness.md) | Benchmark harness and method | `todo` | no | M | A-04 |
+| [A-05](A-contracts/A-05-bench-harness.md) | Benchmark harness and method | `done` | no | M | A-04 |
 | [A-06](A-contracts/A-06-record-3x-baselines.md) | Record the 3.x baselines (stock + "optimised 3.x" tag) | `todo` | no | S | 3x-01, 3x-03, 3x-07, 3x-08, 3x-09, 3x-11, 3x-12, 3x-14, A-04, A-05 |
 | [A-07](A-contracts/A-07-differential-framework.md) | Differential harness framework (two venvs, canonical traces, difference manifests, poison control) | `todo` | no | M | A-04 |
 | [A-08](A-contracts/A-08-model-oracle.md) | Model oracle, 3.x side | `todo` | no | M | A-04, A-07 |
