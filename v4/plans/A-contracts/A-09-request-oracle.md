@@ -64,7 +64,8 @@ captures the raw HTTP request and answers with an A-04 response fixture.
 - [ ] Canonicaliser for multipart and JSON bodies, shared with D-15 later. Keep it in `differential/trace.py` or a
       sibling module.
 - [ ] Implement all probes over the A-04 request and response inputs.
-- [ ] Run `pypi:aiogram==3.32.0` vs `path:.`: 0 mismatches. Run `--poison right`: detected.
+- [ ] Run `'pypi:aiogram<4'` (the latest supported 3.x release; the trace header prints the resolved version)
+      vs `path:.`: 0 mismatches. Run `--poison right`: detected.
 - [ ] Manifest entries above.
 - [ ] Changelog: none. Use the `skip news` label.
 
@@ -72,7 +73,7 @@ captures the raw HTTP request and answers with an A-04 response fixture.
 
 - Every A-04 request input yields `request.resolved` + `request.encoding` records, and every response input yields a
   `response.decode` record.
-- The 3.32.0 vs HEAD run is clean, and poison is detected.
+- The latest 3.x release vs HEAD run is clean, and poison is detected.
 - When run against 3x-09's branch, the only differences are `request.encoding` (approved, R18).
 
 ## Rejected alternatives
@@ -85,8 +86,8 @@ captures the raw HTTP request and answers with an A-04 response fixture.
 ## Validation
 
 ```bash
-uv run python -m differential run --kind request --left pypi:aiogram==3.32.0 --right path:.
-uv run python -m differential run --kind request --left pypi:aiogram==3.32.0 --right path:. --poison right; test $? -ne 0
+uv run python -m differential run --kind request --left 'pypi:aiogram<4' --right path:.
+uv run python -m differential run --kind request --left 'pypi:aiogram<4' --right path:. --poison right; test $? -ne 0
 uv run pytest tests --cov=aiogram --cov-report=term-missing
 make lint
 ```
