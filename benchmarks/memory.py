@@ -5,14 +5,20 @@ from __future__ import annotations
 import gc
 import os
 import sys
-import tracemalloc
 from collections.abc import Callable
 from pathlib import Path
 from typing import Any
 
+try:
+    import tracemalloc
+except ImportError:  # PyPy has no tracemalloc: its fields stay null
+    tracemalloc = None  # type: ignore[assignment]
 
-def traced(call: Callable[[], Any]) -> dict[str, int]:
+
+def traced(call: Callable[[], Any]) -> dict[str, int | None]:
     """tracemalloc peak and retained bytes of one call, the result still held when read."""
+    if tracemalloc is None:
+        return {"peak": None, "retained": None}
     gc.collect()
     tracemalloc.start()
     try:
