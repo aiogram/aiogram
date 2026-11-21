@@ -12,6 +12,10 @@ use super::value::{IStr, Meta, Raw, UnixTime, Unknown, set_bit};
 /// (B-14 decodes a union member on a fresh cursor over its slice). Every recorded [`Raw`] is
 /// an offset into the update's buffer.
 pub(crate) struct Cursor<'j> {
+    /// the whole input, at `origin_base`
+    origin: &'j [u8],
+    origin_base: u32,
+    /// the part `jiter` reads: `origin` from `base` on (moved by [`recover`](Self::recover))
     data: &'j [u8],
     jiter: Jiter<'j>,
     base: u32,
@@ -23,23 +27,38 @@ pub(crate) struct Object {
     end: u32,
     first: bool,
     unknown: Vec<Unknown>,
+    /// fields whose last occurrence so far failed; empty unless the input is invalid
+    failed: Vec<(u16, DecodeError)>,
 }
 
 impl Object {
-    pub(crate) fn meta<B>(self, present: B) -> Meta<B> {
-        Meta {
+    /// Field `id` was read: an earlier failed occurrence of it is overwritten (last wins).
+    #[inline]
+    pub(crate) fn settled(&mut self, id: u16) {
+        if !self.failed.is_empty() {
+            self.failed.retain(|(failed, _)| *failed != id);
+        }
+    }
+
+    /// The header of the finished object, or the first error that no later duplicate overwrote.
+    pub(crate) fn meta<B>(self, present: B) -> DecodeResult<Meta<B>> {
+        if let Some((_, error)) = self.failed.into_iter().next() {
+            return Err(error);
+        }
+        Ok(Meta {
             span: Raw {
                 start: self.start,
                 end: self.end,
             },
             present,
             unknown: self.unknown.into_boxed_slice(),
-        }
+        })
     }
 }
 
 impl<'j> Cursor<'j> {
-    /// A cursor over `data`, which starts at byte `base` of the update's buffer.
+    /// A cursor over `data`, which starts at byte `base` of the update's buffer. The whole of
+    /// `data` must be UTF-8: jiter does not check it in keys and skipped values.
     pub(crate) fn new(data: &'j [u8], base: u32) -> DecodeResult<Self> {
         if u32::try_from(data.len())
             .ok()
@@ -48,11 +67,58 @@ impl<'j> Cursor<'j> {
         {
             return Err(DecodeError::new(ErrorKind::TooLarge, base));
         }
+        if let Err(e) = std::str::from_utf8(data) {
+            let at = u32::try_from(e.valid_up_to()).unwrap_or(u32::MAX);
+            return Err(DecodeError::new(
+                ErrorKind::Json("invalid UTF-8".into()),
+                base.saturating_add(at),
+            ));
+        }
         Ok(Self {
+            origin: data,
+            origin_base: base,
             data,
             jiter: Jiter::new(data),
             base,
         })
+    }
+
+    /// Where the next value starts, for [`recover`](Self::recover).
+    pub(crate) fn mark(&self) -> u32 {
+        self.here()
+    }
+
+    /// After reading field `id` (its value at `mark`) failed with `error`: skips that value on a
+    /// fresh jiter and goes on after it, so the rest of the object is read and a later duplicate
+    /// can still win. Invalid JSON in the value is the error.
+    #[cold]
+    pub(crate) fn recover(
+        &mut self,
+        table: &Table,
+        object: &mut Object,
+        mark: u32,
+        id: u16,
+        error: DecodeError,
+    ) -> DecodeResult<()> {
+        let at = Seg::Key(table.wire(id));
+        let local = mark.saturating_sub(self.origin_base) as usize;
+        let mut jiter = Jiter::new(self.origin.get(local..).unwrap_or_default());
+        if let Err(skip) = jiter.next_skip() {
+            // invalid JSON wins; a nested level already reported it with the finer path
+            return Err(if matches!(error.kind(), ErrorKind::Json(_)) {
+                error.at(at)
+            } else {
+                DecodeError::jiter(skip, mark).at(at)
+            });
+        }
+        let end = local.saturating_add(jiter.current_index());
+        self.data = self.origin.get(end..).unwrap_or_default();
+        self.base = self
+            .origin_base
+            .saturating_add(u32::try_from(end).unwrap_or(u32::MAX));
+        self.jiter = Jiter::new(self.data);
+        object.failed.push((id, error.at(at)));
+        Ok(())
     }
 
     /// Offset in the update's buffer of `index` in `data`. Exact: `new` keeps `base + len`
@@ -87,6 +153,7 @@ impl<'j> Cursor<'j> {
             end: 0,
             first: true,
             unknown: Vec::new(),
+            failed: Vec::new(),
         })
     }
 
@@ -177,7 +244,10 @@ impl<'j> Cursor<'j> {
         while next.is_some() {
             let index = u32::try_from(out.len()).unwrap_or(u32::MAX);
             out.push(item(self).map_err(|e| e.at(Seg::Index(index)))?);
-            next = self.jiter.array_step().map_err(|e| self.fail(e))?;
+            next = self
+                .jiter
+                .array_step()
+                .map_err(|e| self.fail(e).at(Seg::Index(index)))?;
         }
         Ok(out.into_boxed_slice())
     }
@@ -199,7 +269,12 @@ impl<'j> Cursor<'j> {
     pub(crate) fn i32(&mut self) -> DecodeResult<i32> {
         self.peek()?;
         let at = self.here();
-        i32::try_from(self.i64()?).map_err(|_| DecodeError::new(ErrorKind::Range("i32"), at))
+        let range = || DecodeError::new(ErrorKind::Range("i32"), at);
+        match self.i64() {
+            Ok(value) => i32::try_from(value).map_err(|_| range()),
+            Err(e) if matches!(e.kind(), ErrorKind::Range(_)) => Err(range()),
+            Err(e) => Err(e),
+        }
     }
 
     /// A JSON number; an integer literal is accepted.

@@ -11,7 +11,7 @@ pub(crate) struct Raw {
 }
 
 impl Raw {
-    /// The bytes of the range in `buf` (the update's buffer), `None` if it is not that buffer.
+    /// The bytes of the range in `buf`, which must be the update's buffer; `None` if out of bounds.
     pub(crate) fn slice(self, buf: &[u8]) -> Option<&[u8]> {
         buf.get(self.start as usize..self.end as usize)
     }

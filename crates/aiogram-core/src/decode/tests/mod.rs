@@ -5,13 +5,8 @@ mod types;
 
 use pyo3::prelude::*;
 
-use super::{
-    Cursor, Decode, DecodeError, ErrorKind, INTERNED, IStr, Kind, Raw, Table, UnixTime, bit,
-};
-use types::{
-    CHAT, ChatType, EntityType, INLINE_KEYBOARD_BUTTON, INLINE_KEYBOARD_MARKUP, LOCATION, MESSAGE,
-    MESSAGE_ENTITY, Message, MessageCold, PHOTO_SIZE, TEXT_QUOTE, UPDATE, USER, Update, User, m,
-};
+use super::{Cursor, Decode, DecodeError, ErrorKind, INTERNED, IStr, Kind, Raw, UnixTime, bit};
+use types::{ChatType, EntityType, MESSAGE, Message, MessageCold, Update, User, m};
 
 fn text(buf: &[u8], raw: Raw) -> &str {
     std::str::from_utf8(raw.slice(buf).unwrap()).unwrap()
@@ -37,7 +32,9 @@ fn wrap(fields: &str) -> String {
 
 // ---- tables ----
 
-fn check_table(name: &str, table: &Table, width: usize) {
+fn check_table<T: Decode>(name: &str) {
+    let table = T::TABLE;
+    let width = T::Bits::default().as_ref().len();
     assert!(
         table.fields.len() <= width * 64,
         "{name}: present bitset too narrow"
@@ -75,20 +72,16 @@ fn check_table(name: &str, table: &Table, width: usize) {
 
 #[test]
 fn tables_are_consistent() {
-    for (name, table, width) in [
-        ("User", &USER, 1),
-        ("Chat", &CHAT, 1),
-        ("MessageEntity", &MESSAGE_ENTITY, 1),
-        ("PhotoSize", &PHOTO_SIZE, 1),
-        ("TextQuote", &TEXT_QUOTE, 1),
-        ("Location", &LOCATION, 1),
-        ("InlineKeyboardButton", &INLINE_KEYBOARD_BUTTON, 1),
-        ("InlineKeyboardMarkup", &INLINE_KEYBOARD_MARKUP, 1),
-        ("Message", &MESSAGE, 3),
-        ("Update", &UPDATE, 1),
-    ] {
-        check_table(name, table, width);
-    }
+    check_table::<User>("User");
+    check_table::<types::Chat>("Chat");
+    check_table::<types::MessageEntity>("MessageEntity");
+    check_table::<types::PhotoSize>("PhotoSize");
+    check_table::<types::TextQuote>("TextQuote");
+    check_table::<types::Location>("Location");
+    check_table::<types::InlineKeyboardButton>("InlineKeyboardButton");
+    check_table::<types::InlineKeyboardMarkup>("InlineKeyboardMarkup");
+    check_table::<Message>("Message");
+    check_table::<Update>("Update");
     assert_eq!(MESSAGE.fields.len(), 130);
     assert!(INTERNED.windows(2).all(|w| w[0] < w[1]));
 }
@@ -155,6 +148,16 @@ fn integer_errors() {
     ));
     assert_eq!(e.path(), "message.entities[0].offset");
     assert_eq!(*e.kind(), ErrorKind::Range("i32"));
+
+    let e = types::MessageEntity::from_slice(
+        br#"{"type":"bold","offset":99999999999999999999,"length":1}"#,
+        0,
+    )
+    .unwrap_err();
+    assert_eq!(
+        (e.path().as_str(), e.kind()),
+        ("offset", &ErrorKind::Range("i32"))
+    );
 
     let e = error(r#"{"update_id":99999999999999999999}"#);
     assert_eq!(
@@ -248,6 +251,37 @@ fn lone_surrogates() {
 }
 
 #[test]
+fn invalid_utf8_is_rejected_everywhere() {
+    for (json, offset) in [
+        (&b"{\"update_id\":1,\"x\":\"\xff\"}"[..], 20),
+        (&b"{\"update_id\":1,\"x\xfe\":2}"[..], 17),
+        (
+            &b"{\"update_id\":1,\"message\":{\"sticker\":\"\xc3\"}}"[..],
+            37,
+        ),
+    ] {
+        let e = Update::from_slice(json, 0).unwrap_err();
+        assert!(
+            matches!(e.kind(), ErrorKind::Json(m) if m.contains("UTF-8")),
+            "{e}"
+        );
+        assert_eq!(e.offset(), offset, "{e}");
+    }
+    let e = Update::from_slice(b"{\"update_id\":1,\"x\":\"\xff\"}", 100).unwrap_err();
+    assert_eq!(e.offset(), 120);
+}
+
+#[test]
+fn syntax_error_between_items_has_the_index() {
+    let e = Message::from_slice(
+        wrap(r#","entities":[{"type":"url","offset":0,"length":1} {}]"#).as_bytes(),
+        0,
+    )
+    .unwrap_err();
+    assert_eq!(e.path(), "entities[0]");
+}
+
+#[test]
 fn present_bits() {
     let msg = message(&wrap(
         r#","text":null,"reply_markup":{"inline_keyboard":[]},"ton_wallet_transfer":{},"nope":1"#,
@@ -328,6 +362,34 @@ fn duplicate_keys_last_wins() {
         (e.path().as_str(), e.kind()),
         ("message_id", &ErrorKind::Missing)
     );
+}
+
+#[test]
+fn invalid_earlier_duplicate_is_overwritten() {
+    // as `json.loads` + validation: only the occurrence that wins is checked
+    assert_eq!(update(r#"{"update_id":"bad","update_id":1}"#).update_id, 1);
+    let upd = update(&format!(
+        r#"{{"update_id":1,"message":{{"message_id":1}},"message":{}}}"#,
+        wrap("")
+    ));
+    assert_eq!(upd.message.as_ref().unwrap().chat.id, -100);
+    // inside an array item too, and the rest of the object is still read
+    let msg = message(&wrap(
+        r#","entities":[{"type":1}],"entities":[{"type":"url","offset":0,"length":1}],"text":"t""#,
+    ));
+    assert_eq!(msg.entities.as_deref().unwrap().len(), 1);
+    assert_eq!(msg.text.as_deref(), Some("t"));
+    // the last occurrence invalid: its error, with its path
+    let e = error(r#"{"update_id":1,"update_id":"bad"}"#);
+    assert_eq!(e.path(), "update_id");
+    let e = error(r#"{"update_id":1,"message":{"message_id":1}}"#);
+    assert_eq!(e.path(), "message.date");
+    // invalid JSON after a failed field still wins
+    let e = error(r#"{"update_id":"bad","x":[1,}"#);
+    assert_eq!((e.path().as_str(), e.offset()), ("", 26));
+    // and invalid JSON inside the failed value is reported at the field
+    let e = error(r#"{"update_id":"a,"message":{}}"#);
+    assert!(matches!(e.kind(), ErrorKind::Json(_)), "{e}");
 }
 
 #[test]

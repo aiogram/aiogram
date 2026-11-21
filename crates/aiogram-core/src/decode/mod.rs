@@ -7,7 +7,8 @@
 //! instantiated per caller (08 §7 items 12-13); key lookup, unknown keys and present bits live
 //! in the shared, non-generic [`Cursor`] (B21).
 //!
-//! Input rules: duplicate keys, last wins (as `json.loads`); a wire name and its Python alias
+//! Input rules: the input must be UTF-8; duplicate keys, last wins and only the winning
+//! occurrence is validated (as `json.loads` + validation); a wire name and its Python alias
 //! (`from` / `from_user`) are one field, last wins; `null` is "set to `None`"; a lone surrogate
 //! escape (`"\ud800"`) anywhere is an error at the nearest known field: jiter rejects it in
 //! skipped values too, and Rust `str` cannot hold it (B-14 isolates it, the bytes stay).
@@ -24,7 +25,7 @@ mod value;
 mod tests;
 
 pub(crate) use cursor::Cursor;
-pub(crate) use error::{DecodeError, DecodeResult, ErrorKind, Seg};
+pub(crate) use error::{DecodeError, DecodeResult, ErrorKind};
 pub(crate) use table::{Field, Kind, Table};
 pub(crate) use value::{
     ColdField, INTERNED, IStr, Meta, Raw, UnixTime, WireEnum, bit, cold_finish, cold_get, cold_set,
@@ -54,12 +55,18 @@ pub(crate) trait Decode: Sized {
         let mut present = Self::Bits::default();
         let mut object = c.begin()?;
         while let Some(id) = c.field(Self::TABLE, &mut object, present.as_mut())? {
-            Self::set(&mut p, id, c).map_err(|e| e.at(Seg::Key(Self::TABLE.wire(id))))?;
+            let mark = c.mark();
+            match Self::set(&mut p, id, c) {
+                Ok(()) => object.settled(id),
+                Err(e) => c.recover(Self::TABLE, &mut object, mark, id, e)?,
+            }
         }
-        Self::finish(p, object.meta(present))
+        Self::finish(p, object.meta(present)?)
     }
 
     /// Decodes `data`, a whole JSON document starting at byte `base` of the update's buffer.
+    /// No depth limit yet: nothing may expose this to untrusted input before B-14's stack
+    /// guard wraps `decode`.
     fn from_slice(data: &[u8], base: u32) -> DecodeResult<Self> {
         let mut c = Cursor::new(data, base)?;
         let value = Self::decode(&mut c)?;

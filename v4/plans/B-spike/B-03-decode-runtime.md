@@ -115,8 +115,12 @@ uv run pytest tests
 - **`cargo llvm-lines`** (`--lib --profile test`): every decode function has exactly one copy; `decode` is one per
   type, `Cursor::opt` / `Cursor::list` one per value type, `Cursor::field` one in total.
 - **Duplicate keys (Decide, proposed default taken; flagged).** Last wins, as `json.loads` and 3.x pydantic do,
-  `null` included (`{"a":1,"a":null}` leaves `a` unset-to-`None` with its present bit set). Every occurrence of a
-  duplicate unknown key is kept as a range, in input order.
+  `null` included (`{"a":1,"a":null}` leaves `a` unset-to-`None` with its present bit set). Only the winning
+  occurrence is validated: a failed field is skipped again on a fresh jiter and the object read on, so
+  `{"a":"bad","a":1}` decodes (error path only, `Cursor::recover`). Every occurrence of a duplicate unknown key
+  is kept as a range, in input order.
+- **UTF-8.** The whole input is checked once (`str::from_utf8` in `Cursor::new`): jiter does not check it in keys
+  and skipped values, so invalid bytes in an unknown key would otherwise pass.
 - **Lone surrogates (Decide, proposed default taken; flagged).** A lone `\udXXX` escape is a decode error at the
   nearest known field, with the byte offset. jiter rejects it in skipped values too (unknown keys, opaque fields),
   not only in decoded strings, so "the raw bytes stay available" holds for the update's buffer, not for the
