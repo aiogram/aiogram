@@ -10,12 +10,15 @@ import aiohttp
 import certifi
 from aiohttp import (
     BasicAuth,
+    ClientConnectorError,
     ClientError,
+    ClientHttpProxyError,
     ClientResponseError,
     ClientSession,
     ClientTimeout,
     FormData,
     TCPConnector,
+    TraceConfig,
 )
 from aiohttp.hdrs import USER_AGENT
 from aiohttp.http import SERVER_SOFTWARE
@@ -52,7 +55,24 @@ _NOT_SENT = tuple(
 )
 
 
-def _request_sent(error: BaseException) -> bool | None:
+class _Attempt:
+    """Per-request state filled by the trace callbacks of the session."""
+
+    redirected = False
+
+
+async def _on_request_redirect(session: ClientSession, context: Any, params: Any) -> None:
+    if isinstance(context.trace_request_ctx, _Attempt):
+        context.trace_request_ctx.redirected = True
+
+
+def _request_sent(error: BaseException, attempt: _Attempt) -> bool | None:
+    if attempt.redirected:
+        # A response already arrived; the error comes from following its redirect
+        return True
+    if isinstance(error, ClientHttpProxyError):
+        # The proxy refused the tunnel: nothing reached the server
+        return False
     if isinstance(error, _RESPONSE_ARRIVED):
         return True
     if isinstance(error, _NOT_SENT):
@@ -65,14 +85,18 @@ def _network_error(
     method: TelegramMethod[Any] | None,
     http_method: str,
     url: str,
+    attempt: _Attempt,
 ) -> TelegramNetworkError:
     """
     Wrap an HTTP client error without building text from it.
 
     Its ``str()`` contains the request URL and so the token: the message is built only from
-    the error type, the redacted URL and the status code.
+    the error type, the redacted URL, the status code and the OS error text of a failed
+    connection (which names the host at most).
     """
     message = f"{type(error).__name__}: {http_method} {url}"
+    if isinstance(error, ClientConnectorError) and error.strerror:
+        message = f"{message} ({error.strerror})"
     if isinstance(error, ClientResponseError) and error.status:
         # The server's reason phrase is untrusted text; the standard one is token-free
         try:
@@ -84,7 +108,7 @@ def _network_error(
         method=method,
         message=message,
         original=error,
-        request_sent=_request_sent(error),
+        request_sent=_request_sent(error, attempt),
     )
 
 
@@ -179,11 +203,14 @@ class AiohttpSession(BaseSession):
             await self.close()
 
         if self._session is None or self._session.closed:
+            trace = TraceConfig()
+            trace.on_request_redirect.append(_on_request_redirect)
             self._session = ClientSession(
                 connector=self._connector_type(**self._connector_init),
                 headers={
                     USER_AGENT: f"{SERVER_SOFTWARE} aiogram/{__version__}",
                 },
+                trace_configs=[trace],
             )
             self._should_reset_connector = False
 
@@ -223,17 +250,19 @@ class AiohttpSession(BaseSession):
 
         url = self.api.api_url(token=bot.token, method=method.__api_method__)
         form = self.build_form_data(bot=bot, method=method)
+        attempt = _Attempt()
 
         try:
             async with session.post(
                 url,
                 data=form,
                 timeout=ClientTimeout(total=self.timeout if timeout is None else timeout),
+                trace_request_ctx=attempt,
             ) as resp:
                 raw_result = await resp.text()
         except (TimeoutError, ClientError) as e:
             # `from None`: a traceback prints the chained error, and its URL holds the token
-            raise _network_error(e, method, "POST", self.api.redact_url(url)) from None
+            raise _network_error(e, method, "POST", self.api.redact_url(url), attempt) from None
         response = self.check_response(
             bot=bot,
             method=method,
@@ -254,6 +283,7 @@ class AiohttpSession(BaseSession):
             headers = {}
 
         session = await self.create_session()
+        attempt = _Attempt()
 
         try:
             async with session.get(
@@ -261,11 +291,12 @@ class AiohttpSession(BaseSession):
                 timeout=ClientTimeout(total=timeout),
                 headers=headers,
                 raise_for_status=raise_for_status,
+                trace_request_ctx=attempt,
             ) as resp:
                 async for chunk in resp.content.iter_chunked(chunk_size):
                     yield chunk
         except (TimeoutError, ClientError) as e:
-            raise _network_error(e, None, "GET", self.api.redact_url(url)) from None
+            raise _network_error(e, None, "GET", self.api.redact_url(url), attempt) from None
 
     async def __aenter__(self) -> Self:
         await self.create_session()

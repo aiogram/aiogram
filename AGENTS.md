@@ -94,6 +94,11 @@ Suite strategy (4.0, D88):
 - The `aiogram.test` toolkit for new end-to-end scenarios (dispatcher + FSM + scenes + filters + errors).
 - No mass rewrite of existing tests onto the toolkit.
 - The 100% coverage rule is unchanged.
+- Token safety: assert with `tests/token_safety.py` (`FAKE_TOKEN`, `assert_token_absent`). `raise ... from None`
+  inside `except` still sets `__context__` (only suppressed), so the helper walks the chain a traceback prints, not
+  `__context__` / `.original`, which hold the raw aiohttp error by design.
+- `aresponses` intercepts every host, `127.0.0.1` included: a test that needs a real unreachable hop (a redirect to
+  a closed port) uses `aiohttp.test_utils.TestServer` without the `aresponses` fixture.
 
 `MockedSession` builds the JSON wire envelope and runs it through `BaseSession.check_response`, so unit tests keep
 exercising the real error mapping (`TelegramBadRequest`, `TelegramRetryAfter`, ...). Its only model-layer dependency is

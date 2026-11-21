@@ -55,11 +55,33 @@ class TestAPIServer:
                 "http://localhost:8081/file/bot42:TEST/x",
                 "http://localhost:8081/file/bot42:***/x",
             ),
-            # No id part: nothing of the token is shown
+            # Query and fragment may carry other secrets
+            (
+                PRODUCTION,
+                "https://api.telegram.org/file/bot42:TEST/a.jpg?sig=SECRET#SECRET",
+                "https://api.telegram.org/file/bot42:***/a.jpg",
+            ),
+            # Not shaped like a token where the template puts one: origin only
             (
                 PRODUCTION,
                 "https://api.telegram.org/botSECRET/getMe",
-                "https://api.telegram.org/bot***/getMe",
+                "https://api.telegram.org/...",
+            ),
+            (
+                PRODUCTION,
+                "https://api.telegram.org/bot/../x?k=SECRET",
+                "https://api.telegram.org/...",
+            ),
+            (
+                PRODUCTION,
+                "https://api.telegram.org/botab:SECRET/getMe",
+                "https://api.telegram.org/...",
+            ),
+            # The secret again later in the URL
+            (
+                PRODUCTION,
+                "https://api.telegram.org/file/bot42:TEST/42:TEST",
+                "https://api.telegram.org/...",
             ),
             # A foreign URL may carry other secrets: origin only, no credentials
             (
@@ -72,6 +94,13 @@ class TestAPIServer:
     )
     def test_redact_url(self, server: TelegramAPIServer, url: str, expected: str):
         assert server.redact_url(url) == expected
+
+    def test_redact_url_overlapping_prefixes(self):
+        server = TelegramAPIServer(
+            base="https://h/{token}/{method}", file="https://h/file/{token}/{path}"
+        )
+        assert server.redact_url("https://h/file/42:TEST/a.jpg") == "https://h/file/42:***/a.jpg"
+        assert server.redact_url("https://h/42:TEST/getMe") == "https://h/42:***/getMe"
 
     def test_redact_url_token_at_template_end(self):
         server = TelegramAPIServer(base="https://h/{method}?t={token}", file="https://h/f/{token}")

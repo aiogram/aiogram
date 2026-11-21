@@ -1,9 +1,10 @@
 Errors of :meth:`Bot.download_file() <aiogram.client.bot.Bot.download_file>`,
 :meth:`Bot.download() <aiogram.client.bot.Bot.download>` and :class:`~aiogram.types.input_file.URLInputFile`
-reads are now :class:`~aiogram.exceptions.TelegramNetworkError` instead of a copy of the :code:`aiohttp` error;
-catch :class:`~aiogram.exceptions.TelegramNetworkError` and read the :code:`aiohttp` error from :code:`.original`.
+reads, timeouts included, are now :class:`~aiogram.exceptions.TelegramNetworkError` instead of a copy of the
+:code:`aiohttp` error or a bare :code:`TimeoutError`; catch :class:`~aiogram.exceptions.TelegramNetworkError`
+and read the original error from :code:`.original`.
 Every network error message now has the form :code:`<aiohttp error type>: <HTTP method> <redacted URL>`
-(plus :code:`-> <status> <standard reason>` when a response arrived), replacing :code:`Request timeout error`
+(plus :code:`-> <status> <standard reason>` when a response arrived, or the OS error text of a failed connection), replacing :code:`Request timeout error`
 and the :code:`aiohttp` error text. :class:`~aiogram.exceptions.TelegramNetworkError` gains
 :code:`.request_sent` (:code:`False` when the request is known not to have been sent, :code:`True` when a
 response arrived, :code:`None` when unknown); its :code:`.method` is :code:`None` for a download.

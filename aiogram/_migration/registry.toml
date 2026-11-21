@@ -893,11 +893,11 @@ warn_3x = { site = "call", target = "aiogram.utils.link.create_channel_bot_link"
 [[entry]]
 id = "AG4050"
 kind = "removal-4.0"
-title = "download errors are TelegramNetworkError, not aiohttp.ClientError"
+title = "download errors, timeouts included, are TelegramNetworkError, not aiohttp.ClientError or TimeoutError"
 decisions = ["R22", "PD-14"]
 area = "errors"
 change = "behaviour"
-replacement = "catch aiogram.exceptions.TelegramNetworkError around Bot.download_file(), Bot.download() and URLInputFile reads; the aiohttp error is on .original"
+replacement = "catch aiogram.exceptions.TelegramNetworkError around Bot.download_file(), Bot.download() and URLInputFile reads, instead of aiohttp.ClientError or asyncio.TimeoutError; the original error is on .original"
 detection = "heuristic"
 confidence = "medium"
 codemod = "none"

@@ -1,4 +1,5 @@
 import asyncio
+import ssl
 from collections.abc import AsyncGenerator, AsyncIterable
 from typing import (
     Any,
@@ -9,8 +10,10 @@ from unittest.mock import AsyncMock, Mock, patch
 import aiohttp_socks
 import pytest
 from aiohttp import (
+    ClientConnectorCertificateError,
     ClientConnectorError,
     ClientError,
+    ClientHttpProxyError,
     ClientOSError,
     ClientProxyConnectionError,
     ClientResponseError,
@@ -22,7 +25,9 @@ from aiohttp import (
     ServerDisconnectedError,
     SocketTimeoutError,
     TooManyRedirects,
+    web,
 )
+from aiohttp.test_utils import TestServer
 from aresponses import ResponsesMockServer
 from multidict import CIMultiDict, CIMultiDictProxy
 from yarl import URL
@@ -32,7 +37,7 @@ from aiogram.client.default import Default
 from aiogram.client.session import aiohttp
 from aiogram.client.session.aiohttp import AiohttpSession
 from aiogram.client.telegram import TelegramAPIServer
-from aiogram.exceptions import TelegramNetworkError
+from aiogram.exceptions import TelegramEntityTooLarge, TelegramNetworkError
 from aiogram.methods import GetMe, TelegramMethod
 from aiogram.types import InputFile, URLInputFile
 from tests.mocked_bot import MockedBot
@@ -388,6 +393,7 @@ class TestAiohttpSession:
             (ConnectionTimeoutError("connect"), False),
             (InvalidURL("x"), False),
             (NonHttpUrlClientError("x"), False),
+            (ClientHttpProxyError(Mock(), (), status=407), False),
             (ClientResponseError(Mock(), (), status=502), True),
             (TooManyRedirects(Mock(), ()), True),
             (InvalidUrlRedirectClientError("x"), True),
@@ -398,7 +404,58 @@ class TestAiohttpSession:
         ],
     )
     def test_request_sent(self, error: BaseException, sent: bool | None):
-        assert aiohttp._network_error(error, None, "GET", "u").request_sent is sent
+        attempt = aiohttp._Attempt()
+        assert aiohttp._network_error(error, None, "GET", "u", attempt).request_sent is sent
+        # After a redirect a response has already arrived, whatever fails next
+        attempt.redirected = True
+        assert aiohttp._network_error(error, None, "GET", "u", attempt).request_sent is True
+
+    async def test_request_sent_after_redirect(self):
+        async def redirect(request: web.Request) -> web.Response:
+            raise web.HTTPTemporaryRedirect("http://127.0.0.1:1/unreachable")
+
+        app = web.Application()
+        app.router.add_post("/{tail:.*}", redirect)
+        async with TestServer(app) as server:
+            session = AiohttpSession(api=TelegramAPIServer.from_base(str(server.make_url(""))))
+            async with Bot(TOKEN, session=session).context() as bot:
+                with pytest.raises(TelegramNetworkError) as exc_info:
+                    await bot.get_me()
+
+        assert_wrapped(exc_info.value)
+        assert isinstance(exc_info.value.original, ClientConnectorError)
+        assert exc_info.value.request_sent is True
+
+    async def test_on_request_redirect_ignores_foreign_context(self):
+        context = Mock(trace_request_ctx=None)
+        await aiohttp._on_request_redirect(Mock(), context, Mock())
+        assert context.trace_request_ctx is None
+
+    @pytest.mark.parametrize(
+        ("error", "detail"),
+        [
+            (
+                ClientConnectorError(Mock(), OSError(111, "Connect call failed")),
+                " (Connect call failed)",
+            ),
+            (ClientConnectorError(Mock(), OSError("no errno")), ""),
+            (
+                ClientConnectorCertificateError(
+                    Mock(), ssl.SSLCertVerificationError(1, "certificate verify failed")
+                ),
+                " (certificate verify failed)",
+            ),
+        ],
+    )
+    def test_network_error_connection_detail(self, error: ClientConnectorError, detail: str):
+        message = aiohttp._network_error(error, None, "GET", "u", aiohttp._Attempt()).message
+        assert message == f"{type(error).__name__}: GET u{detail}"
+
+    async def test_entity_too_large_request_sent(self, bot: MockedBot):
+        with pytest.raises(TelegramEntityTooLarge) as exc_info:
+            bot.session.check_response(bot, GetMe(), 413, '{"ok": false, "description": "x"}')
+        assert exc_info.value.request_sent is True
+        assert exc_info.value.original is None
 
     @pytest.mark.parametrize(
         ("status", "suffix"),
@@ -406,7 +463,7 @@ class TestAiohttpSession:
     )
     def test_network_error_status(self, status: int, suffix: str):
         error = ClientResponseError(Mock(), (), status=status, message="echo")
-        assert aiohttp._network_error(error, None, "GET", "u").message == (
+        assert aiohttp._network_error(error, None, "GET", "u", aiohttp._Attempt()).message == (
             f"ClientResponseError: GET u{suffix}"
         )
 

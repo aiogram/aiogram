@@ -88,9 +88,10 @@ class TelegramNetworkError(TelegramAPIError):
     """The HTTP client error, or ``None`` when the error is not a transport failure."""
     request_sent: bool | None
     """
-    ``False`` when the request is known not to have reached the server (connection or
-    invalid URL errors), ``True`` when a response arrived, ``None`` when it is unknown
-    (a timeout or a connection lost mid-request). A retry of a non-idempotent method is
+    ``False`` when the request is known not to have reached the server (connection, proxy
+    tunnel or invalid URL errors before any redirect), ``True`` when a response arrived
+    (an HTTP error status, a redirect, a 413), ``None`` when it is unknown (a timeout or
+    a connection lost mid-request). A retry of a non-idempotent method is
     only safe when this is ``False``.
     """
 

@@ -86,23 +86,28 @@ class TelegramAPIServer:
         """
         Render a URL for error messages and logs without the bot token
 
-        A URL built from :attr:`base` or :attr:`file` keeps everything but the token
-        secret (``.../bot123456:***/getMe``). Any other URL is shown as its origin only
-        (``https://example.com/...``), because its path or query may carry other secrets.
+        A URL built from :attr:`base` or :attr:`file` keeps its path but not the token
+        secret, the query or the fragment (``.../bot123456:***/getMe``). Any other URL is
+        shown as its origin only (``https://example.com/...``), because its path or query
+        may carry other secrets.
 
         :param url: URL to render
         :return: URL safe to show
         """
-        for template in (self.base, self.file):
-            prefix, found, rest = template.partition("{token}")
+        templates = [template.partition("{token}") for template in (self.base, self.file)]
+        # Longest prefix first: with overlapping prefixes the shorter one cuts the wrong span
+        for prefix, found, rest in sorted(templates, key=lambda t: len(t[0]), reverse=True):
             if not found or not url.startswith(prefix):
                 continue
             # The token runs up to the character that follows `{token}` in the template
             delimiter = rest[:1]
             remainder = url[len(prefix) :]
             token, sep, tail = remainder.partition(delimiter) if delimiter else (remainder, "", "")
-            bot_id, colon, _ = token.partition(":")
-            return f"{prefix}{bot_id + ':' if colon else ''}***{sep}{tail}"
+            bot_id, colon, secret = token.partition(":")
+            if not (colon and bot_id.isdigit()) or (secret and secret in tail):
+                continue  # not a token where the template puts one: show the origin only
+            tail = tail.partition("?")[0].partition("#")[0]
+            return f"{prefix}{bot_id}:***{sep}{tail}"
         try:
             return f"{URL(url).origin()}/..."
         except ValueError:
