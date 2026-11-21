@@ -5,12 +5,12 @@ from __future__ import annotations
 import importlib.util
 import inspect
 import json
+import re
 import sys
 import tomllib
 from pathlib import Path
 
 import pytest
-import yaml
 
 from aiogram import Bot, Router
 from aiogram.methods import TelegramMethod
@@ -88,7 +88,7 @@ def test_signatures_cover_everything():
     for cls in signatures_script._subclasses(TelegramMethod):
         assert cls.__name__ in methods
     for path in (ROOT / ".butcher" / "types").glob("*/aliases.yml"):
-        for alias in yaml.safe_load(path.read_text(encoding="utf-8")):
+        for alias in re.findall(r"^([a-z_0-9]+):", path.read_text(encoding="utf-8"), re.M):
             assert f"{path.parent.name}.{alias}" in SIGNATURES["shortcuts"]
 
 
