@@ -8,7 +8,7 @@ use pyo3::types::{PyDict, PyFrozenSet, PyList, PySet, PyString, PyType};
 use pyo3::{PyTraverseError, PyVisit};
 
 use super::compile;
-use super::schema::ModelSchema;
+use super::schema::{KindCore, ModelSchema};
 
 /// One compiled type; `converter` is the Python converter it came from (error `repr`s, and
 /// the methods called for [`Data::Python`]).
@@ -38,6 +38,9 @@ pub(crate) enum Data {
     Dict(Box<Kind>),
     TypedDict(Box<TypedDict>),
     Model(Box<Nested>),
+    /// A TypedDict used as a field type: its own compiled core (`_Native._core()`), shared, so a
+    /// recursive TypedDict compiles its field table once.
+    Shared(Box<Shared>),
     Union(Box<Union>),
     /// A user converter (`register_converter`, a `Converter` in `Annotated`, a subclass of a
     /// built-in that does not declare its own `kind`): call its methods.
@@ -140,6 +143,28 @@ impl Collect {
     }
 }
 
+pub(crate) struct Shared {
+    pub(crate) core: OnceLock<Py<KindCore>>,
+}
+
+impl Shared {
+    pub(crate) fn core<'py>(
+        &self,
+        py: Python<'py>,
+        converter: &Py<PyAny>,
+    ) -> PyResult<Bound<'py, KindCore>> {
+        let core = once(&self.core, || {
+            converter
+                .bind(py)
+                .call_method0(pyo3::intern!(py, "_core"))?
+                .cast_into::<KindCore>()
+                .map(Bound::unbind)
+                .map_err(PyErr::from)
+        })?;
+        Ok(core.bind(py).clone())
+    }
+}
+
 /// A nested model, resolved on first use so self-referencing classes compile.
 pub(crate) struct Nested {
     pub(crate) schema: OnceLock<Py<ModelSchema>>,
@@ -219,6 +244,7 @@ pub(crate) fn traverse(kind: &Kind, visit: &PyVisit<'_>) -> Result<(), PyTravers
             }
         }
         Data::Model(nested) => visit.call(nested.schema.get())?,
+        Data::Shared(shared) => visit.call(shared.core.get())?,
         Data::Union(union) => {
             for member in &union.members {
                 traverse(&member.kind, visit)?;

@@ -61,6 +61,10 @@ pub(crate) fn load<'py>(
         }
         Data::Dict(item) => dict(py, value, item, depth, load),
         Data::TypedDict(typed) => typed_dict(py, typed, &kind.converter, value, depth, load),
+        Data::Shared(shared) => {
+            let core = shared.core(py, &kind.converter)?;
+            load(py, value, &core.get().kind, depth)
+        }
         Data::Model(nested) => nested
             .schema(py, &kind.converter)?
             .get()
@@ -163,17 +167,27 @@ fn enum_member<'py>(
     {
         return Ok(member);
     }
+    missing_member(py, enumeration, value)?.ok_or_else(miss) // a miss, or an unhashable value
+}
+
+/// A tolerant enum's `_missing_(value)`, called directly (`tp(value)` would first match by
+/// equality, so `true` would load an `IntEnum` member). Only a member of the enum counts; a
+/// `ValueError` from the hook is a miss.
+pub(crate) fn missing_member<'py>(
+    py: Python<'py>,
+    enumeration: &Enumeration,
+    value: &Bound<'py, PyAny>,
+) -> PyResult<Option<Bound<'py, PyAny>>> {
     if !enumeration.has_missing {
-        return Err(miss()); // a miss, or an unhashable value
+        return Ok(None);
     }
-    // a tolerant enum: `tp(value)` runs its _missing_ hook; a ValueError is still a miss
-    enumeration.tp.bind(py).call1((value,)).map_err(|error| {
-        if error.is_instance_of::<PyValueError>(py) {
-            miss()
-        } else {
-            error
-        }
-    })
+    let tp = enumeration.tp.bind(py);
+    match tp.call_method1(pyo3::intern!(py, "_missing_"), (value,)) {
+        Ok(member) if member.is_instance(tp)? => Ok(Some(member)),
+        Ok(_) => Ok(None),
+        Err(error) if error.is_instance_of::<PyValueError>(py) => Ok(None),
+        Err(error) => Err(error),
+    }
 }
 
 /// `_Literal`: `(type(value), value) in _json`; an unhashable value is a miss.

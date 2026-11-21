@@ -1027,7 +1027,7 @@ class TestMoreKinds:
         assert BadDict not in _converters._typeddicts
 
     def test_untyped_namedtuple_rejected(self):
-        with pytest.raises(TypeError, match="unsupported annotation"):
+        with pytest.raises(TypeError, match="no annotation"):
             converter_for(namedtuple("Plain", ["a"]))  # noqa: PYI024
 
     def test_per_field_converter_wins_over_register_converter(self, monkeypatch):
@@ -1161,6 +1161,19 @@ class LeafDict(TypedDict):
     kind: Literal["leaf"]
 
 
+@dataclasses.dataclass(frozen=True)
+class FrozenTree:
+    children: tuple[FrozenTree, ...] = ()
+
+
+@dataclasses.dataclass
+class WithNested:
+    class Kind(Enum):
+        X = "x"
+
+    kind: Kind
+
+
 class TestReviewFindings:
     def test_recursive_discriminated_typeddict(self):
         doc = converter_for(Doc).from_json(
@@ -1226,6 +1239,60 @@ class TestReviewFindings:
         assert Address.__converter__.load_json(Raw(b'{"city": "a"}')).city == "a"
         assert Address.__converter__.load_json(Text('{"city": "b"}')).city == "b"
         assert Address.__converter__.load_json('{"city": "\ud800"}').city == "\ud800"
+
+    def test_tolerant_int_enum_keeps_type_matching(self):
+        class Grade(IntEnum):
+            A = 1
+            UNKNOWN = -1
+
+            @classmethod
+            def _missing_(cls, value):
+                return cls.UNKNOWN if type(value) is int else None
+
+        converter = converter_for(Grade)
+        assert converter.from_json(99) is Grade.UNKNOWN
+        for value in (True, 1.0):
+            with pytest.raises(ConversionError, match="expected a Grade value"):
+                converter.from_json(value)
+
+    def test_tolerant_enum_in_the_flat_codec(self):
+        class Mode(StrEnum):
+            ON = "on"
+            OTHER = "other"
+
+            @classmethod
+            def _missing_(cls, value):
+                return cls.OTHER
+
+        assert converter_for(Mode).from_str("new") is Mode.OTHER
+
+    def test_recursive_frozen_dataclass_as_set_item(self):
+        assert converter_for(set[FrozenTree]).from_json([{"children": [{}]}]) == {
+            FrozenTree((FrozenTree(),))
+        }
+
+    def test_class_body_names_in_string_annotations(self):
+        assert model_converter(WithNested).from_json({"kind": "x"}).kind is WithNested.Kind.X
+
+    def test_optional_over_empty_text_has_no_flat_form(self):
+        class Blank(Enum):
+            EMPTY = ""
+            A = "a"
+
+        assert not converter_for(Blank | None).flat
+        assert not converter_for(Literal["", "a"] | None).flat
+        assert converter_for(Literal["a"] | None).flat
+
+    def test_recursive_typeddict_compiles_once(self):
+        converter = converter_for(Branch)
+        deep = {"name": "a", "children": [{"name": "b", "children": [{"name": "c"}]}]}
+        assert converter.from_json(deep) == deep
+        nested = converter._core()
+        assert converter._core() is nested
+
+    def test_untyped_namedtuple_message(self):
+        with pytest.raises(TypeError, match="the field has no annotation"):
+            converter_for(namedtuple("Untyped", ["a"]))  # noqa: PYI024
 
     def test_used_converters_are_collected(self):
         refs = []

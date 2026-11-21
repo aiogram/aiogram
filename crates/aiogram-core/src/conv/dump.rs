@@ -53,6 +53,10 @@ pub(crate) fn dump<'py>(
         }
         Data::Dict(item) => load::dict(py, value, item, depth, dump),
         Data::TypedDict(typed) => typed_dict(py, typed, &kind.converter, value, depth, dump),
+        Data::Shared(shared) => {
+            let core = shared.core(py, &kind.converter)?;
+            dump(py, value, &core.get().kind, depth)
+        }
         Data::Model(nested) => {
             nested
                 .schema(py, &kind.converter)?

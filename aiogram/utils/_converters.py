@@ -264,7 +264,10 @@ class _Optional(_Native):
 
     def __init__(self, inner: Converter) -> None:
         self.inner = inner
-        self.flat = inner.flat  # "" is None in the flat codec (3.x pack writes None as "")
+        # "" is None in the flat codec (3.x pack writes None as ""), so an inner value whose
+        # text is "" (an enum member or Literal value) would come back as None: no flat form
+        empty = "" in getattr(inner, "_by_text", ()) or "" in getattr(inner, "_text", ())
+        self.flat = inner.flat and not empty
 
 
 class _Sequence(_Native):
@@ -318,7 +321,7 @@ class _TypedDict(_Native):
 
     def _compile(self) -> tuple[tuple[str, Converter, bool], ...]:
         hints = typing.get_type_hints(
-            self.tp, localns={self.tp.__name__: self.tp}, include_extras=True, **_HINTS_OPTIONS
+            self.tp, localns=_localns(self.tp), include_extras=True, **_HINTS_OPTIONS
         )
         required_keys = self.tp.__required_keys__  # type: ignore[attr-defined]
         fields = []
@@ -573,16 +576,19 @@ def _generated_hash(tp: type) -> bool:
     return code is not None and code.co_filename.startswith("<")  # exec'd, not in a source file
 
 
-def _unhashable(converter: Converter) -> bool:
+def _unhashable(converter: Converter, seen: frozenset[int] = frozenset()) -> bool:
     """Whether ``converter`` can produce a value that cannot go in a set."""
+    if id(converter) in seen:  # a recursive model: decided by its other fields
+        return False
+    seen |= {id(converter)}
     if isinstance(converter, (_Dict, _TypedDict)):
         return True
     if isinstance(converter, _Sequence):
-        return converter.tp in {list, set} or _unhashable(converter.item)
+        return converter.tp in {list, set} or _unhashable(converter.item, seen)
     if isinstance(converter, _Optional):
-        return _unhashable(converter.inner)
+        return _unhashable(converter.inner, seen)
     if isinstance(converter, _Union):
-        return any(_unhashable(member) for member in converter.members)
+        return any(_unhashable(member, seen) for member in converter.members)
     if isinstance(converter, ModelConverter):
         tp = converter.tp
         if getattr(tp, "__hash__", None) is None:  # a non-frozen dataclass
@@ -598,7 +604,9 @@ def _unhashable(converter: Converter) -> bool:
             }
         if hashed:
             with contextlib.suppress(NameError):  # a field type defined later
-                return any(_unhashable(f.converter) for f in converter.fields if f.name in hashed)
+                return any(
+                    _unhashable(f.converter, seen) for f in converter.fields if f.name in hashed
+                )
     return False
 
 
@@ -718,13 +726,19 @@ def _union(tp: Any, discriminator: str | None) -> _Union:
     )
 
 
+def _localns(cls: type) -> dict[str, Any]:
+    """Names for string annotations: the class body (nested classes), and the class itself,
+    which is not bound in its module yet while ``__init_subclass__`` runs."""
+    return {**vars(cls), cls.__name__: cls}
+
+
 def _is_namedtuple(tp: type) -> bool:
     return issubclass(tp, tuple) and hasattr(tp, "_fields")
 
 
 def _compile(cls: type) -> tuple[FieldSpec, ...]:
     hints = typing.get_type_hints(
-        cls, localns={cls.__name__: cls}, include_extras=True, **_HINTS_OPTIONS
+        cls, localns=_localns(cls), include_extras=True, **_HINTS_OPTIONS
     )
     items: list[tuple[str, Any, Any]]
     if _is_namedtuple(cls):  # like a dataclass: a JSON object, built with cls(**values)
@@ -754,7 +768,10 @@ def _compile(cls: type) -> tuple[FieldSpec, ...]:
     specs = []
     for name, default, factory in items:
         try:
-            converter = converter_for(hints.get(name, Any))  # an untyped namedtuple field
+            if name not in hints:  # an untyped collections.namedtuple field
+                msg = "the field has no annotation"
+                raise TypeError(msg)
+            converter = converter_for(hints[name])
         except TypeError as e:
             msg = f"{cls.__qualname__}.{name}: {e}"
             raise TypeError(msg) from None

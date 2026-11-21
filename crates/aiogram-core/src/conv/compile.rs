@@ -7,7 +7,7 @@ use pyo3::types::{PyDict, PyFrozenSet, PySet, PyString, PyTuple, PyType};
 
 use super::errors;
 use super::kind::{
-    Collect, Data, Discriminator, Enumeration, Field, Kind, Literal, Member, Nested, Text,
+    Collect, Data, Discriminator, Enumeration, Field, Kind, Literal, Member, Nested, Shared, Text,
     TypedDict, TypedDictField, Union,
 };
 
@@ -85,8 +85,11 @@ pub(crate) fn kind(converter: &Bound<'_, PyAny>, native: bool) -> PyResult<Kind>
             }
         }
         "dict" => Data::Dict(Box::new(kind(&attr("item")?, false)?)),
-        "typeddict" => Data::TypedDict(Box::new(TypedDict {
+        "typeddict" if native => Data::TypedDict(Box::new(TypedDict {
             fields: OnceLock::new(),
+        })),
+        "typeddict" => Data::Shared(Box::new(Shared {
+            core: OnceLock::new(),
         })),
         "model" => Data::Model(Box::new(Nested {
             schema: OnceLock::new(),

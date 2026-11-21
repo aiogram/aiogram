@@ -270,7 +270,7 @@ impl ModelSchema {
 /// `to_json` / `from_json` / `to_str` / `from_str` methods call these.
 #[pyclass(frozen, module = "aiogram._core")]
 pub struct KindCore {
-    kind: Kind,
+    pub(crate) kind: Kind,
 }
 
 #[pymethods]

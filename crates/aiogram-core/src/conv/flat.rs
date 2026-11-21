@@ -8,7 +8,7 @@ use pyo3::types::{PyBool, PyDict, PyFloat, PyInt, PyString};
 use super::dump::check_text;
 use super::errors::{self, expected, no_flat_form};
 use super::kind::{Data, Kind};
-use super::load::{boolean, float, int, literal_value, parse_text, string};
+use super::load::{boolean, float, int, literal_value, missing_member, parse_text, string};
 
 static BOOL_TEXT: PyOnceLock<Py<PyDict>> = PyOnceLock::new();
 
@@ -52,10 +52,11 @@ pub(crate) fn from_str<'py>(
         },
         Data::Text(text) if text.flat => parse_text(py, text, part),
         Data::Enum(enumeration) => match &enumeration.by_text {
-            Some(by_text) => by_text
-                .bind(py)
-                .get_item(part)?
-                .ok_or_else(|| expected(py, &format!("a {} value", enumeration.name), part)),
+            Some(by_text) => match by_text.bind(py).get_item(part)? {
+                Some(member) => Ok(member),
+                None => missing_member(py, enumeration, part)?
+                    .ok_or_else(|| expected(py, &format!("a {} value", enumeration.name), part)),
+            },
             None => Err(no_flat_form(converter)),
         },
         Data::Literal(literal) => match &literal.text {

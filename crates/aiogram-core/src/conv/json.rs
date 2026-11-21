@@ -72,14 +72,9 @@ pub(crate) fn load_document<'py>(
                 allow_inf_nan: true,
                 ..PythonParse::default()
             };
-            let value = parse.python_parse(py, text).map_err(|e| {
-                let position = LinePosition::find(text, e.index);
-                let reason = format!(
-                    "invalid JSON: {} at line {} column {}",
-                    e.error_type, position.line, position.column
-                );
-                errors::conversion(py, &reason, None)
-            })?;
+            let value = parse
+                .python_parse(py, text)
+                .map_err(|e| invalid(py, text, &e.error_type, e.index))?;
             schema.load(py, &value, 0)
         }
         other => other,
@@ -87,13 +82,17 @@ pub(crate) fn load_document<'py>(
 }
 
 /// Invalid JSON: `ConversionError("invalid JSON: <problem> at line L column C")`.
-fn syntax(py: Python<'_>, text: &[u8], error: &JiterError) -> PyErr {
-    let position = LinePosition::find(text, error.index);
+fn invalid(py: Python<'_>, text: &[u8], problem: &dyn std::fmt::Display, index: usize) -> PyErr {
+    let position = LinePosition::find(text, index);
     let reason = format!(
-        "invalid JSON: {} at line {} column {}",
-        error.error_type, position.line, position.column
+        "invalid JSON: {problem} at line {} column {}",
+        position.line, position.column
     );
     errors::conversion(py, &reason, None)
+}
+
+fn syntax(py: Python<'_>, text: &[u8], error: &JiterError) -> PyErr {
+    invalid(py, text, &error.error_type, error.index)
 }
 
 impl Document<'_> {
@@ -266,6 +265,10 @@ fn walk<'py>(
                 key = document.key(py, false)?;
             }
             Ok(out.into_any())
+        }
+        Data::Shared(shared) => {
+            let core = shared.core(py, &kind.converter)?;
+            walk(py, document, peek, &core.get().kind, depth)
         }
         Data::TypedDict(typed) if peek == Peek::Object => {
             errors::check_depth(depth)?;
