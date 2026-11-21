@@ -5,7 +5,7 @@
 | Status | `todo` |
 | Story | 3x — 3.x quick wins & migration baseline |
 | Target branch | `dev-3.x` |
-| Depends on | [3x-09](3x-09-json-request-body.md) (shared has-files detection), 3x-02 (held back) (same file, land first), [A-09](../A-contracts/A-09-request-oracle.md) |
+| Depends on | [3x-09](3x-09-json-request-body.md) (shared has-files detection), [3x-02](3x-02-webhook-poison-200.md) (same file, land first), [A-09](../A-contracts/A-09-request-oracle.md) |
 | Blocks | — |
 | Gate-conditional | no |
 | Decisions | R18 (keep multipart for methods with files; applies to 3.x too, D120) |

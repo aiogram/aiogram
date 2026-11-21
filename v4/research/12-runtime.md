@@ -66,7 +66,8 @@ async with runner:                       # startup → serve → shutdown
 - **Workflow data**: `Runner(dp, **kwargs)` merges with `dp.workflow_data` as `start_polling(**kwargs)` does today.
 - **Free-threading** (07): one Runner per thread/loop and one shared `Dispatcher`. `run_polling_threads` becomes
   N Runners with bots sharded across them. A single high-traffic bot gets one ingress poller that hands updates
-  off to the Runners sharded by isolation key (07 §1, R12).
+  off to the Runners sharded by isolation key (07 §1, R12); this single-bot sharding ships in 4.0 (PD-06, E-19).
+  Redis/Mongo storages are single-loop in 4.0, so multi-Runner and sharded setups with them are unsupported (PD-09).
 
 ## 4. Source protocol
 
@@ -108,6 +109,9 @@ or the dispatcher.
 - The reply-or-background logic (answer inline within ≈55 s, otherwise continue in the background and call the
   method) moves from `Dispatcher.feed_webhook_update` into the shared webhook core used by both aiohttp and ASGI.
   Background tasks are tracked by the Runner, so shutdown waits for them. This fixes the dropped-on-shutdown bug.
+  On 3.x the same fix, the **webhook background-task drain on shutdown**, is an external prerequisite (a 3.x fix,
+  not a plan; [3x README](../plans/3x-quick-wins/README.md)). The webhook `dispatcher` kwarg is already fixed
+  (#1856) and `bots` is polling-only by design, so neither is a prerequisite.
   Background mode has a pending cap (`max_pending`); beyond it the handler answers 5xx so Telegram redelivers (R12).
 - Replies are JSON for methods without files and multipart otherwise (R18, 05 §2.4).
 - Body read as bytes → `runner.process(bot, raw)` (05 §2.4).

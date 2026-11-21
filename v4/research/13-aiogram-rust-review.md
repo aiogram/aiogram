@@ -62,8 +62,8 @@ All numbers are from a warm process on Windows with Python 3.14.10, against 3.32
 | B5 | ~~**Crate layout from day one**~~ **superseded by §7 / D102 (one crate)**: generated types in their own crate, frequently edited hand-written code in a crate above it | the types crate is 157 s of a 158 s build; touching hand-written code drops from 12 s to 3 s; a later 620-file move cost +11–13% binary size | 08 §2 |
 | B6 | **pyo3 ≥ 0.30, and benchmark in a "warm" state.** Any `Py` dropped while detached arms pyo3's reference-pool mutex on every call, about 7–15 ns | `msg.text` 43→57 ns on 0.29; 0.30 fixed it | 01 §5, 07 §2, 08 §3 |
 | B7 | **Depth bound** (128) + `stacker` on decode; iterative dealloc for deep trees on 3.11 | they found a real stack overflow and GC cases | 01 §3.1 |
-| B8 | **Differential harnesses with a poison control**: model, request and routing traces compared across two venvs (3.x vs 4.0). A poisoned side must produce mismatches, or the harness counts as broken | 4 real model bugs in 2 800 cases; native and fallback encoders disagreed on 12/300 requests | README roadmap phase 2/4, 08 §5 |
-| B9 | **Cancellation fuzz** for uploads and downloads (4 boundaries × 8 seeds, 4 leak checks) | caught a leak that reproduced on 8 of 8 seeds | 05, phase 3 |
+| B8 | **Differential harnesses with a poison control**: model, request and routing traces compared across two venvs (3.x vs 4.0). A poisoned side must produce mismatches, or the harness counts as broken | 4 real model bugs in 2 800 cases; native and fallback encoders disagreed on 12/300 requests | README milestones D and E (framework A-07), 08 §5 |
+| B9 | **Cancellation fuzz** for uploads and downloads (4 boundaries × 8 seeds, 4 leak checks) | caught a leak that reproduced on 8 of 8 seeds | 05, milestone D |
 | B10 | **Typing check against the installed wheel** (`assert_type`, run from outside the repo) + stubtest. Hand-written surface must reach the stubs | their stubs were missing 203 members until checked | 02 §5.1, 08 §5 |
 | B11 | clippy **restriction lints** `unwrap_used`, `expect_used`, `panic`, `todo`, `unimplemented` = deny; they are not masked by `allow(clippy::all)` in generated files | | 08 §5 |
 | B12 | CI: rust-cache with `PYO3_ENVIRONMENT_SIGNATURE` (otherwise a stale libpython path gets replayed), incremental and debuginfo off, path-filtered PR jobs, wheel builds cached too. (Their aarch64 rustls / `manylinux_2_28` note doesn't apply: no Rust networking, R25) | | 08 §5 |
@@ -71,7 +71,7 @@ All numbers are from a warm process on Windows with Python 3.14.10, against 3.32
 | B14 | **Routing keys in one Rust call per update** (`update.routing_keys()` → command, text, callback data, chat type, content kind) instead of one FFI read per handler | their Python routing over native objects is 13% slower than 3.x | 03 §3, 01 §5 |
 | B15 | **Topology epoch** (a global counter bumped on any middleware/router change) to invalidate cached chains on 3.x | single handler 18.6 → 13.4 µs | 09 #11 |
 | B16 | ~~Measure abi3 vs per-version wheels in the spike~~ **declined**: per-version wheels are kept regardless, and the CI cost is accepted | | 08 §4 |
-| B17 | Encoder details found by their fuzzing/reviews: `timedelta` as seconds (not chrono `[secs, nanos]`); naive datetimes are local time; half-even rounding; `from`/`from_user` and `bot`/`bot_user` both accepted on every input path; `timeout <= 0` means no deadline | | 01 §3.1, 05 |
+| B17 | Encoder details found by their fuzzing/reviews: a `timedelta` is never chrono `[secs, nanos]`; aiogram encodes it as the absolute unix time `now + delta`, as 3.x does, because relative seconds would make a temporary ban permanent (PD-11); naive datetimes are local time; half-even rounding; `from`/`from_user` and `bot`/`bot_user` both accepted on every input path; `timeout <= 0` means no deadline | | 01 §3.1, 05 |
 
 ## 4. Where we deliberately differ
 
@@ -119,7 +119,7 @@ because the code sat in two codegen units: one core was busy for about 190 s, an
 | B21 | Hoist class-independent code out of per-class functions | 02 §5, 08 §7 item 15 |
 | B22 | Parse the response envelope by borrowing `result` as raw text; no intermediate tree. (They use serde_json `raw_value`; we use jiter `current_index` / `known_skip` / `slice_to_current`, verified on 0.19.0) | 05 §2.2, 10 §3 |
 | B23 | Unions decode the chosen variant from the raw slice; they still buffer a tree here (about 10% of their IR plus a second pass) | 01 §3.1, D85 |
-| B24 | Benchmark the bot's real path (batch + response); their headline 7.3× was 4.0× on the polling path | 01 §5, README phase 1 |
+| B24 | Benchmark the bot's real path (batch + response); their headline 7.3× was 4.0× on the polling path | 01 §5, README milestone B |
 | B25 | CI watches the **largest codegen unit** and the phase split (`-Ztime-passes` on a separate nightly job, threshold calibrated on CI hardware, R25), not total code (total IR −15% bought almost nothing) | 08 §5 |
 
 Tried and dropped there (08 §7 item 16): `#[inline]` on widely used generic wrappers (+7–8% build); `lto = "off"`

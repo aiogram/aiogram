@@ -10,12 +10,15 @@ themselves are **not** thread-safe, R12). Shared between threads: the `Dispatche
 immutable snapshot, D114), routers, filters,
 storages, isolation. Per thread/loop: `Runner`, `Bot` + aiohttp session (loop-bound), Redis clients (loop-bound).
 Loop-bound objects (`asyncio.Lock`, futures, tasks) are never shared. Cross-thread hand-off uses
-`call_soon_threadsafe` / `run_coroutine_threadsafe`.
+`call_soon_threadsafe` / `run_coroutine_threadsafe`. Redis and Mongo storages are **single-loop** in 4.0 (PD-09):
+use from a second loop raises a clear error, so multi-Runner and sharded deployments with Redis/Mongo are documented
+as unsupported in 4.0; `MemoryStorage` and the in-process isolation work across threads and loops.
 
 A helper is planned: `dp.run_polling_threads(bot_factory, threads=N)`. It runs one `Runner` per thread
 ([12](12-runtime.md)) with bots sharded across them. For a single high-traffic bot there is **one ingress poller**
 per bot (one `getUpdates` offset), which hands updates off to the worker Runners sharded by the **isolation key**
-(R12), preserving per-key ordering. Only the main-thread Runner owns signals. Design detail to be done in phase 4.
+(R12), preserving per-key ordering. Only the main-thread Runner owns signals. **Single-bot sharding ships in 4.0**
+(PD-06); the design detail is done in milestone E (E-19).
 
 ## 2. Rules for the Rust core
 
@@ -35,10 +38,10 @@ per bot (one `getUpdates` offset), which hands updates off to the worker Runners
 |---|---|
 | Dispatcher | per-Runner routing snapshot (D114), per-loop `Runner`; changes after start apply on restart or `runner.refresh()`, with a one-time warning |
 | `SimpleEventIsolation` | lock table that works across threads and loops, with pruning (04 §3) |
-| `MemoryStorage` | sharded locks, atomic `update_data`, history copy-on-write |
+| `MemoryStorage` | one dict + one `threading.Lock` (PD-21), atomic `update_data`, history copy-on-write |
 | Scenes/StatesGroup registries | captured in the Runner's snapshot (D114); later changes apply on refresh |
 | `Bot._me` / `_usernames` caches | idempotent races, acceptable; use `PyOnceLock`-like `threading.Lock` init if needed |
-| Mongo | `PyMongoStorage` only; motor-based `MongoStorage` removed |
+| Mongo | `PyMongoStorage` only; motor-based `MongoStorage` removed; single-loop like Redis (PD-09) |
 | pydantic | not a dependency (D14), so a free-threaded install doesn't pull pydantic-core |
 
 ## 4. Dependency readiness (PyPI, 2026-11)
@@ -52,6 +55,9 @@ per bot (one `getUpdates` offset), which hands updates off to the worker Runners
 | **no ft wheels** | orjson (never require it; docs must not recommend it for ft builds), motor (replaced) |
 
 Tracker: https://py-free-threading.github.io/tracking/
+
+Tier 1 (D119) on 3.14t / 3.15t means **our** wheels build and **our** suite passes (PD-27). A third-party package
+without free-threaded wheels is documented here, not release-blocking.
 
 ## 5. CI
 

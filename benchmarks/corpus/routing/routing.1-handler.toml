@@ -1,0 +1,19 @@
+# One message handler without filters on the root router.
+schema = 1
+
+[variants]
+fsm = ["on", "off"]
+
+[[router]]
+name = "dp"
+
+[[router.handler]]
+id = "h0"
+event = "message"
+filters = []
+
+[[event]]
+name = "first"
+update = "update.text.small"
+patch = { "message.text" = "hello" }
+expect = "h0"

@@ -1,0 +1,1 @@
+{"text":"Status: build 42 passed all checks, see report","entities":[{"type":"bold","offset":0,"length":46},{"type":"italic","offset":8,"length":28},{"type":"underline","offset":14,"length":15},{"type":"strikethrough","offset":14,"length":2},{"type":"spoiler","offset":17,"length":6},{"type":"text_link","offset":40,"length":6,"url":"https://example.com/r?a=1&b=<2>"}]}

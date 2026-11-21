@@ -107,7 +107,7 @@ Verification method and results: [_VERIFICATION.md](_VERIFICATION.md).
 | ID | Title | Status | Gate-cond. | Size | Depends on |
 |---|---|---|---|---|---|
 | [3x-01](3x-quick-wins/3x-01-polling-poison-isolation.md) | Polling: isolate poison updates instead of stalling | `todo` | no | M | A-03, A-05 |
-| 3x-02 | (held back) | `in-progress` | no | L | A-03 |
+| [3x-02](3x-quick-wins/3x-02-webhook-poison-200.md) | Webhook: poison updates are logged and answered with 200 | `done` | no | L | A-03 |
 | [3x-03](3x-quick-wins/3x-03-magicfilter-inline.md) | Resolve `MagicFilter` inline; backport `blocking(fn)` as the thread escape | `todo` | no | M | A-05, A-10 |
 | [3x-04](3x-quick-wins/3x-04-keyboard-builder-add.md) | `KeyboardBuilder`: fix the O(n²) `add()`, cheaper isolated `export()` | `todo` | no | S | A-05 |
 | [3x-05](3x-quick-wins/3x-05-memory-storage-get.md) | `MemoryStorage` reads stop creating records | `todo` | no | S | A-05 |
@@ -120,27 +120,27 @@ Verification method and results: [_VERIFICATION.md](_VERIFICATION.md).
 | [3x-12](3x-quick-wins/3x-12-small-dispatch-costs.md) | Small per-update dispatch costs | `todo` | no | S | 3x-11, A-05 |
 | [3x-13](3x-quick-wins/3x-13-deserialize-no-ssl-context.md) | `deserialize_telegram_object`: no SSL context per call | `todo` | no | S | A-05 |
 | [3x-14](3x-quick-wins/3x-14-callback-data-prefix-fast-fail.md) | `CallbackData`: prefix fast-fail before split and validate | `todo` | no | S | A-05 |
-| 3x-15 | (held back) | `in-progress` | no | M | — |
+| [3x-15](3x-quick-wins/3x-15-dp-update-root-filters.md) | `dp.update.filter` root filters are actually checked (and the rest of the filter-correctness bundle) | `done` | no | M | — |
 | [3x-16](3x-quick-wins/3x-16-redis-update-data.md) | Redis one-round-trip `update_data` (dropped) | `dropped` | no | — | — |
 | [3x-17](3x-quick-wins/3x-17-formatting-perf.md) | Formatting performance (`Text.render`, `_unparse_entities`) and the entity reference corpus | `todo` | no | M | A-04, A-05 |
 | [3x-18](3x-quick-wins/3x-18-unknown-union-fallback.md) | `Unknown` fallback variant for discriminated unions (optional) | `todo` | no | L | 3x-01, 3x-02, A-08, A-11 |
-| 3x-19 | (held back) | `in-progress` | no | M | — |
+| [3x-19](3x-quick-wins/3x-19-token-leak-fix.md) | Stop leaking the bot token through network/download errors (ANT-2026-4GL80S7S) | `done` | no | M | — |
 | [3x-20](3x-quick-wins/3x-20-deprecation-machinery.md) | Deprecation machinery backport (warning classes, filter, registry reader) | `todo` | no | M | A-11 |
 | [3x-21](3x-quick-wins/3x-21-import-attribute-warnings.md) | Import- and attribute-level warnings for 4.0 removals | `todo` | no | L | 3x-20, A-11 |
 | [3x-22](3x-quick-wins/3x-22-registration-warnings.md) | Registration- and class-creation-time warnings | `todo` | no | M | 3x-20, 3x-21, A-11 |
 | [3x-23](3x-quick-wins/3x-23-mutation-ledger-warnings.md) | Mutation warnings and Bot API ledger-field warnings | `todo` | no | L | 3x-20, A-05, A-11, C-26 |
 | [3x-24](3x-quick-wins/3x-24-migration-baseline-release.md) | Name and cut the migration-baseline 3.x release; "Preparing for 4.0" page | `todo` | no | M | 3x-20, 3x-21, 3x-22, 3x-23, A-11, C-26 |
-| [A-01](A-contracts/A-01-bootstrap-dev-4x.md) | Bootstrap `dev-4.x`, commit the planning tree, define the sync policy | `in-progress` | no | S | — |
-| [A-02](A-contracts/A-02-apply-resolutions.md) | Apply the review resolutions (19) and planning decisions (PD-01..PD-34) to the research pages | `todo` | no | M | A-01 |
+| [A-01](A-contracts/A-01-bootstrap-dev-4x.md) | Bootstrap `dev-4.x`, commit the planning tree, define the sync policy | `done` | no | S | — |
+| [A-02](A-contracts/A-02-apply-resolutions.md) | Apply the review resolutions (19) and planning decisions (PD-01..PD-34) to the research pages | `done` | no | M | A-01 |
 | [A-03](A-contracts/A-03-poison-update-decision.md) | Decision record: 3.x poison-update boundaries (owner sign-off required) | `done` | no | S | — |
-| [A-04](A-contracts/A-04-pinned-corpus.md) | Pinned corpus and payload manifest | `in-progress` | no | M | — |
+| [A-04](A-contracts/A-04-pinned-corpus.md) | Pinned corpus and payload manifest | `done` | no | M | — |
 | [A-05](A-contracts/A-05-bench-harness.md) | Benchmark harness and method | `todo` | no | M | A-04 |
 | [A-06](A-contracts/A-06-record-3x-baselines.md) | Record the 3.x baselines (stock + "optimised 3.x" tag) | `todo` | no | S | 3x-01, 3x-03, 3x-07, 3x-08, 3x-09, 3x-11, 3x-12, 3x-14, A-04, A-05 |
 | [A-07](A-contracts/A-07-differential-framework.md) | Differential harness framework (two venvs, canonical traces, difference manifests, poison control) | `todo` | no | M | A-04 |
 | [A-08](A-contracts/A-08-model-oracle.md) | Model oracle, 3.x side | `todo` | no | M | A-04, A-07 |
 | [A-09](A-contracts/A-09-request-oracle.md) | Request/response oracle, 3.x side | `todo` | no | M | A-04, A-07 |
 | [A-10](A-contracts/A-10-routing-oracle.md) | Routing oracle, 3.x side | `todo` | no | L | A-04, A-07 |
-| [A-11](A-contracts/A-11-migration-registry.md) | Migration registry: `registry.toml` schema, id allocation, seed | `todo` | no | M | A-01 |
+| [A-11](A-contracts/A-11-migration-registry.md) | Migration registry: `registry.toml` schema, id allocation, seed | `done` | no | M | A-01 |
 | [B-00](B-spike/B-00-freeze-gate-spec.md) | Freeze the gate spec | `todo` | no | M | A-04, A-05, A-06 |
 | [B-01](B-spike/B-01-crate-maturin-skeleton.md) | Crate + maturin skeleton + minimal CI | `done` | no | M | A-01 |
 | [B-02](B-spike/B-02-bench-adapter-memory-estimator.md) | Bench harness 4.0 adapter + memory estimator | `todo` | no | M | A-04, A-05, A-06, B-00, B-01 |

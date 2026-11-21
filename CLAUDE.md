@@ -24,6 +24,12 @@ they are the ones verified against this project's toolchain:
 - **Don't use bare `rtk ruff` / `rtk mypy`.** They look the tool up on `PATH`, not in the
   `uv` venv: `rtk ruff` fails with "Failed to run ruff", and `rtk mypy aiogram` printed
   "No issues found" for an error that `make lint` (strict, project config) reports.
+- The rtk hook rewrites `cat a b c` and `… | grep pat` into its own read/grep commands. A multi-file `cat` then
+  fails (`read: not a valid identifier`), and `unzip -l x.whl | grep pat` greps the whole repository. Use the
+  Read tool, or `rtk proxy` on each stage of the pipe, e.g. for the wheel check:
+  `rtk proxy unzip -l dist/*.whl > out.txt; rtk proxy awk '/registry.toml/' out.txt`.
+- `rtk mypy` truncates the error text after `file:line: error:`. When you need the full
+  message, rerun as `rtk proxy uv run mypy aiogram`.
 - `rtk test`/`rtk err` accept a full command, so `uv run …` stays intact — which is what
   AGENTS.md mandates.
 - `rtk git push` can print nothing for a push that pushed nothing, for example when the branch
