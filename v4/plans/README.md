@@ -157,7 +157,7 @@ Verification method and results: [_VERIFICATION.md](_VERIFICATION.md).
 | [B-13](B-spike/B-13-gate-run-and-decision.md) | Gate run + go/no-go decision record | `todo` | no | M | A-06, A-08, B-00, B-01, B-02, B-03, B-04, B-05, B-06, B-07, B-08, B-09, B-10, B-11, B-12, B-14 |
 | [B-14](B-spike/B-14-unions-envelope-batch-decode.md) | Decode runtime: unions, depth guard, response envelope, `getUpdates` batch | `todo` | no | M | B-03 |
 | [C-01](C-butcher/C-01-crate-xtask-ir-snapshot.md) | butcher crate, xtask entry point, IR model, snapshot format | `done` | no | M | A-01, B-01 |
-| [C-02](C-butcher/C-02-fetch-provenance.md) | `fetch`, source cache and manifest provenance | `todo` | no | S | C-01 |
+| [C-02](C-butcher/C-02-fetch-provenance.md) | `fetch`, source cache and manifest provenance | `done` | no | S | C-01 |
 | [C-03](C-butcher/C-03-html-adapter.md) | HTML adapter | `todo` | no | L | C-01 |
 | [C-04](C-butcher/C-04-openapi-adapter.md) | OpenAPI 3.2 adapter | `todo` | no | L | C-01 |
 | [C-05](C-butcher/C-05-errors-json-adapter.md) | `errors.json` adapter | `todo` | no | S | C-01 |
