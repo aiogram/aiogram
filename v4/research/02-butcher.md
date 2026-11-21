@@ -109,30 +109,41 @@ Strict schema: unknown keys are errors, and every reference is checked against t
 8. Hot fields for the sparse layout (01 §3.1).
 9. Heuristic overrides for html-only releases (returns, consts, subtypes, enum members).
 10. Docs extras.
+11. `ErrorReason` member names (D47): pinned here after their first emission, so a reworded description never
+    renames a member; `butcher diff` reports renames (PD-24).
+12. Per-method `idempotent` flag (R19): new methods default to **non-idempotent**, and `butcher check` fails until
+    the overlay records an explicit decision. Raw `bot.call` retries only 429 (PD-25).
 
-One-off migration: `cargo xtask butcher import-legacy` converts `.butcher/**` YAML into the overlay and
-`entity.json` markers into the ledger (§4). The Python `fill` expressions are translated to the DSL, and any it
-can't parse are flagged for manual work. Then `.butcher/` is deleted.
+One-off migration: `import-legacy` converts `.butcher/**` YAML into the overlay and `entity.json` markers into the
+ledger (§4). It is a **throwaway Python script** (`ast` + PyYAML) behind the `cargo xtask butcher import-legacy`
+shim, not Rust (PD-10): translating Python `fill` expressions into the DSL is a job for `ast`. Expressions it can't
+translate are flagged for manual work. 3.x keeps getting Bot API bumps through legacy butcher during its full support
+window (D73), so the script stays runnable in a "diff against the current overlay" mode until 3.x full support ends;
+shortcuts or defaults added on 3.x are then noticed and ported.
 
 ## 4. Compat ledger (`butcher/ledger.toml`)
 
 Legacy butcher's backward-compat memory is `entity.json` used as a state store:
 - fields that vanish upstream are re-appended with `deprecated = {version, date}`;
 - removed entities get `meta.deprecated` and are never deleted;
-- positional params that became optional get `keep_position` (currently `chat_id` on 15 send* methods, so
+- positional params that became optional get `keep_position` (currently `chat_id` on 14 send* methods, so
   `bot.send_message(chat_id, text)` keeps working).
 
 Neither input contains this state, so v4 keeps it as an explicit, committed ledger, separate from the IR:
 
 ```toml
-[[removed_field]]            # written by `butcher diff` when a field disappears upstream
-entity = "SendMessage"; field = "disable_web_page_preview"
-removed_in = "7.0"; removed_on = 2023-12-29; drop_after = "…"   # computed from the policy below
-replacement = "link_preview_options"   # optional; drives the runtime translation table
+[[removed_field]]            # written by `butcher diff` when a field disappears upstream after 4.0
+entity = "…"; field = "…"
+removed_in = "…"; removed_on = …; drop_after = "…"   # computed from the policy below
+replacement = "…"            # optional; drives the runtime translation table
 
-[[removed_entity]]
-entity = "StoryAreaPosition"; removed_in = "10.4"; removed_on = 2026-11-09
+[[removed_entity]]           # shape only: an entity removed upstream after 4.0
+entity = "…"; removed_in = "…"; removed_on = …
 ```
+
+3.x deprecations (the 122 fields such as `disable_web_page_preview` → `link_preview_options`, and the entities
+`KeyboardButtonRequestUser`, `UserShared` and `StoryAreaPosition`, removed in 10.4) are dropped by the 4.0 reset
+below (11 §1), so they never enter the 4.x ledger.
 
 **Policy (D6c)**:
 - **4.0 reset**: every deprecated field and entity accumulated in 3.x is dropped and listed in the migration
@@ -166,7 +177,7 @@ crates/butcher/src/
 | `emit` | writes generated files whole; hand-written code lives in separate `*_ext.rs` / `*_ext.pyi` / mixin-consuming modules that the generator never touches (§5.1) |
 | `diff <old> <new>` | structured change list → ledger updates, `CHANGES/*.misc.rst`, PR body |
 | `check` | CI gate, **offline** (D118): regenerate from the committed IR and fail on diff; overlay/ledger validation; heuristic-vs-schema disagreements. A scheduled online job re-extracts the sources and diffs them against the committed per-adapter IR |
-| `import-legacy` | one-off migration (§3, §4) |
+| `import-legacy` | shim over the throwaway Python migration script (§3, §4; PD-10) |
 
 Emitted:
 - **Rust**: `crates/aiogram-core/src/generated/**` (types, methods, unions, enums, encoders, shortcuts, deprecation warnings).
@@ -187,11 +198,13 @@ side (decision **D11**). There is no Python facade per type.
 | Hand-written today | v4 home |
 |---|---|
 | `User.full_name/url/mention_html/mention_markdown`, `Chat.full_name/shifted_id`, `Contact.full_name`, `Message.get_url`, `as_reply_parameters`, `as_ephemeral_message_parameters`, `Downloadable.file_id` | hand-written Rust: `crates/aiogram-core/src/types/<type>_ext.rs` |
-| `Message.html_text/md_text/_unparse_entities`, `MessageEntity.extract_from` | Rust entities module (06), exposed from `message_ext.rs` |
+| `Message.html_text/md_text/_unparse_entities`, `MessageEntity.extract_from` | Rust entity-rendering kernel (06 §1, D-17; PD-15), exposed from `message_ext.rs` |
 | `Update.event_type/event/__hash__` | **generated** from the IR (update fields) |
 | `Message.content_type` + `ContentType` | **removed** (2.x leftover, [11](11-removals.md)); `send_copy` uses an internal content-kind table |
 | `Message.send_copy` | **generated** from an overlay mapping `content_type → method + field map`; a new content type with no mapping fails `check` |
 | `InputFile` family (`read()` = async file/HTTP streaming) | stays **plain Python** (`aiogram/types/input_file.py`); not a pyclass; the encoder recognises it with `isinstance` |
+
+The spike ports 2–3 of them (01 §5); porting the rest (≈26 methods in 12 classes) to `*_ext.rs` is C-27 (PD-16).
 
 **Mechanics**
 - Generated Rust (`src/generated/**`) is always fully regenerated: no regions and no merging. Hand code lives in

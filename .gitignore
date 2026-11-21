@@ -30,3 +30,5 @@ graphify-out/
 /target/
 aiogram/_core*.so
 aiogram/_core*.pyd
+# benchmarks/record: unredacted recorder output, never committed
+benchmarks/record/raw/

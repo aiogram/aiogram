@@ -1,0 +1,12 @@
+# sendMessage whose parse_mode / link preview / protect_content come from bot defaults.
+schema = 1
+method = "sendMessage"
+
+[params]
+chat_id = 100000001
+text = "<b>hello</b> https://example.com"
+
+[defaults]
+parse_mode = "HTML"
+link_preview_is_disabled = true
+protect_content = true

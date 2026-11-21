@@ -1,0 +1,891 @@
+# aiogram migration registry (PD-13): the single source for the 3.x baseline warnings, the 4.0
+# `aiogram migrate` checker and codemod, and the migration guide / Deprecations page.
+# It is plain data read by path (tomllib); nothing here may require importing aiogram.
+# tests/test_migration_registry.py enforces every rule below.
+#
+# Schema 1. One [[entry]] per item, entries sorted by id. Every key is required unless marked optional.
+#   id              "AG4nnn". Append-only: never reused, renumbered or deleted. Docs anchor: id.lower().
+#   kind            removal-4.0 | deprecation-4.x | api-ledger
+#   title           short statement of the change; also the warning text, so it reads after "AG4nnn: "
+#   decisions       non-empty list of Dnnn / PD-nn / Rnn ids
+#   area            migration-guide page (18 §2): types, dispatcher, filters, middlewares, fsm, errors,
+#                   client, utils, i18n, packaging
+#   change          removed | behaviour | signature | renamed
+#   replacement     what user code does instead
+#   detection       checker finding class (R28): definite | heuristic | manual
+#   confidence      high | medium | low
+#   codemod         full | partial | none
+#   suppress        checker suppression comment, always "aiogram: ignore[<id>]"
+#   gate            true when the item depends on the B spike gate (D104)
+#   breaking_change optional: README "Breaking changes in 4.0" number (1-24)
+#   generated       true exactly for api-ledger entries, which a generator writes (3x-23)
+#   fields          api-ledger only: removed field names of the object / method (empty for a removed entity)
+#   warn_3x         3.x baseline warning (3x-20..23):
+#     site          import | attribute | construction | registration | class-creation | mutation | call | read | none
+#     target        dotted name where the warning hooks in: the module (import), module attribute(s)
+#                   (attribute, comma-separated when one entry covers several names), class (construction,
+#                   class-creation, mutation, registration), attribute (read) or callable (call); "" for none
+#     since         baseline 3.x version, filled by 3x-24; "" until then
+#   removal         deprecation-4.x only (D71): deprecated_in, earliest_removal (version floor; the later of
+#                   12 months and 2 minors after deprecated_in, the 12-month part is checked by I-12)
+#
+# Id blocks (PD-33):
+#   AG4001-AG4699  removal-4.0 / deprecation-4.x, allocated on dev-4.x by 4.0 plans. AG4001-AG4049 are the
+#                  A-11 seed, written on dev-3.x once and merged forward.
+#   AG4700-AG4799  removal-4.0 / deprecation-4.x entries first added on dev-3.x (3x-20..23), so the two
+#                  branches never collide.
+#   AG4800-AG4999  api-ledger, one per affected Bot API object or method plus one per removed entity (3x-23).
+#
+# Authority and sync (PD-33):
+#   1. Before the dev-4.x fork the file lives on dev-3.x.
+#   2. After the fork dev-4.x is authoritative. dev-3.x changes reach it by the normal merge-forward, which
+#      only appends in the AG47xx and AG48xx blocks or fills warn_3x.since.
+#   3. Before each baseline-bearing 3.x release, 3x-24 copies dev-4.x's file to dev-3.x.
+#   4. The test on both branches checks parsing, unique ids, blocks, and that ids are append-only against
+#      the previous release tag.
+
+schema = 1
+
+# 3.x warning text; the docs link "See <docs url>#<anchor>" is appended by 3x-20.
+message = "{id}: {title}; use {replacement}. Removed in aiogram 4.0."
+
+# ---------------------------------------------------------------- README breaking changes 1-24
+
+[[entry]]
+id = "AG4001"
+kind = "removal-4.0"
+title = "aiogram types and methods are no longer pydantic models"
+decisions = ["D4", "D91"]
+area = "types"
+change = "behaviour"
+replacement = "the native API (to_json(), to_dict(), from_json(), from_dict(), replace()); no pydantic validators or validate_assignment on aiogram types"
+detection = "heuristic"
+confidence = "medium"
+codemod = "none"
+suppress = "aiogram: ignore[AG4001]"
+gate = true
+breaking_change = 1
+generated = false
+warn_3x = { site = "none", target = "", since = "" }
+
+[[entry]]
+id = "AG4002"
+kind = "removal-4.0"
+title = "model_fields is removed from aiogram types"
+decisions = ["D95"]
+area = "types"
+change = "removed"
+replacement = "nothing: aiogram has no public field introspection"
+detection = "definite"
+confidence = "medium"
+codemod = "none"
+suppress = "aiogram: ignore[AG4002]"
+gate = true
+breaking_change = 1
+generated = false
+warn_3x = { site = "none", target = "", since = "" }
+
+[[entry]]
+id = "AG4003"
+kind = "deprecation-4.x"
+title = "model_* methods of aiogram types are deprecated aliases"
+decisions = ["D91", "D71", "R06"]
+area = "types"
+change = "renamed"
+replacement = "to_json(), to_dict(), from_json(), from_dict(), replace() or copy.replace()"
+detection = "definite"
+confidence = "medium"
+codemod = "partial"
+suppress = "aiogram: ignore[AG4003]"
+gate = true
+breaking_change = 1
+generated = false
+warn_3x = { site = "none", target = "", since = "" }
+removal = { deprecated_in = "4.0", earliest_removal = "4.2" }
+
+[[entry]]
+id = "AG4004"
+kind = "removal-4.0"
+title = "aiogram types are immutable"
+decisions = ["D15", "D91", "R28"]
+area = "types"
+change = "removed"
+replacement = "obj = obj.replace(field=value), copy.replace(obj, ...) or the keyboard builders"
+detection = "heuristic"
+confidence = "medium"
+codemod = "partial"
+suppress = "aiogram: ignore[AG4004]"
+gate = false
+breaking_change = 2
+generated = false
+warn_3x = { site = "mutation", target = "aiogram.types.base.MutableTelegramObject", since = "" }
+
+[[entry]]
+id = "AG4005"
+kind = "removal-4.0"
+title = "decoded updates contain the base types unless a subclass is registered"
+decisions = ["D83"]
+area = "types"
+change = "behaviour"
+replacement = "aiogram.types.register(MySubclass); secondary bases through ABC registration"
+detection = "heuristic"
+confidence = "low"
+codemod = "none"
+suppress = "aiogram: ignore[AG4005]"
+gate = true
+breaking_change = 3
+generated = false
+warn_3x = { site = "none", target = "", since = "" }
+
+[[entry]]
+id = "AG4006"
+kind = "removal-4.0"
+title = "equality of aiogram objects compares class and data and ignores the bot binding"
+decisions = ["D84", "D108"]
+area = "types"
+change = "behaviour"
+replacement = "compare objects of the same class; compare .bot explicitly where the binding matters"
+detection = "manual"
+confidence = "low"
+codemod = "none"
+suppress = "aiogram: ignore[AG4006]"
+gate = true
+breaking_change = 3
+generated = false
+warn_3x = { site = "none", target = "", since = "" }
+
+[[entry]]
+id = "AG4007"
+kind = "removal-4.0"
+title = "ambiguous or malformed members of decoded unions become Unknown variants"
+decisions = ["D85", "D107"]
+area = "types"
+change = "behaviour"
+replacement = "handle the Unknown variant (.decode_error, .raw)"
+detection = "manual"
+confidence = "low"
+codemod = "none"
+suppress = "aiogram: ignore[AG4007]"
+gate = true
+breaking_change = 3
+generated = false
+warn_3x = { site = "none", target = "", since = "" }
+
+[[entry]]
+id = "AG4008"
+kind = "removal-4.0"
+title = "nesting deeper than 128 levels is a decode error"
+decisions = ["D87"]
+area = "types"
+change = "behaviour"
+replacement = "nothing for Bot API data; keep user-built objects within 128 levels"
+detection = "manual"
+confidence = "low"
+codemod = "none"
+suppress = "aiogram: ignore[AG4008]"
+gate = true
+breaking_change = 3
+generated = false
+warn_3x = { site = "none", target = "", since = "" }
+
+[[entry]]
+id = "AG4009"
+kind = "removal-4.0"
+title = "routing changes after start apply only on restart or runner.refresh()"
+decisions = ["D114", "D19"]
+area = "dispatcher"
+change = "behaviour"
+replacement = "register routers, handlers and middlewares before start, or call runner.refresh()"
+detection = "manual"
+confidence = "medium"
+codemod = "none"
+suppress = "aiogram: ignore[AG4009]"
+gate = false
+breaking_change = 4
+generated = false
+warn_3x = { site = "none", target = "", since = "" }
+
+[[entry]]
+id = "AG4010"
+kind = "removal-4.0"
+title = "free-threaded builds need CPython 3.14t or newer; PyPy is not supported (PD-35)"
+decisions = ["D8", "D119", "PD-35"]
+area = "packaging"
+change = "behaviour"
+replacement = "CPython 3.14t+ for free-threading; a Tier 1 platform for supported wheels"
+detection = "manual"
+confidence = "high"
+codemod = "none"
+suppress = "aiogram: ignore[AG4010]"
+gate = false
+breaking_change = 5
+generated = false
+warn_3x = { site = "none", target = "", since = "" }
+
+[[entry]]
+id = "AG4011"
+kind = "removal-4.0"
+title = "MongoStorage (motor) is removed"
+decisions = ["D2", "D74"]
+area = "fsm"
+change = "removed"
+replacement = "aiogram.fsm.storage.pymongo.PyMongoStorage"
+detection = "definite"
+confidence = "high"
+codemod = "partial"
+suppress = "aiogram: ignore[AG4011]"
+gate = false
+breaking_change = 6
+generated = false
+warn_3x = { site = "construction", target = "aiogram.fsm.storage.mongo.MongoStorage", since = "" }
+
+[[entry]]
+id = "AG4012"
+kind = "removal-4.0"
+title = "installing aiogram from the sdist needs a Rust toolchain"
+decisions = ["D1", "D17"]
+area = "packaging"
+change = "behaviour"
+replacement = "a prebuilt wheel (D119 Tier 1), or a Rust toolchain for source builds"
+detection = "manual"
+confidence = "high"
+codemod = "none"
+suppress = "aiogram: ignore[AG4012]"
+gate = false
+breaking_change = 7
+generated = false
+warn_3x = { site = "none", target = "", since = "" }
+
+# Umbrella item of the ledger reset; it also covers the legacy reply parameters of the hand-written
+# Message.send_copy and disable_web_page_preview on the answer / reply shortcuts. The per-object api-ledger
+# entries (AG48xx, with their fields and 3.x warnings) are generated by 3x-23.
+[[entry]]
+id = "AG4013"
+kind = "removal-4.0"
+title = "Bot API fields and entities deprecated during 3.x are removed"
+decisions = ["D6", "R28"]
+area = "types"
+change = "removed"
+replacement = "the field named in each deprecation note (reply_parameters, link_preview_options, ChatFullInfo, ...)"
+detection = "definite"
+confidence = "high"
+codemod = "partial"
+suppress = "aiogram: ignore[AG4013]"
+gate = false
+breaking_change = 8
+generated = false
+warn_3x = { site = "none", target = "", since = "" }
+
+[[entry]]
+id = "AG4014"
+kind = "removal-4.0"
+title = "unknown union tags and update types decode to Unknown variants instead of raising"
+decisions = ["D10", "D49"]
+area = "types"
+change = "behaviour"
+replacement = "handle Unknown variants and router.unknown_update; Update.event_type returns the unknown name"
+detection = "manual"
+confidence = "medium"
+codemod = "none"
+suppress = "aiogram: ignore[AG4014]"
+gate = false
+breaking_change = 9
+generated = false
+warn_3x = { site = "none", target = "", since = "" }
+
+[[entry]]
+id = "AG4015"
+kind = "removal-4.0"
+title = "RestartingTelegram is removed"
+decisions = ["D47", "D74"]
+area = "errors"
+change = "removed"
+replacement = "TelegramServerError, with e.reason"
+detection = "definite"
+confidence = "high"
+codemod = "partial"
+suppress = "aiogram: ignore[AG4015]"
+gate = false
+breaking_change = 10
+generated = false
+warn_3x = { site = "attribute", target = "aiogram.exceptions.RestartingTelegram", since = "" }
+
+[[entry]]
+id = "AG4016"
+kind = "removal-4.0"
+title = "Message.content_type is removed"
+decisions = ["D2", "D74"]
+area = "types"
+change = "removed"
+replacement = "the content field itself: F.photo, F.text | F.sticker"
+detection = "definite"
+confidence = "medium"
+codemod = "partial"
+suppress = "aiogram: ignore[AG4016]"
+gate = false
+breaking_change = 11
+generated = false
+warn_3x = { site = "read", target = "aiogram.types.message.Message.content_type", since = "" }
+
+[[entry]]
+id = "AG4017"
+kind = "removal-4.0"
+title = "the ContentType enum is removed"
+decisions = ["D2", "D74"]
+area = "types"
+change = "removed"
+replacement = "the content field itself: F.photo, F.text | F.sticker"
+detection = "definite"
+confidence = "high"
+codemod = "partial"
+suppress = "aiogram: ignore[AG4017]"
+gate = false
+breaking_change = 11
+generated = false
+warn_3x = { site = "attribute", target = "aiogram.enums.ContentType, aiogram.types.ContentType", since = "" }
+
+[[entry]]
+id = "AG4018"
+kind = "removal-4.0"
+title = "event_from_user, event_chat and event_thread_id are no longer injected"
+decisions = ["D12", "D74"]
+area = "middlewares"
+change = "removed"
+replacement = "event_context.user, event_context.chat, event_context.thread_id"
+detection = "definite"
+confidence = "high"
+codemod = "partial"
+suppress = "aiogram: ignore[AG4018]"
+gate = false
+breaking_change = 11
+generated = false
+warn_3x = { site = "registration", target = "aiogram.dispatcher.event.handler.CallableObject", since = "" }
+
+# Middlewares reading the removed keys from the data dict; no runtime warning can see this (3x-22 Out).
+[[entry]]
+id = "AG4019"
+kind = "removal-4.0"
+title = "data[\"event_from_user\"], data[\"event_chat\"] and data[\"event_thread_id\"] are no longer set"
+decisions = ["D12"]
+area = "middlewares"
+change = "removed"
+replacement = "data[\"event_context\"].user, .chat, .thread_id"
+detection = "heuristic"
+confidence = "medium"
+codemod = "none"
+suppress = "aiogram: ignore[AG4019]"
+gate = false
+breaking_change = 11
+generated = false
+warn_3x = { site = "none", target = "", since = "" }
+
+[[entry]]
+id = "AG4020"
+kind = "removal-4.0"
+title = "aiogram.utils.markdown is removed"
+decisions = ["D13", "D74"]
+area = "utils"
+change = "removed"
+replacement = "aiogram.utils.formatting (Bold(...), Text(...).as_kwargs()), or html.bold(html.quote(x))"
+detection = "definite"
+confidence = "high"
+codemod = "partial"
+suppress = "aiogram: ignore[AG4020]"
+gate = false
+breaking_change = 11
+generated = false
+warn_3x = { site = "import", target = "aiogram.utils.markdown", since = "" }
+
+[[entry]]
+id = "AG4021"
+kind = "removal-4.0"
+title = "UNSET_PARSE_MODE, UNSET_DISABLE_WEB_PAGE_PREVIEW and UNSET_PROTECT_CONTENT are removed"
+decisions = ["D2", "D74"]
+area = "client"
+change = "removed"
+replacement = "Default(\"parse_mode\") and Default(\"protect_content\"); link_preview_options / DefaultBotProperties(link_preview=...) instead of the disable_web_page_preview default"
+detection = "definite"
+confidence = "high"
+codemod = "partial"
+suppress = "aiogram: ignore[AG4021]"
+gate = false
+breaking_change = 11
+generated = false
+warn_3x = { site = "attribute", target = "aiogram.types.base.UNSET_PARSE_MODE, aiogram.types.base.UNSET_DISABLE_WEB_PAGE_PREVIEW, aiogram.types.base.UNSET_PROTECT_CONTENT", since = "" }
+
+[[entry]]
+id = "AG4022"
+kind = "removal-4.0"
+title = "the flat link_preview_* fields of DefaultBotProperties are removed"
+decisions = ["D2", "D74"]
+area = "client"
+change = "removed"
+replacement = "DefaultBotProperties(link_preview=LinkPreviewOptions(...))"
+detection = "definite"
+confidence = "high"
+codemod = "partial"
+suppress = "aiogram: ignore[AG4022]"
+gate = false
+breaking_change = 11
+generated = false
+warn_3x = { site = "construction", target = "aiogram.client.default.DefaultBotProperties", since = "" }
+
+[[entry]]
+id = "AG4023"
+kind = "removal-4.0"
+title = "the BaseFilter alias is removed"
+decisions = ["D2", "D74"]
+area = "filters"
+change = "renamed"
+replacement = "aiogram.filters.Filter"
+detection = "definite"
+confidence = "high"
+codemod = "full"
+suppress = "aiogram: ignore[AG4023]"
+gate = false
+breaking_change = 11
+generated = false
+warn_3x = { site = "attribute", target = "aiogram.filters.BaseFilter", since = "" }
+
+[[entry]]
+id = "AG4024"
+kind = "removal-4.0"
+title = "CancelHandler is removed"
+decisions = ["D2", "D74"]
+area = "dispatcher"
+change = "removed"
+replacement = "SkipHandler, or return from the middleware without calling the handler"
+detection = "definite"
+confidence = "high"
+codemod = "none"
+suppress = "aiogram: ignore[AG4024]"
+gate = false
+breaking_change = 11
+generated = false
+warn_3x = { site = "attribute", target = "aiogram.dispatcher.event.bases.CancelHandler", since = "" }
+
+[[entry]]
+id = "AG4025"
+kind = "removal-4.0"
+title = "the REJECTED sentinel is removed"
+decisions = ["D2", "D74"]
+area = "dispatcher"
+change = "removed"
+replacement = "UNHANDLED, or nothing: no aiogram API returns REJECTED"
+detection = "definite"
+confidence = "high"
+codemod = "none"
+suppress = "aiogram: ignore[AG4025]"
+gate = false
+breaking_change = 11
+generated = false
+warn_3x = { site = "attribute", target = "aiogram.dispatcher.event.bases.REJECTED", since = "" }
+
+[[entry]]
+id = "AG4026"
+kind = "removal-4.0"
+title = "dp[...] = ... and del dp[...] are removed"
+decisions = ["D2", "D74"]
+area = "dispatcher"
+change = "removed"
+replacement = "Dispatcher(**kwargs) or dp.workflow_data before start; dp[...] reads stay"
+detection = "definite"
+confidence = "medium"
+codemod = "partial"
+suppress = "aiogram: ignore[AG4026]"
+gate = false
+breaking_change = 11
+generated = false
+warn_3x = { site = "call", target = "aiogram.dispatcher.dispatcher.Dispatcher.__setitem__, aiogram.dispatcher.dispatcher.Dispatcher.__delitem__", since = "" }
+
+[[entry]]
+id = "AG4027"
+kind = "removal-4.0"
+title = "class-based handlers (aiogram.handlers) are removed"
+decisions = ["D42", "D74"]
+area = "dispatcher"
+change = "removed"
+replacement = "an async def handler: self.event, self.data and self.bot become the event argument, kwargs and bot"
+detection = "definite"
+confidence = "high"
+codemod = "partial"
+suppress = "aiogram: ignore[AG4027]"
+gate = false
+breaking_change = 11
+generated = false
+warn_3x = { site = "import", target = "aiogram.handlers", since = "" }
+
+# Same change as AG4027, warned where the class is declared (3x-22 row 2); AG4027 is the import warning.
+[[entry]]
+id = "AG4028"
+kind = "removal-4.0"
+title = "subclassing BaseHandler (class-based handlers) is no longer supported"
+decisions = ["D42", "D74"]
+area = "dispatcher"
+change = "removed"
+replacement = "an async def handler: self.event, self.data and self.bot become the event argument, kwargs and bot"
+detection = "definite"
+confidence = "high"
+codemod = "partial"
+suppress = "aiogram: ignore[AG4028]"
+gate = false
+breaking_change = 11
+generated = false
+warn_3x = { site = "class-creation", target = "aiogram.handlers.base.BaseHandler", since = "" }
+
+[[entry]]
+id = "AG4029"
+kind = "removal-4.0"
+title = "aiogram.utils.mixins is removed"
+decisions = ["D2", "D74"]
+area = "utils"
+change = "removed"
+replacement = "a module-level ContextVar instead of ContextInstanceMixin, a plain dict instead of DataMixin"
+detection = "definite"
+confidence = "high"
+codemod = "none"
+suppress = "aiogram: ignore[AG4029]"
+gate = false
+breaking_change = 11
+generated = false
+warn_3x = { site = "import", target = "aiogram.utils.mixins", since = "" }
+
+[[entry]]
+id = "AG4030"
+kind = "removal-4.0"
+title = "the aiogram.utils.deep_linking re-exports are removed"
+decisions = ["D2", "D74"]
+area = "utils"
+change = "renamed"
+replacement = "create_telegram_link from aiogram.utils.link, encode_payload and decode_payload from aiogram.utils.payload"
+detection = "definite"
+confidence = "high"
+codemod = "full"
+suppress = "aiogram: ignore[AG4030]"
+gate = false
+breaking_change = 11
+generated = false
+warn_3x = { site = "attribute", target = "aiogram.utils.deep_linking.create_telegram_link, aiogram.utils.deep_linking.encode_payload, aiogram.utils.deep_linking.decode_payload", since = "" }
+
+[[entry]]
+id = "AG4031"
+kind = "removal-4.0"
+title = "CallbackData is no longer a pydantic model"
+decisions = ["D14", "D74"]
+area = "filters"
+change = "behaviour"
+replacement = "plain annotated fields with defaults; a __post_init__ check instead of Field(...) constraints and validators"
+detection = "heuristic"
+confidence = "medium"
+codemod = "none"
+suppress = "aiogram: ignore[AG4031]"
+gate = true
+breaking_change = 12
+generated = false
+warn_3x = { site = "class-creation", target = "aiogram.filters.callback_data.CallbackData", since = "" }
+
+[[entry]]
+id = "AG4032"
+kind = "removal-4.0"
+title = "aiogram no longer depends on pydantic"
+decisions = ["D14"]
+area = "packaging"
+change = "behaviour"
+replacement = "declare pydantic in your own project's dependencies if you use it"
+detection = "manual"
+confidence = "high"
+codemod = "none"
+suppress = "aiogram: ignore[AG4032]"
+gate = true
+breaking_change = 12
+generated = false
+warn_3x = { site = "none", target = "", since = "" }
+
+[[entry]]
+id = "AG4033"
+kind = "removal-4.0"
+title = "a certainly-false compiled filter skips the handler without running its other filters"
+decisions = ["D114", "D37", "PD-19"]
+area = "filters"
+change = "behaviour"
+replacement = "filters must not rely on running, or on side effects, for handlers that cannot match"
+detection = "manual"
+confidence = "low"
+codemod = "none"
+suppress = "aiogram: ignore[AG4033]"
+gate = false
+breaking_change = 13
+generated = false
+warn_3x = { site = "none", target = "", since = "" }
+
+[[entry]]
+id = "AG4034"
+kind = "removal-4.0"
+title = "aiogram_i18n is deprecated in favour of the core i18n"
+decisions = ["D25"]
+area = "i18n"
+change = "renamed"
+replacement = "the core i18n; the migration guide maps the aiogram_i18n API one to one"
+detection = "definite"
+confidence = "high"
+codemod = "partial"
+suppress = "aiogram: ignore[AG4034]"
+gate = false
+breaking_change = 14
+generated = false
+warn_3x = { site = "none", target = "", since = "" }
+
+[[entry]]
+id = "AG4035"
+kind = "removal-4.0"
+title = "event isolation is on by default"
+decisions = ["D28", "D110", "PD-26"]
+area = "fsm"
+change = "behaviour"
+replacement = "async with state.release_isolation(): around waits for a later update of the same key, or events_isolation=DisabledEventIsolation() for 3.x behaviour"
+detection = "heuristic"
+confidence = "low"
+codemod = "none"
+suppress = "aiogram: ignore[AG4035]"
+gate = false
+breaking_change = 15
+generated = false
+warn_3x = { site = "none", target = "", since = "" }
+
+[[entry]]
+id = "AG4036"
+kind = "removal-4.0"
+title = "sync filter functions run on the event loop by default"
+decisions = ["D34"]
+area = "filters"
+change = "behaviour"
+replacement = "blocking(fn) for blocking filters, or Dispatcher(sync_filters=SyncFilterMode.THREAD) for 3.x behaviour"
+detection = "heuristic"
+confidence = "low"
+codemod = "none"
+suppress = "aiogram: ignore[AG4036]"
+gate = false
+breaking_change = 16
+generated = false
+warn_3x = { site = "none", target = "", since = "" }
+
+[[entry]]
+id = "AG4037"
+kind = "removal-4.0"
+title = "error handlers bubble from the raising router to its parents; siblings no longer catch"
+decisions = ["D48", "PD-05"]
+area = "errors"
+change = "behaviour"
+replacement = "cross-cutting errors handlers on a common parent router or the dispatcher"
+detection = "heuristic"
+confidence = "medium"
+codemod = "none"
+suppress = "aiogram: ignore[AG4037]"
+gate = false
+breaking_change = 17
+generated = false
+warn_3x = { site = "none", target = "", since = "" }
+
+[[entry]]
+id = "AG4038"
+kind = "removal-4.0"
+title = "model_dump_json() emits wire names and ignores by_alias"
+decisions = ["D86", "D94"]
+area = "types"
+change = "behaviour"
+replacement = "to_json(); model_dump() keeps the 3.x names while it exists"
+detection = "heuristic"
+confidence = "medium"
+codemod = "partial"
+suppress = "aiogram: ignore[AG4038]"
+gate = true
+breaking_change = 18
+generated = false
+warn_3x = { site = "none", target = "", since = "" }
+
+[[entry]]
+id = "AG4039"
+kind = "removal-4.0"
+title = "extra fields of aiogram objects must be JSON-shaped"
+decisions = ["D87"]
+area = "types"
+change = "behaviour"
+replacement = "JSON-compatible values only (dict, list, str, int, float, bool, None)"
+detection = "manual"
+confidence = "low"
+codemod = "none"
+suppress = "aiogram: ignore[AG4039]"
+gate = true
+breaking_change = 19
+generated = false
+warn_3x = { site = "none", target = "", since = "" }
+
+[[entry]]
+id = "AG4040"
+kind = "removal-4.0"
+title = "custom TelegramMethod subclasses are not supported"
+decisions = ["D96", "D74"]
+area = "client"
+change = "removed"
+replacement = "await bot.call(\"methodName\", {...}, returns=Type)"
+detection = "definite"
+confidence = "high"
+codemod = "none"
+suppress = "aiogram: ignore[AG4040]"
+gate = false
+breaking_change = 20
+generated = false
+warn_3x = { site = "class-creation", target = "aiogram.methods.base.TelegramMethod", since = "" }
+
+# Checker-only (PD-02): no runtime warning in 3.x; aiogram migrate fix rewrites resolvable calls.
+[[entry]]
+id = "AG4041"
+kind = "removal-4.0"
+title = "generated API calls are keyword-only"
+decisions = ["D100", "D101", "PD-02"]
+area = "client"
+change = "signature"
+replacement = "keyword arguments: message.answer(text=...), bot.send_message(chat_id=..., text=...)"
+detection = "heuristic"
+confidence = "medium"
+codemod = "partial"
+suppress = "aiogram: ignore[AG4041]"
+gate = false
+breaking_change = 21
+generated = false
+warn_3x = { site = "none", target = "", since = "" }
+
+[[entry]]
+id = "AG4042"
+kind = "removal-4.0"
+title = "obj.as_(bot) returns a new bound view instead of rebinding obj"
+decisions = ["D103"]
+area = "types"
+change = "behaviour"
+replacement = "the return value: m = m.as_(bot)"
+detection = "definite"
+confidence = "medium"
+codemod = "none"
+suppress = "aiogram: ignore[AG4042]"
+gate = true
+breaking_change = 22
+generated = false
+warn_3x = { site = "none", target = "", since = "" }
+
+[[entry]]
+id = "AG4043"
+kind = "removal-4.0"
+title = "collection fields are tuples"
+decisions = ["D106"]
+area = "types"
+change = "behaviour"
+replacement = "tuple comparisons and new tuples instead of list comparisons and .append"
+detection = "heuristic"
+confidence = "medium"
+codemod = "none"
+suppress = "aiogram: ignore[AG4043]"
+gate = false
+breaking_change = 23
+generated = false
+warn_3x = { site = "none", target = "", since = "" }
+
+[[entry]]
+id = "AG4044"
+kind = "removal-4.0"
+title = "outer middlewares of routers without a matching handler are skipped"
+decisions = ["D111", "PD-19"]
+area = "middlewares"
+change = "behaviour"
+replacement = "dp.update outer middlewares for code that must see every update"
+detection = "manual"
+confidence = "medium"
+codemod = "none"
+suppress = "aiogram: ignore[AG4044]"
+gate = false
+breaking_change = 24
+generated = false
+warn_3x = { site = "none", target = "", since = "" }
+
+# ---------------------------------------------------------------- 11-removals rows outside the README list
+
+[[entry]]
+id = "AG4045"
+kind = "removal-4.0"
+title = "Bot() no longer accepts arbitrary keyword arguments"
+decisions = ["D2"]
+area = "client"
+change = "signature"
+replacement = "Bot(token, session=..., default=DefaultBotProperties(...))"
+detection = "definite"
+confidence = "high"
+codemod = "none"
+suppress = "aiogram: ignore[AG4045]"
+gate = false
+generated = false
+warn_3x = { site = "none", target = "", since = "" }
+
+[[entry]]
+id = "AG4046"
+kind = "removal-4.0"
+title = "WebAppUser, WebAppChat and WebAppInitData are frozen dataclasses"
+decisions = ["D2"]
+area = "utils"
+change = "behaviour"
+replacement = "the same field names; no model_* methods or attribute assignment"
+detection = "heuristic"
+confidence = "medium"
+codemod = "none"
+suppress = "aiogram: ignore[AG4046]"
+gate = false
+generated = false
+warn_3x = { site = "none", target = "", since = "" }
+
+# ---------------------------------------------------------------- 3.x migration-baseline additions (3x-20..24)
+
+[[entry]]
+id = "AG4047"
+kind = "removal-4.0"
+title = "UnsupportedKeywordArgument is removed"
+decisions = ["D2", "D74"]
+area = "dispatcher"
+change = "removed"
+replacement = "TypeError"
+detection = "definite"
+confidence = "high"
+codemod = "full"
+suppress = "aiogram: ignore[AG4047]"
+gate = false
+generated = false
+warn_3x = { site = "attribute", target = "aiogram.exceptions.UnsupportedKeywordArgument", since = "" }
+
+[[entry]]
+id = "AG4048"
+kind = "removal-4.0"
+title = "the Recommendation warning class is removed"
+decisions = ["D2", "D74"]
+area = "filters"
+change = "removed"
+replacement = "AiogramWarning; import F from aiogram"
+detection = "definite"
+confidence = "high"
+codemod = "full"
+suppress = "aiogram: ignore[AG4048]"
+gate = false
+generated = false
+warn_3x = { site = "attribute", target = "aiogram.utils.warnings.Recommendation", since = "" }
+
+[[entry]]
+id = "AG4049"
+kind = "removal-4.0"
+title = "the parameter argument of create_channel_bot_link() is removed"
+decisions = ["D2", "D74"]
+area = "utils"
+change = "signature"
+replacement = "no parameter (channel links have none), or create_telegram_link(username, startgroup=..., admin=...) for a group link"
+detection = "definite"
+confidence = "high"
+codemod = "none"
+suppress = "aiogram: ignore[AG4049]"
+gate = false
+generated = false
+warn_3x = { site = "call", target = "aiogram.utils.link.create_channel_bot_link", since = "" }

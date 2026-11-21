@@ -30,7 +30,8 @@
 - **Traces:**
   - one span per `SpanKind` from the D63 hook, named `aiogram.update`, `aiogram.handler <qualname>`, and so on;
   - `API_CALL` spans come from a request middleware placed with the D39 anchors, recording method, HTTP status,
-    `ErrorReason` (D47) and retry attempts (D43).
+    `ErrorReason` (D47) and the retry attempt (D43). There is one span **per attempt**, inside `RetryMiddleware`,
+    which exposes the attempt number (PD-17).
 - **Metrics:**
 
   | Instrument | Type | Attributes |
@@ -67,9 +68,12 @@
   logger filters to records from child loggers, R22), with a test that walks the logger dict. It masks
   `\d{5,}:[A-Za-z0-9_-]{30,}` as `<id>:***` in message and args, and rewrites a record only when a token matches, to
   keep Sentry grouping. Opt out with `aiogram.loggers.redact_tokens(False)`.
-- **Exception text never contains a token**: aiogram never builds token-bearing exception text. URLs are rendered
-  with `/bot<id>:***/`, and aiohttp errors are wrapped `from None`, with the original kept on `.original` (not
-  `__cause__`, which a formatted traceback would print).
+- **Exception text never contains a token** (PD-14): aiogram never builds token-bearing exception text. URLs are
+  rendered with `/bot<id>:***/`, and aiohttp errors are wrapped in `TelegramNetworkError` `from None`, with the
+  original kept on `.original` (not `__cause__`, which a formatted traceback would print). 3.x fixed its own leak
+  in 3.33.0: ANT-2026-4GL80S7S, a raw `ClientResponseError` containing `/file/bot<token>/` from downloads
+  ([GHSA-52j5-qrwv-2vf2](https://github.com/aiogram/aiogram/security/advisories/GHSA-52j5-qrwv-2vf2)). The 4.x
+  wrapping is owned by D-03 in the client; milestone H owns only the log filters on this page (H-02).
 - **Access logs**: a handler-level filter is exported for user handlers and attached to `aiohttp.access` /
   `uvicorn.access` by the CLI and the documented server setup, so `TokenBasedRequestHandler` paths are masked.
   `setup_application(...)` can't install an access logger (aiohttp accepts `access_log_class` only in `run_app` /

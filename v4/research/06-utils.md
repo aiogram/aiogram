@@ -12,6 +12,10 @@ construction. In v4 the entities already live in Rust.
 | UTF-16 helpers (`sizeof`, offset slicing) | 0.74 µs per 300 chars, recomputed at every nesting level in `formatting.py` | Rust function; `Text.render` gets lengths back instead of re-encoding |
 | Markdown / HTML quoting | `html.quote` 1.4 µs, MD quote 4.4 µs (230 chars) | Rust |
 
+**Ownership (PD-15):** this Rust **entity-rendering kernel** (UTF-16 offsets, HTML / MarkdownV2 unparse, quoting) is
+data plane and owned by D-17. G-08 builds the Python formatting API (`aiogram.utils.formatting`, `Text.render`) on
+it. There is no Rust *parse* (HTML / Markdown → entities) in 4.0, because nothing consumes it.
+
 **Extensibility rule**: users subclass `TextDecoration` and override `bold`/`link`/`quote`… The Rust fast
 path is used only for the two built-in instances (`html_decoration`, `markdown_decoration`) and exact built-in
 types. Any subclass runs the Python algorithm, which also gets the O(n) rewrite. The Python implementation stays
@@ -44,9 +48,9 @@ touches Rust.
 | Engines ("cores") | `GettextCore` built in (`.mo`/`.po`, as 3.x `I18n`); `FluentRuntimeCore` / `FluentCompilerCore` behind extras `aiogram[fluent-runtime]`, `aiogram[fluent-compiler]`; custom engine = `BaseCore` subclass |
 | Locale managers | `UserLocaleManager` (reads `event_context.user.language_code`, no I/O, the default), `FSMManager(fallback=…)`, `ConstManager`; custom = `BaseManager` subclass |
 | Handler API | `I18nContext` injected as `i18n`: `i18n.get("key", **kw)`, `i18n.key(**kw)`, `i18n.locale`, `i18n.use_locale(...)` |
-| Lazy text | `L.key(**kw)` / `LazyProxy("key")`: an object implementing a small render protocol. Display-text fields (`text`, `caption`, `title`, button `text`, …; marked in the overlay, 02 §3) accept it and store it unchanged, so it works with frozen types (D15). The Rust encoder renders it when the request is built, with the i18n context **captured at return** (D117): a method created inside an update, or returned from a handler, captures the current locale, which covers webhook inline replies and polling silent calls. Rendered once per request snapshot; retries reuse it. One keyboard literal then serves every locale |
+| Lazy text | `L.key(**kw)` / `LazyProxy("key")`: an object implementing a small render protocol. Display-text fields (`text`, `caption`, `title`, button `text`, …; marked in the overlay, 02 §3) accept it and store it unchanged, so it works with frozen types (D15). The Rust encoder renders it when the request is built, with the i18n context captured **when a handler returns the method and when `bot(method)` is called** (D117, narrowed by PD-07); method constructors stay i18n-free. That covers webhook inline replies and polling silent calls. Rendered once per request snapshot; retries reuse it. One keyboard literal then serves every locale |
 | Filters | `LazyFilter("key")` matches the text against the key in the current locale |
-| Context | one module-level `ContextVar` set by the middleware, captured by methods at creation/return (D117), so encoding after the handler returned still renders with it. Outside handlers, `i18n.use_locale(...)` or the engine default applies |
+| Context | one module-level `ContextVar` set by the middleware, captured when a handler returns a method or calls `bot(method)` (D117, PD-07), so encoding after the handler returned still renders with it. Outside handlers, `i18n.use_locale(...)` or the engine default applies |
 | 3.x compatibility | `aiogram.utils.i18n` names kept: `I18n`, `gettext`/`_`, `lazy_gettext`/`__`, `I18nMiddleware`, `SimpleI18nMiddleware`, `ConstI18nMiddleware`, `FSMI18nMiddleware`, now as thin wrappers over the new engine. **No renames**, unlike aiogram_rust |
 | `aiogram_i18n` | **deprecated**: the migration guide maps its API one to one onto core; only one final release, carrying the deprecation notice and pointing to the guide |
 | Tooling | key extraction / checking stays external ([FTL-Extract](https://github.com/andrew000/FTL-Extract)) and must recognise `i18n.get`, `i18n.key()`, `L.key()`, `LazyFilter` |
@@ -74,7 +78,7 @@ Defaults:
 |---|---|
 | **D59** | ~~Opt-in album aggregation (`MediaGroupMiddleware`)~~ **Withdrawn (D116, see 19)**: album aggregation is deferred out of 4.0. Per-handler buffering can't work behind the FSM lock (D27/D28 take it before routing), and the ingress designs are too risky for 4.0. To revisit as a Runner pre-dispatch stage |
 | **D60** | **Bot commands from handlers** (cf. PR #1867): `Command(...)` gains optional `description=`, `scope=` (a `BotCommandScope`), `language_code=` and an i18n key (D25) for localised descriptions. `router.resolve_bot_commands()` returns `{(scope, language): [BotCommand, …]}` across the tree. `await dp.set_my_commands(bot, *, delete_missing=False)` calls `setMyCommands` for each `(scope, language)`. Nothing is sent automatically. `CommandStart` / hidden commands (`description=None`) are excluded |
-| **D61** | **Lazy text in formatting trees**: `Text` nodes may contain lazy values (`Bold(L.title()), " ", L.body()`). A `Text` that contains one implements the lazy-text protocol (06 §3), and its text **and entities** (UTF-16 offsets) are rendered once per request snapshot with the i18n context captured at return (D117). Explicit `entities` / `parse_mode` next to a lazy `Text` raise. A plain `Text` renders eagerly as today |
+| **D61** | **Lazy text in formatting trees**: `Text` nodes may contain lazy values (`Bold(L.title()), " ", L.body()`). A `Text` that contains one implements the lazy-text protocol (06 §3), and its text **and entities** (UTF-16 offsets) are rendered once per request snapshot with the i18n context captured at return or at `bot(method)` (D117, PD-07). Explicit `entities` / `parse_mode` next to a lazy `Text` raise. A plain `Text` renders eagerly as today |
 | **D62** | **Both formatting styles stay; formatting nodes are primary.** Docs lead with `aiogram.utils.formatting`: it is entity-based, so there are no escaping bugs, and it works with D61. `html` / `md` decorations stay supported for `parse_mode` users and for `html_text` / `md_text` unparse (Rust fast path, §1) |
 
 ## 5. Security notes (if any signature check is ever rewritten)

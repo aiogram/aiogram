@@ -4,7 +4,8 @@ package_dir := aiogram
 tests_dir := tests
 scripts_dir := scripts
 examples_dir := examples
-code_dir := $(package_dir) $(tests_dir) $(scripts_dir) $(examples_dir)
+benchmarks_dir := benchmarks
+code_dir := $(package_dir) $(tests_dir) $(scripts_dir) $(examples_dir) $(benchmarks_dir)
 reports_dir := reports
 
 redis_connection := redis://localhost:6379
@@ -37,8 +38,8 @@ install: clean
 
 .PHONY: lint
 lint:
-	uv run ruff format --check --diff $(package_dir) $(tests_dir) $(scripts_dir) $(examples_dir)
-	uv run ruff check --show-fixes --preview $(package_dir) $(examples_dir)
+	uv run ruff format --check --diff $(package_dir) $(tests_dir) $(scripts_dir) $(examples_dir) $(benchmarks_dir)
+	uv run ruff check --show-fixes --preview $(package_dir) $(examples_dir) $(benchmarks_dir)
 	uv run mypy --native-parser --num-workers 8 $(package_dir)
 	# aiogram/types/custom.py has a `sys.platform == "win32"` branch that mypy prunes as
 	# unreachable on Linux; this second pass type-checks it.

@@ -1,0 +1,16 @@
+# sendMediaGroup with files nested inside InputMedia objects.
+schema = 1
+method = "sendMediaGroup"
+
+[params]
+chat_id = 100000001
+
+[[params.media]]
+type = "photo"
+media = { corpus_file = "red.png" }
+caption = "red"
+
+[[params.media]]
+type = "photo"
+media = { corpus_file = "blue.png" }
+caption = "blue"

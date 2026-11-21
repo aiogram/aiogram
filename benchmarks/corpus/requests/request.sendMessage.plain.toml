@@ -1,0 +1,7 @@
+# Plain sendMessage: no defaults, no files.
+schema = 1
+method = "sendMessage"
+
+[params]
+chat_id = 100000001
+text = "hello"

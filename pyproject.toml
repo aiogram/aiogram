@@ -58,6 +58,7 @@ manifest-path = "crates/aiogram-core/Cargo.toml"
 exclude = [
     { path = ".claude/**/*", format = "sdist" },
     { path = ".oss-scanner/**/*", format = "sdist" },
+    { path = "benchmarks/**/*", format = "sdist" },
     { path = "design/**/*", format = "sdist" },
     { path = "openspec/**/*", format = "sdist" },
     { path = "orca.yaml", format = "sdist" },

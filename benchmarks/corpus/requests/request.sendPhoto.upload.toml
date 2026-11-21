@@ -1,0 +1,8 @@
+# sendPhoto with a top-level file upload.
+schema = 1
+method = "sendPhoto"
+
+[params]
+chat_id = 100000001
+caption = "red square"
+photo = { corpus_file = "red.png" }
