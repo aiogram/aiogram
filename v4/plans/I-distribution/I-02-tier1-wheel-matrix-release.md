@@ -88,7 +88,8 @@ frozenlist has no cp315t wheel, cryptography is 314t-only, 07 §4) are documente
 | Alternative | Why rejected | Decision |
 |---|---|---|
 | abi3 / abi3t wheels in 4.0 | Can't load on ft builds; per-version speedups kept; revisit when the floor reaches 3.15 (PEP 803) | 08 §4, 13 B16 |
-| PyPy, Windows arm64, i686 etc. release-blocking | Best-effort tier | D119, D7 |
+| PyPy wheels (unsupported in 4.x) | Owner decision | PD-35 |
+| Windows arm64, i686 etc. release-blocking | Best-effort tier | D119 |
 | Blocking on third-party ft wheels | Tier 1 is our wheels and our suite | PD-27 |
 | Fat LTO in release profile | 3× build time, OOM on 16 GB, ≈2% gain | 08 §3, 13 B4 |
 

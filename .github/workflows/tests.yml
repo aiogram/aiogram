@@ -70,13 +70,6 @@ jobs:
           - "3.13"
           - "3.14"
           - "3.15"
-          - "pypy3.11"
-        exclude:
-          # PyPy on Windows was disabled in the old workflow as well
-          - os: windows-latest
-            python-version: pypy3.11
-    env:
-      IS_PYPY: ${{ startsWith(matrix.python-version, 'pypy') }}
     steps:
       - uses: actions/checkout@v7
         with:
@@ -129,10 +122,7 @@ jobs:
       - name: Run tests
         id: tests
         run: |
-          flags=()
-          if [[ "$IS_PYPY" == "false" ]]; then
-            flags+=(--cov=aiogram --cov-report=xml)
-          fi
+          flags=(--cov=aiogram --cov-report=xml)
           if [[ "$RUNNER_OS" == "Linux" ]]; then
             flags+=(--redis redis://localhost:6379/0 --mongo mongodb://localhost:27017)
           fi
@@ -142,7 +132,7 @@ jobs:
         # upload when pytest actually ran, even if it failed: coverage.xml is still written and
         # codecov.yaml waits for all 15 uploads before commenting. A leg whose setup failed
         # never reached pytest, has no report, and must not add a second error.
-        if: ${{ !cancelled() && env.IS_PYPY == 'false' && steps.tests.outcome != 'skipped' }}
+        if: ${{ !cancelled() && steps.tests.outcome != 'skipped' }}
         uses: codecov/codecov-action@v7
         with:
           token: ${{ secrets.CODECOV_TOKEN }}

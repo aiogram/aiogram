@@ -57,7 +57,7 @@ from day one (D8).
   `sys._is_gil_enabled()` becomes true after `import aiogram._core`.
 
 **Out:**
-- Tier-1 wheel matrix and release workflow (I-02), free-threaded wheels (I-03), PyPy (I-02, best-effort).
+- Tier-1 wheel matrix and release workflow (I-02), free-threaded wheels (I-03), PyPy (unsupported in 4.x, PD-35).
 - sdist hardening and packaging metadata polish (I-01).
 - Largest-codegen-unit guard (I-06), coverage and caching structure (I-05), contributor docs (I-08).
 

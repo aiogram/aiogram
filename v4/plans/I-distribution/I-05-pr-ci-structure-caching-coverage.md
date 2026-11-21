@@ -21,12 +21,12 @@
 
 3.x CI (`.github/workflows/tests.yml`) runs pure Python:
 - lint;
-- a 3 OS × {3.11–3.15, pypy3.11} test matrix with Redis/Mongo on Linux and codecov uploads;
+- a 3 OS × {3.11–3.15} test matrix with Redis/Mongo on Linux and codecov uploads;
 - a lowest-direct-deps job.
 
 B-01 adds one Rust build job. On `dev-4.x` every test job needs a compiled extension (about 10 minutes for a release
 build, 08 §3). Rebuilding that per matrix leg on every PR is expensive, and the decision table doesn't settle the
-PR-time matrix: 08 §5 lists the full matrix, including PyPy, while D119 makes PyPy best-effort.
+PR-time matrix: 08 §5 lists the full matrix; PyPy is not part of it (PD-35), so no PyPy leg and no `IS_PYPY` coverage carve-out remain.
 
 ## Scope
 
@@ -46,7 +46,7 @@ PR-time matrix: 08 §5 lists the full matrix, including PyPy, while D119 makes P
   - generated code excluded from the Rust threshold only (R26: still executed by property/differential tests).
 - A documented slot in the workflow structure where later plans add jobs; C-23 adds the `butcher-check` job itself
   (no placeholder job here).
-- Required vs non-required jobs: PyPy legs are `continue-on-error` (D7, D119).
+- Required vs non-required jobs: there is no PyPy leg to mark non-required (PD-35).
 
 **Out:**
 - Release matrix (I-02).
@@ -90,7 +90,7 @@ PR-time matrix: 08 §5 lists the full matrix, including PyPy, while D119 makes P
 | Alternative | Why rejected | Decision |
 |---|---|---|
 | Full matrix on every PR | Cost about 10 min/leg × 20+ legs; nightly catches the rest | proposed default above |
-| PyPy as a required check | Best-effort tier | D7, D119 |
+| A PyPy leg, required or not | Unsupported in 4.x | PD-35 |
 | Excluding generated Rust from execution | Only from the % threshold; still executed | R26 |
 | Python fallback encoder for differential tests | No pure-Python fallback | D1, PD-12 |
 

@@ -1,7 +1,7 @@
 # 13 — Review of the community port `andrew000/aiogram_rust`
 
 Reviewed 2026-11-17 at commit `7d7902a4`, read-only. It is an independent port of 3.32.0 / Bot API 10.4: about
-222k lines of Rust, with eager `#[pyclass]` types, a reqwest + tokio transport and abi3 wheels. There is no PyPy and
+222k lines of Rust, with eager `#[pyclass]` types, a reqwest + tokio transport and abi3 wheels. There is no PyPy (nor in ours, PD-35) and
 no free-threading. Routing, FSM and webhook are the 3.x Python code with a native prefilter added. The owner treats
 it as **a source of lessons, not of code** (`dialogue.md`). This doc records what we take, what confirms our
 decisions, and where we deliberately differ.
@@ -82,7 +82,7 @@ All numbers are from a warm process on Windows with Python 3.14.10, against 3.32
 | Bot binding | per object, tree walk on validate (about 0.47 µs per update) | independent bound views (D103, replaces one `Ctx` per tree) | O(1) `as_()` / re-mount as a new view; no shared mutable context |
 | Mutability | `MutableTelegramObject` kept | D15: everything is immutable | free-threading |
 | Prefilter semantics | skips a handler on any certain reject, even if user filters come first (BREAKING.md "guaranteed-false filters may be skipped"); Rust `split_whitespace` ≠ Python `str.split` for U+001C–U+001F (inferred from the code, not run) | **same skip rule, adopted** (03 §3, README breaking change 13); command parsing reuses the exact Python splitting rule | faster; documented as a break |
-| Wheels | abi3, CPython only | per-version + ft + PyPy (D7, D8); B16 declined | abi3 can't load on free-threaded builds |
+| Wheels | abi3, CPython only | per-version + ft, no PyPy (D8, PD-35); B16 declined | abi3 can't load on free-threaded builds |
 | Requests | always multipart | JSON body unless files are attached (05 §2) | smaller, faster |
 | i18n | absorbed `aiogram_i18n`, renamed 3.x middleware classes | **D25: absorbed too, 3.x names kept** (06 §3) | no rename churn |
 

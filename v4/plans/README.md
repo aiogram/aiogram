@@ -54,6 +54,7 @@ Owner = confirmed by the owner on 2026-11-17. Default = planning default; owner 
 | PD-32 | `force_reply` on keyboard markups is a real Bot API 10.4 field (#1954) and is **kept**; no plan removes or warns about it | Default | 11 §4, 16 §2 |
 | PD-33 | Registry authority: `dev-4.x` owns `registry.toml` after the fork; id blocks AG4001–4699 (dev-4.x), AG4700–4799 (first added on dev-3.x), AG4800–4999 (api-ledger); 3x-24 copies the file back before each baseline release (A-11) | Default | PD-12 / PD-13 interplay |
 | PD-34 | Embargo: nothing that names or describes an unfixed security issue reaches the public repo before its fix ships. A-01 commits a **redacted** `v4/` (owner, 2026-11-18): plans whose substance is an unfixed fix are held back until released, and are committed after their fix ships; `4.x-plan-for-core-devs.md` stays closed circulation | Owner | — |
+| PD-35 | **PyPy is not supported in 4.x** (owner, 2026-11-21): no pp311/pp312 wheels, no PyPy CI leg, no classifier; the migration text says "PyPy is not supported in 4.x; stay on 3.x", and 3.x keeps PyPy until its EOL. Supersedes the PyPy parts of D7, D119 and D20. Evidence: Rust through cpyext is 3–9× slower than pure Python on PyPy (F-08 report-03, 12.5 µs vs 4.1 µs for 20 fields from a dict); PyPy 3.12 only arrived in 8.0 (2026-09) and is beta, with no 3.13+ and no free-threading; orjson, jiter, polars, msgspec and uvloop ship no PyPy wheels, and NumPy and Django 6.0 dropped it. Reversing costs a CI leg plus wheels | Owner | D7, D119 (PyPy parts), D20 |
 
 ## 2. Stories
 
