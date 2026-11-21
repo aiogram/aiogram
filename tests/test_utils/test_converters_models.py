@@ -2171,3 +2171,11 @@ class TestFinalRound:
         module = module_from_source("type Box[T] = list[T]\n")
         with pytest.raises(TypeError, match="unhashable set item"):
             json_codec(set[module.Box[int]])
+
+    def test_huge_timedelta_dump_does_not_overflow(self):
+        # seconds * 10**6 fits an i64, + the microseconds does not (review comment on #2021)
+        delta = timedelta(seconds=9223372036854, microseconds=999999)
+        codec = json_codec(timedelta)
+        assert codec.dump(delta) == delta.total_seconds()
+        assert json.loads(codec.dump_json(delta)) == delta.total_seconds()
+        assert float(codec.dump_flat(delta)) == delta.total_seconds()

@@ -636,7 +636,9 @@ pub(crate) fn dump_timedelta<'py>(value: &Bound<'py, PyAny>, label: &str) -> VRe
         return Ok(Num::Int(seconds));
     }
     // exact in a float below 2**53 microseconds; beyond, Python's correctly rounded division
-    if let Some(total) = seconds.checked_mul(1_000_000).map(|total| total + micros)
+    if let Some(total) = seconds
+        .checked_mul(1_000_000)
+        .and_then(|total| total.checked_add(micros))
         && total.unsigned_abs() < (1 << 53)
     {
         return Ok(Num::ratio(total, 1_000_000));
