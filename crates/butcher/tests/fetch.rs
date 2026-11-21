@@ -409,7 +409,7 @@ fn cli_fetch_then_build_offline() {
     assert!(build(Some(dir.join("b.tar.gz")), "elsewhere").contains("build: not implemented"));
     assert!(dir.join("elsewhere").join(INDEX).exists());
     // no cache and no bundle: a source error, never a network call
-    assert!(build(None, "empty").contains("empty/fetch.toml"));
+    assert!(build(None, "empty").contains(INDEX));
 
     // the page is gone
     let mut dead = args(None);
