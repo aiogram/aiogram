@@ -1,7 +1,8 @@
 //! Schema compile: Python converters -> [`Kind`] and [`Field`].
 
 use pyo3::prelude::*;
-use pyo3::sync::PyOnceLock;
+use std::sync::OnceLock;
+
 use pyo3::types::{PyDict, PyFrozenSet, PySet, PyString, PyTuple, PyType};
 
 use super::errors;
@@ -84,10 +85,10 @@ pub(crate) fn kind(converter: &Bound<'_, PyAny>, native: bool) -> PyResult<Kind>
         }
         "dict" => Data::Dict(Box::new(kind(&attr("item")?, false)?)),
         "typeddict" => Data::TypedDict(Box::new(TypedDict {
-            fields: PyOnceLock::new(),
+            fields: OnceLock::new(),
         })),
         "model" => Data::Model(Box::new(Nested {
-            schema: PyOnceLock::new(),
+            schema: OnceLock::new(),
         })),
         "union" => Data::Union(Box::new(union(converter)?)),
         _ => Data::Python,
@@ -121,7 +122,7 @@ fn union(converter: &Bound<'_, PyAny>) -> PyResult<Union> {
         } else {
             Some(Discriminator {
                 field: discriminator.cast_into::<PyString>()?.unbind(),
-                table: PyOnceLock::new(),
+                table: OnceLock::new(),
             })
         },
     })

@@ -575,11 +575,21 @@ def _unhashable(converter: Converter) -> bool:
     if isinstance(converter, _Union):
         return any(_unhashable(member) for member in converter.members)
     if isinstance(converter, ModelConverter):
-        if getattr(converter.tp, "__hash__", None) is None:  # a non-frozen dataclass
+        tp = converter.tp
+        if getattr(tp, "__hash__", None) is None:  # a non-frozen dataclass
             return True
-        if _is_namedtuple(converter.tp):
-            with contextlib.suppress(NameError):  # a NamedTuple field defined later
-                return any(_unhashable(field.converter) for field in converter.fields)
+        hashed: set[str] | None = None  # the fields a generated __hash__ uses
+        if _is_namedtuple(tp):
+            hashed = set(tp._fields)  # type: ignore[attr-defined]
+        elif dataclasses.is_dataclass(tp) and "__hash__" in vars(tp):
+            hashed = {
+                field.name
+                for field in dataclasses.fields(tp)
+                if field.hash or (field.hash is None and field.compare)
+            }
+        if hashed:
+            with contextlib.suppress(NameError):  # a field type defined later
+                return any(_unhashable(f.converter) for f in converter.fields if f.name in hashed)
     return False
 
 

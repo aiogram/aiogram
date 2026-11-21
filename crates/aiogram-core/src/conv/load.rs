@@ -363,7 +363,7 @@ fn discriminated<'py>(
     let Some(tag) = Getter::new(py, value)?.get(field)? else {
         return Err(field_required(py, &key));
     };
-    let (table, label) = discriminator.table.get_or_try_init(py, || -> PyResult<_> {
+    let (table, label) = crate::conv::kind::once(&discriminator.table, || -> PyResult<_> {
         let table = converter
             .bind(py)
             .call_method0(pyo3::intern!(py, "_tag_table"))?

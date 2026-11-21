@@ -5,9 +5,10 @@ use pyo3::exceptions::{PyAttributeError, PyValueError};
 use pyo3::prelude::*;
 use pyo3::sync::PyOnceLock;
 use pyo3::types::{PyDict, PyFrozenSet, PyList, PyType};
+use pyo3::{PyTraverseError, PyVisit};
 
 use super::errors::{self, at, expected};
-use super::kind::{Field, Kind};
+use super::kind::{self, Field, Kind};
 use super::load::Getter;
 use super::{compile, dump, flat, json, load};
 
@@ -184,6 +185,15 @@ impl ModelSchema {
 
 #[pymethods]
 impl ModelSchema {
+    fn __traverse__(&self, visit: PyVisit<'_>) -> Result<(), PyTraverseError> {
+        visit.call(&self.cls)?;
+        visit.call(&self.all_set)?;
+        for field in &self.fields {
+            kind::traverse_field(field, &visit)?;
+        }
+        Ok(())
+    }
+
     #[new]
     fn new(converter: &Bound<'_, PyAny>) -> PyResult<Self> {
         let py = converter.py();
@@ -269,6 +279,10 @@ pub struct KindCore {
 
 #[pymethods]
 impl KindCore {
+    fn __traverse__(&self, visit: PyVisit<'_>) -> Result<(), PyTraverseError> {
+        kind::traverse(&self.kind, &visit)
+    }
+
     #[new]
     fn new(converter: &Bound<'_, PyAny>) -> PyResult<Self> {
         Ok(Self {

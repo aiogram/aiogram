@@ -3,12 +3,14 @@
 from __future__ import annotations
 
 import dataclasses
+import gc
 import json
 import math
 import subprocess
 import sys
 import textwrap
 import types
+import weakref
 from datetime import date, datetime, timezone
 from decimal import Decimal
 from enum import Enum, IntEnum, IntFlag, StrEnum
@@ -850,9 +852,8 @@ class TestLoadJson:
 
     def test_lone_surrogate_escape_is_invalid(self):
         # json.loads keeps an escaped lone surrogate; jiter rejects it (PD-35, F-08 Notes)
-        with pytest.raises(ConversionError, match="invalid JSON") as exc_info:
+        with pytest.raises(ConversionError, match="invalid JSON"):
             Address.__converter__.load_json(rb'{"city": "\ud800"}')
-        assert exc_info.value.path == "city"
 
     @pytest.mark.parametrize(
         ("text", "reason"),
@@ -1188,6 +1189,41 @@ class TestReviewFindings:
         with pytest.raises(TypeError, match="unhashable set item"):
             converter_for(tp)
 
+    def test_used_converters_are_collected(self):
+        refs = []
+        for _ in range(20):
+            converter = converter_for(list[int])
+            assert converter.from_json([1]) == [1]  # compiles and caches its KindCore
+            refs.append(weakref.ref(converter))
+        del converter
+        gc.collect()
+        assert all(ref() is None for ref in refs)
+
+    def test_frozen_dataclass_with_unhashable_field_rejected_in_set(self):
+        @dataclasses.dataclass(frozen=True)
+        class Tagged:
+            tags: list[str]
+            name: str = ""
+
+        @dataclasses.dataclass(frozen=True)
+        class Labelled:
+            name: str
+            tags: list[str] = dataclasses.field(default_factory=list, hash=False, compare=False)
+
+        with pytest.raises(TypeError, match="unhashable set item"):
+            converter_for(set[Tagged])
+        assert converter_for(set[Labelled]).from_json([{"name": "a"}]) == {Labelled("a")}
+
+    def test_duplicate_json_keys_last_wins_before_validation(self):
+        converter = OrderForm.__converter__
+        assert converter.load_json(b'{"item_id": "bad", "item_id": 2}').item_id == 2
+        assert converter.load_json(b'{"item_id": 1, "meta": {"k": "x", "k": 3}}').meta == {"k": 3}
+        holder = Holder.__converter__.load_json(b'{"pairs": [], "tree": {"name": 1, "name": "a"}}')
+        assert holder.tree == {"name": "a"}
+        with pytest.raises(ConversionError) as exc_info:
+            converter.load_json(b'{"tags": [1], "item_id": "x"}')
+        assert exc_info.value.path == "item_id"  # field order, as from_json reports it
+
     def test_hashable_set_items(self):
         assert converter_for(frozenset[Pair]).from_json([{"x": 1}]) == frozenset({Pair(1)})
         assert converter_for(set[Kind | None]).from_json(["a", None]) == {Kind.A, None}
@@ -1219,7 +1255,7 @@ class TestReviewFindings:
         assert getattr(guarded, FIELDS_SET) == {"x"}
 
     @pytest.mark.parametrize("load", ["from_json", "load_json"])
-    def test_user_code_runs_once_per_value(self, monkeypatch, load):
+    def test_user_code_runs_once_or_twice_on_error(self, monkeypatch, load):
         monkeypatch.setattr(Counted, "calls", [])
         data = {"inner": {"x": 1}}
         with pytest.raises(ConversionError, match="never valid") as exc_info:
@@ -1227,7 +1263,8 @@ class TestReviewFindings:
                 HasCounted.__converter__.from_json(data)
             else:
                 HasCounted.__converter__.load_json(json.dumps(data))
-        assert Counted.calls == [1]
+        # load_json: the one-pass walk, then the from_json path for the exact error (F-08 Notes)
+        assert Counted.calls == ([1] if load == "from_json" else [1, 1])
         assert exc_info.value.path == "inner"
         assert isinstance(exc_info.value.__cause__, ValueError)
 

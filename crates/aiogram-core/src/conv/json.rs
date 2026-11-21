@@ -2,10 +2,11 @@
 //!
 //! Gives what `json.loads` + `from_json` would: NaN / Infinity and integers of any size are
 //! accepted, a UTF-8 BOM is skipped, the last of repeated keys wins. Scalars, sequences, dicts,
-//! TypedDicts and models are walked here. Any other kind, and any value of the wrong JSON type,
-//! is materialised and handed to [`load::load`], so the error is the `from_json` one. Invalid
-//! JSON is a `ConversionError("invalid JSON: ...")`. With several invalid fields, the first in
-//! document order is reported.
+//! TypedDicts and models are walked here; any other kind is materialised and handed to
+//! [`load::load`]. When the walk meets a `ConversionError` (invalid input, or a value that a
+//! repeated key overwrites later), the whole document is parsed once more and loaded through the
+//! `from_json` path, so results and errors are exactly the `from_json` ones. Invalid JSON is a
+//! `ConversionError("invalid JSON: ...")`.
 
 use jiter::{Jiter, JiterError, LinePosition, NumberAny, NumberInt, Peek, PythonParse};
 use pyo3::exceptions::PyTypeError;
@@ -48,13 +49,32 @@ pub(crate) fn load_document<'py>(
         parser: Jiter::new(text).with_allow_inf_nan(),
         text,
     };
-    let peek = document.peek(py)?;
-    let instance = model(py, &mut document, peek, schema, 0)?;
-    document
-        .parser
-        .finish()
-        .map_err(|e| syntax(py, document.text, &e))?;
-    Ok(instance)
+    let walked = document.peek(py).and_then(|peek| {
+        let instance = model(py, &mut document, peek, schema, 0)?;
+        document.parser.finish().map_err(|e| syntax(py, text, &e))?;
+        Ok(instance)
+    });
+    match walked {
+        Err(error) if errors::is_conversion(py, &error) => {
+            // Invalid input, or a value a repeated key overwrites: parse the whole document as
+            // json.loads would (last key wins) and take the from_json path, so the result and
+            // the error (the first in field order) are exactly what from_json gives.
+            let parse = PythonParse {
+                allow_inf_nan: true,
+                ..PythonParse::default()
+            };
+            let value = parse.python_parse(py, text).map_err(|e| {
+                let position = LinePosition::find(text, e.index);
+                let reason = format!(
+                    "invalid JSON: {} at line {} column {}",
+                    e.error_type, position.line, position.column
+                );
+                errors::conversion(py, &reason, None)
+            })?;
+            schema.load(py, &value, 0)
+        }
+        other => other,
+    }
 }
 
 /// Invalid JSON: `ConversionError("invalid JSON: <problem> at line L column C")`.

@@ -167,7 +167,9 @@ make lint
     `kind`) are Python objects the Rust core calls.
   - **Semantics changed with the rewrite:** `load_json` raises `ConversionError("invalid JSON: … at line L column
     C")` instead of `json.JSONDecodeError` / `UnicodeDecodeError`, and rejects an escaped lone surrogate (`json.loads`
-    keeps it); with several invalid fields it reports the first in document order. Enums match by `(type, value)`, so
+    keeps it). When the one-pass walk meets a conversion error (or a value a repeated key overwrites), it parses the
+    document once more and takes the `from_json` path, so results and errors are exactly the `from_json` ones; on
+    invalid input user converters / `__post_init__` therefore run twice. Enums match by `(type, value)`, so
     `true` / `1.0` no longer load an `IntEnum`; `Flag` enums are rejected (composite values could not round-trip).
     `float` fields turn an overflow (`10 ** 1000`) into "expected a number". Set items that can be unhashable
     (through a union, `| None`, a non-frozen dataclass) are rejected at class creation. Nesting beyond 512 levels

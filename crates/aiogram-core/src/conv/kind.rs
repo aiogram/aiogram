@@ -1,8 +1,11 @@
 //! Compiled field types.
 
 use pyo3::prelude::*;
-use pyo3::sync::PyOnceLock;
+use std::sync::OnceLock;
+
+use pyo3::exceptions::PyRuntimeError;
 use pyo3::types::{PyDict, PyFrozenSet, PyList, PySet, PyString, PyType};
+use pyo3::{PyTraverseError, PyVisit};
 
 use super::compile;
 use super::schema::ModelSchema;
@@ -71,7 +74,7 @@ pub(crate) struct Literal {
 
 /// The fields of a TypedDict, compiled on first use so a TypedDict may refer to itself.
 pub(crate) struct TypedDict {
-    pub(crate) fields: PyOnceLock<Vec<TypedDictField>>,
+    pub(crate) fields: OnceLock<Vec<TypedDictField>>,
 }
 
 pub(crate) struct TypedDictField {
@@ -87,9 +90,10 @@ impl TypedDict {
         py: Python<'_>,
         converter: &Py<PyAny>,
     ) -> PyResult<&'a [TypedDictField]> {
-        self.fields
-            .get_or_try_init(py, || compile::typeddict_fields(converter.bind(py)))
-            .map(Vec::as_slice)
+        once(&self.fields, || {
+            compile::typeddict_fields(converter.bind(py))
+        })
+        .map(Vec::as_slice)
     }
 }
 
@@ -110,7 +114,7 @@ pub(crate) struct Member {
 pub(crate) struct Discriminator {
     pub(crate) field: Py<PyString>,
     /// `_Union._tag_table()` and its "one of [...]" label, built on first use
-    pub(crate) table: PyOnceLock<(Py<PyDict>, String)>,
+    pub(crate) table: OnceLock<(Py<PyDict>, String)>,
 }
 
 /// The Python container a `_Sequence` builds from its JSON list.
@@ -136,7 +140,7 @@ impl Collect {
 
 /// A nested model, resolved on first use so self-referencing classes compile.
 pub(crate) struct Nested {
-    pub(crate) schema: PyOnceLock<Py<ModelSchema>>,
+    pub(crate) schema: OnceLock<Py<ModelSchema>>,
 }
 
 impl Nested {
@@ -145,7 +149,7 @@ impl Nested {
         py: Python<'py>,
         converter: &Py<PyAny>,
     ) -> PyResult<&Bound<'py, ModelSchema>> {
-        let schema = self.schema.get_or_try_init(py, || {
+        let schema = once(&self.schema, || {
             converter
                 .bind(py)
                 .call_method0(pyo3::intern!(py, "_rust_schema"))?
@@ -165,4 +169,72 @@ pub(crate) struct Field {
     pub(crate) kind: Kind,
     pub(crate) default: Option<Py<PyAny>>,
     pub(crate) factory: Option<Py<PyAny>>,
+}
+
+/// `OnceLock::get_or_try_init` (unstable): a racing thread's value is kept and the other dropped.
+/// A plain `OnceLock` (not `PyOnceLock`) so `__traverse__` can read it without the Python API.
+pub(crate) fn once<T>(cell: &OnceLock<T>, init: impl FnOnce() -> PyResult<T>) -> PyResult<&T> {
+    if let Some(value) = cell.get() {
+        return Ok(value);
+    }
+    let _ = cell.set(init()?);
+    cell.get()
+        .ok_or_else(|| PyRuntimeError::new_err("converter cache not initialised"))
+}
+
+/// Report every Python reference a kind tree holds, for the garbage collector: a built-in
+/// converter and its `KindCore` reference each other.
+pub(crate) fn traverse(kind: &Kind, visit: &PyVisit<'_>) -> Result<(), PyTraverseError> {
+    visit.call(&kind.converter)?;
+    match &kind.data {
+        Data::Str | Data::Int | Data::Float | Data::Bool | Data::Python => {}
+        Data::Text(text) => {
+            visit.call(&text.tp)?;
+            visit.call(&text.reject)?;
+            visit.call(&text.parse)?;
+            visit.call(&text.to_text)?;
+            visit.call(&text.to_flat)?;
+        }
+        Data::Enum(enumeration) => {
+            visit.call(&enumeration.tp)?;
+            visit.call(&enumeration.by_json)?;
+            visit.call(&enumeration.by_text)?;
+        }
+        Data::Literal(literal) => {
+            visit.call(&literal.json)?;
+            visit.call(&literal.text)?;
+        }
+        Data::Optional { inner, .. } => traverse(inner, visit)?,
+        Data::Sequence { item, tp, .. } => {
+            traverse(item, visit)?;
+            visit.call(tp)?;
+        }
+        Data::Dict(item) => traverse(item, visit)?,
+        Data::TypedDict(typed) => {
+            for field in typed.fields.get().into_iter().flatten() {
+                visit.call(&field.name)?;
+                traverse(&field.kind, visit)?;
+            }
+        }
+        Data::Model(nested) => visit.call(nested.schema.get())?,
+        Data::Union(union) => {
+            for member in &union.members {
+                traverse(&member.kind, visit)?;
+                visit.call(&member.json_types)?;
+                visit.call(&member.python_types)?;
+            }
+            if let Some(discriminator) = &union.discriminator {
+                visit.call(&discriminator.field)?;
+                visit.call(discriminator.table.get().map(|(table, _)| table))?;
+            }
+        }
+    }
+    Ok(())
+}
+
+pub(crate) fn traverse_field(field: &Field, visit: &PyVisit<'_>) -> Result<(), PyTraverseError> {
+    visit.call(&field.name)?;
+    visit.call(&field.default)?;
+    visit.call(&field.factory)?;
+    traverse(&field.kind, visit)
 }
