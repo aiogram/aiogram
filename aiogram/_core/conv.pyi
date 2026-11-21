@@ -1,15 +1,14 @@
-# Hand-written stub for the native extension (crates/aiogram-core), checked against the
-# built module by `make stubtest` (PD-36, as pydantic-core does).
+# Hand-written stub of the native submodule `aiogram._core.conv` (crates/aiogram-core/src/conv),
+# checked against the built module by `make stubtest` (PD-36, as pydantic-core does).
 #
-# The converter classes below are the whole Python -> Rust interface of the converter core
+# These classes are the whole Python -> Rust interface of the converter core
 # (aiogram/utils/_converters.py builds them; F-08 plan-10): Rust never reads Python attributes
 # of the resolver's objects by name.
 from collections.abc import Callable, Mapping, Sequence
 from types import GenericAlias
-from typing import Any, Generic, Literal, Self, TypedDict, TypeVar, final, type_check_only
+from typing import Any, Generic, Literal, Self, TypeVar, final
 
 __all__ = [
-    "__version__",
     "Field",
     "FlatSchema",
     "JsonCodec",
@@ -17,23 +16,11 @@ __all__ = [
     "Kind",
     "KindCell",
     "ModelCore",
-    "build_info",
     "converters_init",
 ]
 
 _T = TypeVar("_T")
 
-__version__: str
-
-@type_check_only
-class BuildInfo(TypedDict):
-    version: str
-    pyo3_version: str
-    profile: str
-    lto: str
-    target: str
-
-def build_info() -> BuildInfo: ...
 def converters_init(
     error: type[ValueError], detail: type[tuple[Any, ...]], missing: object
 ) -> None:

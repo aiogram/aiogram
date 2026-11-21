@@ -1,8 +1,8 @@
 """
 Converter core, Python side (private; F-08, PD-36, plan-10).
 
-Python resolves annotations and builds the typed ``aiogram._core`` objects (``Kind``, ``Field``,
-``ModelCore``); Rust does every conversion. This module holds:
+Python resolves annotations and builds the typed ``aiogram._core.conv`` objects (``Kind``,
+``Field``, ``ModelCore``); Rust does every conversion. This module holds:
 
 - the annotation resolver: forward references evaluated per field in the namespace of the class
   that declares it, ``Annotated`` markers, ``NewType`` and ``type X = ...`` aliases, defaults and
@@ -50,7 +50,7 @@ from typing import (
 )
 from uuid import UUID
 
-from aiogram import _core
+from aiogram._core import conv
 from aiogram.utils.converters import (
     MISSING,
     ConversionError,
@@ -71,7 +71,7 @@ from aiogram.utils.converters import (
 
 __all__ = ["ModelBase", "fields_set", "flat_schema", "json_codec", "json_schema"]
 
-_core.converters_init(ConversionError, ErrorDetail, MISSING)
+conv.converters_init(ConversionError, ErrorDetail, MISSING)
 
 _T = TypeVar("_T")
 
@@ -259,19 +259,19 @@ def _typeddict_hints(cls: type) -> dict[str, tuple[Any, type]]:
 # The resolver
 # ---------------------------------------------------------------------------------------------
 
-_SCALARS: dict[type, _core.Kind] = {
-    str: _core.Kind.str_(),
-    int: _core.Kind.int_(),
-    float: _core.Kind.float_(),
-    bool: _core.Kind.bool_(),
-    UUID: _core.Kind.uuid(),
-    datetime: _core.Kind.datetime(),
-    date: _core.Kind.date(),
-    time: _core.Kind.time(),
-    timedelta: _core.Kind.timedelta(),
-    Decimal: _core.Kind.decimal(),
-    bytes: _core.Kind.bytes_(),
-    Fraction: _core.Kind.text(Fraction, Fraction, str, flat=True),
+_SCALARS: dict[type, conv.Kind] = {
+    str: conv.Kind.str_(),
+    int: conv.Kind.int_(),
+    float: conv.Kind.float_(),
+    bool: conv.Kind.bool_(),
+    UUID: conv.Kind.uuid(),
+    datetime: conv.Kind.datetime(),
+    date: conv.Kind.date(),
+    time: conv.Kind.time(),
+    timedelta: conv.Kind.timedelta(),
+    Decimal: conv.Kind.decimal(),
+    bytes: conv.Kind.bytes_(),
+    Fraction: conv.Kind.text(Fraction, Fraction, str, flat=True),
 }
 _JSON_SCALARS = (str, int, float, bool, type(None))
 
@@ -288,7 +288,7 @@ def _is_foreign(tp: type) -> bool:
     return is_typeddict(tp) or dataclasses.is_dataclass(tp) or _is_namedtuple(tp)
 
 
-def _enum_kind(tp: type[enum.Enum], *, by_name: bool = False) -> _core.Kind:
+def _enum_kind(tp: type[enum.Enum], *, by_name: bool = False) -> conv.Kind:
     if issubclass(tp, enum.Flag):
         # composite and zero flags are not members: they could not round-trip
         msg = f"{tp.__name__} is a Flag enum, which is not supported"
@@ -300,15 +300,15 @@ def _enum_kind(tp: type[enum.Enum], *, by_name: bool = False) -> _core.Kind:
                 raise TypeError(msg)
     # an overridden _missing_ (a tolerant enum: unknown values -> UNKNOWN) is called on a miss
     missing = getattr(tp._missing_, "__func__", None) is not enum.Enum._missing_.__func__  # type: ignore[attr-defined]
-    return _core.Kind.enum(tp, by_name=by_name, missing=missing)
+    return conv.Kind.enum(tp, by_name=by_name, missing=missing)
 
 
-def _literal_kind(values: tuple[Any, ...]) -> _core.Kind:
+def _literal_kind(values: tuple[Any, ...]) -> conv.Kind:
     for value in values:
         if value is not None and type(value) not in {str, int, bool}:
             msg = f"unsupported Literal value {value!r}; use str, int, bool or None"
             raise TypeError(msg)
-    return _core.Kind.literal(values)
+    return conv.Kind.literal(values)
 
 
 def _flat_converter(converter: Converter) -> bool:
@@ -332,15 +332,15 @@ class _Compiler:
         self.owner = owner
         self.converters = converters
         self.frame_locals = frame_locals
-        self.memo: dict[type, _core.ModelCore] = {}
-        self.aliases: dict[Any, tuple[_core.KindCell | None, _core.Kind | None]] = {}
+        self.memo: dict[type, conv.ModelCore] = {}
+        self.aliases: dict[Any, tuple[conv.KindCell | None, conv.Kind | None]] = {}
         # aliases being resolved with no container (list, tuple, dict, model) passed yet: a
         # reference to one of them is a cycle that never reaches a value (`type X = X | int`)
         self.unguarded: set[Any] = set()
 
     # annotations -> kinds
 
-    def kind(self, tp: Any, scope: _Scope) -> _core.Kind:  # noqa: C901, PLR0911, PLR0912
+    def kind(self, tp: Any, scope: _Scope) -> conv.Kind:  # noqa: C901, PLR0911, PLR0912
         text = _text_of(tp)
         if text is not None:
             return self.kind(_evaluate(text, scope), scope)
@@ -365,25 +365,25 @@ class _Compiler:
         if origin is Literal:
             return _literal_kind(args)
         if origin is list and len(args) == 1:
-            return _core.Kind.sequence(self.item(args[0], scope), list)
+            return conv.Kind.sequence(self.item(args[0], scope), list)
         if origin is tuple and len(args) == 2 and args[1] is Ellipsis:  # noqa: PLR2004
-            return _core.Kind.sequence(self.item(args[0], scope), tuple)
+            return conv.Kind.sequence(self.item(args[0], scope), tuple)
         if origin is tuple and args and Ellipsis not in args:
-            return _core.Kind.tuple_([self.item(arg, scope) for arg in args])
+            return conv.Kind.tuple_([self.item(arg, scope) for arg in args])
         if origin in {set, frozenset} and len(args) == 1:
             if self.unhashable(args[0], scope, set()):
                 msg = f"unhashable set item {_name(args[0])}"
                 raise TypeError(msg)
-            return _core.Kind.sequence(self.item(args[0], scope), origin)
+            return conv.Kind.sequence(self.item(args[0], scope), origin)
         if origin is dict and len(args) == 2:  # noqa: PLR2004
             if args[0] is not str:
                 msg = f"dict keys must be str, not {_name(args[0])}"
                 raise TypeError(msg)
-            return _core.Kind.dict_(self.item(args[1], scope))
+            return conv.Kind.dict_(self.item(args[1], scope))
         msg = f"unsupported annotation {_name(tp)}"
         raise TypeError(msg)
 
-    def item(self, tp: Any, scope: _Scope) -> _core.Kind:
+    def item(self, tp: Any, scope: _Scope) -> conv.Kind:
         """A container item: an alias reached from here is guarded by the container."""
         saved, self.unguarded = self.unguarded, set()
         try:
@@ -391,7 +391,7 @@ class _Compiler:
         finally:
             self.unguarded = saved
 
-    def annotated(self, tp: Any, scope: _Scope) -> _core.Kind:
+    def annotated(self, tp: Any, scope: _Scope) -> conv.Kind:
         base, *metadata = get_args(tp)
         if any(isinstance(marker, Key) for marker in metadata):
             msg = "Key applies to a field, not to a type inside a container"
@@ -407,7 +407,7 @@ class _Compiler:
             return self.union(base, scope, marker.field)
         return self.converter_kind(marker, base, scope)
 
-    def class_kind(self, tp: type) -> _core.Kind:
+    def class_kind(self, tp: type) -> conv.Kind:
         # the class map: exact type, then along the MRO (not through the built-in scalars, so
         # a `date` entry does not catch `datetime` fields)
         for base in tp.__mro__:
@@ -431,22 +431,22 @@ class _Compiler:
         if issubclass(tp, enum.Enum):
             return _enum_kind(tp)
         if (core := vars(tp).get("__aiogram_core__")) is not None:
-            return _core.Kind.model(core)
+            return conv.Kind.model(core)
         if _is_foreign(tp):
-            return _core.Kind.model(self.foreign(tp))
+            return conv.Kind.model(self.foreign(tp))
         msg = f"unsupported annotation {_name(tp)}"
         raise TypeError(msg)
 
-    def converter_kind(self, converter: Converter, base: Any, scope: _Scope | None) -> _core.Kind:
+    def converter_kind(self, converter: Converter, base: Any, scope: _Scope | None) -> conv.Kind:
         if base is not None:
             target = self.unwrap(base, scope or _Scope({}, {}))
             args = get_args(target)
             if get_origin(target) in _UNION_TYPES and type(None) in args and len(args) == 2:  # noqa: PLR2004
                 # `X | None`: the converter takes X, None stays None
                 inner = next(arg for arg in args if arg is not type(None))
-                return _core.Kind.optional(self.converter_kind(converter, inner, scope))
+                return conv.Kind.optional(self.converter_kind(converter, inner, scope))
         if not isinstance(converter, _Native):
-            return _core.Kind.python(converter, flat=_flat_converter(converter))
+            return conv.Kind.python(converter, flat=_flat_converter(converter))
         tp = self.unwrap(base, scope or _Scope({}, {}))
         expected: type
         if isinstance(converter, (IsoDatetime, EpochDatetime)):
@@ -463,15 +463,15 @@ class _Compiler:
             msg = f"{converter!r} applies to {expected.__name__}, not {_name(tp)}"
             raise TypeError(msg)
         if isinstance(converter, IsoDatetime):
-            return _core.Kind.datetime(timespec=converter.timespec, sep=converter.sep)
+            return conv.Kind.datetime(timespec=converter.timespec, sep=converter.sep)
         if isinstance(converter, EpochDatetime):
-            return _core.Kind.datetime(epoch=converter.unit)
+            return conv.Kind.datetime(epoch=converter.unit)
         if isinstance(converter, IsoTime):
-            return _core.Kind.time(timespec=converter.timespec)
+            return conv.Kind.time(timespec=converter.timespec)
         if isinstance(converter, DecimalAsNumber):
-            return _core.Kind.decimal(number=True)
+            return conv.Kind.decimal(number=True)
         if isinstance(converter, UuidHex):
-            return _core.Kind.uuid(hex=True)
+            return conv.Kind.uuid(hex=True)
         if not isinstance(converter, EnumByName):  # pragma: no cover
             msg = f"unknown converter {converter!r}"
             raise TypeError(msg)
@@ -505,7 +505,7 @@ class _Compiler:
             else:
                 return tp
 
-    def union(self, tp: Any, scope: _Scope, discriminator: str | None) -> _core.Kind:
+    def union(self, tp: Any, scope: _Scope, discriminator: str | None) -> conv.Kind:
         tp = self.unwrap(tp, scope)
         if get_origin(tp) not in _UNION_TYPES:
             msg = f"Discriminator needs a union of models, got {_name(tp)}"
@@ -514,14 +514,14 @@ class _Compiler:
         nullable = type(None) in args
         rest = [arg for arg in args if arg is not type(None)]
         if discriminator is None and len(rest) == 1:
-            return _core.Kind.optional(self.kind(rest[0], scope))
+            return conv.Kind.optional(self.kind(rest[0], scope))
         if discriminator is not None and len(rest) < 2:  # noqa: PLR2004
             msg = f"Discriminator needs a union of models, got {_name(tp)}"
             raise TypeError(msg)
         members = [self.kind(arg, scope) for arg in rest]
-        return _core.Kind.union(members, nullable=nullable, discriminator=discriminator)
+        return conv.Kind.union(members, nullable=nullable, discriminator=discriminator)
 
-    def alias(self, key: Any, name: str, value: Callable[[], Any], scope: _Scope) -> _core.Kind:
+    def alias(self, key: Any, name: str, value: Callable[[], Any], scope: _Scope) -> conv.Kind:
         """``type X = ...``: a recursive reference to ``X`` inside its value is a lazy kind."""
         entry = self.aliases.get(key)
         if entry is not None:
@@ -532,9 +532,9 @@ class _Compiler:
                 msg = f"type alias {name} refers to itself outside a list, tuple, dict or model"
                 raise TypeError(msg)
             if cell is None:
-                cell = _core.KindCell()
+                cell = conv.KindCell()
                 self.aliases[key] = (cell, None)
-            return _core.Kind.lazy(cell, name)
+            return conv.Kind.lazy(cell, name)
         self.aliases[key] = (None, None)
         self.unguarded.add(key)
         try:
@@ -570,10 +570,10 @@ class _Compiler:
 
     # foreign classes
 
-    def foreign(self, tp: type) -> _core.ModelCore:
+    def foreign(self, tp: type) -> conv.ModelCore:
         core = self.memo.get(tp)
         if core is None:
-            core = _core.ModelCore(tp, build="dict" if is_typeddict(tp) else "call")
+            core = conv.ModelCore(tp, build="dict" if is_typeddict(tp) else "call")
             self.memo[tp] = core
             saved, self.unguarded = self.unguarded, set()
             try:
@@ -582,11 +582,11 @@ class _Compiler:
                 self.unguarded = saved
         return core
 
-    def foreign_fields(self, tp: type) -> list[_core.Field]:
+    def foreign_fields(self, tp: type) -> list[conv.Field]:
         hints = _class_hints(tp)
         scopes: dict[type, _Scope] = {}
 
-        def resolve(name: str) -> tuple[Any, _core.Kind]:
+        def resolve(name: str) -> tuple[Any, conv.Kind]:
             raw, owner = hints[name]
             if owner not in scopes:
                 scopes[owner] = _scope(owner, _own_annotations(owner), self.frame_locals)
@@ -603,7 +603,7 @@ class _Compiler:
             for name in hints:
                 hint, kind = resolve(name)
                 fields.append(
-                    _core.Field(name, kind, required=self.required(hint, name in required_keys))
+                    conv.Field(name, kind, required=self.required(hint, name in required_keys))
                 )
             return fields
         if _is_namedtuple(tp):
@@ -739,16 +739,16 @@ def _is_hashable(value: Any) -> bool:
 
 def _field(
     name: str,
-    kind: _core.Kind,
+    kind: conv.Kind,
     *,
     default: Any = MISSING,
     factory: Any = MISSING,
     **options: Any,
-) -> _core.Field:
+) -> conv.Field:
     """A ``Field``; a mutable default (``[]``, ``{}``, ``set()``) is copied per instance (D115)."""
     if default is not MISSING and not _is_hashable(default):
         default, factory = MISSING, partial(deepcopy, default)
-    return _core.Field(
+    return conv.Field(
         name,
         kind,
         default=None if default is MISSING else default,
@@ -964,7 +964,7 @@ def _model_field(
     decl: _Decl,
     scope: _Scope,
     rename: Callable[[str], str] | None,
-) -> _core.Field:
+) -> conv.Field:
     hint = _field_hint(decl.owner, decl.name, decl.raw, scope)
     key, load, converter = decl.key, decl.load, decl.converter
     explicit_key = key is not None
@@ -1005,7 +1005,7 @@ def _model_field(
     )
 
 
-def _compile(cls: type) -> list[_core.Field]:
+def _compile(cls: type) -> list[conv.Field]:
     """The fields of a ``ModelBase`` class: ``TypeError`` for a bad field, ``_NotDefined`` when
     names are missing (the other fields are still checked)."""
     info = _info(cls)
@@ -1038,7 +1038,7 @@ def _compile(cls: type) -> list[_core.Field]:
     return fields
 
 
-def _check_renamed(cls: type, fields: list[_core.Field], policy: Any) -> None:
+def _check_renamed(cls: type, fields: list[conv.Field], policy: Any) -> None:
     """Two fields that ``rename`` maps to one key (``a_b`` and ``a__b`` under ``"camel"``): a
     ``TypeError`` that names the policy and the way out, before the generic key check."""
     owners: dict[str, str] = {}
@@ -1056,7 +1056,7 @@ def _check_renamed(cls: type, fields: list[_core.Field], policy: Any) -> None:
 def _resolve(cls: type) -> None:
     """``ModelCore``'s resolve callback: compile a class whose names were missing at creation."""
     info = _info(cls)
-    core: _core.ModelCore = vars(cls)["__aiogram_core__"]
+    core: conv.ModelCore = vars(cls)["__aiogram_core__"]
     with info.lock:
         if not core.ready:
             core.set_fields(_compile(cls))
@@ -1126,7 +1126,7 @@ def _setup(
                 )
                 raise TypeError(msg)
     post_init = callable(getattr(cls, "__post_init__", None))
-    core = _core.ModelCore(cls, build="model", post_init=post_init, resolve=partial(_resolve, cls))
+    core = conv.ModelCore(cls, build="model", post_init=post_init, resolve=partial(_resolve, cls))
     cls.__aiogram_core__ = core
     body = vars(cls)
     if is_frozen:
@@ -1193,7 +1193,7 @@ class ModelBase(metaclass=_ModelMeta):
 
     __slots__ = ("__fields_set__",)
 
-    __aiogram_core__: ClassVar[_core.ModelCore]
+    __aiogram_core__: ClassVar[conv.ModelCore]
     __aiogram_info__: ClassVar[_ModelInfo]
 
     def __init_subclass__(
@@ -1279,7 +1279,7 @@ def fields_set(obj: ModelBase) -> frozenset[str]:
 # ---------------------------------------------------------------------------------------------
 
 
-def _model_core(tp: type) -> _core.ModelCore:
+def _model_core(tp: type) -> conv.ModelCore:
     core = vars(tp).get("__aiogram_core__") if isinstance(tp, type) else None
     if core is not None:
         return core  # type: ignore[no-any-return]
@@ -1289,7 +1289,7 @@ def _model_core(tp: type) -> _core.ModelCore:
     return _Compiler(tp, {}).foreign(tp)
 
 
-def _cached(tp: type, attribute: str, build: Callable[[_core.ModelCore], Any]) -> Any:
+def _cached(tp: type, attribute: str, build: Callable[[conv.ModelCore], Any]) -> Any:
     schema = vars(tp).get(attribute) if isinstance(tp, type) else None
     if schema is None:
         schema = build(_model_core(tp))
@@ -1298,23 +1298,23 @@ def _cached(tp: type, attribute: str, build: Callable[[_core.ModelCore], Any]) -
     return schema
 
 
-def json_schema(tp: type[_T]) -> _core.JsonSchema[_T]:
+def json_schema(tp: type[_T]) -> conv.JsonSchema[_T]:
     """The JSON codec of a ``ModelBase`` class, dataclass, NamedTuple or TypedDict (compiled
     once, stored on the class)."""
-    schema: _core.JsonSchema[_T] = _cached(tp, "__aiogram_json__", _core.JsonSchema)
+    schema: conv.JsonSchema[_T] = _cached(tp, "__aiogram_json__", conv.JsonSchema)
     return schema
 
 
-def flat_schema(tp: type[_T]) -> _core.FlatSchema[_T]:
+def flat_schema(tp: type[_T]) -> conv.FlatSchema[_T]:
     """The positional flat-string codec (callback data); ``TypeError`` for a field without a
     flat form, or with a ``Key`` / ``rename``."""
-    schema: _core.FlatSchema[_T] = _cached(tp, "__aiogram_flat__", _core.FlatSchema)
+    schema: conv.FlatSchema[_T] = _cached(tp, "__aiogram_flat__", conv.FlatSchema)
     return schema
 
 
 def json_codec(
     annotation: Any, *, converters: Mapping[type, Converter] | None = None
-) -> _core.JsonCodec:
+) -> conv.JsonCodec:
     """The JSON (and flat) codec of any annotation: ``json_codec(list[int]).load([1])``."""
     compiler = _Compiler(annotation, converters or {})
-    return _core.JsonCodec(compiler.kind(annotation, _Scope({}, {})))
+    return conv.JsonCodec(compiler.kind(annotation, _Scope({}, {})))

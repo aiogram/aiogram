@@ -37,7 +37,7 @@ Python (lazy text) without holding a Rust lock (06 §3).
   - Parameters whose types are outside the spike set accept dicts / `to_dict()` objects through the generic value
     path (D97 rule).
   - Unknown kwargs allowed if JSON-shaped and forwarded, with a one-time warning per `(method, name)` (D99).
-- **Encoder.** `_core.encode(method, defaults) -> JsonBody | Multipart`.
+- **Encoder.** `_core.encoder.encode(method, defaults) -> JsonBody | Multipart`.
   - It walks the Rust struct, with no Python recursion.
   - `Default(...)` is resolved against a Rust snapshot of `DefaultBotProperties` (`aiogram/client/default.py`, made
     frozen by D-01 per PD-20), built once per bot.
@@ -60,7 +60,7 @@ Python (lazy text) without holding a Rust lock (06 §3).
   generated shortcut. It fills `chat_id` / `message_thread_id` the way 3.x `Message.answer` does and returns
   `bot(method)`, a coroutine, never awaited in Rust (01 §3.4). The spike `Bot` shim is a minimal Python class in
   `tests/test_core/` and the bench, whose `__call__` encodes and posts to the B-02 fake Bot API.
-- **Response path.** `_core.decode_response(SendMessage, raw: bytes, bot) -> Message`, bound in the root view
+- **Response path.** `_core.decode.decode_response(SendMessage, raw: bytes, bot) -> Message`, bound in the root view
   (D103), using the B-14 envelope. `{"ok": false}` → `(error_code, description, parameters)` for Python.
   - A decode failure where Layer 1 doesn't suffice raises a spike error carrying `.raw`. Mapping it to
     `ClientDecodeError` with `.raw` is D-02 / D-09 (PD-29).

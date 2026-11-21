@@ -47,7 +47,7 @@ layer (the B gate) or on pydantic, so F-09 can ship whatever the gate decides.
 - An **independent converter contract suite** (R16) in `tests/test_utils/test_converters.py`: per type, both codecs,
   round trip, rejected inputs, field paths, defaults, recursion.
 - **Added by PD-36 (owner, 2026-11-21):**
-  - **all per-value conversion in Rust** (`aiogram._core.ModelSchema` / `KindCore` in `crates/aiogram-core/src/conv/`):
+  - **all per-value conversion in Rust** (`aiogram._core.conv`; first version `ModelSchema` / `KindCore` in `crates/aiogram-core/src/conv/`):
     dict walker (`from_json`), one-pass JSON bytes (`load_json`, `jiter`), `to_json` / `dump`, and the flat codec
     (`from_flat` / `to_flat`). Rust-only: PyPy is dropped from 4.x (PD-35), so there is no Python backend.
     `_converters.py` keeps the class-creation compiler, `register_converter`, `ConversionError` and the API
@@ -57,7 +57,7 @@ layer (the B gate) or on pydantic, so F-09 can ship whatever the gate decides.
   - more kinds: `set` / `frozenset`, NamedTuple, TypedDict, smart `Union` with an optional `Discriminator`, a
     per-field `Converter` in `Annotated`;
   - the contract suite, run against the Python layer over the Rust core;
-  - `make stubtest` (in `make lint`) for the hand-written `aiogram/_core.pyi`.
+  - `make stubtest` (in `make lint`) for the hand-written `aiogram/_core/conv.pyi`.
 
 **Out:**
 - The `FSMData` class and `FSMContext` API: [F-09](F-09-fsmdata-typed-fsmcontext.md).
@@ -174,7 +174,7 @@ make lint
   - **Compile under threads:** a model's / TypedDict's lazy field compile takes a per-converter `RLock`, so another
     thread waits instead of seeing a spurious "not ready"; a recursive reference in the same thread defers (the
     discriminator tag table of a recursive union is built on first use).
-  - **Stubs (owner, after a probe):** `aiogram/_core.pyi` stays hand-written, as pydantic-core does; `make stubtest`
+  - **Stubs (owner, after a probe):** the stubs (`aiogram/_core/conv.pyi`) stay hand-written, as pydantic-core does; `make stubtest`
     runs in `make lint` (and so in CI's Lint job). PyO3 `experimental-inspect` + `maturin --generate-stubs` needs a
     declarative module, types `Bound<PyAny>` as `Any` and adds no imports; pyo3-stub-gen 0.23.3 adds 70 crates, pins
     `pyo3 < 0.31`, writes `_core/__init__.pyi` and drops `__version__`. aiogram_rust dropped pyo3-stub-gen for
@@ -213,7 +213,7 @@ make lint
     - `json_schema(cls)`: `load`, `load_json`, `dump`, `dump_json`, `dump_fields`, `keys`.
     - `flat_schema(cls)`: positional `load` / `dump`, `TypeError` for a non-flat field, a `Key` or `rename`.
     - `json_codec(annotation)`: any annotation, including its flat form.
-    - The Python→Rust interface is the typed constructors in `conv/ir.rs` and `_core.pyi`. Rust reads no resolver
+    - The Python→Rust interface is the typed constructors in `conv/ir.rs` and `aiogram/_core/conv.pyi`. Rust reads no resolver
       attribute by name.
   - **Errors.**
     - One `ConversionError(ValueError)` with `.errors`, a list of `ErrorDetail(loc, message, value)`, and `.title`

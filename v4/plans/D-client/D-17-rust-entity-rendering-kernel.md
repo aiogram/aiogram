@@ -32,7 +32,7 @@ Parsing HTML/MarkdownV2 into entities is **not** in 4.0 (no consumer; dropped fr
 ## Scope
 
 **In:**
-- Rust module (e.g. `crates/aiogram-core/src/entities/`) exposing coarse functions through `_core`:
+- Rust module (e.g. `crates/aiogram-core/src/entities/`) exposing coarse functions through the native submodule `aiogram._core.render`:
   - `utf16_len(text) -> int`, `utf16_slice(text, offset, length) -> str`;
   - `unparse_html(text, entities) -> str`, `unparse_markdown_v2(text, entities) -> str` — same output as 3.x
     `html_decoration.unparse` / `markdown_decoration.unparse` for every entity type incl. nested, overlapping,

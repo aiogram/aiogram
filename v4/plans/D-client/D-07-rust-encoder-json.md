@@ -27,7 +27,7 @@ B-09 built it for `SendMessage` only; this plan generalises it to every generate
 ## Scope
 
 **In:**
-- `aiogram._core.encode(method, defaults) -> JsonBody | Multipart` entry point (`JsonBody(bytes)`); this plan
+- `aiogram._core.encoder.encode(method, defaults) -> JsonBody | Multipart` entry point (`JsonBody(bytes)`); this plan
   implements the no-files branch for all methods; the multipart branch is D-08 (until then, a method with an
   `InputFile` raises `NotImplementedError` behind a test-only path).
 - Encoder runtime in hand-written Rust (e.g. `crates/aiogram-core/src/encode/`), driven by the per-method field
@@ -117,7 +117,7 @@ uv run python -m benchmarks compare --base v4-baseline/3.x-optimised --head WORK
 
 - Inputs: B-09 (SendMessage encoder prototype), C-20 (encoder tables), C-21 (per-method encode fixtures), D-01
   (defaults accessor).
-- Outputs: `_core.encode`, `JsonBody` for D-08, D-10, D-11, D-13, D-14; differential cases in D-15.
+- Outputs: `_core.encoder.encode`, `JsonBody` for D-08, D-10, D-11, D-13, D-14; differential cases in D-15.
 - Can run in parallel with D-09 after B-13.
 
 ## Notes

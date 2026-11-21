@@ -28,13 +28,13 @@ element with per-update isolation (10 Layer 2), copying each update's bytes out 
 ## Scope
 
 **In:**
-- `aiogram._core.decode_response(method_cls, raw: bytes, bot) -> Ok(result) | Err(error_code, description,
+- `aiogram._core.decode.decode_response(method_cls, raw: bytes, bot) -> Ok(result) | Err(error_code, description,
   parameters)` (Python-visible shape decided below). Return type from the C-20 tables (`mediaTypes`, e.g.
   `MessageOrTrueResult`). Bot bound once at the root view (D103).
 - `getUpdates`: tuple of `Update` (D106); each element decoded from its own slice; bytes copied out of the batch
   buffer (R04, normative per 19 §3.3); a failing element becomes an `Update` with `update_id` (always extracted) and
   `decode_error: UpdateDecodeError(path, message)` + `raw`.
-- `aiogram._core.decode_update(raw: bytes, bot) -> Update` for webhook / feed bodies (one update, not an
+- `aiogram._core.decode.decode_update(raw: bytes, bot) -> Update` for webhook / feed bodies (one update, not an
   envelope): same per-update isolation as `getUpdates` — an undecodable body becomes the `Update` shell with
   `update_id` (when extractable) and `decode_error` + `raw`; honours `DecodePolicy`. This plan owns the production
   entry point (B-05's spike entry point of the same name is superseded). Consumed by E-14

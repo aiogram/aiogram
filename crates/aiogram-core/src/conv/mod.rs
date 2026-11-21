@@ -29,7 +29,21 @@ mod scalars;
 mod schema;
 mod walk;
 
-pub use errors::converters_init;
-pub use ir::{Field, Kind, KindCell};
-pub use model::ModelCore;
-pub use schema::{FlatSchema, JsonCodec, JsonSchema};
+use pyo3::prelude::*;
+
+use errors::converters_init;
+use ir::{Field, Kind, KindCell};
+use model::ModelCore;
+use schema::{FlatSchema, JsonCodec, JsonSchema};
+
+/// Fills `aiogram._core.conv` (stub: `aiogram/_core/conv.pyi`).
+pub fn register(m: &Bound<'_, PyModule>) -> PyResult<()> {
+    m.add_class::<Kind>()?;
+    m.add_class::<KindCell>()?;
+    m.add_class::<Field>()?;
+    m.add_class::<ModelCore>()?;
+    m.add_class::<JsonSchema>()?;
+    m.add_class::<FlatSchema>()?;
+    m.add_class::<JsonCodec>()?;
+    m.add_function(wrap_pyfunction!(converters_init, m)?)
+}

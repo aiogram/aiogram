@@ -34,7 +34,7 @@ pub(crate) struct Fields {
     pub(crate) positional: Vec<usize>,
 }
 
-#[pyclass(frozen, module = "aiogram._core")]
+#[pyclass(frozen, module = "aiogram._core.conv")]
 pub struct ModelCore {
     pub(crate) tp: Py<PyType>,
     pub(crate) qualname: String,

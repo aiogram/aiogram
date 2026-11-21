@@ -33,10 +33,10 @@ builds that measurement so it measures **the model layer only**:
   `aiogram.Dispatcher` from the **optimised-3.x tag (A-06)** on both sides with the pinned realistic router from A-10.
 - **3.x side.** Updates decoded with `Update.model_validate_json(raw, context={"bot": bot})`, then
   `await dp.feed_update(bot, update)`.
-- **Native side.** Updates decoded with `_core.decode_update(raw, bot=bot)`, then the same `dp.feed_update`. The
+- **Native side.** Updates decoded with `_core.decode.decode_update(raw, bot=bot)`, then the same `dp.feed_update`. The
   native side gets only the minimal shims that make 3.x code accept native objects:
   - ABC registration of the native classes on the 3.x pydantic classes. pydantic's `ModelMetaclass` derives from
-    `ABCMeta`, so `aiogram.types.Update.register(_core.Update)` etc. makes the `isinstance(event, Update)` in
+    `ABCMeta`, so `aiogram.types.Update.register(_core.views.Update)` etc. makes the `isinstance(event, Update)` in
     `UserContextMiddleware.__call__` and the `InaccessibleMessage` checks in `resolve_event_context`
     (`aiogram/dispatcher/middlewares/user_context.py`) work unchanged.
   - Updates arrive already bound, so the `update.bot != bot` round-trip in `Dispatcher.feed_update` never runs on

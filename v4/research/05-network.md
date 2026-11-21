@@ -31,7 +31,7 @@ it matters for broadcasts (≈1 000 msg/s ≈ 33% of a core) and big `getUpdates
 ### 2.1 Encoder (Rust core)
 
 ```python
-body = _core.encode(method, defaults=bot.default)   # -> JsonBody(bytes) | Multipart(fields, files)
+body = _core.encoder.encode(method, defaults=bot.default)   # -> JsonBody(bytes) | Multipart(fields, files)
 ```
 
 - Walks the Rust method struct directly: no `model_dump`, no Python recursion.
@@ -49,7 +49,7 @@ body = _core.encode(method, defaults=bot.default)   # -> JsonBody(bytes) | Multi
 ### 2.2 Decoder (Rust core)
 
 ```python
-result = _core.decode_response(method_cls, raw_bytes, bot)   # Response[T] without pydantic
+result = _core.decode.decode_response(method_cls, raw_bytes, bot)   # Response[T] without pydantic
 ```
 
 - `{"ok": true, "result": …}` decoded straight into the method's return type (from the schema's
@@ -69,7 +69,7 @@ result = _core.decode_response(method_cls, raw_bytes, bot)   # Response[T] witho
 - `prepare_value` / `check_response` stay overridable. The Rust fast path is used only when
   `type(session).prepare_value is BaseSession.prepare_value` and the JSON hooks are defaults; otherwise the
   old Python path runs, so subclasses don't break.
-- `json_loads` / `json_dumps` hooks stay. Default `json_dumps` → Rust core (`_core.to_json`) that understands
+- `json_loads` / `json_dumps` hooks stay. Default `json_dumps` → Rust core (`_core.encoder.to_json`) that understands
   aiogram types; `json_loads=None` keeps meaning "decode in core". JSON hooks may return `str` or `bytes` (R18).
 - `TelegramMethod.to_json()` is the model representation (unresolved `Default` omitted) and raises for
   `InputFile` values; the ready request is built only by the encoder (R18).
@@ -79,7 +79,7 @@ result = _core.decode_response(method_cls, raw_bytes, bot)   # Response[T] witho
 
 ### 2.4 Webhook
 
-- Read the body as bytes and call `_core.decode_update(raw, bot)`. Drop `request.json()` +
+- Read the body as bytes and call `_core.decode.decode_update(raw, bot)`. Drop `request.json()` +
   `model_validate`. Saves the dict round-trip (101 → ≈84 µs today, far more with Rust types).
 - Webhook replies (R18): JSON when the method has no files, **multipart** otherwise (the encoder already returns
   `JsonBody | Multipart`), instead of building a `MultipartWriter` for every reply (`aiohttp_server.py:334-358`).

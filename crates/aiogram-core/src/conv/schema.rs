@@ -19,7 +19,7 @@ fn fail(py: Python<'_>, action: &str, kind: &Kind, error: ValError) -> PyErr {
 }
 
 /// The JSON codec of one class: `json_schema(cls)`.
-#[pyclass(frozen, generic, module = "aiogram._core")]
+#[pyclass(frozen, generic, module = "aiogram._core.conv")]
 pub struct JsonSchema {
     core: Py<ModelCore>,
     kind: Py<Kind>,
@@ -116,7 +116,7 @@ impl JsonSchema {
 }
 
 /// The positional flat-string codec of one class (callback data): `flat_schema(cls)`.
-#[pyclass(frozen, generic, module = "aiogram._core")]
+#[pyclass(frozen, generic, module = "aiogram._core.conv")]
 pub struct FlatSchema {
     core: Py<ModelCore>,
     kind: Py<Kind>,
@@ -181,7 +181,7 @@ impl FlatSchema {
 }
 
 /// The JSON (and flat) codec of any kind: `json_codec(list[int])`.
-#[pyclass(frozen, module = "aiogram._core")]
+#[pyclass(frozen, module = "aiogram._core.conv")]
 pub struct JsonCodec {
     kind: Py<Kind>,
 }

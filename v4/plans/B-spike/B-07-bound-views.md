@@ -36,7 +36,7 @@ R02's acceptance test is a gate item (B-00).
   regardless of tree size.
 - Children materialised from a view carry the view's bot. `obj.bot` returns the view's bot or `None`.
 - Shortcuts capture the bot of their own view at call time. `message.answer` itself is B-09; here, a test-only
-  `_core._bound_bot(obj)` hook or B-09's shortcut once merged.
+  `_core.views._bound_bot(obj)` hook or B-09's shortcut once merged.
 - Remount helper for B-12: `update.as_(bot)` is the dispatcher remount.
 - The R02 acceptance tests and the 07 §5 contention test (cp314t).
 

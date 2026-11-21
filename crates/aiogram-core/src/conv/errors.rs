@@ -167,7 +167,7 @@ struct Types {
 
 static TYPES: Mutex<Option<Types>> = Mutex::new(None);
 
-/// `aiogram._core.converters_init(ConversionError, ErrorDetail, MISSING)`.
+/// `aiogram._core.conv.converters_init(ConversionError, ErrorDetail, MISSING)`.
 #[pyfunction]
 pub fn converters_init(
     error: Bound<'_, PyAny>,

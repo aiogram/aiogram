@@ -20,17 +20,17 @@
 ## Motivation
 
 D16 keeps the 3.x layout: one module per type and per method, so deep imports such as
-`from aiogram.types.message import Message` keep working. Each module is a one-line re-export from `aiogram._core`.
-`aiogram/types/__init__.py` and `aiogram/methods/__init__.py` import straight from `_core`, so startup reads no
+`from aiogram.types.message import Message` keep working. Each module is a one-line re-export from `aiogram._core.views`.
+`aiogram/types/__init__.py` and `aiogram/methods/__init__.py` import straight from `aiogram._core.views`, so startup reads no
 per-type files. A single merged module was rejected (02 §5.2).
 
 ## Scope
 
 **In:** `crates/butcher/src/emit/python.rs`:
-- `aiogram/types/<snake>.py` and `aiogram/methods/<snake>.py`: `from aiogram._core import X as X` plus `__all__`.
+- `aiogram/types/<snake>.py` and `aiogram/methods/<snake>.py`: `from aiogram._core.views import X as X` plus `__all__`.
   Module names match 3.x (`message.py`, `send_message.py`), including D18-merged twins (no module for the 7 schema-only
   `Input*`) and D109 renames (field names only, no module change).
-- `aiogram/types/__init__.py` and `aiogram/methods/__init__.py`: one `from aiogram._core import (...)` block, sorted, plus `__all__`.
+- `aiogram/types/__init__.py` and `aiogram/methods/__init__.py`: one `from aiogram._core.views import (...)` block, sorted, plus `__all__`.
 - `aiogram/types/__init__.pyi` / `aiogram/methods/__init__.pyi`: `from .message import Message as Message` re-exports.
 - Hand-written Python types (`InputFile` family in `aiogram/types/input_file.py`, `aiogram/types/custom.py` replaced by
   the Rust datetime) are never overwritten. The emitter keeps an allow-list of hand-written modules and fails if the IR
@@ -52,7 +52,7 @@ per-type files. A single merged module was rejected (02 §5.2).
 
 ## Acceptance criteria
 
-- `import aiogram.types` on a dev build opens no `aiogram/types/<x>.py` file (`python -X importtime` shows only `aiogram.types` and `aiogram._core`).
+- `import aiogram.types` on a dev build opens no `aiogram/types/<x>.py` file (`python -X importtime` shows only `aiogram.types` and `aiogram._core`; `aiogram._core.views` is registered by the same `.so`).
 - `from aiogram.types.message import Message` and `from aiogram.types import Message` give the same object.
 - The module-set diff test passes.
 

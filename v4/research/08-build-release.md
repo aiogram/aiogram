@@ -26,7 +26,7 @@ pyproject.toml          # build-backend = "maturin"; [tool.maturin] python-sourc
 Cargo.toml              # workspace (crate + butcher + xtask)
 crates/aiogram-core/    # ONE crate: generated/ + hand-written decode/encode/entities/ctx + *_ext.rs, PyO3 bindings
 aiogram/                # Python package (unchanged location)
-aiogram/_core.pyi       # hand-written stub for the non-generated surface, checked by stubtest (PD-36); generated stubs live beside types
+aiogram/_core/*.pyi     # hand-written stubs (root + one per native submodule) for the non-generated surface, checked by stubtest (PD-36); generated stubs live beside types
 crates/butcher/         # generator, run via `cargo xtask butcher` (02 §5)
 butcher/                # overlay, ledger, IR snapshots (02)
 ```

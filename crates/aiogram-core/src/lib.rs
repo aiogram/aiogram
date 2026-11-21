@@ -29,15 +29,37 @@ fn py_build_info(py: Python<'_>) -> PyResult<Bound<'_, PyDict>> {
 #[pymodule(gil_used = false)]
 fn _core(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add("__version__", VERSION)?;
-    m.add_class::<conv::Kind>()?;
-    m.add_class::<conv::KindCell>()?;
-    m.add_class::<conv::Field>()?;
-    m.add_class::<conv::ModelCore>()?;
-    m.add_class::<conv::JsonSchema>()?;
-    m.add_class::<conv::FlatSchema>()?;
-    m.add_class::<conv::JsonCodec>()?;
-    m.add_function(wrap_pyfunction!(conv::converters_init, m)?)?;
-    m.add_function(wrap_pyfunction!(py_build_info, m)?)
+    m.add_function(wrap_pyfunction!(py_build_info, m)?)?;
+    // one line per native group; its stub is `aiogram/_core/<name>.pyi` (AGENTS.md)
+    register_submodule(m, "conv", conv::register)
+}
+
+/// Adds the native submodule `<parent>.<name>`, filled by `fill`.
+///
+/// Everything lives in one `.so`, so the import system has no file to find the submodule by:
+/// the `sys.modules` entry is what makes `import aiogram._core.conv` and
+/// `from aiogram._core.conv import Kind` work. The fully qualified name keeps `__name__` and
+/// `repr` equal to the import path.
+fn register_submodule(
+    parent: &Bound<'_, PyModule>,
+    name: &str,
+    fill: fn(&Bound<'_, PyModule>) -> PyResult<()>,
+) -> PyResult<()> {
+    let py = parent.py();
+    let qualified = format!("{}.{name}", parent.name()?);
+    let module = PyModule::new(py, &qualified)?;
+    // a spec (no loader: nothing to reload) keeps `importlib.util.find_spec` and pydoc working
+    let spec = py
+        .import("importlib.machinery")?
+        .getattr("ModuleSpec")?
+        .call1((&qualified, py.None()))?;
+    module.setattr("__spec__", spec)?;
+    module.setattr("__package__", parent.name()?)?;
+    fill(&module)?;
+    parent.add(name, &module)?;
+    py.import("sys")?
+        .getattr("modules")?
+        .set_item(qualified, module)
 }
 
 fn build_info() -> [(&'static str, &'static str); 5] {
