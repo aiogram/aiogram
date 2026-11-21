@@ -889,3 +889,21 @@ suppress = "aiogram: ignore[AG4049]"
 gate = false
 generated = false
 warn_3x = { site = "call", target = "aiogram.utils.link.create_channel_bot_link", since = "" }
+
+# ---------------------------------------------------------------- 4.0 plans
+
+[[entry]]
+id = "AG4050"
+kind = "removal-4.0"
+title = "StateFilter.states is read-only"
+decisions = ["D33"]
+area = "filters"
+change = "behaviour"
+replacement = "a new StateFilter(*states) instead of assigning .states"
+detection = "heuristic"
+confidence = "medium"
+codemod = "none"
+suppress = "aiogram: ignore[AG4050]"
+gate = false
+generated = false
+warn_3x = { site = "none", target = "", since = "" }

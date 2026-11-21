@@ -225,3 +225,67 @@ class TestStatesGroup:
 
         assert "B.C:state1" not in A.B.C
         assert not A.B.C.D()(None, "C.D:state1")
+
+
+class TestStateNameCache:
+    def test_inner_first_nested_groups(self):
+        # The inner classes exist (and are read) before the outer class gets created
+        names = []
+
+        class A(StatesGroup):
+            class B(StatesGroup):
+                class C(StatesGroup):
+                    state1 = State()
+
+                names.append(C.state1.state)
+
+            names.append(B.C.state1.state)
+
+        assert names == ["C:state1", "B.C:state1"]
+        assert A.B.C.state1.state == "A.B.C:state1"
+        assert A.B.C.__all_states_names__ == ("A.B.C:state1",)
+
+    def test_direct_parent_assignment(self):
+        class Inner(StatesGroup):
+            state1 = State()
+
+            class Deep(StatesGroup):
+                state1 = State()
+
+        class Outer(StatesGroup):
+            pass
+
+        assert Inner.Deep.state1.state == "Inner.Deep:state1"
+        Inner.__parent__ = Outer
+        assert Inner.state1.state == "Outer.Inner:state1"
+        assert Inner.Deep.state1.state == "Outer.Inner.Deep:state1"
+        assert Inner.Deep.__all_states_names__ == ("Outer.Inner.Deep:state1",)
+
+    def test_set_parent_resets(self):
+        class First(StatesGroup):
+            pass
+
+        class Second(StatesGroup):
+            pass
+
+        state = State("x")
+        assert state.state == "@:x"
+        state.set_parent(First)
+        assert state.state == "First:x"
+        state.set_parent(Second)
+        assert state.state == "Second:x"
+
+    def test_subclass_of_nested_group(self):
+        class Outer(StatesGroup):
+            class Inner(StatesGroup):
+                pass
+
+        class Child(Outer.Inner):
+            state1 = State()
+
+            class Sub(StatesGroup):
+                state1 = State()
+
+        assert Child.__parent__ is None
+        assert Child.state1.state == "Child:state1"
+        assert Child.Sub.state1.state == "Child.Sub:state1"

@@ -37,6 +37,7 @@ class FSMContextMiddleware(BaseMiddleware):
         self.strategy = strategy
         self.events_isolation = events_isolation
         self.key_on_sender_chat = key_on_sender_chat
+        self._bot_id: tuple[Bot, int] | None = None
 
     async def __call__(
         self,
@@ -62,6 +63,28 @@ class FSMContextMiddleware(BaseMiddleware):
         destiny: str = DEFAULT_DESTINY,
     ) -> FSMContext | None:
         event_context: EventContext = cast(EventContext, data.get(EVENT_CONTEXT_KEY))
+        key = self.resolve_key(self._get_bot_id(bot), event_context, destiny=destiny)
+        if key is None:
+            return None
+        return FSMContext(storage=self.storage, key=key)
+
+    def resolve_key(
+        self,
+        bot_id: int,
+        event_context: EventContext,
+        destiny: str = DEFAULT_DESTINY,
+    ) -> StorageKey | None:
+        """
+        Resolve the FSM storage key of an event: the isolation key, also used to shard
+        one bot's updates across threads.
+
+        Pure: no I/O, no :code:`await`, no storage or isolation access.
+
+        :param bot_id: bot id
+        :param event_context: event context built by :code:`UserContextMiddleware`
+        :param destiny: storage key destiny
+        :return: the key, or :code:`None` when the event has no chat and no user
+        """
         user_id = event_context.user_id
         if (
             self.key_on_sender_chat
@@ -70,8 +93,8 @@ class FSMContextMiddleware(BaseMiddleware):
             and event_context.chat.type != ChatType.CHANNEL
         ):
             user_id = event_context.sender_chat.id
-        return self.resolve_context(
-            bot=bot,
+        return self._build_key(
+            bot_id=bot_id,
             chat_id=event_context.chat_id,
             user_id=user_id,
             thread_id=event_context.thread_id,
@@ -90,29 +113,63 @@ class FSMContextMiddleware(BaseMiddleware):
         destiny: str = DEFAULT_DESTINY,
         is_guest: bool = False,
     ) -> FSMContext | None:
+        key = self._build_key(
+            bot_id=self._get_bot_id(bot),
+            chat_id=chat_id,
+            user_id=user_id,
+            thread_id=thread_id,
+            business_connection_id=business_connection_id,
+            destiny=destiny,
+            is_guest=is_guest,
+        )
+        if key is None:
+            return None
+        return FSMContext(storage=self.storage, key=key)
+
+    def _build_key(
+        self,
+        bot_id: int,
+        chat_id: int | None,
+        user_id: int | None,
+        thread_id: int | None,
+        business_connection_id: str | None,
+        destiny: str,
+        is_guest: bool,
+    ) -> StorageKey | None:
         if chat_id is None:
             chat_id = user_id
         elif user_id is None and self.strategy in {FSMStrategy.CHAT, FSMStrategy.CHAT_TOPIC}:
             # CHAT/CHAT_TOPIC are chat-scoped, so missing user_id can fallback to chat_id.
             user_id = chat_id
 
-        if chat_id is not None and user_id is not None:
-            chat_id, user_id, thread_id = apply_strategy(
-                chat_id=chat_id,
-                user_id=user_id,
-                thread_id=thread_id,
-                strategy=self.strategy,
-            )
-            return self.get_context(
-                bot=bot,
-                chat_id=chat_id,
-                user_id=user_id,
-                thread_id=thread_id,
-                business_connection_id=business_connection_id,
-                destiny=destiny,
-                is_guest=is_guest,
-            )
-        return None
+        if chat_id is None or user_id is None:
+            return None
+        chat_id, user_id, thread_id = apply_strategy(
+            chat_id=chat_id,
+            user_id=user_id,
+            thread_id=thread_id,
+            strategy=self.strategy,
+        )
+        return StorageKey(
+            user_id=user_id,
+            chat_id=chat_id,
+            bot_id=bot_id,
+            thread_id=thread_id,
+            business_connection_id=business_connection_id,
+            destiny=destiny,
+            is_guest=is_guest,
+        )
+
+    def _get_bot_id(self, bot: Bot) -> int:
+        # ponytail: one entry, swapped as one tuple (atomic without the GIL); a multi-bot
+        # dispatcher alternates and falls back to bot.id. Remove once Bot computes its id at
+        # init (D-01).
+        cached = self._bot_id
+        if cached is not None and cached[0] is bot:
+            return cached[1]
+        bot_id = bot.id
+        self._bot_id = (bot, bot_id)
+        return bot_id
 
     def get_context(
         self,
@@ -129,7 +186,7 @@ class FSMContextMiddleware(BaseMiddleware):
             key=StorageKey(
                 user_id=user_id,
                 chat_id=chat_id,
-                bot_id=bot.id,
+                bot_id=self._get_bot_id(bot),
                 thread_id=thread_id,
                 business_connection_id=business_connection_id,
                 destiny=destiny,
