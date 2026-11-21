@@ -75,7 +75,7 @@ class TestCanonicalRequest:
         }
 
     def test_json_agrees_with_form(self):
-        body = json.dumps({"chat_id": 100, "text": "hi", "markup": {"a": 1}, "id": "100"}).encode()
+        body = json.dumps({"chat_id": 100, "text": "hi", "markup": {"a": 1}, "id": 100}).encode()
         resolved, encoding = wire.canonical_request("application/json; charset=utf-8", body)
         form, _ = wire.canonical_request(
             "application/x-www-form-urlencoded",
@@ -124,6 +124,21 @@ class TestCanonicalRequest:
         resolved, _ = wire.canonical_request(content_type, body)
         assert resolved == {"photo": file_of(b"data"), "caption": "attach://missing"}
 
+    def test_literal_strings_are_kept(self):
+        form, _ = wire.canonical_request(
+            "application/x-www-form-urlencoded", b"a=hello&b=%22hello%22&c=NaN&d=-Infinity"
+        )
+        assert form == {"a": "hello", "b": '"hello"', "c": "NaN", "d": "-Infinity"}
+        body = json.dumps({"a": '"hello"', "b": "100", "c": "[1]"}).encode()
+        resolved, _ = wire.canonical_request("application/json", body)
+        assert resolved == {"a": '"hello"', "b": "100", "c": "[1]"}  # JSON values are exact
+
+    def test_multipart_boundary_inside_a_payload(self):
+        content_type, body = multipart(("photo", "a.png", b"before--Bafter\r\nnext"))
+        resolved, encoding = wire.canonical_request(content_type, body)
+        assert resolved == {"photo": file_of(b"before--Bafter\r\nnext")}
+        assert encoding["fields"] == ["file#0"]
+
     def test_unsupported_content_type(self):
         with pytest.raises(ValueError, match="unsupported request content type"):
             wire.canonical_request("text/plain", b"x")
@@ -161,6 +176,7 @@ class TestComparators:
             (record(FILES), record({**JSON, "fields": FILES["fields"]}), "must stay multipart"),
             (record(FORM), record({**FORM, "encoding": "multipart"}), "not a JSON body"),
             (record(FORM), record(None, ok=False), "both sides"),
+            (record({**JSON, "content_type": "x"}), record(JSON), "left is not a form"),
         ],
     )
     def test_json_body_rejects(self, left, right, error):
@@ -263,7 +279,55 @@ class TestSide:
             {"until_date": delta},
             (1000.0, 1001.0),
         )
-        assert instance.records[0]["value"] == {"until_date": {"now_plus": 40}}
+        assert instance.records[0]["value"] == {"until_date": {"raw_offset": 100}}
+
+    def test_doubled_timedelta_is_not_hidden(self):
+        side = load_side()
+        instance = side.Side(trace, wire, CORPUS, poison=False)
+        delta = datetime.timedelta(seconds=60)
+        for sent in (1061, 1121):  # now + delta, now + 2 * delta
+            instance.wire_records(
+                "c",
+                "application/x-www-form-urlencoded",
+                f"until_date={sent}".encode(),
+                {},
+                {"until_date": delta},
+                (1000.75, 1001.5),
+            )
+        assert instance.records[0]["value"] == {"until_date": {"now_plus": 60}}
+        assert instance.records[2]["value"] == {"until_date": {"raw_offset": 120}}
+
+    def test_unparsable_reply_is_recorded(self):
+        side = load_side()
+        instance = side.Side(trace, wire, CORPUS, poison=False)
+        instance.wire_records("c", "text/plain", b"500: Internal Server Error", {})
+        assert [(r["probe"], r["ok"], r["error"]["type"]) for r in instance.records] == [
+            ("resolved", False, "ValueError"),
+            ("encoding", False, "ValueError"),
+        ]
+
+    def test_send_without_a_request_is_recorded(self):
+        side = load_side()
+
+        class Refuse(side.BaseRequestMiddleware):
+            async def __call__(self, make_request, bot, method):
+                raise side.AiogramError("refused")
+
+        async def go():
+            instance = side.Side(trace, wire, CORPUS, poison=False)
+            async with instance.api.server:
+                session = instance.api.session()
+                session.middleware(Refuse())
+                await instance.send("c", side.methods.GetMe(), session=session)
+            return instance.records
+
+        import asyncio
+
+        records = asyncio.run(go())
+        assert [(r["probe"], r["error"]["type"]) for r in records] == [
+            ("resolved", "AiogramError"),
+            ("encoding", "AiogramError"),
+        ]
 
     def test_failed_send_is_recorded(self):
         side = load_side()

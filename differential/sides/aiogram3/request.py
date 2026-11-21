@@ -171,6 +171,10 @@ class Side:
         item = self.inputs[case]
         return (self.corpus / item["path"]).read_bytes(), item.get("status", 200)
 
+    def error(self, case: str, exc: BaseException) -> None:
+        self.records.append(self.trace.error(case, "resolved", exc))
+        self.records.append(self.trace.error(case, "encoding", exc))
+
     def wire_records(
         self,
         case: str,
@@ -186,13 +190,17 @@ class Side:
         send ``window`` (+- 1 s for rounding) is recorded as ``{"now_plus": <seconds>}``, which is
         what both sides must agree on; anything else keeps the raw offset from the window start.
         """
-        resolved, encoding = self.wire.canonical_request(content_type, body)
+        try:
+            resolved, encoding = self.wire.canonical_request(content_type, body)
+        except ValueError as exc:  # e.g. a webhook reply that is an error page
+            self.error(case, exc)
+            return
         for name, delta in (relative or {}).items():
-            offset = int(resolved[name]) - delta.total_seconds()
-            inside = window[0] - 1 <= offset <= window[1] + 1
-            resolved[name] = {
-                "now_plus": int(delta.total_seconds() if inside else offset - window[0])
-            }
+            sent = int(resolved[name])
+            if window[0] - 1 <= sent - delta.total_seconds() <= window[1] + 1:
+                resolved[name] = {"now_plus": int(delta.total_seconds())}
+            else:  # a distinct key: never equal to a correct value
+                resolved[name] = {"raw_offset": sent - round(window[0])}
         if self.poison and resolved:
             del resolved[min(resolved)]
         self.records.append(self.trace.ok(case, "resolved", resolved))
@@ -213,16 +221,17 @@ class Side:
         self.api.requests.clear()
         self.api.reply = self.fixture(REQUEST_REPLY)
         started = time.time()
+        failure: Exception | None = None
         try:
             await bot(method)
-        except AiogramError:
-            pass  # the reply does not fit every method; response.* cases cover decoding
         except Exception as exc:  # noqa: BLE001 - a failed send is a recorded outcome
-            self.records.append(self.trace.error(case, "resolved", exc))
-            self.records.append(self.trace.error(case, "encoding", exc))
-            return
+            failure = exc
         finally:
             await session.close()
+        if not self.api.requests:
+            self.error(case, failure or RuntimeError("no request reached the server"))
+            return
+        # once sent, a failure is the reply not fitting the method; response.* covers decoding
         (request,) = self.api.requests
         extra = {"http_method": request["http_method"], "api_method": request["api_method"]}
         self.wire_records(
@@ -242,8 +251,14 @@ class Side:
             params = materialise(
                 {**spec.get("params", {}), **spec.get("extra", {})}, self.corpus / "files"
             )
-            default = DefaultBotProperties(**spec["defaults"]) if "defaults" in spec else None
-            await self.send(case, build(spec["method"], params), default=default)
+            try:  # an input this side's aiogram cannot build is a recorded outcome
+                default = DefaultBotProperties(**spec.get("defaults", {}))
+                method = build(spec["method"], params)
+            except Exception as exc:  # noqa: BLE001
+                self.error(case, exc)
+                self.records.append(self.trace.error(case, "serialize", exc))
+                continue
+            await self.send(case, method, default=default)
             self.serialize(case, build(spec["method"], params), default)
 
     def serialize(self, case: str, method: Any, default: DefaultBotProperties | None) -> None:

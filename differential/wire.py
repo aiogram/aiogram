@@ -5,9 +5,11 @@ Stdlib only, like ``trace.py``: side scripts load it by path, from the directory
 
 :func:`canonical_request` turns ``(content type, body)`` into two values:
 
-- ``resolved``: encoding-independent params. JSON bodies are decoded; form fields (urlencoded or
-  multipart) are decoded as JSON where they parse, so ``"100"`` and ``100`` agree. A JSON-body
-  string value gets the same treatment, which keeps the rule symmetric. Every ``attach://<key>``
+- ``resolved``: encoding-independent params. JSON bodies are taken as they are; a form field
+  (urlencoded or multipart) is decoded as JSON when it is a number, bool, null, object or array,
+  so form ``100`` and JSON ``100`` agree. Anything else stays text, so ``hello`` and ``"hello"``
+  differ. The ceiling: form text ``123`` reads as the number, which a JSON body sending the
+  string ``"123"`` would not match. Every ``attach://<key>``
   is replaced by the file part it names, as ``{"file": {filename, sha256, content_type}}``; a file
   part nobody references stays under its own field name. The attach keys are random in 3.x, so
   they never reach the record.
@@ -27,13 +29,17 @@ from typing import Any
 ATTACH = "attach://"
 
 
-def _decode(value: Any) -> Any:
-    if isinstance(value, str):
-        try:
-            return json.loads(value)
-        except ValueError:
-            return value
-    return value
+def _no_constant(name: str) -> Any:
+    raise ValueError(name)
+
+
+def _decode(value: str) -> Any:
+    """A form field as JSON where it is a number, bool, null, object or array; else the text."""
+    try:
+        decoded = json.loads(value, parse_constant=_no_constant)  # NaN / Infinity stay text
+    except ValueError:
+        return value
+    return value if isinstance(decoded, str) else decoded  # '"x"' is literal text, not x
 
 
 def _headers(content_type: str) -> Message:
@@ -42,15 +48,16 @@ def _headers(content_type: str) -> Message:
 
 def _multipart(boundary: str, body: bytes) -> list[tuple[str, Message, bytes]]:
     """``(name, headers, payload)`` per part, in body order."""
-    delimiter = b"--" + boundary.encode("latin-1")
+    # a delimiter is a whole line: CRLF "--" boundary; the leading CRLF belongs to it (RFC 2046)
+    delimiter = b"\r\n--" + boundary.encode("latin-1")
     parts = []
-    for chunk in body.split(delimiter)[1:]:
+    for chunk in (b"\r\n" + body).split(delimiter)[1:]:
         if chunk.startswith(b"--"):  # closing delimiter
             break
         head, _, payload = chunk.removeprefix(b"\r\n").partition(b"\r\n\r\n")
         headers = BytesHeaderParser().parsebytes(head + b"\r\n\r\n")
         name = headers.get_param("name", header="content-disposition")
-        parts.append((str(name), headers, payload.removesuffix(b"\r\n")))
+        parts.append((str(name), headers, payload))
     return parts
 
 
@@ -73,7 +80,7 @@ def canonical_request(content_type: str, body: bytes) -> tuple[dict[str, Any], d
     order: list[str] = []
     if media_type == "application/json":
         kind = "json"
-        params = {key: _decode(value) for key, value in json.loads(body or b"{}").items()}
+        params = json.loads(body or b"{}")  # JSON values are typed already
         order = list(params)
     elif media_type == "multipart/form-data":
         kind = "multipart"

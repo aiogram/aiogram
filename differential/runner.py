@@ -123,6 +123,9 @@ def json_body_without_files(left: Record, right: Record) -> tuple[Record, Record
     ):
         msg = "both sides must have encoded the request"
         raise Mismatch(msg)
+    if lval.get("encoding") not in {"urlencoded", "multipart"}:
+        msg = "left is not a form"
+        raise Mismatch(msg)
     if any(str(name).startswith("file#") for name in lval.get("fields", [])):
         msg = "the request has files: it must stay multipart"
         raise Mismatch(msg)
