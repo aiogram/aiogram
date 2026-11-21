@@ -24,7 +24,7 @@ One update that 3.x can't validate (for example, an unknown union tag after a Bo
 off and asks for the same batch again, so polling **stalls forever** (reproduced; public issues #1840 / #1890).
 Ride-along: `ok: true` with `result: null` raises `TypeError` inside polling.
 
-The webhook background-task drain is an external prerequisite, not part of any plan. 3x-19 (held back) touches
+The webhook background-task drain is an external prerequisite, not part of any plan. [3x-19](3x-19-token-leak-fix.md) touches
 the same client code; if it has to ship before A-03 is signed off, it ships on its own and this plan rebases.
 
 ## Scope
@@ -51,7 +51,7 @@ the same client code; if it has to ship before A-03 is signed off, it ships on i
   trade-off.
 
 **Out:**
-- Webhook poison updates: 3x-02 (held back).
+- Webhook poison updates: [3x-02](3x-02-webhook-poison-200.md).
 - `Unknown` union variants that avoid the failure altogether: [3x-18](3x-18-unknown-union-fallback.md), optional.
 - 4.0 Layer 2 (`router.unknown_update`, `phase=DECODE`): E-14 and D-09.
 

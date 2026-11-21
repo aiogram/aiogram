@@ -9,15 +9,19 @@
 
 ## 1. Rules for a deprecation
 
-- Each deprecation is listed in the docs ("Deprecations" page, generated from a registry in code), with the version
-  in which it was deprecated, the earliest removal version and the replacement.
+- Each deprecation is listed in the docs ("Deprecations" page, generated from the migration registry), with the
+  version in which it was deprecated, the earliest removal version and the replacement. The registry is one data file,
+  `aiogram/_migration/registry.toml`, read by path (PD-13, 18 §2). After the fork `dev-4.x` owns it, with id blocks
+  per branch (PD-33, A-11).
 - Warnings fire at the earliest point that has no runtime cost:
   - at **registration**, when a handler, filter or middleware signature or argument uses something deprecated
     (`CallableObject` already inspects signatures);
   - at **import**, for deprecated modules;
   - on **first use**, for attributes and methods.
 - Tests: one test per deprecation asserting that the warning is raised and that the replacement works. The removal
-  PR deletes both, and the registry fails CI once an entry's removal version is reached.
+  PR deletes both. An entry becomes **due** under the D71 rule (R28): 12 months **and** 2 minors after its
+  deprecation. From then on CI requires an explicit `removal_decision` on the entry (I-12); it doesn't fail merely
+  because a version number was reached.
 
 ## 2. 3.x → 4.0 bridges (D74)
 
@@ -29,8 +33,15 @@
      parameters;
    - `aiogram.utils.markdown`, `aiogram.handlers`, `MongoStorage`, `UNSET_*`, `BaseFilter`, `CancelHandler`,
      `dp[...] = ...`, `utils.mixins`, the `deep_linking` re-exports, the flat `link_preview_*` fields, `RestartingTelegram`;
+   - `UnsupportedKeywordArgument`, the `Recommendation` warning, `create_channel_bot_link(parameter=)`;
+   - user `TelegramMethod` subclasses (D96);
+   - the API-ledger reset: the 122 deprecated Bot API fields and the 3 entities (`KeyboardButtonRequestUser`,
+     `UserShared`, `StoryAreaPosition`, 11 §1);
    - pydantic-specific `CallbackData` features (`Field`, validators);
    - mutation of mutable types.
+
+   `force_reply` on the keyboard builders is **not** on the list: it is a real Bot API 10.4 field (#1954) and stays
+   (PD-32). D100 positional calls get **no runtime warning** in 3.x; only the checker reports them.
 2. **Codemod**, `python -m aiogram.migrate fix <paths>`, built on libcst through the `aiogram[migrate]` extra. It
    rewrites the mechanical cases:
    - imports and renamed modules;

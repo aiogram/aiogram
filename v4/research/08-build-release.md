@@ -24,7 +24,7 @@ a schema at runtime, because Telegram types are fixed per release and we own the
 ```
 pyproject.toml          # build-backend = "maturin"; [tool.maturin] python-source = ".", module-name = "aiogram._core"
 Cargo.toml              # workspace (crate + butcher + xtask)
-crates/aiogram-core/    # ONE crate: generated/ + hand-written decode/encode/entities/ctx + *_ext.rs, PyO3 bindings
+crates/aiogram-core/    # ONE crate: generated/ + hand-written decode/encode/entities/views + *_ext.rs, PyO3 bindings
 aiogram/                # Python package (unchanged location)
 aiogram/_core/*.pyi     # hand-written stubs (root + one per native submodule) for the non-generated surface, checked by stubtest (PD-36); generated stubs live beside types
 crates/butcher/         # generator, run via `cargo xtask butcher` (02 §5)
@@ -53,7 +53,7 @@ rebuilding the wheel matrix hurts.
 | Release profile | `opt-level = 3`, **`lto = "thin"`, `codegen-units = 16`**, `strip = true`. Fat LTO tripled build time and ran a 16 GB runner out of memory for ≈2% (13 B4). Expect ≈50–60 MB stripped binary, 9–11 min per platform in CI |
 | Rust MSRV policy | latest stable − 2 minors; pinned in `rust-toolchain.toml` for CI reproducibility |
 | JSON | `jiter` (decode, used by pydantic) + `serde`/`serde_json` or hand-written writer for encode |
-| Concurrency prims | `arc-swap`, `std::sync::OnceLock`, `parking_lot` only if profiling asks for it |
+| Concurrency prims | atomic-set wrapper caches (R03), `std::sync::OnceLock` for process-wide globals, `parking_lot` only if profiling asks for it. No `arc-swap`: it was only for the shared bot `Ctx`, which independent bound views replaced (D103) |
 | Build backend | maturin ≥1.14 (needed for future `abi3t`) |
 | Async | **none in Rust**: no pyo3-async-runtimes, no tokio, no `experimental-async` |
 
@@ -62,6 +62,8 @@ rebuilding the wheel matrix hurts.
 **Release-blocking tiers (D119).** **Tier 1** (blocks a release): CPython cp311–cp315 + cp314t/cp315t on manylinux
 x86_64/aarch64, musllinux x86_64/aarch64, macOS arm64/x86_64, Windows x64. **Best-effort** (never blocks):
 Windows arm64, i686/armv7l/ppc64le/s390x. PyPy is not supported (PD-35). An sdist is always published.
+Tier 1 means **our** wheels build and **our** suite passes on them (PD-27); a missing third-party
+free-threaded wheel is documented (07 §4), not release-blocking.
 
 - CPython **cp311–cp315**, per-version (abi3 can't load on free-threaded builds, and per-version keeps the
   version-specific speedups). Kept regardless of an abi3 comparison: the CI cost (≈10 min per wheel) is
@@ -89,9 +91,11 @@ cibuildwheel is the alternative if we need its test-in-wheel matrix.
   amount of code is not the signal. The threshold is calibrated on real CI hardware (R25). The `-Ztime-passes`
   split runs on a **separate nightly-toolchain job**, so the compiler being compared never changes.
 - Typing: `assert_type` checks against the **installed wheel**, run from outside the repo, plus `stubtest` (13 B10).
-- Differential harnesses (13 B8), with each side in its own venv and a canonical JSON trace:
+- Differential harnesses (13 B8, framework A-07), with each side in its own venv and a canonical JSON trace. The
+  3.x side is an **external pinned 3.x venv**; 4.0 carries no in-tree reference path (PD-12), and there is no
+  Python fallback encoder to compare against (D1):
   - model decode/dump, 3.x vs 4.0;
-  - request encoding, Rust vs the Python fallback encoder;
+  - request encoding, 3.x vs 4.0;
   - routing outcomes, 3.x vs 4.0.
 
   Each harness has a poison control that must report mismatches. Plus a cancellation fuzz for uploads and
@@ -100,7 +104,9 @@ cibuildwheel is the alternative if we need its test-in-wheel matrix.
   in CI; PR jobs path-filtered (Python-only PRs reuse a cached wheel); wheel builds cached too.
 - Coverage: Python stays at **100%** (repo rule). Rust coverage via `cargo-llvm-cov` over both `cargo test` and
   the pytest run (instrumented build), with generated code excluded from the threshold.
-- Benchmarks: `pytest-codspeed` or `asv` on the spike's benchmark set (01 §5) to catch regressions on PRs.
+- Benchmarks: the A-05 harness (`python -m benchmarks`, authored on `dev-3.x` and merged forward, PD-12) on the
+  spike's benchmark set (01 §5) to catch regressions on PRs. A-05 records the tool choice; `pytest-codspeed` and
+  `asv` were the candidates named here.
 - Release: trusted publishing (`pypa/gh-action-pypi-publish` or `uv publish --trusted-publishing always`),
   build attestations; zizmor already gates workflows (`make lint-workflows`).
 

@@ -41,7 +41,7 @@ Prefer Serena's symbol tools over `Read`/`Grep` for source code exploration. Onl
 
 Code style/lint in this repository is enforced via Ruff (`ruff check` + `ruff format`).
 
-Quick loop (recommended for most PR iterations). `make lint` runs ruff, both mypy passes and the pre-commit hooks exactly as CI does. The pre-commit hooks include fixers (`trailing-whitespace`, `end-of-file-fixer`, `ruff-format`), so `make lint` may modify files in the working tree; review `git diff` afterwards.
+Quick loop (recommended for most PR iterations). `make lint` runs ruff, both mypy passes and the pre-commit hooks exactly as CI does. The pre-commit hooks include fixers (`trailing-whitespace`, `end-of-file-fixer`, `ruff-format`), so `make lint` may modify files in the working tree; review `git diff` afterwards. `pre-commit run --all-files` only sees files git tracks: `git add` new files before `make lint`, or the hooks (`check-json`, `check-toml`, ruff) skip them.
 
 ```bash
 make lint
@@ -154,6 +154,13 @@ These patterns repeatedly appeared in maintainer feedback and should be treated 
   `DeprecationWarning`) fails every existing test that reaches it. Find those tests first, then either stop
   them from triggering it or assert it with `pytest.warns`.
 
+## Benchmark corpus (`benchmarks/corpus/`)
+
+- Pinned inputs for benchmarks and differential oracles; schema in `benchmarks/corpus/README.md`. `benchmarks/` is dev tooling, excluded from the sdist and wheel.
+- Append-only: never edit a pinned file, add a new id. Every file needs a `MANIFEST.toml` entry with its sha256; `tests/test_corpus_manifest.py` enforces this and rejects anything matching a bot-token pattern. Corpus files are `-text` in `.gitattributes` so Windows checkouts keep the hashed bytes; keep new corpus paths under that rule rather than normalising line endings in the hash.
+- `on_3x` records whether current 3.x decodes each update/response input. A change that makes 3.x accept or reject one (e.g. a forward-compat fallback) updates that field in the same PR.
+- Real traces: record with `benchmarks/record/recorder.py` into the gitignored `benchmarks/record/raw/`, commit only the output of `benchmarks/record/redact.py`, after a manual review.
+
 ## 4.0 planning tree (`v4/`)
 
 - `v4/research/` and `v4/plans/` hold the aiogram 4.0 research and plans; `v4/plans/README.md` is the index and
@@ -204,6 +211,15 @@ These patterns repeatedly appeared in maintainer feedback and should be treated 
     tests fail, crash or pass for the wrong reason.
   - A build outside the worktree (a scratch copy, an older commit from `git archive`) goes through
     `maturin build -i <python>` and the wheel's `_core*.so`: a plain `cargo build` cdylib segfaults at import.
+- The A-02 link-check script (in `v4/plans/A-contracts/A-02-apply-resolutions.md`, *Validation*) reports 9 known
+  broken links in files no plan may edit: `v4/research/codex-review.md` (`../../../aiogram/...`) and
+  `v4/plans/_TEMPLATE.md` (paths relative to a story folder). Any other hit is yours.
+- A public plan's checklist may still point at work that belongs to a held-back plan. Skip such an item rather than
+  paraphrasing it, and keep the *Notes* entry neutral ("left to the owner"); explain it only in the private report.
+- `aiogram/_migration/registry.toml` is the migration registry (PD-13), plain data that is never imported. Its ids are
+  append-only and sorted, and each kind stays in its PD-33 block: on `dev-3.x`, new hand-written entries go in
+  AG4700–AG4799 and generated `api-ledger` entries in AG4800–AG4999. AG4001–AG4699 are allocated on `dev-4.x`
+  only. The schema is documented in the file header, and `tests/test_migration_registry.py` enforces it.
 
 ## Butcher (`dev-4.x`)
 

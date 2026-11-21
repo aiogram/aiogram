@@ -8,3 +8,7 @@
 # butcher writes and compares these byte for byte: LF on every platform, also on Windows checkouts
 butcher/** text eol=lf
 crates/butcher/tests/fixtures/** text eol=lf
+
+# Pinned corpus: checked out byte-for-byte on every platform (no CRLF conversion),
+# because MANIFEST.toml pins each file's sha256.
+benchmarks/corpus/** -text
