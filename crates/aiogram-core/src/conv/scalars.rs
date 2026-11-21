@@ -235,8 +235,17 @@ fn load_uuid<'py>(
     text: TextIn<'_, 'py>,
     label: &str,
 ) -> VResult<Bound<'py, PyAny>> {
-    if let Some(value) = text.text().and_then(uuid::parse) {
-        return Ok(make_uuid(py, value)?);
+    if let Some(raw) = text.text() {
+        if let Some(value) = uuid::parse(raw) {
+            return Ok(make_uuid(py, value)?);
+        }
+        // `UUID(text)` drops `urn:`, `uuid:`, the braces around and every hyphen, then needs
+        // exactly 32 characters: anything else is a miss without calling Python
+        let core = raw.replace("urn:", "").replace("uuid:", "");
+        let core = core.trim_matches(['{', '}']);
+        if core.chars().filter(|c| *c != '-').count() != 32 {
+            return Err(expected(label, &text.object(py).into_any()));
+        }
     }
     let text = text.object(py);
     std_type(py, &UUID, "uuid", "UUID")?

@@ -11,7 +11,7 @@ use crate::conv::construct::field_index;
 use crate::conv::errors::{
     Ctx, Loc, MAX_DEPTH, VResult, ValError, expected, field_required, from_user,
 };
-use crate::conv::ir::{Data, Kind, Union};
+use crate::conv::ir::{DECIMAL, Data, Kind, Union, std_type};
 use crate::conv::json::load::str_key_error;
 use crate::conv::model::{Build, ModelCore};
 use crate::conv::scalars;
@@ -107,6 +107,17 @@ fn scalar<'py, const BUILD: bool>(
             scalars::finite_decimal(value, label)?;
             Ok(if BUILD {
                 py.get_type::<PyFloat>().call1((value,))?
+            } else {
+                value.clone()
+            })
+        }
+        Data::Decimal { number: false } => {
+            // `str(d)` as is: no copy through a Rust string
+            if !value.is_instance(std_type(py, &DECIMAL, "decimal", "Decimal")?)? {
+                return Err(expected(label, value));
+            }
+            Ok(if BUILD {
+                value.str()?.into_any()
             } else {
                 value.clone()
             })
