@@ -1,0 +1,15 @@
+[package]
+name = "xtask"
+version = "0.1.0"
+publish = false
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[dependencies]
+butcher = { path = "../crates/butcher" }
+clap.workspace = true
+
+[lints]
+workspace = true

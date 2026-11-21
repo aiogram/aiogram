@@ -1,0 +1,18 @@
+api_version = "10.4"
+butcher = "0.1.0"
+html_only = false
+overlay_sha256 = "8f3c1a0d6b2e4f5a7c9d0e1f2a3b4c5d6e7f8091a2b3c4d5e6f708192a3b4c5d"
+ledger_sha256 = "0e1f2a3b4c5d6e7f8091a2b3c4d5e6f708192a3b4c5d8f3c1a0d6b2e4f5a7c9d"
+
+[sources.html]
+url = "https://core.telegram.org/bots/api"
+status = "ok"
+http_status = 200
+fetched_at = 2026-11-21T09:30:00Z
+sha256 = "5d6e7f8091a2b3c4d5e6f708192a3b4c5d8f3c1a0d6b2e4f5a7c9d0e1f2a3b4c"
+
+[sources.openapi]
+url = "https://core.telegram.org/bots/api.json"
+status = "unreachable"
+http_status = 200
+fetched_at = 2026-11-21T09:30:01Z

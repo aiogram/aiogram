@@ -1,0 +1,531 @@
+{
+  "header": {
+    "api_version": "10.4",
+    "api_date": "2026-11-09",
+    "sources": [
+      "html",
+      "openapi",
+      "errors"
+    ],
+    "html_only": false
+  },
+  "types": [
+    {
+      "name": "Message",
+      "section": "Available types",
+      "doc": "<p>This object represents a message.</p>",
+      "direction": {
+        "value": "response"
+      },
+      "fields": [
+        {
+          "name": "message_id",
+          "doc": "<p>Unique message identifier</p>",
+          "type": {
+            "value": {
+              "prim": "int64"
+            }
+          },
+          "response": {
+            "required": {
+              "value": true
+            }
+          },
+          "constraints": [
+            {
+              "value": {
+                "minimum": 0
+              }
+            }
+          ]
+        },
+        {
+          "name": "from",
+          "type": {
+            "value": {
+              "ref": "User"
+            }
+          },
+          "response": {
+            "required": {
+              "value": false
+            }
+          }
+        },
+        {
+          "name": "entities",
+          "type": {
+            "value": {
+              "array": {
+                "ref": "MessageEntity"
+              }
+            },
+            "by": {
+              "heuristic": "types.array_of"
+            }
+          },
+          "response": {
+            "required": {
+              "value": false
+            }
+          }
+        },
+        {
+          "name": "dice_value",
+          "type": {
+            "value": {
+              "prim": "int"
+            }
+          },
+          "response": {
+            "required": {
+              "value": false
+            }
+          },
+          "values": {
+            "value": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6
+            ],
+            "by": {
+              "heuristic": "enums.multi_parse"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "InputMediaPhoto",
+      "section": "Available types",
+      "direction": {
+        "value": "request",
+        "by": {
+          "heuristic": "direction.input_prefix"
+        }
+      },
+      "fields": [
+        {
+          "name": "type",
+          "type": {
+            "value": {
+              "prim": "string"
+            }
+          },
+          "request": {
+            "required": {
+              "value": true
+            },
+            "constant": {
+              "value": "photo",
+              "by": {
+                "heuristic": "consts.must_be"
+              }
+            }
+          },
+          "values": {
+            "value": [
+              "photo"
+            ]
+          }
+        },
+        {
+          "name": "media",
+          "type": {
+            "value": {
+              "union": [
+                {
+                  "ref": "InputFile"
+                },
+                {
+                  "prim": "string"
+                }
+              ]
+            },
+            "by": {
+              "heuristic": "types.or"
+            }
+          },
+          "request": {
+            "required": {
+              "value": true
+            }
+          },
+          "constraints": [
+            {
+              "value": {
+                "pattern": "^(attach://|https?://).+"
+              }
+            }
+          ]
+        },
+        {
+          "name": "caption",
+          "type": {
+            "value": {
+              "prim": "string"
+            }
+          },
+          "request": {
+            "required": {
+              "value": false
+            }
+          },
+          "constraints": [
+            {
+              "value": {
+                "min_length": 0
+              }
+            },
+            {
+              "value": {
+                "max_length": 1024
+              }
+            }
+          ]
+        },
+        {
+          "name": "has_spoiler",
+          "type": {
+            "value": {
+              "prim": "true"
+            }
+          },
+          "request": {
+            "required": {
+              "value": false
+            },
+            "default": {
+              "value": null,
+              "by": {
+                "overlay": {
+                  "file": "defaults.toml",
+                  "key": "InputMediaPhoto.has_spoiler"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "ChatPermissions",
+      "direction": {
+        "value": "both"
+      },
+      "fields": [
+        {
+          "name": "can_send_messages",
+          "type": {
+            "value": {
+              "prim": "bool"
+            }
+          },
+          "request": {
+            "required": {
+              "value": false
+            }
+          },
+          "response": {
+            "required": {
+              "value": false,
+              "by": {
+                "overlay": {
+                  "file": "twins.toml",
+                  "key": "ChatPermissions"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "methods": [
+    {
+      "name": "sendMessage",
+      "section": "Available methods",
+      "doc": "<p>Use this method to send text messages.</p>",
+      "params": [
+        {
+          "name": "chat_id",
+          "type": {
+            "value": {
+              "union": [
+                {
+                  "prim": "int64"
+                },
+                {
+                  "prim": "string"
+                }
+              ]
+            }
+          },
+          "required": {
+            "value": true
+          }
+        },
+        {
+          "name": "text",
+          "type": {
+            "value": {
+              "prim": "string"
+            }
+          },
+          "required": {
+            "value": true
+          },
+          "constraints": [
+            {
+              "value": {
+                "min_length": 1
+              }
+            },
+            {
+              "value": {
+                "max_length": 4096
+              }
+            }
+          ]
+        },
+        {
+          "name": "parse_mode",
+          "type": {
+            "value": {
+              "prim": "string"
+            }
+          },
+          "required": {
+            "value": false,
+            "by": {
+              "heuristic": "params.optional_column"
+            }
+          },
+          "default": {
+            "value": "HTML",
+            "by": {
+              "overlay": {
+                "file": "defaults.toml",
+                "key": "sendMessage.parse_mode"
+              }
+            }
+          }
+        }
+      ],
+      "returns": {
+        "value": {
+          "ref": "Message"
+        },
+        "by": {
+          "heuristic": "returns.r01"
+        }
+      }
+    },
+    {
+      "name": "sendLocation",
+      "params": [
+        {
+          "name": "latitude",
+          "type": {
+            "value": {
+              "prim": "float"
+            }
+          },
+          "required": {
+            "value": true
+          },
+          "constraints": [
+            {
+              "value": {
+                "minimum": -90.0
+              }
+            },
+            {
+              "value": {
+                "maximum": 90.5
+              }
+            }
+          ]
+        },
+        {
+          "name": "kind",
+          "type": {
+            "value": {
+              "prim": "string"
+            }
+          },
+          "required": {
+            "value": false
+          },
+          "constant": {
+            "value": "location"
+          },
+          "values": {
+            "value": [
+              "location"
+            ]
+          }
+        },
+        {
+          "name": "photos",
+          "type": {
+            "value": {
+              "array": {
+                "array": {
+                  "ref": "InputMediaPhoto"
+                }
+              }
+            }
+          },
+          "required": {
+            "value": false
+          },
+          "constraints": [
+            {
+              "value": {
+                "min_items": 2
+              }
+            },
+            {
+              "value": {
+                "max_items": 10
+              }
+            }
+          ]
+        }
+      ],
+      "returns": {
+        "value": {
+          "union": [
+            {
+              "ref": "Message"
+            },
+            {
+              "prim": "true"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "getMe",
+      "returns": {
+        "value": {
+          "ref": "User"
+        }
+      }
+    }
+  ],
+  "enums": [
+    {
+      "name": "ChatType",
+      "doc": "<p>Type of the chat</p>",
+      "values": {
+        "value": [
+          "private",
+          "group",
+          "channel"
+        ],
+        "by": {
+          "overlay": {
+            "file": "enums/ChatType.toml",
+            "key": "values"
+          }
+        }
+      }
+    },
+    {
+      "name": "DiceValue",
+      "values": {
+        "value": [
+          1,
+          2,
+          3
+        ]
+      }
+    }
+  ],
+  "unions": [
+    {
+      "name": "MessageOrigin",
+      "section": "Available types",
+      "doc": "<p>This object describes the origin of a message.</p>",
+      "members": {
+        "value": [
+          "MessageOriginUser",
+          "MessageOriginChannel"
+        ]
+      },
+      "discriminator": {
+        "value": {
+          "field": "type",
+          "mapping": {
+            "channel": "MessageOriginChannel",
+            "user": "MessageOriginUser"
+          }
+        }
+      }
+    },
+    {
+      "name": "MaybeInaccessibleMessage",
+      "members": {
+        "value": [
+          "Message",
+          "InaccessibleMessage"
+        ],
+        "by": {
+          "heuristic": "subtypes.list"
+        }
+      },
+      "discriminator": {
+        "value": {
+          "field": "date",
+          "mapping": {
+            "0": "InaccessibleMessage"
+          }
+        },
+        "by": {
+          "overlay": {
+            "file": "unions.toml",
+            "key": "MaybeInaccessibleMessage"
+          }
+        }
+      }
+    }
+  ],
+  "errors": [
+    {
+      "code": 400,
+      "message": "Bad Request: chat not found",
+      "mtproto": "CHAT_ID_INVALID",
+      "methods": [
+        "sendMessage",
+        "getChat"
+      ]
+    },
+    {
+      "code": 429,
+      "message": "Too Many Requests: retry after %d",
+      "template": {
+        "placeholders": [
+          "d"
+        ],
+        "regex": "^Too Many Requests: retry after (\\d+)$"
+      }
+    },
+    {
+      "code": 400,
+      "message": "Bad Request: %s %d",
+      "template": {
+        "placeholders": [
+          "s",
+          "d"
+        ],
+        "regex": "^Bad Request: (.+) (\\d+)$"
+      }
+    }
+  ]
+}

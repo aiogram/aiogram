@@ -1,0 +1,3 @@
+[alias]
+# `cargo xtask butcher <cmd>` (v4/research/02 §5)
+xtask = "run --package xtask --"

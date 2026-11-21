@@ -2,7 +2,7 @@
 
 | Field | Value |
 |---|---|
-| Status | `todo` |
+| Status | `done` |
 | Story | C — Reproducible butcher |
 | Target branch | `dev-4.x` |
 | Depends on | [B-01](../B-spike/B-01-crate-maturin-skeleton.md), [A-01](../A-contracts/A-01-bootstrap-dev-4x.md) |
@@ -32,7 +32,7 @@ committed next to the merged IR, with a manifest.
   Register subcommands `fetch`, `build`, `emit`, `diff`, `check`, `import-legacy`. They are stubs that print "not
   implemented", and later tasks fill them in.
 - IR types (`ir.rs`): `Ir { header, types, methods, enums, unions, errors }`, `Type`, `Field`, `Method`, `Param`,
-  `TypeRef = Prim | Ref | Array | Union`, `Returns`, `Discriminator`, `Enum`, `Constraint`, `Doc` (plain / html / rst).
+  `TypeRef = Prim | Ref | Array | Union`, `Returns`, `Discriminator`, `Enum`, `Constraint`, `Doc` (the source HTML only; plain text and RST are derived at emit time).
   - **Provenance** on every inferred fact: `explicit | heuristic(rule_id) | overlay(file, key)`.
   - **Direction-specific facts** (D118): requiredness, `const` and writability per direction `{request, response}`.
     These are kept even after the D18 twin merge in [C-09](C-09-resolution-passes.md).
@@ -50,19 +50,19 @@ committed next to the merged IR, with a manifest.
 
 ## Checklist
 
-- [ ] Add `crates/butcher` and `xtask` to the workspace `Cargo.toml` from B-01; pin dependencies (`serde`, `serde_json`, `toml`, `clap`, `sha2`) in `Cargo.lock`.
-- [ ] `ir.rs` with the types above, `#[serde(deny_unknown_fields)]` on every struct.
-- [ ] Provenance enum and direction-specific requiredness/const/writable fields.
-- [ ] Deterministic writer (`Ir::write`) and loader; a golden round-trip test on a small hand-written IR fixture.
-- [ ] `manifest.toml` struct + serde, with the fields above.
-- [ ] `cargo xtask butcher --help` lists every subcommand.
-- [ ] Clippy restriction lints (`unwrap_used`, `expect_used`, `panic`, `todo`, `unimplemented` = deny) on the crate (08 §5).
-- [ ] **Decide snapshot retention** (proposed default: commit **only the current API version's** snapshot directory
+- [x] Add `crates/butcher` and `xtask` to the workspace `Cargo.toml` from B-01; pin dependencies (`serde`, `serde_json`, `toml`, `clap`, `sha2`) in `Cargo.lock`.
+- [x] `ir.rs` with the types above, `#[serde(deny_unknown_fields)]` on every struct.
+- [x] Provenance enum and direction-specific requiredness/const/writable fields.
+- [x] Deterministic writer (`Ir::write`) and loader; a golden round-trip test on a small hand-written IR fixture.
+- [x] `manifest.toml` struct + serde, with the fields above.
+- [x] `cargo xtask butcher --help` lists every subcommand.
+- [x] Clippy restriction lints (`unwrap_used`, `expect_used`, `panic`, `todo`, `unimplemented` = deny) on the crate (08 §5).
+- [x] **Decide snapshot retention** (proposed default: commit **only the current API version's** snapshot directory
   and rely on git history as the version archive. Previous snapshots are reachable with `git show <rev>:butcher/snapshots/…`;
   [C-08](C-08-merge-cross-check.md)'s html-only fallback reads the previous snapshot from the same directory before it
   is replaced). Record the choice in Notes and flag it to the owner. The legacy schema alone is 2 MB, so keeping every
   version means about 6 MB per bump.
-- [ ] Tests (100% coverage of new code where Python; `cargo test` for Rust)
+- [x] Tests (100% coverage of new code where Python; `cargo test` for Rust)
 
 ## Acceptance criteria
 
@@ -96,6 +96,10 @@ cargo xtask butcher --help
 - Gate-independent: can start while the B spike is running.
 
 ## Notes
+
+- **Snapshot retention (owner, 2026-11-21): the proposed default.** Only `butcher/snapshots/<current>/` is committed;
+  git history is the version archive, and `build` for a new API version replaces the directory in the same PR.
+- **`sha2` (owner, 2026-11-21):** deferred to C-02, the first plan that computes a digest.
 
 - **Owner question (flagged, not a blocker):** D6b (generator written in Rust) was questioned in
   [codex-review.md §9](../../research/codex-review.md). It compared Rust against Python expertise for parser and overlay
