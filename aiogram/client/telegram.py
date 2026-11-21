@@ -3,6 +3,8 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
+from yarl import URL
+
 
 class FilesPathWrapper(ABC):
     @abstractmethod
@@ -79,6 +81,32 @@ class TelegramAPIServer:
         :return: URL
         """
         return self.file.format(token=token, path=path)
+
+    def redact_url(self, url: str) -> str:
+        """
+        Render a URL for error messages and logs without the bot token
+
+        A URL built from :attr:`base` or :attr:`file` keeps everything but the token
+        secret (``.../bot123456:***/getMe``). Any other URL is shown as its origin only
+        (``https://example.com/...``), because its path or query may carry other secrets.
+
+        :param url: URL to render
+        :return: URL safe to show
+        """
+        for template in (self.base, self.file):
+            prefix, found, rest = template.partition("{token}")
+            if not found or not url.startswith(prefix):
+                continue
+            # The token runs up to the character that follows `{token}` in the template
+            delimiter = rest[:1]
+            remainder = url[len(prefix) :]
+            token, sep, tail = remainder.partition(delimiter) if delimiter else (remainder, "", "")
+            bot_id, colon, _ = token.partition(":")
+            return f"{prefix}{bot_id + ':' if colon else ''}***{sep}{tail}"
+        try:
+            return f"{URL(url).origin()}/..."
+        except ValueError:
+            return "<invalid URL>"
 
     @classmethod
     def from_base(cls, base: str, **kwargs: Any) -> "TelegramAPIServer":

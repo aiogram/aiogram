@@ -56,11 +56,17 @@ Network errors and the bot token
 ================================
 
 Request URLs of the Bot API contain the bot token. Network errors never contain it:
-:class:`~aiogram.exceptions.TelegramNetworkError` and the :code:`aiohttp` errors raised by
-:meth:`Bot.download_file() <aiogram.client.bot.Bot.download_file>` and
-:meth:`Bot.download() <aiogram.client.bot.Bot.download>` show it as :code:`<bot id>:***`
-in their message and traceback, and keep their type, so existing :code:`except` clauses still work.
-The original exception is available as :code:`.original` and may contain the token — don't log it.
+requests, :meth:`Bot.download_file() <aiogram.client.bot.Bot.download_file>`,
+:meth:`Bot.download() <aiogram.client.bot.Bot.download>` and
+:class:`~aiogram.types.input_file.URLInputFile` reads raise
+:class:`~aiogram.exceptions.TelegramNetworkError`, whose message names the :code:`aiohttp` error type
+and the URL with the token shown as :code:`<bot id>:***` (a URL of another host is shown as its
+origin only). The error is raised :code:`from None`, so its traceback prints no chained exception.
+
+- :code:`.original` is the :code:`aiohttp` exception. It may contain the token — don't log it.
+- :code:`.request_sent` is :code:`False` when the request is known not to have reached the server,
+  :code:`True` when a response arrived, and :code:`None` when it is unknown (for example a timeout).
+- :code:`.method` is the API method, or :code:`None` for a download.
 
 .. _error-event:
 

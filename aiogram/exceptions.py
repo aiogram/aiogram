@@ -75,12 +75,35 @@ class TelegramNetworkError(TelegramAPIError):
     """
     Base exception for all Telegram network errors.
 
-    Its message never contains the bot token. The underlying HTTP client error is kept
-    on :attr:`original` instead of being chained, because it may contain the token.
+    Its message never contains the bot token: it names the HTTP client error type and the
+    request URL with the token replaced by ``<bot id>:***``. The HTTP client error itself
+    is kept on :attr:`original` instead of being chained (``__cause__`` is ``None``),
+    because its text may contain the token.
     """
 
     label = "HTTP Client says"
-    original: BaseException | None = None
+    method: TelegramMethod[Any] | None  # type: ignore[assignment]
+    """The API method, or ``None`` when a file download failed."""
+    original: BaseException | None
+    """The HTTP client error, or ``None`` when the error is not a transport failure."""
+    request_sent: bool | None
+    """
+    ``False`` when the request is known not to have reached the server (connection or
+    invalid URL errors), ``True`` when a response arrived, ``None`` when it is unknown
+    (a timeout or a connection lost mid-request). A retry of a non-idempotent method is
+    only safe when this is ``False``.
+    """
+
+    def __init__(
+        self,
+        method: TelegramMethod[Any] | None,
+        message: str,
+        original: BaseException | None = None,
+        request_sent: bool | None = None,
+    ) -> None:
+        super().__init__(method=method, message=message)  # type: ignore[arg-type]
+        self.original = original
+        self.request_sent = request_sent
 
 
 class TelegramRetryAfter(TelegramAPIError):
