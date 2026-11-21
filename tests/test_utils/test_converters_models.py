@@ -21,7 +21,7 @@ import types
 import typing
 import weakref
 from collections.abc import Iterator
-from datetime import date, datetime, timezone
+from datetime import date, datetime, time, timedelta, timezone
 from decimal import Decimal
 from pathlib import Path
 from typing import Annotated, Any, ClassVar, Literal, NamedTuple, NotRequired, Required, TypedDict
@@ -1483,7 +1483,7 @@ class TestFlat:
     @pytest.mark.parametrize(
         ("annotation", "message"),
         [
-            ("datetime", "datetime has no flat-string form"),
+            ("bytes | None", "bytes | None has no flat-string form"),
             ("list[int]", "list has no flat-string form"),
             ("int | str", "int | str has no flat-string form"),
             ("Address", "Address has no flat-string form"),
@@ -2006,3 +2006,88 @@ class TestReviewRegressions:
         with pytest.raises(ConversionError) as exc_info:
             json_codec(int | bool).load("x" * 10_000)
         assert all(len(note) < 200 for note in exc_info.value.__notes__)
+
+
+class TestFlatTemporal:
+    """Brief 12: datetime / date / time in callback data (ISO 8601 basic, no `:`)."""
+
+    def test_callback_fields_round_trip_without_separators(self):
+        from aiogram.utils.converters import IsoTime  # noqa: PLC0415
+
+        plus = timezone(timedelta(hours=-5, minutes=-30, seconds=-15, microseconds=-500000))
+
+        class Booking(ModelBase):
+            start: datetime
+            day: date
+            at: time
+            short: Annotated[datetime, IsoDatetime(timespec="minutes", sep=" ")]
+            stamp: Annotated[datetime, EpochDatetime()]
+            alarm: Annotated[time, IsoTime(timespec="seconds")]
+
+        schema = flat_schema(Booking)
+        booking = Booking(
+            start=datetime(2026, 11, 21, 15, 30, 0, 123456, tzinfo=plus),
+            day=date(2026, 11, 21),
+            at=time(15, 30, tzinfo=UTC),
+            short=datetime(2026, 11, 21, 15, 30, tzinfo=UTC),
+            stamp=datetime(2026, 11, 21, 15, 30, tzinfo=UTC),
+            alarm=time(7, 8, 9, 999),
+        )
+        parts = schema.dump(booking)
+        assert parts == [
+            "20261121T153000.123456-053015.500000",
+            "20261121",
+            "153000Z",
+            "20261121T1530Z",
+            str(int(booking.stamp.timestamp())),
+            "070809",
+        ]
+        assert not any(":" in part for part in parts)
+        loaded = schema.load(parts)
+        assert loaded.start == booking.start
+        assert loaded.start.utcoffset() == booking.start.utcoffset()
+        assert (loaded.day, loaded.at, loaded.short, loaded.stamp) == (
+            booking.day,
+            booking.at,
+            booking.short,
+            booking.stamp,
+        )
+        assert loaded.alarm == time(7, 8, 9)
+
+    @pytest.mark.parametrize(
+        ("tp", "text", "value"),
+        [
+            (datetime, "2026-11-21T15:30:00+02:00", datetime(2026, 11, 21, 13, 30, tzinfo=UTC)),
+            (datetime, "20261121T153000", datetime(2026, 11, 21, 15, 30)),
+            (date, "2026-11-21", date(2026, 11, 21)),
+            (time, "15:30", time(15, 30)),
+        ],
+    )
+    def test_load_takes_basic_and_extended(self, tp, text, value):
+        assert json_codec(tp).load_flat(text) == value
+
+    @pytest.mark.parametrize(
+        ("tp", "text"),
+        [(datetime, "nope"), (date, "20261321"), (time, "2561"), (datetime, "")],
+    )
+    def test_invalid_flat_text(self, tp, text):
+        with pytest.raises(ConversionError, match=f"expected {tp.__name__}"):
+            json_codec(tp).load_flat(text)
+
+    def test_naive_and_aware_both_kept(self):
+        codec = json_codec(datetime)
+        naive = datetime(2026, 1, 1, 12)
+        aware = naive.replace(tzinfo=UTC)
+        assert codec.dump_flat(naive) == "20260101T120000"
+        assert codec.load_flat(codec.dump_flat(naive)).tzinfo is None
+        assert codec.load_flat(codec.dump_flat(aware)) == aware
+
+    def test_date_rejects_a_datetime_and_iso_time_applies_to_time(self):
+        from aiogram.utils.converters import IsoTime  # noqa: PLC0415
+
+        with pytest.raises(ConversionError):
+            json_codec(date).dump_flat(datetime(2026, 1, 1))
+        with pytest.raises(TypeError, match="applies to time"):
+            json_codec(Annotated[datetime, IsoTime()])
+        with pytest.raises(ConversionError):
+            json_codec(time).dump_flat("12:00")

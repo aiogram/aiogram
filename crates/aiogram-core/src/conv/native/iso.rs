@@ -114,40 +114,12 @@ pub(crate) fn parse_datetime(text: &str) -> Option<(Date, Time)> {
 
 /// `date.isoformat()`.
 pub(crate) fn write_date(date: &Date, out: &mut String) {
-    push_padded(out, date.year.unsigned_abs(), 4);
-    out.push('-');
-    push_padded(out, u32::from(date.month), 2);
-    out.push('-');
-    push_padded(out, u32::from(date.day), 2);
+    date_fields(date, true, out);
 }
 
 /// `time.isoformat(timespec)`, with the offset when the time is aware.
 pub(crate) fn write_time(time: &Time, timespec: Timespec, out: &mut String) {
-    let timespec = match timespec {
-        Timespec::Auto if time.microsecond != 0 => Timespec::Microseconds,
-        Timespec::Auto => Timespec::Seconds,
-        other => other,
-    };
-    push_padded(out, u32::from(time.hour), 2);
-    if timespec != Timespec::Hours {
-        out.push(':');
-        push_padded(out, u32::from(time.minute), 2);
-    }
-    if matches!(
-        timespec,
-        Timespec::Seconds | Timespec::Milliseconds | Timespec::Microseconds
-    ) {
-        out.push(':');
-        push_padded(out, u32::from(time.second), 2);
-    }
-    if timespec == Timespec::Milliseconds {
-        // truncated, not rounded, as CPython does
-        out.push('.');
-        push_padded(out, time.microsecond / 1000, 3);
-    } else if timespec == Timespec::Microseconds {
-        out.push('.');
-        push_padded(out, time.microsecond, 6);
-    }
+    time_fields(time, timespec, true, out);
     if let Some(offset) = time.offset {
         write_offset(offset, out);
     }
@@ -166,18 +138,93 @@ pub(crate) fn write_datetime(
     write_time(time, timespec, out);
 }
 
+/// ISO 8601 basic `YYYYMMDD` (the flat form: no `-` / `:`, so no callback-data separator).
+pub(crate) fn write_date_basic(date: &Date, out: &mut String) {
+    date_fields(date, false, out);
+}
+
+/// ISO 8601 basic `HHMMSS[.ffffff]`, then nothing (naive), `Z` (offset 0) or
+/// `±HHMM[SS[.ffffff]]`; `timespec` as in `isoformat`.
+pub(crate) fn write_time_basic(time: &Time, timespec: Timespec, out: &mut String) {
+    time_fields(time, timespec, false, out);
+    match time.offset {
+        None => {}
+        Some(0) => out.push('Z'),
+        Some(offset) => offset_fields(offset, false, out),
+    }
+}
+
+/// ISO 8601 basic `YYYYMMDDTHHMMSS...`, see [`write_time_basic`].
+pub(crate) fn write_datetime_basic(date: &Date, time: &Time, timespec: Timespec, out: &mut String) {
+    write_date_basic(date, out);
+    out.push('T');
+    write_time_basic(time, timespec, out);
+}
+
 /// `+HH:MM[:SS[.ffffff]]` as `isoformat` writes a UTC offset: the sign, then the absolute value
 /// (`-05:30:15.500000` for `-timedelta(seconds=19815.5)`).
 pub(crate) fn write_offset(offset: i64, out: &mut String) {
+    offset_fields(offset, true, out);
+}
+
+fn date_fields(date: &Date, extended: bool, out: &mut String) {
+    push_padded(out, date.year.unsigned_abs(), 4);
+    if extended {
+        out.push('-');
+    }
+    push_padded(out, u32::from(date.month), 2);
+    if extended {
+        out.push('-');
+    }
+    push_padded(out, u32::from(date.day), 2);
+}
+
+fn time_fields(time: &Time, timespec: Timespec, extended: bool, out: &mut String) {
+    let timespec = match timespec {
+        Timespec::Auto if time.microsecond != 0 => Timespec::Microseconds,
+        Timespec::Auto => Timespec::Seconds,
+        other => other,
+    };
+    push_padded(out, u32::from(time.hour), 2);
+    if timespec != Timespec::Hours {
+        if extended {
+            out.push(':');
+        }
+        push_padded(out, u32::from(time.minute), 2);
+    }
+    if matches!(
+        timespec,
+        Timespec::Seconds | Timespec::Milliseconds | Timespec::Microseconds
+    ) {
+        if extended {
+            out.push(':');
+        }
+        push_padded(out, u32::from(time.second), 2);
+    }
+    if timespec == Timespec::Milliseconds {
+        // truncated, not rounded, as CPython does
+        out.push('.');
+        push_padded(out, time.microsecond / 1000, 3);
+    } else if timespec == Timespec::Microseconds {
+        out.push('.');
+        push_padded(out, time.microsecond, 6);
+    }
+}
+
+fn offset_fields(offset: i64, extended: bool, out: &mut String) {
     let total = offset.unsigned_abs();
     let micro = (total % 1_000_000) as u32;
     let seconds = (total / 1_000_000) as u32;
     out.push(if offset < 0 { '-' } else { '+' });
     push_padded(out, seconds / 3600, 2);
-    out.push(':');
+    if extended {
+        out.push(':');
+    }
     push_padded(out, (seconds / 60) % 60, 2);
     if !seconds.is_multiple_of(60) || micro != 0 {
-        out.push(':');
+        if extended {
+            out.push(':');
+        }
         push_padded(out, seconds % 60, 2);
         if micro != 0 {
             out.push('.');
@@ -283,6 +330,79 @@ fn push_padded(out: &mut String, value: u32, width: usize) {
 
 #[cfg(test)]
 mod tests {
+
+    #[test]
+    fn basic_writers() {
+        let date = Date {
+            year: 2026,
+            month: 11,
+            day: 21,
+        };
+        let time = |microsecond, offset| Time {
+            hour: 15,
+            minute: 30,
+            second: 5,
+            microsecond,
+            offset,
+        };
+        let datetime = |time: &Time, timespec| {
+            let mut out = String::new();
+            write_datetime_basic(&date, time, timespec, &mut out);
+            out
+        };
+        let cases = [
+            (time(0, None), Timespec::Auto, "20261121T153005"),
+            (time(0, Some(0)), Timespec::Auto, "20261121T153005Z"),
+            (
+                time(0, Some(7_200_000_000)),
+                Timespec::Auto,
+                "20261121T153005+0200",
+            ),
+            (
+                time(0, Some(-19_800_000_000)),
+                Timespec::Auto,
+                "20261121T153005-0530",
+            ),
+            (
+                time(0, Some(19_815_000_000)),
+                Timespec::Auto,
+                "20261121T153005+053015",
+            ),
+            (
+                time(0, Some(-19_815_500_000)),
+                Timespec::Auto,
+                "20261121T153005-053015.500000",
+            ),
+            (
+                time(123_456, Some(0)),
+                Timespec::Auto,
+                "20261121T153005.123456Z",
+            ),
+            (time(123_456, None), Timespec::Hours, "20261121T15"),
+            (time(123_456, None), Timespec::Minutes, "20261121T1530"),
+            (time(123_456, None), Timespec::Seconds, "20261121T153005"),
+            (
+                time(123_456, None),
+                Timespec::Milliseconds,
+                "20261121T153005.123",
+            ),
+            (
+                time(0, None),
+                Timespec::Microseconds,
+                "20261121T153005.000000",
+            ),
+        ];
+        for (value, timespec, expected) in cases {
+            assert_eq!(datetime(&value, timespec), expected);
+            assert!(!expected.contains(':'));
+        }
+        let mut out = String::new();
+        write_date_basic(&date, &mut out);
+        assert_eq!(out, "20261121");
+        let mut out = String::new();
+        write_time_basic(&time(5, Some(-3_600_000_000)), Timespec::Auto, &mut out);
+        assert_eq!(out, "153005.000005-0100");
+    }
     use super::*;
 
     const fn d(year: i32, month: u8, day: u8) -> Date {

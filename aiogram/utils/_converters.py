@@ -61,6 +61,7 @@ from aiogram.utils.converters import (
     EpochDatetime,
     ErrorDetail,
     IsoDatetime,
+    IsoTime,
     Key,
     UuidHex,
     _FieldInfo,
@@ -427,6 +428,8 @@ class _Compiler:
         expected: type
         if isinstance(converter, (IsoDatetime, EpochDatetime)):
             expected = datetime
+        elif isinstance(converter, IsoTime):
+            expected = time
         elif isinstance(converter, DecimalAsNumber):
             expected = Decimal
         elif isinstance(converter, UuidHex):
@@ -440,6 +443,8 @@ class _Compiler:
             return _core.Kind.datetime(timespec=converter.timespec, sep=converter.sep)
         if isinstance(converter, EpochDatetime):
             return _core.Kind.datetime(epoch=converter.unit)
+        if isinstance(converter, IsoTime):
+            return _core.Kind.time(timespec=converter.timespec)
         if isinstance(converter, DecimalAsNumber):
             return _core.Kind.decimal(number=True)
         if isinstance(converter, UuidHex):

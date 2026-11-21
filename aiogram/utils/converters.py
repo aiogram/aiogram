@@ -8,8 +8,8 @@ to them:
 - ``Annotated`` markers: :class:`Key` (stored key, keys read on load), :class:`Discriminator`
   (tagged unions), a converter (per-field format);
 - ready-made converters that select a native format (no Python call per value):
-  :class:`IsoDatetime`, :class:`EpochDatetime`, :class:`DecimalAsNumber`, :class:`EnumByName`,
-  :class:`UuidHex`;
+  :class:`IsoDatetime`, :class:`IsoTime`, :class:`EpochDatetime`, :class:`DecimalAsNumber`,
+  :class:`EnumByName`, :class:`UuidHex`;
 - :class:`Converter`, the base of user converters (Python callbacks);
 - :class:`ConversionError`, raised for data that does not convert.
 
@@ -34,6 +34,7 @@ __all__ = [
     "EpochDatetime",
     "ErrorDetail",
     "IsoDatetime",
+    "IsoTime",
     "Key",
     "UuidHex",
     "field",
@@ -144,16 +145,29 @@ _Timespec = Literal["auto", "hours", "minutes", "seconds", "milliseconds", "micr
 
 @dataclasses.dataclass(frozen=True)
 class IsoDatetime(_Native):
-    """``datetime`` as ISO 8601 text, ``isoformat(sep, timespec)``; any ISO text loads."""
+    """``datetime`` as ISO 8601 text, ``isoformat(sep, timespec)``; any ISO text loads.
+
+    The flat form (callback data) is ISO 8601 basic, ``20261121T153000Z``: no ``:``, so never a
+    separator; ``timespec`` applies there and ``sep`` does not. To fit a long callback into
+    Telegram's 64 bytes, use ``timespec="seconds"`` / ``"minutes"`` or :class:`EpochDatetime`.
+    """
 
     timespec: _Timespec = "auto"
     sep: str = "T"
 
 
 @dataclasses.dataclass(frozen=True)
+class IsoTime(_Native):
+    """``time`` as ISO 8601 text, ``isoformat(timespec)`` (flat form: basic, ``153000Z``)."""
+
+    timespec: _Timespec = "auto"
+
+
+@dataclasses.dataclass(frozen=True)
 class EpochDatetime(_Native):
-    """``datetime`` as a Unix timestamp (seconds or milliseconds); loads as an aware UTC
-    ``datetime``. A naive ``datetime`` is local time, as ``datetime.timestamp()`` reads it."""
+    """``datetime`` as a Unix timestamp (seconds or milliseconds), in JSON and in the flat form
+    (the shortest callback-data form); loads as an aware UTC ``datetime``. A naive ``datetime``
+    is local time, as ``datetime.timestamp()`` reads it."""
 
     unit: Literal["s", "ms"] = "s"
 

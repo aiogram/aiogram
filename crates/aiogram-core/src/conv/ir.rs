@@ -342,7 +342,8 @@ impl Kind {
 }
 
 fn scalar(py: Python<'_>, data: Data, label: &str, json_types: u8, tp: &Bound<'_, PyType>) -> Kind {
-    let flat = !matches!(data, Data::Datetime { .. } | Data::Date | Data::Time { .. });
+    // every scalar has a flat form; datetime / date / time use ISO 8601 basic there (brief 12)
+    let flat = true;
     let _ = py;
     Kind::new(
         data,

@@ -109,3 +109,9 @@ make lint
 - Unblocks I-07 (pydantic removal from dependencies) together with the B/C model work.
 
 ## Notes
+
+- **F-08 (brief 12, owner 2026-11-21):** the flat codec packs `datetime` / `date` / `time` (ISO 8601 basic, no `:`)
+  and adds **no** separator or length check. Keep the 3.x checks in `pack()`, run on the list `FlatSchema.dump`
+  returns: a part containing `sep`, the multi-character re-split check, then the 64-byte `MAX_CALLBACK_LENGTH`. The
+  error for a too-long callback can point at `IsoDatetime(timespec="seconds" | "minutes")` or `EpochDatetime()`.
+  Count the parts before `FlatSchema.load`; it raises `TypeError` for TypedDicts, `Key` and `rename`.

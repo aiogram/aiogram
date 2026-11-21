@@ -280,6 +280,12 @@ make lint
   - **Known limits:**
     - jiter's 200-level limit on skipped or materialised values raises `RecursionError`.
     - `load_json` of an escaped lone surrogate re-parses through `json.loads`, the only re-parse left.
+    - Flat form of temporal types (brief 12, owner 2026-11-21): `datetime` / `date` / `time` are ISO 8601 basic
+      (`20261121T153000.123456Z`, `±HHMM[SS[.ffffff]]` offsets, `YYYYMMDD`, `HHMMSS[.ffffff][Z|±HHMM]`), so no part
+      contains `:`; `timespec` applies (`IsoDatetime`, the new `IsoTime`), `sep` does not; naive and aware both
+      round-trip; load takes basic and extended. `EpochDatetime` uses the JSON number text, the shortest form for a
+      long callback (or `IsoDatetime(timespec="seconds" | "minutes")`). No built-in base36/base62: a user
+      `Converter` with `to_str` / `from_str` covers it.
     - Flat form: `str | None` packs `None` as `""`, so `""` unpacks as `None` (3.x `CallbackData` behaved the same;
       F-11 owns the #2007 empty-part rule). `bytes | None`, and an enum or `Literal` with a `""` text, have no flat
       form under `| None`. A flat user converter whose `to_str` returns `""` under `| None` has the `str` behaviour.

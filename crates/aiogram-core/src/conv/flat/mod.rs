@@ -120,6 +120,23 @@ pub(crate) fn load<'py>(
             }
         }
         Data::Uuid { .. } => scalars::load_text(py, kind, TextIn::Py(text)),
+        // the number text of the JSON form
+        Data::Datetime {
+            epoch: Some(epoch), ..
+        } => {
+            let number = match int_of(text)? {
+                Some(int) => int,
+                None => float_of(text)?.ok_or_else(|| expected(label, part))?,
+            };
+            scalars::load_epoch(&number, *epoch, label).map_err(|error| match error {
+                ValError::Lines(_) => expected(label, part),
+                fatal @ ValError::Fatal(_) => fatal,
+            })
+        }
+        // ISO 8601 basic as written by `dump`; the extended form loads too (`fromisoformat`)
+        Data::Datetime { .. } | Data::Date | Data::Time { .. } => {
+            scalars::load_text(py, kind, TextIn::Py(text))
+        }
         Data::Timedelta => {
             let number = match int_of(text)? {
                 Some(int) => int,
@@ -215,6 +232,21 @@ pub(crate) fn dump<'py>(
             }
             let mut out = String::new();
             uuid::write(scalars::uuid_int(value)?, true, &mut out);
+            PyString::new(py, &out)
+        }
+        Data::Datetime {
+            epoch: Some(epoch), ..
+        } => {
+            let mut out = Vec::new();
+            match scalars::dump_epoch(value, *epoch, label)? {
+                Num::Obj(float) => Num::Float(float.extract()?).write(&mut out)?,
+                number => number.write(&mut out)?,
+            }
+            text(&out)
+        }
+        Data::Datetime { .. } | Data::Date | Data::Time { .. } => {
+            let mut out = String::new();
+            scalars::dump_basic(value, kind, &mut out)?;
             PyString::new(py, &out)
         }
         Data::Timedelta => {

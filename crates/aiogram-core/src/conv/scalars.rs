@@ -407,6 +407,42 @@ pub(crate) fn dump_text(
     Ok(())
 }
 
+/// The flat text of a `datetime` / `date` / `time`: ISO 8601 basic (no `-` / `:`, so never a
+/// callback-data separator); `timespec` applies, `sep` does not (basic always uses `T`).
+pub(crate) fn dump_basic(value: &Bound<'_, PyAny>, kind: &Kind, out: &mut String) -> VResult<()> {
+    let label = kind.label.as_str();
+    match &kind.data {
+        Data::Datetime { timespec, .. } => {
+            let dt = value
+                .cast::<PyDateTime>()
+                .map_err(|_| expected(label, value))?;
+            let time = time_parts(dt, offset(value, dt.get_tzinfo())?);
+            iso::write_datetime_basic(&date_parts(dt), &time, *timespec, out);
+        }
+        Data::Date => {
+            let date = value.cast::<PyDate>().map_err(|_| expected(label, value))?;
+            if value.is_instance_of::<PyDateTime>() {
+                return Err(expected(label, value));
+            }
+            iso::write_date_basic(&date_parts(date), out);
+        }
+        Data::Time { timespec } => {
+            let time = value.cast::<PyTime>().map_err(|_| expected(label, value))?;
+            iso::write_time_basic(
+                &time_parts(time, offset(value, time.get_tzinfo())?),
+                *timespec,
+                out,
+            );
+        }
+        _ => {
+            return Err(ValError::Fatal(PyRuntimeError::new_err(format!(
+                "{label} has no ISO form"
+            ))));
+        }
+    }
+    Ok(())
+}
+
 /// `uuid.int`.
 pub(crate) fn uuid_int(value: &Bound<'_, PyAny>) -> PyResult<u128> {
     value.getattr(pyo3::intern!(value.py(), "int"))?.extract()
