@@ -38,7 +38,7 @@ from day one (D8).
   `deny` (B11).
 - **Module.** `#[pymodule]` with free-threading support declared (never `gil_used = true`). It exposes only
   `__version__` and `build_info()` (pyo3 version, profile, target).
-- **Stubs and build glue.** Hand-written stub `aiogram/_core.pyi`. `[tool.uv] cache-keys` cover `Cargo.toml`,
+- **Stubs and build glue.** Hand-written stubs `aiogram/_core/__init__.pyi` + one `aiogram/_core/<group>.pyi` per native submodule. `[tool.uv] cache-keys` cover `Cargo.toml`,
   `Cargo.lock` and `crates/**/*.rs` (08 §6). Makefile targets `dev` (`maturin develop`, debug) and `bench`
   (`maturin develop --release`).
 - **Typing suite skeleton.** Create `tests/typing/` (an `__init__`-free directory of mypy-only test files with a
@@ -70,9 +70,9 @@ from day one (D8).
   script updates in the same commit; a test asserts both are equal). Record in Notes and flag to owner. I-01 hardens
   this.
 - [x] Add the Cargo workspace, crate, `rust-toolchain.toml`, release profile and lint table.
-- [x] Add a `#[pymodule]` with `__version__` and `build_info()`; update `aiogram/_core.pyi`.
+- [x] Add a `#[pymodule]` with `__version__` and `build_info()`; update `aiogram/_core/__init__.pyi`.
 - [x] Export the `_core` build metadata G-15's `aiogram info` reports: `build_info()` returns at least `version`,
-  `profile` and `target` (plus the pyo3 version), typed in `aiogram/_core.pyi`.
+  `profile` and `target` (plus the pyo3 version), typed in `aiogram/_core/__init__.pyi`.
 - [x] Add `[tool.uv] cache-keys`, and the Makefile `dev` / `bench` / `typing` targets; create `tests/typing/`.
 - [x] Add the CI workflow. `make lint-workflows` (zizmor) must pass.
 - [x] Add the conftest free-threading guard.

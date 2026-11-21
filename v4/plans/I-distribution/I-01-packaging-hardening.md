@@ -34,7 +34,7 @@ R25 asks for exactly these tests: an offline sdist build, packaged stubs and dat
 
 **In:**
 - `[tool.maturin]` include/exclude so the wheel ships `aiogram/**/*.py`, every generated `*.pyi`,
-  `aiogram/_core.pyi`, `py.typed`, `aiogram/_migration/registry.toml` (PD-13) and the compiled `_core`. Tests,
+  `aiogram/_core/*.pyi`, `py.typed`, `aiogram/_migration/registry.toml` (PD-13) and the compiled `_core`. Tests,
   `crates/**/target`, `v4/`, `docs/_build` and `.butcher` state stay out.
 - Sdist contents: `Cargo.toml`, `Cargo.lock`, `crates/**`, `rust-toolchain.toml`, Python sources and stubs. A CI job
   builds the sdist **offline** (`cargo vendor` or `--offline` with a pre-fetched registry) and installs it.
@@ -57,7 +57,7 @@ R25 asks for exactly these tests: an offline sdist build, packaged stubs and dat
 - [ ] Inventory what B-01 left in `pyproject.toml` / `Cargo.toml`. Drop the hatchling remnants (`[tool.hatch.*]`).
 - [ ] `[tool.maturin]` `include` / `exclude`. Add `tests/test_packaging/test_wheel_contents.py`, which unpacks the built
       wheel and asserts the presence of `py.typed`, a sample of generated `.pyi` (e.g. `aiogram/types/message.pyi`),
-      `_core.pyi` and `registry.toml`, and the absence of `tests/`.
+      `aiogram/_core/*.pyi` and `registry.toml`, and the absence of `tests/`.
 - [ ] Sdist manifest test: unpack it, assert the presence of `Cargo.lock` and `crates/`, and that no `target/` was packed.
 - [ ] CI job `sdist-offline`: build the sdist, then `pip install --no-index` with a vendored cargo registry and
       network disabled for cargo (`CARGO_NET_OFFLINE=true`). Then `python -P -c "import aiogram"`.

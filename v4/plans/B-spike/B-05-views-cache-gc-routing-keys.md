@@ -60,9 +60,9 @@ router reading native attributes one FFI call at a time is 13% slower than 3.x (
 - **Python-facing errors.** The Python class for a per-update decode error (path, message, raw, `update_id`) and
   `Update.decode_error` (10 Layer 2). `from_json` / `from_dict` raise `ValueError`.
 - **Module and stubs.** `module = "aiogram.types"` on every class; `freelist` on `User`, `MessageEntity`,
-  `PhotoSize`; no `dict` / `weakref` slots (08 §7 item 6). `aiogram/_core.pyi` stubs for the spike classes.
-- **Entry points.** `_core.decode_update(raw: bytes, bot=None) -> Update` and
-  `_core.decode_updates_response(raw: bytes, bot=None) -> tuple[Update, ...]`.
+  `PhotoSize`; no `dict` / `weakref` slots (08 §7 item 6). `aiogram/_core/views.pyi` stubs for the spike classes.
+- **Entry points.** `_core.decode.decode_update(raw: bytes, bot=None) -> Update` and
+  `_core.decode.decode_updates_response(raw: bytes, bot=None) -> tuple[Update, ...]`.
 
 **Out:**
 - Constructors, `to_*` / `from_*`, `replace`, eq / hash, pickle, seeding (B-06).
@@ -85,7 +85,7 @@ router reading native attributes one FFI call at a time is 13% slower than 3.x (
   matrix of inputs including U+001C–U+001F, NBSP and surrogate pairs (03 §3).
 - [ ] Python decode-error class, `Update.decode_error`, and the `decode_update` / `decode_updates_response` entry
   points.
-- [ ] `module = "aiogram.types"`, freelists, and `_core.pyi` entries.
+- [ ] `module = "aiogram.types"`, freelists, and `aiogram/_core/views.pyi` entries.
 - [ ] Register the first-access, warm-access, collection and `routing_keys` workloads in the B-02 adapter.
 - [ ] Tests in `tests/test_core/`: identity within a view, tuples, raw freshness (mutating `.raw` changes nothing),
   D105 warning once, routing-key parity, decode-error update (100% of new Python).

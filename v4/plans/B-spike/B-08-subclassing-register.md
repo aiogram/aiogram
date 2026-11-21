@@ -34,7 +34,7 @@ secondary bases go through ABC registration (D83).
   `MessageOrigin` → its four variants. Every pyclass is `subclass` + `frozen`.
 - **Secondary bases (D83).** The ABC `register` mechanism, shown with a test-only secondary base, since no spike
   type has a real one (the 3.x `MutableTelegramObject` base goes away under D15).
-- **Registry.** `_core.register(base, sub)`, which lives in `_core`, **not** in `aiogram.types` (PD-03).
+- **Registry.** `_core.registry.register(base, sub)`, which lives in `_core`, **not** in `aiogram.types` (PD-03).
   - It validates that `sub` is a Python subclass of `base`.
   - It is a process-global, free-threading-safe registry read by wrapper materialisation and the
     `from_json` / `from_dict` / constructor paths.
@@ -66,7 +66,7 @@ secondary bases go through ABC registration (D83).
 - [ ] Decide `register` after decoding has started, on a free-threaded build (proposed default: allowed. Copy-on-write
   registry with atomic publish; wrappers already materialised keep their class; new materialisations see the new
   entry. Documented, no lock on read). Record and flag.
-- [ ] `_core.register` with validation (non-subclass → `TypeError`; registering twice replaces with a
+- [ ] `_core.registry.register` with validation (non-subclass → `TypeError`; registering twice replaces with a
   `RuntimeWarning`).
 - [ ] Equality class-strictness and pickle round-trip of a registered subclass.
 - [ ] Register the subclass-instantiation workload and the "default path with registry populated" workload in B-02.
@@ -82,7 +82,7 @@ secondary bases go through ABC registration (D83).
 
 ## Acceptance criteria
 
-- After `_core.register(Message, MyMessage)`, `type(_core.decode_update(raw).message) is MyMessage`, and an
+- After `_core.registry.register(Message, MyMessage)`, `type(_core.decode.decode_update(raw).message) is MyMessage`, and an
   `__init__` that raises is never triggered.
 - Default-path first access with an unrelated registry entry is within noise (≤2%) of the empty-registry run (B-02
   workload).

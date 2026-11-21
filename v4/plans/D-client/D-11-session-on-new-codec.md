@@ -36,7 +36,7 @@ decoder. PD-08 simplifies the hooks: session `json_loads`/`json_dumps` **no long
     `AiogramDeprecationWarning` when passed (PD-08), emitted through I-12's `warn_deprecated` with its registry id.
   - `__call__` builds the per-call context (D-10) and runs the cached chain (D-06).
   - Public `encode_request(bot, method) -> JsonBody | Multipart` (reads/creates the D-10 snapshot) for custom
-    sessions; public `decode_response(bot, method, status_code, content: bytes)` that wraps `_core.decode_response` +
+    sessions; public `decode_response(bot, method, status_code, content: bytes)` that wraps `_core.decode.decode_response` +
     D-02 `raise_for_error`.
   - `check_response` / `prepare_value` remain defined on the base class for D-12's compatibility path; the default
     request path does not call them.

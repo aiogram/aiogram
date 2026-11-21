@@ -157,4 +157,4 @@ jobs:
           uv venv --clear "$venv"
           uv pip install --python "$venv/Scripts/python.exe" dist/*.whl
           # -P keeps the checkout's own aiogram/ off sys.path, so this imports what was just installed
-          "$venv/Scripts/python.exe" -P -c "import aiogram._core as core; print(core.build_info())"
+          "$venv/Scripts/python.exe" -P -c "import aiogram._core as core; from aiogram._core.conv import Kind; print(core.build_info(), Kind.int_())"

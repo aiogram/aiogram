@@ -176,14 +176,22 @@ These patterns repeatedly appeared in maintainer feedback and should be treated 
   `crates/aiogram-core/Cargo.toml`. Only change it with `make bump`: it writes both copies and refreshes
   `Cargo.lock` and `uv.lock` (`uv sync --locked` fails otherwise). `test_build.py` asserts they match.
 - `tests/typing/` holds mypy-only `assert_type` files, never collected by pytest; run them with `make typing`.
-- `aiogram/_core.pyi` is hand-written (PD-36). After changing the `_core` surface, update it and run `make stubtest`
-  (also part of `make lint`); stubtest needs the built extension.
+- The stubs are hand-written (PD-36): `aiogram/_core/__init__.pyi` for the root (`__version__`, `build_info`) and
+  one `aiogram/_core/<name>.pyi` per native submodule. The directory holds stubs only (no `.py`); the `.so` beside
+  it wins at import. After changing the `_core` surface, update the stubs and run `make stubtest` (also part of
+  `make lint`); stubtest needs the built extension and walks every submodule stub on its own.
+- A new native group = one Rust `mod` with `pub fn register(&Bound<PyModule>)` + one
+  `register_submodule(m, "<name>", <name>::register)` line in `lib.rs` + one `aiogram/_core/<name>.pyi` (with
+  `__all__`, and `from . import <name> as <name>` in `__init__.pyi`). Its classes get
+  `#[pyclass(module = "aiogram._core.<name>")]`. Nothing else: `test_build.py` derives the submodule list from the
+  stub files and imports each in a fresh process. Consumers import names directly
+  (`from aiogram._core.<name> import X`); the root holds no flat aliases.
 - Converter core (PD-36, F-08 plan-10): `aiogram/utils/converters.py` is the public, stdlib-only declaration API
   (`field`, `Key`, `Discriminator`, `Converter`, ready-made converters, `ConversionError`); `aiogram/utils/_converters.py`
   resolves annotations and holds `ModelBase`; `crates/aiogram-core/src/conv/` does every conversion. `import aiogram`
   must not import `_converters` (it loads `_core`); `tests/test_core/test_build.py` checks it.
   - The Python -> Rust interface is the typed constructors in `conv/ir.rs` (`Kind`, `Field`, `KindCell`) and
-    `ModelCore`, declared in `aiogram/_core.pyi`. Rust never reads resolver attributes by name. A new kind needs a
+    `ModelCore`, declared in `aiogram/_core/conv.pyi`. Rust never reads resolver attributes by name. A new kind needs a
     constructor (and its stub), a `Data` variant, and its arm in `json/load.rs`, `json/parse.rs`, `json/dump.rs`,
     `json/write.rs`, `check.rs` and `flat/` (or a "no flat form" there).
   - Errors stay Rust `Line`s until `errors::materialize` builds one `ConversionError`; message text and locs are

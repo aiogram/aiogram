@@ -1521,18 +1521,18 @@ class TestFlat:
 
 def test_core_stub_surface():
     """The only place the raw ``_core`` objects matter: the resolver builds them."""
-    from aiogram import _core  # noqa: PLC0415
+    from aiogram._core import conv  # noqa: PLC0415
 
-    kind = _core.Kind.int_()
+    kind = conv.Kind.int_()
     assert (kind.label, kind.flat) == ("int", True)
     assert repr(kind) == "<Kind int>"
-    field_ = _core.Field("a", kind, key="b", load=["c"])
+    field_ = conv.Field("a", kind, key="b", load=["c"])
     assert (field_.name, field_.key, field_.load, field_.kind) == ("a", "b", ("c",), kind)
     core = Address.__aiogram_core__
     assert (core.tp, core.ready) == (Address, True)
     with pytest.raises(RuntimeError, match="has its fields set already"):
         core.set_fields([])
-    cell = _core.KindCell()
+    cell = conv.KindCell()
     cell.set(kind)
     with pytest.raises(RuntimeError):
         cell.set(kind)

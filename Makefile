@@ -46,8 +46,10 @@ lint:
 	$(MAKE) stubtest
 	uv run pre-commit run --all-files --show-diff-on-failure
 
-# aiogram/_core.pyi is hand-written (PD-36, as pydantic-core does); stubtest checks it against
-# the built extension. Exceptions, if ever needed, go in an --allowlist file with a reason.
+# aiogram/_core/*.pyi is hand-written (PD-36, as pydantic-core does); stubtest checks it against
+# the built extension. It walks the stub package, so it checks the root and every native
+# submodule (aiogram._core.conv, ...); naming a submodule again fails as a duplicate module.
+# Exceptions, if ever needed, go in an --allowlist file with a reason.
 .PHONY: stubtest
 stubtest:
 	uv run python -m mypy.stubtest aiogram._core

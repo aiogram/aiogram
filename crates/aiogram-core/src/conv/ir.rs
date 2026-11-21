@@ -1,7 +1,7 @@
 //! The Python -> Rust interface of the converter core (F-08 plan-10, decision 10).
 //!
 //! The resolver in `aiogram/utils/_converters.py` builds [`Kind`] and [`Field`] objects through the
-//! typed constructors below (`aiogram/_core.pyi`). Rust never reads attributes of the resolver's
+//! typed constructors below (`aiogram/_core/conv.pyi`). Rust never reads attributes of the resolver's
 //! objects by name: a mismatch is a mypy / stubtest error, or a `TypeError` at class creation.
 //!
 //! Kinds are immutable once built, except two set-once references ([`Slot`]): a model's core
@@ -287,7 +287,7 @@ pub(crate) enum Data {
 }
 
 /// One compiled annotation.
-#[pyclass(frozen, module = "aiogram._core")]
+#[pyclass(frozen, module = "aiogram._core.conv")]
 pub struct Kind {
     pub(crate) data: Data,
     pub(crate) label: String,
@@ -916,7 +916,7 @@ impl Kind {
 }
 
 /// A kind set later: `type J = dict[str, J] | int` refers to itself.
-#[pyclass(frozen, module = "aiogram._core")]
+#[pyclass(frozen, module = "aiogram._core.conv")]
 pub struct KindCell {
     pub(crate) kind: Slot<Kind>,
 }
@@ -952,7 +952,7 @@ impl KindCell {
 // ---------------------------------------------------------------------------------------------
 
 /// One field of a model, dataclass, NamedTuple or TypedDict.
-#[pyclass(frozen, module = "aiogram._core")]
+#[pyclass(frozen, module = "aiogram._core.conv")]
 pub struct Field {
     /// The attribute name (`__dict__` / slot, `__init__` keyword, `__fields_set__`)
     pub(crate) name: Py<PyString>,
