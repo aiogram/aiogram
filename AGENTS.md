@@ -154,6 +154,10 @@ These patterns repeatedly appeared in maintainer feedback and should be treated 
   in `benchmarks/README.md`. Cases are keyed by corpus ids and reach aiogram only through
   `benchmarks/adapters/aiogram3.py`. `compare` caches exported trees and venvs per sha in the gitignored `.benchmarks/`
   (delete it to rebuild), and `make bench` runs every case (about 10 minutes).
+- The bench builds every `routing/*.toml` topology, and its adapter knows only `command`, `text_eq` and `pass`. A
+  topology using any other kind (all the A-10 oracle scenarios) carries `bench = false`;
+  `tests/test_differential_routing.py` enforces both sides. The PR CI does not run the bench, so a missed key only
+  shows in the weekly Benchmarks run.
 
 ## Differential harness (`differential/`)
 
@@ -161,6 +165,12 @@ These patterns repeatedly appeared in maintainer feedback and should be treated 
 - A new top-level dev directory is linted only if it is added to the Makefile `lint` paths and the pre-commit ruff `files` regex, and shipped unless it is in the hatch sdist `exclude`; `differential/` is in all three.
 - Side scripts (`differential/sides/<adapter>/<kind>.py`) run under `python -I` in their own venv: stdlib + aiogram only, `differential/trace.py` loaded by path. Do not import other repository code from them.
 - Side venvs live in the gitignored `.differential/`; `pypi:`/`git:` venvs are reused, so delete it to pick up a new release.
+- A comparator decides on what the left side (the 3.x reference) records in `meta`, never on "what the right side
+  did". The routing side puts its reference facts there (surviving candidates, raise paths, same-case
+  registrations), and that is how its comparators stay narrow. A record matches one manifest entry, so a difference
+  that holds everywhere (D12, D34, D111) is applied inside every comparator of the kind, not by a second entry.
+- A concurrent routing case (`group`) must not depend on thread timing: a sync filter hops to `asyncio.to_thread`,
+  so use `command` (async) filters there.
 
 ## 4.0 planning tree (`v4/`)
 
