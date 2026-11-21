@@ -89,9 +89,7 @@ def _stub(name: str, owner: str) -> None:
 
 # Seeded approved differences (manifests/*.toml). Each owning plan replaces its stub with the real
 # narrow assertion and refines the entry's ``match``.
-for _name, _owner in (
-    ("collections_are_tuples", "B plans"),
-):
+for _name, _owner in (("collections_are_tuples", "B plans"),):
     _stub(_name, _owner)
 
 
