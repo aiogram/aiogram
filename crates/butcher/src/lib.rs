@@ -6,6 +6,7 @@ use std::path::{Path, PathBuf};
 pub mod cli;
 pub mod ir;
 pub mod manifest;
+pub mod sources;
 
 #[derive(Debug)]
 pub enum Error {

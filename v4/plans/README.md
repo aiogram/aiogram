@@ -160,7 +160,7 @@ Verification method and results: [_VERIFICATION.md](_VERIFICATION.md).
 | [C-02](C-butcher/C-02-fetch-provenance.md) | `fetch`, source cache and manifest provenance | `todo` | no | S | C-01 |
 | [C-03](C-butcher/C-03-html-adapter.md) | HTML adapter | `todo` | no | L | C-01 |
 | [C-04](C-butcher/C-04-openapi-adapter.md) | OpenAPI 3.2 adapter | `todo` | no | L | C-01 |
-| [C-05](C-butcher/C-05-errors-json-adapter.md) | `errors.json` adapter | `todo` | no | S | C-01 |
+| [C-05](C-butcher/C-05-errors-json-adapter.md) | `errors.json` adapter | `done` | no | S | C-01 |
 | [C-06](C-butcher/C-06-overlay-schema-loader.md) | Overlay schema and loader | `todo` | no | M | C-01 |
 | [C-07](C-butcher/C-07-fill-dsl.md) | Fill-DSL for shortcuts | `todo` | no | M | C-06 |
 | [C-08](C-butcher/C-08-merge-cross-check.md) | Merge and cross-check | `todo` | no | L | C-03, C-04, C-05, C-06 |
@@ -226,7 +226,7 @@ Verification method and results: [_VERIFICATION.md](_VERIFICATION.md).
 | [F-01](F-fsm/F-01-thread-safe-memory-storage.md) | Thread-safe `MemoryStorage` (one dict + one lock) | `todo` | no | M | A-01, A-05, A-11 |
 | [F-02](F-fsm/F-02-isolation-lock-table-default-on.md) | Cross-thread, cross-loop isolation lock table, on by default (D28) | `todo` | no | L | A-01, A-05, A-06, A-11, H-01 |
 | [F-03](F-fsm/F-03-release-isolation-warn-after.md) | `state.release_isolation()`, `isolation_warn_after`, release hooks, re-entrancy error | `todo` | no | M | A-11, F-02, H-01 |
-| [F-04](F-fsm/F-04-fsm-hot-paths-statefilter.md) | FSM hot paths, StateFilter introspection, public isolation-key function | `todo` | no | S | A-01, A-05 |
+| [F-04](F-fsm/F-04-fsm-hot-paths-statefilter.md) | FSM hot paths, StateFilter introspection, public isolation-key function | `done` | no | S | A-01, A-05 |
 | [F-05](F-fsm/F-05-storage-record-batch-api.md) | Storage record and batch API (`get_records` / `apply_writes`) with fallbacks | `todo` | no | M | F-01 |
 | [F-06](F-fsm/F-06-redis-storage-legacy-layout.md) | `RedisStorage`: 3.x layout, pipelined reads/writes, single-loop detection | `todo` | no | M | A-11, F-05 |
 | [F-07](F-fsm/F-07-mongo-remove-motor-key-validation.md) | Mongo: remove motor `MongoStorage`; `PyMongoStorage` key validation, batching, single-loop | `todo` | no | M | A-11, F-05 |

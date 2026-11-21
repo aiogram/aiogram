@@ -2,7 +2,7 @@
 
 | Field | Value |
 |---|---|
-| Status | `todo` |
+| Status | `done` |
 | Story | F — FSM & scenes |
 | Target branch | `dev-4.x` |
 | Depends on | [A-01](../A-contracts/A-01-bootstrap-dev-4x.md), [A-05](../A-contracts/A-05-bench-harness.md) |

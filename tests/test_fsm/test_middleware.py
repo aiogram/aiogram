@@ -210,3 +210,72 @@ class TestFSMContextMiddleware:
             assert [key.user_id for key in keys] == [-2001, -2002]
         else:
             assert [key.user_id for key in keys] == [CHANNEL_BOT.id, CHANNEL_BOT.id]
+
+
+class FailingResource:
+    """Any attribute access fails: resolve_key must not touch storage or isolation."""
+
+    def __getattr__(self, name):
+        msg = f"unexpected access to {name!r}"
+        raise AssertionError(msg)
+
+
+SUPERGROUP = Chat(id=GROUP_ID, type="supergroup")
+USER = User(id=100, is_bot=False, first_name="Test")
+EVENT_CONTEXTS = [
+    EventContext(),
+    EventContext(user=USER),
+    EventContext(chat=SUPERGROUP),
+    EventContext(chat=SUPERGROUP, user=USER),
+    EventContext(chat=SUPERGROUP, user=USER, thread_id=THREAD_ID),
+    EventContext(chat=SUPERGROUP, user=USER, business_connection_id="bc", is_guest=True),
+    EventContext(chat=SUPERGROUP, user=CHANNEL_BOT, sender_chat=Chat(id=-2001, type="channel")),
+    EventContext(chat=Chat(id=CHANNEL_ID, type="channel"), sender_chat=SUPERGROUP),
+]
+
+
+class TestResolveKey:
+    @pytest.mark.parametrize("strategy", list(FSMStrategy))
+    @pytest.mark.parametrize("key_on_sender_chat", [False, True])
+    @pytest.mark.parametrize("event_context", EVENT_CONTEXTS)
+    @pytest.mark.parametrize("destiny", ["default", "scene"])
+    def test_equals_resolve_event_context(
+        self, strategy, key_on_sender_chat, event_context, destiny
+    ):
+        bot = MockedBot()
+        middleware = create_middleware(strategy, key_on_sender_chat=key_on_sender_chat)
+        context = middleware.resolve_event_context(
+            bot, {EVENT_CONTEXT_KEY: event_context}, destiny=destiny
+        )
+        middleware.storage = FailingResource()
+        middleware.events_isolation = FailingResource()
+
+        key = middleware.resolve_key(bot.id, event_context, destiny=destiny)
+
+        if context is None:
+            assert key is None
+        else:
+            assert key == context.key
+
+    def test_bot_id_cache(self):
+        middleware = create_middleware(FSMStrategy.USER_IN_CHAT)
+        first, second = MockedBot(token="42:TEST"), MockedBot(token="43:TEST")
+
+        assert middleware.get_context(first, 1, 1).key.bot_id == 42
+        assert middleware.get_context(first, 1, 1).key.bot_id == 42
+        assert middleware.get_context(second, 1, 1).key.bot_id == 43
+        assert middleware.resolve_context(first, 1, 1).key.bot_id == 42
+
+    def test_get_context_override_is_used(self):
+        class Custom(FSMContextMiddleware):
+            def get_context(self, bot, chat_id, user_id, **kwargs):
+                return super().get_context(
+                    bot, chat_id, user_id, **{**kwargs, "destiny": "custom"}
+                )
+
+        middleware = Custom(storage=MemoryStorage(), events_isolation=DisabledEventIsolation())
+        event_context = EventContext(chat=SUPERGROUP, user=USER)
+        context = middleware.resolve_event_context(MockedBot(), {EVENT_CONTEXT_KEY: event_context})
+
+        assert context is not None
+        assert context.key.destiny == "custom"
