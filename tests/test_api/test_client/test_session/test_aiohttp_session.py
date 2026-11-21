@@ -407,7 +407,7 @@ class TestAiohttpSession:
         attempt = aiohttp._Attempt()
         assert aiohttp._network_error(error, None, "GET", "u", attempt).request_sent is sent
         # After a redirect a response has already arrived, whatever fails next
-        attempt.redirected = True
+        attempt["redirected"] = True
         assert aiohttp._network_error(error, None, "GET", "u", attempt).request_sent is True
 
     async def test_request_sent_after_redirect(self):

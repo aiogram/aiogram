@@ -55,15 +55,22 @@ _NOT_SENT = tuple(
 )
 
 
-class _Attempt:
-    """Per-request state filled by the trace callbacks of the session."""
+class _Attempt(dict[str, bool]):
+    """
+    Per-request state filled by the trace callbacks of the session.
 
-    redirected = False
+    A mapping because older aiohttp (3.11, the lowest resolved) types
+    ``trace_request_ctx`` as ``Mapping[str, Any]``.
+    """
+
+    @property
+    def redirected(self) -> bool:
+        return self.get("redirected", False)
 
 
 async def _on_request_redirect(session: ClientSession, context: Any, params: Any) -> None:
     if isinstance(context.trace_request_ctx, _Attempt):
-        context.trace_request_ctx.redirected = True
+        context.trace_request_ctx["redirected"] = True
 
 
 def _request_sent(error: BaseException, attempt: _Attempt) -> bool | None:
@@ -95,8 +102,12 @@ def _network_error(
     connection (which names the host at most).
     """
     message = f"{type(error).__name__}: {http_method} {url}"
-    if isinstance(error, ClientConnectorError) and error.strerror:
-        message = f"{message} ({error.strerror})"
+    if isinstance(error, ClientConnectorError):
+        # Older aiohttp keeps a certificate error's text only on `.certificate_error`
+        cert_error = getattr(error, "certificate_error", None)
+        detail = error.strerror or getattr(cert_error, "strerror", None)
+        if detail:
+            message = f"{message} ({detail})"
     if isinstance(error, ClientResponseError) and error.status:
         # The server's reason phrase is untrusted text; the standard one is token-free
         try:
@@ -204,7 +215,8 @@ class AiohttpSession(BaseSession):
 
         if self._session is None or self._session.closed:
             trace = TraceConfig()
-            trace.on_request_redirect.append(_on_request_redirect)
+            # ponytail: cast, the Signal stubs of older aiohttp (3.11) reject any plain callback
+            trace.on_request_redirect.append(cast(Any, _on_request_redirect))
             self._session = ClientSession(
                 connector=self._connector_type(**self._connector_init),
                 headers={
