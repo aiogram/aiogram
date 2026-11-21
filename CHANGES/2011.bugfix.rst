@@ -1,0 +1,1 @@
+Fixed :code:`aiogram.utils.web_app_signature.check_webapp_signature` raising :code:`binascii.Error` or :code:`ValueError` on a malformed (not base64url) :code:`signature` instead of returning :code:`False`.

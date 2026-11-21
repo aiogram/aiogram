@@ -35,6 +35,10 @@ class TestWebAppSignature:
                 False,
             ],
             [42, "test&foo=bar=baz", False],
+            # signature is not valid base64url
+            [42, "auth_date=1650385342&query_id=test&signature=a", False],
+            [42, "auth_date=1650385342&query_id=test&signature=ab!d", False],
+            [42, "auth_date=1650385342&query_id=test&signature=%C3%A9", False],
         ],
     )
     def test_check_webapp_signature(self, bot_id: int, case: str, result: bool):
@@ -53,6 +57,14 @@ class TestWebAppSignature:
         assert result.query_id == "test"
         assert result.auth_date.year == 2022
         assert result.hash == "123"
+
+    def test_safe_check_webapp_init_data_from_signature_malformed(self):
+        with pytest.raises(ValueError, match="Invalid init data signature"):
+            safe_check_webapp_init_data_from_signature(
+                42,
+                "auth_date=1650385342&query_id=test&hash=123&signature=a",
+                PUBLIC_KEY,
+            )
 
     def test_safe_check_webapp_init_data_from_signature_invalid(self):
         with pytest.raises(ValueError):
