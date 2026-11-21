@@ -28,3 +28,6 @@ graphify-out/
 
 # benchmarks/record: unredacted recorder output, never committed
 benchmarks/record/raw/
+
+# differential harness: side venvs, archived git sides, traces
+.differential/

@@ -1,0 +1,59 @@
+# Routing kind (A-10). Schema: differential/README.md. First matching entry wins; unmatched cases are invariant.
+# Seeded 4.0 approved differences (README breaking changes): `when = "aiogram4"` keeps them inert in 3.x-vs-3.x
+# runs, and each `assert` is a stub comparator that never approves until its owning plan refines the entry.
+
+[[case]]
+match = "routing.middleware.outer.*"
+class = "approved"
+decision = "D111"
+assert = "outer_middleware_skipped_without_handler"
+when = "aiogram4"
+note = "outer middlewares of routers with no matching handler are skipped (breaking change 24)"
+
+[[case]]
+match = "routing.rejector.*"
+class = "approved"
+decision = "BC13"
+assert = "compiled_rejector_skips_handler"
+when = "aiogram4"
+note = "README breaking change 13: compiled rejectors skip a handler whose Command / F.x == lit is certainly false"
+
+[[case]]
+match = "routing.errors.*"
+class = "approved"
+decision = "D48"
+assert = "errors_bubble_to_raising_router"
+when = "aiogram4"
+note = "errors bubble to the raising router, then parents; siblings no longer catch (breaking change 17)"
+
+[[case]]
+match = "routing.filters.sync.*"
+class = "approved"
+decision = "D34"
+assert = "sync_filters_inline"
+when = "aiogram4"
+note = "sync filters run inline by default (breaking change 16)"
+
+[[case]]
+match = "routing.isolation.*"
+class = "approved"
+decision = "D28"
+assert = "event_isolation_default"
+when = "aiogram4"
+note = "D28 / D110: event isolation on by default, release_isolation() escape hatch (breaking change 15)"
+
+[[case]]
+match = "routing.snapshot.*"
+class = "approved"
+decision = "D114"
+assert = "routing_snapshot_per_runner"
+when = "aiogram4"
+note = "per-Runner immutable routing snapshot (breaking change 4)"
+
+[[case]]
+match = "routing.*/kwargs"
+class = "approved"
+decision = "D12"
+assert = "event_context_only_kwargs"
+when = "aiogram4"
+note = "event_from_user / event_chat / event_thread_id no longer injected, only event_context (breaking change 11)"

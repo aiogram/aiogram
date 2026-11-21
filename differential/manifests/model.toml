@@ -1,0 +1,74 @@
+# Model kind (A-08). Schema: differential/README.md. First matching entry wins; unmatched cases are invariant.
+# Seeded 4.0 approved differences (README breaking changes): `when = "aiogram4"` keeps them inert in 3.x-vs-3.x
+# runs, and each `assert` is a stub comparator that never approves until its owning plan refines the entry.
+# `gate = true` follows the A-07 plan (D83-D87, D91-D95, D103, D106-D108): void if B-13 is a no-go.
+
+[[case]]
+match = "model.*/eq.*"
+class = "approved"
+decision = "D108"
+assert = "equality_ignores_bot"
+gate = true
+when = "aiogram4"
+note = "D84 / D108: equality is class + data, ignores the bot binding (breaking change 3)"
+
+[[case]]
+match = "model.*/dump_json"
+class = "approved"
+decision = "D86"
+assert = "wire_names_in_dump_json"
+gate = true
+when = "aiogram4"
+note = "to_json / model_dump_json emit wire names, by_alias ignored (breaking change 18)"
+
+[[case]]
+match = "model.*/extras.*"
+class = "approved"
+decision = "D87"
+assert = "json_shaped_extras"
+gate = true
+when = "aiogram4"
+note = "extras must be JSON-shaped, depth > 128 is a decode error (breaking change 19)"
+
+[[case]]
+match = "model.*/dump_json.str"
+class = "approved"
+decision = "D94"
+assert = "dump_json_equals_to_json"
+gate = true
+when = "aiogram4"
+note = "model_dump_json() is to_json() as str; model_dump() keeps 3.x names (breaking change 18)"
+
+[[case]]
+match = "model.*/collections"
+class = "approved"
+decision = "D106"
+assert = "collections_are_tuples"
+gate = true
+when = "aiogram4"
+note = "collection fields are cached tuples (breaking change 23)"
+
+[[case]]
+match = "model.union.malformed.*"
+class = "approved"
+decision = "D107"
+assert = "malformed_member_is_unknown"
+gate = true
+when = "aiogram4"
+note = "a malformed union member becomes Unknown with .decode_error (breaking change 3/9)"
+
+[[case]]
+match = "model.update.forward_compat.*"
+class = "new"
+decision = "D10"
+when = "aiogram4"
+note = "10 Layer 2: element-wise getUpdates decode; a failing element becomes Update(decode_error=...)"
+
+[[case]]
+match = "model.*/as_"
+class = "approved"
+decision = "D103"
+assert = "as_returns_new_view"
+gate = true
+when = "aiogram4"
+note = "obj.as_(bot) returns a new bound view (breaking change 22)"
