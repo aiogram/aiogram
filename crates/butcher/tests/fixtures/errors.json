@@ -1,0 +1,32 @@
+{
+  "version": "10.4",
+  "mtproto_layer": 227,
+  "errors": {
+    "400": {
+      "Bad Request: ADMINS_TOO_MUCH": ["banChatMember", "leaveChat"],
+      "Bad Request: can't use file of type %s as %s": ["sendDocument"],
+      "Bad Request: chat not found": ["sendMessage"],
+      "Bad Request: entity %s": ["sendMessage"],
+      "Bad Request: entity begins after the end of the text at UTF-16 offset %d": ["sendMessage"],
+      "Bad Request: file of size %d bytes is too big%s; the maximum size is %d bytes": ["sendDocument"],
+      "Bad Request: message (text) is not modified [1+1]": ["editMessageText"],
+      "Bad Request: wrong remote file identifier specified: %s": ["getFile"],
+      "Bad Request: wrong remote file identifier specified: can't unserialize it": ["getFile"]
+    },
+    "403": {
+      "Forbidden: bot was blocked by the user": ["sendMessage"]
+    },
+    "429": {
+      "Too Many Requests: retry after %d": ["sendMessage"]
+    },
+    "500": {
+      "Internal Server Error: sent message was not found": ["sendMessage"]
+    }
+  },
+  "parameters": {"Too Many Requests: retry after %d": ["retry_after"]},
+  "mtproto_errors": {
+    "Bad Request: ADMINS_TOO_MUCH": ["ADMINS_TOO_MUCH"],
+    "Bad Request: chat not found": ["CHANNEL_INVALID", "CHANNEL_PRIVATE"]
+  },
+  "mtproto_descriptions": {"ADMINS_TOO_MUCH": "There are too many admins."}
+}

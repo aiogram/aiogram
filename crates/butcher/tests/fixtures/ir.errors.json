@@ -1,0 +1,136 @@
+{
+  "header": {
+    "api_version": "10.4",
+    "sources": [
+      "errors"
+    ],
+    "html_only": false
+  },
+  "errors": [
+    {
+      "code": 400,
+      "message": "Bad Request: ADMINS_TOO_MUCH",
+      "mtproto": "ADMINS_TOO_MUCH",
+      "methods": [
+        "banChatMember",
+        "leaveChat"
+      ]
+    },
+    {
+      "code": 400,
+      "message": "Bad Request: can't use file of type %s as %s",
+      "template": {
+        "placeholders": [
+          "s",
+          "s"
+        ],
+        "regex": "^Bad Request: can't use file of type (.*?) as (.*?)$"
+      },
+      "methods": [
+        "sendDocument"
+      ]
+    },
+    {
+      "code": 400,
+      "message": "Bad Request: chat not found",
+      "methods": [
+        "sendMessage"
+      ]
+    },
+    {
+      "code": 400,
+      "message": "Bad Request: entity %s",
+      "template": {
+        "placeholders": [
+          "s"
+        ],
+        "regex": "^Bad Request: entity (.*?)$"
+      },
+      "methods": [
+        "sendMessage"
+      ]
+    },
+    {
+      "code": 400,
+      "message": "Bad Request: entity begins after the end of the text at UTF-16 offset %d",
+      "template": {
+        "placeholders": [
+          "d"
+        ],
+        "regex": "^Bad Request: entity begins after the end of the text at UTF\\-16 offset (-?\\d+)$"
+      },
+      "methods": [
+        "sendMessage"
+      ]
+    },
+    {
+      "code": 400,
+      "message": "Bad Request: file of size %d bytes is too big%s; the maximum size is %d bytes",
+      "template": {
+        "placeholders": [
+          "d",
+          "s",
+          "d"
+        ],
+        "regex": "^Bad Request: file of size (-?\\d+) bytes is too big(.*?); the maximum size is (-?\\d+) bytes$"
+      },
+      "methods": [
+        "sendDocument"
+      ]
+    },
+    {
+      "code": 400,
+      "message": "Bad Request: message (text) is not modified [1+1]",
+      "methods": [
+        "editMessageText"
+      ]
+    },
+    {
+      "code": 400,
+      "message": "Bad Request: wrong remote file identifier specified: %s",
+      "template": {
+        "placeholders": [
+          "s"
+        ],
+        "regex": "^Bad Request: wrong remote file identifier specified: (.*?)$"
+      },
+      "methods": [
+        "getFile"
+      ]
+    },
+    {
+      "code": 400,
+      "message": "Bad Request: wrong remote file identifier specified: can't unserialize it",
+      "methods": [
+        "getFile"
+      ]
+    },
+    {
+      "code": 403,
+      "message": "Forbidden: bot was blocked by the user",
+      "methods": [
+        "sendMessage"
+      ]
+    },
+    {
+      "code": 429,
+      "message": "Too Many Requests: retry after %d",
+      "template": {
+        "placeholders": [
+          "d"
+        ],
+        "regex": "^Too Many Requests: retry after (-?\\d+)$"
+      },
+      "methods": [
+        "sendMessage"
+      ]
+    },
+    {
+      "code": 500,
+      "message": "Internal Server Error: sent message was not found",
+      "methods": [
+        "sendMessage"
+      ]
+    }
+  ]
+}
