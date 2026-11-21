@@ -43,7 +43,13 @@ impl Fetched {
             at: ".".to_owned(),
             message: e.to_string(),
         })?;
-        serde_path_to_error::deserialize(de).map_err(|e| crate::parse_error(path, e))
+        let fetched: Fetched =
+            serde_path_to_error::deserialize(de).map_err(|e| crate::parse_error(path, e))?;
+        fetched
+            .sources
+            .check()
+            .map_err(|e| crate::invalid(path, e))?;
+        Ok(fetched)
     }
 
     /// Reads the cache index and checks that every `ok` source is in the cache and matches its digest.
@@ -202,7 +208,7 @@ fn record(
         match get(agent, url) {
             Ok(got) if got.status >= 500 => last = Some(got.status),
             Ok(got) => return finish(&opts.cache, url, kind, got),
-            Err(_) => last = None,
+            Err(_) => {} // keep the last HTTP status seen
         }
     }
     Ok(unreachable_record(url, last))
@@ -213,10 +219,9 @@ fn finish(cache: &Path, url: &str, kind: Kind, got: Got) -> Result<SourceRecord,
         return Ok(unreachable_record(url, Some(got.status)));
     }
     let sha = sha256(&got.body);
+    // always written: a blob left truncated by an interrupted run must not survive a refetch
     let blob = cache.join(&sha);
-    if !blob.exists() {
-        std::fs::write(&blob, &got.body).map_err(|source| Error::Io { path: blob, source })?;
-    }
+    std::fs::write(&blob, &got.body).map_err(|source| Error::Io { path: blob, source })?;
     Ok(SourceRecord {
         url: url.to_owned(),
         status: FetchStatus::Ok,

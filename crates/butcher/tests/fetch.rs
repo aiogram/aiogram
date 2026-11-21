@@ -293,7 +293,13 @@ fn a_bad_bundle_is_rejected() {
     let page = sha256(b"page");
     let good = manifest_for(&page);
     type Case<'a> = (&'a str, Vec<(&'a str, &'a [u8])>, &'a str);
-    let cases: [Case; 6] = [
+    let no_sha = manifest_for(&page).replace(&format!("sha256 = \"{page}\"\n"), "");
+    let cases: [Case; 7] = [
+        (
+            "nosha",
+            vec![("manifest.toml", no_sha.as_bytes())],
+            "sources.html.sha256: required",
+        ),
         (
             "stray",
             vec![("manifest.toml", good.as_bytes()), ("sub/evil", b"x")],
@@ -413,4 +419,16 @@ fn cli_fetch_then_build_offline() {
             .unwrap_err()
             .contains("unreachable")
     );
+}
+
+#[test]
+fn refetch_repairs_a_truncated_blob() {
+    let server = happy();
+    let cache = scratch("repair");
+    let fetched = fetch::fetch(&server.options(&cache)).unwrap();
+    let blob = cache.join(fetched.sources.html.sha256.as_ref().unwrap());
+    std::fs::write(&blob, "trunc").unwrap();
+    assert!(Fetched::load(&cache).is_err());
+    fetch::fetch(&server.options(&cache)).unwrap();
+    assert!(Fetched::load(&cache).is_ok());
 }
