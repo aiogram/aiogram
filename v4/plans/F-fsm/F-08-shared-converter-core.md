@@ -159,18 +159,22 @@ make lint
   - **Fallback design.** The Rust walkers take only inputs they can convert as they are; anything else (wrong
     types, missing fields, subclasses, values outside `i64`, NaN, a user converter that raises...) re-runs the whole
     input through `ModelConverter._py_*`. Results and `ConversionError`s are the Python ones by construction; the
-    cost is that on an error path user converters and `__post_init__` run twice.
+    cost is that on an error path user converters and `__post_init__` run twice (a thread-local "inside a
+    fallback" flag keeps nested calls on Python, so never more). A `BaseException` that is not an `Exception`
+    (`KeyboardInterrupt`) propagates without a retry; nesting beyond 128 levels falls back, so deep or cyclic input
+    raises Python's `RecursionError` instead of overflowing the native stack. Rust mirrors a converter natively only
+    when its class declares `kind` itself, so a subclass that overrides a built-in's methods is called.
   - **Production numbers** (M2 Pro, `scripts/bench_converters.py`, median µs, Python / Rust / pydantic v2):
 
     | Case | CPython 3.14.2 | 3.14t (no GIL) | PyPy 3.11 (Python only) |
     |---|---|---|---|
-    | a. callback unpack (`split` + `from_flat`) | 1.28 / 0.55 / 2.89 | 1.30 / 0.66 / 3.03 | 0.62 / – / 10.92 |
-    | b. 5 fields from dict | 1.42 / 0.35 / 0.62 | 1.50 / 0.39 / 0.73 | 0.63 / – / 4.35 |
-    | c. 5 fields from JSON | 2.64 / 0.57 / 0.76 | 2.65 / 0.60 / 0.83 | 0.99 / – / 5.59 |
-    | c′. + nested dataclass, JSON | 3.83 / 0.90 / 1.10 | 4.03 / 0.94 / 1.21 | 1.46 / – / 8.38 |
-    | d. 20 fields, JSON | 12.60 / 3.51 / 3.54 | 12.95 / 3.74 / 4.02 | 6.14 / – / 38.61 |
-    | d. 20 fields, dict | 8.24 / 1.84 / 2.59 | 8.77 / 2.26 / 3.38 | 3.98 / – / 22.45 |
-    | d′. 20 fields, 3 via Python converters, JSON | 12.93 / 4.31 / 3.73 | 13.61 / 4.56 / 4.25 | 7.49 / – / 26.28 |
+    | a. callback unpack (`split` + `from_flat`) | 1.24 / 0.55 / 2.84 | 1.29 / 0.66 / 2.99 | 0.63 / – / 11.10 |
+    | b. 5 fields from dict | 1.37 / 0.33 / 0.60 | 1.49 / 0.38 / 0.74 | 0.64 / – / 4.36 |
+    | c. 5 fields from JSON | 2.59 / 0.60 / 0.71 | 2.64 / 0.63 / 0.84 | 0.99 / – / 5.91 |
+    | c′. + nested dataclass, JSON | 3.77 / 0.95 / 1.08 | 3.88 / 0.99 / 1.26 | 1.46 / – / 8.63 |
+    | d. 20 fields, JSON | 12.42 / 3.71 / 3.54 | 12.94 / 4.20 / 4.06 | 6.61 / – / 24.05 |
+    | d. 20 fields, dict | 8.53 / 1.89 / 2.63 | 8.66 / 2.25 / 3.39 | 4.25 / – / 21.92 |
+    | d′. 20 fields, 3 via Python converters, JSON | 12.89 / 4.47 / 3.74 | 13.69 / 5.01 / 4.39 | 7.71 / – / 24.96 |
 
   - **Raw-bytes path (owner):** an internal hook on the built-in `RedisStorage` only; typed reads always parse the
     raw bytes and **bypass a custom `json_loads`**; Memory and Mongo storages use the dict walker. F-09 wires

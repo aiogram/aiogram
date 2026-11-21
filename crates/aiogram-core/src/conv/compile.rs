@@ -8,7 +8,17 @@ use super::kind::{Collect, Field, Kind, Nested};
 
 pub(crate) fn kind(converter: &Bound<'_, PyAny>) -> PyResult<Kind> {
     let py = converter.py();
-    let tag: String = converter.getattr(pyo3::intern!(py, "kind"))?.extract()?;
+    // A subclass that does not declare its own `kind` may override the Python methods, so it is
+    // called, not mirrored.
+    let own = converter
+        .get_type()
+        .getattr(pyo3::intern!(py, "__dict__"))?
+        .contains(pyo3::intern!(py, "kind"))?;
+    let tag: String = if own {
+        converter.getattr(pyo3::intern!(py, "kind"))?.extract()?
+    } else {
+        String::from("python")
+    };
     let flat = || -> PyResult<bool> { converter.getattr(pyo3::intern!(py, "flat"))?.extract() };
     let dict = |name: &str| -> PyResult<Py<PyDict>> {
         Ok(converter.getattr(name)?.cast_into::<PyDict>()?.unbind())

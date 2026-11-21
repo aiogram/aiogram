@@ -17,14 +17,14 @@ pub(crate) fn from_parts<'py>(
     } else if let Ok(tuple) = parts.cast_exact::<PyTuple>() {
         tuple.iter().collect()
     } else {
-        return Err(Fallback);
+        return Err(Fallback::Retry);
     };
     if parts.len() != schema.fields.len() {
-        return Err(Fallback);
+        return Err(Fallback::Retry);
     }
     let mut values = Vec::with_capacity(parts.len());
     for (field, part) in schema.fields.iter().zip(&parts) {
-        let text = part.cast_exact::<PyString>().map_err(|_| Fallback)?;
+        let text = part.cast_exact::<PyString>().map_err(|_| Fallback::Retry)?;
         values.push(Some(from_str(py, text, &field.kind)?));
     }
     schema.build(py, values)
@@ -37,14 +37,16 @@ fn from_str<'py>(
 ) -> Fast<Bound<'py, PyAny>> {
     match kind {
         Kind::Str => Ok(part.clone().into_any()),
-        Kind::Int => Ok(PyInt::new(py, parse_int(part.to_str()?).ok_or(Fallback)?).into_any()),
+        Kind::Int => {
+            Ok(PyInt::new(py, parse_int(part.to_str()?).ok_or(Fallback::Retry)?).into_any())
+        }
         Kind::Float => {
-            Ok(PyFloat::new(py, parse_float(part.to_str()?).ok_or(Fallback)?).into_any())
+            Ok(PyFloat::new(py, parse_float(part.to_str()?).ok_or(Fallback::Retry)?).into_any())
         }
         Kind::Bool => match part.to_str()? {
             "1" => Ok(PyBool::new(py, true).to_owned().into_any()),
             "0" => Ok(PyBool::new(py, false).to_owned().into_any()),
-            _ => Err(Fallback), // the lax set ("true", "Off", ...) stays in Python
+            _ => Err(Fallback::Retry), // the lax set ("true", "Off", ...) stays in Python
         },
         Kind::Optional { flat: true, .. } if part.to_str()?.is_empty() => {
             Ok(py.None().into_bound(py))
@@ -53,14 +55,14 @@ fn from_str<'py>(
         Kind::Enum {
             by_text: Some(by_text),
             ..
-        } => by_text.bind(py).get_item(part)?.ok_or(Fallback),
+        } => by_text.bind(py).get_item(part)?.ok_or(Fallback::Retry),
         Kind::Literal {
             text: Some(text), ..
-        } => text.bind(py).get_item(part)?.ok_or(Fallback),
+        } => text.bind(py).get_item(part)?.ok_or(Fallback::Retry),
         Kind::Python(converter) => Ok(converter
             .bind(py)
             .call_method1(pyo3::intern!(py, "from_str"), (part,))?),
-        _ => Err(Fallback), // no flat-string form: Python raises TypeError
+        _ => Err(Fallback::Retry), // no flat-string form: Python raises TypeError
     }
 }
 
@@ -70,7 +72,7 @@ pub(crate) fn to_parts<'py>(
     schema: &ModelSchema,
 ) -> Fast<Bound<'py, PyList>> {
     if !value.is_instance(schema.cls(py))? {
-        return Err(Fallback);
+        return Err(Fallback::Retry);
     }
     let parts = PyList::empty(py);
     for field in &schema.fields {
@@ -109,7 +111,7 @@ fn to_str<'py>(py: Python<'py>, value: &Bound<'py, PyAny>, kind: &Kind) -> Fast<
         } => {
             let key = PyTuple::new(py, [value.get_type().into_any(), value.clone()])?;
             if !json.bind(py).contains(key)? {
-                return Err(Fallback);
+                return Err(Fallback::Retry);
             }
             // `_literal_text`: None -> "", bool -> "1"/"0", else str(value)
             if value.is_none() {
@@ -123,7 +125,7 @@ fn to_str<'py>(py: Python<'py>, value: &Bound<'py, PyAny>, kind: &Kind) -> Fast<
         Kind::Python(converter) => Ok(converter
             .bind(py)
             .call_method1(pyo3::intern!(py, "to_str"), (value,))?),
-        _ => Err(Fallback), // every rejection stays in Python
+        _ => Err(Fallback::Retry), // every rejection stays in Python
     }
 }
 

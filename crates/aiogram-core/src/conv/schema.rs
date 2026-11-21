@@ -4,7 +4,7 @@ use pyo3::prelude::*;
 use pyo3::sync::PyOnceLock;
 use pyo3::types::{PyDict, PyFrozenSet, PyString, PyType};
 
-use super::fallback::{Fallback, Fast};
+use super::fallback::{self, Fallback, Fast};
 use super::kind::Field;
 use super::{compile, dict, flat, json};
 
@@ -32,7 +32,24 @@ impl ModelSchema {
         py: Python<'py>,
         values: Vec<Option<Bound<'py, PyAny>>>,
     ) -> Fast<Bound<'py, PyAny>> {
-        let dict = PyDict::new(py);
+        let cls = self.cls.bind(py);
+        // A model: fill the new instance's own __dict__, as `instance.__dict__.update(...)`
+        // does, so a guarded __setattr__ (a frozen FSMData) is never called.
+        let instance = if self.is_model {
+            let object_new = OBJECT_NEW.get_or_try_init(py, || {
+                py.get_type::<PyAny>().getattr("__new__").map(Bound::unbind)
+            })?;
+            Some(object_new.bind(py).call1((cls,))?)
+        } else {
+            None
+        };
+        let dict = match &instance {
+            Some(instance) => instance
+                .getattr(pyo3::intern!(py, "__dict__"))?
+                .cast_into::<PyDict>()
+                .map_err(|_| Fallback::Retry)?,
+            None => PyDict::new(py),
+        };
         let mut set = Vec::new();
         let mut all = true;
         for (field, value) in self.fields.iter().zip(values) {
@@ -49,40 +66,41 @@ impl ModelSchema {
                     match (&field.default, &field.factory) {
                         (Some(default), _) => dict.set_item(name, default.bind(py))?,
                         (None, Some(factory)) => dict.set_item(name, factory.bind(py).call0()?)?,
-                        (None, None) => return Err(Fallback), // required: Python raises
+                        (None, None) => return Err(Fallback::Retry), // required: Python raises
                     }
                 }
             }
         }
-        let cls = self.cls.bind(py);
-        if !self.is_model {
+        let Some(instance) = instance else {
             // dataclass / NamedTuple; a ValueError from __post_init__ falls back too, so
             // Python wraps it identically
             return Ok(cls.call((), Some(&dict))?);
-        }
+        };
         let fields_set = if all {
             self.all_set.bind(py).clone()
         } else {
             PyFrozenSet::new(py, &set)?
         };
         dict.set_item(pyo3::intern!(py, "__fields_set__"), fields_set)?;
-        let object_new = OBJECT_NEW.get_or_try_init(py, || {
-            py.get_type::<PyAny>().getattr("__new__").map(Bound::unbind)
-        })?;
-        let instance = object_new.bind(py).call1((cls,))?;
-        instance.setattr(pyo3::intern!(py, "__dict__"), dict)?;
         Ok(instance)
     }
 
+    /// The fast path, or the Python implementation (`fallback`) when it does not apply or
+    /// when this thread is already inside a fallback.
     fn run<'py>(
         &self,
-        fast: Fast<Bound<'py, PyAny>>,
+        fast: impl FnOnce() -> Fast<Bound<'py, PyAny>>,
         fallback: &Bound<'py, PyString>,
         arg: &Bound<'py, PyAny>,
     ) -> PyResult<Bound<'py, PyAny>> {
-        match fast {
+        let python = || self.converter.bind(arg.py()).call_method1(fallback, (arg,));
+        if fallback::python_only() {
+            return python();
+        }
+        match fast() {
             Ok(result) => Ok(result),
-            Err(Fallback) => self.converter.bind(arg.py()).call_method1(fallback, (arg,)),
+            Err(Fallback::Retry) => fallback::in_python(python),
+            Err(Fallback::Raise(error)) => Err(error),
         }
     }
 }
@@ -106,7 +124,7 @@ impl ModelSchema {
     fn load_dict<'py>(&self, value: &Bound<'py, PyAny>) -> PyResult<Bound<'py, PyAny>> {
         let py = value.py();
         self.run(
-            dict::load_model(py, value, self),
+            || dict::load_model(py, value, self, 0),
             pyo3::intern!(py, "_py_from_json"),
             value,
         )
@@ -116,7 +134,7 @@ impl ModelSchema {
     fn load_json<'py>(&self, data: &Bound<'py, PyAny>) -> PyResult<Bound<'py, PyAny>> {
         let py = data.py();
         self.run(
-            json::load_document(py, data, self),
+            || json::load_document(py, data, self),
             pyo3::intern!(py, "_py_load_json"),
             data,
         )
@@ -127,7 +145,7 @@ impl ModelSchema {
     fn load_flat<'py>(&self, parts: &Bound<'py, PyAny>) -> PyResult<Bound<'py, PyAny>> {
         let py = parts.py();
         self.run(
-            flat::from_parts(py, parts, self),
+            || flat::from_parts(py, parts, self),
             pyo3::intern!(py, "_py_from_flat"),
             parts,
         )
@@ -137,7 +155,7 @@ impl ModelSchema {
     fn to_flat<'py>(&self, value: &Bound<'py, PyAny>) -> PyResult<Bound<'py, PyAny>> {
         let py = value.py();
         self.run(
-            flat::to_parts(py, value, self).map(Bound::into_any),
+            || flat::to_parts(py, value, self).map(Bound::into_any),
             pyo3::intern!(py, "_py_to_flat"),
             value,
         )

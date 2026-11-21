@@ -60,6 +60,10 @@ else:  # pragma: no cover
     _HINTS_OPTIONS: dict[str, Any] = {}
 
 
+class _NotReady(NameError):
+    """A class's fields were needed while they were being compiled (a recursive reference)."""
+
+
 class ConversionError(ValueError):
     """A value could not be converted; :attr:`path` points at the offending field."""
 
@@ -448,28 +452,41 @@ class _TypedDict(Converter):
     def __init__(self, tp: type) -> None:
         self.tp = tp
         self._fields: tuple[tuple[str, Converter, bool], ...] | None = None
+        self._compiling = False
 
     @property
     def fields(self) -> tuple[tuple[str, Converter, bool], ...]:
+        if self._fields is None and self._compiling:
+            raise _NotReady(self.tp)
         if self._fields is None:  # lazy: a TypedDict may refer to itself
-            hints = typing.get_type_hints(
-                self.tp, localns={self.tp.__name__: self.tp}, include_extras=True, **_HINTS_OPTIONS
-            )
-            required_keys = self.tp.__required_keys__  # type: ignore[attr-defined]
-            fields = []
-            for name, hint in hints.items():
-                # The wrapper wins: under string annotations __required_keys__ can miss it.
-                wrapper = get_origin(hint)
-                required = wrapper is Required or (
-                    wrapper is not NotRequired and name in required_keys
-                )
-                try:
-                    fields.append((name, converter_for(hint), required))
-                except TypeError as e:
-                    msg = f"{self.tp.__qualname__}.{name}: {e}"
-                    raise TypeError(msg) from None
-            self._fields = tuple(fields)
+            self._compiling = True
+            try:
+                self._fields = self._compile()
+            finally:
+                self._compiling = False
         return self._fields
+
+    def _compile(self) -> tuple[tuple[str, Converter, bool], ...]:
+        hints = typing.get_type_hints(
+            self.tp, localns={self.tp.__name__: self.tp}, include_extras=True, **_HINTS_OPTIONS
+        )
+        required_keys = self.tp.__required_keys__  # type: ignore[attr-defined]
+        fields = []
+        for name, hint in hints.items():
+            # The wrapper wins: under string annotations __required_keys__ can miss it.
+            inner = hint
+            while get_origin(inner) is Annotated:
+                inner = get_args(inner)[0]
+            wrapper = get_origin(inner)
+            required = wrapper is Required or (
+                wrapper is not NotRequired and name in required_keys
+            )
+            try:
+                fields.append((name, converter_for(hint), required))
+            except TypeError as e:
+                msg = f"{self.tp.__qualname__}.{name}: {e}"
+                raise TypeError(msg) from None
+        return tuple(fields)
 
     def _convert(self, value: Any, method: str) -> dict[str, Any]:
         if not isinstance(value, Mapping):
@@ -560,7 +577,7 @@ class _Union(Converter):
 
     def _tag_table(self) -> dict[tuple[type, Any], Converter]:
         if self._tags is None:
-            tags = {}
+            tags: dict[tuple[type, Any], Converter] = {}
             for member in self.members:
                 fields: dict[str, Converter] = {}
                 if isinstance(member, ModelConverter):
@@ -574,7 +591,9 @@ class _Union(Converter):
                     )
                     raise TypeError(msg)
                 for value in tag.values:
-                    tags[type(value), value] = member
+                    if tags.setdefault((type(value), value), member) is not member:
+                        msg = f"{self.label}: tag {value!r} is used by more than one member"
+                        raise TypeError(msg)
             self._tags = tags
         return self._tags
 
@@ -641,12 +660,19 @@ class ModelConverter(Converter):
         self.tp = tp
         self.is_model = is_model
         self._fields: tuple[FieldSpec, ...] | None = None
+        self._compiling = False
 
     @property
     def fields(self) -> tuple[FieldSpec, ...]:
         # Lazy: a class may refer to itself (or to a class defined later) through its fields.
         if self._fields is None:
-            self._fields = _compile(self.tp)
+            if self._compiling:
+                raise _NotReady(self.tp)
+            self._compiling = True
+            try:
+                self._fields = _compile(self.tp)
+            finally:
+                self._compiling = False
             self._accelerate()
         return self._fields
 
@@ -703,7 +729,7 @@ class ModelConverter(Converter):
 
     def load_json(self, data: bytes | str) -> Any:
         """JSON text (``bytes`` or ``str``) -> instance; one pass on the Rust backend."""
-        return self.from_json(json.loads(data))
+        return self._py_from_json(json.loads(data))
 
     def from_flat(self, parts: Sequence[str]) -> Any:
         """Callback-data parts (one string per field, in field order) -> instance."""

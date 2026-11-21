@@ -1100,6 +1100,153 @@ def test_non_cpython_never_loads_rust(backend):
     assert "aiogram._core" not in sys.modules or "_schema" not in vars(Flat.__converter__)
 
 
+class Leaf(Model):
+    kind: Literal["leaf"]
+
+
+class Trunk(Model):
+    kind: Literal["trunk"]
+    children: list[Annotated[Leaf | Trunk, Discriminator("kind")]] = []  # noqa: RUF012
+
+
+class Total(TypedDict):
+    always: int
+    maybe: Annotated[NotRequired[int], "meta"]
+
+
+class Partial(TypedDict, total=False):
+    sometimes: int
+    must: Annotated[Required[int], "meta"]
+
+
+class Upper(_converters._Str):
+    """A subclass of a built-in converter that changes it: Rust must not use the native kind."""
+
+    def from_json(self, value):
+        return value.upper()
+
+
+class Shouty(Model):
+    word: Annotated[str, Upper()]
+
+
+class Guarded(Model):
+    x: int
+
+    def __setattr__(self, name, value):
+        msg = "frozen"
+        raise AttributeError(msg)
+
+
+@dataclasses.dataclass
+class Counted:
+    calls: ClassVar[list[int]] = []
+    x: int
+
+    def __post_init__(self) -> None:
+        Counted.calls.append(self.x)
+        msg = "never valid"
+        raise ValueError(msg)
+
+
+class HasCounted(Model):
+    inner: Counted
+
+
+class Interrupting(Converter):
+    calls: ClassVar[int] = 0
+
+    def from_json(self, value):
+        Interrupting.calls += 1
+        raise KeyboardInterrupt
+
+
+class Interrupted(Model):
+    value: Annotated[int, Interrupting()]
+
+
+class Doc(TypedDict):
+    kind: Literal["doc"]
+    items: list[Annotated[Doc | LeafDict, Discriminator("kind")]]
+
+
+class LeafDict(TypedDict):
+    kind: Literal["leaf"]
+
+
+class TestReviewFindings:
+    def test_recursive_discriminated_typeddict(self):
+        doc = converter_for(Doc).from_json(
+            {"kind": "doc", "items": [{"kind": "leaf"}, {"kind": "doc", "items": []}]}
+        )
+        assert doc == {"kind": "doc", "items": [{"kind": "leaf"}, {"kind": "doc", "items": []}]}
+
+    def test_subclassed_builtin_converter_is_honoured(self):
+        assert Shouty.__converter__.from_json({"word": "abc"}).word == "ABC"
+        assert Shouty.__converter__.load_json(b'{"word": "abc"}').word == "ABC"
+
+    def test_model_refusing_setattr_loads_without_fallback(self, backend, monkeypatch):
+        calls = []
+        original = ModelConverter._py_from_json
+        monkeypatch.setattr(
+            ModelConverter, "_py_from_json", lambda s, v: (calls.append(v), original(s, v))[1]
+        )
+        assert Guarded.__converter__.from_json({"x": 1}).x == 1
+        assert calls == []
+
+    def test_fallback_runs_user_code_at_most_twice(self, backend, monkeypatch):
+        monkeypatch.setattr(Counted, "calls", [])
+        with pytest.raises(ConversionError, match="never valid"):
+            HasCounted.__converter__.load_json(b'{"inner": {"x": 1}}')
+        assert len(Counted.calls) == (2 if backend == "rust" else 1)
+
+    def test_keyboard_interrupt_is_not_retried(self, monkeypatch):
+        monkeypatch.setattr(Interrupting, "calls", 0)
+        with pytest.raises(KeyboardInterrupt):
+            Interrupted.__converter__.from_json({"value": 1})
+        assert Interrupting.calls == 1
+
+    def test_deep_nesting_raises_recursion_error_not_a_crash(self):
+        depth = 100_000
+        text = '{"value": 0, "children": [' * depth + "]}" * depth
+        with pytest.raises(RecursionError):
+            Node.__converter__.load_json(text.encode())
+
+    def test_cyclic_dict_raises_recursion_error(self):
+        data: dict[str, Any] = {"value": 0}
+        data["children"] = [data]
+        with pytest.raises(RecursionError):
+            Node.__converter__.from_json(data)
+
+    def test_moderate_nesting_loads(self):
+        depth = 60
+        text = '{"value": 0, "children": [' * depth + '{"value": 1}' + "]}" * depth
+        node = Node.__converter__.load_json(text.encode())
+        for _ in range(depth):
+            node = node.children[0]
+        assert node.value == 1
+
+    def test_recursive_discriminated_union(self):
+        trunk = Trunk.__converter__.from_json(
+            {"kind": "trunk", "children": [{"kind": "leaf"}, {"kind": "trunk", "children": []}]}
+        )
+        assert [type(child) for child in trunk.children] == [Leaf, Trunk]
+
+    def test_duplicate_discriminator_tag_rejected(self):
+        class Kitten(Model):
+            kind: Literal["cat"]
+
+        with pytest.raises(TypeError, match="tag 'cat' is used by more than one member"):
+            converter_for(Annotated[Cat | Kitten, Discriminator("kind")])
+
+    def test_typeddict_required_inside_annotated(self):
+        total, partial = converter_for(Total), converter_for(Partial)
+        assert total.from_json({"always": 1}) == {"always": 1}
+        assert partial.from_json({"must": 1}) == {"must": 1}
+        with pytest.raises(ConversionError, match="must: field required"):
+            partial.from_json({"sometimes": 1})
+
+
 class TestBackendSelection:
     def test_python_without_core(self, monkeypatch):
         monkeypatch.setitem(sys.modules, "aiogram._core", None)

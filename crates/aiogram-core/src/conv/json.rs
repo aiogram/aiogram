@@ -8,7 +8,7 @@ use jiter::{Jiter, NumberAny, NumberInt, Peek, PythonParse};
 use pyo3::prelude::*;
 use pyo3::types::{PyBool, PyBytes, PyDict, PyFloat, PyInt, PyList, PyString, PyTuple};
 
-use super::fallback::{Fallback, Fast};
+use super::fallback::{Fallback, Fast, MAX_DEPTH};
 use super::kind::Kind;
 use super::schema::ModelSchema;
 
@@ -17,16 +17,18 @@ pub(crate) fn load_document<'py>(
     data: &Bound<'py, PyAny>,
     schema: &ModelSchema,
 ) -> Fast<Bound<'py, PyAny>> {
+    let encoded; // a temporary copy: `to_str` would cache UTF-8 on the str for its lifetime
     let text: &[u8] = if let Ok(bytes) = data.cast_exact::<PyBytes>() {
         bytes.as_bytes()
     } else if let Ok(string) = data.cast_exact::<PyString>() {
-        string.to_str()?.as_bytes() // lone surrogates fail here and fall back
+        encoded = string.encode_utf8()?; // lone surrogates fail here and fall back
+        encoded.as_bytes()
     } else {
-        return Err(Fallback);
+        return Err(Fallback::Retry);
     };
     let mut parser = Jiter::new(text);
     let peek = parser.peek()?;
-    let instance = load_model(py, &mut parser, text, peek, schema)?;
+    let instance = load_model(py, &mut parser, text, peek, schema, 0)?;
     parser.finish()?;
     Ok(instance)
 }
@@ -37,9 +39,13 @@ fn load_model<'py>(
     text: &[u8],
     peek: Peek,
     schema: &ModelSchema,
+    depth: u32,
 ) -> Fast<Bound<'py, PyAny>> {
+    if depth > MAX_DEPTH {
+        return Err(Fallback::Retry);
+    }
     if peek != Peek::Object {
-        return Err(Fallback);
+        return Err(Fallback::Retry);
     }
     let mut values: Vec<Option<Bound<'py, PyAny>>> = Vec::with_capacity(schema.fields.len());
     values.resize_with(schema.fields.len(), || None);
@@ -54,7 +60,14 @@ fn load_model<'py>(
         match index {
             Some(index) => {
                 // a repeated key: the last one wins, as in json.loads
-                values[index] = Some(load(py, parser, text, peek, &schema.fields[index].kind)?);
+                values[index] = Some(load(
+                    py,
+                    parser,
+                    text,
+                    peek,
+                    &schema.fields[index].kind,
+                    depth + 1,
+                )?);
                 expected = index + 1;
             }
             None => parser.known_skip(peek)?,
@@ -76,10 +89,12 @@ fn any_value<'py>(
     }
     let start = parser.current_index();
     parser.known_skip(peek)?;
-    let slice = text.get(start..parser.current_index()).ok_or(Fallback)?;
+    let slice = text
+        .get(start..parser.current_index())
+        .ok_or(Fallback::Retry)?;
     PythonParse::default()
         .python_parse(py, slice)
-        .map_err(|_| Fallback)
+        .map_err(|_| Fallback::Retry)
 }
 
 fn load<'py>(
@@ -88,12 +103,13 @@ fn load<'py>(
     text: &[u8],
     peek: Peek,
     kind: &Kind,
+    depth: u32,
 ) -> Fast<Bound<'py, PyAny>> {
     match kind {
         Kind::Str if peek == Peek::String => Ok(PyString::new(py, parser.known_str()?).into_any()),
         Kind::Int if peek.is_num() => match parser.known_number(peek)? {
             NumberAny::Int(NumberInt::Int(int)) => Ok(PyInt::new(py, int).into_any()),
-            NumberAny::Float(_) => Err(Fallback),
+            NumberAny::Float(_) => Err(Fallback::Retry),
         },
         Kind::Float if peek.is_num() => match parser.known_number(peek)? {
             #[allow(clippy::cast_precision_loss)] // the same round-to-nearest as float(int)
@@ -109,24 +125,24 @@ fn load<'py>(
             parser.known_null()?;
             Ok(py.None().into_bound(py))
         }
-        Kind::Optional { inner, .. } => load(py, parser, text, peek, inner),
+        Kind::Optional { inner, .. } => load(py, parser, text, peek, inner, depth),
         Kind::Enum { by_value, .. } if peek != Peek::Array && peek != Peek::Object => {
             let value = any_value(py, parser, text, peek)?;
-            by_value.bind(py).get_item(&value)?.ok_or(Fallback)
+            by_value.bind(py).get_item(&value)?.ok_or(Fallback::Retry)
         }
         Kind::Literal { json, .. } if peek != Peek::Array && peek != Peek::Object => {
             let value = any_value(py, parser, text, peek)?;
             let key = PyTuple::new(py, [value.get_type().into_any(), value.clone()])?;
             match json.bind(py).contains(key)? {
                 true => Ok(value),
-                false => Err(Fallback),
+                false => Err(Fallback::Retry),
             }
         }
         Kind::Sequence { item, collect } if peek == Peek::Array => {
             let out = PyList::empty(py);
             let mut next = parser.known_array()?;
             while let Some(peek) = next {
-                out.append(load(py, parser, text, peek, item)?)?;
+                out.append(load(py, parser, text, peek, item, depth + 1)?)?;
                 next = parser.array_step()?;
             }
             Ok(collect.finish(out)?)
@@ -138,7 +154,7 @@ fn load<'py>(
                 let peek = parser.peek()?;
                 out.set_item(
                     PyString::new(py, &name),
-                    load(py, parser, text, peek, item)?,
+                    load(py, parser, text, peek, item, depth + 1)?,
                 )?;
                 key = parser.next_key()?.map(str::to_owned);
             }
@@ -146,7 +162,7 @@ fn load<'py>(
         }
         Kind::Model(nested) => {
             let schema = nested.schema(py)?;
-            load_model(py, parser, text, peek, schema.get())
+            load_model(py, parser, text, peek, schema.get(), depth + 1)
         }
         Kind::Python(converter) => {
             let value = any_value(py, parser, text, peek)?;
@@ -154,6 +170,6 @@ fn load<'py>(
                 .bind(py)
                 .call_method1(pyo3::intern!(py, "from_json"), (value,))?)
         }
-        _ => Err(Fallback),
+        _ => Err(Fallback::Retry),
     }
 }
