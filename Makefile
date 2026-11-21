@@ -43,7 +43,14 @@ lint:
 	# aiogram/types/custom.py has a `sys.platform == "win32"` branch that mypy prunes as
 	# unreachable on Linux; this second pass type-checks it.
 	uv run mypy --native-parser --num-workers 8 --platform win32 $(package_dir)
+	$(MAKE) stubtest
 	uv run pre-commit run --all-files --show-diff-on-failure
+
+# aiogram/_core.pyi is hand-written (PD-35, as pydantic-core does); stubtest checks it against
+# the built extension. Exceptions, if ever needed, go in an --allowlist file with a reason.
+.PHONY: stubtest
+stubtest:
+	uv run python -m mypy.stubtest aiogram._core
 
 # tests/typing/ holds mypy-only `assert_type` cases (never collected by pytest)
 .PHONY: typing
