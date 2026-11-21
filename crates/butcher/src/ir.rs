@@ -50,7 +50,8 @@ pub struct Header {
     pub html_only: bool,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+/// Declaration order is the order `Header.sources` must follow.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum Source {
     Html,
@@ -262,8 +263,8 @@ pub struct Enum {
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct ErrorEntry {
-    /// HTTP / Bot API error code.
-    pub code: u16,
+    /// HTTP / Bot API error code; MTProto-derived codes can be negative (`-503`).
+    pub code: i32,
     pub message: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mtproto: Option<String>,
@@ -294,14 +295,21 @@ impl Ir {
     pub fn load(path: &Path) -> Result<Ir, Error> {
         let text = crate::read(path)?;
         let mut de = serde_json::Deserializer::from_str(&text);
-        let ir =
+        let ir: Ir =
             serde_path_to_error::deserialize(&mut de).map_err(|e| crate::parse_error(path, e))?;
-        de.end().map_err(|e| Error::Parse {
-            path: path.to_owned(),
-            at: ".".to_owned(),
-            message: e.to_string(),
-        })?;
+        de.end()
+            .map_err(|e| crate::invalid(path, (".".to_owned(), e.to_string())))?;
+        ir.check().map_err(|e| crate::invalid(path, e))?;
         Ok(ir)
+    }
+
+    /// Invariants serde cannot express, as `(key path, message)`.
+    fn check(&self) -> Result<(), (String, String)> {
+        if !self.header.sources.is_sorted_by(|a, b| a < b) {
+            let message = "must be unique, in html, openapi, errors order";
+            return Err(("header.sources".to_owned(), message.to_owned()));
+        }
+        Ok(())
     }
 
     pub fn write(&self, path: &Path) -> Result<(), Error> {
@@ -310,6 +318,7 @@ impl Ir {
 
     /// The exact bytes [`Ir::write`] writes.
     pub fn to_json(&self) -> Result<String, Error> {
+        self.check().map_err(crate::invalid_output)?;
         let mut text =
             serde_json::to_string_pretty(self).map_err(|e| Error::Encode(e.to_string()))?;
         text.push('\n');

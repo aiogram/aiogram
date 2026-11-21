@@ -167,9 +167,10 @@ These patterns repeatedly appeared in maintainer feedback and should be treated 
 ## Native extension (`dev-4.x`)
 
 - The build backend is maturin: `crates/aiogram-core` builds `aiogram._core`, so `uv sync` needs `rustup`
-  (`rust-toolchain.toml` pins the toolchain). `uv run` rebuilds it (release profile) when a `crates/aiogram-core/**`
-  file, the workspace `Cargo.toml` or `Cargo.lock` changes; `make dev` installs a fast debug build, `make bench` a
-  release one. Nothing on the 3.x import path loads `_core` (`tests/test_core/test_build.py` checks it).
+  (`rust-toolchain.toml` pins the toolchain). `uv run` rebuilds it (release profile) when a `*.rs` or `Cargo.toml`
+  under `crates/aiogram-core`, the workspace `Cargo.toml`, `Cargo.lock` or `.cargo/config.toml` changes; `make dev`
+  installs a fast debug build, `make bench` a release one. Nothing on the 3.x import path loads `_core`
+  (`tests/test_core/test_build.py` checks it).
 - Rust checks: `cargo fmt --all --check`, `cargo clippy --workspace --all-targets -- -D warnings` (`unwrap`,
   `expect`, `panic!`, `todo!`, `unimplemented!` are denied), `cargo test --workspace`. CI: `.github/workflows/core.yml`.
 - `clippy.toml`'s `allow-*-in-tests` covers `#[test]` functions and `#[cfg(test)]` modules only. Helpers in an

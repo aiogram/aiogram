@@ -4,7 +4,7 @@
 use std::path::Path;
 
 use serde::{Deserialize, Serialize};
-use toml::value::Datetime;
+use toml::value::{Datetime, Offset};
 
 use crate::Error;
 
@@ -64,7 +64,43 @@ impl Manifest {
             at: ".".to_owned(),
             message: e.to_string(),
         })?;
-        serde_path_to_error::deserialize(de).map_err(|e| crate::parse_error(path, e))
+        let manifest: Manifest =
+            serde_path_to_error::deserialize(de).map_err(|e| crate::parse_error(path, e))?;
+        manifest.check().map_err(|e| crate::invalid(path, e))?;
+        Ok(manifest)
+    }
+
+    /// Invariants serde cannot express, as `(key path, message)`.
+    fn check(&self) -> Result<(), (String, String)> {
+        let s = &self.sources;
+        let records = [
+            ("html", Some(&s.html)),
+            ("preview", s.preview.as_ref()),
+            ("openapi", s.openapi.as_ref()),
+            ("errors", s.errors.as_ref()),
+        ];
+        for (name, record) in records {
+            let Some(record) = record else { continue };
+            let at = |key: &str| format!("sources.{name}.{key}");
+            let t = &record.fetched_at;
+            if t.date.is_none() || t.time.is_none() || t.offset != Some(Offset::Z) {
+                return Err((
+                    at("fetched_at"),
+                    "must be a UTC date-time (`...Z`)".to_owned(),
+                ));
+            }
+            match (record.status, &record.sha256) {
+                (FetchStatus::Ok, None) => {
+                    return Err((at("sha256"), "required when status is `ok`".to_owned()));
+                }
+                (FetchStatus::Unreachable, Some(_)) => {
+                    let message = "must be absent when status is `unreachable`";
+                    return Err((at("sha256"), message.to_owned()));
+                }
+                _ => {}
+            }
+        }
+        Ok(())
     }
 
     pub fn write(&self, path: &Path) -> Result<(), Error> {
@@ -73,6 +109,7 @@ impl Manifest {
 
     /// The exact bytes [`Manifest::write`] writes.
     pub fn to_toml(&self) -> Result<String, Error> {
+        self.check().map_err(crate::invalid_output)?;
         toml::to_string(self).map_err(|e| Error::Encode(e.to_string()))
     }
 }

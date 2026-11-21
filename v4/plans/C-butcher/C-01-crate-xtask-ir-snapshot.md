@@ -50,7 +50,7 @@ committed next to the merged IR, with a manifest.
 
 ## Checklist
 
-- [x] Add `crates/butcher` and `xtask` to the workspace `Cargo.toml` from B-01; pin dependencies (`serde`, `serde_json`, `toml`, `clap`, `sha2`) in `Cargo.lock`.
+- [ ] Add `crates/butcher` and `xtask` to the workspace `Cargo.toml` from B-01; pin dependencies (`serde`, `serde_json`, `toml`, `clap`, `sha2`) in `Cargo.lock`.
 - [x] `ir.rs` with the types above, `#[serde(deny_unknown_fields)]` on every struct.
 - [x] Provenance enum and direction-specific requiredness/const/writable fields.
 - [x] Deterministic writer (`Ir::write`) and loader; a golden round-trip test on a small hand-written IR fixture.

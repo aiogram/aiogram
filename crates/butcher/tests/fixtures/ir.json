@@ -351,6 +351,27 @@
           ]
         },
         {
+          "name": "horizontal_accuracy",
+          "type": {
+            "value": {
+              "prim": "float"
+            }
+          },
+          "required": {
+            "value": false
+          },
+          "default": {
+            "value": 1.6041656501881165
+          },
+          "constraints": [
+            {
+              "value": {
+                "maximum": 1500
+              }
+            }
+          ]
+        },
+        {
           "name": "kind",
           "type": {
             "value": {
@@ -515,6 +536,10 @@
         ],
         "regex": "^Too Many Requests: retry after (\\d+)$"
       }
+    },
+    {
+      "code": -503,
+      "message": "Timeout"
     },
     {
       "code": 400,

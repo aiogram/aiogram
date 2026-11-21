@@ -20,15 +20,15 @@ fn load_str(name: &str, text: &str) -> Result<Ir, Error> {
 
 #[test]
 fn round_trip_is_byte_identical() {
-    let fixture = std::fs::read(FIXTURE).unwrap();
+    let fixture = std::fs::read_to_string(FIXTURE).unwrap();
     let ir = Ir::load(Path::new(FIXTURE)).unwrap();
-    assert_eq!(ir.to_json().unwrap().as_bytes(), fixture.as_slice());
+    assert_eq!(ir.to_json().unwrap(), fixture);
 
     let (a, b) = (tmp("round-trip-a.json"), tmp("round-trip-b.json"));
     ir.write(&a).unwrap();
     Ir::load(&a).unwrap().write(&b).unwrap();
-    assert_eq!(std::fs::read(&a).unwrap(), fixture);
-    assert_eq!(std::fs::read(&b).unwrap(), fixture);
+    assert_eq!(std::fs::read_to_string(&a).unwrap(), fixture);
+    assert_eq!(std::fs::read_to_string(&b).unwrap(), fixture);
 }
 
 #[test]
@@ -168,4 +168,32 @@ fn fixture_uses_every_provenance_kind() {
         }] += 1;
     });
     assert!(kinds.iter().all(|&n| n > 0), "{kinds:?}");
+}
+
+#[test]
+fn header_sources_must_be_ordered_and_unique() {
+    let text = std::fs::read_to_string(FIXTURE).unwrap();
+    let needle = "\"html\",\n      \"openapi\",";
+    assert!(text.contains(needle));
+    for (name, sources) in [
+        ("sources-order.json", "\"openapi\",\n      \"html\","),
+        ("sources-dup.json", "\"html\",\n      \"html\","),
+    ] {
+        let err = load_str(name, &text.replacen(needle, sources, 1)).unwrap_err();
+        assert!(
+            matches!(err, Error::Parse { ref at, .. } if at == "header.sources"),
+            "{err}"
+        );
+    }
+}
+
+#[test]
+fn an_invalid_ir_is_not_written() {
+    let mut ir = Ir::load(Path::new(FIXTURE)).unwrap();
+    ir.header.sources.reverse();
+    let err = ir.to_json().unwrap_err();
+    assert!(
+        matches!(err, Error::Encode(ref m) if m.starts_with("header.sources: ")),
+        "{err}"
+    );
 }

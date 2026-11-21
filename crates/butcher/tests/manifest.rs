@@ -1,3 +1,6 @@
+// clippy.toml's allow-*-in-tests covers #[test] fns only, not the helpers of an integration test crate
+#![allow(clippy::unwrap_used)]
+
 use std::path::Path;
 
 use butcher::manifest::{FetchStatus, Manifest};
@@ -42,4 +45,58 @@ fn invalid_toml_fails() {
         Manifest::load(&path),
         Err(butcher::Error::Parse { .. })
     ));
+}
+
+fn load_variant(name: &str, from: &str, to: &str) -> Result<Manifest, butcher::Error> {
+    let text = std::fs::read_to_string(FIXTURE).unwrap();
+    assert!(text.contains(from), "{from}");
+    let path = Path::new(env!("CARGO_TARGET_TMPDIR")).join(name);
+    std::fs::write(&path, text.replacen(from, to, 1)).unwrap();
+    Manifest::load(&path)
+}
+
+#[test]
+fn fetched_at_must_be_a_utc_datetime() {
+    let from = "fetched_at = 2026-11-21T09:30:00Z";
+    for (i, to) in [
+        "fetched_at = 2026-11-21",
+        "fetched_at = 2026-11-21T09:30:00",
+        "fetched_at = 2026-11-21T09:30:00+03:00",
+    ]
+    .into_iter()
+    .enumerate()
+    {
+        let err = load_variant(&format!("manifest-time-{i}.toml"), from, to).unwrap_err();
+        assert!(
+            err.to_string().contains(": sources.html.fetched_at: "),
+            "{err}"
+        );
+    }
+}
+
+#[test]
+fn sha256_follows_the_status() {
+    let ok_without = load_variant(
+        "manifest-ok-no-sha.toml",
+        "sha256 = \"5d6e",
+        "# sha256 = \"5d6e",
+    );
+    let err = ok_without.unwrap_err().to_string();
+    assert!(err.contains(": sources.html.sha256: "), "{err}");
+
+    let unreachable_with = load_variant(
+        "manifest-unreachable-sha.toml",
+        "fetched_at = 2026-11-21T09:30:01Z",
+        "fetched_at = 2026-11-21T09:30:01Z\nsha256 = \"00\"",
+    );
+    let err = unreachable_with.unwrap_err().to_string();
+    assert!(err.contains(": sources.openapi.sha256: "), "{err}");
+}
+
+#[test]
+fn an_invalid_manifest_is_not_written() {
+    let mut manifest = Manifest::load(Path::new(FIXTURE)).unwrap();
+    manifest.sources.html.sha256 = None;
+    let err = manifest.to_toml().unwrap_err();
+    assert!(err.to_string().contains("sources.html.sha256"), "{err}");
 }

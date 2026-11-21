@@ -50,6 +50,19 @@ pub(crate) fn write(path: &Path, text: &str) -> Result<(), Error> {
     })
 }
 
+pub(crate) fn invalid(path: &Path, (at, message): (String, String)) -> Error {
+    Error::Parse {
+        path: path.to_owned(),
+        at,
+        message,
+    }
+}
+
+/// A value about to be written breaks an invariant `load` would reject.
+pub(crate) fn invalid_output((at, message): (String, String)) -> Error {
+    Error::Encode(format!("{at}: {message}"))
+}
+
 pub(crate) fn parse_error<E: fmt::Display>(path: &Path, e: serde_path_to_error::Error<E>) -> Error {
     Error::Parse {
         path: path.to_owned(),
