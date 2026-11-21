@@ -519,6 +519,11 @@ pub(crate) fn load_epoch<'py>(
             value.extract::<i64>().map_err(|_| expected(label, value))?,
             0,
         )
+    } else if value.is_instance_of::<PyInt>() {
+        // integer milliseconds: split exactly (a float loses the microseconds after ~2106)
+        let ms = value.extract::<i64>().map_err(|_| expected(label, value))?;
+        #[allow(clippy::cast_possible_truncation, clippy::cast_sign_loss)] // 0 <= µs < 10**6
+        (ms.div_euclid(1000), (ms.rem_euclid(1000) * 1000) as u32)
     } else {
         #[allow(clippy::cast_precision_loss)] // `x / 1000` is a float division in Python too
         let stamp = match value.extract::<i64>() {
@@ -601,6 +606,8 @@ pub(crate) fn dump_epoch<'py>(
         // beyond 2**53 microseconds a float division rounds twice: Python's int / int does not
         let quotient =
             PyInt::new(py, total).call_method1(pyo3::intern!(py, "__truediv__"), (unit,))?;
+        // near `datetime.max` the float rounds past the range: never write what cannot load
+        load_epoch(&quotient, epoch, label).map_err(|_| expected(label, value))?;
         return Ok(Num::Obj(quotient.into_any()));
     }
     Ok(Num::ratio(total, unit))
@@ -646,10 +653,10 @@ pub(crate) fn dump_timedelta<'py>(value: &Bound<'py, PyAny>, label: &str) -> VRe
     {
         return Ok(Num::ratio(total, 1_000_000));
     }
-    Ok(Num::Obj(value.call_method0(pyo3::intern!(
-        value.py(),
-        "total_seconds"
-    ))?))
+    let float = value.call_method0(pyo3::intern!(value.py(), "total_seconds"))?;
+    // near `timedelta.max` the float rounds past the range: never write what cannot load
+    load_timedelta(&float, label).map_err(|_| expected(label, value))?;
+    Ok(Num::Obj(float))
 }
 
 /// `Decimal(text)`.

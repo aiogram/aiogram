@@ -2212,3 +2212,30 @@ class Cached(ModelBase):
 
     def __post_init__(self) -> None:
         self.cache = self.x * 2
+
+
+class TestLastPass:
+    """The last /code-review pass."""
+
+    def test_values_that_cannot_load_back_are_not_written(self):
+        top = datetime.max.replace(tzinfo=UTC)
+        for codec in (
+            json_codec(Annotated[datetime, EpochDatetime()]),
+            json_codec(Annotated[datetime, EpochDatetime(unit="ms")]),
+        ):
+            with pytest.raises(ConversionError, match="expected datetime"):
+                codec.dump_json(top)
+        with pytest.raises(ConversionError, match="expected timedelta"):
+            json_codec(timedelta).dump(timedelta.max)
+        # a large value that does load back is still written
+        big = timedelta(days=10**8, microseconds=1)
+        assert json_codec(timedelta).load(json_codec(timedelta).dump(big)) is not None
+
+    def test_integer_milliseconds_load_exactly(self):
+        codec = json_codec(Annotated[datetime, EpochDatetime(unit="ms")])
+        for value in (
+            datetime(3000, 1, 1, 0, 0, 0, 123000, tzinfo=UTC),
+            datetime(9000, 1, 1, 0, 0, 0, 123000, tzinfo=UTC),
+            datetime(1900, 1, 1, 0, 0, 0, 999000, tzinfo=UTC),
+        ):
+            assert codec.load(codec.dump(value)) == value
