@@ -144,7 +144,7 @@ Verification method and results: [_VERIFICATION.md](_VERIFICATION.md).
 | [B-00](B-spike/B-00-freeze-gate-spec.md) | Freeze the gate spec | `todo` | no | M | A-04, A-05, A-06 |
 | [B-01](B-spike/B-01-crate-maturin-skeleton.md) | Crate + maturin skeleton + minimal CI | `done` | no | M | A-01 |
 | [B-02](B-spike/B-02-bench-adapter-memory-estimator.md) | Bench harness 4.0 adapter + memory estimator | `todo` | no | M | A-04, A-05, A-06, B-00, B-01 |
-| [B-03](B-spike/B-03-decode-runtime.md) | Decode runtime core: field tables, value kinds, sparse layout | `todo` | no | M | B-01 |
+| [B-03](B-spike/B-03-decode-runtime.md) | Decode runtime core: field tables, value kinds, sparse layout | `done` | no | M | B-01 |
 | [B-04](B-spike/B-04-spike-type-set.md) | Spike type set (hand-written in emitted shape) | `todo` | no | L | B-00, B-03, B-14 |
 | [B-05](B-spike/B-05-views-cache-gc-routing-keys.md) | Python views, wrapper cache, GC, `routing_keys()` | `todo` | no | L | B-04 |
 | [B-06](B-spike/B-06-value-semantics-native-api.md) | Value semantics + native serialization API | `todo` | no | M | B-05 |
