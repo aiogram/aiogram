@@ -1,5 +1,6 @@
 """The routing oracle (A-10): the aiogram3 routing side, run in-process, and its comparators."""
 
+import asyncio
 import json
 import logging
 import runpy
@@ -247,12 +248,12 @@ class TestComparators:
         assert judge(left, {**left, "value": all_inline}) is not None  # handler stays threaded
 
     @pytest.mark.parametrize("probe", ["trace", "kwargs"])
-    def test_d111_skips_routers_without_a_called_handler(self, records, probe):
+    def test_d111_skips_routers_without_a_called_handler(self, records, probe):  # noqa: PLR0914
         left = records[f"{NO_MATCH}/{probe}"]
         skipped = strip_d12(without(left, lambda e: "r1" in e["path"]))
         assert judge(left, skipped) is None
         both = strip_d12(without(left, lambda e: "r1" in e["path"] or "r2" in e["path"]))
-        assert judge(left, both) is None  # r2 may be skipped too (its candidate fails)
+        assert judge(left, both) is not None  # r2's candidate survives the rejectors: entered
         handled = strip_d12(without(left, lambda e: "r3" in e["path"]))
         assert judge(left, handled) is not None  # r3 called h3: never skipped
         if probe == "trace":
@@ -287,15 +288,36 @@ class TestComparators:
             )
             assert judge(kwargs, k_bubbled) is None
             result = records[f"{case}/result"]
-            escaped = {**result, "value": [{"raised": {"type": "OracleError", "message": "x"}}]}
-            assert judge(result, escaped) is None
+            message = f"{name} failed"
+            escaped = {
+                **result,
+                "value": [{"raised": {"type": "OracleError", "message": message}}],
+            }
+            assert judge(result, escaped) is None  # r1 and dp decline: the original escapes
+            assert judge(result, result) is not None  # the sibling r2 no longer handles it
+            other = {**result, "value": [{"raised": {"type": "RuntimeError", "message": message}}]}
+            assert judge(result, other) is not None
             assert judge(result, {**result, "value": [{"returned": "dp.e0"}]}) is not None
 
     def test_d48_right_reaching_an_unseen_handler(self, records):
         kwargs = records["routing.errors.handler.polling.fsm-off.first/kwargs"]
         ghost = {"component": "r11.e0", "kind": "error", "update": 0, "path": [], "data": {}}
         right = strip_d12({**kwargs, "value": [*kwargs["value"], ghost]})
-        assert "did not reach" in judge(kwargs, right)
+        assert judge(kwargs, right) is not None
+
+    @pytest.mark.parametrize("probe", ["kwargs", "threads"])
+    def test_d48_the_sibling_alone_is_not_approved_on_any_probe(self, records, probe):
+        left = records[f"routing.errors.handler.polling.fsm-off.first/{probe}"]
+        sibling = without(left, lambda e: e["kind"] == "error" and e["component"] != "r2.e0")
+        assert judge(left, strip_d12(sibling)) is not None
+        by_id = {e["component"]: e for e in left["value"] if e["kind"] == "error"}
+        rest = [e for e in left["value"] if e["kind"] != "error"]
+        bubbled = strip_d12({**left, "value": [*rest, by_id["r1.e0"], by_id["dp.e0"]]})
+        if probe == "threads":
+            bubbled["value"] = [
+                {**e, "on_loop": True} if e["kind"] == "filter" else e for e in bubbled["value"]
+            ]
+        assert judge(left, bubbled) is None
 
     def test_d28_isolation_serialises_one_key(self, records):
         left = records["routing.isolation.same-key.polling.fsm-on.pair/trace"]
@@ -310,14 +332,41 @@ class TestComparators:
         case = "routing.snapshot.register-middleware.polling.fsm-off"
         first, second = records[f"{case}.first/trace"], records[f"{case}.second/trace"]
         assert any(e.get("registers") == "late.m0" for e in first["value"])
-        assert any(e.get("late") == "late.m0" for e in second["value"])
+        late = [e for e in second["value"] if e["component"] == "late.m0"]
+        assert late and not [e for e in late if "late" in e]  # registered by an earlier case
         assert judge(first, without(first, lambda e: e.get("late") == "late.m0")) is None
-        assert judge(second, without(second, lambda e: e.get("late") == "late.m0")) is not None
+        assert judge(second, without(second, lambda e: e["component"] == "late.m0")) is not None
         assert judge(second, second) is None
-        include = "routing.snapshot.include-router.polling.fsm-off.first"
-        result = records[f"{include}/result"]
-        assert judge(result, {**result, "value": [{"returned": "UNHANDLED"}]}) is None
+        unhandled = [{"returned": "UNHANDLED"}]
+        for case, approved in (
+            ("include-router.polling.fsm-off.first", True),  # only the late router matched
+            ("include-router.polling.fsm-off.second", False),  # r3 is part of the routing now
+            ("register-middleware.polling.fsm-off.first", False),  # h2 existed before
+        ):
+            result = records[f"routing.snapshot.{case}/result"]
+            assert (judge(result, {**result, "value": unhandled}) is None) is approved, case
+        result = records["routing.snapshot.include-router.polling.fsm-off.first/result"]
         assert judge(result, {**result, "value": [{"returned": "h1"}]}) is not None
+
+    def test_d114_threads_drop_the_late_handler(self, records):
+        left = records["routing.snapshot.include-router.polling.fsm-off.first/threads"]
+        assert [e["component"] for e in left["value"]] == ["h1.f0", "h3"]
+        assert judge(left, without(left, lambda e: e["component"] == "h3")) is None
+
+    def test_d114_the_registering_router_survives_the_rejectors(self, records):
+        """4.0 must enter r1 for the registration to happen at all (PD-19)."""
+        for name in ("include-router", "register-middleware"):
+            meta = records[f"routing.snapshot.{name}.polling.fsm-off.first/trace"]["meta"]
+            (h1,) = [c for c in meta["candidates"] if c["handler"] == "h1"]
+            assert h1["rejected"] is False
+            assert h1["path"] == ["dp", "r1"]
+
+    def test_d111_applies_to_the_bench_topologies(self, records):
+        left = records["routing.52-handlers.polling.fsm-off.unhandled/trace"]
+        assert left["value"]  # 3.x enters every router's outer chain
+        assert all(c["rejected"] for c in left["meta"]["candidates"])
+        right = without(left, lambda e: e.get("observer") != "update")
+        assert judge(left, right) is None
 
     def test_d12_handler_asking_for_event_from_user(self, records):
         case = "routing.kwargs.event-from-user.polling.fsm-off.first"
@@ -330,6 +379,10 @@ class TestComparators:
         assert judge(result, {**result, "value": [{"returned": "other"}]}) is not None
         traced = records[f"{case}/trace"]
         assert judge(traced, without(traced, lambda e: e["kind"] == "handler")) is None
+        # only the handler that asks for event_from_user may go missing
+        other = {**traced, "meta": {**traced["meta"], "d12_params": []}}
+        assert judge(other, without(traced, lambda e: e["kind"] == "handler")) is not None
+        assert judge({**result, "meta": {**result["meta"], "d12_params": []}}, error) is not None
 
     def test_value_that_is_not_a_list(self, records):
         left = records[f"{NO_MATCH}/trace"]
@@ -344,12 +397,7 @@ class TestComparators:
 
     def test_errors_without_a_raise(self, records):
         left = records["routing.errors.handler.polling.fsm-off.first/trace"]
-        broken = {
-            **left,
-            "value": [
-                {**e, "result": "x"} if e["kind"] == "handler" else e for e in left["value"]
-            ],
-        }
+        broken = {**left, "meta": {**left["meta"], "errors": []}}
         assert "nothing raised" in judge(broken, broken)
 
 
@@ -370,6 +418,20 @@ class TestBuilder:
         args = (spec, where) if factory == "make_filter" else (spec, where, None)
         with pytest.raises(ValueError, match="unknown"):
             side[factory](*args)
+
+    def test_reused_event_or_group_name(self, side):
+        topology = {
+            "router": [{"name": "dp"}],
+            "event": [
+                {"name": "a", "group": "g", "update": "update.text.small"},
+                {"name": "b", "update": "update.text.small"},
+                {"name": "c", "group": "g", "update": "update.text.small"},
+            ],
+        }
+        payloads = {"update.text.small": (CORPUS / "wire" / "update.text.small.json").read_bytes()}
+        run = side["run_topology"](trace, "t", topology, payloads, poison=False)
+        with pytest.raises(ValueError, match="'g' reused"):
+            asyncio.run(run)
 
     def test_unsupported_params(self, side):
         spec = {"id": "h", "params": ["event_chat"]}

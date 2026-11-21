@@ -155,6 +155,17 @@ request, so nothing reaches the network.
   Each topology and variant also has a `used_update_types` probe. Timings go to `meta` and are
   never compared.
 - **Poison** swaps the first two handlers of every observer that has two or more.
-- **Comparators.** One record matches one manifest entry. So every routing comparator also applies
-  the two 4.0 differences that hold everywhere: D12 on `kwargs` (no `event_from_user` /
-  `event_chat` / `event_thread_id`) and D34 on `threads` (sync filters on the loop).
+- **Reference meta.** Every record of a case also carries, in `meta`, what the 3.x reference knows
+  and the 4.0 differences decide on:
+  - `candidates`: per update, each handler for the event type, and whether one of its compiled
+    filters (`command`, `text_eq`, `magic_*`) is false on the original event.
+  - `errors`: per raising update, the raising path, the exception and the `errors` handlers' results.
+  - `late_handled`: whether a component registered in this case handled the update.
+
+  A component registered in an earlier case loses its `late` mark.
+- **Comparators.** They read the left side's `meta` only. One record matches one manifest entry, so
+  every routing comparator also applies the 4.0 differences that hold everywhere:
+  - D12 on `kwargs`: no `event_from_user` / `event_chat` / `event_thread_id`.
+  - D34 on `threads`: sync filters on the loop.
+  - The D111 / PD-19 and breaking change 13 skips: a router none of whose candidates survives, or
+    the user filters of a rejected candidate. Each is skipped whole or not at all.

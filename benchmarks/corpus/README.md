@@ -125,7 +125,8 @@ the kinds above (`command`, `text_eq`, `pass`). Every A-10 scenario carries it.
   - `inner_middleware` or `outer_middleware` (`router`, `middleware`).
   - `handler` (`router`, `handler`).
   - `router` (`router`: a router table with `parent`).
-- **`[variants]`** also takes `feed = ["polling", "webhook"]` (default: polling only). The default `fsm` is `["off"]`.
+- **`[variants]`** also takes `feed = ["polling", "webhook"]` (default: polling only). The default `fsm` is `["on"]`, as in the
+  A-05 bench.
 - **`[[event]]`:** events with the same `group` that follow one another are fed concurrently.
 - **`[[scene]]`** (`name`, which is also its state):
   - `[[scene.handler]]` uses the handler keys, with `event`.

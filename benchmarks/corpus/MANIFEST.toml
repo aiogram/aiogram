@@ -535,7 +535,7 @@ notes = "D33 scenes (A-10)."
 id = "routing.snapshot.include-router"
 kind = "routing"
 path = "routing/routing.snapshot.include-router.toml"
-sha256 = "0576c02bb696a7047aba8f1a64120cc2ee14b6b0e8bf362199f779b6997c1a34"
+sha256 = "60ba89f67f35afbff00d484909083a6fb4ba27c40fca29d6d233fb46f7744180"
 provenance = { source = "hand", date = "2026-11-21", aiogram = "3.33.0", bot_api = "10.4", author = "JRoot Junior" }
 notes = "D114 late registration (A-10)."
 
@@ -543,7 +543,7 @@ notes = "D114 late registration (A-10)."
 id = "routing.snapshot.register-middleware"
 kind = "routing"
 path = "routing/routing.snapshot.register-middleware.toml"
-sha256 = "9f93daea0eb42f3be1926e45602e3472add5b0bac63e05fad916188402479b96"
+sha256 = "0f1e9fbafbbda1202ec9e71ba9f2b34c9b1e454ae2f11404d153d1145dc72bf0"
 provenance = { source = "hand", date = "2026-11-21", aiogram = "3.33.0", bot_api = "10.4", author = "JRoot Junior" }
 notes = "D114 late registration (A-10)."
 

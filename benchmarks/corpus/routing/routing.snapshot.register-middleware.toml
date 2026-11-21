@@ -22,7 +22,7 @@ register = { id = "late.m0", what = "inner_middleware", router = "r2", middlewar
 [[router.handler]]
 id = "h1"
 event = "message"
-filters = [{ kind = "text_eq", value = "nope" }]
+filters = [{ id = "h1.f0", kind = "async", result = false }]  # survives the rejectors, so 4.0 enters r1
 
 [[router]]
 name = "r2"

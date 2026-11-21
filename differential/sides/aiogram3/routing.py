@@ -43,10 +43,11 @@ from aiogram.filters import Command, Filter
 from aiogram.fsm.scene import Scene, SceneRegistry, ScenesManager, on
 from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.methods import SendMessage, TelegramMethod
-from aiogram.types import TelegramObject, Update
+from aiogram.types import Message, TelegramObject, Update
 
 TOKEN = "42:TEST"  # fake; the session below never reaches the network
 FEEDS = ("polling", "webhook")
+COMPILED = {"command", "text_eq", "magic_eq", "magic_true"}  # what 4.0 compiles into rejectors
 MIDDLEWARE_KINDS = {
     "pass",
     "short_circuit",
@@ -142,6 +143,7 @@ class Where:
         self.router = router
         self.path = path
         self.owner: str | None = None  # a filter's handler
+        self.observer: str | None = None  # a middleware's event type
         self.late: str | None = None  # the registration that added it while handling (D114)
 
     def record(
@@ -163,6 +165,8 @@ class Where:
         }
         if self.owner is not None:
             entry["owner"] = self.owner
+        if self.observer is not None:
+            entry["observer"] = self.observer
         if self.late is not None:
             entry["late"] = self.late
         if registers is not None:
@@ -387,6 +391,9 @@ class Builder:
         self.paths: dict[str, list[str]] = {}
         self.scenes: dict[str, type[Scene]] = {}
         self.registered: set[str] = set()
+        # (event type, handler id, path, compiled filters): who may match, for the meta
+        self.candidates: list[tuple[str, str, list[str], list[Any]]] = []
+        self.d12_params: list[str] = []  # handlers that ask for event_from_user by signature
         for spec in topology["router"]:
             self.add_router(spec, fsm=fsm)
         for spec in topology.get("scene", []):
@@ -433,6 +440,7 @@ class Builder:
 
     def add_middleware(self, router: str, spec: Spec, *, outer: bool, late: str | None) -> None:
         where = self.where(spec, "outer" if outer else "inner", router, late)
+        where.observer = spec["event"]
         observer = self.routers[router].observers[spec["event"]]
         middleware = make_middleware(spec, where, self)
         if outer:
@@ -444,10 +452,15 @@ class Builder:
         self, router: str, spec: Spec, *, kind: str = "handler", late: str | None
     ) -> None:
         where = self.where(spec, kind, router, late)
+        specs = ids(spec.get("filters", []), f"{spec['id']}.f")
         filters = [
             make_filter(flt, self.where(flt, "filter", router, late, owner=spec["id"]))
-            for flt in ids(spec.get("filters", []), f"{spec['id']}.f")
+            for flt in specs
         ]
+        if kind == "handler":
+            self.add_candidate(spec["event"], spec["id"], router, specs, filters)
+        if spec.get("params"):
+            self.d12_params.append(spec["id"])
         self.routers[router].observers[spec["event"]].register(
             make_handler(spec, where, self), *filters, flags=spec.get("flags")
         )
@@ -458,10 +471,12 @@ class Builder:
         namespace: dict[str, Any] = {"__module__": "oracle", "__qualname__": name}
         for handler in ids(spec.get("handler", []), f"{name}.h"):
             where = self.where(handler, "handler", name, None)
+            specs = ids(handler.get("filters", []), f"{handler['id']}.f")
             filters = [
                 make_filter(flt, self.where(flt, "filter", name, None, owner=handler["id"]))
-                for flt in ids(handler.get("filters", []), f"{handler['id']}.f")
+                for flt in specs
             ]
+            self.add_candidate(handler["event"], handler["id"], name, specs, filters)
             marker = getattr(on, handler["event"])
             callback = make_handler(handler, where, self, scene=True)
             namespace[f"handler_{handler['id']}"] = marker(*filters)(callback)
@@ -478,6 +493,36 @@ class Builder:
         self.scenes[name] = types.new_class(
             name, (Scene,), {"state": name}, lambda body: body.update(namespace)
         )
+
+    def add_candidate(
+        self, event: str, handler: str, router: str, specs: list[Spec], filters: list[Any]
+    ) -> None:
+        compiled = [
+            obj for flt, obj in zip(specs, filters, strict=True) if flt["kind"] in COMPILED
+        ]
+        self.candidates.append((event, handler, self.paths[router], compiled))
+
+    async def eligibility(self, bot: Bot, index: int, update: Update) -> list[dict[str, Any]]:
+        """The candidates for the update's event type, and whether a compiled filter (``command``,
+        ``text_eq``, ``magic_*``) is certainly false on the original event: what PD-19 and
+        breaking change 13 decide on in 4.0. Computed before feeding, so late handlers are not
+        candidates of the update that registers them."""
+        event_type, event = update.event_type, update.event
+        out = []
+        for observer, handler, path, compiled in self.candidates:
+            if observer != event_type:
+                continue
+            rejected = False
+            for obj in compiled:
+                if isinstance(obj, Command):
+                    passed: Any = isinstance(event, Message) and await obj(event, bot=bot)
+                else:
+                    passed = obj.resolve(event)
+                if not passed:
+                    rejected = True
+                    break
+            out.append({"update": index, "handler": handler, "path": path, "rejected": rejected})
+        return out
 
     def register_late(self, spec: Spec) -> bool:
         """D114: add components while an update is being handled; True the first time only."""
@@ -581,6 +626,61 @@ def probes(entries: list[Entry]) -> dict[str, list[Entry]]:
     return out
 
 
+def raised_entry(entry: Entry) -> bool:
+    result = entry["result"]
+    return isinstance(result, dict) and "raised" in result and result["raised"] != "SkipHandler"
+
+
+def reference(
+    entries: list[Entry], candidates: list[dict[str, Any]], count: int
+) -> dict[str, Any]:
+    """What the 3.x reference knows that the approved 4.0 differences decide on (``meta``,
+    read by the comparators only). It also drops ``late`` from components registered in an
+    earlier case: from then on they are part of the routing."""
+    here = {e["registers"] for e in entries if "registers" in e}
+    for entry in entries:
+        if entry.get("late") not in here:
+            entry.pop("late", None)
+    late_handled = [
+        any(
+            e["update"] == index and e["kind"] == "handler" and "late" in e and not raised_entry(e)
+            for e in entries
+        )
+        for index in range(count)
+    ]
+    errors = []
+    for index in range(count):
+        mine = [e for e in entries if e["update"] == index]
+        handlers = [e for e in mine if e["kind"] == "error"]
+        raising = next((e for e in mine if raised_entry(e)), None)
+        if not handlers or raising is None:
+            continue
+        exception = next(
+            (e["event"]["exception"] for e in handlers if "exception" in e.get("event", {})), None
+        )
+        errors.append(
+            {
+                "update": index,
+                "raise_path": raising["path"],
+                "exception": exception,
+                "handlers": [
+                    {"component": e["component"], "router": e["router"], "result": e["result"]}
+                    for e in handlers
+                ],
+            }
+        )
+    return {"candidates": candidates, "late_handled": late_handled, "errors": errors}
+
+
+def make_updates(batch: list[Spec], payloads: dict[str, bytes], bot: Bot) -> list[Update]:
+    updates = []
+    for event in batch:
+        payload = json.loads(payloads[event["update"]])
+        apply_patch(payload, event.get("patch", {}))
+        updates.append(Update.model_validate(payload, context={"bot": bot}))
+    return updates
+
+
 async def run_topology(
     trace: ModuleType,
     topology_id: str,
@@ -595,7 +695,7 @@ async def run_topology(
         if feed not in FEEDS:
             msg = f"{topology_id}: unknown feed {feed!r}"
             raise ValueError(msg)
-        for fsm in variants.get("fsm", ["off"]):
+        for fsm in variants.get("fsm", ["on"]):  # the A-05 bench's default too
             prefix = f"{topology_id}.{feed}.fsm-{fsm}"
             build = Builder(topology, fsm=fsm == "on")
             if poison:
@@ -603,13 +703,19 @@ async def run_topology(
             used = build.dp.resolve_used_update_types()
             records.append(trace.ok(prefix, "used_update_types", used))
             bot = Bot(TOKEN, session=NoNetworkSession())
+            seen: set[str] = set()
             for batch in batches(topology["event"]):
-                updates = []
-                for event in batch:
-                    payload = json.loads(payloads[event["update"]])
-                    apply_patch(payload, event.get("patch", {}))
-                    updates.append(Update.model_validate(payload, context={"bot": bot}))
+                updates = make_updates(batch, payloads, bot)
                 case = f"{prefix}.{batch[0].get('group', batch[0]['name'])}"
+                if case in seen:
+                    msg = f"{topology_id}: event or group name {case.rsplit('.', 1)[1]!r} reused"
+                    raise ValueError(msg)
+                seen.add(case)
+                candidates = [
+                    candidate
+                    for index, update in enumerate(updates)
+                    for candidate in await build.eligibility(bot, index, update)
+                ]
                 loop = asyncio.get_running_loop()
                 started = loop.time()
                 async with recording() as entries:
@@ -619,7 +725,11 @@ async def run_topology(
                             for index, update in enumerate(updates)
                         )
                     )
-                meta = {"elapsed_s": loop.time() - started}
+                meta = {
+                    "elapsed_s": loop.time() - started,
+                    **reference(entries, candidates, len(updates)),
+                    "d12_params": build.d12_params,
+                }
                 for probe, value in probes(entries).items():
                     records.append(trace.ok(case, probe, value, meta=meta))
                 records.append(trace.ok(case, "result", results, meta=meta))
