@@ -5,7 +5,7 @@
 //! plus `version`, `mtproto_layer`, `parameters` and `mtproto_descriptions`, which the IR does not carry.
 //!
 //! A message with `%s` / `%d` is a template. Its regex is anchored, has one capture group per placeholder, and
-//! stays in the subset Python `re` and Rust `regex` share: `%s` is `(.*?)` (it can render empty), `%d` is `(-?\d+)`.
+//! stays in the subset Python `re` and Rust `regex` share: `%s` is `([\s\S]*?)` (it can render empty or span lines), `%d` is `(-?\d+)`.
 //! Templates overlap (`entity %s` also matches `entity begins after ... %d`), so the regexes alone are ambiguous.
 //! Lookup rule for consumers: the exact message first, then the matching template with the longest
 //! [`literal_len`]; the catalogue guarantees that template is unique.
@@ -123,7 +123,7 @@ fn compile(message: &str) -> Result<Option<Template>, String> {
         match rest.as_bytes().get(at + 1) {
             Some(b's') => {
                 placeholders.push(Placeholder::S);
-                regex.push_str("(.*?)");
+                regex.push_str(r"([\s\S]*?)");
             }
             Some(b'd') => {
                 placeholders.push(Placeholder::D);

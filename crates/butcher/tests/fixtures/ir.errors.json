@@ -24,7 +24,7 @@
           "s",
           "s"
         ],
-        "regex": "^Bad Request: can't use file of type (.*?) as (.*?)$"
+        "regex": "^Bad Request: can't use file of type ([\\s\\S]*?) as ([\\s\\S]*?)$"
       },
       "methods": [
         "sendDocument"
@@ -44,7 +44,7 @@
         "placeholders": [
           "s"
         ],
-        "regex": "^Bad Request: entity (.*?)$"
+        "regex": "^Bad Request: entity ([\\s\\S]*?)$"
       },
       "methods": [
         "sendMessage"
@@ -72,7 +72,7 @@
           "s",
           "d"
         ],
-        "regex": "^Bad Request: file of size (-?\\d+) bytes is too big(.*?); the maximum size is (-?\\d+) bytes$"
+        "regex": "^Bad Request: file of size (-?\\d+) bytes is too big([\\s\\S]*?); the maximum size is (-?\\d+) bytes$"
       },
       "methods": [
         "sendDocument"
@@ -92,7 +92,7 @@
         "placeholders": [
           "s"
         ],
-        "regex": "^Bad Request: wrong remote file identifier specified: (.*?)$"
+        "regex": "^Bad Request: wrong remote file identifier specified: ([\\s\\S]*?)$"
       },
       "methods": [
         "getFile"

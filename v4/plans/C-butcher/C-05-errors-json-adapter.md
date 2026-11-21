@@ -55,8 +55,8 @@ ordered by HTTP code, then message (the order of the sorted source objects). Ent
 `Bad Request: ` prefix), `mtproto` (only when the file gives exactly one code), `template`, `methods`. A template has
 `placeholders` (`s` / `d`, in order) and an anchored `regex` with one capture group per placeholder.
 
-- Regex dialect is the subset Python `re` and Rust `regex` share: `^...$`, `%s` is `(.*?)`, `%d` is `(-?\d+)`; use a
-  full match. `%s` can render empty (`too big%s;`), which `(.+)` would reject.
+- Regex dialect is the subset Python `re` and Rust `regex` share: `^...$`, `%s` is `([\s\S]*?)`, `%d` is `(-?\d+)`; use a
+  full match. `%s` can render empty (`too big%s;`), which `(.+)` would reject, and the value can contain a newline (an echoed URL), which `.` would not match.
 - Consumers (C-12) look up the exact message first, then the matching template with the longest `literal_len`
   (`butcher::sources::errors::literal_len`).
 - `mtproto_descriptions` and `parameters` (`retry_after`, `migrate_to_chat_id`) are not carried: the IR has no field for them.

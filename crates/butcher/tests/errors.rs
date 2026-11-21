@@ -107,13 +107,14 @@ fn placeholder_kinds() {
     .ir;
     let t = |i: usize| ir.errors[i].template.clone().unwrap();
     assert_eq!(t(0).placeholders, [Placeholder::S]);
-    assert_eq!(t(0).regex, "^Bad Request: a (.*?)$");
+    assert_eq!(t(0).regex, r"^Bad Request: a ([\s\S]*?)$");
     assert_eq!(t(1).placeholders, [Placeholder::D]);
     assert_eq!(t(1).regex, r"^Bad Request: b (-?\d+)$");
     assert_eq!(t(2).placeholders, [Placeholder::D, Placeholder::S]);
     let re = Regex::new(&t(1).regex).unwrap();
     assert!(re.is_match("Bad Request: b -7") && !re.is_match("Bad Request: b x"));
-    assert!(Regex::new(&t(0).regex).unwrap().is_match("Bad Request: a "));
+    let re = Regex::new(&t(0).regex).unwrap();
+    assert!(re.is_match("Bad Request: a ") && re.is_match("Bad Request: a x\ny"));
 }
 
 #[test]
