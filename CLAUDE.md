@@ -10,8 +10,8 @@ they are the ones verified against this project's toolchain:
 | Task | Command |
 |---|---|
 | Tests | `rtk test uv run pytest tests -q` |
-| Lint | `rtk proxy uv run ruff check --show-fixes --preview aiogram examples` |
-| Format | `rtk proxy uv run ruff format aiogram tests scripts examples` |
+| Lint | `rtk proxy uv run ruff check --show-fixes --preview aiogram examples benchmarks differential` |
+| Format | `rtk proxy uv run ruff format aiogram tests scripts examples benchmarks differential` |
 | Types | `rtk mypy aiogram` |
 | Workflow lint | `rtk proxy make lint-workflows` |
 | git / gh | `rtk git <sub>` / `rtk gh <sub>` |
