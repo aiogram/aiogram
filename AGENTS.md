@@ -176,13 +176,17 @@ These patterns repeatedly appeared in maintainer feedback and should be treated 
 - `tests/typing/` holds mypy-only `assert_type` files, never collected by pytest; run them with `make typing`.
 - `aiogram/_core.pyi` is hand-written (PD-36). After changing the `_core` surface, update it and run `make stubtest`
   (also part of `make lint`); stubtest needs the built extension.
-- Converter core (`aiogram/utils/_converters.py` + `crates/aiogram-core/src/conv/`, PD-36): Python compiles
-  annotations into converter objects (tags, tables, labels); Rust does every conversion and builds the
-  `ConversionError`s. There is no Python backend (PyPy is dropped).
-  - A new kind needs a `kind` tag, a Rust `Data` variant and its arm in `load`, `dump`, `json` and `flat`. Without
-    one, a converter is `"python"`: Rust calls its methods, which is right for user converters only.
-  - Error text is ported word for word from the Python code into Rust (`errors.rs` and the walkers). The contract
-    suite (`tests/test_utils/test_converters.py`) checks messages and paths, so change both together.
+- Converter core (PD-36, F-08 plan-10): `aiogram/utils/converters.py` is the public, stdlib-only declaration API
+  (`field`, `Key`, `Discriminator`, `Converter`, ready-made converters, `ConversionError`); `aiogram/utils/_converters.py`
+  resolves annotations and holds `ModelBase`; `crates/aiogram-core/src/conv/` does every conversion. `import aiogram`
+  must not import `_converters` (it loads `_core`); `tests/test_core/test_build.py` checks it.
+  - The Python -> Rust interface is the typed constructors in `conv/ir.rs` (`Kind`, `Field`, `KindCell`) and
+    `ModelCore`, declared in `aiogram/_core.pyi`. Rust never reads resolver attributes by name. A new kind needs a
+    constructor (and its stub), a `Data` variant, and its arm in `json/load.rs`, `json/parse.rs`, `json/dump.rs`,
+    `json/write.rs`, `check.rs` and `flat/` (or a "no flat form" there).
+  - Errors stay Rust `Line`s until `errors::materialize` builds one `ConversionError`; message text and locs are
+    checked by the contract suite (`tests/test_utils/test_converters.py`), so change both together.
+  - `conv/native/` is pure Rust, tested against CPython-generated vectors; keep it free of the Python API.
   - Rebuild before testing a crate change (`make dev`, then `uv run --no-sync pytest`): a stale `_core.*.so` makes
     tests fail, crash or pass for the wrong reason.
 

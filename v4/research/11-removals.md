@@ -76,7 +76,8 @@ class Item(CallbackData, prefix="item"):
 - Implementation: Python, `typing.dataclass_transform` for type checkers, a small converter table built at
   class creation (`int`, `str`, `float`, `bool`, `Decimal`, `UUID`, `Enum`/`IntEnum`/`StrEnum`, `X | None`,
   `Literal`), plus defaults. `pack`/`unpack` and the 64-byte limit work as today. `filter()` and the magic `F`
-  rule are unchanged.
+  rule are unchanged. Revised by PD-36 (F-08 plan-10): `CallbackData` builds on the shared `ModelBase` and its
+  positional flat schema (one resolver with `FSMData`, two schemas); `rename=` and `Key` raise `TypeError` there.
 - ~~No Rust: pack/unpack cost (2–3 µs) is the user's field conversion~~ — revised by PD-36: the shared converter
   core converts in Rust (unpack 0.58 µs; 1.24 µs in its first, pure-Python version), Rust-only since PyPy is dropped.
   The prefix fast-fail (09 #16) still removes most of the filter cost.

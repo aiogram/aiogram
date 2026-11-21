@@ -136,14 +136,38 @@ class RedisStorage(BaseStorage):
             value = value.decode("utf-8")
         return cast(dict[str, Any], self.json_loads(value))
 
+    @property
+    def _raw_reads(self) -> bool:
+        """Typed reads may take the stored bytes (:meth:`_get_data_raw`): ``json_loads`` is the
+        stdlib default, so parsing the bytes in one pass gives what it would (PD-36)."""
+        return self.json_loads is json.loads
+
+    @property
+    def _raw_writes(self) -> bool:
+        """Typed writes may store bytes dumped by the converter core (:meth:`_set_data_raw`):
+        ``json_dumps`` is the stdlib default (PD-36)."""
+        return self.json_dumps is json.dumps
+
     async def _get_data_raw(self, key: StorageKey) -> bytes | str | None:
         """Internal hook (PD-36): the stored data as JSON text, ``None`` when there is none.
 
-        Typed reads parse it in one pass (``ModelConverter.load_json``), bypassing
-        ``json_loads``; the dict API above keeps using the hooks.
+        Only for typed reads when :attr:`_raw_reads` is true; otherwise they go through
+        :meth:`get_data` and ``json_loads``.
         """
         value = await self.redis.get(self.key_builder.build(key, "data"))
         return cast(bytes | str | None, value)
+
+    async def _set_data_raw(self, key: StorageKey, data: bytes) -> None:
+        """Internal hook (PD-36): store JSON bytes (``JsonSchema.dump_json``) as :meth:`set_data`
+        stores ``json_dumps(data)``; an empty object deletes the key, as an empty dict does.
+
+        Only for typed writes when :attr:`_raw_writes` is true.
+        """
+        redis_key = self.key_builder.build(key, "data")
+        if data == b"{}":
+            await self.redis.delete(redis_key)
+            return
+        await self.redis.set(redis_key, data, ex=self.data_ttl)
 
 
 class RedisEventIsolation(BaseEventIsolation):

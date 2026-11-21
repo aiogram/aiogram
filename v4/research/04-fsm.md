@@ -125,7 +125,8 @@ await state.get_data()                               # dict API unchanged
   aiogram types (stored through the core encoder as wire JSON and decoded back with `from_dict`, D91).
 - **Shared converters with `CallbackData` (D14)**: one converter table. `CallbackData` uses its flat-string
   subset and `FSMData` the JSON-shaped, nested superset. The table is built at class creation, so per call
-  there is no reflection.
+  there is no reflection. Revised by PD-36 (F-08 plan-10): one shared annotation resolver, then separate JSON and flat
+  schemas, each with its own type set and errors; `CallbackData` takes the flat schema, `FSMData` the JSON one.
 - **Typed patches (D115)**: `update_data(OrderForm, qty=2)` validates each field and needs no full model. Passing a
   model instance merges **only explicitly set fields** (`exclude_unset`), so the default `qty=1` doesn't overwrite a
   stored quantity. Mutable defaults (`tags: list[str] = []`) are copied per instance. `set_data(model)` writes the

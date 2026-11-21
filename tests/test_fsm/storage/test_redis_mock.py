@@ -126,6 +126,26 @@ class TestRedisStorageMock:
         json_loads.assert_not_called()
 
 
+    async def test_raw_paths_only_with_stdlib_json(self):
+        storage = RedisStorage(redis=AsyncMock())
+        assert storage._raw_reads
+        assert storage._raw_writes
+        custom = RedisStorage(redis=AsyncMock(), json_loads=MagicMock(), json_dumps=MagicMock())
+        assert not custom._raw_reads
+        assert not custom._raw_writes
+
+    async def test_set_data_raw(self):
+        redis_mock = AsyncMock()
+        json_dumps = MagicMock()
+        storage = RedisStorage(redis=redis_mock, json_dumps=json_dumps, data_ttl=10)
+        redis_key = storage.key_builder.build(STORAGE_KEY, "data")
+        await storage._set_data_raw(key=STORAGE_KEY, data=b'{"a":1}')
+        redis_mock.set.assert_called_once_with(redis_key, b'{"a":1}', ex=10)
+        await storage._set_data_raw(key=STORAGE_KEY, data=b"{}")
+        redis_mock.delete.assert_called_once_with(redis_key)
+        json_dumps.assert_not_called()
+
+
 class TestRedisEventIsolationLockMock:
     async def test_lock(self):
         redis_mock = MagicMock()

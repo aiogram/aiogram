@@ -1,35 +1,36 @@
 """
-Shared converter core for ``FSMData`` and ``CallbackData`` (private).
+Converter core, Python side (private; F-08, PD-36, plan-10).
 
-One converter table serves both (D14, D30): every converter has a JSON codec
-(``to_json`` / ``from_json``, JSON-shaped values for FSM storages) and, for the
-flat subset (scalars, enums, ``Literal``, ``X | None``), a string codec
-(``to_str`` / ``from_str``, callback data parts).
+Python resolves annotations and builds the typed ``aiogram._core`` objects (``Kind``, ``Field``,
+``ModelCore``); Rust does every conversion. This module holds:
 
-Field specs are compiled once per class (:func:`register_model` from
-``__init_subclass__``), so loading does no per-call reflection. An unsupported
-annotation raises :class:`TypeError` at class creation; bad input raises
-:class:`ConversionError` carrying the field path (``address.zip``, ``tags[2]``).
+- the annotation resolver: forward references evaluated per field in the namespace of the class
+  that declares it, ``Annotated`` markers, ``NewType`` and ``type X = ...`` aliases, defaults and
+  stored keys. Converter lookup order: the field (``Annotated[T, Conv]``), the class
+  (``converters={T: Conv}``), the type's own ``__aiogram_converter__`` hook (found along the MRO),
+  the built-ins. There is no global registry;
+- :class:`ModelBase`, the ``dataclass_transform`` base that ``FSMData`` (F-09) and
+  ``CallbackData`` (F-11) build on;
+- :func:`json_schema`, :func:`flat_schema` and :func:`json_codec`, the codecs consumers use.
 
-This module compiles annotations into converters; all per-value conversion runs in
-Rust, in ``aiogram._core`` (PD-36: Rust-only, since PyPy is dropped from 4.x, PD-35). The
-module imports only the standard library: ``aiogram._core`` is imported on first use.
+``import aiogram`` does not import this module (B-01: it loads ``aiogram._core``).
 """
 
 from __future__ import annotations
 
 import contextlib
 import dataclasses
-import importlib
+import enum
+import re
+import reprlib
 import sys
 import threading
 import types
 import typing
-from collections.abc import Callable, Mapping, Sequence
+from collections.abc import Callable, Iterable, Mapping
 from copy import deepcopy
-from datetime import date, datetime
+from datetime import date, datetime, time, timedelta
 from decimal import Decimal
-from enum import Enum, Flag
 from fractions import Fraction
 from functools import partial
 from typing import (
@@ -40,746 +41,564 @@ from typing import (
     Literal,
     NotRequired,
     Required,
+    TypeAlias,
+    TypeVar,
+    dataclass_transform,
     get_args,
     get_origin,
     is_typeddict,
 )
 from uuid import UUID
 
-MISSING: Any = dataclasses.MISSING
-FIELDS_SET = "__fields_set__"
-"""Instance attribute holding the frozenset of explicitly set field names (``exclude_unset``)."""
+from aiogram import _core
+from aiogram.utils.converters import (
+    MISSING,
+    ConversionError,
+    Converter,
+    DecimalAsNumber,
+    Discriminator,
+    EnumByName,
+    EpochDatetime,
+    ErrorDetail,
+    IsoDatetime,
+    Key,
+    UuidHex,
+    _FieldInfo,
+    _Native,
+    field,
+)
+
+__all__ = ["ModelBase", "fields_set", "flat_schema", "json_codec", "json_schema"]
+
+_core.converters_init(ConversionError, ErrorDetail, MISSING)
+
+_T = TypeVar("_T")
+
+Rename: TypeAlias = Literal["camel", "snake", "kebab"] | Callable[[str], str]
+
+# ---------------------------------------------------------------------------------------------
+# Annotations and namespaces
+# ---------------------------------------------------------------------------------------------
 
 if sys.version_info >= (3, 14):
     import annotationlib
 
-    # Under deferred annotations a name that is not bound yet (the class itself while
-    # ``__init_subclass__`` runs) raises NameError in the default format even with localns.
-    _HINTS_OPTIONS: dict[str, Any] = {"format": annotationlib.Format.FORWARDREF}
+    def _own_annotations(cls: type) -> dict[str, Any]:
+        # FORWARDREF: a name that is not bound yet (the class itself while __init_subclass__
+        # runs, a class defined later) becomes a ForwardRef instead of raising NameError.
+        return dict(annotationlib.get_annotations(cls, format=annotationlib.Format.FORWARDREF))
+
+    def _string_annotation(cls: type, name: str) -> str | None:
+        return annotationlib.get_annotations(cls, format=annotationlib.Format.STRING).get(name)
+
+    def _namespace_annotations(namespace: Mapping[str, Any]) -> dict[str, Any]:
+        annotate = annotationlib.get_annotate_from_class_namespace(namespace)
+        if annotate is None:
+            return dict(namespace.get("__annotations__", {}))
+        return dict(
+            annotationlib.call_annotate_function(annotate, annotationlib.Format.FORWARDREF)
+        )
+
 else:  # pragma: no cover
-    _HINTS_OPTIONS: dict[str, Any] = {}
 
+    def _own_annotations(cls: type) -> dict[str, Any]:
+        return dict(cls.__dict__.get("__annotations__", {}))
 
-class _NotReady(NameError):
-    """A class's fields were needed while they were being compiled (a recursive reference)."""
+    def _string_annotation(cls: type, name: str) -> str | None:  # noqa: ARG001
+        return None
 
+    def _namespace_annotations(namespace: Mapping[str, Any]) -> dict[str, Any]:
+        return dict(namespace.get("__annotations__", {}))
 
-class ConversionError(ValueError):
-    """A value could not be converted; :attr:`path` points at the offending field."""
 
-    def __init__(self, reason: str, value: Any = MISSING) -> None:
-        super().__init__(reason)
-        self.reason = reason
-        self.value = value
-        self._segments: list[str] = []
+if sys.version_info >= (3, 12):
+    _ALIAS_TYPES: tuple[type, ...] = (typing.TypeAliasType,)
+else:  # pragma: no cover
+    _ALIAS_TYPES = ()
 
-    def _at(self, segment: str) -> ConversionError:
-        self._segments.append(segment)
-        return self
-
-    @property
-    def path(self) -> str:
-        return "".join(reversed(self._segments)).removeprefix(".")
-
-    def __str__(self) -> str:
-        text = f"{self.path}: {self.reason}" if self._segments else self.reason
-        if self.value is not MISSING:
-            text += f" (got {self.value!r})"
-        return text
-
-
-class Converter:
-    """A converter: ``to_json`` / ``from_json``, and, when ``flat``, ``to_str`` / ``from_str``.
-
-    Subclass it for :func:`register_converter` or a per-field ``Annotated[T, MyConverter()]``;
-    the Rust core calls these methods. The built-in converters below carry only compile data
-    (a ``kind`` tag, types, tables): their per-value work runs in Rust (PD-36).
-    """
-
-    flat: bool = False
-    kind: ClassVar[str] = "python"
-    """Tag the Rust core dispatches on; ``"python"`` means "call this converter's methods"."""
-
-    def to_json(self, value: Any) -> Any:  # pragma: no cover
-        raise NotImplementedError
-
-    def from_json(self, value: Any) -> Any:  # pragma: no cover
-        raise NotImplementedError
-
-    def to_str(self, value: Any) -> str:
-        msg = f"{self!r} has no flat-string form"
-        raise TypeError(msg)
-
-    def from_str(self, value: str) -> Any:
-        msg = f"{self!r} has no flat-string form"
-        raise TypeError(msg)
-
-    def __repr__(self) -> str:
-        return f"<{type(self).__name__}>"
-
-
-class _Native(Converter):
-    """A built-in converter: its methods run on its compiled Rust core."""
-
-    def _core(self) -> Any:
-        core = self.__dict__.get("_core_")
-        if core is None:
-            core = self.__dict__["_core_"] = _rust().KindCore(self)
-        return core
-
-    def to_json(self, value: Any) -> Any:
-        return self._core().to_json(value)
-
-    def from_json(self, value: Any) -> Any:
-        return self._core().from_json(value)
-
-    def to_str(self, value: Any) -> str:
-        return self._core().to_str(value)  # type: ignore[no-any-return]
-
-    def from_str(self, value: str) -> Any:
-        return self._core().from_str(value)
-
-
-class _Str(_Native):
-    flat = True
-    kind = "str"
-
-
-class _Int(_Native):
-    flat = True
-    kind = "int"
-
-
-class _Float(_Native):
-    flat = True
-    kind = "float"
-
-
-# The flat bool text: 3.x packs "1"/"0"; the rest is pydantic's lax set, kept for hand-built data.
-_BOOL_TEXT = {
-    "1": True,
-    "0": False,
-    "true": True,
-    "false": False,
-    "t": True,
-    "f": False,
-    "yes": True,
-    "no": False,
-    "y": True,
-    "n": False,
-    "on": True,
-    "off": False,
-}
-
-
-class _Bool(_Native):
-    flat = True
-    kind = "bool"
-
-
-class _Text(_Native):
-    """A value stored as text in both codecs (``Decimal``, ``UUID``, ``datetime``...).
-
-    ``parse`` reads the text (a ``ValueError`` / ``ArithmeticError`` is a conversion error),
-    ``to_text`` / ``to_flat`` write it; an instance of ``reject`` (``datetime`` for ``date``)
-    is refused.
-    """
-
-    kind = "text"
-
-    def __init__(
-        self,
-        tp: type,
-        parse: Callable[[str], Any],
-        *,
-        flat: bool = True,
-        to_text: Callable[[Any], str] = str,
-        to_flat: Callable[[Any], str] | None = None,
-        reject: type | None = None,
-    ) -> None:
-        self.tp = tp
-        self.parse = parse
-        self.flat = flat
-        self.to_text = to_text
-        self.to_flat = to_flat or to_text
-        self.reject = reject
-
-
-class _Enum(_Native):
-    """An ``Enum``: its JSON form is the member value, matched by ``(type, value)`` so that
-    ``true`` or ``1.0`` never load an ``IntEnum`` member."""
-
-    flat = True
-    kind = "enum"
-
-    def __init__(self, tp: type[Enum]) -> None:
-        if issubclass(tp, Flag):
-            # composite and zero flags are not members: they could not round-trip
-            msg = f"{tp.__name__} is a Flag enum, which is not supported"
-            raise TypeError(msg)
-        for member in tp:
-            if type(member.value) not in _JSON_SCALARS:
-                msg = f"{tp.__name__}.{member.name} value {member.value!r} is not a JSON scalar"
-                raise TypeError(msg)
-        self.tp = tp
-        # an overridden _missing_ (a tolerant enum: unknown values -> UNKNOWN) is called on a miss
-        default_missing = vars(Enum)["_missing_"].__func__
-        self.has_missing = getattr(tp._missing_, "__func__", None) is not default_missing
-        self._by_json = {(type(member.value), member.value): member for member in tp}
-        self._by_text = {str(member.value): member for member in tp}
-        # Values with the same text (1 and "1") cannot round-trip through a flat string.
-        self.flat = len(self._by_text) == len(tp)
-
-
-_JSON_SCALARS = {str, int, float, bool, types.NoneType}
-
-
-def _literal_text(value: Any) -> str:
-    if value is None:
-        return ""
-    if isinstance(value, bool):
-        return "1" if value else "0"
-    return str(value)
-
-
-class _Literal(_Native):
-    flat = True
-    kind = "literal"
-
-    def __init__(self, values: tuple[Any, ...]) -> None:
-        for value in values:
-            if value is not None and type(value) not in {str, int, bool}:
-                msg = f"unsupported Literal value {value!r}; use str, int, bool or None"
-                raise TypeError(msg)
-        self.values = values
-        self.label = f"one of {list(values)}"
-        # Keyed by type too, so True does not match Literal[1].
-        self._json = {(type(value), value) for value in values}
-        self._text = {_literal_text(value): value for value in values}
-        self.flat = len(self._text) == len(values)  # Literal[1, "1"]: same text
-
-
-class _Optional(_Native):
-    kind = "optional"
-
-    def __init__(self, inner: Converter) -> None:
-        self.inner = inner
-        # "" is None in the flat codec (3.x pack writes None as ""), so an inner value whose
-        # text is "" (an enum member or Literal value) would come back as None: no flat form
-        empty = "" in getattr(inner, "_by_text", ()) or "" in getattr(inner, "_text", ())
-        self.flat = inner.flat and not empty
-
-
-class _Sequence(_Native):
-    """``list[T]``, ``tuple[T, ...]``, ``set[T]``, ``frozenset[T]``; the JSON form is a list."""
-
-    kind = "sequence"
-
-    def __init__(self, item: Converter, tp: type) -> None:
-        self.item = item
-        self.tp: Any = tp
-
-
-class _Dict(_Native):
-    """``dict[str, T]``."""
-
-    kind = "dict"
-
-    def __init__(self, item: Converter) -> None:
-        self.item = item
-
-
-class _TypedDict(_Native):
-    """A ``TypedDict``: a plain ``dict`` of the declared keys present in the input.
-
-    ``Required`` keys must be there; ``NotRequired`` keys that are missing stay missing (the
-    dict is its own "set fields" record). Unknown keys are dropped, as for models.
-    """
-
-    kind = "typeddict"
-
-    def __init__(self, tp: type) -> None:
-        self.tp = tp
-        self._fields: tuple[tuple[str, Converter, bool], ...] | None = None
-        self._compiling = False
-        self._lock = threading.RLock()
-
-    @property
-    def fields(self) -> tuple[tuple[str, Converter, bool], ...]:
-        if self._fields is not None:
-            return self._fields
-        with self._lock:  # another thread waits; a recursive reference in this one is _NotReady
-            if self._fields is None:
-                if self._compiling:
-                    raise _NotReady(self.tp)
-                self._compiling = True
-                try:
-                    self._fields = self._compile()
-                finally:
-                    self._compiling = False
-            return self._fields
-
-    def _compile(self) -> tuple[tuple[str, Converter, bool], ...]:
-        hints = typing.get_type_hints(
-            self.tp, localns=_localns(self.tp), include_extras=True, **_HINTS_OPTIONS
-        )
-        required_keys = self.tp.__required_keys__  # type: ignore[attr-defined]
-        fields = []
-        for name, hint in hints.items():
-            # The wrapper wins: under string annotations __required_keys__ can miss it.
-            inner = hint
-            while get_origin(inner) is Annotated:
-                inner = get_args(inner)[0]
-            wrapper = get_origin(inner)
-            required = wrapper is Required or (
-                wrapper is not NotRequired and name in required_keys
-            )
-            try:
-                fields.append((name, converter_for(hint), required))
-            except TypeError as e:
-                msg = f"{self.tp.__qualname__}.{name}: {e}"
-                raise TypeError(msg) from None
-        return tuple(fields)
-
-
-@dataclasses.dataclass(frozen=True, slots=True)
-class Discriminator:
-    """``Annotated[A | B, Discriminator("kind")]``: pick the union member by its ``Literal`` tag.
-
-    Every member must be a model, dataclass, NamedTuple or TypedDict whose ``kind`` field is a
-    ``Literal``; the tag of the input selects the member, so loading never guesses.
-    """
-
-    field: str
-
-
-_SCALAR_TYPES: dict[str, type] = {"str": str, "int": int, "float": float, "bool": bool}
-
-
-def _types(converter: Converter, *, json_form: bool) -> frozenset[type]:
-    """The value types ``converter`` takes without coercion (JSON or Python form); for Union."""
-    if isinstance(converter, (_Str, _Int, _Float, _Bool)):
-        return frozenset({_SCALAR_TYPES[converter.kind]})
-    if isinstance(converter, _Text):
-        return frozenset({str if json_form else converter.tp})
-    if isinstance(converter, _Enum):
-        return (
-            frozenset({type(m.value) for m in converter.tp})
-            if json_form
-            else frozenset({converter.tp})
-        )
-    if isinstance(converter, _Literal):
-        return frozenset(type(value) for value in converter.values)
-    if isinstance(converter, _Sequence):
-        return frozenset({list} if json_form else {converter.tp})
-    if isinstance(converter, (_Dict, _TypedDict)):
-        return frozenset({dict})
-    if isinstance(converter, ModelConverter):
-        return frozenset({dict if json_form else converter.tp})
-    return frozenset()  # a user converter: tried in order, after the exact matches
-
-
-class _Union(_Native):
-    """``A | B | ...`` (with or without ``None``), smart mode (PD-36).
-
-    A member whose type matches the value exactly is tried first (``int | str`` keeps ``1`` and
-    ``"1"`` apart, ``float | int`` keeps ``1`` an int), then every member left to right; the
-    first that accepts wins. With a :class:`Discriminator`, the tag field picks the member.
-    """
-
-    kind = "union"
-
-    def __init__(
-        self,
-        members: list[Converter],
-        *,
-        nullable: bool,
-        label: str,
-        discriminator: str | None = None,
-    ) -> None:
-        self.members = members
-        self.nullable = nullable
-        self.label = label
-        self.discriminator = discriminator
-        self._json = [(member, _types(member, json_form=True)) for member in members]
-        self._python = [(member, _types(member, json_form=False)) for member in members]
-        self._tags: dict[tuple[type, Any], Converter] | None = None
-        self.tag_label = ""
-        if discriminator is not None:
-            with contextlib.suppress(NameError):  # a member defined later: built on first use
-                self._tag_table()
-
-    def _tag_table(self) -> dict[tuple[type, Any], Converter]:
-        if self._tags is None:
-            tags: dict[tuple[type, Any], Converter] = {}
-            for member in self.members:
-                fields: dict[str, Converter] = {}
-                if isinstance(member, ModelConverter):
-                    fields = {field.name: field.converter for field in member.fields}
-                elif isinstance(member, _TypedDict):
-                    fields = {name: converter for name, converter, _ in member.fields}
-                tag = fields.get(self.discriminator)  # type: ignore[arg-type]
-                if not isinstance(tag, _Literal):
-                    msg = (
-                        f"{self.label}: every member needs a Literal {self.discriminator!r} field"
-                    )
-                    raise TypeError(msg)
-                for value in tag.values:
-                    if tags.setdefault((type(value), value), member) is not member:
-                        msg = f"{self.label}: tag {value!r} is used by more than one member"
-                        raise TypeError(msg)
-            self.tag_label = f"one of {[value for _, value in tags]}"
-            self._tags = tags
-        return self._tags
-
-
-@dataclasses.dataclass(frozen=True, slots=True)
-class FieldSpec:
-    name: str
-    converter: Converter
-    default: Any = MISSING
-    default_factory: Callable[[], Any] | None = None
-
-
-class ModelConverter(Converter):
-    """Converter for a registered model class, a stdlib dataclass or a NamedTuple.
-
-    The fields are compiled here, in Python; loading and dumping run on the compiled Rust
-    schema (``aiogram._core.ModelSchema``), which replaces these methods per instance on first
-    use. Registered models are built without calling ``__init__`` and must have an instance
-    ``__dict__``; dataclasses and NamedTuples are built with ``tp(**values)``, so
-    ``__post_init__`` runs (a ``ValueError`` there becomes a :class:`ConversionError`).
-    """
-
-    kind = "model"
-
-    def __init__(self, tp: type, *, is_model: bool) -> None:
-        self.tp = tp
-        self.is_model = is_model
-        self._fields: tuple[FieldSpec, ...] | None = None
-        self._compiling = False
-        self._lock = threading.RLock()
-
-    @property
-    def fields(self) -> tuple[FieldSpec, ...]:
-        # Lazy: a class may refer to itself (or to a class defined later) through its fields.
-        if self._fields is not None:
-            return self._fields
-        with self._lock:  # another thread waits; a recursive reference in this one is _NotReady
-            if self._fields is None:
-                if self._compiling:
-                    raise _NotReady(self.tp)
-                self._compiling = True
-                try:
-                    self._fields = _compile(self.tp)
-                finally:
-                    self._compiling = False
-            return self._fields
-
-    def _rust_schema(self) -> Any:
-        """The compiled Rust schema (compiling the fields first); also used for nested models."""
-        schema = self.__dict__.get("_schema")
-        if schema is None:
-            self.fields  # noqa: B018
-            schema = _rust().ModelSchema(self)
-            # Instance attributes shadow the methods below: later calls go straight to Rust.
-            vars(self).update(
-                _schema=schema,
-                from_json=schema.load_dict,
-                load_json=schema.load_json,
-                to_json=schema.to_json,
-                dump=schema.dump,
-                from_flat=schema.from_flat,
-                to_flat=schema.to_flat,
-            )
-        return schema
-
-    def from_json(self, value: Any) -> Any:
-        """A JSON-shaped mapping -> instance (unknown keys ignored)."""
-        return self._rust_schema().load_dict(value)
-
-    def load_json(self, data: bytes | bytearray | str) -> Any:
-        """JSON text -> instance in one pass, as ``json.loads`` + :meth:`from_json` would."""
-        return self._rust_schema().load_json(data)
-
-    def to_json(self, value: Any) -> Any:
-        return self._rust_schema().to_json(value)
-
-    def dump(self, value: Any, *, exclude_unset: bool = False) -> dict[str, Any]:
-        """Instance -> JSON-shaped dict; validates the values."""
-        return self._rust_schema().dump(value, exclude_unset=exclude_unset)  # type: ignore[no-any-return]
-
-    def from_flat(self, parts: Sequence[str]) -> Any:
-        """Callback-data parts (one string per field, in field order) -> instance."""
-        return self._rust_schema().from_flat(parts)
-
-    def to_flat(self, value: Any) -> list[str]:
-        """Instance -> callback-data parts, one string per field in field order."""
-        return self._rust_schema().to_flat(value)  # type: ignore[no-any-return]
-
-    def init(self, instance: Any, kwargs: Mapping[str, Any]) -> None:
-        """``__init__`` body for a registered model: store kwargs, fill defaults, record set
-        fields.
-
-        Values are not converted; :meth:`dump` validates them.
-        """
-        values = {}
-        for field in self.fields:
-            if field.name in kwargs:
-                values[field.name] = kwargs[field.name]
-            elif field.default is not MISSING:
-                values[field.name] = field.default
-            elif field.default_factory is not None:
-                values[field.name] = field.default_factory()
-            else:
-                msg = f"{self.tp.__qualname__}() missing required argument {field.name!r}"
-                raise TypeError(msg)
-        if unknown := kwargs.keys() - values.keys():
-            msg = f"{self.tp.__qualname__}() got unexpected arguments {sorted(unknown)}"
-            raise TypeError(msg)
-        instance.__dict__.update(values)
-        instance.__dict__[FIELDS_SET] = frozenset(kwargs)
-
-
-# ponytail: plain dicts keep compiled classes alive; classes are module-level and immortal anyway.
-_models: dict[type, ModelConverter] = {}
-_extra: dict[Any, Converter] = {}
-_typeddicts: dict[type, _TypedDict] = {}
-
-_SCALARS: dict[Any, Converter] = {
-    str: _Str(),
-    int: _Int(),
-    float: _Float(),
-    bool: _Bool(),
-    Decimal: _Text(Decimal, Decimal),
-    Fraction: _Text(Fraction, Fraction),
-    UUID: _Text(UUID, UUID, to_flat=lambda value: value.hex),  # hex: 3.x pack, shorter
-    datetime: _Text(datetime, datetime.fromisoformat, flat=False, to_text=datetime.isoformat),
-    date: _Text(date, date.fromisoformat, flat=False, to_text=date.isoformat, reject=datetime),
-}
 _UNION_TYPES = (typing.Union, types.UnionType)
-
-_CORE: Any = None
-
-
-def _rust() -> Any:
-    """``aiogram._core``, imported on first use: importing this module stays stdlib-only."""
-    global _CORE  # noqa: PLW0603
-    if _CORE is None:
-        _CORE = importlib.import_module("aiogram._core")
-    return _CORE
+# A ClassVar written as text (`from __future__ import annotations`), the way dataclasses detects it
+_CLASSVAR_TEXT = re.compile(r"^\s*(?:\w+\s*\.\s*)*ClassVar\b")
+_KW_ONLY_TEXT = re.compile(r"^\s*(?:\w+\s*\.\s*)*KW_ONLY\s*$")
+_INITVAR_TEXT = re.compile(r"^\s*(?:\w+\s*\.\s*)*InitVar\b")
 
 
-def _generated_hash(tp: type) -> bool:
-    """Whether a dataclass's ``__hash__`` was generated by ``dataclasses`` (from its fields)."""
-    code = getattr(vars(tp).get("__hash__"), "__code__", None)
-    return code is not None and code.co_filename.startswith("<")  # exec'd, not in a source file
+def _text_of(raw: Any) -> str | None:
+    if isinstance(raw, ForwardRef):
+        return raw.__forward_arg__
+    return raw if isinstance(raw, str) else None
 
 
-def _unhashable(converter: Converter, seen: frozenset[int] = frozenset()) -> bool:
-    """Whether ``converter`` can produce a value that cannot go in a set."""
-    if id(converter) in seen:  # a recursive model: decided by its other fields
-        return False
-    seen |= {id(converter)}
-    if isinstance(converter, (_Dict, _TypedDict)):
-        return True
-    if isinstance(converter, _Sequence):
-        return converter.tp in {list, set} or _unhashable(converter.item, seen)
-    if isinstance(converter, _Optional):
-        return _unhashable(converter.inner, seen)
-    if isinstance(converter, _Union):
-        return any(_unhashable(member, seen) for member in converter.members)
-    if isinstance(converter, ModelConverter):
-        tp = converter.tp
-        if getattr(tp, "__hash__", None) is None:  # a non-frozen dataclass
-            return True
-        hashed: set[str] | None = None  # the fields a generated __hash__ uses
-        if _is_namedtuple(tp):
-            hashed = set(tp._fields)  # type: ignore[attr-defined]
-        elif dataclasses.is_dataclass(tp) and _generated_hash(tp):
-            hashed = {
-                field.name
-                for field in dataclasses.fields(tp)
-                if field.hash or (field.hash is None and field.compare)
-            }
-        if hashed:
-            with contextlib.suppress(NameError):  # a field type defined later
-                return any(
-                    _unhashable(f.converter, seen) for f in converter.fields if f.name in hashed
-                )
-    return False
+def _is_classvar(raw: Any) -> bool:
+    text = _text_of(raw)
+    if text is not None:
+        return bool(_CLASSVAR_TEXT.match(text))
+    return raw is ClassVar or get_origin(raw) is ClassVar
 
 
-def register_converter(tp: Any, converter: Converter) -> None:
-    """Extension hook: use ``converter`` for annotation ``tp`` (exact match, before the built-ins).
+def _is_typeish(value: Any) -> bool:
+    """A class-body name an annotation may refer to: a nested class or a type alias."""
+    return isinstance(value, (type, typing.NewType, types.GenericAlias, *_ALIAS_TYPES))
 
-    Affects only classes compiled after the call.
+
+@dataclasses.dataclass(slots=True)
+class _Scope:
+    """Where the annotations of one class are evaluated."""
+
+    globals: dict[str, Any]
+    locals: dict[str, Any]
+
+
+def _scope(cls: type, fields: Iterable[str], frame_locals: Mapping[str, Any] | None) -> _Scope:
+    """The namespace of ``cls``'s own annotations.
+
+    Lookup order: the class itself by name (not bound in its module yet while
+    ``__init_subclass__`` runs), class-body names that are types and not field names (nested
+    classes; a field default or slot never shadows a type: ``date: date = date(...)``), the
+    locals of the defining function, the module globals.
     """
-    _extra[tp] = converter
-
-
-def register_model(cls: type) -> ModelConverter:
-    """Compile ``cls``; call from ``__init_subclass__``. :class:`TypeError` on a bad field."""
-    converter = _models[cls] = ModelConverter(cls, is_model=True)
-    try:
-        converter.fields  # noqa: B018
-    except NameError:
-        pass  # a name defined later in the module; compiled on first use
-    except TypeError:
-        del _models[cls]
-        raise
-    return converter
-
-
-def model_converter(tp: type) -> ModelConverter:
-    """The converter for a registered model or a stdlib dataclass."""
-    converter = converter_for(tp)
-    if not isinstance(converter, ModelConverter):
-        msg = f"{tp!r} is neither a registered model nor a dataclass"
-        raise TypeError(msg)
-    return converter
-
-
-def converter_for(tp: Any) -> Converter:
-    """Resolve an annotation to its converter; :class:`TypeError` if unsupported."""
-    if isinstance(tp, (str, ForwardRef)):
-        msg = f"unresolved forward reference {tp!r}"
-        raise NameError(msg)
-    origin = get_origin(tp)
-    try:
-        converter = _extra.get(tp)
-    except TypeError:  # Annotated with unhashable metadata
-        converter = None
-    if converter is not None:
-        return converter
-    if origin is Annotated:
-        base, *metadata = get_args(tp)
-        for marker in metadata:
-            if isinstance(marker, Converter):  # a per-field converter (PD-36)
-                return marker
-        for marker in metadata:
-            if isinstance(marker, Discriminator):
-                return _union(base, marker.field)
-        return converter_for(base)
-    if origin in {Required, NotRequired}:  # TypedDict keys; required-ness comes from the class
-        return converter_for(get_args(tp)[0])
-    if (converter := _SCALARS.get(tp)) is not None:
-        return converter
-    args = get_args(tp)
-    if origin in _UNION_TYPES:
-        rest = [arg for arg in args if arg is not types.NoneType]
-        if len(rest) == 1:
-            return _Optional(converter_for(rest[0]))
-        return _union(tp, None)
-    if origin is Literal:
-        return _Literal(args)
-    if origin is list and len(args) == 1:
-        return _Sequence(converter_for(args[0]), list)
-    if origin is tuple and args[1:] == (Ellipsis,):
-        return _Sequence(converter_for(args[0]), tuple)
-    if origin is dict and args[:1] == (str,):
-        return _Dict(converter_for(args[-1]))
-    if origin in {set, frozenset} and len(args) == 1:
-        item = converter_for(args[0])
-        if _unhashable(item):
-            msg = f"unhashable set item {args[0]!r}"
-            raise TypeError(msg)
-        return _Sequence(item, origin)
-    if is_typeddict(tp):
-        if (cached := _typeddicts.get(tp)) is not None:
-            return cached
-        converter = _typeddicts[tp] = _TypedDict(tp)
-        try:
-            converter.fields  # noqa: B018  # eager, so a bad key fails at class creation
-        except TypeError:
-            del _typeddicts[tp]
-            raise
-        return converter
-    if isinstance(tp, type):
-        if issubclass(tp, Enum):
-            return _Enum(tp)
-        if tp in _models:
-            return _models[tp]
-        if dataclasses.is_dataclass(tp) or _is_namedtuple(tp):
-            model = _models[tp] = ModelConverter(tp, is_model=False)
-            try:
-                model.fields  # noqa: B018  # eager, so a bad nested field fails at class creation
-            except TypeError:
-                del _models[tp]
-                raise
-            return model
-    msg = f"unsupported annotation {tp!r}"
-    raise TypeError(msg)
-
-
-def _union(tp: Any, discriminator: str | None) -> _Union:
-    args = get_args(tp)
-    if get_origin(tp) not in _UNION_TYPES or len(args) < 2:  # noqa: PLR2004
-        msg = f"Discriminator needs a union of models, got {tp!r}"
-        raise TypeError(msg)
-    members = [converter_for(arg) for arg in args if arg is not types.NoneType]
-    return _Union(
-        members,
-        nullable=types.NoneType in args,
-        label=repr(tp).removeprefix("typing."),
-        discriminator=discriminator,
+    module = sys.modules.get(cls.__module__)
+    namespace: dict[str, Any] = dict(frame_locals or {})
+    skip = set(fields)
+    namespace.update(
+        (name, value)
+        for name, value in vars(cls).items()
+        if name not in skip and _is_typeish(value)
     )
+    namespace[cls.__name__] = cls
+    return _Scope(vars(module) if module is not None else {}, namespace)
 
 
-def _localns(cls: type) -> dict[str, Any]:
-    """Names for string annotations: the class body (nested classes), and the class itself,
-    which is not bound in its module yet while ``__init_subclass__`` runs."""
-    return {**vars(cls), cls.__name__: cls}
+def _evaluate(text: str, scope: _Scope) -> Any:
+    """Evaluate an annotation written as text; ``NameError`` for a name not defined yet."""
+    try:
+        return eval(text, scope.globals, scope.locals)  # noqa: S307
+    except NameError:
+        raise
+    except Exception as e:  # noqa: BLE001
+        msg = f"cannot evaluate annotation {text!r}: {e}"
+        raise TypeError(msg) from None
+
+
+def _field_hint(owner: type, name: str, raw: Any, scope: _Scope) -> Any:
+    """The annotation of field ``name`` declared on ``owner``, evaluated."""
+    own = vars(owner).get(name, MISSING)
+    if own is not MISSING and raw is own and not isinstance(raw, str):
+        # Without `from __future__ import annotations` the annotation is evaluated in the class
+        # body, where the field's default (or slot) has already replaced a type of that name.
+        text = _string_annotation(owner, name)
+        if text is None:
+            msg = (
+                f"the annotation evaluates to the field's own default ({raw!r}); quote it or use "
+                f"`from __future__ import annotations`"
+            )
+            raise TypeError(msg)
+        raw = text
+    text = _text_of(raw)
+    return _evaluate(text, scope) if text is not None else raw
+
+
+def _class_hints(cls: type) -> dict[str, tuple[Any, type]]:
+    """Field name -> (raw annotation, declaring class) over ``cls``'s MRO, later bases first."""
+    hints: dict[str, tuple[Any, type]] = {}
+    for base in reversed(cls.__mro__):
+        if base is object or base.__module__ == "builtins":
+            continue
+        for name, raw in _own_annotations(base).items():
+            hints[name] = (raw, base)
+    return hints
+
+
+# ---------------------------------------------------------------------------------------------
+# The resolver
+# ---------------------------------------------------------------------------------------------
+
+_SCALARS: dict[type, _core.Kind] = {
+    str: _core.Kind.str_(),
+    int: _core.Kind.int_(),
+    float: _core.Kind.float_(),
+    bool: _core.Kind.bool_(),
+    UUID: _core.Kind.uuid(),
+    datetime: _core.Kind.datetime(),
+    date: _core.Kind.date(),
+    time: _core.Kind.time(),
+    timedelta: _core.Kind.timedelta(),
+    Decimal: _core.Kind.decimal(),
+    bytes: _core.Kind.bytes_(),
+    Fraction: _core.Kind.text(Fraction, Fraction, str, flat=True),
+}
+_JSON_SCALARS = (str, int, float, bool, type(None))
+
+
+def _name(tp: Any) -> str:
+    return tp.__qualname__ if isinstance(tp, type) else repr(tp).removeprefix("typing.")
 
 
 def _is_namedtuple(tp: type) -> bool:
     return issubclass(tp, tuple) and hasattr(tp, "_fields")
 
 
-def _compile(cls: type) -> tuple[FieldSpec, ...]:
-    hints = typing.get_type_hints(
-        cls, localns=_localns(cls), include_extras=True, **_HINTS_OPTIONS
-    )
-    items: list[tuple[str, Any, Any]]
-    if _is_namedtuple(cls):  # like a dataclass: a JSON object, built with cls(**values)
-        defaults = cls._field_defaults  # type: ignore[attr-defined]
-        items = [(name, defaults.get(name, MISSING), MISSING) for name in cls._fields]  # type: ignore[attr-defined]
-    elif dataclasses.is_dataclass(cls):
-        for name, hint in hints.items():
-            if isinstance(hint, dataclasses.InitVar) and getattr(cls, name, MISSING) is MISSING:
-                # Loading cannot supply it: dataclasses.fields() leaves InitVars out.
-                msg = f"{cls.__qualname__}.{name}: required InitVar is not supported"
+def _is_foreign(tp: type) -> bool:
+    return is_typeddict(tp) or dataclasses.is_dataclass(tp) or _is_namedtuple(tp)
+
+
+def _enum_kind(tp: type[enum.Enum], *, by_name: bool = False) -> _core.Kind:
+    if issubclass(tp, enum.Flag):
+        # composite and zero flags are not members: they could not round-trip
+        msg = f"{tp.__name__} is a Flag enum, which is not supported"
+        raise TypeError(msg)
+    if not by_name:
+        for member in tp:
+            if type(member.value) not in _JSON_SCALARS:
+                msg = f"{tp.__name__}.{member.name} value {member.value!r} is not a JSON scalar"
                 raise TypeError(msg)
-        items = [
-            (field.name, field.default, field.default_factory)
-            for field in dataclasses.fields(cls)
-            if field.init
-        ]
-    else:
-        items = []
-        for name, hint in hints.items():
-            if name.startswith("_") or hint is ClassVar or get_origin(hint) is ClassVar:
+    # an overridden _missing_ (a tolerant enum: unknown values -> UNKNOWN) is called on a miss
+    missing = getattr(tp._missing_, "__func__", None) is not enum.Enum._missing_.__func__  # type: ignore[attr-defined]
+    return _core.Kind.enum(tp, by_name=by_name, missing=missing)
+
+
+def _literal_kind(values: tuple[Any, ...]) -> _core.Kind:
+    for value in values:
+        if value is not None and type(value) not in {str, int, bool}:
+            msg = f"unsupported Literal value {value!r}; use str, int, bool or None"
+            raise TypeError(msg)
+    return _core.Kind.literal(values)
+
+
+def _flat_converter(converter: Converter) -> bool:
+    cls = type(converter)
+    return cls.to_str is not Converter.to_str and cls.from_str is not Converter.from_str
+
+
+class _Compiler:
+    """One compile: resolves annotations for ``owner`` with its class-level converter map.
+
+    Foreign dataclasses, NamedTuples and TypedDicts are compiled here, within the owner's
+    compile (the class map reaches into them); the memo gives recursive ones one core.
+    """
+
+    def __init__(
+        self,
+        owner: Any,
+        converters: Mapping[type, Converter],
+        frame_locals: Mapping[str, Any] | None = None,
+    ) -> None:
+        self.owner = owner
+        self.converters = converters
+        self.frame_locals = frame_locals
+        self.memo: dict[type, _core.ModelCore] = {}
+        self.aliases: dict[int, tuple[_core.KindCell | None, _core.Kind | None]] = {}
+
+    # annotations -> kinds
+
+    def kind(self, tp: Any, scope: _Scope) -> _core.Kind:  # noqa: C901, PLR0911, PLR0912
+        text = _text_of(tp)
+        if text is not None:
+            return self.kind(_evaluate(text, scope), scope)
+        origin = get_origin(tp)
+        if origin is Annotated:
+            return self.annotated(tp, scope)
+        if origin in {Required, NotRequired}:  # TypedDict keys; required-ness comes from the class
+            return self.kind(get_args(tp)[0], scope)
+        if isinstance(tp, typing.NewType):
+            return self.kind(tp.__supertype__, scope)
+        if isinstance(tp, _ALIAS_TYPES):
+            return self.alias(tp, scope)
+        if origin is not None and isinstance(origin, _ALIAS_TYPES):
+            return self.kind(self.substitute(tp, origin), scope)
+        if origin is None and isinstance(tp, type):
+            return self.class_kind(tp)
+        args = get_args(tp)
+        if origin in _UNION_TYPES:
+            return self.union(tp, scope, None)
+        if origin is Literal:
+            return _literal_kind(args)
+        if origin is list and len(args) == 1:
+            return _core.Kind.sequence(self.kind(args[0], scope), list)
+        if origin is tuple and len(args) == 2 and args[1] is Ellipsis:  # noqa: PLR2004
+            return _core.Kind.sequence(self.kind(args[0], scope), tuple)
+        if origin is tuple and args and Ellipsis not in args:
+            return _core.Kind.tuple_([self.kind(arg, scope) for arg in args])
+        if origin in {set, frozenset} and len(args) == 1:
+            if self.unhashable(args[0], scope, set()):
+                msg = f"unhashable set item {_name(args[0])}"
+                raise TypeError(msg)
+            return _core.Kind.sequence(self.kind(args[0], scope), origin)
+        if origin is dict and len(args) == 2:  # noqa: PLR2004
+            if args[0] is not str:
+                msg = f"dict keys must be str, not {_name(args[0])}"
+                raise TypeError(msg)
+            return _core.Kind.dict_(self.kind(args[1], scope))
+        msg = f"unsupported annotation {_name(tp)}"
+        raise TypeError(msg)
+
+    def annotated(self, tp: Any, scope: _Scope) -> _core.Kind:
+        base, *metadata = get_args(tp)
+        if any(isinstance(marker, Key) for marker in metadata):
+            msg = "Key applies to a field, not to a type inside a container"
+            raise TypeError(msg)
+        markers = [m for m in metadata if isinstance(m, (Converter, Discriminator))]
+        if len(markers) > 1:
+            msg = f"more than one converter or Discriminator in {_name(tp)}"
+            raise TypeError(msg)
+        if not markers:
+            return self.kind(base, scope)
+        marker = markers[0]
+        if isinstance(marker, Discriminator):
+            return self.union(base, scope, marker.field)
+        return self.converter_kind(marker, base, scope)
+
+    def class_kind(self, tp: type) -> _core.Kind:
+        # the class map: exact type, then along the MRO (not through the built-in scalars, so
+        # a `date` entry does not catch `datetime` fields)
+        for base in tp.__mro__:
+            if base is not tp and base in _SCALARS:
                 continue
-            default = getattr(cls, name, MISSING)
-            if isinstance(default, dataclasses.Field):
-                items.append((name, default.default, default.default_factory))
-            else:
-                items.append((name, default, MISSING))
-    specs = []
-    for name, default, factory in items:
-        try:
-            if name not in hints:  # an untyped collections.namedtuple field
-                msg = "the field has no annotation"
+            converter = self.converters.get(base)
+            if converter is not None:
+                return self.converter_kind(converter, tp, None)
+        hook = getattr(tp, "__aiogram_converter__", None)
+        if hook is not None:
+            converter = hook()
+            if not isinstance(converter, Converter):
+                msg = (
+                    f"{tp.__qualname__}.__aiogram_converter__() returned {converter!r}, "
+                    f"not a Converter"
+                )
                 raise TypeError(msg)
-            converter = converter_for(hints[name])
+            return self.converter_kind(converter, tp, None)
+        if (kind := _SCALARS.get(tp)) is not None:
+            return kind
+        if issubclass(tp, enum.Enum):
+            return _enum_kind(tp)
+        if (core := vars(tp).get("__aiogram_core__")) is not None:
+            return _core.Kind.model(core)
+        if _is_foreign(tp):
+            return _core.Kind.model(self.foreign(tp))
+        msg = f"unsupported annotation {_name(tp)}"
+        raise TypeError(msg)
+
+    def converter_kind(self, converter: Converter, base: Any, scope: _Scope | None) -> _core.Kind:
+        if not isinstance(converter, _Native):
+            return _core.Kind.python(converter, flat=_flat_converter(converter))
+        tp = self.unwrap(base, scope or _Scope({}, {}))
+        expected: type
+        if isinstance(converter, (IsoDatetime, EpochDatetime)):
+            expected = datetime
+        elif isinstance(converter, DecimalAsNumber):
+            expected = Decimal
+        elif isinstance(converter, UuidHex):
+            expected = UUID
+        else:
+            expected = enum.Enum
+        if not (isinstance(tp, type) and issubclass(tp, expected)):
+            msg = f"{converter!r} applies to {expected.__name__}, not {_name(tp)}"
+            raise TypeError(msg)
+        if isinstance(converter, IsoDatetime):
+            return _core.Kind.datetime(timespec=converter.timespec, sep=converter.sep)
+        if isinstance(converter, EpochDatetime):
+            return _core.Kind.datetime(epoch=converter.unit)
+        if isinstance(converter, DecimalAsNumber):
+            return _core.Kind.decimal(number=True)
+        if isinstance(converter, UuidHex):
+            return _core.Kind.uuid(hex=True)
+        if not isinstance(converter, EnumByName):  # pragma: no cover
+            msg = f"unknown converter {converter!r}"
+            raise TypeError(msg)
+        return _enum_kind(typing.cast(type[enum.Enum], tp), by_name=True)
+
+    def unwrap(self, tp: Any, scope: _Scope) -> Any:
+        """The class under text, ``NewType`` and aliases (to check a converter applies)."""
+        while True:
+            text = _text_of(tp)
+            if text is not None:
+                tp = _evaluate(text, scope)
+            elif isinstance(tp, typing.NewType):
+                tp = tp.__supertype__
+            elif isinstance(tp, _ALIAS_TYPES):
+                tp = tp.__value__
+            else:
+                return tp
+
+    def union(self, tp: Any, scope: _Scope, discriminator: str | None) -> _core.Kind:
+        tp = self.unwrap(tp, scope)
+        if get_origin(tp) not in _UNION_TYPES:
+            msg = f"Discriminator needs a union of models, got {_name(tp)}"
+            raise TypeError(msg)
+        args = get_args(tp)
+        nullable = type(None) in args
+        rest = [arg for arg in args if arg is not type(None)]
+        if discriminator is None and len(rest) == 1:
+            return _core.Kind.optional(self.kind(rest[0], scope))
+        if discriminator is not None and len(rest) < 2:  # noqa: PLR2004
+            msg = f"Discriminator needs a union of models, got {_name(tp)}"
+            raise TypeError(msg)
+        members = [self.kind(arg, scope) for arg in rest]
+        return _core.Kind.union(members, nullable=nullable, discriminator=discriminator)
+
+    def alias(self, alias: Any, scope: _Scope) -> _core.Kind:
+        """``type X = ...``: a recursive reference to ``X`` inside its value is a lazy kind."""
+        entry = self.aliases.get(id(alias))
+        if entry is not None:
+            cell, kind = entry
+            if kind is not None:
+                return kind
+            if cell is None:
+                cell = _core.KindCell()
+                self.aliases[id(alias)] = (cell, None)
+            return _core.Kind.lazy(cell, alias.__name__)
+        self.aliases[id(alias)] = (None, None)
+        kind = self.kind(alias.__value__, scope)
+        cell, _ = self.aliases[id(alias)]
+        if cell is not None:
+            cell.set(kind)
+        self.aliases[id(alias)] = (cell, kind)
+        return kind
+
+    @staticmethod
+    def substitute(tp: Any, origin: Any) -> Any:
+        """``Pair[int]`` for ``type Pair[T] = tuple[T, T]``."""
+        try:
+            return origin.__value__[get_args(tp)]
         except TypeError as e:
-            msg = f"{cls.__qualname__}.{name}: {e}"
+            msg = f"cannot apply {_name(origin)} to {get_args(tp)}: {e}"
             raise TypeError(msg) from None
-        if default is not MISSING and not _is_hashable(default):
-            # D115: a mutable default ([], {}, set()) is copied per instance.
-            default, factory = MISSING, partial(deepcopy, default)
-        specs.append(FieldSpec(name, converter, default, None if factory is MISSING else factory))
-    return tuple(specs)
+
+    # foreign classes
+
+    def foreign(self, tp: type) -> _core.ModelCore:
+        core = self.memo.get(tp)
+        if core is None:
+            core = _core.ModelCore(tp, build="dict" if is_typeddict(tp) else "call")
+            self.memo[tp] = core
+            core.set_fields(self.foreign_fields(tp))
+        return core
+
+    def foreign_fields(self, tp: type) -> list[_core.Field]:
+        hints = _class_hints(tp)
+        scopes: dict[type, _Scope] = {}
+
+        def resolve(name: str) -> _core.Kind:
+            raw, owner = hints[name]
+            if owner not in scopes:
+                scopes[owner] = _scope(owner, _own_annotations(owner), self.frame_locals)
+            try:
+                return self.kind(_field_hint(owner, name, raw, scopes[owner]), scopes[owner])
+            except TypeError as e:
+                msg = f"{tp.__qualname__}.{name}: {e}"
+                raise TypeError(msg) from None
+
+        fields = []
+        if is_typeddict(tp):
+            required_keys = tp.__required_keys__  # type: ignore[attr-defined]
+            for name, (raw, _) in hints.items():
+                fields.append(
+                    _core.Field(
+                        name, resolve(name), required=self.required(raw, name in required_keys)
+                    )
+                )
+            return fields
+        if _is_namedtuple(tp):
+            defaults = tp._field_defaults  # type: ignore[attr-defined]
+            items = [(name, defaults.get(name, MISSING), MISSING) for name in tp._fields]  # type: ignore[attr-defined]
+        else:
+            for name, (raw, _) in hints.items():
+                if (
+                    isinstance(raw, dataclasses.InitVar)
+                    or _INITVAR_TEXT.match(_text_of(raw) or "")
+                ) and getattr(tp, name, MISSING) is MISSING:
+                    msg = f"{tp.__qualname__}.{name}: required InitVar is not supported"
+                    raise TypeError(msg)
+            items = [
+                (spec.name, spec.default, spec.default_factory)
+                for spec in dataclasses.fields(tp)
+                if spec.init
+            ]
+        for name, default, factory in items:
+            if name not in hints:  # an untyped collections.namedtuple field
+                msg = f"{tp.__qualname__}.{name}: the field has no annotation"
+                raise TypeError(msg)
+            fields.append(_field(name, resolve(name), default=default, factory=factory))
+        return fields
+
+    @staticmethod
+    def required(raw: Any, default: bool) -> bool:
+        """A TypedDict key's required-ness: the hint's wrapper wins (``__required_keys__``
+        misses ``Required`` / ``NotRequired`` inside ``Annotated`` under string annotations)."""
+        text = _text_of(raw)
+        if text is not None:
+            if re.match(r"^\s*(?:\w+\.)*Required\b", text) or "Annotated[Required" in text:
+                return True
+            if re.match(r"^\s*(?:\w+\.)*NotRequired\b", text) or "Annotated[NotRequired" in text:
+                return False
+            return default
+        while get_origin(raw) is Annotated:
+            raw = get_args(raw)[0]
+        if get_origin(raw) is Required:
+            return True
+        if get_origin(raw) is NotRequired:
+            return False
+        return default
+
+    # set items
+
+    def unhashable(self, tp: Any, scope: _Scope, seen: set[int]) -> bool:  # noqa: C901, PLR0911
+        """Whether ``tp`` can produce a value that cannot go in a set."""
+        text = _text_of(tp)
+        if text is not None:
+            return self.unhashable(_evaluate(text, scope), scope, seen)
+        origin = get_origin(tp)
+        args = get_args(tp)
+        if origin is Annotated:
+            if any(isinstance(marker, Converter) for marker in args[1:]):
+                return False  # a converter decides its values
+            return self.unhashable(args[0], scope, seen)
+        if isinstance(tp, typing.NewType):
+            return self.unhashable(tp.__supertype__, scope, seen)
+        if isinstance(tp, _ALIAS_TYPES):
+            if id(tp) in seen:
+                return False
+            seen.add(id(tp))
+            return self.unhashable(tp.__value__, scope, seen)
+        if origin in _UNION_TYPES:
+            return any(self.unhashable(arg, scope, seen) for arg in args)
+        if origin in {list, dict, set}:
+            return True
+        if origin in {tuple, frozenset}:
+            return any(self.unhashable(arg, scope, seen) for arg in args if arg is not Ellipsis)
+        if not isinstance(tp, type) or id(tp) in seen:
+            return False  # a recursive class: decided by its other fields
+        seen.add(id(tp))
+        if is_typeddict(tp) or getattr(tp, "__hash__", None) is None:
+            return True
+        hashed = _hashed_fields(tp)
+        if not hashed:
+            return False
+        hints = _class_hints(tp)
+        for name in hashed:
+            raw, owner = hints[name]
+            owner_scope = _scope(owner, _own_annotations(owner), self.frame_locals)
+            if self.unhashable(_field_hint(owner, name, raw, owner_scope), owner_scope, seen):
+                return True
+        return False
+
+
+def _hashed_fields(tp: type) -> list[str]:
+    """The fields a field-based ``__hash__`` of ``tp`` uses (empty: not field-based)."""
+    info = vars(tp).get("__aiogram_info__")
+    if info is not None:
+        return list(info.compare) if info.frozen else []
+    if _is_namedtuple(tp):
+        return list(tp._fields)  # type: ignore[attr-defined]
+    if dataclasses.is_dataclass(tp):
+        params = tp.__dataclass_params__  # type: ignore[attr-defined]
+        if params.unsafe_hash or (params.eq and params.frozen):
+            return [
+                spec.name
+                for spec in dataclasses.fields(tp)
+                if spec.hash or (spec.hash is None and spec.compare)
+            ]
+    return []
 
 
 def _is_hashable(value: Any) -> bool:
@@ -788,3 +607,512 @@ def _is_hashable(value: Any) -> bool:
     except TypeError:
         return False
     return True
+
+
+def _field(
+    name: str,
+    kind: _core.Kind,
+    *,
+    default: Any = MISSING,
+    factory: Any = MISSING,
+    **options: Any,
+) -> _core.Field:
+    """A ``Field``; a mutable default (``[]``, ``{}``, ``set()``) is copied per instance (D115)."""
+    if default is not MISSING and not _is_hashable(default):
+        default, factory = MISSING, partial(deepcopy, default)
+    return _core.Field(
+        name,
+        kind,
+        default=None if default is MISSING else default,
+        has_default=default is not MISSING,
+        factory=None if factory is MISSING else factory,
+        **options,
+    )
+
+
+# ---------------------------------------------------------------------------------------------
+# Keys
+# ---------------------------------------------------------------------------------------------
+
+
+def _camel(name: str) -> str:
+    head = len(name) - len(name.lstrip("_"))
+    first, *rest = name[head:].split("_")
+    return name[:head] + first + "".join(part[:1].upper() + part[1:] for part in rest)
+
+
+def _snake(name: str) -> str:
+    return re.sub(r"(?<=[a-z0-9])([A-Z])", r"_\1", name).lower()
+
+
+def _kebab(name: str) -> str:
+    head = len(name) - len(name.lstrip("_"))
+    return name[:head] + _snake(name[head:]).replace("_", "-")
+
+
+_RENAMES: dict[str, Callable[[str], str]] = {"camel": _camel, "snake": _snake, "kebab": _kebab}
+
+
+def _rename_function(rename: Rename | None) -> Callable[[str], str] | None:
+    if rename is None or callable(rename):
+        return rename
+    if rename not in _RENAMES:
+        msg = f"rename must be one of {sorted(_RENAMES)} or a callable, not {rename!r}"
+        raise TypeError(msg)
+    return _RENAMES[rename]
+
+
+# ---------------------------------------------------------------------------------------------
+# ModelBase
+# ---------------------------------------------------------------------------------------------
+
+
+@dataclasses.dataclass(slots=True)
+class _Decl:
+    """One field as declared in a class body (before its annotation is resolved)."""
+
+    name: str
+    raw: Any
+    owner: type
+    # MISSING as a dataclass default would mean "no default"
+    default: Any = dataclasses.field(default_factory=lambda: MISSING)
+    factory: Any = dataclasses.field(default_factory=lambda: MISSING)
+    init: bool = True
+    kw_only: bool = True
+    repr: bool = True
+    compare: bool = True
+    key: str | None = None
+    load: tuple[str, ...] = ()
+    converter: Converter | None = None
+
+
+@dataclasses.dataclass(slots=True)
+class _ModelInfo:
+    """Per-class state of a ``ModelBase`` subclass (``vars(cls)["__aiogram_info__"]``)."""
+
+    own: tuple[_Decl, ...]
+    rename: Rename | None
+    converters: Mapping[type, Converter]
+    frozen: bool
+    # the defining function's frame (or class-body namespace), kept until the fields resolve
+    locals_source: Any
+    lock: threading.RLock
+    names: tuple[str, ...] = ()
+    init: tuple[str, ...] = ()
+    repr: tuple[str, ...] = ()
+    compare: tuple[str, ...] = ()
+
+    def frame_locals(self) -> Mapping[str, Any] | None:
+        source = self.locals_source
+        if source is None:
+            return None
+        if isinstance(source, types.FrameType):
+            return dict(source.f_locals)
+        return dict(source)
+
+
+def _info(cls: type) -> _ModelInfo:
+    info: _ModelInfo = vars(cls)["__aiogram_info__"]
+    return info
+
+
+def _parent_info(cls: type) -> _ModelInfo | None:
+    for base in cls.__mro__[1:]:
+        info = vars(base).get("__aiogram_info__")
+        if info is not None:
+            return info  # type: ignore[no-any-return]
+    return None
+
+
+class _NotDefined(NameError):
+    """A model refers to names that are not defined (yet)."""
+
+
+def _locals_source() -> Any:
+    """The frame that defines the class being set up, past ``__init_subclass__`` chains and the
+    metaclass: a function frame (its locals are read at each resolve, so classes defined later
+    in the same function resolve too), a class-body namespace, or ``None`` at module level."""
+    frame = sys._getframe(1)  # noqa: SLF001
+    own = {_setup.__code__, _ModelMeta.__new__.__code__}
+    while frame is not None and (
+        frame.f_code in own or frame.f_code.co_name == "__init_subclass__"
+    ):
+        frame = frame.f_back  # type: ignore[assignment]
+    if frame is None or frame.f_locals is frame.f_globals:
+        return None
+    if frame.f_code.co_flags & 0x1:  # CO_OPTIMIZED: a function frame
+        return frame
+    return frame.f_locals
+
+
+def _declarations(cls: type) -> tuple[_Decl, ...]:
+    own = _own_annotations(cls)
+    slots_defaults: dict[str, Any] | None = vars(cls).get("__aiogram_defaults__")
+    decls = []
+    for name, raw in own.items():
+        if _is_classvar(raw):
+            continue
+        text = _text_of(raw)
+        if raw is dataclasses.KW_ONLY or (text is not None and _KW_ONLY_TEXT.match(text)):
+            msg = f"{cls.__qualname__}: KW_ONLY is not needed, every field is keyword-only"
+            raise TypeError(msg)
+        if isinstance(raw, dataclasses.InitVar) or (
+            text is not None and _INITVAR_TEXT.match(text)
+        ):
+            msg = f"{cls.__qualname__}.{name}: InitVar is not supported"
+            raise TypeError(msg)
+        value = (slots_defaults if slots_defaults is not None else vars(cls)).get(name, MISSING)
+        if isinstance(value, types.MemberDescriptorType):
+            value = MISSING  # a user-declared slot, not a default
+        decl = _Decl(name, raw, cls)
+        if isinstance(value, _FieldInfo):
+            decl.default, decl.factory = value.default, value.default_factory
+            decl.init, decl.repr, decl.compare = value.init, value.repr, value.compare
+            decl.kw_only = True if value.kw_only is None else value.kw_only
+            decl.key, decl.load, decl.converter = value.key, value.load, value.converter
+        elif isinstance(value, dataclasses.Field):
+            decl.default, decl.factory = value.default, value.default_factory
+            decl.init, decl.repr, decl.compare = value.init, value.repr, value.compare
+            decl.kw_only = True if value.kw_only is MISSING else bool(value.kw_only)
+        else:
+            decl.default = value
+        if isinstance(value, (_FieldInfo, dataclasses.Field)) and slots_defaults is None:
+            # as dataclasses: the class attribute becomes the plain default, or goes away
+            if decl.default is MISSING:
+                delattr(cls, name)
+            else:
+                setattr(cls, name, decl.default)
+        if not decl.init and decl.default is MISSING and decl.factory is MISSING:
+            msg = f"{cls.__qualname__}.{name}: init=False needs a default or a default_factory"
+            raise TypeError(msg)
+        decls.append(decl)
+    return tuple(decls)
+
+
+def _all_declarations(cls: type) -> list[_Decl]:
+    """Every field of ``cls``: inherited ones first, a redeclared field keeps its position."""
+    fields: dict[str, _Decl] = {}
+    for base in reversed(cls.__mro__):
+        info = vars(base).get("__aiogram_info__")
+        if info is not None:
+            for decl in info.own:
+                fields[decl.name] = decl
+    return list(fields.values())
+
+
+def _model_field(
+    compiler: _Compiler,
+    cls: type,
+    decl: _Decl,
+    scope: _Scope,
+    rename: Callable[[str], str] | None,
+) -> _core.Field:
+    hint = _field_hint(decl.owner, decl.name, decl.raw, scope)
+    key, load, converter = decl.key, decl.load, decl.converter
+    explicit_key = key is not None
+    if get_origin(hint) is Annotated:
+        base, *metadata = get_args(hint)
+        keys = [marker for marker in metadata if isinstance(marker, Key)]
+        if keys:
+            if len(keys) > 1 or explicit_key or load:
+                msg = "the stored key is given more than once (Key / field(key=, load=))"
+                raise TypeError(msg)
+            key, load, explicit_key = keys[0].name, keys[0].load, True
+            rest = [marker for marker in metadata if not isinstance(marker, Key)]
+            hint = Annotated[(base, *rest)] if rest else base
+    if converter is not None:
+        if get_origin(hint) is Annotated and any(
+            isinstance(marker, (Converter, Discriminator)) for marker in get_args(hint)[1:]
+        ):
+            msg = "the converter is given twice (Annotated and field(converter=))"
+            raise TypeError(msg)
+        kind = compiler.converter_kind(converter, hint, scope)
+    else:
+        kind = compiler.kind(hint, scope)
+    if key is None:
+        key = rename(decl.name) if rename is not None else decl.name
+        if not isinstance(key, str):
+            msg = f"rename returned {key!r}, not a str"
+            raise TypeError(msg)
+    return _field(
+        decl.name,
+        kind,
+        default=decl.default,
+        factory=decl.factory,
+        key=key,
+        load=load,
+        init=decl.init,
+        kw_only=decl.kw_only,
+        keyed=explicit_key or rename is not None,
+    )
+
+
+def _compile(cls: type) -> list[_core.Field]:
+    """The fields of a ``ModelBase`` class: ``TypeError`` for a bad field, ``_NotDefined`` when
+    names are missing (the other fields are still checked)."""
+    info = _info(cls)
+    frame_locals = info.frame_locals()
+    compiler = _Compiler(cls, info.converters, frame_locals)
+    rename = _rename_function(info.rename)
+    scopes: dict[type, _Scope] = {}
+    fields = []
+    missing: list[str] = []
+    for decl in _all_declarations(cls):
+        if decl.owner not in scopes:
+            owner_info = _info(decl.owner)
+            scopes[decl.owner] = _scope(
+                decl.owner, [d.name for d in owner_info.own], owner_info.frame_locals()
+            )
+        try:
+            fields.append(_model_field(compiler, cls, decl, scopes[decl.owner], rename))
+        except NameError as e:
+            missing.append(e.name or str(e))
+        except TypeError as e:
+            msg = f"{cls.__qualname__}.{decl.name}: {e}"
+            raise TypeError(msg) from None
+    if missing:
+        names = sorted(set(missing))
+        verb = "is" if len(names) == 1 else "are"
+        msg = f"{cls.__qualname__} is not fully defined: {', '.join(names)} {verb} not defined"
+        raise _NotDefined(msg)
+    return fields
+
+
+def _resolve(cls: type) -> None:
+    """``ModelCore``'s resolve callback: compile a class whose names were missing at creation."""
+    info = _info(cls)
+    core: _core.ModelCore = vars(cls)["__aiogram_core__"]
+    with info.lock:
+        if not core.ready:
+            core.set_fields(_compile(cls))
+            info.locals_source = None
+
+
+def _frozen_setattr(self: Any, name: str, value: Any) -> None:
+    msg = f"cannot assign to field {name!r}"
+    raise dataclasses.FrozenInstanceError(msg)
+
+
+def _frozen_delattr(self: Any, name: str) -> None:
+    msg = f"cannot delete field {name!r}"
+    raise dataclasses.FrozenInstanceError(msg)
+
+
+def _frozen_hash(self: Any) -> int:
+    return hash(tuple(getattr(self, name) for name in type(self).__aiogram_info__.compare))
+
+
+def _setup(
+    cls: Any,  # attributes are set on it
+    rename: Rename | None,
+    converters: Mapping[type, Converter] | None,
+    frozen: bool | None,
+) -> None:
+    parent = _parent_info(cls)
+    if converters is not None and not all(isinstance(tp, type) for tp in converters):
+        msg = f"{cls.__qualname__}: converters= keys must be types"
+        raise TypeError(msg)
+    if parent is not None and frozen is not None and frozen != parent.frozen:
+        kinds = {True: "frozen", False: "non-frozen"}
+        msg = (
+            f"{cls.__qualname__}: cannot inherit a {kinds[frozen]} model from a "
+            f"{kinds[parent.frozen]} one"
+        )
+        raise TypeError(msg)
+    is_frozen = frozen if frozen is not None else (parent.frozen if parent else False)
+    _rename_function(rename)  # reject a bad policy at class creation
+    info = _ModelInfo(
+        own=(),
+        rename=rename if rename is not None else (parent.rename if parent else None),
+        converters={**(parent.converters if parent else {}), **(converters or {})},
+        frozen=is_frozen,
+        locals_source=_locals_source(),
+        lock=threading.RLock(),
+    )
+    cls.__aiogram_info__ = info
+    info.own = _declarations(cls)
+    decls = _all_declarations(cls)
+    info.names = tuple(d.name for d in decls)
+    info.init = tuple(d.name for d in decls if d.init)
+    info.repr = tuple(d.name for d in decls if d.repr)
+    info.compare = tuple(d.name for d in decls if d.compare)
+    seen_default = None
+    for decl in decls:
+        if decl.init and not decl.kw_only:
+            if decl.default is not MISSING or decl.factory is not MISSING:
+                seen_default = decl.name
+            elif seen_default is not None:
+                msg = (
+                    f"{cls.__qualname__}: positional field {decl.name!r} without a default "
+                    f"follows {seen_default!r}"
+                )
+                raise TypeError(msg)
+    post_init = callable(getattr(cls, "__post_init__", None))
+    core = _core.ModelCore(cls, build="model", post_init=post_init, resolve=partial(_resolve, cls))
+    cls.__aiogram_core__ = core
+    body = vars(cls)
+    if is_frozen:
+        if "__setattr__" not in body:
+            cls.__setattr__ = _frozen_setattr
+        if "__delattr__" not in body:
+            cls.__delattr__ = _frozen_delattr
+        if "__hash__" not in body or (body["__hash__"] is None and "__eq__" not in body):
+            cls.__hash__ = _frozen_hash
+    try:
+        fields = _compile(cls)
+    except _NotDefined:
+        return  # names defined later: compiled on first use (`_resolve`)
+    core.set_fields(fields)
+    info.locals_source = None
+
+
+class _ModelMeta(type):
+    """Only for ``slots=True``: ``__init_subclass__`` runs after the instance layout is fixed,
+    so this moves the defaults out of the class namespace and declares the slots first."""
+
+    def __new__(
+        mcls,
+        name: str,
+        bases: tuple[type, ...],
+        namespace: dict[str, Any],
+        **kwargs: Any,
+    ) -> _ModelMeta:
+        if kwargs.get("slots"):
+            if "__slots__" in namespace:
+                msg = f"{name}: slots=True and __slots__ cannot be combined"
+                raise TypeError(msg)
+            names = [
+                field_name
+                for field_name, raw in _namespace_annotations(namespace).items()
+                if not _is_classvar(raw)
+            ]
+            namespace["__aiogram_defaults__"] = {
+                field_name: namespace.pop(field_name)
+                for field_name in names
+                if field_name in namespace
+            }
+            namespace["__slots__"] = tuple(names)
+        return super().__new__(mcls, name, bases, namespace, **kwargs)
+
+
+@dataclass_transform(kw_only_default=True, field_specifiers=(field, dataclasses.field))
+class ModelBase(metaclass=_ModelMeta):
+    """The base of converter-backed classes (``FSMData``, ``CallbackData``).
+
+    Fields are annotated class attributes, as in a dataclass (PEP 681): ``_x`` names are fields,
+    ``ClassVar`` is not, :func:`~aiogram.utils.converters.field` / ``dataclasses.field`` give
+    ``default_factory``, ``init=False``, ``kw_only=False``, ``repr=False``, ``compare=False``.
+    Every field is keyword-only unless ``kw_only=False``. The constructor checks every value
+    (``ConversionError``); ``__post_init__`` runs after construction and after every load.
+
+    Class keywords: ``rename=`` (``"camel"`` / ``"snake"`` / ``"kebab"`` / a callable: stored
+    keys), ``converters={type: Converter}`` (this class's formats, inherited by subclasses),
+    ``frozen=True``, ``slots=True``.
+    """
+
+    __slots__ = ("__fields_set__",)
+
+    __aiogram_core__: ClassVar[_core.ModelCore]
+    __aiogram_info__: ClassVar[_ModelInfo]
+
+    def __init_subclass__(
+        cls,
+        *,
+        rename: Rename | None = None,
+        converters: Mapping[type, Converter] | None = None,
+        frozen: bool | None = None,
+        slots: bool = False,  # noqa: ARG003  (handled by the metaclass)
+        **kwargs: Any,
+    ) -> None:
+        super().__init_subclass__(**kwargs)
+        _setup(cls, rename, converters, frozen)
+
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
+        self.__aiogram_core__.init(self, args, kwargs)
+
+    @reprlib.recursive_repr()
+    def __repr__(self) -> str:
+        names = type(self).__aiogram_info__.repr
+        args = ", ".join(f"{name}={getattr(self, name, MISSING)!r}" for name in names)
+        return f"{type(self).__qualname__}({args})"
+
+    def __eq__(self, other: object) -> bool:
+        if type(other) is not type(self):
+            return NotImplemented
+        names = type(self).__aiogram_info__.compare
+        return tuple(getattr(self, n) for n in names) == tuple(getattr(other, n) for n in names)
+
+    __hash__ = None  # type: ignore[assignment]  # set per class for frozen models
+
+    def __replace__(self, **changes: Any) -> typing.Self:
+        """``copy.replace(obj, **changes)``: a new instance, checked by the constructor."""
+        info = type(self).__aiogram_info__
+        for name in changes:
+            if name in info.names and name not in info.init:
+                msg = f"field {name!r} is declared with init=False, it cannot be replaced"
+                raise ValueError(msg)
+        kwargs = {name: getattr(self, name) for name in info.init if name not in changes}
+        kwargs.update(changes)
+        return type(self)(**kwargs)
+
+    def __getstate__(self) -> dict[str, Any]:
+        state = {name: getattr(self, name) for name in type(self).__aiogram_info__.names}
+        state["__fields_set__"] = fields_set(self)
+        return state
+
+    def __setstate__(self, state: Mapping[str, Any]) -> None:
+        for name, value in state.items():
+            object.__setattr__(self, name, value)
+
+
+def fields_set(obj: ModelBase) -> frozenset[str]:
+    """The fields given explicitly (constructor arguments, keys present on load): D115
+    ``exclude_unset``."""
+    value: frozenset[str] = obj.__fields_set__  # type: ignore[attr-defined]
+    return value
+
+
+# ---------------------------------------------------------------------------------------------
+# Facades
+# ---------------------------------------------------------------------------------------------
+
+
+def _model_core(tp: type) -> _core.ModelCore:
+    core = vars(tp).get("__aiogram_core__") if isinstance(tp, type) else None
+    if core is not None:
+        return core  # type: ignore[no-any-return]
+    if not (isinstance(tp, type) and _is_foreign(tp)):
+        msg = f"{_name(tp)} is not a model, dataclass, NamedTuple or TypedDict"
+        raise TypeError(msg)
+    return _Compiler(tp, {}).foreign(tp)
+
+
+def _cached(tp: type, attribute: str, build: Callable[[_core.ModelCore], Any]) -> Any:
+    schema = vars(tp).get(attribute) if isinstance(tp, type) else None
+    if schema is None:
+        schema = build(_model_core(tp))
+        with contextlib.suppress(TypeError, AttributeError):
+            setattr(tp, attribute, schema)  # the schema lives on the class
+    return schema
+
+
+def json_schema(tp: type[_T]) -> _core.JsonSchema[_T]:
+    """The JSON codec of a ``ModelBase`` class, dataclass, NamedTuple or TypedDict (compiled
+    once, stored on the class)."""
+    schema: _core.JsonSchema[_T] = _cached(tp, "__aiogram_json__", _core.JsonSchema)
+    return schema
+
+
+def flat_schema(tp: type[_T]) -> _core.FlatSchema[_T]:
+    """The positional flat-string codec (callback data); ``TypeError`` for a field without a
+    flat form, or with a ``Key`` / ``rename``."""
+    schema: _core.FlatSchema[_T] = _cached(tp, "__aiogram_flat__", _core.FlatSchema)
+    return schema
+
+
+def json_codec(
+    annotation: Any, *, converters: Mapping[type, Converter] | None = None
+) -> _core.JsonCodec:
+    """The JSON (and flat) codec of any annotation: ``json_codec(list[int]).load([1])``."""
+    compiler = _Compiler(annotation, converters or {})
+    return _core.JsonCodec(compiler.kind(annotation, _Scope({}, {})))

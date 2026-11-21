@@ -1,22 +1,35 @@
-//! The converter core (`aiogram/utils/_converters.py`, F-08, PD-36): the Python module compiles
-//! annotations into converters, and this tree does all per-value conversion.
+//! The converter core (F-08, PD-36, plan-10). `aiogram/utils/_converters.py` resolves
+//! annotations and builds [`ir`] objects through typed constructors; this tree does every
+//! conversion.
 //!
-//! - [`errors`]: `ConversionError` with field paths, the depth guard;
-//! - [`kind`]: compiled field types;
-//! - [`compile`]: Python converters -> kinds and fields;
-//! - [`load`] (`from_json`), [`dump`] (`to_json`), [`json`] (one-pass `load_json`),
-//!   [`flat`] (callback-data `from_str` / `to_str`): the walkers;
-//! - [`schema`]: the Python-facing `ModelSchema` and `KindCore`, model building.
+//! - [`ir`]: the Python -> Rust interface: `Kind`, `KindCell`, `Field`;
+//! - [`model`]: `ModelCore`, the field table of a class, and discriminator tags;
+//! - [`construct`]: building instances (generic setattr, `__fields_set__`, `__post_init__`) and
+//!   the validating `__init__`;
+//! - [`check`]: strict checks of Python values;
+//! - [`scalars`]: Python glue of the scalar kinds, shared by every codec;
+//! - [`walk`]: error collection, mapping access, dict iteration and smart-union trials;
+//! - [`errors`]: error lines kept in Rust, one `ConversionError` at the boundary;
+//! - [`native`]: pure-Rust text formats (UUID, ISO 8601, base64, JSON numbers and strings);
+//! - [`json`]: dict load, one-pass bytes load, dict dump, bytes dump;
+//! - [`flat`]: the positional flat-string codec (callback data);
+//! - [`schema`]: the Python-facing `JsonSchema`, `FlatSchema`, `JsonCodec`.
 //!
 //! This tree is independent of the generated Bot API code (08 §7 placement rules).
 
-mod compile;
-mod dump;
-mod errors;
+mod check;
+mod construct;
+pub(crate) mod errors;
 mod flat;
+pub(crate) mod ir;
 mod json;
-mod kind;
-mod load;
+pub(crate) mod model;
+mod native;
+mod scalars;
 mod schema;
+mod walk;
 
-pub use schema::{KindCore, ModelSchema};
+pub use errors::converters_init;
+pub use ir::{Field, Kind, KindCell};
+pub use model::ModelCore;
+pub use schema::{FlatSchema, JsonCodec, JsonSchema};

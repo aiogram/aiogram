@@ -29,8 +29,14 @@ fn py_build_info(py: Python<'_>) -> PyResult<Bound<'_, PyDict>> {
 #[pymodule(gil_used = false)]
 fn _core(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add("__version__", VERSION)?;
-    m.add_class::<conv::ModelSchema>()?;
-    m.add_class::<conv::KindCore>()?;
+    m.add_class::<conv::Kind>()?;
+    m.add_class::<conv::KindCell>()?;
+    m.add_class::<conv::Field>()?;
+    m.add_class::<conv::ModelCore>()?;
+    m.add_class::<conv::JsonSchema>()?;
+    m.add_class::<conv::FlatSchema>()?;
+    m.add_class::<conv::JsonCodec>()?;
+    m.add_function(wrap_pyfunction!(conv::converters_init, m)?)?;
     m.add_function(wrap_pyfunction!(py_build_info, m)?)
 }
 
