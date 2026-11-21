@@ -213,6 +213,8 @@ These patterns repeatedly appeared in maintainer feedback and should be treated 
 - The IR (`crates/butcher/src/ir.rs`) is the contract of every C plan. It only grows by optional fields (`Option` /
   `Vec`, omitted when empty), so older snapshots still load; a rename or removal regenerates the committed
   snapshots in the same PR. Files under `butcher/` are compared byte for byte (`.gitattributes` keeps them LF).
+- A new workspace crate stays out of the sdist and the wheel: maturin rewrites the sdist's `members` to
+  `crates/aiogram-core` and its path dependencies. Check with `uv build` (sdist, then a wheel built from it).
 
 ## Developer design notes (`design/`)
 
