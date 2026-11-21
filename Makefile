@@ -83,6 +83,15 @@ test-coverage-view:
 	uv run python -c "import webbrowser; webbrowser.open('file://$(shell pwd)/reports/coverage/index.html')"
 
 # =================================================================================================
+# Benchmarks
+# =================================================================================================
+
+# extra flags go through args, e.g. `make bench args="--out benchmarks/results/local.json"`
+.PHONY: bench
+bench:
+	uv run python -m benchmarks run --cases all $(args)
+
+# =================================================================================================
 # Docs
 # =================================================================================================
 
