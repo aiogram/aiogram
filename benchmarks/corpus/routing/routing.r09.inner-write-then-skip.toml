@@ -3,6 +3,7 @@
 # on the parent router, so the child's handlers reach it through inherited inner-middleware
 # resolution, which the discarded standalone-observer probe did not exercise.
 schema = 1
+bench = false  # an oracle scenario (A-10), not a bench topology
 
 [variants]
 fsm = ["on", "off"]

@@ -1,6 +1,7 @@
 # The same topology fed through feed_update and feed_webhook_update: a handler that returns a Bot API
 # method (the webhook reply), one that returns a value, and an unhandled update.
 schema = 1
+bench = false  # an oracle scenario (A-10), not a bench topology
 
 [variants]
 fsm = ["on", "off"]

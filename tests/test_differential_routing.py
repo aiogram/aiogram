@@ -392,3 +392,30 @@ class TestBuilder:
         before = list(build.dp.message.handlers)
         build.poison()
         assert build.dp.message.handlers == before[::-1]
+
+
+@pytest.mark.parametrize("topology_id", sorted(TOPOLOGIES))
+def test_bench_builds_every_topology_not_marked_bench_false(topology_id):
+    """The A-05 bench builds every routing topology without `bench = false`."""
+    from benchmarks.adapters.aiogram3 import build_dispatch
+
+    topology = TOPOLOGIES[topology_id]
+    if topology.get("bench", True) is False:
+        assert topology_id not in BENCH_CASES
+        return
+    assert topology_id in BENCH_CASES
+    updates = {
+        event["update"]: json.loads((CORPUS / "wire" / f"{event['update']}.json").read_bytes())
+        for event in topology["event"]
+    }
+    build_dispatch(topology, updates, fsm=True)
+
+
+def _bench_cases() -> set[str]:
+    from benchmarks.cases import dispatch  # noqa: F401 - registers the routing cases
+    from benchmarks.harness import REGISTRY
+
+    return set(REGISTRY)
+
+
+BENCH_CASES = _bench_cases()

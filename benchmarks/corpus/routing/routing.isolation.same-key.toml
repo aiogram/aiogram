@@ -2,6 +2,7 @@
 # 3.x defaults to DisabledEventIsolation, so the second runs in between; 4.0 serialises them.
 # Command filters only: a sync filter would hop to a thread and make the interleaving timing-bound.
 schema = 1
+bench = false  # an oracle scenario (A-10), not a bench topology
 
 [variants]
 fsm = ["on"]

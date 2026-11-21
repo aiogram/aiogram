@@ -1,6 +1,7 @@
 # A dp.update outer middleware replaces the Update (message text "hello" -> "/c1"). E-02 decides
 # whether 4.0 routing keys follow it (the proposed default: yes).
 schema = 1
+bench = false  # an oracle scenario (A-10), not a bench topology
 
 [variants]
 fsm = ["on", "off"]

@@ -1,6 +1,7 @@
 # Codex §11 R09 probe 1: a candidate's filter returns data, then its next filter rejects; the next
 # candidate does not see that data. Real Router.message observer.
 schema = 1
+bench = false  # an oracle scenario (A-10), not a bench topology
 
 [variants]
 fsm = ["on", "off"]

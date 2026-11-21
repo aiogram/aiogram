@@ -1,6 +1,7 @@
 # D111: a router outer middleware replaces the event (text "hello" -> "/c1"). In 3.x the
 # replacement routes: h1's Command matches. 4.0 computes routing keys once, before it.
 schema = 1
+bench = false  # an oracle scenario (A-10), not a bench topology
 
 [variants]
 fsm = ["on", "off"]

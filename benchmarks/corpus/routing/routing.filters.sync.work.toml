@@ -1,6 +1,7 @@
 # D34: a sync filter doing work runs in a thread in 3.x (inline in 4.0); the sync handler stays in a
 # thread in both. The `threads` probe records on_loop per component.
 schema = 1
+bench = false  # an oracle scenario (A-10), not a bench topology
 
 [variants]
 fsm = ["on", "off"]

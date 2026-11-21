@@ -1,5 +1,6 @@
 # D48: r11's outer middleware raises; errors handlers as in routing.errors.handler.
 schema = 1
+bench = false  # an oracle scenario (A-10), not a bench topology
 
 [variants]
 fsm = ["on", "off"]

@@ -85,6 +85,8 @@ equals it). Middleware kinds: `pass` (calls the next handler, does nothing else)
 added here first, with the plan that needs them.
 
 Added by A-10 (routing oracle). Every component may carry an `id`; one without gets a positional id.
+A top-level `bench = false` marks an oracle scenario: the A-05 bench skips it, because its adapter builds only
+the kinds above (`command`, `text_eq`, `pass`). Every A-10 scenario carries it.
 
 - **Filter kinds.**
   - `magic_eq` (`attr`, `value`: the event attribute equals it) and `magic_true` (`attr`: the attribute is truthy).

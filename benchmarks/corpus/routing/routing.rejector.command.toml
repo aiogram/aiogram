@@ -1,6 +1,7 @@
 # Breaking change 13: a user filter placed before a certainly-false Command. 3.x runs the user
 # filter; 4.0's compiled rejector skips the candidate first.
 schema = 1
+bench = false  # an oracle scenario (A-10), not a bench topology
 
 [variants]
 fsm = ["on", "off"]

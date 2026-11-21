@@ -2,6 +2,7 @@
 # picked by update type); /start, /next, /back returns to s1; /leave leaves it; a last message is
 # handled outside any scene.
 schema = 1
+bench = false  # an oracle scenario (A-10), not a bench topology
 
 [variants]
 fsm = ["on"]

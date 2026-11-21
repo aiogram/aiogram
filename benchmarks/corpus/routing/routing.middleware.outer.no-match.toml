@@ -2,6 +2,7 @@
 # rejected by `F.text ==` (a compiled rejector in 4.0); r2's survives the rejectors and fails a user
 # filter, so 4.0 still enters r2; r3 handles the update.
 schema = 1
+bench = false  # an oracle scenario (A-10), not a bench topology
 
 [variants]
 fsm = ["on", "off"]

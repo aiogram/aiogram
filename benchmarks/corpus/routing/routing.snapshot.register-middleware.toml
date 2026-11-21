@@ -1,6 +1,7 @@
 # D114: r1's outer middleware registers an inner middleware on r2 while handling the first update.
 # 3.x applies it to the same update (r2 is reached later); 4.0 from the next one.
 schema = 1
+bench = false  # an oracle scenario (A-10), not a bench topology
 
 [variants]
 fsm = ["on", "off"]

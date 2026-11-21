@@ -27,5 +27,6 @@ def _routing(input_id: str) -> None:
 
 
 for _entry in _CORPUS.entries.values():
-    if _entry["kind"] == "routing":
+    # `bench = false`: an oracle scenario (A-10) with components the bench adapter does not build
+    if _entry["kind"] == "routing" and _CORPUS.toml(_entry["id"]).get("bench", True):
         _routing(_entry["id"])
