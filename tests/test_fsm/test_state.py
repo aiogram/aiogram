@@ -244,6 +244,7 @@ class TestStateNameCache:
         assert names == ["C:state1", "B.C:state1"]
         assert A.B.C.state1.state == "A.B.C:state1"
         assert A.B.C.__all_states_names__ == ("A.B.C:state1",)
+        assert A.B.C.__state_names__ == ("A.B.C:state1",)
 
     def test_direct_parent_assignment(self):
         class Inner(StatesGroup):
@@ -289,3 +290,16 @@ class TestStateNameCache:
         assert Child.__parent__ is None
         assert Child.state1.state == "Child:state1"
         assert Child.Sub.state1.state == "Child.Sub:state1"
+
+    def test_set_parent_state_follows_group_nesting(self):
+        class Inner(StatesGroup):
+            pass
+
+        state = State("x")
+        state.set_parent(Inner)
+        assert state.state == "Inner:x"
+
+        class Outer(StatesGroup):
+            child = Inner
+
+        assert state.state == "Outer.Inner:x"

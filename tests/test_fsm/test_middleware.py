@@ -265,3 +265,17 @@ class TestResolveKey:
         assert middleware.get_context(first, 1, 1).key.bot_id == 42
         assert middleware.get_context(second, 1, 1).key.bot_id == 43
         assert middleware.resolve_context(first, 1, 1).key.bot_id == 42
+
+    def test_get_context_override_is_used(self):
+        class Custom(FSMContextMiddleware):
+            def get_context(self, bot, chat_id, user_id, **kwargs):
+                return super().get_context(
+                    bot, chat_id, user_id, **{**kwargs, "destiny": "custom"}
+                )
+
+        middleware = Custom(storage=MemoryStorage(), events_isolation=DisabledEventIsolation())
+        event_context = EventContext(chat=SUPERGROUP, user=USER)
+        context = middleware.resolve_event_context(MockedBot(), {EVENT_CONTEXT_KEY: event_context})
+
+        assert context is not None
+        assert context.key.destiny == "custom"

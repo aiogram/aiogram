@@ -1,8 +1,14 @@
 import inspect
 from collections.abc import Iterator
+from itertools import count
 from typing import Any, no_type_check
 
 from aiogram.types import TelegramObject
+
+# Bumped whenever a group gets a new parent: every cached State.state computed before is stale.
+# next() on a count is atomic, so no update is lost without the GIL.
+_generations = count()
+_generation = next(_generations)
 
 
 class State:
@@ -14,8 +20,8 @@ class State:
         self._state = state
         self._group_name = group_name
         self._group: type[StatesGroup] | None = None
-        # Full state name, computed on first access; reset when the group or its parents change
-        self._full_state: tuple[str | None] | None = None
+        # (full state name, _generation it was computed in); reset by set_parent
+        self._full_state: tuple[str | None, int] | None = None
 
     @property
     def group(self) -> "type[StatesGroup]":
@@ -27,8 +33,9 @@ class State:
     @property
     def state(self) -> str | None:
         full_state = self._full_state
-        if full_state is None:
-            full_state = self._full_state = (self._resolve_state(),)
+        if full_state is None or full_state[1] != _generation:
+            generation = _generation
+            full_state = self._full_state = (self._resolve_state(), generation)
         return full_state[0]
 
     def _resolve_state(self) -> str | None:
@@ -123,14 +130,20 @@ class StatesGroupMeta(type):
         return cls.__name__
 
     def __setattr__(cls, name: str, value: Any) -> None:
+        global _generation  # noqa: PLW0603
         super().__setattr__(name, value)
-        # A new parent changes the full name of every state below this group. During class
-        # creation (no own __all_states__ yet) nothing is cached for this class.
+        # A new parent changes the full name of every state below this group, including states
+        # bound with set_parent() that are not in __all_states__. During class creation (no own
+        # __all_states__ yet) nothing is cached for this class.
         if name == "__parent__" and "__all_states__" in vars(cls):
-            for state in cls.__all_states__:
-                state._full_state = None
+            _generation = next(_generations)
             groups: tuple[StatesGroupMeta, ...] = (cls, *cls.__all_childs__)
             for group in groups:
+                # Same value as in __new__: a state bound in a class body always has a name
+                group.__state_names__ = tuple(
+                    state.state  # type: ignore[misc]
+                    for state in group.__states__
+                )
                 group.__all_states_names__ = group._get_all_states_names()
 
     def _prepare_child(cls, child: type["StatesGroup"]) -> type["StatesGroup"]:
