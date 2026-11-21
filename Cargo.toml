@@ -27,6 +27,7 @@ ureq = "3.5.2"
 sha2 = "0.11.1"
 tar = "0.4.46"
 flate2 = "1.1.11"
+regex = "1.12.2"
 
 [workspace.lints.clippy]
 # v4/research/13 B11: also enforced in generated code, `allow(clippy::all)` does not mask them

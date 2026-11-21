@@ -1,0 +1,8 @@
+Faster FSM checks: :code:`State.state` is cached (and reset when a group's parent changes), and
+:class:`~aiogram.filters.state.StateFilter` matches exact states through a precomputed set.
+Added :code:`StateFilter.exact_states`, the set of exact states a filter accepts (:code:`None` for
+:code:`"*"` or custom states), and :code:`FSMContextMiddleware.resolve_key`, which computes the FSM
+storage key of an event without any I/O.
+A :code:`StateFilter` now resolves state names when it is created and checks exact states and
+:code:`"*"` before custom states. :code:`StateFilter.states` is read-only (AG4050): create a new filter
+instead of assigning it.

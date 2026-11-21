@@ -18,5 +18,9 @@ sha2.workspace = true
 tar.workspace = true
 flate2.workspace = true
 
+[dev-dependencies]
+# tests only: the adapter emits regex strings and never compiles them
+regex.workspace = true
+
 [lints]
 workspace = true

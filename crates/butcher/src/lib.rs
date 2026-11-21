@@ -8,6 +8,7 @@ pub mod cli;
 pub mod fetch;
 pub mod ir;
 pub mod manifest;
+pub mod sources;
 
 #[derive(Debug)]
 pub enum Error {
