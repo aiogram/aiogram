@@ -53,8 +53,10 @@ package (PyYAML, for one) passes locally and fails in CI with `ModuleNotFoundErr
 `test`-group packages in `tests/`.
 
 PyPy 3.11 on macOS arm64 segfaults on `copy` / `deepcopy` of `DefaultBotProperties`, and CI
-does not reproduce it. Before pushing a change that copies or pickles models, run the
-touched tests on a local PyPy, in a separate environment so `.venv` is left alone:
+does not reproduce it. PyPy also lacks some stdlib modules CPython has (`tracemalloc`), and the
+PyPy CI jobs collect every test module, `benchmarks/` self-tests included. Before pushing a change
+that copies or pickles models, or imports such a module, run the touched tests on a local PyPy,
+in a separate environment so `.venv` is left alone:
 
 ```bash
 UV_PROJECT_ENVIRONMENT=/tmp/aiogram-pypy uv sync --locked --all-extras --group test --python pypy3.11
@@ -148,6 +150,10 @@ These patterns repeatedly appeared in maintainer feedback and should be treated 
 - Append-only: never edit a pinned file, add a new id. Every file needs a `MANIFEST.toml` entry with its sha256; `tests/test_corpus_manifest.py` enforces this and rejects anything matching a bot-token pattern. Corpus files are `-text` in `.gitattributes` so Windows checkouts keep the hashed bytes; keep new corpus paths under that rule rather than normalising line endings in the hash.
 - `on_3x` records whether current 3.x decodes each update/response input. A change that makes 3.x accept or reject one (e.g. a forward-compat fallback) updates that field in the same PR.
 - Real traces: record with `benchmarks/record/recorder.py` into the gitignored `benchmarks/record/raw/`, commit only the output of `benchmarks/record/redact.py`, after a manual review.
+- Harness (A-05): `uv run python -m benchmarks run|compare|report`; the method, the CLI and how to read `compare` are
+  in `benchmarks/README.md`. Cases are keyed by corpus ids and reach aiogram only through
+  `benchmarks/adapters/aiogram3.py`. `compare` caches exported trees and venvs per sha in the gitignored `.benchmarks/`
+  (delete it to rebuild), and `make bench` runs every case (about 10 minutes).
 
 ## Differential harness (`differential/`)
 
