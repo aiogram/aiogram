@@ -17,7 +17,7 @@ class GetMyDefaultAdministratorRights(TelegramMethod[ChatAdministratorRights]):
     __api_method__ = "getMyDefaultAdministratorRights"
 
     for_channels: bool | None = None
-    """Pass :code:`True` to get default administrator rights of the bot in channels. Otherwise, default administrator rights of the bot for groups and supergroups will be returned."""
+    """Pass :code:`True` to get default administrator rights of the bot in channels. Otherwise, default administrator rights of the bot for groups and supergroups will be returned"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!

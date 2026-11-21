@@ -1,0 +1,33 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Rich messages",
+    "anchor": "rich-messages"
+  },
+  "object": {
+    "anchor": "richtextmathematicalexpression",
+    "name": "RichTextMathematicalExpression",
+    "description": "A mathematical expression.",
+    "html_description": "<p>A mathematical expression.</p>",
+    "rst_description": "A mathematical expression.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Type of the rich text, always 'mathematical_expression'",
+        "html_description": "<td>Type of the rich text, always &#8220;mathematical_expression&#8221;</td>",
+        "rst_description": "Type of the rich text, always 'mathematical_expression'\n",
+        "name": "type",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "The expression in LaTeX format",
+        "html_description": "<td>The expression in LaTeX format</td>",
+        "rst_description": "The expression in LaTeX format\n",
+        "name": "expression",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

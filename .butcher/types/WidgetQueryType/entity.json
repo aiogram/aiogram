@@ -1,0 +1,16 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "widgetquerytype",
+    "name": "WidgetQueryType",
+    "description": "This object describes the type of a query from a widget. Currently, it can be one of\n - WidgetQueryTypeData\n - WidgetQueryTypeSignData\n - WidgetQueryTypeSentTransaction",
+    "html_description": "<p>This object describes the type of a query from a widget. Currently, it can be one of</p><ul>\n<li><a href=\"#widgetquerytypedata\">WidgetQueryTypeData</a></li>\n<li><a href=\"#widgetquerytypesigndata\">WidgetQueryTypeSignData</a></li>\n<li><a href=\"#widgetquerytypesenttransaction\">WidgetQueryTypeSentTransaction</a></li>\n</ul>",
+    "rst_description": "This object describes the type of a query from a widget. Currently, it can be one of\n\n - :class:`aiogram.types.widget_query_type_data.WidgetQueryTypeData`\n - :class:`aiogram.types.widget_query_type_sign_data.WidgetQueryTypeSignData`\n - :class:`aiogram.types.widget_query_type_sent_transaction.WidgetQueryTypeSentTransaction`",
+    "annotations": [],
+    "category": "types"
+  }
+}

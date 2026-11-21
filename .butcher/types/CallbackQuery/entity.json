@@ -28,6 +28,14 @@
         "required": true
       },
       {
+        "type": "String",
+        "description": "Global identifier, uniquely corresponding to the chat to which the message with the callback button was sent. Useful for high scores in games.",
+        "html_description": "<td>Global identifier, uniquely corresponding to the chat to which the message with the callback button was sent. Useful for high scores in <a href=\"#games\">games</a>.</td>",
+        "rst_description": "Global identifier, uniquely corresponding to the chat to which the message with the callback button was sent. Useful for high scores in :class:`aiogram.methods.games.Games`.\n",
+        "name": "chat_instance",
+        "required": true
+      },
+      {
         "type": "MaybeInaccessibleMessage",
         "description": "Message sent by the bot with the callback button that originated the query",
         "html_description": "<td><em>Optional</em>. Message sent by the bot with the callback button that originated the query</td>",
@@ -37,19 +45,11 @@
       },
       {
         "type": "String",
-        "description": "Identifier of the message sent via the bot in inline mode, that originated the query.",
-        "html_description": "<td><em>Optional</em>. Identifier of the message sent via the bot in inline mode, that originated the query.</td>",
-        "rst_description": "*Optional*. Identifier of the message sent via the bot in inline mode, that originated the query.\n",
+        "description": "Identifier of the message sent via the bot in inline mode, that originated the query",
+        "html_description": "<td><em>Optional</em>. Identifier of the message sent via the bot in inline mode, that originated the query</td>",
+        "rst_description": "*Optional*. Identifier of the message sent via the bot in inline mode, that originated the query\n",
         "name": "inline_message_id",
         "required": false
-      },
-      {
-        "type": "String",
-        "description": "Global identifier, uniquely corresponding to the chat to which the message with the callback button was sent. Useful for high scores in games.",
-        "html_description": "<td>Global identifier, uniquely corresponding to the chat to which the message with the callback button was sent. Useful for high scores in <a href=\"#games\">games</a>.</td>",
-        "rst_description": "Global identifier, uniquely corresponding to the chat to which the message with the callback button was sent. Useful for high scores in :class:`aiogram.methods.games.Games`.\n",
-        "name": "chat_instance",
-        "required": true
       },
       {
         "type": "String",
@@ -62,8 +62,8 @@
       {
         "type": "String",
         "description": "Short name of a Game to be returned, serves as the unique identifier for the game",
-        "html_description": "<td><em>Optional</em>. Short name of a <a href=\"#games\">Game</a> to be returned, serves as the unique identifier for the game</td>",
-        "rst_description": "*Optional*. Short name of a `Game <https://core.telegram.org/bots/api#games>`_ to be returned, serves as the unique identifier for the game\n",
+        "html_description": "<td><em>Optional</em>. Short name of a <a href=\"#game\">Game</a> to be returned, serves as the unique identifier for the game</td>",
+        "rst_description": "*Optional*. Short name of a :class:`aiogram.types.game.Game` to be returned, serves as the unique identifier for the game\n",
         "name": "game_short_name",
         "required": false
       }

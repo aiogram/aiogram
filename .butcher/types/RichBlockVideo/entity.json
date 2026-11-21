@@ -1,0 +1,49 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Rich messages",
+    "anchor": "rich-messages"
+  },
+  "object": {
+    "anchor": "richblockvideo",
+    "name": "RichBlockVideo",
+    "description": "A block with a video, corresponding to the HTML tag <video>.",
+    "html_description": "<p>A block with a video, corresponding to the HTML tag <code>&lt;video&gt;</code>.</p>",
+    "rst_description": "A block with a video, corresponding to the HTML tag :code:`<video>`.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Type of the block, always 'video'",
+        "html_description": "<td>Type of the block, always &#8220;video&#8221;</td>",
+        "rst_description": "Type of the block, always 'video'\n",
+        "name": "type",
+        "required": true
+      },
+      {
+        "type": "Video",
+        "description": "The video",
+        "html_description": "<td>The video</td>",
+        "rst_description": "The video\n",
+        "name": "video",
+        "required": true
+      },
+      {
+        "type": "True",
+        "description": "True, if the media preview is covered by a spoiler animation",
+        "html_description": "<td><em>Optional</em>. <em>True</em>, if the media preview is covered by a spoiler animation</td>",
+        "rst_description": "*Optional*. :code:`True`, if the media preview is covered by a spoiler animation\n",
+        "name": "has_spoiler",
+        "required": false
+      },
+      {
+        "type": "RichBlockCaption",
+        "description": "Caption of the block",
+        "html_description": "<td><em>Optional</em>. Caption of the block</td>",
+        "rst_description": "*Optional*. Caption of the block\n",
+        "name": "caption",
+        "required": false
+      }
+    ],
+    "category": "types"
+  }
+}

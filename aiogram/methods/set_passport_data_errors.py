@@ -20,7 +20,7 @@ class SetPassportDataErrors(TelegramMethod[bool]):
     user_id: int
     """User identifier"""
     errors: list[PassportElementErrorUnion]
-    """A JSON-serialized array describing the errors"""
+    """A JSON-serialized Array describing the errors"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!

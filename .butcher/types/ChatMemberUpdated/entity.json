@@ -53,9 +53,9 @@
       },
       {
         "type": "ChatInviteLink",
-        "description": "Chat invite link, which was used by the user to join the chat; for joining by invite link events only.",
-        "html_description": "<td><em>Optional</em>. Chat invite link, which was used by the user to join the chat; for joining by invite link events only.</td>",
-        "rst_description": "*Optional*. Chat invite link, which was used by the user to join the chat; for joining by invite link events only.\n",
+        "description": "Chat invite link, which was used by the user to join the chat; for joining by invite link events only",
+        "html_description": "<td><em>Optional</em>. Chat invite link, which was used by the user to join the chat; for joining by invite link events only</td>",
+        "rst_description": "*Optional*. Chat invite link, which was used by the user to join the chat; for joining by invite link events only\n",
         "name": "invite_link",
         "required": false
       },

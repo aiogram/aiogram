@@ -1,0 +1,49 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "tonwalletcard",
+    "name": "TonWalletCard",
+    "description": "This object describes a TON wallet card, which is shown on the profile page of a user to everyone.",
+    "html_description": "<p>This object describes a TON wallet card, which is shown on the profile page of a user to everyone.</p>",
+    "rst_description": "This object describes a TON wallet card, which is shown on the profile page of a user to everyone.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Address of the wallet",
+        "html_description": "<td>Address of the wallet</td>",
+        "rst_description": "Address of the wallet\n",
+        "name": "address",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "Balance of the wallet, in the smallest units of the cryptocurrency, as a decimal number",
+        "html_description": "<td>Balance of the wallet, in the <em>smallest units</em> of the cryptocurrency, as a decimal number</td>",
+        "rst_description": "Balance of the wallet, in the *smallest units* of the cryptocurrency, as a decimal number\n",
+        "name": "amount",
+        "required": true
+      },
+      {
+        "type": "Array of TonWalletCardSticker",
+        "description": "Stickers placed on the card",
+        "html_description": "<td>Stickers placed on the card</td>",
+        "rst_description": "Stickers placed on the card\n",
+        "name": "stickers",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "Address of the NFT of one of the stickers, whose colors must be used for the card background; omitted if the default background must be used",
+        "html_description": "<td><em>Optional</em>. Address of the NFT of one of the stickers, whose colors must be used for the card background; omitted if the default background must be used</td>",
+        "rst_description": "*Optional*. Address of the NFT of one of the stickers, whose colors must be used for the card background; omitted if the default background must be used\n",
+        "name": "background_nft_address",
+        "required": false
+      }
+    ],
+    "category": "types"
+  }
+}

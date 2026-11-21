@@ -13,9 +13,9 @@
     "annotations": [
       {
         "type": "String",
-        "description": "Three-letter ISO 4217 currency code, or 'XTR' for payments in Telegram Stars. Currently, always 'XTR'",
-        "html_description": "<td>Three-letter ISO 4217 <a href=\"/bots/payments#supported-currencies\">currency</a> code, or &#8220;XTR&#8221; for payments in <a href=\"https://t.me/BotNews/90\">Telegram Stars</a>. Currently, always &#8220;XTR&#8221;</td>",
-        "rst_description": "Three-letter ISO 4217 `currency <https://core.telegram.org/bots/payments#supported-currencies>`_ code, or 'XTR' for payments in `Telegram Stars <https://t.me/BotNews/90>`_. Currently, always 'XTR'\n",
+        "description": "Three-letter ISO 4217 currency code, or 'XTR' for payments in Telegram Stars. Currently, always 'XTR'.",
+        "html_description": "<td>Three-letter ISO 4217 <a href=\"/bots/payments#supported-currencies\">currency</a> code, or &#8220;XTR&#8221; for payments in <a href=\"https://t.me/BotNews/90\">Telegram Stars</a>. Currently, always &#8220;XTR&#8221;.</td>",
+        "rst_description": "Three-letter ISO 4217 `currency <https://core.telegram.org/bots/payments#supported-currencies>`_ code, or 'XTR' for payments in `Telegram Stars <https://t.me/BotNews/90>`_. Currently, always 'XTR'.\n",
         "name": "currency",
         "required": true
       },

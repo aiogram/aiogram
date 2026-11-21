@@ -1,0 +1,6 @@
+3.x:
+  - base-branch:
+      - '^dev-3\.x$'
+4.x:
+  - base-branch:
+      - '^dev-4\.x$'

@@ -18,7 +18,7 @@ class BusinessMessagesDeleted(TelegramObject):
     business_connection_id: str
     """Unique identifier of the business connection"""
     chat: Chat
-    """Information about a chat in the business account. The bot may not have access to the chat or the corresponding user."""
+    """Information about a chat in the business account. The bot may not have access to the chat or the corresponding user"""
     message_ids: list[int]
     """The list of identifiers of deleted messages in the chat of the business account"""
 

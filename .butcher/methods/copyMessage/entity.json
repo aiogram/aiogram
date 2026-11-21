@@ -7,17 +7,33 @@
   "object": {
     "anchor": "copymessage",
     "name": "copyMessage",
-    "description": "Use this method to copy messages of any kind. Service messages, paid media messages, giveaway messages, giveaway winners messages, and invoice messages can't be copied. A quiz poll can be copied only if the value of the field correct_option_id is known to the bot. The method is analogous to the method forwardMessage, but the copied message doesn't have a link to the original message. Returns the MessageId of the sent message on success.",
-    "html_description": "<p>Use this method to copy messages of any kind. Service messages, paid media messages, giveaway messages, giveaway winners messages, and invoice messages can't be copied. A quiz <a href=\"#poll\">poll</a> can be copied only if the value of the field <em>correct_option_id</em> is known to the bot. The method is analogous to the method <a href=\"#forwardmessage\">forwardMessage</a>, but the copied message doesn't have a link to the original message. Returns the <a href=\"#messageid\">MessageId</a> of the sent message on success.</p>",
-    "rst_description": "Use this method to copy messages of any kind. Service messages, paid media messages, giveaway messages, giveaway winners messages, and invoice messages can't be copied. A quiz :class:`aiogram.methods.poll.Poll` can be copied only if the value of the field *correct_option_id* is known to the bot. The method is analogous to the method :class:`aiogram.methods.forward_message.ForwardMessage`, but the copied message doesn't have a link to the original message. Returns the :class:`aiogram.types.message_id.MessageId` of the sent message on success.",
+    "description": "Use this method to copy messages of any kind. Service messages, paid media messages, giveaway messages, giveaway winners messages, invoice messages, and widget messages can't be copied. A quiz poll can be copied only if the value of the field correct_option_ids is known to the bot. The method is analogous to the method forwardMessage, but the copied message doesn't have a link to the original message. Returns the MessageId of the sent message on success.",
+    "html_description": "<p>Use this method to copy messages of any kind. Service messages, paid media messages, giveaway messages, giveaway winners messages, invoice messages, and widget messages can't be copied. A quiz <a href=\"#poll\">poll</a> can be copied only if the value of the field <em>correct_option_ids</em> is known to the bot. The method is analogous to the method <a href=\"#forwardmessage\">forwardMessage</a>, but the copied message doesn't have a link to the original message. Returns the <a href=\"#messageid\">MessageId</a> of the sent message on success.</p>",
+    "rst_description": "Use this method to copy messages of any kind. Service messages, paid media messages, giveaway messages, giveaway winners messages, invoice messages, and widget messages can't be copied. A quiz :class:`aiogram.methods.poll.Poll` can be copied only if the value of the field *correct_option_ids* is known to the bot. The method is analogous to the method :class:`aiogram.methods.forward_message.ForwardMessage`, but the copied message doesn't have a link to the original message. Returns the :class:`aiogram.types.message_id.MessageId` of the sent message on success.",
     "annotations": [
       {
         "type": "Integer or String",
         "required": true,
-        "description": "Unique identifier for the target chat or username of the target bot, supergroup or channel in the format @username",
-        "html_description": "<td>Unique identifier for the target chat or username of the target bot, supergroup or channel in the format <code>@username</code></td>",
-        "rst_description": "Unique identifier for the target chat or username of the target bot, supergroup or channel in the format :code:`@username`\n",
+        "description": "Unique identifier for the target chat or username of the target bot, supergroup, or channel in the format @username",
+        "html_description": "<td>Unique identifier for the target chat or username of the target bot, supergroup, or channel in the format <code>@username</code></td>",
+        "rst_description": "Unique identifier for the target chat or username of the target bot, supergroup, or channel in the format :code:`@username`\n",
         "name": "chat_id"
+      },
+      {
+        "type": "Integer or String",
+        "required": true,
+        "description": "Unique identifier for the chat where the original message was sent (or username of the target bot, supergroup, or channel in the format @username)",
+        "html_description": "<td>Unique identifier for the chat where the original message was sent (or username of the target bot, supergroup, or channel in the format <code>@username</code>)</td>",
+        "rst_description": "Unique identifier for the chat where the original message was sent (or username of the target bot, supergroup, or channel in the format :code:`@username`)\n",
+        "name": "from_chat_id"
+      },
+      {
+        "type": "Integer",
+        "required": true,
+        "description": "Message identifier in the chat specified in from_chat_id",
+        "html_description": "<td>Message identifier in the chat specified in <em>from_chat_id</em></td>",
+        "rst_description": "Message identifier in the chat specified in *from_chat_id*\n",
+        "name": "message_id"
       },
       {
         "type": "Integer",
@@ -36,22 +52,6 @@
         "name": "direct_messages_topic_id"
       },
       {
-        "type": "Integer or String",
-        "required": true,
-        "description": "Unique identifier for the chat where the original message was sent (or username of the target bot, supergroup or channel in the format @username)",
-        "html_description": "<td>Unique identifier for the chat where the original message was sent (or username of the target bot, supergroup or channel in the format <code>@username</code>)</td>",
-        "rst_description": "Unique identifier for the chat where the original message was sent (or username of the target bot, supergroup or channel in the format :code:`@username`)\n",
-        "name": "from_chat_id"
-      },
-      {
-        "type": "Integer",
-        "required": true,
-        "description": "Message identifier in the chat specified in from_chat_id",
-        "html_description": "<td>Message identifier in the chat specified in <em>from_chat_id</em></td>",
-        "rst_description": "Message identifier in the chat specified in *from_chat_id*\n",
-        "name": "message_id"
-      },
-      {
         "type": "Integer",
         "required": false,
         "description": "New start timestamp for the copied video in the message",
@@ -62,9 +62,9 @@
       {
         "type": "String",
         "required": false,
-        "description": "New caption for media, 0-1024 characters after entities parsing. If not specified, the original caption is kept",
-        "html_description": "<td>New caption for media, 0-1024 characters after entities parsing. If not specified, the original caption is kept</td>",
-        "rst_description": "New caption for media, 0-1024 characters after entities parsing. If not specified, the original caption is kept\n",
+        "description": "New caption for media, 0-1024 characters after entities parsing. If not specified, the original caption is kept.",
+        "html_description": "<td>New caption for media, 0-1024 characters after entities parsing. If not specified, the original caption is kept.</td>",
+        "rst_description": "New caption for media, 0-1024 characters after entities parsing. If not specified, the original caption is kept.\n",
         "name": "caption"
       },
       {
@@ -86,9 +86,9 @@
       {
         "type": "Boolean",
         "required": false,
-        "description": "Pass True, if the caption must be shown above the message media. Ignored if a new caption isn't specified.",
-        "html_description": "<td>Pass <em>True</em>, if the caption must be shown above the message media. Ignored if a new caption isn't specified.</td>",
-        "rst_description": "Pass :code:`True`, if the caption must be shown above the message media. Ignored if a new caption isn't specified.\n",
+        "description": "Pass True if the caption must be shown above the message media. Ignored if a new caption isn't specified.",
+        "html_description": "<td>Pass <em>True</em> if the caption must be shown above the message media. Ignored if a new caption isn't specified.</td>",
+        "rst_description": "Pass :code:`True` if the caption must be shown above the message media. Ignored if a new caption isn't specified.\n",
         "name": "show_caption_above_media"
       },
       {
@@ -142,9 +142,9 @@
       {
         "type": "InlineKeyboardMarkup or ReplyKeyboardMarkup or ReplyKeyboardRemove or ForceReply",
         "required": false,
-        "description": "Additional interface options. A JSON-serialized object for an inline keyboard, custom reply keyboard, instructions to remove a reply keyboard or to force a reply from the user",
-        "html_description": "<td>Additional interface options. A JSON-serialized object for an <a href=\"/bots/features#inline-keyboards\">inline keyboard</a>, <a href=\"/bots/features#keyboards\">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user</td>",
-        "rst_description": "Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user\n",
+        "description": "Additional interface options. A JSON-serialized object for an inline keyboard, custom reply keyboard, instructions to remove a reply keyboard or to force a reply from the user.",
+        "html_description": "<td>Additional interface options. A JSON-serialized object for an <a href=\"/bots/features#inline-keyboards\">inline keyboard</a>, <a href=\"/bots/features#keyboards\">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user.</td>",
+        "rst_description": "Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user.\n",
         "name": "reply_markup"
       },
       {

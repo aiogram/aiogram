@@ -13,9 +13,9 @@ class WebAppData(TelegramObject):
     """
 
     data: str
-    """The data. Be aware that a bad client can send arbitrary data in this field."""
+    """The data. Be aware that a bad client can send arbitrary data in this field"""
     button_text: str
-    """Text of the *web_app* keyboard button from which the Web App was opened. Be aware that a bad client can send arbitrary data in this field."""
+    """Text of the *web_app* keyboard button from which the Web App was opened. Be aware that a bad client can send arbitrary data in this field"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!

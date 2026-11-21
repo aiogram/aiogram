@@ -1,0 +1,41 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Rich messages",
+    "anchor": "rich-messages"
+  },
+  "object": {
+    "anchor": "richtexttextmention",
+    "name": "RichTextTextMention",
+    "description": "A mention of a Telegram user by their identifier.",
+    "html_description": "<p>A mention of a Telegram user by their identifier.</p>",
+    "rst_description": "A mention of a Telegram user by their identifier.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Type of the rich text, always 'text_mention'",
+        "html_description": "<td>Type of the rich text, always &#8220;text_mention&#8221;</td>",
+        "rst_description": "Type of the rich text, always 'text_mention'\n",
+        "name": "type",
+        "required": true
+      },
+      {
+        "type": "RichText",
+        "description": "The text",
+        "html_description": "<td>The text</td>",
+        "rst_description": "The text\n",
+        "name": "text",
+        "required": true
+      },
+      {
+        "type": "User",
+        "description": "The mentioned user",
+        "html_description": "<td>The mentioned user</td>",
+        "rst_description": "The mentioned user\n",
+        "name": "user",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

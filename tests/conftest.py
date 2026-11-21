@@ -21,6 +21,10 @@ from aiogram.fsm.storage.pymongo import PyMongoStorage
 from aiogram.fsm.storage.redis import RedisStorage
 from tests.mocked_bot import MockedBot
 
+# The suite blocks the plugin's entry point (``-p no:aiogram`` in pyproject.toml) and enables
+# it here, after coverage starts; ``pytest_plugins`` is only accepted in the root conftest.
+pytest_plugins = ["aiogram.test.plugin"]
+
 DATA_DIR = Path(__file__).parent / "data"
 
 CHAT_ID = -42
@@ -41,8 +45,6 @@ def pytest_configure(config):
 
     if sys.platform == "win32" and sys.version_info < (3, 14):
         asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
-    else:
-        asyncio.set_event_loop_policy(asyncio.DefaultEventLoopPolicy())
 
 
 @pytest.fixture()
@@ -193,10 +195,3 @@ def storage(request):
 @pytest.fixture()
 def isolation(request):
     return request.getfixturevalue(request.param)
-
-
-# @pytest.fixture(scope="session")
-# def event_loop_policy(request):
-#     if sys.platform == "win32":
-#         return asyncio.WindowsSelectorEventLoopPolicy()
-#     return asyncio.DefaultEventLoopPolicy()

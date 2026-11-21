@@ -1,7 +1,7 @@
-from enum import Enum
+from enum import StrEnum
 
 
-class UpdateType(str, Enum):
+class UpdateType(StrEnum):
     """
     This object represents the complete list of allowed update types
 
@@ -33,3 +33,7 @@ class UpdateType(str, Enum):
     CHAT_BOOST = "chat_boost"
     REMOVED_CHAT_BOOST = "removed_chat_boost"
     MANAGED_BOT = "managed_bot"
+    SUBSCRIPTION = "subscription"
+    STOPPED_MESSAGE_GENERATION = "stopped_message_generation"
+    WIDGET_QUERY = "widget_query"
+    SHARED_WIDGET_QUERY = "shared_widget_query"

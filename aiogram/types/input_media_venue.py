@@ -13,7 +13,7 @@ class InputMediaVenue(InputPollMedia, InputPollOptionMedia):
     """
 
     type: Literal[InputMediaType.VENUE] = InputMediaType.VENUE
-    """Type of the result, must be *venue*"""
+    """Type of the media, must be *venue*"""
     latitude: float
     """Latitude of the location"""
     longitude: float

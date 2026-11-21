@@ -17,7 +17,7 @@ class ChatInviteLink(TelegramObject):
     """
 
     invite_link: str
-    """The invite link. If the link was created by another chat administrator, then the second part of the link will be replaced with '…'."""
+    """The invite link. If the link was created by another chat administrator, then the second part of the link will be replaced with '…'"""
     creator: User
     """Creator of the link"""
     creates_join_request: bool

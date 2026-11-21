@@ -17,13 +17,13 @@ class StopPoll(TelegramMethod[Poll]):
     __api_method__ = "stopPoll"
 
     chat_id: ChatIdUnion
-    """Unique identifier for the target chat or username of the target bot, supergroup or channel in the format :code:`@username`"""
+    """Unique identifier for the target chat or username of the target bot, supergroup, or channel in the format :code:`@username`"""
     message_id: int
     """Identifier of the original message with the poll"""
     business_connection_id: str | None = None
     """Unique identifier of the business connection on behalf of which the message to be edited was sent"""
     reply_markup: InlineKeyboardMarkup | None = None
-    """A JSON-serialized object for a new message `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_."""
+    """A JSON-serialized object for a new message `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!

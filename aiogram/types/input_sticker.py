@@ -23,9 +23,9 @@ class InputSticker(TelegramObject):
     emoji_list: list[str]
     """List of 1-20 emoji associated with the sticker"""
     mask_position: MaskPosition | None = None
-    """*Optional*. Position where the mask should be placed on faces. For 'mask' stickers only."""
+    """*Optional*. Position where the mask should be placed on faces. For 'mask' stickers only"""
     keywords: list[str] | None = None
-    """*Optional*. List of 0-20 search keywords for the sticker with total length of up to 64 characters. For 'regular' and 'custom_emoji' stickers only."""
+    """*Optional*. List of 0-20 search keywords for the sticker with total length of up to 64 characters. For 'regular' and 'custom_emoji' stickers only"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!

@@ -1,0 +1,41 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Rich messages",
+    "anchor": "rich-messages"
+  },
+  "object": {
+    "anchor": "richblockvoicenote",
+    "name": "RichBlockVoiceNote",
+    "description": "A block with a voice note, corresponding to the HTML tag <audio>.",
+    "html_description": "<p>A block with a voice note, corresponding to the HTML tag <code>&lt;audio&gt;</code>.</p>",
+    "rst_description": "A block with a voice note, corresponding to the HTML tag :code:`<audio>`.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Type of the block, always 'voice_note'",
+        "html_description": "<td>Type of the block, always &#8220;voice_note&#8221;</td>",
+        "rst_description": "Type of the block, always 'voice_note'\n",
+        "name": "type",
+        "required": true
+      },
+      {
+        "type": "Voice",
+        "description": "The voice note",
+        "html_description": "<td>The voice note</td>",
+        "rst_description": "The voice note\n",
+        "name": "voice_note",
+        "required": true
+      },
+      {
+        "type": "RichBlockCaption",
+        "description": "Caption of the block",
+        "html_description": "<td><em>Optional</em>. Caption of the block</td>",
+        "rst_description": "*Optional*. Caption of the block\n",
+        "name": "caption",
+        "required": false
+      }
+    ],
+    "category": "types"
+  }
+}

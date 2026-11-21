@@ -1,0 +1,33 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Rich messages",
+    "anchor": "rich-messages"
+  },
+  "object": {
+    "anchor": "richtextbutton",
+    "name": "RichTextButton",
+    "description": "A button.",
+    "html_description": "<p>A button.</p>",
+    "rst_description": "A button.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Type of the rich text, always 'button'",
+        "html_description": "<td>Type of the rich text, always &#8220;button&#8221;</td>",
+        "rst_description": "Type of the rich text, always 'button'\n",
+        "name": "type",
+        "required": true
+      },
+      {
+        "type": "RichMessageButton",
+        "description": "The button",
+        "html_description": "<td>The button</td>",
+        "rst_description": "The button\n",
+        "name": "button",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

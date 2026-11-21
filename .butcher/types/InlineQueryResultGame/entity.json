@@ -8,8 +8,8 @@
     "anchor": "inlinequeryresultgame",
     "name": "InlineQueryResultGame",
     "description": "Represents a Game.",
-    "html_description": "<p>Represents a <a href=\"#games\">Game</a>.</p>",
-    "rst_description": "Represents a `Game <https://core.telegram.org/bots/api#games>`_.",
+    "html_description": "<p>Represents a <a href=\"#game\">Game</a>.</p>",
+    "rst_description": "Represents a :class:`aiogram.types.game.Game`.",
     "annotations": [
       {
         "type": "String",

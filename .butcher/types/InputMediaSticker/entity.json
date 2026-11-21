@@ -13,9 +13,9 @@
     "annotations": [
       {
         "type": "String",
-        "description": "Type of the result, must be sticker",
-        "html_description": "<td>Type of the result, must be <em>sticker</em></td>",
-        "rst_description": "Type of the result, must be *sticker*\n",
+        "description": "Type of the media, must be sticker",
+        "html_description": "<td>Type of the media, must be <em>sticker</em></td>",
+        "rst_description": "Type of the media, must be *sticker*\n",
         "name": "type",
         "required": true
       },

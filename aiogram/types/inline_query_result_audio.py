@@ -30,7 +30,7 @@ class InlineQueryResultAudio(InlineQueryResult):
     caption: str | None = None
     """*Optional*. Caption, 0-1024 characters after entities parsing"""
     parse_mode: str | Default | None = Default("parse_mode")
-    """*Optional*. Mode for parsing entities in the audio caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details."""
+    """*Optional*. Mode for parsing entities in the audio caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details"""
     caption_entities: list[MessageEntity] | None = None
     """*Optional*. List of special entities that appear in the caption, which can be specified instead of *parse_mode*"""
     performer: str | None = None

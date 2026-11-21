@@ -26,15 +26,15 @@ class TransactionPartnerUser(TransactionPartner):
     user: User
     """Information about the user"""
     affiliate: AffiliateInfo | None = None
-    """*Optional*. Information about the affiliate that received a commission via this transaction. Can be available only for 'invoice_payment' and 'paid_media_payment' transactions."""
+    """*Optional*. Information about the affiliate that received a commission via this transaction. Can be available only for 'invoice_payment' and 'paid_media_payment' transactions"""
     invoice_payload: str | None = None
-    """*Optional*. Bot-specified invoice payload. Can be available only for 'invoice_payment' transactions."""
+    """*Optional*. Bot-specified invoice payload. Can be available only for 'invoice_payment' transactions"""
     subscription_period: int | None = None
-    """*Optional*. The duration of the paid subscription. Can be available only for 'invoice_payment' transactions."""
+    """*Optional*. The duration of the paid subscription. Can be available only for 'invoice_payment' transactions"""
     paid_media: list[PaidMediaUnion] | None = None
     """*Optional*. Information about the paid media bought by the user; for 'paid_media_payment' transactions only"""
     paid_media_payload: str | None = None
-    """*Optional*. Bot-specified paid media payload. Can be available only for 'paid_media_payment' transactions."""
+    """*Optional*. Bot-specified paid media payload. Can be available only for 'paid_media_payment' transactions"""
     gift: Gift | None = None
     """*Optional*. The gift sent to the user by the bot; for 'gift_purchase' transactions only"""
     premium_subscription_duration: int | None = None

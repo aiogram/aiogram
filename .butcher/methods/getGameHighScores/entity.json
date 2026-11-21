@@ -22,25 +22,25 @@
       {
         "type": "Integer",
         "required": false,
-        "description": "Required if inline_message_id is not specified. Unique identifier for the target chat",
-        "html_description": "<td>Required if <em>inline_message_id</em> is not specified. Unique identifier for the target chat</td>",
-        "rst_description": "Required if *inline_message_id* is not specified. Unique identifier for the target chat\n",
+        "description": "Required if inline_message_id is not specified. Unique identifier for the target chat.",
+        "html_description": "<td>Required if <em>inline_message_id</em> is not specified. Unique identifier for the target chat.</td>",
+        "rst_description": "Required if *inline_message_id* is not specified. Unique identifier for the target chat.\n",
         "name": "chat_id"
       },
       {
         "type": "Integer",
         "required": false,
-        "description": "Required if inline_message_id is not specified. Identifier of the sent message",
-        "html_description": "<td>Required if <em>inline_message_id</em> is not specified. Identifier of the sent message</td>",
-        "rst_description": "Required if *inline_message_id* is not specified. Identifier of the sent message\n",
+        "description": "Required if inline_message_id is not specified. Identifier of the sent message.",
+        "html_description": "<td>Required if <em>inline_message_id</em> is not specified. Identifier of the sent message.</td>",
+        "rst_description": "Required if *inline_message_id* is not specified. Identifier of the sent message.\n",
         "name": "message_id"
       },
       {
         "type": "String",
         "required": false,
-        "description": "Required if chat_id and message_id are not specified. Identifier of the inline message",
-        "html_description": "<td>Required if <em>chat_id</em> and <em>message_id</em> are not specified. Identifier of the inline message</td>",
-        "rst_description": "Required if *chat_id* and *message_id* are not specified. Identifier of the inline message\n",
+        "description": "Required if chat_id and message_id are not specified. Identifier of the inline message.",
+        "html_description": "<td>Required if <em>chat_id</em> and <em>message_id</em> are not specified. Identifier of the inline message.</td>",
+        "rst_description": "Required if *chat_id* and *message_id* are not specified. Identifier of the inline message.\n",
         "name": "inline_message_id"
       }
     ],

@@ -1,0 +1,33 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available methods",
+    "anchor": "available-methods"
+  },
+  "object": {
+    "anchor": "answerchatjoinrequestquery",
+    "name": "answerChatJoinRequestQuery",
+    "description": "Use this method to process a received chat join request query. Returns True on success.",
+    "html_description": "<p>Use this method to process a received chat join request query. Returns <em>True</em> on success.</p>",
+    "rst_description": "Use this method to process a received chat join request query. Returns :code:`True` on success.",
+    "annotations": [
+      {
+        "type": "String",
+        "required": true,
+        "description": "Unique identifier of the join request query",
+        "html_description": "<td>Unique identifier of the join request query</td>",
+        "rst_description": "Unique identifier of the join request query\n",
+        "name": "chat_join_request_query_id"
+      },
+      {
+        "type": "String",
+        "required": true,
+        "description": "Result of the query. Must be either 'approve' to allow the user to join the chat, 'decline' to disallow the user to join the chat, or 'queue' to leave the decision to other administrators.",
+        "html_description": "<td>Result of the query. Must be either &#8220;approve&#8221; to allow the user to join the chat, &#8220;decline&#8221; to disallow the user to join the chat, or &#8220;queue&#8221; to leave the decision to other administrators.</td>",
+        "rst_description": "Result of the query. Must be either 'approve' to allow the user to join the chat, 'decline' to disallow the user to join the chat, or 'queue' to leave the decision to other administrators.\n",
+        "name": "result"
+      }
+    ],
+    "category": "methods"
+  }
+}

@@ -18,9 +18,9 @@ class ForwardMessage(TelegramMethod[Message]):
     __api_method__ = "forwardMessage"
 
     chat_id: ChatIdUnion
-    """Unique identifier for the target chat or username of the target bot, supergroup or channel in the format :code:`@username`"""
+    """Unique identifier for the target chat or username of the target bot, supergroup, or channel in the format :code:`@username`"""
     from_chat_id: ChatIdUnion
-    """Unique identifier for the chat where the original message was sent (or username of the target bot, supergroup or channel in the format :code:`@username`)"""
+    """Unique identifier for the chat where the original message was sent (or username of the target bot, supergroup, or channel in the format :code:`@username`)"""
     message_id: int
     """Message identifier in the chat specified in *from_chat_id*"""
     message_thread_id: int | None = None
@@ -30,7 +30,7 @@ class ForwardMessage(TelegramMethod[Message]):
     video_start_timestamp: DateTimeUnion | None = None
     """New start timestamp for the forwarded video in the message"""
     disable_notification: bool | None = None
-    """Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound."""
+    """Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound"""
     protect_content: bool | Default | None = Default("protect_content")
     """Protects the contents of the forwarded message from forwarding and saving"""
     message_effect_id: str | None = None

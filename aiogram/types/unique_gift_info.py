@@ -8,6 +8,7 @@ from .base import TelegramObject
 from .custom import DateTime
 
 if TYPE_CHECKING:
+    from .message_entity import MessageEntity
     from .unique_gift import UniqueGift
 
 
@@ -23,15 +24,21 @@ class UniqueGiftInfo(TelegramObject):
     origin: str
     """Origin of the gift. Currently, either 'upgrade' for gifts upgraded from regular gifts, 'transfer' for gifts transferred from other users or channels, 'resale' for gifts bought from other users, 'gifted_upgrade' for upgrades purchased after the gift was sent, or 'offer' for gifts bought or sold through gift purchase offers"""
     last_resale_currency: str | None = None
-    """*Optional*. For gifts bought from other users, the currency in which the payment for the gift was done. Currently, one of 'XTR' for Telegram Stars or 'TON' for toncoins."""
+    """*Optional*. For gifts bought from other users, the currency in which the payment for the gift was done. Currently, one of 'XTR' for Telegram Stars or 'TON' for TON grams"""
     last_resale_amount: int | None = None
-    """*Optional*. For gifts bought from other users, the price paid for the gift in either Telegram Stars or nanotoncoins"""
+    """*Optional*. For gifts bought from other users, the price paid for the gift in either Telegram Stars or nanograms"""
     owned_gift_id: str | None = None
     """*Optional*. Unique identifier of the received gift for the bot; only present for gifts received on behalf of business accounts"""
     transfer_star_count: int | None = None
     """*Optional*. Number of Telegram Stars that must be paid to transfer the gift; omitted if the bot cannot transfer the gift"""
     next_transfer_date: DateTime | None = None
     """*Optional*. Point in time (Unix timestamp) when the gift can be transferred. If it is in the past, then the gift can be transferred now"""
+    text: str | None = None
+    """*Optional*. Text of the message that was added to the gift"""
+    entities: list[MessageEntity] | None = None
+    """*Optional*. Special entities that appear in the text"""
+    is_private: bool | None = None
+    """*Optional*. :code:`True`, if the sender and gift text are shown only to the gift receiver; otherwise, everyone will be able to see them"""
     last_resale_star_count: int | None = Field(None, json_schema_extra={"deprecated": True})
     """*Optional*. For gifts bought from other users, the price paid for the gift
 
@@ -52,6 +59,9 @@ class UniqueGiftInfo(TelegramObject):
             owned_gift_id: str | None = None,
             transfer_star_count: int | None = None,
             next_transfer_date: DateTime | None = None,
+            text: str | None = None,
+            entities: list[MessageEntity] | None = None,
+            is_private: bool | None = None,
             last_resale_star_count: int | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
@@ -67,6 +77,9 @@ class UniqueGiftInfo(TelegramObject):
                 owned_gift_id=owned_gift_id,
                 transfer_star_count=transfer_star_count,
                 next_transfer_date=next_transfer_date,
+                text=text,
+                entities=entities,
+                is_private=is_private,
                 last_resale_star_count=last_resale_star_count,
                 **__pydantic_kwargs,
             )

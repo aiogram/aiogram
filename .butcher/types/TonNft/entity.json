@@ -1,0 +1,73 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "tonnft",
+    "name": "TonNft",
+    "description": "This object represents an NFT in the TON blockchain.",
+    "html_description": "<p>This object represents an NFT in the TON blockchain.</p>",
+    "rst_description": "This object represents an NFT in the TON blockchain.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Address of the NFT",
+        "html_description": "<td>Address of the NFT</td>",
+        "rst_description": "Address of the NFT\n",
+        "name": "address",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "Index of the NFT among all NFTs from the collection as a decimal number",
+        "html_description": "<td>Index of the NFT among all NFTs from the collection as a decimal number</td>",
+        "rst_description": "Index of the NFT among all NFTs from the collection as a decimal number\n",
+        "name": "index",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "Name of the NFT",
+        "html_description": "<td>Name of the NFT</td>",
+        "rst_description": "Name of the NFT\n",
+        "name": "name",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "Description of the NFT",
+        "html_description": "<td>Description of the NFT</td>",
+        "rst_description": "Description of the NFT\n",
+        "name": "description",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "Address of the collection to which the NFT belongs; omitted if unknown",
+        "html_description": "<td><em>Optional</em>. Address of the collection to which the NFT belongs; omitted if unknown</td>",
+        "rst_description": "*Optional*. Address of the collection to which the NFT belongs; omitted if unknown\n",
+        "name": "collection_address",
+        "required": false
+      },
+      {
+        "type": "Array of TonNftAttribute",
+        "description": "Attributes of the NFT",
+        "html_description": "<td><em>Optional</em>. Attributes of the NFT</td>",
+        "rst_description": "*Optional*. Attributes of the NFT\n",
+        "name": "attributes",
+        "required": false
+      },
+      {
+        "type": "UniqueGift",
+        "description": "The unique gift corresponding to the NFT",
+        "html_description": "<td><em>Optional</em>. The unique gift corresponding to the NFT</td>",
+        "rst_description": "*Optional*. The unique gift corresponding to the NFT\n",
+        "name": "gift",
+        "required": false
+      }
+    ],
+    "category": "types"
+  }
+}

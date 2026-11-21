@@ -3,12 +3,13 @@ from __future__ import annotations
 import asyncio
 import contextvars
 import signal
-import sys
 import warnings
 from asyncio import CancelledError, Event, Future, Lock
 from collections.abc import AsyncGenerator, Awaitable
 from contextlib import suppress
 from typing import TYPE_CHECKING, Any
+
+from pydantic import ValidationError
 
 from aiogram import loggers
 from aiogram.exceptions import TelegramAPIError
@@ -17,7 +18,7 @@ from aiogram.fsm.storage.base import BaseEventIsolation, BaseStorage
 from aiogram.fsm.storage.memory import DisabledEventIsolation, MemoryStorage
 from aiogram.fsm.strategy import FSMStrategy
 from aiogram.methods import GetUpdates, TelegramMethod
-from aiogram.types import Update, User
+from aiogram.types import ErrorEvent, Update, User
 from aiogram.types.base import UNSET, UNSET_TYPE
 from aiogram.types.update import UpdateTypeLookupError
 from aiogram.utils.backoff import Backoff, BackoffConfig
@@ -49,6 +50,7 @@ class Dispatcher(Router):
         events_isolation: BaseEventIsolation | None = None,
         disable_fsm: bool = False,
         media_group_aggregator: MediaGroupAggregatorMiddleware | None = None,
+        fsm_key_on_sender_chat: bool = False,
         name: str | None = None,
         **kwargs: Any,
     ) -> None:
@@ -60,6 +62,9 @@ class Dispatcher(Router):
         :param events_isolation: Events isolation
         :param disable_fsm: Disable FSM, note that if you disable FSM
             then you should not use storage and events isolation
+        :param fsm_key_on_sender_chat: Use :code:`sender_chat.id` as the user id of the FSM key
+            for messages sent on behalf of a chat in non-channel chats
+            (anonymous group administrators, users posting as a channel)
         :param kwargs: Other arguments, will be passed as keyword arguments to handlers
         """
         super().__init__(name=name)
@@ -94,6 +99,7 @@ class Dispatcher(Router):
             storage=storage or MemoryStorage(),
             strategy=fsm_strategy,
             events_isolation=events_isolation or DisabledEventIsolation(),
+            key_on_sender_chat=fsm_key_on_sender_chat,
         )
         if not disable_fsm:
             # Note that when FSM middleware is disabled, the event isolation is also disabled
@@ -167,9 +173,10 @@ class Dispatcher(Router):
 
         try:
             response = await self.update.wrap_outer_middleware(
-                self.update.trigger,
+                self._trigger_update,
                 update,
                 {
+                    "dispatcher": self,
                     **self.workflow_data,
                     **kwargs,
                     "bot": bot,
@@ -188,6 +195,15 @@ class Dispatcher(Router):
                 bot.id,
             )
 
+    async def _trigger_update(self, update: Update, **kwargs: Any) -> Any:
+        # `dp.update` is not reached through `_propagate_event`,
+        # so its root filters are checked here, the same way
+        result, data = await self.update.check_root_filters(update, **kwargs)
+        if not result:
+            return UNHANDLED
+        kwargs.update(data)
+        return await self.update.trigger(update, **kwargs)
+
     async def feed_raw_update(self, bot: Bot, update: dict[str, Any], **kwargs: Any) -> Any:
         """
         Main entry point for incoming updates with automatic Dict->Update serializer
@@ -196,8 +212,58 @@ class Dispatcher(Router):
         :param update:
         :param kwargs:
         """
-        parsed_update = Update.model_validate(update, context={"bot": bot})
+        parsed_update = await self._validate_update(bot, update, **kwargs)
+        if parsed_update is None:
+            return UNHANDLED
         return await self._feed_webhook_update(bot=bot, update=parsed_update, **kwargs)
+
+    async def _validate_update(self, bot: Bot, update: Any, **kwargs: Any) -> Update | None:
+        """
+        Validate a raw update, or skip it when it can't be validated.
+
+        Telegram would redeliver such an update forever, so it is dropped: logged with the
+        error count only (rendering every error of a large update blocks the event loop)
+        and reported to the ``errors`` observers as an :class:`ErrorEvent` whose update
+        carries only ``update_id``. Delivery is best-effort: the update is lost.
+        """
+        try:
+            return Update.model_validate(update, context={"bot": bot})
+        except ValidationError as e:
+            # Handled outside the except block, so that nothing raised later is chained to it
+            error = e
+
+        update_id = update.get("update_id") if isinstance(update, dict) else None
+        if type(update_id) is not int:
+            update_id = None
+        first = error.errors(include_url=False, include_context=False, include_input=False)[0]
+        loggers.webhook.error(
+            "Update id=%s is skipped because it can't be validated by bot id=%d: "
+            "%d validation errors, first: %s at %s",
+            update_id,
+            bot.id,
+            error.error_count(),
+            first["type"],
+            first["loc"],
+        )
+        loggers.webhook.debug("Skipped update: %r", update)
+        if update_id is None:
+            return None
+
+        try:
+            await self.propagate_event(
+                update_type="error",
+                event=ErrorEvent(update=Update(update_id=update_id), exception=error),
+                **{"dispatcher": self, **self.workflow_data, **kwargs, "bot": bot},
+            )
+        except Exception:  # noqa: BLE001
+            # The update is skipped anyway: a failing error handler must not turn it into
+            # a non-2xx answer that makes Telegram redeliver it
+            loggers.event.exception(
+                "Error handler failed for skipped update id=%d by bot id=%d",
+                update_id,
+                bot.id,
+            )
+        return None
 
     @classmethod
     async def _listen_updates(
@@ -273,14 +339,15 @@ class Dispatcher(Router):
             update_type = update.event_type
             event = update.event
         except UpdateTypeLookupError as e:
+            # Constant text: Python keeps every distinct warning text for the process lifetime
             warnings.warn(
                 "Detected unknown update type.\n"
                 "Seems like Telegram Bot API was updated and you have "
-                "installed not latest version of aiogram framework"
-                f"\nUpdate: {update.model_dump_json(exclude_unset=True)}",
+                "installed not latest version of aiogram framework",
                 RuntimeWarning,
                 stacklevel=2,
             )
+            loggers.event.debug("Unknown update type: %r", update)
             raise SkipHandler() from e
 
         kwargs.update(event_update=update)
@@ -356,6 +423,34 @@ class Dispatcher(Router):
         finally:
             semaphore.release()
 
+    async def _wait_for_handle_update_tasks(self, timeout: float | None) -> None:
+        """
+        Wait for updates that are still being handled in tasks started by polling
+
+        Tasks still running after the timeout are cancelled, and their cancellation is awaited.
+
+        :param timeout: Maximum time to wait in seconds (None = do not wait)
+        """
+        if timeout is None or not self._handle_update_tasks:
+            return
+        tasks = set(self._handle_update_tasks)
+        loggers.dispatcher.info(
+            "Waiting up to %s seconds for %d update(s) to be handled",
+            timeout,
+            len(tasks),
+        )
+        _, pending = await asyncio.wait(tasks, timeout=timeout)
+        if not pending:
+            return
+        loggers.dispatcher.warning(
+            "%d update(s) were not handled within %s seconds, cancelling them",
+            len(pending),
+            timeout,
+        )
+        for task in pending:
+            task.cancel()
+        await asyncio.wait(pending)
+
     async def _polling(
         self,
         bot: Bot,
@@ -399,11 +494,12 @@ class Dispatcher(Router):
                 backoff_config=backoff_config,
                 allowed_updates=allowed_updates,
             ):
+                if handle_as_tasks and semaphore:
+                    # Wait for capacity before creating the update coroutine.
+                    await semaphore.acquire()
                 handle_update = self._process_update(bot=bot, update=update, **kwargs)
                 if handle_as_tasks:
                     if semaphore:
-                        # Use semaphore to limit concurrent tasks
-                        await semaphore.acquire()
                         handle_update_task = asyncio.create_task(
                             self._process_with_semaphore(handle_update, semaphore),
                         )
@@ -445,9 +541,6 @@ class Dispatcher(Router):
         _timeout: float = 55,
         **kwargs: Any,
     ) -> TelegramMethod[TelegramType] | None:
-        if not isinstance(update, Update):  # Allow to use raw updates
-            update = Update.model_validate(update, context={"bot": bot})
-
         ctx = contextvars.copy_context()
         loop = asyncio.get_running_loop()
         waiter = loop.create_future()
@@ -458,8 +551,12 @@ class Dispatcher(Router):
 
         timeout_handle = loop.call_later(_timeout, release_waiter)
 
+        # Raw updates are validated inside the timed task: the errors handlers of an invalid
+        # update must not hold the answer past the deadline either
         process_updates: Future[Any] = asyncio.ensure_future(
-            self._feed_webhook_update(bot=bot, update=update, **kwargs),
+            self._feed_webhook_update(bot=bot, update=update, **kwargs)
+            if isinstance(update, Update)
+            else self.feed_raw_update(bot=bot, update=update, **kwargs),
         )
         process_updates.add_done_callback(release_waiter, context=ctx)
 
@@ -510,8 +607,22 @@ class Dispatcher(Router):
             raise RuntimeError(msg)
         if not self._stop_signal or not self._stopped_signal:
             return
+        # A handler that starts the stop is not waited for on shutdown, because it is
+        # the one waiting for shutdown to complete. When the stop was already started
+        # (by a signal or another call), the handler is waited for like any other one.
+        handler_task = None
+        if not self._stop_signal.is_set():
+            current_task = asyncio.current_task()
+            if current_task in self._handle_update_tasks:
+                self._handle_update_tasks.discard(current_task)
+                handler_task = current_task
         self._stop_signal.set()
-        await self._stopped_signal.wait()
+        try:
+            await self._stopped_signal.wait()
+        finally:
+            if handler_task is not None:
+                # Keep a reference to the task until it is done, as polling does
+                self._handle_update_tasks.add(handler_task)
 
     def _signal_stop_polling(self, sig: signal.Signals) -> None:
         if not self._running_lock.locked():
@@ -532,6 +643,7 @@ class Dispatcher(Router):
         handle_signals: bool = True,
         close_bot_session: bool = True,
         tasks_concurrency_limit: int | None = None,
+        tasks_shutdown_timeout: float | None = None,
         **kwargs: Any,
     ) -> None:
         """
@@ -547,6 +659,10 @@ class Dispatcher(Router):
         :param close_bot_session: close bot sessions on shutdown
         :param tasks_concurrency_limit: Maximum number of concurrent updates to process
             (None = no limit), used only if handle_as_tasks is True
+        :param tasks_shutdown_timeout: Maximum time in seconds to wait on shutdown for updates
+            that are still being handled, before shutdown callbacks run and bot sessions
+            are closed; handlers still running after it are cancelled
+            (None = do not wait), used only if handle_as_tasks is True
         :param kwargs: contextual data
         :return:
         """
@@ -622,6 +738,8 @@ class Dispatcher(Router):
                     task.cancel()
                     with suppress(CancelledError):
                         await task
+                # Let updates that are still being handled finish before shutdown
+                await self._wait_for_handle_update_tasks(timeout=tasks_shutdown_timeout)
                 # Wait finished tasks to propagate unhandled exceptions
                 await asyncio.gather(*done)
 
@@ -644,6 +762,7 @@ class Dispatcher(Router):
         handle_signals: bool = True,
         close_bot_session: bool = True,
         tasks_concurrency_limit: int | None = None,
+        tasks_shutdown_timeout: float | None = None,
         **kwargs: Any,
     ) -> None:
         """
@@ -658,6 +777,10 @@ class Dispatcher(Router):
         :param close_bot_session: close bot sessions on shutdown
         :param tasks_concurrency_limit: Maximum number of concurrent updates to process
             (None = no limit), used only if handle_as_tasks is True
+        :param tasks_shutdown_timeout: Maximum time in seconds to wait on shutdown for updates
+            that are still being handled, before shutdown callbacks run and bot sessions
+            are closed; handlers still running after it are cancelled
+            (None = do not wait), used only if handle_as_tasks is True
         :param kwargs: contextual data
         :return:
         """
@@ -672,6 +795,7 @@ class Dispatcher(Router):
                 handle_signals=handle_signals,
                 close_bot_session=close_bot_session,
                 tasks_concurrency_limit=tasks_concurrency_limit,
+                tasks_shutdown_timeout=tasks_shutdown_timeout,
             )
 
             try:
@@ -681,9 +805,5 @@ class Dispatcher(Router):
                 return asyncio.run(coro)
 
             else:
-                if sys.version_info >= (3, 11):
-                    with asyncio.Runner(loop_factory=uvloop.new_event_loop) as runner:
-                        return runner.run(coro)
-                else:  # pragma: no cover
-                    uvloop.install()
-                    return asyncio.run(coro)
+                with asyncio.Runner(loop_factory=uvloop.new_event_loop) as runner:
+                    return runner.run(coro)

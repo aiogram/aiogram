@@ -53,3 +53,5 @@ extract:
     - guest_query_id
     - guest_bot_caller_user
     - guest_bot_caller_chat
+    - receiver_user
+    - ephemeral_message_id

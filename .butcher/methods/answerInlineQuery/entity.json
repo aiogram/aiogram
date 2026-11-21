@@ -22,9 +22,9 @@
       {
         "type": "Array of InlineQueryResult",
         "required": true,
-        "description": "A JSON-serialized array of results for the inline query",
-        "html_description": "<td>A JSON-serialized array of results for the inline query</td>",
-        "rst_description": "A JSON-serialized array of results for the inline query\n",
+        "description": "A JSON-serialized Array of results for the inline query",
+        "html_description": "<td>A JSON-serialized Array of results for the inline query</td>",
+        "rst_description": "A JSON-serialized Array of results for the inline query\n",
         "name": "results"
       },
       {

@@ -19,7 +19,7 @@ class SetStickerMaskPosition(TelegramMethod[bool]):
     sticker: str
     """File identifier of the sticker"""
     mask_position: MaskPosition | None = None
-    """A JSON-serialized object with the position where the mask should be placed on faces. Omit the parameter to remove the mask position."""
+    """A JSON-serialized object with the position where the mask should be placed on faces. Omit the parameter to remove the mask position"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!

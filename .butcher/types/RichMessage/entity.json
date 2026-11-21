@@ -1,0 +1,33 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Rich messages",
+    "anchor": "rich-messages"
+  },
+  "object": {
+    "anchor": "richmessage",
+    "name": "RichMessage",
+    "description": "Rich formatted message.",
+    "html_description": "<p>Rich formatted message.</p>",
+    "rst_description": "Rich formatted message.",
+    "annotations": [
+      {
+        "type": "Array of RichBlock",
+        "description": "Content of the message",
+        "html_description": "<td>Content of the message</td>",
+        "rst_description": "Content of the message\n",
+        "name": "blocks",
+        "required": true
+      },
+      {
+        "type": "Boolean",
+        "description": "True, if the rich message must be shown right-to-left",
+        "html_description": "<td><em>Optional</em>. <em>True</em>, if the rich message must be shown right-to-left</td>",
+        "rst_description": "*Optional*. :code:`True`, if the rich message must be shown right-to-left\n",
+        "name": "is_rtl",
+        "required": false
+      }
+    ],
+    "category": "types"
+  }
+}

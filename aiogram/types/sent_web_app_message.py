@@ -13,7 +13,7 @@ class SentWebAppMessage(TelegramObject):
     """
 
     inline_message_id: str | None = None
-    """*Optional*. Identifier of the sent inline message. Available only if there is an `inline keyboard <https://core.telegram.org/bots/api#inlinekeyboardmarkup>`_ attached to the message."""
+    """*Optional*. Identifier of the sent inline message. Available only if there is an `inline keyboard <https://core.telegram.org/bots/api#inlinekeyboardmarkup>`_ attached to the message"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!

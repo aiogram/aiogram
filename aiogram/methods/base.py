@@ -11,12 +11,10 @@ from typing import (
 )
 
 from pydantic import BaseModel, ConfigDict
-from pydantic.functional_validators import model_validator
 
 from aiogram.client.context_controller import BotContextController
 
 from ..types import InputFile, ResponseParameters
-from ..types.base import UNSET_TYPE
 
 if TYPE_CHECKING:
     from ..client.bot import Bot
@@ -47,21 +45,6 @@ class TelegramMethod(BotContextController, BaseModel, Generic[TelegramType], ABC
         populate_by_name=True,
         arbitrary_types_allowed=True,
     )
-
-    @model_validator(mode="before")
-    @classmethod
-    def remove_unset(cls, values: dict[str, Any]) -> dict[str, Any]:
-        """
-        Remove UNSET before fields validation.
-
-        We use UNSET as a sentinel value for `parse_mode` and replace it to real value later.
-        It isn't a problem when it's just default value for a model field,
-        but UNSET might be passing to a model initialization from `Bot.method_name`,
-        so we must take care of it and remove it before fields validation.
-        """
-        if not isinstance(values, dict):
-            return values
-        return {k: v for k, v in values.items() if not isinstance(v, UNSET_TYPE)}
 
     if TYPE_CHECKING:
         __returning__: ClassVar[Any]

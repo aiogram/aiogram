@@ -1,0 +1,41 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Rich messages",
+    "anchor": "rich-messages"
+  },
+  "object": {
+    "anchor": "inputrichblockblockquotation",
+    "name": "InputRichBlockBlockQuotation",
+    "description": "A block quotation, corresponding to the HTML tag <blockquote>.",
+    "html_description": "<p>A block quotation, corresponding to the HTML tag <code>&lt;blockquote&gt;</code>.</p>",
+    "rst_description": "A block quotation, corresponding to the HTML tag :code:`<blockquote>`.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Type of the block, always 'blockquote'",
+        "html_description": "<td>Type of the block, always &#8220;blockquote&#8221;</td>",
+        "rst_description": "Type of the block, always 'blockquote'\n",
+        "name": "type",
+        "required": true
+      },
+      {
+        "type": "Array of InputRichBlock",
+        "description": "Content of the block",
+        "html_description": "<td>Content of the block</td>",
+        "rst_description": "Content of the block\n",
+        "name": "blocks",
+        "required": true
+      },
+      {
+        "type": "RichText",
+        "description": "Credit of the block",
+        "html_description": "<td><em>Optional</em>. Credit of the block</td>",
+        "rst_description": "*Optional*. Credit of the block\n",
+        "name": "credit",
+        "required": false
+      }
+    ],
+    "category": "types"
+  }
+}

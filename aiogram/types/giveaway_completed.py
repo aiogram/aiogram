@@ -22,7 +22,7 @@ class GiveawayCompleted(TelegramObject):
     giveaway_message: Message | None = None
     """*Optional*. Message with the giveaway that was completed, if it wasn't deleted"""
     is_star_giveaway: bool | None = None
-    """*Optional*. :code:`True`, if the giveaway is a Telegram Star giveaway. Otherwise, currently, the giveaway is a Telegram Premium giveaway."""
+    """*Optional*. :code:`True`, if the giveaway is a Telegram Star giveaway. Otherwise, currently, the giveaway is a Telegram Premium giveaway"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!

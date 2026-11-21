@@ -1,4 +1,6 @@
+import asyncio
 import functools
+import inspect
 from collections.abc import Callable
 from typing import Any
 
@@ -7,7 +9,7 @@ from magic_filter import F as A
 
 from aiogram import F
 from aiogram.dispatcher.event.handler import CallableObject, FilterObject, HandlerObject
-from aiogram.filters import Filter
+from aiogram.filters import Filter, invert_f
 from aiogram.handlers import BaseHandler
 from aiogram.types import Update
 from aiogram.utils.warnings import Recommendation
@@ -39,12 +41,27 @@ class SyncCallable:
         return locals()
 
 
+class AsyncCallable:
+    async def __call__(self, foo, bar, baz):
+        return locals()
+
+
 class TestCallableObject:
-    @pytest.mark.parametrize("callback", [callback2, TestFilter()])
+    @pytest.mark.parametrize("callback", [callback2, TestFilter(), AsyncCallable()])
     def test_init_awaitable(self, callback):
         obj = CallableObject(callback)
         assert obj.awaitable
         assert obj.callback == callback
+
+    @pytest.mark.asyncio
+    async def test_call_async_callable_object(self):
+        obj = CallableObject(AsyncCallable())
+        assert await obj.call(foo=1, bar=2, baz=3) == {
+            "self": obj.callback,
+            "foo": 1,
+            "bar": 2,
+            "baz": 3,
+        }
 
     @pytest.mark.parametrize("callback", [callback1, SyncCallable()])
     def test_init_not_awaitable(self, callback):
@@ -142,6 +159,80 @@ class TestCallableObject:
 
         result = await obj.call(foo=42, bar="test", baz="fuz", spam=True)
         assert result == {"foo": 42, "bar": "test", "baz": "fuz"}
+
+
+async def _reject(value) -> bool:
+    return False
+
+
+def _async_wraps(func):
+    @functools.wraps(func)
+    async def wrapper(*args, **kwargs):
+        return func(*args, **kwargs)
+
+    return wrapper
+
+
+class FlagFilter(Filter):
+    async def __call__(self, value, flag: bool) -> bool:  # pragma: no cover
+        return flag
+
+
+class TestCoroutineFilters:
+    @pytest.mark.parametrize(
+        "callback,result",
+        [
+            [_reject, False],
+            [functools.partial(_reject), False],
+            [lambda value: value == 42, True],
+            [lambda value: {"value": value}, {"value": 42}],
+        ],
+    )
+    async def test_valid_filter(self, callback, result):
+        assert await FilterObject(callback).call(42) == result
+
+    @pytest.mark.parametrize(
+        "callback",
+        [
+            lambda value: _reject(value),
+            _async_wraps(lambda value: False),
+            functools.partial(FlagFilter(), flag=False),
+            F.func(_reject),
+        ],
+    )
+    async def test_filter_returning_coroutine_fails_closed(self, callback):
+        handler = HandlerObject(simple_handler, [FilterObject(callback)])
+        with pytest.raises(TypeError, match="returned an awaitable"):
+            await handler.check(42)
+
+    async def test_coroutine_is_closed_and_not_awaited(self):
+        coroutines = []
+
+        def callback(value):
+            coroutines.append(_reject(value))
+            return coroutines[-1]
+
+        with pytest.raises(TypeError, match="returned an awaitable"):
+            await FilterObject(callback).call(42)
+        assert inspect.getcoroutinestate(coroutines[0]) == inspect.CORO_CLOSED
+
+    async def test_filter_returning_future_fails_closed(self):
+        future = asyncio.get_running_loop().create_future()
+        with pytest.raises(TypeError, match="returned an awaitable"):
+            await FilterObject(lambda value: future).call(42)
+        assert not future.done()
+
+    async def test_filter_returning_custom_awaitable_fails_closed(self):
+        class Awaitable:
+            def __await__(self):  # pragma: no cover
+                yield
+
+        with pytest.raises(TypeError, match="returned an awaitable"):
+            await FilterObject(lambda value: Awaitable()).call(42)
+
+    async def test_inverted_filter_returning_coroutine_fails_closed(self):
+        with pytest.raises(TypeError, match="returned an awaitable"):
+            await FilterObject(invert_f(lambda value: _reject(value))).call(42)
 
 
 class TestFilterObject:

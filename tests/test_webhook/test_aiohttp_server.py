@@ -1,4 +1,5 @@
 import asyncio
+import json
 import time
 from asyncio import Event
 from dataclasses import dataclass
@@ -10,9 +11,11 @@ from aiohttp import MultipartReader, web
 from aiohttp.test_utils import TestClient
 from aiohttp.web_app import Application
 
-from aiogram import Dispatcher, F
+from aiogram import Bot, Dispatcher, F
+from aiogram.filters import Filter
+from aiogram.fsm.storage.base import StorageKey
 from aiogram.methods import GetMe, Request
-from aiogram.types import BufferedInputFile, Message, User
+from aiogram.types import BufferedInputFile, InlineQuery, Message, User
 from aiogram.webhook.aiohttp_server import (
     SimpleRequestHandler,
     TokenBasedRequestHandler,
@@ -72,6 +75,33 @@ class TestSimpleRequestHandler:
                 },
             },
         )
+
+    async def test_custom_json_loads_is_used_for_the_update(self, bot: MockedBot, aiohttp_client):
+        # The session decoder is optional now, so the handler falls back to
+        # json.loads; a custom one must still be honoured.
+        app = Application()
+        dp = Dispatcher()
+        seen: list[str] = []
+
+        def counting_loads(value):
+            seen.append(value)
+            return json.loads(value)
+
+        bot.session.json_loads = counting_loads
+
+        @dp.message(F.text == "test")
+        def handle_message(msg: Message):
+            return msg.answer(text="PASS")
+
+        handler = SimpleRequestHandler(dispatcher=dp, bot=bot, handle_in_background=False)
+        handler.register(app, path="/webhook")
+        client: TestClient = await aiohttp_client(app)
+
+        resp = await self.make_reqest(client=client)
+
+        assert resp.status == 200
+        assert len(seen) == 1
+        assert "update_id" in seen[0]
 
     async def test_reply_into_webhook_file(self, bot: MockedBot, aiohttp_client):
         app = Application()
@@ -195,6 +225,81 @@ class TestSimpleRequestHandler:
         result = await resp.json()
         assert not result
 
+    @pytest.mark.parametrize("handle_in_background", [True, False])
+    async def test_invalid_update_is_answered_with_200(
+        self, bot: MockedBot, aiohttp_client, caplog, handle_in_background: bool
+    ):
+        app = Application()
+        dp = Dispatcher()
+        handled = Event()
+
+        @dp.message(F.text == "test")
+        async def handle_message(msg: Message):
+            handled.set()
+
+        handler = SimpleRequestHandler(
+            dispatcher=dp, bot=bot, handle_in_background=handle_in_background
+        )
+        handler.register(app, path="/webhook")
+        client: TestClient = await aiohttp_client(app)
+
+        resp = await client.post(
+            "/webhook",
+            json={
+                "update_id": 1,
+                "message": {
+                    "message_id": 1,
+                    "date": 1,
+                    "chat": {"id": 42, "type": "private"},
+                    "photo": [{}] * 100,
+                },
+            },
+        )
+        assert resp.status == 200
+        assert await resp.json() == {}
+        tasks = list(handler._background_feed_update_tasks)
+        await asyncio.gather(*tasks)  # re-raises if a background task failed
+        assert not handled.is_set()
+        [record] = [r for r in caplog.records if r.name == "aiogram.webhook"]
+        assert "Update id=1 is skipped" in record.getMessage()
+
+        # The next valid update is handled as usual
+        resp = await self.make_reqest(client=client)
+        assert resp.status == 200
+        await asyncio.wait_for(handled.wait(), timeout=3)
+
+    @pytest.mark.parametrize("handle_in_background", [True, False])
+    @pytest.mark.parametrize("charset", ["utf-16", "punycode"])
+    async def test_request_charset_is_ignored(
+        self, bot: MockedBot, aiohttp_client, handle_in_background: bool, charset: str
+    ):
+        app = Application()
+        dp = Dispatcher()
+        handled = Event()
+
+        @dp.message(F.text == "é")
+        async def handle_message(msg: Message):
+            handled.set()
+
+        handler = SimpleRequestHandler(
+            dispatcher=dp, bot=bot, handle_in_background=handle_in_background
+        )
+        handler.register(app, path="/webhook")
+        client: TestClient = await aiohttp_client(app)
+
+        update = {
+            "update_id": 1,
+            "message": {"message_id": 1, "date": 1, "chat": {"id": 42, "type": "private"}},
+        }
+        update["message"]["text"] = "é"
+        resp = await client.post(
+            "/webhook",
+            data=json.dumps(update, ensure_ascii=False).encode(),
+            headers={"Content-Type": f"application/json; charset={charset}"},
+        )
+        assert resp.status == 200
+        await asyncio.wait_for(handled.wait(), timeout=3)
+
     async def test_verify_secret(self, bot: MockedBot, aiohttp_client):
         app = Application()
         dp = Dispatcher()
@@ -205,6 +310,48 @@ class TestSimpleRequestHandler:
         client: TestClient = await aiohttp_client(app)
         resp = await self.make_reqest(client=client)
         assert resp.status == 401
+
+    @pytest.mark.parametrize("handle_in_background", [True, False])
+    async def test_filter_requiring_dispatcher(
+        self, bot: MockedBot, aiohttp_client, handle_in_background: bool
+    ):
+        """Regression: webhook-fed updates must expose `dispatcher` to filters/handlers
+        the same way polling does (FSM-state filter shape from the original report)."""
+        app = Application()
+        dp = Dispatcher()
+        handled = Event()
+
+        class StateFilter(Filter):
+            async def __call__(self, query: InlineQuery, bot: Bot, dispatcher: Dispatcher) -> bool:
+                key = StorageKey(bot_id=bot.id, chat_id=42, user_id=42)
+                return await dispatcher.storage.get_state(key) == "playing"
+
+        @dp.inline_query(StateFilter())
+        async def handle_inline_query(query: InlineQuery):
+            handled.set()
+
+        await dp.storage.set_state(StorageKey(bot_id=bot.id, chat_id=42, user_id=42), "playing")
+
+        handler = SimpleRequestHandler(
+            dispatcher=dp, bot=bot, handle_in_background=handle_in_background
+        )
+        handler.register(app, path="/webhook")
+        client: TestClient = await aiohttp_client(app)
+
+        resp = await client.post(
+            "/webhook",
+            json={
+                "update_id": 1,
+                "inline_query": {
+                    "id": "query",
+                    "from": {"id": 42, "first_name": "Test", "is_bot": False},
+                    "query": "42:: ",
+                    "offset": "",
+                },
+            },
+        )
+        assert resp.status == 200
+        await asyncio.wait_for(handled.wait(), timeout=3)
 
 
 class TestTokenBasedRequestHandler:

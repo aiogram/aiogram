@@ -24,7 +24,7 @@ class ChatMemberRestricted(ChatMember):
     is_member: bool
     """:code:`True`, if the user is a member of the chat at the moment of the request"""
     can_send_messages: bool
-    """:code:`True`, if the user is allowed to send text messages, contacts, giveaways, giveaway winners, invoices, locations and venues"""
+    """:code:`True`, if the user is allowed to send text messages, rich messages, contacts, giveaways, giveaway winners, invoices, locations and venues"""
     can_send_audios: bool
     """:code:`True`, if the user is allowed to send audios"""
     can_send_documents: bool
@@ -40,7 +40,7 @@ class ChatMemberRestricted(ChatMember):
     can_send_polls: bool
     """:code:`True`, if the user is allowed to send polls and checklists"""
     can_send_other_messages: bool
-    """:code:`True`, if the user is allowed to send animations, games, stickers and use inline bots"""
+    """:code:`True`, if the user is allowed to send animations, games, stickers, widgets and use inline bots"""
     can_add_web_page_previews: bool
     """:code:`True`, if the user is allowed to add web page previews to their messages"""
     can_react_to_messages: bool

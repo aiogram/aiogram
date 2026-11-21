@@ -19,7 +19,7 @@ class GetStarTransactions(TelegramMethod[StarTransactions]):
     offset: int | None = None
     """Number of transactions to skip in the response"""
     limit: int | None = None
-    """The maximum number of transactions to be retrieved. Values between 1-100 are accepted. Defaults to 100."""
+    """The maximum number of transactions to be retrieved. Values between 1-100 are accepted. Defaults to 100"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!

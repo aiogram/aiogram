@@ -17,7 +17,7 @@ class MessageEntity(MutableTelegramObject):
     """
 
     type: str
-    """Type of the entity. Currently, can be 'mention' (:code:`@username`), 'hashtag' (:code:`#hashtag` or :code:`#hashtag@chatusername`), 'cashtag' (:code:`$USD` or :code:`$USD@chatusername`), 'bot_command' (:code:`/start@jobs_bot`), 'url' (:code:`https://telegram.org`), 'email' (:code:`do-not-reply@telegram.org`), 'phone_number' (:code:`+1-212-555-0123`), 'bold' (**bold text**), 'italic' (*italic text*), 'underline' (underlined text), 'strikethrough' (strikethrough text), 'spoiler' (spoiler message), 'blockquote' (block quotation), 'expandable_blockquote' (collapsed-by-default block quotation), 'code' (monowidth string), 'pre' (monowidth block), 'text_link' (for clickable text URLs), 'text_mention' (for users `without usernames <https://telegram.org/blog/edit#new-mentions>`_), 'custom_emoji' (for inline custom emoji stickers), or 'date_time' (for formatted date and time)"""
+    """Type of the entity. Currently, can be 'mention' (:code:`@username`), 'hashtag' (:code:`#hashtag` or :code:`#hashtag@chatusername`), 'cashtag' (:code:`$USD` or :code:`$USD@chatusername`), 'bot_command' (:code:`/start@jobs_bot`), 'url' (:code:`https://telegram.org`), 'email' (:code:`do-not-reply@telegram.org`), 'phone_number' (:code:`+1-212-555-0123`), 'bank_card_number' (bank card number), 'ton_address' (address in the TON blockchain), 'bold' (**bold text**), 'italic' (*italic text*), 'underline' (underlined text), 'strikethrough' (strikethrough text), 'spoiler' (spoiler message), 'blockquote' (block quotation), 'expandable_blockquote' (collapsed-by-default block quotation), 'code' (monowidth string), 'pre' (monowidth block), 'text_link' (for clickable text URLs), 'text_mention' (for users `without usernames <https://telegram.org/blog/edit#new-mentions>`_), 'custom_emoji' (for inline custom emoji stickers), or 'date_time' (for formatted date and time)"""
     offset: int
     """Offset in `UTF-16 code units <https://core.telegram.org/api/entities#entity-length>`_ to the start of the entity"""
     length: int
@@ -33,7 +33,7 @@ class MessageEntity(MutableTelegramObject):
     unix_time: int | None = None
     """*Optional*. For 'date_time' only, the Unix time associated with the entity"""
     date_time_format: str | None = None
-    """*Optional*. For 'date_time' only, the string that defines the formatting of the date and time. See `date-time entity formatting <https://core.telegram.org/bots/api#date-time-entity-formatting>`_ for more details."""
+    """*Optional*. For 'date_time' only, the string that defines the formatting of the date and time. See `date-time entity formatting <https://core.telegram.org/bots/api#date-time-entity-formatting>`_ for more details"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!

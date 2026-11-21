@@ -87,6 +87,16 @@ class Router:
         )
         self.managed_bot = TelegramEventObserver(router=self, event_name="managed_bot")
         self.guest_message = TelegramEventObserver(router=self, event_name="guest_message")
+        self.subscription = TelegramEventObserver(router=self, event_name="subscription")
+        self.stopped_message_generation = TelegramEventObserver(
+            router=self,
+            event_name="stopped_message_generation",
+        )
+        self.widget_query = TelegramEventObserver(router=self, event_name="widget_query")
+        self.shared_widget_query = TelegramEventObserver(
+            router=self,
+            event_name="shared_widget_query",
+        )
 
         self.errors = self.error = TelegramEventObserver(router=self, event_name="error")
 
@@ -119,6 +129,10 @@ class Router:
             "purchased_paid_media": self.purchased_paid_media,
             "managed_bot": self.managed_bot,
             "guest_message": self.guest_message,
+            "subscription": self.subscription,
+            "stopped_message_generation": self.stopped_message_generation,
+            "widget_query": self.widget_query,
+            "shared_widget_query": self.shared_widget_query,
             "error": self.errors,
         }
 

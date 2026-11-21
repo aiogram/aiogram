@@ -33,7 +33,12 @@ class CallableObject:
 
     def __post_init__(self) -> None:
         callback = inspect.unwrap(self.callback)
-        self.awaitable = inspect.isawaitable(callback) or inspect.iscoroutinefunction(callback)
+        self.awaitable = (
+            inspect.isawaitable(callback)
+            or inspect.iscoroutinefunction(callback)
+            # A callable object is async when its `__call__` is a coroutine function
+            or (callable(callback) and inspect.iscoroutinefunction(type(callback).__call__))
+        )
 
         kwargs: dict[str, Any] = {}
         if sys.version_info >= (3, 14):
@@ -97,6 +102,21 @@ class FilterObject(CallableObject):
 
         if isinstance(self.callback, Filter):
             self.awaitable = True
+
+    async def call(self, *args: Any, **kwargs: Any) -> Any:
+        result = await super().call(*args, **kwargs)
+        if inspect.isawaitable(result):
+            # An awaitable is truthy: never let it pass as a match. Nothing is awaited or
+            # cancelled; only a coroutine is closed, so it leaves no "never awaited" warning
+            if inspect.iscoroutine(result):
+                result.close()
+            msg = (
+                f"Filter {self.magic if self.magic is not None else self.callback!r} "
+                "returned an awaitable instead of a result. "
+                "Declare async filters with `async def`; sync filters must return a bool or a dict"
+            )
+            raise TypeError(msg)
+        return result
 
 
 @dataclass

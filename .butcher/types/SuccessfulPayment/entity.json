@@ -36,6 +36,22 @@
         "required": true
       },
       {
+        "type": "String",
+        "description": "Telegram payment identifier",
+        "html_description": "<td>Telegram payment identifier</td>",
+        "rst_description": "Telegram payment identifier\n",
+        "name": "telegram_payment_charge_id",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "Provider payment identifier",
+        "html_description": "<td>Provider payment identifier</td>",
+        "rst_description": "Provider payment identifier\n",
+        "name": "provider_payment_charge_id",
+        "required": true
+      },
+      {
         "type": "Integer",
         "description": "Expiration date of the subscription, in Unix time; for recurring payments only",
         "html_description": "<td><em>Optional</em>. Expiration date of the subscription, in Unix time; for recurring payments only</td>",
@@ -74,22 +90,6 @@
         "rst_description": "*Optional*. Order information provided by the user\n",
         "name": "order_info",
         "required": false
-      },
-      {
-        "type": "String",
-        "description": "Telegram payment identifier",
-        "html_description": "<td>Telegram payment identifier</td>",
-        "rst_description": "Telegram payment identifier\n",
-        "name": "telegram_payment_charge_id",
-        "required": true
-      },
-      {
-        "type": "String",
-        "description": "Provider payment identifier",
-        "html_description": "<td>Provider payment identifier</td>",
-        "rst_description": "Provider payment identifier\n",
-        "name": "provider_payment_charge_id",
-        "required": true
       }
     ],
     "category": "types"

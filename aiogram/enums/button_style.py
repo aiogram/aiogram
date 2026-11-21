@@ -1,15 +1,17 @@
-from enum import Enum
+from enum import StrEnum
 
 
-class ButtonStyle(str, Enum):
+class ButtonStyle(StrEnum):
     """
     This object represents a button style (inline- or reply-keyboard).
 
     Sources:
       * https://core.telegram.org/bots/api#inlinekeyboardbutton
       * https://core.telegram.org/bots/api#keyboardbutton
+      * https://core.telegram.org/bots/api#richmessagebutton
     """
 
     DANGER = "danger"
     SUCCESS = "success"
     PRIMARY = "primary"
+    LINK = "link"

@@ -21,9 +21,9 @@
       },
       {
         "type": "User",
-        "description": "Information about the user that created the topic. Currently, it is always present",
-        "html_description": "<td><em>Optional</em>. Information about the user that created the topic. Currently, it is always present</td>",
-        "rst_description": "*Optional*. Information about the user that created the topic. Currently, it is always present\n",
+        "description": "Information about the user that created the topic. Currently, it is always present.",
+        "html_description": "<td><em>Optional</em>. Information about the user that created the topic. Currently, it is always present.</td>",
+        "rst_description": "*Optional*. Information about the user that created the topic. Currently, it is always present.\n",
         "name": "user",
         "required": false
       }

@@ -20,9 +20,9 @@ class UniqueGiftModel(TelegramObject):
     sticker: Sticker
     """The sticker that represents the unique gift"""
     rarity_per_mille: int
-    """The number of unique gifts that receive this model for every 1000 gift upgrades. Always 0 for crafted gifts."""
+    """The number of unique gifts that receive this model for every 1000 gift upgrades. Always 0 for crafted gifts"""
     rarity: str | None = None
-    """*Optional*. Rarity of the model if it is a crafted model. Currently, can be 'uncommon', 'rare', 'epic', or 'legendary'."""
+    """*Optional*. Rarity of the model if it is a crafted model. Currently, can be 'uncommon', 'rare', 'epic', or 'legendary'"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!

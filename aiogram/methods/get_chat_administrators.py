@@ -19,7 +19,7 @@ class GetChatAdministrators(TelegramMethod[list[ResultChatMemberUnion]]):
     chat_id: ChatIdUnion
     """Unique identifier for the target chat or username of the target supergroup or channel in the format :code:`@username`"""
     return_bots: bool | None = None
-    """Pass :code:`True` to additionally receive all bots that are administrators of the chat. By default, bots other than the current bot are omitted."""
+    """Pass :code:`True` to additionally receive all bots that are administrators of the chat. By default, bots other than the current bot are omitted"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!

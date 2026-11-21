@@ -1,7 +1,7 @@
-from enum import Enum
+from enum import StrEnum
 
 
-class InlineQueryResultType(str, Enum):
+class InlineQueryResultType(StrEnum):
     """
     Type of inline query result
 

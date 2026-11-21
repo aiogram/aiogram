@@ -34,30 +34,23 @@ from aiogram.types import Chat, Message, Update
 from tests.mocked_bot import MockedBot
 
 
+# Scene handlers can not be attached to the error observer: enter/leave/exit/back actions
+# are resolved by the update type, which is never "error".
+SCENE_OBSERVER_NAMES = sorted(set(Router().observers) - {"error"})
+
+
 class TestOnMarker:
-    @pytest.mark.parametrize(
-        "marker_name",
-        [
-            "message",
-            "edited_message",
-            "channel_post",
-            "edited_channel_post",
-            "inline_query",
-            "chosen_inline_result",
-            "callback_query",
-            "shipping_query",
-            "pre_checkout_query",
-            "poll",
-            "poll_answer",
-            "my_chat_member",
-            "chat_member",
-            "chat_join_request",
-        ],
-    )
+    @pytest.mark.parametrize("marker_name", SCENE_OBSERVER_NAMES)
     def test_marker_name(self, marker_name: str):
         attr = getattr(on, marker_name)
         assert isinstance(attr, ObserverMarker)
         assert attr.name == marker_name
+
+    def test_markers_cover_all_router_observers(self):
+        markers = {
+            name for name, value in vars(type(on)).items() if isinstance(value, ObserverMarker)
+        }
+        assert markers == set(SCENE_OBSERVER_NAMES)
 
 
 async def test_empty_handler():
@@ -97,12 +90,18 @@ class TestObserverMarker:
 
     def test_enter(self):
         marker = ObserverMarker("test")
-        decorator = marker.enter(F.test)
+        decorator = marker.enter()
         assert isinstance(decorator, ObserverDecorator)
         assert decorator.name == "test"
-        assert len(decorator.filters) == 1
+        assert decorator.filters == ()
         assert decorator.action == SceneAction.enter
         assert decorator.after is None
+
+    def test_enter_with_filters_is_deprecated(self):
+        marker = ObserverMarker("test")
+        with pytest.warns(DeprecationWarning, match=r"on\.test\.enter\(\) are not checked"):
+            decorator = marker.enter(F.test)
+        assert decorator.action == SceneAction.enter
 
     def test_leave(self):
         marker = ObserverMarker("test")
@@ -580,7 +579,7 @@ class TestScene:
             def parent_handler(self, *args, **kwargs):
                 pass
 
-            @on.message.enter(F.text)
+            @on.message.enter()
             def parent_action(self, *args, **kwargs):
                 pass
 
@@ -692,7 +691,7 @@ class TestScene:
 
     async def test_scene_as_handler_enter(self):
         class MyScene(Scene):
-            @on.message.enter(F.text)
+            @on.message.enter()
             def test_handler(self, *args, **kwargs):
                 pass
 

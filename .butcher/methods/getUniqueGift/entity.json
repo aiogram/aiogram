@@ -1,0 +1,25 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available methods",
+    "anchor": "available-methods"
+  },
+  "object": {
+    "anchor": "getuniquegift",
+    "name": "getUniqueGift",
+    "description": "Use this method to get information about a unique gift by its name. Returns a UniqueGift object on success.",
+    "html_description": "<p>Use this method to get information about a unique gift by its name. Returns a <a href=\"#uniquegift\">UniqueGift</a> object on success.</p>",
+    "rst_description": "Use this method to get information about a unique gift by its name. Returns a :class:`aiogram.types.unique_gift.UniqueGift` object on success.",
+    "annotations": [
+      {
+        "type": "String",
+        "required": true,
+        "description": "Unique name of the gift",
+        "html_description": "<td>Unique name of the gift</td>",
+        "rst_description": "Unique name of the gift\n",
+        "name": "name"
+      }
+    ],
+    "category": "methods"
+  }
+}

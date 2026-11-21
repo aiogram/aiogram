@@ -5,6 +5,7 @@ import pytest
 from aiogram.enums import MessageEntityType
 from aiogram.types import MessageEntity, User
 from aiogram.utils.formatting import (
+    BankCardNumber,
     BlockQuote,
     Bold,
     BotCommand,
@@ -23,6 +24,7 @@ from aiogram.utils.formatting import (
     Text,
     TextLink,
     TextMention,
+    TonAddress,
     Underline,
     Url,
     _apply_entity,
@@ -71,6 +73,14 @@ class TestNode:
                 "test",
             ],
             [
+                BankCardNumber("test"),
+                "test",
+            ],
+            [
+                TonAddress("test"),
+                "test",
+            ],
+            [
                 Bold("test"),
                 "<b>test</b>",
             ],
@@ -96,7 +106,7 @@ class TestNode:
             ],
             [
                 Pre("test", language="python"),
-                '<pre><code language="language-python">test</code></pre>',
+                '<pre><code class="language-python">test</code></pre>',
             ],
             [
                 TextLink("test", url="https://example.com"),
@@ -218,6 +228,18 @@ class TestNode:
     def test_as_markdown(self):
         node = Text("Hello, ", Bold("World"), "!")
         assert node.as_markdown() == r"Hello, *World*\!"
+
+    def test_as_markdown_custom_emoji(self):
+        node = Text(CustomEmoji("👍", custom_emoji_id="5368324170671202286"))
+        assert node.as_markdown() == "![👍](tg://emoji?id=5368324170671202286)"
+
+    def test_as_markdown_blockquote(self):
+        node = Text(BlockQuote("quoted ", Italic("word"), "\n"), "after")
+        assert node.as_markdown() == ">quoted _\rword_\r\nafter"
+
+    def test_as_markdown_expandable_blockquote(self):
+        node = Text(ExpandableBlockQuote("a\n\n"), "after")
+        assert node.as_markdown() == ">a\n>||\nafter"
 
     def test_replace(self):
         node0 = Text("test0", param0="test1")
@@ -368,6 +390,18 @@ class TestUtils:
         )
         assert isinstance(node, Bold)
         assert node._body == ("test",)
+
+    @pytest.mark.parametrize(
+        "entity_type,node_type",
+        [
+            [MessageEntityType.BANK_CARD_NUMBER, BankCardNumber],
+            [MessageEntityType.TON_ADDRESS, TonAddress],
+        ],
+    )
+    def test_apply_entity_keeps_detected_entity(self, entity_type, node_type):
+        node = _apply_entity(MessageEntity(type=entity_type, offset=0, length=4), "test")
+        assert type(node) is node_type
+        assert node.render()[1] == [MessageEntity(type=entity_type, offset=0, length=4)]
 
     def test_apply_entity_date_time(self):
         node = _apply_entity(

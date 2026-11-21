@@ -29,6 +29,7 @@ if TYPE_CHECKING:
     from .video import Video
     from .video_note import VideoNote
     from .voice import Voice
+    from .widget import Widget
 
 
 class ExternalReplyInfo(TelegramObject):
@@ -41,9 +42,9 @@ class ExternalReplyInfo(TelegramObject):
     origin: MessageOriginUnion
     """Origin of the message replied to by the given message"""
     chat: Chat | None = None
-    """*Optional*. Chat the original message belongs to. Available only if the chat is a supergroup or a channel."""
+    """*Optional*. Chat the original message belongs to. Available only if the chat is a supergroup or a channel"""
     message_id: int | None = None
-    """*Optional*. Unique message identifier inside the original chat. Available only if the original chat is a supergroup or a channel."""
+    """*Optional*. Unique message identifier inside the original chat. Available only if the original chat is a supergroup or a channel"""
     link_preview_options: LinkPreviewOptions | None = None
     """*Optional*. Options used for link preview generation for the original message, if it is a text message"""
     animation: Animation | None = None
@@ -90,6 +91,8 @@ class ExternalReplyInfo(TelegramObject):
     """*Optional*. Message is a native poll, information about the poll"""
     venue: Venue | None = None
     """*Optional*. Message is a venue, information about the venue"""
+    widget: Widget | None = None
+    """*Optional*. Message is an HTML widget, information about the widget"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!
@@ -124,6 +127,7 @@ class ExternalReplyInfo(TelegramObject):
             location: Location | None = None,
             poll: Poll | None = None,
             venue: Venue | None = None,
+            widget: Widget | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!
@@ -157,5 +161,6 @@ class ExternalReplyInfo(TelegramObject):
                 location=location,
                 poll=poll,
                 venue=venue,
+                widget=widget,
                 **__pydantic_kwargs,
             )

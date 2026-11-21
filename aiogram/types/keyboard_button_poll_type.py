@@ -13,7 +13,7 @@ class KeyboardButtonPollType(MutableTelegramObject):
     """
 
     type: str | None = None
-    """*Optional*. If *quiz* is passed, the user will be allowed to create only polls in the quiz mode. If *regular* is passed, only regular polls will be allowed. Otherwise, the user will be allowed to create a poll of any type."""
+    """*Optional*. If *quiz* is passed, the user will be allowed to create only polls in the quiz mode. If *regular* is passed, only regular polls will be allowed. Otherwise, the user will be allowed to create a poll of any type"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!

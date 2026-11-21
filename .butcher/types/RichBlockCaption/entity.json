@@ -1,0 +1,33 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Rich messages",
+    "anchor": "rich-messages"
+  },
+  "object": {
+    "anchor": "richblockcaption",
+    "name": "RichBlockCaption",
+    "description": "Caption of a rich formatted block.",
+    "html_description": "<p>Caption of a rich formatted block.</p>",
+    "rst_description": "Caption of a rich formatted block.",
+    "annotations": [
+      {
+        "type": "RichText",
+        "description": "Block caption",
+        "html_description": "<td>Block caption</td>",
+        "rst_description": "Block caption\n",
+        "name": "text",
+        "required": true
+      },
+      {
+        "type": "RichText",
+        "description": "Block credit which corresponds to the HTML tag <cite>",
+        "html_description": "<td><em>Optional</em>. Block credit which corresponds to the HTML tag &lt;cite&gt;</td>",
+        "rst_description": "*Optional*. Block credit which corresponds to the HTML tag <cite>\n",
+        "name": "credit",
+        "required": false
+      }
+    ],
+    "category": "types"
+  }
+}

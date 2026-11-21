@@ -13,33 +13,33 @@
     "annotations": [
       {
         "type": "Integer",
-        "description": "Identifier of the message that will be replied to in the current chat, or in the chat chat_id if it is specified",
-        "html_description": "<td>Identifier of the message that will be replied to in the current chat, or in the chat <em>chat_id</em> if it is specified</td>",
-        "rst_description": "Identifier of the message that will be replied to in the current chat, or in the chat *chat_id* if it is specified\n",
+        "description": "Identifier of the message that will be replied to in the current chat, or in the chat chat_id if it is specified. Required if ephemeral_message_id isn't specified.",
+        "html_description": "<td><em>Optional</em>. Identifier of the message that will be replied to in the current chat, or in the chat <em>chat_id</em> if it is specified. Required if <em>ephemeral_message_id</em> isn't specified.</td>",
+        "rst_description": "*Optional*. Identifier of the message that will be replied to in the current chat, or in the chat *chat_id* if it is specified. Required if *ephemeral_message_id* isn't specified.\n",
         "name": "message_id",
-        "required": true
+        "required": false
       },
       {
         "type": "Integer or String",
-        "description": "If the message to be replied to is from a different chat, unique identifier for the chat or username of the bot, supergroup or channel in the format @username. Not supported for messages sent on behalf of a business account and messages from channel direct messages chats.",
-        "html_description": "<td><em>Optional</em>. If the message to be replied to is from a different chat, unique identifier for the chat or username of the bot, supergroup or channel in the format <code>@username</code>. Not supported for messages sent on behalf of a business account and messages from channel direct messages chats.</td>",
-        "rst_description": "*Optional*. If the message to be replied to is from a different chat, unique identifier for the chat or username of the bot, supergroup or channel in the format :code:`@username`. Not supported for messages sent on behalf of a business account and messages from channel direct messages chats.\n",
+        "description": "If the message to be replied to is from a different chat, unique identifier for the chat or username of the bot, supergroup, or channel in the format @username. Not supported for messages sent on behalf of a business account, messages from channel direct messages chats and ephemeral messages.",
+        "html_description": "<td><em>Optional</em>. If the message to be replied to is from a different chat, unique identifier for the chat or username of the bot, supergroup, or channel in the format <code>@username</code>. Not supported for messages sent on behalf of a business account, messages from channel direct messages chats and ephemeral messages.</td>",
+        "rst_description": "*Optional*. If the message to be replied to is from a different chat, unique identifier for the chat or username of the bot, supergroup, or channel in the format :code:`@username`. Not supported for messages sent on behalf of a business account, messages from channel direct messages chats and ephemeral messages.\n",
         "name": "chat_id",
         "required": false
       },
       {
         "type": "Boolean",
-        "description": "Pass True if the message should be sent even if the specified message to be replied to is not found. Always False for replies in another chat or forum topic. Always True for messages sent on behalf of a business account.",
-        "html_description": "<td><em>Optional</em>. Pass <em>True</em> if the message should be sent even if the specified message to be replied to is not found. Always <em>False</em> for replies in another chat or forum topic. Always <em>True</em> for messages sent on behalf of a business account.</td>",
-        "rst_description": "*Optional*. Pass :code:`True` if the message should be sent even if the specified message to be replied to is not found. Always :code:`False` for replies in another chat or forum topic. Always :code:`True` for messages sent on behalf of a business account.\n",
+        "description": "Pass True if the message should be sent even if the specified message to be replied to is not found. Always False for replies in another chat or forum topic, and sent ephemeral messages. Always True for messages sent on behalf of a business account.",
+        "html_description": "<td><em>Optional</em>. Pass <em>True</em> if the message should be sent even if the specified message to be replied to is not found. Always <em>False</em> for replies in another chat or forum topic, and sent ephemeral messages. Always <em>True</em> for messages sent on behalf of a business account.</td>",
+        "rst_description": "*Optional*. Pass :code:`True` if the message should be sent even if the specified message to be replied to is not found. Always :code:`False` for replies in another chat or forum topic, and sent ephemeral messages. Always :code:`True` for messages sent on behalf of a business account.\n",
         "name": "allow_sending_without_reply",
         "required": false
       },
       {
         "type": "String",
-        "description": "Quoted part of the message to be replied to; 0-1024 characters after entities parsing. The quote must be an exact substring of the message to be replied to, including bold, italic, underline, strikethrough, spoiler, custom_emoji, and date_time entities. The message will fail to send if the quote isn't found in the original message.",
-        "html_description": "<td><em>Optional</em>. Quoted part of the message to be replied to; 0-1024 characters after entities parsing. The quote must be an exact substring of the message to be replied to, including <em>bold</em>, <em>italic</em>, <em>underline</em>, <em>strikethrough</em>, <em>spoiler</em>, <em>custom_emoji</em>, and <em>date_time</em> entities. The message will fail to send if the quote isn't found in the original message.</td>",
-        "rst_description": "*Optional*. Quoted part of the message to be replied to; 0-1024 characters after entities parsing. The quote must be an exact substring of the message to be replied to, including *bold*, *italic*, *underline*, *strikethrough*, *spoiler*, *custom_emoji*, and *date_time* entities. The message will fail to send if the quote isn't found in the original message.\n",
+        "description": "Quoted part of the message to be replied to; 0-1024 characters after entities parsing. The quote must be an exact substring of the message to be replied to, including bold, italic, underline, strikethrough, spoiler, custom_emoji, and date_time entities. The message will fail to send if the quote isn't found in the original message. Ignored for ephemeral messages.",
+        "html_description": "<td><em>Optional</em>. Quoted part of the message to be replied to; 0-1024 characters after entities parsing. The quote must be an exact substring of the message to be replied to, including <em>bold</em>, <em>italic</em>, <em>underline</em>, <em>strikethrough</em>, <em>spoiler</em>, <em>custom_emoji</em>, and <em>date_time</em> entities. The message will fail to send if the quote isn't found in the original message. Ignored for ephemeral messages.</td>",
+        "rst_description": "*Optional*. Quoted part of the message to be replied to; 0-1024 characters after entities parsing. The quote must be an exact substring of the message to be replied to, including *bold*, *italic*, *underline*, *strikethrough*, *spoiler*, *custom_emoji*, and *date_time* entities. The message will fail to send if the quote isn't found in the original message. Ignored for ephemeral messages.\n",
         "name": "quote",
         "required": false
       },
@@ -61,9 +61,9 @@
       },
       {
         "type": "Integer",
-        "description": "Position of the quote in the original message in UTF-16 code units",
-        "html_description": "<td><em>Optional</em>. Position of the quote in the original message in UTF-16 code units</td>",
-        "rst_description": "*Optional*. Position of the quote in the original message in UTF-16 code units\n",
+        "description": "Position of the quote in the original message in UTF-16 code units. For quotes from rich messages, it is the position in the text formed by joining plain texts of all quotable texts of the message, separated by line feeds.",
+        "html_description": "<td><em>Optional</em>. Position of the quote in the original message in UTF-16 code units. For quotes from rich messages, it is the position in the text formed by joining plain texts of all quotable texts of the message, separated by line feeds.</td>",
+        "rst_description": "*Optional*. Position of the quote in the original message in UTF-16 code units. For quotes from rich messages, it is the position in the text formed by joining plain texts of all quotable texts of the message, separated by line feeds.\n",
         "name": "quote_position",
         "required": false
       },
@@ -81,6 +81,22 @@
         "html_description": "<td><em>Optional</em>. Persistent identifier of the specific poll option to be replied to</td>",
         "rst_description": "*Optional*. Persistent identifier of the specific poll option to be replied to\n",
         "name": "poll_option_id",
+        "required": false
+      },
+      {
+        "type": "Integer",
+        "description": "Identifier of the incoming ephemeral message that will be replied to in the current chat. A reply to an ephemeral message must itself be an ephemeral message. An ephemeral message may only be replied to within 15 seconds of being sent. Required if message_id isn't specified.",
+        "html_description": "<td><em>Optional</em>. Identifier of the incoming ephemeral message that will be replied to in the current chat. A reply to an ephemeral message must itself be an ephemeral message. An ephemeral message may only be replied to within 15 seconds of being sent. Required if <em>message_id</em> isn't specified.</td>",
+        "rst_description": "*Optional*. Identifier of the incoming ephemeral message that will be replied to in the current chat. A reply to an ephemeral message must itself be an ephemeral message. An ephemeral message may only be replied to within 15 seconds of being sent. Required if *message_id* isn't specified.\n",
+        "name": "ephemeral_message_id",
+        "required": false
+      },
+      {
+        "type": "Array of RichText",
+        "description": "A JSON-serialized list of quoted parts of the rich message to be replied to. Must contain one element for each quoted text of the message in the order of their appearance. Each of the following is a separate quoted text: the text of a paragraph, a heading, a preformatted block, a footer, or a mathematical expression; the text and the credit of a block quotation or a pull quotation; the summary of a details block; the caption and each cell of a table; the text and the credit of a caption of a media block, a collage, a slideshow, or a map. Texts of blocks nested in lists, block quotations, details, collages, and slideshows are separate quoted texts too. The first and the last elements can contain only a part of the corresponding text; all other elements must contain the whole text. Formatting of the quoted parts must be kept, and rich texts must be nested in the same way as in the message received from the server. Mathematical expressions must be quoted entirely. Buttons in RichBlockButtons, anchors and dividers can't be quoted. Up to 32 quoted texts with total length up to 1024 characters can be specified. Only plain text, RichTextBold, RichTextItalic, RichTextUnderline, RichTextStrikethrough, RichTextSpoiler, RichTextSubscript, RichTextSuperscript, RichTextDateTime, RichTextCustomEmoji, RichTextMathematicalExpression, and arrays of them are kept in the quote; other rich text types are replaced with their text. If non-empty, then quote, quote_parse_mode and quote_entities are ignored.",
+        "html_description": "<td><em>Optional</em>. A JSON-serialized list of quoted parts of the <a href=\"#richmessage\">rich message</a> to be replied to. Must contain one element for each quoted text of the message in the order of their appearance. Each of the following is a separate quoted text: the text of a paragraph, a heading, a preformatted block, a footer, or a mathematical expression; the text and the credit of a block quotation or a pull quotation; the summary of a details block; the caption and each cell of a table; the text and the credit of a caption of a media block, a collage, a slideshow, or a map. Texts of blocks nested in lists, block quotations, details, collages, and slideshows are separate quoted texts too. The first and the last elements can contain only a part of the corresponding text; all other elements must contain the whole text. Formatting of the quoted parts must be kept, and rich texts must be nested in the same way as in the message received from the server. Mathematical expressions must be quoted entirely. Buttons in <a href=\"#richblockbuttons\">RichBlockButtons</a>, anchors and dividers can't be quoted. Up to 32 quoted texts with total length up to 1024 characters can be specified. Only plain text, <a href=\"#richtextbold\">RichTextBold</a>, <a href=\"#richtextitalic\">RichTextItalic</a>, <a href=\"#richtextunderline\">RichTextUnderline</a>, <a href=\"#richtextstrikethrough\">RichTextStrikethrough</a>, <a href=\"#richtextspoiler\">RichTextSpoiler</a>, <a href=\"#richtextsubscript\">RichTextSubscript</a>, <a href=\"#richtextsuperscript\">RichTextSuperscript</a>, <a href=\"#richtextdatetime\">RichTextDateTime</a>, <a href=\"#richtextcustomemoji\">RichTextCustomEmoji</a>, <a href=\"#richtextmathematicalexpression\">RichTextMathematicalExpression</a>, and arrays of them are kept in the quote; other rich text types are replaced with their text. If non-empty, then <em>quote</em>, <em>quote_parse_mode</em> and <em>quote_entities</em> are ignored.</td>",
+        "rst_description": "*Optional*. A JSON-serialized list of quoted parts of the `rich message <https://core.telegram.org/bots/api#richmessage>`_ to be replied to. Must contain one element for each quoted text of the message in the order of their appearance. Each of the following is a separate quoted text: the text of a paragraph, a heading, a preformatted block, a footer, or a mathematical expression; the text and the credit of a block quotation or a pull quotation; the summary of a details block; the caption and each cell of a table; the text and the credit of a caption of a media block, a collage, a slideshow, or a map. Texts of blocks nested in lists, block quotations, details, collages, and slideshows are separate quoted texts too. The first and the last elements can contain only a part of the corresponding text; all other elements must contain the whole text. Formatting of the quoted parts must be kept, and rich texts must be nested in the same way as in the message received from the server. Mathematical expressions must be quoted entirely. Buttons in :class:`aiogram.types.rich_block_buttons.RichBlockButtons`, anchors and dividers can't be quoted. Up to 32 quoted texts with total length up to 1024 characters can be specified. Only plain text, :class:`aiogram.types.rich_text_bold.RichTextBold`, :class:`aiogram.types.rich_text_italic.RichTextItalic`, :class:`aiogram.types.rich_text_underline.RichTextUnderline`, :class:`aiogram.types.rich_text_strikethrough.RichTextStrikethrough`, :class:`aiogram.types.rich_text_spoiler.RichTextSpoiler`, :class:`aiogram.types.rich_text_subscript.RichTextSubscript`, :class:`aiogram.types.rich_text_superscript.RichTextSuperscript`, :class:`aiogram.types.rich_text_date_time.RichTextDateTime`, :class:`aiogram.types.rich_text_custom_emoji.RichTextCustomEmoji`, :class:`aiogram.types.rich_text_mathematical_expression.RichTextMathematicalExpression`, and arrays of them are kept in the quote; other rich text types are replaced with their text. If non-empty, then *quote*, *quote_parse_mode* and *quote_entities* are ignored.\n",
+        "name": "quote_rich_texts",
         "required": false
       }
     ],

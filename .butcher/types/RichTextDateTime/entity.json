@@ -1,0 +1,49 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Rich messages",
+    "anchor": "rich-messages"
+  },
+  "object": {
+    "anchor": "richtextdatetime",
+    "name": "RichTextDateTime",
+    "description": "Formatted date and time.",
+    "html_description": "<p>Formatted date and time.</p>",
+    "rst_description": "Formatted date and time.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Type of the rich text, always 'date_time'",
+        "html_description": "<td>Type of the rich text, always &#8220;date_time&#8221;</td>",
+        "rst_description": "Type of the rich text, always 'date_time'\n",
+        "name": "type",
+        "required": true
+      },
+      {
+        "type": "RichText",
+        "description": "The text",
+        "html_description": "<td>The text</td>",
+        "rst_description": "The text\n",
+        "name": "text",
+        "required": true
+      },
+      {
+        "type": "Integer",
+        "description": "The Unix time associated with the entity",
+        "html_description": "<td>The Unix time associated with the entity</td>",
+        "rst_description": "The Unix time associated with the entity\n",
+        "name": "unix_time",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "The string that defines the formatting of the date and time. See date-time entity formatting for more details.",
+        "html_description": "<td>The string that defines the formatting of the date and time. See <a href=\"#date-time-entity-formatting\">date-time entity formatting</a> for more details.</td>",
+        "rst_description": "The string that defines the formatting of the date and time. See `date-time entity formatting <https://core.telegram.org/bots/api#date-time-entity-formatting>`_ for more details.\n",
+        "name": "date_time_format",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

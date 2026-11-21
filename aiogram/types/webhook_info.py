@@ -30,7 +30,7 @@ class WebhookInfo(TelegramObject):
     max_connections: int | None = None
     """*Optional*. The maximum allowed number of simultaneous HTTPS connections to the webhook for update delivery"""
     allowed_updates: list[str] | None = None
-    """*Optional*. A list of update types the bot is subscribed to. Defaults to all update types except *chat_member*"""
+    """*Optional*. A list of update types the bot is subscribed to. Defaults to all update types except *chat_member*, *message_reaction*, and *message_reaction_count*"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!

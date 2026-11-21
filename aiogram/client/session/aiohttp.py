@@ -1,15 +1,26 @@
 from __future__ import annotations
 
 import asyncio
+import re
 import ssl
 from collections.abc import AsyncGenerator, Iterable
-from typing import TYPE_CHECKING, Any, cast
+from typing import TYPE_CHECKING, Any, Self, TypeVar, cast
 
 import certifi
-from aiohttp import BasicAuth, ClientError, ClientSession, FormData, TCPConnector
+from aiohttp import (
+    BasicAuth,
+    ClientError,
+    ClientResponseError,
+    ClientSession,
+    ClientTimeout,
+    FormData,
+    RequestInfo,
+    TCPConnector,
+)
 from aiohttp.hdrs import USER_AGENT
 from aiohttp.http import SERVER_SOFTWARE
-from typing_extensions import Self
+from multidict import CIMultiDict, CIMultiDictProxy, MultiMapping
+from yarl import URL
 
 from aiogram.__meta__ import __version__
 from aiogram.exceptions import TelegramNetworkError
@@ -25,6 +36,56 @@ if TYPE_CHECKING:
 _ProxyBasic = str | tuple[str, BasicAuth]
 _ProxyChain = Iterable[_ProxyBasic]
 _ProxyType = _ProxyChain | _ProxyBasic
+_ClientErrorT = TypeVar("_ClientErrorT", bound=ClientError)
+
+# The bot token in a Bot API URL path (`/bot<id>:<secret>/`) or a bare token anywhere
+_TOKEN_RE = re.compile(r"(?<=/bot)(\d+):[^/?#\s'\"]+|\b(\d+):[\w-]{30,}", re.ASCII)
+
+
+def _redact(text: str) -> str:
+    return _TOKEN_RE.sub(lambda m: f"{m[1] or m[2]}:***", text)
+
+
+def _redact_value(value: Any) -> Any:
+    if isinstance(value, str):
+        return _redact(value)
+    if isinstance(value, URL):
+        return URL(_redact(str(value)), encoded=True)
+    if isinstance(value, MultiMapping):
+        # Headers such as `Location` can hold a Bot API URL
+        return CIMultiDictProxy(CIMultiDict((k, _redact_value(v)) for k, v in value.items()))
+    if isinstance(value, RequestInfo):
+        return value._replace(
+            url=_redact_value(value.url),
+            headers=_redact_value(value.headers),
+            real_url=_redact_value(value.real_url),
+        )
+    return value
+
+
+def _redact_error(error: _ClientErrorT) -> _ClientErrorT:
+    """
+    Copy an aiohttp error of the same type with the bot token removed from its text.
+
+    Constructors differ between aiohttp error types, so the copy is built from
+    ``args`` and ``__dict__`` instead. The untouched error is kept on ``.original``.
+    """
+    cls = type(error)
+    args = tuple(_redact_value(arg) for arg in error.args)
+    redacted = cls.__new__(cls, *args)
+    redacted.__dict__.update(
+        {key: _redact_value(value) for key, value in vars(error).items()},
+        original=error,
+    )
+    redacted.args = args
+    if isinstance(redacted, OSError) and isinstance(error, OSError) and error.errno is not None:
+        # Only when set: assigning None turns a message-only error into "[Errno None] None"
+        redacted.errno, redacted.strerror = error.errno, _redact_value(error.strerror)
+    if isinstance(redacted, ClientResponseError):
+        # Responses of the redirect history print their URLs
+        redacted.history = ()
+        redacted.args = (redacted.request_info, ())
+    return redacted
 
 
 def _retrieve_basic(basic: _ProxyBasic) -> dict[str, Any]:
@@ -167,13 +228,19 @@ class AiohttpSession(BaseSession):
             async with session.post(
                 url,
                 data=form,
-                timeout=self.timeout if timeout is None else timeout,
+                timeout=ClientTimeout(total=self.timeout if timeout is None else timeout),
             ) as resp:
                 raw_result = await resp.text()
-        except asyncio.TimeoutError as e:
-            raise TelegramNetworkError(method=method, message="Request timeout error") from e
-        except ClientError as e:
-            raise TelegramNetworkError(method=method, message=f"{type(e).__name__}: {e}") from e
+        except (TimeoutError, ClientError) as e:
+            # `from None`: a traceback prints the chained error, and its URL holds the token
+            message = (
+                "Request timeout error"
+                if isinstance(e, TimeoutError)
+                else _redact(f"{type(e).__name__}: {e}")
+            )
+            error = TelegramNetworkError(method=method, message=message)
+            error.original = e
+            raise error from None
         response = self.check_response(
             bot=bot,
             method=method,
@@ -195,14 +262,17 @@ class AiohttpSession(BaseSession):
 
         session = await self.create_session()
 
-        async with session.get(
-            url,
-            timeout=timeout,
-            headers=headers,
-            raise_for_status=raise_for_status,
-        ) as resp:
-            async for chunk in resp.content.iter_chunked(chunk_size):
-                yield chunk
+        try:
+            async with session.get(
+                url,
+                timeout=ClientTimeout(total=timeout),
+                headers=headers,
+                raise_for_status=raise_for_status,
+            ) as resp:
+                async for chunk in resp.content.iter_chunked(chunk_size):
+                    yield chunk
+        except ClientError as e:
+            raise _redact_error(e) from None
 
     async def __aenter__(self) -> Self:
         await self.create_session()

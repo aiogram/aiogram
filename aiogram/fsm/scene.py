@@ -1,13 +1,12 @@
 from __future__ import annotations
 
 import inspect
+import warnings
 from collections import defaultdict
 from collections.abc import Mapping
 from dataclasses import dataclass, replace
 from enum import Enum, auto
-from typing import TYPE_CHECKING, Any, ClassVar, overload
-
-from typing_extensions import Self
+from typing import TYPE_CHECKING, Any, ClassVar, Self, overload
 
 from aiogram import loggers
 from aiogram.dispatcher.dispatcher import Dispatcher
@@ -921,6 +920,14 @@ class ObserverMarker:
         )
 
     def enter(self, *filters: CallbackType) -> ObserverDecorator:
+        if filters:
+            warnings.warn(
+                f"Filters passed to on.{self.name}.enter() are not checked when "
+                "the scene is entered and will be rejected in a future version. "
+                "Put them on the handler that enters the scene instead.",
+                DeprecationWarning,
+                stacklevel=2,
+            )
         return ObserverDecorator(self.name, filters, action=SceneAction.enter)
 
     def leave(self) -> ObserverDecorator:
@@ -954,7 +961,24 @@ class OnMarker:
     - :code:`my_chat_member`: Event marker for handling my chat `Member` events.
     - :code:`chat_member`: Event marker for handling chat `Member` events.
     - :code:`chat_join_request`: Event marker for handling chat `JoinRequest` events.
-    - :code:`error`: Event marker for handling `Error` events.
+    - :code:`message_reaction`: Event marker for handling `MessageReactionUpdated` events.
+    - :code:`message_reaction_count`: Event marker for handling
+      `MessageReactionCountUpdated` events.
+    - :code:`chat_boost`: Event marker for handling `ChatBoostUpdated` events.
+    - :code:`removed_chat_boost`: Event marker for handling `ChatBoostRemoved` events.
+    - :code:`deleted_business_messages`: Event marker for handling
+      `BusinessMessagesDeleted` events.
+    - :code:`business_connection`: Event marker for handling `BusinessConnection` events.
+    - :code:`edited_business_message`: Event marker for handling edited business `Message` events.
+    - :code:`business_message`: Event marker for handling business `Message` events.
+    - :code:`purchased_paid_media`: Event marker for handling `PaidMediaPurchased` events.
+    - :code:`managed_bot`: Event marker for handling `ManagedBotUpdated` events.
+    - :code:`guest_message`: Event marker for handling guest `Message` events.
+    - :code:`subscription`: Event marker for handling `BotSubscriptionUpdated` events.
+    - :code:`stopped_message_generation`: Event marker for handling
+      `MessageGenerationStopped` events.
+    - :code:`widget_query`: Event marker for handling `WidgetQuery` events.
+    - :code:`shared_widget_query`: Event marker for handling `SharedWidgetQuery` events.
 
     .. note::
 
@@ -975,6 +999,21 @@ class OnMarker:
     my_chat_member = ObserverMarker("my_chat_member")
     chat_member = ObserverMarker("chat_member")
     chat_join_request = ObserverMarker("chat_join_request")
+    message_reaction = ObserverMarker("message_reaction")
+    message_reaction_count = ObserverMarker("message_reaction_count")
+    chat_boost = ObserverMarker("chat_boost")
+    removed_chat_boost = ObserverMarker("removed_chat_boost")
+    deleted_business_messages = ObserverMarker("deleted_business_messages")
+    business_connection = ObserverMarker("business_connection")
+    edited_business_message = ObserverMarker("edited_business_message")
+    business_message = ObserverMarker("business_message")
+    purchased_paid_media = ObserverMarker("purchased_paid_media")
+    managed_bot = ObserverMarker("managed_bot")
+    guest_message = ObserverMarker("guest_message")
+    subscription = ObserverMarker("subscription")
+    stopped_message_generation = ObserverMarker("stopped_message_generation")
+    widget_query = ObserverMarker("widget_query")
+    shared_widget_query = ObserverMarker("shared_widget_query")
 
 
 on = OnMarker()

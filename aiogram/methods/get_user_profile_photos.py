@@ -19,9 +19,9 @@ class GetUserProfilePhotos(TelegramMethod[UserProfilePhotos]):
     user_id: int
     """Unique identifier of the target user"""
     offset: int | None = None
-    """Sequential number of the first photo to be returned. By default, all photos are returned."""
+    """Sequential number of the first photo to be returned. By default, all photos are returned"""
     limit: int | None = None
-    """Limits the number of photos to be retrieved. Values between 1-100 are accepted. Defaults to 100."""
+    """Limits the number of photos to be retrieved. Values between 1-100 are accepted. Defaults to 100"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!

@@ -1,4 +1,5 @@
 import asyncio
+import json
 import secrets
 from abc import ABC, abstractmethod
 from asyncio import Transport
@@ -136,6 +137,12 @@ class BaseRequestHandler(ABC):
     def verify_secret(self, telegram_secret_token: str, bot: Bot) -> bool:
         pass
 
+    async def _read_update(self, bot: Bot, request: web.Request) -> Any:
+        # Telegram always sends UTF-8 JSON. The charset of the request is ignored:
+        # request.json() decodes with any codec the sender names, some are quadratic
+        loads = bot.session.json_loads or json.loads
+        return loads((await request.read()).decode("utf-8"))
+
     async def _background_feed_update(self, bot: Bot, update: dict[str, Any]) -> None:
         result = await self.dispatcher.feed_raw_update(bot=bot, update=update, **self.data)
         if isinstance(result, TelegramMethod):
@@ -145,7 +152,7 @@ class BaseRequestHandler(ABC):
         feed_update_task = asyncio.create_task(
             self._background_feed_update(
                 bot=bot,
-                update=await request.json(loads=bot.session.json_loads),
+                update=await self._read_update(bot, request),
             ),
         )
         self._background_feed_update_tasks.add(feed_update_task)
@@ -192,7 +199,7 @@ class BaseRequestHandler(ABC):
     async def _handle_request(self, bot: Bot, request: web.Request) -> web.Response:
         result: TelegramMethod[Any] | None = await self.dispatcher.feed_webhook_update(
             bot,
-            await request.json(loads=bot.session.json_loads),
+            await self._read_update(bot, request),
             **self.data,
         )
         return web.Response(body=self._build_response_writer(bot=bot, result=result))

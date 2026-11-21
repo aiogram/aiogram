@@ -21,9 +21,9 @@
       },
       {
         "type": "String",
-        "description": "URL to use for the link preview. If empty, then the first URL found in the message text will be used",
-        "html_description": "<td><em>Optional</em>. URL to use for the link preview. If empty, then the first URL found in the message text will be used</td>",
-        "rst_description": "*Optional*. URL to use for the link preview. If empty, then the first URL found in the message text will be used\n",
+        "description": "URL to use for the link preview. If empty, then the first URL found in the message text will be used.",
+        "html_description": "<td><em>Optional</em>. URL to use for the link preview. If empty, then the first URL found in the message text will be used.</td>",
+        "rst_description": "*Optional*. URL to use for the link preview. If empty, then the first URL found in the message text will be used.\n",
         "name": "url",
         "required": false
       },

@@ -54,9 +54,9 @@
       {
         "type": "Boolean",
         "required": false,
-        "description": "True, if users joining the chat via the link need to be approved by chat administrators. If True, member_limit can't be specified",
-        "html_description": "<td><em>True</em>, if users joining the chat via the link need to be approved by chat administrators. If <em>True</em>, <em>member_limit</em> can't be specified</td>",
-        "rst_description": ":code:`True`, if users joining the chat via the link need to be approved by chat administrators. If :code:`True`, *member_limit* can't be specified\n",
+        "description": "True, if users joining the chat via the link need to be approved by chat administrators. If True, member_limit can't be specified.",
+        "html_description": "<td><em>True</em>, if users joining the chat via the link need to be approved by chat administrators. If <em>True</em>, <em>member_limit</em> can't be specified.</td>",
+        "rst_description": ":code:`True`, if users joining the chat via the link need to be approved by chat administrators. If :code:`True`, *member_limit* can't be specified.\n",
         "name": "creates_join_request"
       }
     ],

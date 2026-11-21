@@ -1,0 +1,33 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Rich messages",
+    "anchor": "rich-messages"
+  },
+  "object": {
+    "anchor": "richtextstrikethrough",
+    "name": "RichTextStrikethrough",
+    "description": "A strikethrough text.",
+    "html_description": "<p>A strikethrough text.</p>",
+    "rst_description": "A strikethrough text.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Type of the rich text, always 'strikethrough'",
+        "html_description": "<td>Type of the rich text, always &#8220;strikethrough&#8221;</td>",
+        "rst_description": "Type of the rich text, always 'strikethrough'\n",
+        "name": "type",
+        "required": true
+      },
+      {
+        "type": "RichText",
+        "description": "The text",
+        "html_description": "<td>The text</td>",
+        "rst_description": "The text\n",
+        "name": "text",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

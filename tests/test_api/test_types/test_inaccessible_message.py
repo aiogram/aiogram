@@ -16,13 +16,14 @@ from aiogram.methods import (
     SendPaidMedia,
     SendPhoto,
     SendPoll,
+    SendRichMessage,
     SendSticker,
     SendVenue,
     SendVideo,
     SendVideoNote,
     SendVoice,
 )
-from aiogram.types import Chat
+from aiogram.types import Chat, InputRichMessage
 from aiogram.types.inaccessible_message import InaccessibleMessage
 from aiogram.types.message import ContentType
 
@@ -89,6 +90,7 @@ class TestMessage:
             ["video_note", {"video_note": "video_note"}, SendVideoNote],
             ["voice", {"voice": "voice"}, SendVoice],
             ["paid_media", {"media": [], "star_count": 42}, SendPaidMedia],
+            ["rich", {"rich_message": InputRichMessage(html="<p>Test</p>")}, SendRichMessage],
         ],
     )
     @pytest.mark.parametrize("alias_type", ["reply", "answer"])
@@ -116,6 +118,7 @@ class TestMessage:
             | SendVideoNote
             | SendVoice
             | SendPaidMedia
+            | SendRichMessage
         ],
     ):
         message = InaccessibleMessage(

@@ -21,7 +21,7 @@ class BotCommandScopeChatAdministrators(BotCommandScope):
     )
     """Scope type, must be *chat_administrators*"""
     chat_id: ChatIdUnion
-    """Unique identifier for the target chat or username of the target supergroup in the format :code:`@username`. Channel direct messages chats and channel chats aren't supported."""
+    """Unique identifier for the target chat or username of the target supergroup in the format :code:`@username`. Channel direct messages chats and channel chats aren't supported"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!

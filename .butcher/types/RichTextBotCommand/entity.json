@@ -1,0 +1,41 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Rich messages",
+    "anchor": "rich-messages"
+  },
+  "object": {
+    "anchor": "richtextbotcommand",
+    "name": "RichTextBotCommand",
+    "description": "A bot command.",
+    "html_description": "<p>A bot command.</p>",
+    "rst_description": "A bot command.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Type of the rich text, always 'bot_command'",
+        "html_description": "<td>Type of the rich text, always &#8220;bot_command&#8221;</td>",
+        "rst_description": "Type of the rich text, always 'bot_command'\n",
+        "name": "type",
+        "required": true
+      },
+      {
+        "type": "RichText",
+        "description": "The text",
+        "html_description": "<td>The text</td>",
+        "rst_description": "The text\n",
+        "name": "text",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "The bot command",
+        "html_description": "<td>The bot command</td>",
+        "rst_description": "The bot command\n",
+        "name": "bot_command",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

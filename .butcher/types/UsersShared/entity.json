@@ -21,9 +21,9 @@
       },
       {
         "type": "Array of SharedUser",
-        "description": "Information about users shared with the bot.",
-        "html_description": "<td>Information about users shared with the bot.</td>",
-        "rst_description": "Information about users shared with the bot.\n",
+        "description": "Information about users shared with the bot",
+        "html_description": "<td>Information about users shared with the bot</td>",
+        "rst_description": "Information about users shared with the bot\n",
         "name": "users",
         "required": true
       },

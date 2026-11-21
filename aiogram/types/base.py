@@ -1,10 +1,31 @@
 from typing import Any
 from unittest.mock import sentinel
 
-from pydantic import BaseModel, ConfigDict, model_validator
+from pydantic import BaseModel, ConfigDict, GetCoreSchemaHandler
+from pydantic_core import CoreSchema
 
 from aiogram.client.context_controller import BotContextController
 from aiogram.client.default import Default
+
+
+def _fail_fast_lists(schema: Any, model: type[BaseModel]) -> None:
+    """
+    Make every list of the model's own core schema stop at the first invalid item.
+
+    Otherwise pydantic keeps one error per item, each with the full location, so rejecting
+    a nested update costs items x depth. Nested models are skipped: their own schema
+    goes through this hook as well.
+    """
+    if isinstance(schema, dict):
+        if schema.get("type") == "model" and schema.get("cls") is not model:
+            return
+        if schema.get("type") == "list":
+            schema["fail_fast"] = True
+        for value in schema.values():
+            _fail_fast_lists(value, model)
+    elif isinstance(schema, list):
+        for value in schema:
+            _fail_fast_lists(value, model)
 
 
 class TelegramObject(BotContextController, BaseModel):
@@ -19,20 +40,15 @@ class TelegramObject(BotContextController, BaseModel):
         protected_namespaces=(),
     )
 
-    @model_validator(mode="before")
     @classmethod
-    def remove_unset(cls, values: dict[str, Any]) -> dict[str, Any]:
-        """
-        Remove UNSET before fields validation.
-
-        We use UNSET as a sentinel value for `parse_mode` and replace it to real value later.
-        It isn't a problem when it's just default value for a model field,
-        but UNSET might be passed to a model initialization from `Bot.method_name`,
-        so we must take care of it and remove it before fields validation.
-        """
-        if not isinstance(values, dict):
-            return values
-        return {k: v for k, v in values.items() if not isinstance(v, UNSET_TYPE)}
+    def __get_pydantic_core_schema__(
+        cls,
+        source: type[BaseModel],
+        handler: GetCoreSchemaHandler,
+    ) -> CoreSchema:
+        schema = handler(source)
+        _fail_fast_lists(schema, source)
+        return schema
 
 
 class MutableTelegramObject(TelegramObject):

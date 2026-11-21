@@ -22,9 +22,9 @@
       {
         "type": "Array of PassportElementError",
         "required": true,
-        "description": "A JSON-serialized array describing the errors",
-        "html_description": "<td>A JSON-serialized array describing the errors</td>",
-        "rst_description": "A JSON-serialized array describing the errors\n",
+        "description": "A JSON-serialized Array describing the errors",
+        "html_description": "<td>A JSON-serialized Array describing the errors</td>",
+        "rst_description": "A JSON-serialized Array describing the errors\n",
         "name": "errors"
       }
     ],

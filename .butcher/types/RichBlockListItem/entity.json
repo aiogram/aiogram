@@ -1,0 +1,65 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Rich messages",
+    "anchor": "rich-messages"
+  },
+  "object": {
+    "anchor": "richblocklistitem",
+    "name": "RichBlockListItem",
+    "description": "An item of a list.",
+    "html_description": "<p>An item of a list.</p>",
+    "rst_description": "An item of a list.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Label of the item",
+        "html_description": "<td>Label of the item</td>",
+        "rst_description": "Label of the item\n",
+        "name": "label",
+        "required": true
+      },
+      {
+        "type": "Array of RichBlock",
+        "description": "The content of the item",
+        "html_description": "<td>The content of the item</td>",
+        "rst_description": "The content of the item\n",
+        "name": "blocks",
+        "required": true
+      },
+      {
+        "type": "True",
+        "description": "True, if the item has a checkbox",
+        "html_description": "<td><em>Optional</em>. <em>True</em>, if the item has a checkbox</td>",
+        "rst_description": "*Optional*. :code:`True`, if the item has a checkbox\n",
+        "name": "has_checkbox",
+        "required": false
+      },
+      {
+        "type": "True",
+        "description": "True, if the item has a checked checkbox",
+        "html_description": "<td><em>Optional</em>. <em>True</em>, if the item has a checked checkbox</td>",
+        "rst_description": "*Optional*. :code:`True`, if the item has a checked checkbox\n",
+        "name": "is_checked",
+        "required": false
+      },
+      {
+        "type": "Integer",
+        "description": "For ordered lists, the numeric value of the item label",
+        "html_description": "<td><em>Optional</em>. For ordered lists, the numeric value of the item label</td>",
+        "rst_description": "*Optional*. For ordered lists, the numeric value of the item label\n",
+        "name": "value",
+        "required": false
+      },
+      {
+        "type": "String",
+        "description": "For ordered lists, the type of the item label; must be one of 'a' for lowercase letters, 'A' for uppercase letters, 'i' for lowercase Roman numerals, 'I' for uppercase Roman numerals, or '1' for decimal numbers",
+        "html_description": "<td><em>Optional</em>. For ordered lists, the type of the item label; must be one of &#8220;a&#8221; for lowercase letters, &#8220;A&#8221; for uppercase letters, &#8220;i&#8221; for lowercase Roman numerals, &#8220;I&#8221; for uppercase Roman numerals, or &#8220;1&#8221; for decimal numbers</td>",
+        "rst_description": "*Optional*. For ordered lists, the type of the item label; must be one of 'a' for lowercase letters, 'A' for uppercase letters, 'i' for lowercase Roman numerals, 'I' for uppercase Roman numerals, or '1' for decimal numbers\n",
+        "name": "type",
+        "required": false
+      }
+    ],
+    "category": "types"
+  }
+}
