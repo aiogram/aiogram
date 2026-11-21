@@ -44,6 +44,7 @@ class TelegramMethod(BotContextController, BaseModel, Generic[TelegramType], ABC
         extra="allow",
         populate_by_name=True,
         arbitrary_types_allowed=True,
+        defer_build=True,
     )
 
     if TYPE_CHECKING:
