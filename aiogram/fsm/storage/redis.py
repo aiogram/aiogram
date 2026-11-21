@@ -137,7 +137,7 @@ class RedisStorage(BaseStorage):
         return cast(dict[str, Any], self.json_loads(value))
 
     async def _get_data_raw(self, key: StorageKey) -> bytes | str | None:
-        """Internal hook (PD-35): the stored data as JSON text, ``None`` when there is none.
+        """Internal hook (PD-36): the stored data as JSON text, ``None`` when there is none.
 
         Typed reads parse it in one pass (``ModelConverter.load_json``), bypassing
         ``json_loads``; the dict API above keeps using the hooks.

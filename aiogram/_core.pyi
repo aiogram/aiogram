@@ -1,5 +1,5 @@
 # Hand-written stub for the native extension (crates/aiogram-core), checked against the
-# built module by `make stubtest` (PD-35, as pydantic-core does).
+# built module by `make stubtest` (PD-36, as pydantic-core does).
 from collections.abc import Sequence
 from typing import Any, Self, TypedDict, final, type_check_only
 
@@ -19,7 +19,7 @@ def build_info() -> BuildInfo: ...
 
 @final
 class ModelSchema:
-    """Compiled field table of ``aiogram.utils._converters.ModelConverter`` (F-08, PD-35)."""
+    """Compiled field table of ``aiogram.utils._converters.ModelConverter`` (F-08, PD-36)."""
 
     def __new__(cls, converter: Any) -> Self: ...
     def load_dict(self, value: Any) -> Any: ...
@@ -31,7 +31,7 @@ class ModelSchema:
 
 @final
 class KindCore:
-    """Compiled core of one built-in converter of ``aiogram.utils._converters`` (PD-35)."""
+    """Compiled core of one built-in converter of ``aiogram.utils._converters`` (PD-36)."""
 
     def __new__(cls, converter: Any) -> Self: ...
     def from_json(self, value: Any) -> Any: ...

@@ -1,5 +1,5 @@
 """
-F-08 micro-benchmarks: the converter core (Rust, PD-35) against pydantic v2.
+F-08 micro-benchmarks: the converter core (Rust, PD-36) against pydantic v2.
 
 Same cases as tasks/F-08 report-03 (a: callback unpack, b: flat dict, c/c': flat JSON,
 d/d': 20 fields), A-05 method (warm-up, GC off, loops >= 0.2 s, median of 7).

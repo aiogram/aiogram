@@ -1,4 +1,4 @@
-//! The converter core (`aiogram/utils/_converters.py`, F-08, PD-35): the Python module compiles
+//! The converter core (`aiogram/utils/_converters.py`, F-08, PD-36): the Python module compiles
 //! annotations into converters, and this tree does all per-value conversion.
 //!
 //! - [`errors`]: `ConversionError` with field paths, the depth guard;

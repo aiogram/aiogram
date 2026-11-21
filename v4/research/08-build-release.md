@@ -11,7 +11,7 @@
 - Build: maturin, `python-source = "python"`, module `pydantic_core._pydantic_core`, PyO3 0.30, jiter for JSON.
 - Wheels: 140 files per release, **no abi3**. cp310–cp315 + cp314t/cp315t, manylinux (x86_64, i686, aarch64,
   armv7l, ppc64le, s390x, riscv64), musllinux (x86_64, aarch64, armv7l), macOS x86_64/arm64, Windows
-  x86/x64/arm64, PyPy 3.11, GraalPy, emscripten. **No pure-Python fallback.**
+  x86/x64/arm64, PyPy 3.11, GraalPy, emscripten. **No pure-Python fallback.** (Precedent only: we do not ship PyPy wheels, PD-35.)
 - Their own guidance: Python callbacks inside Rust (wrap validators) are slow, and `model_validate_json` beats
   `json.loads` + `model_validate`. In short: **cross the boundary rarely, with big payloads.**
 
@@ -26,7 +26,7 @@ pyproject.toml          # build-backend = "maturin"; [tool.maturin] python-sourc
 Cargo.toml              # workspace (crate + butcher + xtask)
 crates/aiogram-core/    # ONE crate: generated/ + hand-written decode/encode/entities/ctx + *_ext.rs, PyO3 bindings
 aiogram/                # Python package (unchanged location)
-aiogram/_core.pyi       # hand-written stub for the non-generated surface, checked by stubtest (PD-35); generated stubs live beside types
+aiogram/_core.pyi       # hand-written stub for the non-generated surface, checked by stubtest (PD-36); generated stubs live beside types
 crates/butcher/         # generator, run via `cargo xtask butcher` (02 §5)
 butcher/                # overlay, ledger, IR snapshots (02)
 ```
@@ -60,8 +60,8 @@ rebuilding the wheel matrix hurts.
 ## 4. Wheel matrix
 
 **Release-blocking tiers (D119).** **Tier 1** (blocks a release): CPython cp311–cp315 + cp314t/cp315t on manylinux
-x86_64/aarch64, musllinux x86_64/aarch64, macOS arm64/x86_64, Windows x64. **Best-effort** (never blocks): PyPy
-pp311/pp312, Windows arm64, i686/armv7l/ppc64le/s390x. An sdist is always published.
+x86_64/aarch64, musllinux x86_64/aarch64, macOS arm64/x86_64, Windows x64. **Best-effort** (never blocks):
+Windows arm64, i686/armv7l/ppc64le/s390x. PyPy is not supported (PD-35). An sdist is always published.
 
 - CPython **cp311–cp315**, per-version (abi3 can't load on free-threaded builds, and per-version keeps the
   version-specific speedups). Kept regardless of an abi3 comparison: the CI cost (≈10 min per wheel) is
@@ -69,7 +69,7 @@ pp311/pp312, Windows arm64, i686/armv7l/ppc64le/s390x. An sdist is always publis
 - Free-threaded **cp314t, cp315t**.
 - Linux manylinux x86_64/aarch64 (+ best-effort i686, armv7l, ppc64le, s390x); musllinux
   x86_64/aarch64; macOS x86_64/arm64; Windows x64 (+ best-effort arm64; x86 if users ask).
-- PyPy **pp311 + pp312** best-effort (D7; PyPy 8.0.1 is stable for both): built and tested, documented as slower than CPython (cpyext).
+- No PyPy wheels: PyPy is not supported in 4.x (PD-35, supersedes D7); stay on 3.x.
 - Later (a separate decision from B16, which only declined an abi3 comparison for 4.0): when the floor reaches 3.15, switch the non-ft wheels to `abi3` and ft wheels to `abi3t` (PEP 803,
   Final), which collapses the matrix.
 - sdist published, but building it needs Rust ≥ MSRV (documented; affects exotic platforms and Termux).
@@ -81,7 +81,7 @@ cibuildwheel is the alternative if we need its test-in-wheel matrix.
 
 - PR: `cargo fmt --check`, `cargo clippy -D warnings`, `cargo test`; Python lint/mypy/pytest on a single
   wheel built with `maturin develop --release`; butcher `check` (committed output == regenerated); `stubtest`.
-- Matrix: 3.11–3.15, 3.14t/3.15t, PyPy 3.11/3.12, Windows, macOS.
+- Matrix: 3.11–3.15, 3.14t/3.15t, Windows, macOS; no PyPy (PD-35).
 - clippy restriction lints `unwrap_used`, `expect_used`, `panic`, `todo`, `unimplemented` = deny, also in generated
   code; `allow(clippy::all)` there doesn't mask them (13 B11).
 - **Largest-unit guard (B25):** a scheduled release build with `-C save-temps` records the per-unit object sizes. It

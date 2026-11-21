@@ -46,7 +46,7 @@ lint:
 	$(MAKE) stubtest
 	uv run pre-commit run --all-files --show-diff-on-failure
 
-# aiogram/_core.pyi is hand-written (PD-35, as pydantic-core does); stubtest checks it against
+# aiogram/_core.pyi is hand-written (PD-36, as pydantic-core does); stubtest checks it against
 # the built extension. Exceptions, if ever needed, go in an --allowlist file with a reason.
 .PHONY: stubtest
 stubtest:

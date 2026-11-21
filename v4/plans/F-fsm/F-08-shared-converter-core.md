@@ -45,10 +45,10 @@ layer (the B gate) or on pydantic, so F-09 can ship whatever the gate decides.
   compile loops.
 - An **independent converter contract suite** (R16) in `tests/test_utils/test_converters.py`: per type, both codecs,
   round trip, rejected inputs, field paths, defaults, recursion.
-- **Added by PD-35 (owner, 2026-11-21):**
+- **Added by PD-36 (owner, 2026-11-21):**
   - **all per-value conversion in Rust** (`aiogram._core.ModelSchema` / `KindCore` in `crates/aiogram-core/src/conv/`):
     dict walker (`from_json`), one-pass JSON bytes (`load_json`, `jiter`), `to_json` / `dump`, and the flat codec
-    (`from_flat` / `to_flat`). Rust-only: PyPy is dropped from 4.x (the `pypy-drop` PD), so there is no Python backend.
+    (`from_flat` / `to_flat`). Rust-only: PyPy is dropped from 4.x (PD-35), so there is no Python backend.
     `_converters.py` keeps the class-creation compiler, `register_converter`, `ConversionError` and the API;
   - `ModelConverter.from_flat` / `to_flat` / `load_json`, so F-09 and F-11 never loop over fields themselves;
   - the internal `RedisStorage._get_data_raw` hook for one-pass typed reads;
@@ -83,7 +83,7 @@ layer (the B gate) or on pydantic, so F-09 can ship whatever the gate decides.
 - Loading a 5-field flat class (int, str, Enum, `int | None`, bool) from a dict ≤ 3 µs on the A-05 reference machine
   (3.x pydantic `CallbackData.unpack` is 2.9 µs; record the measured number in Notes).
 - No import of pydantic, attrs or msgspec in the module (`python -X importtime` check in a test). The module needs
-  `aiogram._core` by design (PD-35: Rust-only, PyPy is dropped) and imports it on first use, so importing the
+  `aiogram._core` by design (PD-36: Rust-only, PyPy is dropped by PD-35) and imports it on first use, so importing the
   module stays stdlib-only.
 
 ## Rejected alternatives
@@ -93,7 +93,7 @@ layer (the B gate) or on pydantic, so F-09 can ship whatever the gate decides.
 | Keep pydantic for validation | pydantic is no longer a dependency | D14 |
 | Separate converters for CallbackData and FSMData | One table, flat subset vs JSON superset | D30, 04 §7 |
 | Per-call reflection over annotations | Cost; table is built at class creation | 04 §7 |
-| ~~Rust converters~~ | ~~User field conversion dominates; no gain~~ — revisited: all conversion runs in Rust (Rust-only, PyPy dropped), 2–4× faster than the pure-Python core | PD-35 |
+| ~~Rust converters~~ | ~~User field conversion dominates; no gain~~ — revisited: all conversion runs in Rust (Rust-only, PyPy dropped by PD-35), 2–4× faster than the pure-Python core | PD-36 |
 
 ## Validation
 
@@ -154,8 +154,8 @@ make lint
   `get_type_hints(format=FORWARDREF)`; the default format raises `NameError` even with `localns`.
 - The `-X importtime` test is skipped on PyPy, which ignores the flag.
 
-- **PD-35 (briefs 04–08, 2026-11-21)** revises this plan: Rust now, Rust-only, raw-bytes path, more kinds, stubtest.
-  - **Rust-only (brief 08).** PyPy is dropped from 4.x (the `pypy-drop` PD), so the converter has one backend. The
+- **PD-36 (briefs 04–08, 2026-11-21)** revises this plan: Rust now, Rust-only, raw-bytes path, more kinds, stubtest.
+  - **Rust-only (brief 08).** PyPy is dropped from 4.x (PD-35), so the converter has one backend. The
     first design (briefs 04–07) kept the Python code as the reference and PyPy backend, with Rust as a fast path that
     fell back to Python; it is replaced by a Python layer over Rust. Dropped with it: the Python per-value code,
     `_use_backend`, the PyPy guard, the differential Python-vs-Rust tests and the PyPy benchmark runs.

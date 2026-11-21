@@ -12,7 +12,7 @@ annotation raises :class:`TypeError` at class creation; bad input raises
 :class:`ConversionError` carrying the field path (``address.zip``, ``tags[2]``).
 
 This module compiles annotations into converters; all per-value conversion runs in
-Rust, in ``aiogram._core`` (PD-35: Rust-only, since PyPy is dropped from 4.x). The
+Rust, in ``aiogram._core`` (PD-36: Rust-only, since PyPy is dropped from 4.x, PD-35). The
 module imports only the standard library: ``aiogram._core`` is imported on first use.
 """
 
@@ -93,7 +93,7 @@ class Converter:
 
     Subclass it for :func:`register_converter` or a per-field ``Annotated[T, MyConverter()]``;
     the Rust core calls these methods. The built-in converters below carry only compile data
-    (a ``kind`` tag, types, tables): their per-value work runs in Rust (PD-35).
+    (a ``kind`` tag, types, tables): their per-value work runs in Rust (PD-36).
     """
 
     flat: bool = False
@@ -377,7 +377,7 @@ def _types(converter: Converter, *, json_form: bool) -> frozenset[type]:
 
 
 class _Union(_Native):
-    """``A | B | ...`` (with or without ``None``), smart mode (PD-35).
+    """``A | B | ...`` (with or without ``None``), smart mode (PD-36).
 
     A member whose type matches the value exactly is tried first (``int | str`` keeps ``1`` and
     ``"1"`` apart, ``float | int`` keeps ``1`` an int), then every member left to right; the
@@ -647,7 +647,7 @@ def converter_for(tp: Any) -> Converter:
     if origin is Annotated:
         base, *metadata = get_args(tp)
         for marker in metadata:
-            if isinstance(marker, Converter):  # a per-field converter (PD-35)
+            if isinstance(marker, Converter):  # a per-field converter (PD-36)
                 return marker
         for marker in metadata:
             if isinstance(marker, Discriminator):

@@ -48,15 +48,6 @@ make lint
 uv run pytest tests
 ```
 
-PyPy 3.11 on macOS arm64 segfaults on `copy` / `deepcopy` of `DefaultBotProperties`, and CI
-does not reproduce it. Before pushing a change that copies or pickles models, run the
-touched tests on a local PyPy, in a separate environment so `.venv` is left alone:
-
-```bash
-UV_PROJECT_ENVIRONMENT=/tmp/aiogram-pypy uv sync --locked --all-extras --group test --python pypy3.11
-UV_PROJECT_ENVIRONMENT=/tmp/aiogram-pypy uv run --no-sync python -m pytest <touched tests> -p no:cacheprovider
-```
-
 When touching `.github/**`, also run:
 
 ```bash
@@ -183,9 +174,9 @@ These patterns repeatedly appeared in maintainer feedback and should be treated 
   `crates/aiogram-core/Cargo.toml`. Only change it with `make bump`: it writes both copies and refreshes
   `Cargo.lock` and `uv.lock` (`uv sync --locked` fails otherwise). `test_build.py` asserts they match.
 - `tests/typing/` holds mypy-only `assert_type` files, never collected by pytest; run them with `make typing`.
-- `aiogram/_core.pyi` is hand-written (PD-35). After changing the `_core` surface, update it and run `make stubtest`
+- `aiogram/_core.pyi` is hand-written (PD-36). After changing the `_core` surface, update it and run `make stubtest`
   (also part of `make lint`); stubtest needs the built extension.
-- Converter core (`aiogram/utils/_converters.py` + `crates/aiogram-core/src/conv/`, PD-35): Python compiles
+- Converter core (`aiogram/utils/_converters.py` + `crates/aiogram-core/src/conv/`, PD-36): Python compiles
   annotations into converter objects (tags, tables, labels); Rust does every conversion and builds the
   `ConversionError`s. There is no Python backend (PyPy is dropped).
   - A new kind needs a `kind` tag, a Rust `Data` variant and its arm in `load`, `dump`, `json` and `flat`. Without

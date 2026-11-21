@@ -851,7 +851,7 @@ class TestLoadJson:
         assert math.isnan(loaded.ratio)
 
     def test_lone_surrogate_escape_is_invalid(self):
-        # json.loads keeps an escaped lone surrogate; jiter rejects it (PD-35, F-08 Notes)
+        # json.loads keeps an escaped lone surrogate; jiter rejects it (PD-36, F-08 Notes)
         with pytest.raises(ConversionError, match="invalid JSON"):
             Address.__converter__.load_json(rb'{"city": "\ud800"}')
 
