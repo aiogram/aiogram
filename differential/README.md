@@ -92,7 +92,8 @@ A case present on one side only is always a mismatch.
 **Poison control.** `--poison left|right` passes `--poison` to that side only. The side script then
 corrupts real behaviour in its own process; `smoke` flips one field of every decoded object. The run
 must report at least one mismatch per kind, or it exits 2 with `poison not detected`. CI
-(`.github/workflows/differential.yml`, weekly and on demand) runs `smoke` once clean and once
+(`.github/workflows/differential.yml`: weekly, on demand, and on PRs that touch `differential/`,
+the corpus or the workflow) runs `smoke` once clean and once
 poisoned; a plan that adds a kind's probe adds the same two steps for that kind.
 
 ## Adding an approved difference
