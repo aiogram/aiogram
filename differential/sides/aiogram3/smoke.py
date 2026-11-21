@@ -17,6 +17,8 @@ from pathlib import Path
 from types import ModuleType
 from typing import Any
 
+from pydantic import ValidationError
+
 import aiogram
 from aiogram.types import TelegramObject, Update
 
@@ -70,8 +72,10 @@ def main() -> None:
         raw = (corpus / paths[case]).read_bytes()
         try:
             update = Update.model_validate_json(raw)
-        except Exception as exc:  # noqa: BLE001 - a failed decode is a recorded outcome
-            records.append(trace.error(case, "decode", exc))
+        except ValidationError as exc:  # a failed decode is a recorded outcome
+            # no str(exc): it embeds the pydantic version in a docs URL
+            attrs = {"errors": exc.errors(include_url=False, include_input=False)}
+            records.append(trace.error(case, "decode", exc, attrs=attrs))
             continue
         if args.poison:
             poison(update)

@@ -1,6 +1,15 @@
-# Routing kind (A-10). Schema: differential/README.md. First matching entry wins; unmatched cases are invariant.
+# Routing kind (A-10). Schema: differential/README.md. First matching entry wins (keep case-specific
+# entries above probe wildcards); unmatched cases are invariant.
 # Seeded 4.0 approved differences (README breaking changes): `when = "aiogram4"` keeps them inert in 3.x-vs-3.x
 # runs, and each `assert` is a stub comparator that never approves until its owning plan refines the entry.
+
+[[case]]
+match = "routing.*/kwargs"
+class = "approved"
+decision = "D12"
+assert = "event_context_only_kwargs"
+when = "aiogram4"
+note = "event_from_user / event_chat / event_thread_id no longer injected, only event_context (breaking change 11)"
 
 [[case]]
 match = "routing.middleware.outer.*"
@@ -49,11 +58,3 @@ decision = "D114"
 assert = "routing_snapshot_per_runner"
 when = "aiogram4"
 note = "per-Runner immutable routing snapshot (breaking change 4)"
-
-[[case]]
-match = "routing.*/kwargs"
-class = "approved"
-decision = "D12"
-assert = "event_context_only_kwargs"
-when = "aiogram4"
-note = "event_from_user / event_chat / event_thread_id no longer injected, only event_context (breaking change 11)"

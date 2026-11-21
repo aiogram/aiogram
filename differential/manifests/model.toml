@@ -1,7 +1,24 @@
-# Model kind (A-08). Schema: differential/README.md. First matching entry wins; unmatched cases are invariant.
+# Model kind (A-08). Schema: differential/README.md. First matching entry wins (keep case-specific
+# entries above probe wildcards); unmatched cases are invariant.
 # Seeded 4.0 approved differences (README breaking changes): `when = "aiogram4"` keeps them inert in 3.x-vs-3.x
 # runs, and each `assert` is a stub comparator that never approves until its owning plan refines the entry.
 # `gate = true` follows the A-07 plan (D83-D87, D91-D95, D103, D106-D108): void if B-13 is a no-go.
+
+[[case]]
+match = "model.update.forward_compat.*"
+class = "new"
+decision = "D10"
+when = "aiogram4"
+note = "10 Layer 2: element-wise getUpdates decode; a failing element becomes Update(decode_error=...)"
+
+[[case]]
+match = "model.union.malformed.*"
+class = "approved"
+decision = "D107"
+assert = "malformed_member_is_unknown"
+gate = true
+when = "aiogram4"
+note = "a malformed union member becomes Unknown with .decode_error (breaking change 3/9)"
 
 [[case]]
 match = "model.*/eq.*"
@@ -47,22 +64,6 @@ assert = "collections_are_tuples"
 gate = true
 when = "aiogram4"
 note = "collection fields are cached tuples (breaking change 23)"
-
-[[case]]
-match = "model.union.malformed.*"
-class = "approved"
-decision = "D107"
-assert = "malformed_member_is_unknown"
-gate = true
-when = "aiogram4"
-note = "a malformed union member becomes Unknown with .decode_error (breaking change 3/9)"
-
-[[case]]
-match = "model.update.forward_compat.*"
-class = "new"
-decision = "D10"
-when = "aiogram4"
-note = "10 Layer 2: element-wise getUpdates decode; a failing element becomes Update(decode_error=...)"
 
 [[case]]
 match = "model.*/as_"

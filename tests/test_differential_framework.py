@@ -459,3 +459,74 @@ class TestSides:
 def test_cli_harness_error(capsys):
     assert runner.main(["run", "--kind", "smoke", "--left", "bogus", "--right", "path:."]) == 3
     assert "harness error: bad side" in capsys.readouterr().err
+
+
+def test_trace_round_trips_unicode_line_separators(tmp_path):
+    path = tmp_path / "t.jsonl"
+    records = [trace.ok("a", "b", "x y z\x85w\rv")]
+    trace.write(path, {}, records)
+    assert trace.read(path) == ({}, records)
+
+
+@pytest.mark.parametrize("key", ["when", "assert"])
+def test_manifest_rejects_non_string_values(tmp_path, key):
+    text = '[[case]]\nmatch = "a"\nclass = "approved"\ndecision = "D1"\nassert = "json_shaped_extras"\n'
+    text = text.replace(f'{key} = "json_shaped_extras"\n', "") + f"{key} = [1]\n"
+    with pytest.raises(HarnessError):
+        runner.load_manifest(write_manifest(tmp_path, text))
+
+
+class TestCliExitCodes:
+    @pytest.fixture
+    def sides(self, monkeypatch, tmp_path):
+        monkeypatch.setattr(runner, "STATE", tmp_path)
+        traces: list[runner.Trace] = []
+        monkeypatch.setattr(runner, "run_side", lambda *args, **kwargs: traces.pop(0))
+        return traces
+
+    def run(self, *extra: str) -> int:
+        return runner.main(
+            ["run", "--kind", "smoke", "--left", "git:HEAD", "--right", "path:.", *extra]
+        )
+
+    def test_clean_and_poisoned(self, sides):
+        sides.extend([as_trace(fake_side()), as_trace(fake_side())])
+        assert self.run() == runner.EXIT_OK
+        sides.extend([as_trace(fake_side()), as_trace(fake_side(poison=True))])
+        assert self.run("--poison", "right") == runner.EXIT_MISMATCH
+
+    def test_duplicate_record_is_a_harness_error(self, sides, capsys):
+        sides.extend([as_trace(fake_side()), as_trace(fake_side() * 2)])
+        assert self.run("--poison", "right") == runner.EXIT_HARNESS_ERROR
+        assert "twice" in capsys.readouterr().err
+
+    def test_malformed_record_is_a_harness_error(self, sides, capsys):
+        sides.extend([as_trace(fake_side()), as_trace([{"probe": "dump"}])])
+        assert self.run("--poison", "right") == runner.EXIT_HARNESS_ERROR
+        assert "harness error" in capsys.readouterr().err
+
+    def test_usage_error_is_a_harness_error(self, capsys):
+        with pytest.raises(SystemExit) as exc:
+            runner.main(["run", "--kind", "nope", "--left", "git:HEAD", "--right", "path:."])
+        assert exc.value.code == runner.EXIT_HARNESS_ERROR
+
+
+def test_path_side_always_rebuilds(monkeypatch, tmp_path):
+    """uv caches local builds by pyproject only: a fresh venv must not reuse a stale wheel."""
+    monkeypatch.setattr(runner, "STATE", tmp_path)
+    commands: list[list[str]] = []
+
+    def fake_run(cmd: list[str], **kwargs: Any) -> bytes:
+        commands.append(cmd)
+        if cmd[1] == "venv":
+            Path(cmd[-1]).mkdir(parents=True)
+        return b""
+
+    monkeypatch.setattr(runner, "_run", fake_run)
+    monkeypatch.setattr(runner, "_uv", lambda: "uv")
+    side = runner.parse_side(f"path:{ROOT}")
+    runner.prepare(side)  # first build into a fresh venv
+    runner.prepare(side)  # reuse
+    installs = [cmd for cmd in commands if "install" in cmd]
+    assert len(installs) == 2
+    assert all("--reinstall-package" in cmd for cmd in installs)

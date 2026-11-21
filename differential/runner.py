@@ -18,10 +18,11 @@ import sys
 import tarfile
 import tempfile
 import tomllib
+import traceback
 from collections.abc import Callable
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any
+from typing import Any, NoReturn
 
 from differential import trace
 
@@ -154,7 +155,7 @@ def load_manifest(path: str | Path) -> list[Entry]:  # noqa: C901 - one check pe
             msg = f"{where}: class {cls!r} needs a 'decision'"
             raise HarnessError(msg)
         if cls == "approved":
-            if raw.get("assert") not in COMPARATORS:
+            if not isinstance(raw.get("assert"), str) or raw["assert"] not in COMPARATORS:
                 got = raw.get("assert")
                 msg = f"{where}: 'assert' must name a registered comparator, got {got!r}"
                 raise HarnessError(msg)
@@ -164,7 +165,7 @@ def load_manifest(path: str | Path) -> list[Entry]:  # noqa: C901 - one check pe
         if not isinstance(raw.get("gate", False), bool):
             msg = f"{where}: 'gate' must be a boolean"
             raise HarnessError(msg)
-        if raw.get("when") not in {None, *ADAPTERS}:
+        if raw.get("when") is not None and raw["when"] not in ADAPTERS:
             msg = f"{where}: 'when' must be one of {ADAPTERS}"
             raise HarnessError(msg)
         entries.append(
@@ -371,7 +372,10 @@ def prepare(side: Side) -> tuple[Path, str | None]:
             src.mkdir(parents=True)
             archive = _run(["git", "archive", "--format=tar", commit], cwd=REPO)
             with tarfile.open(fileobj=io.BytesIO(archive)) as tar:
-                tar.extractall(src, filter="data")
+                if hasattr(tarfile, "data_filter"):  # 3.11.4+
+                    tar.extractall(src, filter="data")
+                else:  # our own `git archive` output
+                    tar.extractall(src)  # noqa: S202
             (src / ".complete").touch()
         target, resolved = str(src), commit
     else:
@@ -385,26 +389,18 @@ def prepare(side: Side) -> tuple[Path, str | None]:
     venv = STATE / "venvs" / key
     python = _venv_python(venv)
     marker = venv / ".differential-complete"
+    install = [_uv(), "pip", "install", "--quiet", "--python", str(python), target]
+    if side.scheme == "path":
+        # the directory's content changes between runs, and uv caches local builds by
+        # pyproject.toml only: always rebuild, even into a fresh venv
+        install[3:3] = ["--reinstall-package", "aiogram"]
     if not marker.exists():
         shutil.rmtree(venv, ignore_errors=True)
         _run([_uv(), "venv", "--quiet", "--python", sys.executable, str(venv)])
-        _run([_uv(), "pip", "install", "--quiet", "--python", str(python), target])
+        _run(install)
         marker.touch()
     elif side.scheme == "path":
-        # the directory's content changes between runs: always rebuild it
-        _run(
-            [
-                _uv(),
-                "pip",
-                "install",
-                "--quiet",
-                "--python",
-                str(python),
-                "--reinstall-package",
-                "aiogram",
-                target,
-            ]
-        )
+        _run(install)
     return python, commit
 
 
@@ -463,8 +459,15 @@ def run_side(side: Side, kind: str, corpus: Path, out: Path, *, poison: bool) ->
 # ------------------------------------------------------------------------------------------------
 
 
+class _Parser(argparse.ArgumentParser):
+    def error(self, message: str) -> NoReturn:
+        # argparse exits 2, which would read as "poison not detected"
+        self.print_usage(sys.stderr)
+        self.exit(EXIT_HARNESS_ERROR, f"{self.prog}: error: {message}\n")
+
+
 def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(prog="python -m differential")
+    parser = _Parser(prog="python -m differential")
     sub = parser.add_subparsers(dest="command", required=True)
     run = sub.add_parser("run", help="run one kind on two sides and compare the traces")
     run.add_argument("--kind", required=True, choices=KINDS)
@@ -492,11 +495,14 @@ def main(argv: list[str] | None = None) -> int:
             )
             for name, side in (("left", left), ("right", right))
         ]
+        code, report = evaluate(
+            traces[0], traces[1], entries, poison=args.poison, max_diffs=args.max_diffs
+        )
     except HarnessError as exc:
         sys.stderr.write(f"harness error: {exc}\n")
         return EXIT_HARNESS_ERROR
-    code, report = evaluate(
-        traces[0], traces[1], entries, poison=args.poison, max_diffs=args.max_diffs
-    )
+    except Exception:  # noqa: BLE001 - a crash must never exit 1, which reads as "mismatches"
+        sys.stderr.write(f"harness error: unexpected exception\n{traceback.format_exc()}")
+        return EXIT_HARNESS_ERROR
     sys.stdout.write(f"{report}\ntraces: {out_dir}\n")
     return code

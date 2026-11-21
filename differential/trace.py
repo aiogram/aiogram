@@ -119,8 +119,9 @@ def write(path: str | Path, header: dict[str, Any], records: list[dict[str, Any]
 
 
 def read(path: str | Path) -> tuple[dict[str, Any], list[dict[str, Any]]]:
-    lines = Path(path).read_text(encoding="utf-8").splitlines()
-    if not lines:
+    # split on "\n" only: str.splitlines() also breaks on U+2028, U+0085, ... inside values
+    lines = Path(path).read_text(encoding="utf-8").split("\n")
+    if not lines[0]:
         msg = f"{path}: empty trace"
         raise ValueError(msg)
     first = json.loads(lines[0])

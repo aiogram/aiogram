@@ -26,7 +26,7 @@ uv run python -m differential run --kind model --left pypi:aiogram==3.32.0 --rig
 | 0 | no unapproved mismatch |
 | 1 | unapproved mismatches; with `--poison`, the expected result |
 | 2 | `--poison` given and nothing differed: `poison not detected`, the harness is blind |
-| 3 | harness error: bad side or manifest, venv build, side crash |
+| 3 | harness error: bad arguments, side or manifest, venv build, side crash, malformed trace |
 
 ## Concepts
 
@@ -54,6 +54,8 @@ Probes go through the public entry points (`Update.model_validate_json`, `bot(me
   poison}}`. It is printed in the report and never compared.
 - Every other line is one record:
   `{case, probe, ok, value | error: {type, attrs}, meta}`. A failing probe is recorded, not raised.
+  `attrs` must be stable across dependency versions (the two venvs resolve independently): for a
+  pydantic `ValidationError`, record `errors(include_url=False, include_input=False)`, not `str(exc)`.
 - `trace.canonical` makes values JSON-native. Finite floats stay numbers. Anything else that JSON
   cannot hold exactly gets a `__kind__` tag: `float` (nan/inf), `bytes` (base64), `set` (sorted
   items), `tuple`, `datetime`/`date`/`time`/`timedelta`, `decimal`, `enum`, `dict` (non-str keys, or
@@ -74,7 +76,8 @@ when = "aiogram4"                        # optional: active only if a side uses 
 note = "free text"
 ```
 
-Entries are tried in file order and the first active match wins. A record that matches nothing is
+Entries are tried in file order and the first active match wins, so keep case-specific entries
+above probe wildcards (`model.*/dump_json`). A record that matches nothing is
 `invariant`. The loader rejects unknown keys, so a plan that needs a new key (for example
 normalisation rules or platform conditions) adds it to the loader and the self-tests.
 
@@ -89,8 +92,8 @@ A case present on one side only is always a mismatch.
 **Poison control.** `--poison left|right` passes `--poison` to that side only. The side script then
 corrupts real behaviour in its own process; `smoke` flips one field of every decoded object. The run
 must report at least one mismatch per kind, or it exits 2 with `poison not detected`. CI
-(`.github/workflows/differential.yml`, weekly and on demand) runs every kind once clean and once
-poisoned.
+(`.github/workflows/differential.yml`, weekly and on demand) runs `smoke` once clean and once
+poisoned; a plan that adds a kind's probe adds the same two steps for that kind.
 
 ## Adding an approved difference
 

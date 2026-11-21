@@ -45,7 +45,8 @@ lint:
 	# aiogram/types/custom.py has a `sys.platform == "win32"` branch that mypy prunes as
 	# unreachable on Linux; this second pass type-checks it.
 	uv run mypy --native-parser --num-workers 8 --platform win32 $(package_dir)
-	uv run mypy --native-parser $(differential_dir)
+	# side scripts share names across adapters (sides/aiogram3/smoke.py, sides/aiogram4/smoke.py)
+	uv run mypy --native-parser --explicit-package-bases $(differential_dir)
 	uv run pre-commit run --all-files --show-diff-on-failure
 
 .PHONY: lint-workflows
