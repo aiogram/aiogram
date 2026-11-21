@@ -53,7 +53,7 @@ pub(crate) fn walk<'py, const BUILD: bool>(
             Ok(if BUILD { out.into_any() } else { value.clone() })
         }
         Data::Union(union) => self::union::<BUILD>(py, value, union, label, ctx),
-        Data::Lazy(_) => walk::<BUILD>(py, value, kind.resolved(py)?, ctx),
+        Data::Lazy(_) => walk::<BUILD>(py, value, kind.resolved(py)?, ctx.deeper()?),
         _ => scalar::<BUILD>(py, value, kind),
     }
 }

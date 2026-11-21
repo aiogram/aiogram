@@ -302,7 +302,8 @@ fn lines_of(py: Python<'_>, error: &PyErr) -> PyResult<Option<Vec<Line>>> {
             notes: Vec::new(),
         });
     }
-    Ok(Some(lines))
+    // a ConversionError without details: the ValueError path (its text, as the cause)
+    Ok((!lines.is_empty()).then_some(lines))
 }
 
 /// `<loc>: as <member>: <reason loc>: <message>, got <value repr>`.

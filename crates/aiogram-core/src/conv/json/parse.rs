@@ -332,7 +332,7 @@ fn walk<'py>(
                 .ok_or_else(|| PyRuntimeError::new_err("model kind cleared"))?;
             model(py, doc, core.get(), ctx)
         }
-        Data::Lazy(_) => walk(py, doc, peek, kind.resolved(py)?, ctx),
+        Data::Lazy(_) => walk(py, doc, peek, kind.resolved(py)?, ctx.deeper()?),
         Data::Union(union) => self::union(py, doc, peek, union, &kind.label, ctx),
         // user converters, text, enums, literals, numbers of the number kinds, and every
         // value of the wrong JSON type: materialised, then the dict load
@@ -410,6 +410,7 @@ fn model<'py>(
     // per field: (priority of the key read, its value or errors)
     let mut read: Vec<Option<Read<'py>>> = fields.list.iter().map(|_| None).collect();
     let mut count = 0;
+    let mut stopped = false;
     let mut next = doc
         .jiter
         .known_object()?
@@ -437,6 +438,7 @@ fn model<'py>(
                 }
                 read[index] = Some((priority, result));
                 if count > 0 && (ctx.fast || count >= MAX_ERRORS) {
+                    stopped = true;
                     break;
                 }
             }
@@ -456,6 +458,8 @@ fn model<'py>(
                 errors.push(error, ctx)?;
                 slots.push((None, true));
             }
+            // keys after an early stop were not read: not "missing" (errors exist, no build)
+            None if stopped => slots.push((None, false)),
             None => slots.push(load::missing(py, core, field.get(), &mut errors, ctx)?),
         }
     }

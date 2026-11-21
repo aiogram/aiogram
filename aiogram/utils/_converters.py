@@ -204,12 +204,28 @@ def _field_hint(owner: type, name: str, raw: Any, scope: _Scope) -> Any:
 
 def _class_hints(cls: type) -> dict[str, tuple[Any, type]]:
     """Field name -> (raw annotation, declaring class) over ``cls``'s MRO, later bases first."""
+    if is_typeddict(cls):
+        return _typeddict_hints(cls)
     hints: dict[str, tuple[Any, type]] = {}
     for base in reversed(cls.__mro__):
         if base is object or base.__module__ == "builtins":
             continue
         for name, raw in _own_annotations(base).items():
             hints[name] = (raw, base)
+    return hints
+
+
+def _typeddict_hints(cls: type) -> dict[str, tuple[Any, type]]:
+    """A TypedDict's keys with the TypedDict that declares each one: its MRO is just
+    ``(cls, dict, object)``, so the bases come from ``__orig_bases__`` (3.12+; on 3.11 every key
+    is taken as the class's own)."""
+    hints: dict[str, tuple[Any, type]] = {}
+    for base in getattr(cls, "__orig_bases__", ()):
+        if isinstance(base, type) and is_typeddict(base):
+            hints.update(_typeddict_hints(base))
+    for name, raw in _own_annotations(cls).items():
+        if name not in hints:
+            hints[name] = (raw, cls)
     return hints
 
 
@@ -292,6 +308,9 @@ class _Compiler:
         self.frame_locals = frame_locals
         self.memo: dict[type, _core.ModelCore] = {}
         self.aliases: dict[int, tuple[_core.KindCell | None, _core.Kind | None]] = {}
+        # aliases being resolved with no container (list, tuple, dict, model) passed yet: a
+        # reference to one of them is a cycle that never reaches a value (`type X = X | int`)
+        self.unguarded: set[int] = set()
 
     # annotations -> kinds
 
@@ -318,23 +337,31 @@ class _Compiler:
         if origin is Literal:
             return _literal_kind(args)
         if origin is list and len(args) == 1:
-            return _core.Kind.sequence(self.kind(args[0], scope), list)
+            return _core.Kind.sequence(self.item(args[0], scope), list)
         if origin is tuple and len(args) == 2 and args[1] is Ellipsis:  # noqa: PLR2004
-            return _core.Kind.sequence(self.kind(args[0], scope), tuple)
+            return _core.Kind.sequence(self.item(args[0], scope), tuple)
         if origin is tuple and args and Ellipsis not in args:
-            return _core.Kind.tuple_([self.kind(arg, scope) for arg in args])
+            return _core.Kind.tuple_([self.item(arg, scope) for arg in args])
         if origin in {set, frozenset} and len(args) == 1:
             if self.unhashable(args[0], scope, set()):
                 msg = f"unhashable set item {_name(args[0])}"
                 raise TypeError(msg)
-            return _core.Kind.sequence(self.kind(args[0], scope), origin)
+            return _core.Kind.sequence(self.item(args[0], scope), origin)
         if origin is dict and len(args) == 2:  # noqa: PLR2004
             if args[0] is not str:
                 msg = f"dict keys must be str, not {_name(args[0])}"
                 raise TypeError(msg)
-            return _core.Kind.dict_(self.kind(args[1], scope))
+            return _core.Kind.dict_(self.item(args[1], scope))
         msg = f"unsupported annotation {_name(tp)}"
         raise TypeError(msg)
+
+    def item(self, tp: Any, scope: _Scope) -> _core.Kind:
+        """A container item: an alias reached from here is guarded by the container."""
+        saved, self.unguarded = self.unguarded, set()
+        try:
+            return self.kind(tp, scope)
+        finally:
+            self.unguarded = saved
 
     def annotated(self, tp: Any, scope: _Scope) -> _core.Kind:
         base, *metadata = get_args(tp)
@@ -383,6 +410,13 @@ class _Compiler:
         raise TypeError(msg)
 
     def converter_kind(self, converter: Converter, base: Any, scope: _Scope | None) -> _core.Kind:
+        if base is not None:
+            target = self.unwrap(base, scope or _Scope({}, {}))
+            args = get_args(target)
+            if get_origin(target) in _UNION_TYPES and type(None) in args and len(args) == 2:  # noqa: PLR2004
+                # `X | None`: the converter takes X, None stays None
+                inner = next(arg for arg in args if arg is not type(None))
+                return _core.Kind.optional(self.converter_kind(converter, inner, scope))
         if not isinstance(converter, _Native):
             return _core.Kind.python(converter, flat=_flat_converter(converter))
         tp = self.unwrap(base, scope or _Scope({}, {}))
@@ -447,12 +481,22 @@ class _Compiler:
             cell, kind = entry
             if kind is not None:
                 return kind
+            if id(alias) in self.unguarded:
+                msg = (
+                    f"type alias {alias.__name__} refers to itself outside a list, tuple, dict "
+                    f"or model"
+                )
+                raise TypeError(msg)
             if cell is None:
                 cell = _core.KindCell()
                 self.aliases[id(alias)] = (cell, None)
             return _core.Kind.lazy(cell, alias.__name__)
         self.aliases[id(alias)] = (None, None)
-        kind = self.kind(alias.__value__, scope)
+        self.unguarded.add(id(alias))
+        try:
+            kind = self.kind(alias.__value__, scope)
+        finally:
+            self.unguarded.discard(id(alias))
         cell, _ = self.aliases[id(alias)]
         if cell is not None:
             cell.set(kind)
@@ -475,7 +519,11 @@ class _Compiler:
         if core is None:
             core = _core.ModelCore(tp, build="dict" if is_typeddict(tp) else "call")
             self.memo[tp] = core
-            core.set_fields(self.foreign_fields(tp))
+            saved, self.unguarded = self.unguarded, set()
+            try:
+                core.set_fields(self.foreign_fields(tp))
+            finally:
+                self.unguarded = saved
         return core
 
     def foreign_fields(self, tp: type) -> list[_core.Field]:
@@ -537,6 +585,12 @@ class _Compiler:
             return False
         return default
 
+    def locals_of(self, owner: type) -> Mapping[str, Any] | None:
+        """The function locals an annotation of ``owner`` may use: its own (a ``ModelBase``
+        class keeps them), else those of the class being compiled."""
+        info = vars(owner).get("__aiogram_info__")
+        return info.frame_locals() if info is not None else self.frame_locals
+
     # set items
 
     def unhashable(self, tp: Any, scope: _Scope, seen: set[int]) -> bool:  # noqa: C901, PLR0911
@@ -574,7 +628,7 @@ class _Compiler:
         hints = _class_hints(tp)
         for name in hashed:
             raw, owner = hints[name]
-            owner_scope = _scope(owner, _own_annotations(owner), self.frame_locals)
+            owner_scope = _scope(owner, _own_annotations(owner), self.locals_of(owner))
             if self.unhashable(_field_hint(owner, name, raw, owner_scope), owner_scope, seen):
                 return True
         return False

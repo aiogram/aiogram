@@ -1711,3 +1711,124 @@ class TestReviewRegressions:
 
         with pytest.raises(TypeError, match="under different keys"):
             json_codec(Annotated[CatK | DogK, Discriminator("kind")])
+
+    def test_alias_referring_to_itself_outside_a_container(self, module_from_source):
+        if sys.version_info < (3, 12):
+            pytest.skip("PEP 695")
+        module = module_from_source(
+            """
+            type Loop = Loop | int
+            type Tree = dict[str, Tree] | int
+            """
+        )
+        with pytest.raises(TypeError, match="refers to itself outside a list, tuple, dict"):
+            json_codec(module.Loop)
+        assert json_codec(module.Tree).load({"a": {"b": 1}}) == {"a": {"b": 1}}
+
+    def test_load_json_error_cap_reports_no_false_missing_fields(self):
+        class Capped(ModelBase):
+            a: int
+            b: list[int]
+
+        document = json.dumps({"b": ["x"] * 150, "a": 1}).encode()
+        errors = errors_of(json_schema(Capped).load_json, document)
+        assert len(errors) == 100
+        assert all(error[0][0] == "b" for error in errors)
+
+    def test_local_literal_alias_reaches_subclasses(self):
+        def make() -> type:
+            Color = Literal["r", "g"]  # noqa: N806
+
+            class Painted(ModelBase):
+                color: Color
+
+            json_schema(Painted).load({"color": "r"})
+            return Painted
+
+        class Repainted(make()):  # type: ignore[misc]
+            extra: int = 0
+
+        assert json_schema(Repainted).load({"color": "g"}).color == "g"
+
+    def test_set_item_uses_its_own_function_locals(self):
+        def make() -> type:
+            class Inner(ModelBase, frozen=True):
+                a: int
+
+            class Item(ModelBase, frozen=True):
+                x: Inner
+
+            return Item
+
+        item = make()
+
+        class Basket(ModelBase):
+            items: set[item]  # type: ignore[valid-type]
+
+        loaded = json_schema(Basket).load({"items": [{"x": {"a": 1}}]})
+        assert len(loaded.items) == 1
+
+    def test_typeddict_subclass_from_another_module(self, module_from_source):
+        if sys.version_info < (3, 12):
+            pytest.skip("TypedDict has no __orig_bases__ before 3.12")
+        module_from_source(
+            """
+            from __future__ import annotations
+            from typing import TypedDict
+
+            class Point(TypedDict):
+                x: int
+                tag: Tag
+
+            Tag = str
+            """,
+            name="_converters_case_td_base",
+        )
+        child = module_from_source(
+            """
+            from __future__ import annotations
+            from _converters_case_td_base import Point
+
+            class Point3(Point):
+                z: int
+            """
+        )
+        assert json_codec(child.Point3).load({"x": 1, "tag": "t", "z": 2}) == {
+            "x": 1,
+            "tag": "t",
+            "z": 2,
+        }
+
+    def test_converter_on_an_optional_field(self):
+        class Up(Converter):
+            def to_json(self, value: str) -> str:
+                return value.upper()
+
+            def from_json(self, value: Any) -> str:
+                return str(value).lower()
+
+        class Stamped(ModelBase):
+            at: datetime | None = field(default=None, converter=IsoDatetime(timespec="seconds"))
+            name: str | None = field(default=None, converter=Up())
+            other: Annotated[str | None, Up()] = None
+
+        schema = json_schema(Stamped)
+        empty = Stamped()
+        assert schema.dump(empty) == {"at": None, "name": None, "other": None}
+        full = Stamped(at=EPOCH_2, name="a", other="b")
+        assert schema.dump(full) == {"at": "1970-01-01T00:00:02+00:00", "name": "A", "other": "B"}
+        assert schema.load({"name": "X", "at": None}).name == "x"
+
+    def test_empty_conversion_error_from_a_converter(self):
+        class Empty(Converter):
+            def to_json(self, value: Any) -> Any:
+                return value
+
+            def from_json(self, value: Any) -> Any:
+                raise ConversionError("bad", [])
+
+        class Holder(ModelBase):
+            value: Annotated[int, Empty()]
+
+        errors = errors_of(json_schema(Holder).load, {"value": 1})
+        assert [error[:1] for error in errors] == [(("value",),)]

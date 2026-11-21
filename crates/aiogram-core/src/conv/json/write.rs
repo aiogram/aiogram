@@ -174,7 +174,7 @@ impl Writer {
                 self.model(py, value, core.get(), label, ctx)?;
             }
             Data::Union(union) => self.union(py, value, union, label, ctx)?,
-            Data::Lazy(_) => self.write(py, value, kind.resolved(py)?, ctx)?,
+            Data::Lazy(_) => self.write(py, value, kind.resolved(py)?, ctx.deeper()?)?,
             _ => self.scalar(py, value, kind, ctx)?,
         }
         Ok(())

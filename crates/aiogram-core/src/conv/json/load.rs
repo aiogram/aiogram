@@ -59,7 +59,7 @@ pub(crate) fn load<'py>(
             .bind(py)
             .call_method1(pyo3::intern!(py, "from_json"), (value,))
             .map_err(|error| from_user(py, error, value)),
-        Data::Lazy(_) => load(py, value, kind.resolved(py)?, ctx),
+        Data::Lazy(_) => load(py, value, kind.resolved(py)?, ctx.deeper()?),
         Data::Str
         | Data::Uuid { .. }
         | Data::Datetime { .. }
