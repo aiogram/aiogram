@@ -1,8 +1,11 @@
-"""Contract suite for the shared converter core (F-08, R16)."""
+"""Contract suite for the shared converter core (F-08, R16), run over both backends (PD-35)."""
 
 from __future__ import annotations
 
 import dataclasses
+import importlib.util
+import json
+import math
 import subprocess
 import sys
 import textwrap
@@ -12,7 +15,19 @@ from decimal import Decimal
 from enum import Enum, IntEnum, StrEnum
 from fractions import Fraction
 from pathlib import Path
-from typing import Annotated, Any, ClassVar, Literal, Optional, Union
+from collections import namedtuple
+from typing import (
+    Annotated,
+    Any,
+    ClassVar,
+    Literal,
+    NamedTuple,
+    NotRequired,
+    Optional,
+    Required,
+    TypedDict,
+    Union,
+)
 from uuid import UUID
 
 import pytest
@@ -22,12 +37,28 @@ from aiogram.utils._converters import (
     FIELDS_SET,
     ConversionError,
     Converter,
+    Discriminator,
     ModelConverter,
     converter_for,
     model_converter,
     register_converter,
     register_model,
 )
+
+
+RUST_AVAILABLE = (
+    sys.implementation.name == "cpython" and importlib.util.find_spec("aiogram._core") is not None
+)
+
+
+@pytest.fixture(autouse=True, params=["python", "rust"])
+def backend(request: pytest.FixtureRequest) -> Any:
+    rust = request.param == "rust"
+    if rust and not RUST_AVAILABLE:
+        pytest.skip("the Rust backend is CPython-only and needs aiogram._core")
+    _converters._use_backend(rust=rust)
+    yield request.param
+    _converters._use_backend(rust=True)
 
 
 class Model:
@@ -124,6 +155,27 @@ class Skips(Model):
     value: int = 0
 
 
+class Pair(NamedTuple):
+    x: int
+    label: str = "-"
+
+
+class Movie(TypedDict, total=False):
+    title: Required[str]
+    year: int
+    tags: NotRequired[list[str]]
+
+
+class TimesTen(Converter):
+    """A per-field converter (``Annotated[int, TimesTen()]``)."""
+
+    def to_json(self, value):
+        return value * 10
+
+    def from_json(self, value):
+        return value // 10
+
+
 UID = UUID("12345678-1234-5678-1234-567812345678")
 NOW = datetime(2026, 11, 18, 12, 30, tzinfo=timezone.utc)
 TODAY = date(2026, 11, 18)
@@ -163,6 +215,27 @@ VALID = [
     (dict[str, list[UUID]], {"k": [UID]}, {"k": [str(UID)]}, NOT_FLAT),
     (Point, Point(1, 2), {"x": 1, "y": 2}, NOT_FLAT),
     (datetime | None, None, None, NOT_FLAT),
+    (set[int], {1, 2}, [1, 2], NOT_FLAT),
+    (frozenset[str], frozenset({"a"}), ["a"], NOT_FLAT),
+    (tuple[frozenset[int], ...], (frozenset({3}),), [[3]], NOT_FLAT),
+    (int | str, 1, 1, NOT_FLAT),
+    (int | str, "1", "1", NOT_FLAT),
+    (str | int | None, None, None, NOT_FLAT),
+    (float | int, 1, 1, NOT_FLAT),
+    (float | int, 1.5, 1.5, NOT_FLAT),
+    (str | UUID, str(UID), str(UID), NOT_FLAT),
+    (UUID | str, UID, str(UID), NOT_FLAT),
+    (Kind | Level, Level.HIGH, 2, NOT_FLAT),
+    (Pair, Pair(1, "a"), {"x": 1, "label": "a"}, NOT_FLAT),
+    (Pair, Pair(1), {"x": 1, "label": "-"}, NOT_FLAT),
+    (Movie, {"title": "x"}, {"title": "x"}, NOT_FLAT),
+    (
+        Movie,
+        {"title": "x", "year": 1, "tags": []},
+        {"title": "x", "year": 1, "tags": []},
+        NOT_FLAT,
+    ),
+    (Annotated[int, TimesTen()], 3, 30, NOT_FLAT),
 ]
 VALID_FLAT = [row for row in VALID if row[3] is not NOT_FLAT]
 VALID_NOT_FLAT = [row for row in VALID if row[3] is NOT_FLAT]
@@ -194,6 +267,15 @@ INVALID_DUMP = [  # python value rejected by to_json
     (dict[str, int], {1: 1}),
     (dict[str, int], [("a", 1)]),
     (Point, {"x": 1}),
+    (set[int], [1]),
+    (set[int], {"a"}),
+    (int | str, 1.5),
+    (int | str, None),
+    (int | str, True),
+    (Pair, (1, "a")),
+    (Movie, {"year": 1}),
+    (Movie, {"title": 1}),
+    (Movie, [("title", "x")]),
 ]
 INVALID_LOAD = [  # JSON value rejected by from_json
     (str, 1),
@@ -217,6 +299,16 @@ INVALID_LOAD = [  # JSON value rejected by from_json
     (dict[str, int], {"a": None}),
     (Point, [1, 2]),
     (Point, {"y": 1}),
+    (set[int], ["a"]),
+    (set[int], {"a": 1}),
+    (int | str, 1.5),
+    (int | str, None),
+    (int | str, False),
+    (Pair, {"label": "a"}),
+    (Pair, [1, "a"]),
+    (Movie, {"year": 1}),
+    (Movie, {"title": "x", "year": "1999"}),
+    (Movie, ["x"]),
 ]
 INVALID_STR = [  # text rejected by from_str
     (int, "x"),
@@ -318,11 +410,14 @@ class TestUnsupported:
             bytes,
             list,
             dict,
-            set[int],
+            set[list[int]],
+            frozenset[dict[str, int]],
+            set[set[int]],
+            set[Movie],
             dict[int, str],
             tuple[int, str],
-            int | str,
-            int | str | None,
+            int | complex,
+            Annotated[int, Discriminator("kind")],
             Literal[1.5],
             Any,
             list[[1]],  # type: ignore[misc]  # unhashable annotation
@@ -337,7 +432,7 @@ class TestUnsupported:
 
             class Bad(Model):
                 ok: int
-                value: set[int]
+                value: complex
 
         assert not any(cls.__name__ == "Bad" for cls in _converters._models)
 
@@ -626,6 +721,385 @@ class TestExtensionHook:
         assert weather.code == "x"
         with pytest.raises(TypeError, match="no flat-string form"):
             converter_for(Celsius).to_str(weather.temp)
+
+
+class FlatAll(Model):
+    text: str
+    number: int
+    ratio: float
+    flag: bool
+    kind: Kind
+    level: Level
+    color: Color
+    choice: Literal["a", 1]
+    maybe: int | None
+    ref: UUID
+    price: Decimal
+    part: Fraction
+
+
+FLAT_ALL = FlatAll(
+    text="x",
+    number=-5,
+    ratio=0.25,
+    flag=True,
+    kind=Kind.B,
+    level=Level.HIGH,
+    color=Color.RED,
+    choice=1,
+    maybe=None,
+    ref=UID,
+    price=Decimal("1.10"),
+    part=Fraction(1, 3),
+)
+FLAT_ALL_PARTS = ["x", "-5", "0.25", "1", "b", "2", "red", "1", "", UID.hex, "1.10", "1/3"]
+
+
+class TestFlatCodec:
+    def test_backend_in_use(self, backend):
+        assert ("_schema" in vars(FlatAll.__converter__)) is (backend == "rust")
+
+    def test_to_flat(self):
+        assert FlatAll.__converter__.to_flat(FLAT_ALL) == FLAT_ALL_PARTS
+
+    @pytest.mark.parametrize("parts", [FLAT_ALL_PARTS, tuple(FLAT_ALL_PARTS)])
+    def test_from_flat(self, parts):
+        loaded = FlatAll.__converter__.from_flat(parts)
+        assert FlatAll.__converter__.dump(loaded) == FlatAll.__converter__.dump(FLAT_ALL)
+        assert getattr(loaded, FIELDS_SET) == {f.name for f in FlatAll.__converter__.fields}
+        assert type(loaded.flag) is bool
+        assert loaded.kind is Kind.B
+
+    @pytest.mark.parametrize(
+        ("index", "text", "value"),
+        [
+            (1, " 7 ", 7),
+            (1, "1_000", 1000),
+            (2, "inf", math.inf),
+            (3, "true", True),
+            (3, "Off", False),
+        ],
+    )
+    def test_from_flat_lax_text(self, index, text, value):
+        parts = list(FLAT_ALL_PARTS)
+        parts[index] = text
+        loaded = FlatAll.__converter__.from_flat(parts)
+        assert getattr(loaded, FlatAll.__converter__.fields[index].name) == value
+
+    @pytest.mark.parametrize(
+        ("index", "text", "path"),
+        [
+            (1, "x", "number"),
+            (3, "maybe", "flag"),
+            (4, "c", "kind"),
+            (7, "b", "choice"),
+            (9, "zz", "ref"),
+        ],
+    )
+    def test_from_flat_errors(self, index, text, path):
+        parts = list(FLAT_ALL_PARTS)
+        parts[index] = text
+        with pytest.raises(ConversionError) as exc_info:
+            FlatAll.__converter__.from_flat(parts)
+        assert exc_info.value.path == path
+        assert exc_info.value.value == text
+
+    def test_from_flat_part_count(self):
+        with pytest.raises(ConversionError, match="expected 12 parts"):
+            FlatAll.__converter__.from_flat(FLAT_ALL_PARTS[:-1])
+
+    def test_from_flat_needs_flat_fields(self):
+        with pytest.raises(TypeError, match="no flat-string form"):
+            Node.__converter__.from_flat(["1", ""])
+
+    def test_to_flat_errors(self):
+        with pytest.raises(ConversionError, match="FlatAll instance"):
+            FlatAll.__converter__.to_flat(Flat(id=1, name="x", kind=Kind.A))
+        values = {f.name: getattr(FLAT_ALL, f.name) for f in FlatAll.__converter__.fields}
+        bad = FlatAll(**{**values, "number": "5"})
+        with pytest.raises(ConversionError) as exc_info:
+            FlatAll.__converter__.to_flat(bad)
+        assert exc_info.value.path == "number"
+        with pytest.raises(TypeError, match="no flat-string form"):
+            Node.__converter__.to_flat(Node(value=1))
+
+
+class TestLoadJson:
+    DATA = {
+        "item_id": 5,
+        "address": {"city": "Kyiv", "zip": None},
+        "tags": ["a"],
+        "meta": {"k": 1},
+        "point": {"x": 1},
+        "created": NOW.isoformat(),
+        "unknown": [{"deep": [1, 2.5, None, "x"]}],
+    }
+
+    @pytest.mark.parametrize(
+        "encode", [lambda t: t.encode(), str, lambda t: bytearray(t.encode())]
+    )
+    def test_matches_from_json(self, encode):
+        text = json.dumps(self.DATA)
+        converter = OrderForm.__converter__
+        loaded = converter.load_json(encode(text))
+        assert converter.dump(loaded) == converter.dump(converter.from_json(self.DATA))
+        assert getattr(loaded, FIELDS_SET) == set(self.DATA) - {"unknown"}
+        assert getattr(loaded.address, FIELDS_SET) == {"city", "zip"}
+
+    @pytest.mark.parametrize(
+        ("text", "expected"),
+        [
+            ('{"item_id": 5, "qty": 1, "qty": 3}', 3),  # last key wins, as in json.loads
+            ('{"item_id": 5, "qty": 12345678901234567890123}', 12345678901234567890123),
+            ('\ufeff{"item_id": 5}', 1),  # a BOM: json.loads(bytes) accepts it
+        ],
+    )
+    def test_json_loads_semantics(self, text, expected):
+        assert OrderForm.__converter__.load_json(text.encode()).qty == expected
+
+    def test_nan_like_json_loads(self):
+        loaded = FlatAll.__converter__.load_json(
+            json.dumps({**FlatAll.__converter__.dump(FLAT_ALL), "ratio": math.nan})
+        )
+        assert math.isnan(loaded.ratio)
+
+    def test_lone_surrogate_like_json_loads(self):
+        text = rb'{"city": "\ud800"}'  # an escaped lone surrogate: json.loads keeps it
+        assert Address.__converter__.load_json(text).city == json.loads(text)["city"] == "\ud800"
+
+    @pytest.mark.parametrize(
+        ("text", "error"),
+        [
+            (b'{"item_id": 5', json.JSONDecodeError),
+            (b'{"item_id": 5} []', json.JSONDecodeError),
+            (b"\xff", UnicodeDecodeError),
+        ],
+    )
+    def test_malformed(self, text, error):
+        with pytest.raises(error):
+            OrderForm.__converter__.load_json(text)
+
+    def test_error_path(self):
+        with pytest.raises(ConversionError) as exc_info:
+            OrderForm.__converter__.load_json(b'{"item_id": 5, "tags": ["a", 2]}')
+        assert exc_info.value.path == "tags[1]"
+        assert exc_info.value.value == 2
+
+
+class Cat(Model):
+    kind: Literal["cat"]
+    lives: int = 9
+
+
+class Dog(Model):
+    kind: Literal["dog", "puppy"]
+    good: bool = True
+
+
+class Pets(Model):
+    first: Cat | Dog
+    tagged: Annotated[Cat | Dog | None, Discriminator("kind")] = None
+    later: Annotated[Bird | Cat, Discriminator("kind")] | None = None
+
+
+class Bird(Model):  # defined after Pets: its tag table is built on first use
+    kind: Literal["bird"]
+
+
+class Branch(TypedDict):
+    name: str
+    children: NotRequired[list[Branch]]
+
+
+class Holder(Model):
+    pairs: set[Pair]
+    tree: Branch
+    scaled: Annotated[int, TimesTen()] = 0
+
+
+class Shout(Converter):
+    flat = True
+
+    def to_json(self, value):
+        return value.upper()
+
+    def from_json(self, value):
+        return value.lower()
+
+    def to_str(self, value):
+        return value.upper()
+
+    def from_str(self, value):
+        return value.lower()
+
+
+class Loud(Model):
+    word: Annotated[str, Shout()]
+    count: int = 0
+
+
+class TestMoreKinds:
+    def test_union_without_discriminator_is_left_to_right_for_models(self):
+        pets = Pets.__converter__.from_json({"first": {"kind": "cat", "lives": 3}})
+        assert isinstance(pets.first, Cat)
+        with pytest.raises(ConversionError) as exc_info:
+            Pets.__converter__.from_json({"first": {"kind": "fish"}})
+        assert exc_info.value.path == "first"
+        assert "Cat | " in exc_info.value.reason
+
+    def test_union_dump_picks_member_by_type(self):
+        pets = Pets(first=Dog(kind="puppy"), tagged=Cat(kind="cat"))
+        assert Pets.__converter__.dump(pets) == {
+            "first": {"kind": "puppy", "good": True},
+            "tagged": {"kind": "cat", "lives": 9},
+            "later": None,
+        }
+
+    @pytest.mark.parametrize(("tag", "cls"), [("cat", Cat), ("dog", Dog), ("puppy", Dog)])
+    def test_discriminator(self, tag, cls):
+        pets = Pets.__converter__.from_json({"first": {"kind": "cat"}, "tagged": {"kind": tag}})
+        assert type(pets.tagged) is cls
+
+    @pytest.mark.parametrize(
+        ("tagged", "path", "value"),
+        [
+            ({"lives": 1}, "tagged.kind", _converters.MISSING),
+            ({"kind": "fish"}, "tagged.kind", "fish"),
+            ({"kind": ["cat"]}, "tagged.kind", ["cat"]),
+            ({"kind": "cat", "lives": "x"}, "tagged.lives", "x"),
+            ("cat", "tagged", "cat"),
+        ],
+    )
+    def test_discriminator_errors(self, tagged, path, value):
+        with pytest.raises(ConversionError) as exc_info:
+            Pets.__converter__.from_json({"first": {"kind": "cat"}, "tagged": tagged})
+        assert exc_info.value.path == path
+        assert exc_info.value.value == value
+
+    def test_discriminator_over_typeddicts(self):
+        class FishDict(TypedDict):
+            kind: Literal["fish"]
+            fins: int
+
+        converter = converter_for(Annotated[FishDict | Cat, Discriminator("kind")])
+        assert converter.from_json({"kind": "fish", "fins": 2, "x": 0}) == {
+            "kind": "fish",
+            "fins": 2,
+        }
+        assert type(converter.from_json({"kind": "cat"})) is Cat
+
+    def test_discriminator_with_a_later_member(self):
+        pets = Pets.__converter__.from_json({"first": {"kind": "cat"}, "later": {"kind": "bird"}})
+        assert type(pets.later) is Bird
+
+    def test_discriminator_needs_literal_tags(self):
+        with pytest.raises(TypeError, match="needs a Literal 'kind' field"):
+
+            class Bad(Model):
+                pet: Annotated[Cat | Address, Discriminator("kind")]
+
+        with pytest.raises(TypeError, match="needs a Literal 'kind' field"):
+            converter_for(Annotated[Cat | int, Discriminator("kind")])
+
+    def test_typeddict(self):
+        holder = Holder.__converter__.from_json(
+            {
+                "pairs": [{"x": 1}, {"x": 1}, {"x": 2, "label": "b"}],
+                "tree": {"name": "a", "children": [{"name": "b", "extra": 1}]},
+                "scaled": 70,
+            }
+        )
+        assert holder.pairs == {Pair(1), Pair(2, "b")}
+        assert holder.tree == {"name": "a", "children": [{"name": "b"}]}
+        assert type(holder.tree) is dict
+        assert holder.scaled == 7
+        dumped = Holder.__converter__.dump(holder)
+        assert dumped["tree"] == {"name": "a", "children": [{"name": "b"}]}
+        assert dumped["scaled"] == 70
+
+    def test_typeddict_error_path(self):
+        with pytest.raises(ConversionError) as exc_info:
+            Holder.__converter__.from_json(
+                {"pairs": [], "tree": {"name": "a", "children": [{"name": 1}]}}
+            )
+        assert exc_info.value.path == "tree.children[0].name"
+
+    def test_typeddict_bad_key_at_class_creation(self):
+        class BadDict(TypedDict):
+            value: complex
+
+        with pytest.raises(TypeError, match=r"BadDict\.value: unsupported annotation"):
+            converter_for(BadDict)
+        assert BadDict not in _converters._typeddicts
+
+    def test_untyped_namedtuple_rejected(self):
+        with pytest.raises(TypeError, match="unsupported annotation"):
+            converter_for(namedtuple("Plain", ["a"]))  # noqa: PYI024
+
+    def test_per_field_converter_wins_over_register_converter(self, monkeypatch):
+        monkeypatch.setattr(_converters, "_extra", {int: converter_for(str)})
+        assert converter_for(Annotated[int, TimesTen()]).from_json(40) == 4
+
+    def test_per_field_flat_converter(self):
+        loud = Loud.__converter__.from_flat(["HEY", "2"])
+        assert loud.word == "hey"
+        assert Loud.__converter__.to_flat(loud) == ["HEY", "2"]
+        assert Loud.__converter__.load_json(b'{"word": "HO"}').word == "ho"
+
+    def test_new_kinds_have_no_flat_form(self):
+        for tp in (set[int], int | str, Pair, Movie, Cat | Dog):
+            assert not converter_for(tp).flat, tp
+
+    @pytest.mark.parametrize(
+        ("tp", "value", "expected"),
+        [
+            (int | str, True, _converters.ConversionError),
+            (float | int, 1, int),
+            (int | float, 1.0, float),
+            (str | UUID, str(UID), str),
+            (UUID | str, str(UID), UUID),
+            (Literal["x"] | int, "x", str),
+            (list[int] | dict[str, int], {"a": 1}, dict),
+            (Pair | int, {"x": 1}, Pair),
+            (Annotated[int, TimesTen()] | str, 50, int),
+            (Movie | int, {"title": "t"}, dict),
+            (Kind | Literal[5], 5, int),
+            (Point | Address, {"city": "c"}, Address),
+        ],
+    )
+    def test_smart_union_from_json(self, tp, value, expected):
+        converter = converter_for(tp)
+        if expected is _converters.ConversionError:
+            with pytest.raises(ConversionError, match="expected"):
+                converter.from_json(value)
+        else:
+            assert type(converter.from_json(value)) is expected
+
+    @pytest.mark.parametrize(
+        ("tp", "value", "expected"),
+        [
+            (int | str, Level.HIGH, 2),
+            (UUID | str, UID, str(UID)),
+            (Decimal | float, Decimal("1.5"), "1.5"),
+            (Pair | Point, Point(3), {"x": 3, "y": 0}),
+            (Kind | int, Kind.A, "a"),
+            (Literal["x"] | int, "x", "x"),
+            (set[int] | int, {1}, [1]),
+            (dict[str, int] | int, {"a": 1}, {"a": 1}),
+            (Annotated[int, TimesTen()] | str, 5, 50),
+        ],
+    )
+    def test_smart_union_to_json(self, tp, value, expected):
+        assert converter_for(tp).to_json(value) == expected
+
+
+class TestBackendSelection:
+    def test_python_without_core(self, monkeypatch):
+        monkeypatch.setitem(sys.modules, "aiogram._core", None)
+        _converters._use_backend(rust=True)
+        assert _converters._backend() is None
+        assert "_schema" not in vars(Flat.__converter__)
+        assert Flat.__converter__.from_json({"id": 1, "name": "x", "kind": "a"}).id == 1
 
 
 @pytest.mark.skipif(sys.implementation.name != "cpython", reason="-X importtime is CPython-only")

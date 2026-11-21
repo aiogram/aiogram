@@ -1,5 +1,7 @@
 //! `aiogram._core`: the native core of aiogram.
 
+mod conv;
+
 use pyo3::prelude::*;
 use pyo3::types::PyDict;
 
@@ -27,6 +29,7 @@ fn py_build_info(py: Python<'_>) -> PyResult<Bound<'_, PyDict>> {
 #[pymodule(gil_used = false)]
 fn _core(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add("__version__", VERSION)?;
+    m.add_class::<conv::ModelSchema>()?;
     m.add_function(wrap_pyfunction!(py_build_info, m)?)
 }
 
