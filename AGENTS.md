@@ -174,11 +174,14 @@ These patterns repeatedly appeared in maintainer feedback and should be treated 
 ## Native extension (`dev-4.x`)
 
 - The build backend is maturin: `crates/aiogram-core` builds `aiogram._core`, so `uv sync` needs `rustup`
-  (`rust-toolchain.toml` pins the toolchain). `uv run` rebuilds it (release profile) when a `crates/**` file
-  changes; `make dev` installs a fast debug build, `make bench` a release one. Nothing on the 3.x import path
-  loads `_core` (`tests/test_core/test_build.py` checks it).
+  (`rust-toolchain.toml` pins the toolchain). `uv run` rebuilds it (release profile) when a `*.rs` or `Cargo.toml`
+  under `crates/aiogram-core`, the workspace `Cargo.toml`, `Cargo.lock` or `.cargo/config.toml` changes; `make dev`
+  installs a fast debug build, `make bench` a release one. Nothing on the 3.x import path loads `_core`
+  (`tests/test_core/test_build.py` checks it).
 - Rust checks: `cargo fmt --all --check`, `cargo clippy --workspace --all-targets -- -D warnings` (`unwrap`,
   `expect`, `panic!`, `todo!`, `unimplemented!` are denied), `cargo test --workspace`. CI: `.github/workflows/core.yml`.
+- `clippy.toml`'s `allow-*-in-tests` covers `#[test]` functions and `#[cfg(test)]` modules only. Helpers in an
+  integration test crate (`crates/*/tests/*.rs`) need `#![allow(clippy::unwrap_used)]` at the top of the file.
 - The version lives in `aiogram/__meta__.py` and is copied, static, into `pyproject.toml` and
   `crates/aiogram-core/Cargo.toml`. Only change it with `make bump`: it writes both copies and refreshes
   `Cargo.lock` and `uv.lock` (`uv sync --locked` fails otherwise). `test_build.py` asserts they match.
@@ -217,6 +220,17 @@ These patterns repeatedly appeared in maintainer feedback and should be treated 
   append-only and sorted, and each kind stays in its PD-33 block: on `dev-3.x`, new hand-written entries go in
   AG4700–AG4799 and generated `api-ledger` entries in AG4800–AG4999. AG4001–AG4699 are allocated on `dev-4.x`
   only. The schema is documented in the file header, and `tests/test_migration_registry.py` enforces it.
+
+## Butcher (`dev-4.x`)
+
+- The 4.x generator is the pure-Rust `crates/butcher` (no pyo3), run as `cargo xtask butcher <cmd>`; the Python
+  `.butcher/` flow above is 3.x only. `butcher/` holds its committed data: `snapshots/<api_version>/` (current API
+  version only, git history is the archive), `overlay/`, `ledger.toml`.
+- The IR (`crates/butcher/src/ir.rs`) is the contract of every C plan. It only grows by optional fields (`Option` /
+  `Vec`, omitted when empty), so older snapshots still load; a rename or removal regenerates the committed
+  snapshots in the same PR. Files under `butcher/` are compared byte for byte (`.gitattributes` keeps them LF).
+- A new workspace crate stays out of the sdist and the wheel: maturin rewrites the sdist's `members` to
+  `crates/aiogram-core` and its path dependencies. Check with `uv build` (sdist, then a wheel built from it).
 
 ## Developer design notes (`design/`)
 

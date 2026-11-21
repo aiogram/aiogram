@@ -76,6 +76,36 @@ jobs:
       - name: cargo test
         run: cargo test --locked --workspace
 
+  butcher:
+    name: Butcher (${{ matrix.os }})
+    # crates/butcher and xtask are pure Rust (no pyo3, no libpython); fmt and clippy run in the `rust` job
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-latest
+          - macos-latest
+          - windows-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: Install the Rust toolchain
+        run: rustup toolchain install
+
+      - uses: Swatinem/rust-cache@v2.9.3
+        with:
+          env-vars: "CARGO CC CFLAGS CXX CMAKE RUST"
+
+      - name: cargo test
+        run: cargo test --locked -p butcher -p xtask
+
+      - name: cargo xtask butcher --help
+        run: cargo xtask butcher --help
+
   tests:
     name: Tests
     runs-on: ${{ matrix.os }}
