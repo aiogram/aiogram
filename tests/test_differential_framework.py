@@ -245,6 +245,8 @@ class TestManifest:
             "D107",
             "D108",
         }
+        gated.add("R06")  # A-08: model_copy -> replace, through D91
+        three_x = {"GHSA-hv98-r5fx-wc83"}  # A-08: 3.32.0 vs later 3.x
         decisions = set()
         for kind in ("model", "request", "routing"):
             for entry in runner.load_manifest(
@@ -255,7 +257,8 @@ class TestManifest:
                 if entry.cls == "approved":
                     assert entry.assert_ in runner.COMPARATORS
                 assert entry.gate is (entry.decision in gated)
-                assert entry.when == "aiogram4"  # 4.0 stubs never apply to 3.x-vs-3.x runs
+                # 4.0 entries never apply to 3.x-vs-3.x runs
+                assert entry.when == "aiogram4" or entry.decision in three_x
         expected = {
             "D108",
             "D86",
@@ -270,12 +273,13 @@ class TestManifest:
             "D48",
         }
         expected |= {"D34", "D28", "D114", "D12", "R18"}
+        expected = (expected - {"D94"}) | {"D15", "R06", *three_x}  # A-08
         assert decisions == expected
 
     def test_stub_comparators_never_approve(self):
         record = trace.ok("a", "b", 1)
         with pytest.raises(Mismatch, match="refine in"):
-            runner.COMPARATORS["wire_names_in_dump_json"](record, record)
+            runner.COMPARATORS["collections_are_tuples"](record, record)
 
     def test_comparator_registered_twice(self):
         with pytest.raises(ValueError, match="twice"):

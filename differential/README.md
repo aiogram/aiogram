@@ -127,3 +127,26 @@ if B-13 is a no-go.
 `uv run pytest tests/test_differential_framework.py`: fake in-process sides, no venvs or network.
 They cover the trace encoding, each comparator, manifest matching and validation, the poison
 self-check, and the smoke side run in-process.
+
+## Model kind
+
+`sides/aiogram3/model.py` (A-08) records what 3.x models do; a 4.0 adapter implements the same
+cases and probe names. Bots carry fabricated tokens and send nothing.
+
+- `model.<input id>`, for every corpus input of kind `update`: `decode.json`
+  (`Update.model_validate_json` with a bot in the context), `decode.dict` (`json.loads` +
+  `model_validate`, the webhook path), `dump.python`, `dump.wire` (`model_dump(mode="json",
+  exclude_unset=True)`, without and with `by_alias`), `dump_json.default` (`{type, value: model_dump_json(),
+  wire: model_dump_json(by_alias=True, exclude_unset=True)}`), `event`, `access` (the paths in
+  `manifests/model.access.toml`, which needs a list for every new update input), `extra`
+  (`model_extra` of the root and of nested objects that have extras), `eq.same_bot`, `eq.same_token`,
+  `eq.other_bot`, `hash` / `hash.event` (the class of `hash()`, never its salted value),
+  `pickle.unbound`, `pickle.bound`, `copy.valid`, `copy.invalid` (`model_copy(update=...)`). When
+  `decode.json` fails, the later probes are recorded as `DecodeFailed`, so both sides emit the same keys.
+- `model.construct.<type>`: `dump.python` (Python mode, keeps `Default(...)` placeholders) and
+  `dump.wire` of constructor kwargs; `Message.wire_kwargs` passes `from`; `User/extra.non_json`.
+- `model.mutate.<type>/mutate`: attribute assignment.
+- `model.codex11.<name>/observe`: the model probes of `v4/research/codex-review.md` section 11.
+
+ValidationError attrs are `error_count` plus each error's `type` and `loc`: no messages. `--poison`
+drops the first key of every `dump.*` value.
