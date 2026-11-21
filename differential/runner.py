@@ -189,6 +189,10 @@ def immutable_types(left: Record, right: Record) -> tuple[Record, Record]:
         _error_type(right) in {"AttributeError", "TypeError", "ValidationError"},
         "right allowed the assignment or failed otherwise",
     )
+    _expect(
+        _ok(left) or _error_type(left) == "ValidationError",  # frozen types raise it in 3.x
+        "left neither assigned nor raised ValidationError",
+    )
     return left, left
 
 

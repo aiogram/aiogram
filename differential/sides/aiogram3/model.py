@@ -58,6 +58,7 @@ BOTS = {id(BOT): "bot", id(SAME_TOKEN): "same_token", id(OTHER): "other"}
 
 DATE = datetime.datetime(2026, 11, 18, tzinfo=datetime.UTC)
 PATH_PART = re.compile(r"([A-Za-z_]\w*)|\[(-?\d+)\]")
+PATH = re.compile(r"[A-Za-z_]\w*(?:\.[A-Za-z_]\w*|\[-?\d+\])*")
 
 Record = dict[str, Any]
 
@@ -96,6 +97,24 @@ def resolve(obj: Any, path: str) -> Any:
     for name, index in PATH_PART.findall(path):
         obj = getattr(obj, name) if name else obj[int(index)]
     return obj
+
+
+def check_paths(paths: dict[str, list[str]]) -> None:
+    """A mistyped path would resolve to another attribute: fail the run instead."""
+    for input_id, items in paths.items():
+        for path in items:
+            if not PATH.fullmatch(path):
+                msg = f"{input_id}: bad access path {path!r}"
+                raise ValueError(msg)
+
+
+def plain(value: Any) -> Any:
+    """Objects as their set fields, not by repr: a repr lists fields a release may lack."""
+    if isinstance(value, BaseModel):
+        return value.model_dump(mode="json", exclude_none=True)
+    if isinstance(value, list):
+        return [plain(item) for item in value]
+    return value
 
 
 def walk_extras(obj: Any, path: str, out: dict[str, Any]) -> None:
@@ -181,7 +200,7 @@ def access(obj: Any, paths: list[str]) -> dict[str, Any]:
     out: dict[str, Any] = {}
     for path in paths:
         try:
-            out[path] = {"ok": True, "value": resolve(obj, path)}
+            out[path] = {"ok": True, "value": plain(resolve(obj, path))}
         except Exception as exc:  # noqa: BLE001 - a missing attribute is the observation
             out[path] = {"ok": False, "error": type(exc).__name__}
     return out
@@ -422,6 +441,7 @@ def main() -> None:
     corpus = Path(args.corpus)
     manifest = tomllib.loads((corpus / "MANIFEST.toml").read_text(encoding="utf-8"))
     paths = tomllib.loads(ACCESS.read_text(encoding="utf-8"))["access"]
+    check_paths(paths)
     updates = {item["id"]: item["path"] for item in manifest["input"] if item["kind"] == "update"}
 
     rec = Recorder(trace, poison=args.poison)

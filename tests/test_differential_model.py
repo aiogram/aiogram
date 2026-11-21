@@ -113,6 +113,20 @@ class TestSide:
             "nope": {"ok": False, "error": "AttributeError"}
         }
 
+    def test_access_dumps_objects(self):
+        side = runpy.run_path(str(SIDE))
+        user = side["user"]()
+        assert side["access"](user, ["first_name"]) == {"first_name": {"ok": True, "value": "Ada"}}
+        expected = {"first_name": "Ada", "id": 100000001, "is_bot": False}
+        assert side["plain"](user) == expected
+        assert side["plain"]([user]) == [expected]
+
+    @pytest.mark.parametrize("path", ["message..text", "photo[ 0]", "photo[0", "", ".a", "a b"])
+    def test_access_rejects_malformed_paths(self, path):
+        side = runpy.run_path(str(SIDE))
+        with pytest.raises(ValueError, match="access path"):
+            side["check_paths"]({"update.x": [path]})
+
     def test_dump_names(self, records):
         assert (
             "from_user"
@@ -269,6 +283,7 @@ class TestComparators:
             ("hashable_when_fields_are", err("ValueError"), ok("int"), "left neither"),
             ("immutable_types", ok({"text": "b"}), ok({"text": "b"}), "allowed"),
             ("immutable_types", ok({"text": "b"}), err("NameError"), "allowed"),
+            ("immutable_types", err("NameError"), err("AttributeError"), "left neither"),
             ("replace_validates", ok({"type": "str"}), err("RuntimeError"), "accepted"),
             ("replace_validates", ok({"type": "str"}), SKIPPED, "accepted"),
             ("replace_validates", err("TypeError"), err("ValidationError"), "left validated"),
