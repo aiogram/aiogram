@@ -141,7 +141,7 @@ impl ModelCore {
                         .to_string_lossy()
                         .into_owned();
                     return Err(PyTypeError::new_err(format!(
-                        "{}: fields {other:?} and {:?} both read the key {text:?}",
+                        "{}: fields '{other}' and '{}' both read the key '{text}'",
                         self.qualname,
                         spec.name.bind(py).to_string_lossy()
                     )));
@@ -205,7 +205,7 @@ pub(crate) fn union_tags<'a>(py: Python<'_>, union: &'a Union, label: &str) -> P
         });
         let Some((field, literal)) = literal else {
             return Err(PyTypeError::new_err(format!(
-                "{label}: every member needs a Literal {:?} field",
+                "{label}: every member needs a Literal '{}' field",
                 name.to_string_lossy()
             )));
         };
@@ -214,7 +214,7 @@ pub(crate) fn union_tags<'a>(py: Python<'_>, union: &'a Union, label: &str) -> P
             Some(known) if known.bind(py).as_any().eq(field.key.bind(py))? => {}
             Some(_) => {
                 return Err(PyTypeError::new_err(format!(
-                    "{label}: the members store the tag {:?} under different keys",
+                    "{label}: the members store the tag '{}' under different keys",
                     name.to_string_lossy()
                 )));
             }

@@ -28,7 +28,8 @@ layer (the B gate) or on pydantic, so F-09 can ship whatever the gate decides.
 ## Scope
 
 **In:**
-- Internal module `aiogram/utils/_converters.py` (name may change; keep it private):
+- Modules (plan-10): the public, stdlib-only `aiogram/utils/converters.py` (declarations) and the private
+  `aiogram/utils/_converters.py` (resolver, `ModelBase`, schemas):
   - class-creation compiler: resolves annotations (`typing.get_type_hints(include_extras=True)`, forward refs,
     `from __future__ import annotations`) into a tuple of field specs `(name, converter, default | default_factory)`;
   - **types:** `str`, `int`, `float`, `bool`, `Decimal`, `UUID`, `Enum` / `IntEnum` / `StrEnum`, `datetime`, `date`,
@@ -49,7 +50,8 @@ layer (the B gate) or on pydantic, so F-09 can ship whatever the gate decides.
   - **all per-value conversion in Rust** (`aiogram._core.ModelSchema` / `KindCore` in `crates/aiogram-core/src/conv/`):
     dict walker (`from_json`), one-pass JSON bytes (`load_json`, `jiter`), `to_json` / `dump`, and the flat codec
     (`from_flat` / `to_flat`). Rust-only: PyPy is dropped from 4.x (PD-35), so there is no Python backend.
-    `_converters.py` keeps the class-creation compiler, `register_converter`, `ConversionError` and the API;
+    `_converters.py` keeps the class-creation compiler, `register_converter`, `ConversionError` and the API
+    (revised by plan-10, see Notes);
   - `ModelConverter.from_flat` / `to_flat` / `load_json`, so F-09 and F-11 never loop over fields themselves;
   - the internal `RedisStorage._get_data_raw` hook for one-pass typed reads;
   - more kinds: `set` / `frozenset`, NamedTuple, TypedDict, smart `Union` with an optional `Discriminator`, a
@@ -72,7 +74,8 @@ layer (the B gate) or on pydantic, so F-09 can ship whatever the gate decides.
 - [x] Compiler + field specs; class-creation errors.
 - [x] Converters for every type in Scope; flat-string subset enforced (non-flat types rejected for `to_str`).
 - [x] Default/mutable-default/`exclude_unset` support.
-- [x] Extension hook for extra converters (used by F-12), keyed by exact type, checked before the built-ins.
+- [x] Extension hook for extra converters (used by F-12): a type's own `__aiogram_converter__` classmethod, found
+      along the MRO, checked before the built-ins (plan-10; the global exact-type `register_converter` is gone).
 - [x] Contract suite (R16) and a micro-benchmark (A-05 harness): load of a 5-field flat class from JSON-shaped dict.
 - [x] Tests (100% coverage of new code)
 
@@ -82,16 +85,16 @@ layer (the B gate) or on pydantic, so F-09 can ship whatever the gate decides.
 - Unsupported annotations fail at class creation, not at first use.
 - Loading a 5-field flat class (int, str, Enum, `int | None`, bool) from a dict ≤ 3 µs on the A-05 reference machine
   (3.x pydantic `CallbackData.unpack` is 2.9 µs; record the measured number in Notes).
-- No import of pydantic, attrs or msgspec in the module (`python -X importtime` check in a test). The module needs
-  `aiogram._core` by design (PD-36: Rust-only, PyPy is dropped by PD-35) and imports it on first use, so importing the
-  module stays stdlib-only.
+- No import of pydantic, attrs or msgspec in the module (`python -X importtime` check in a test). `_converters.py`
+  imports `aiogram._core` at the top (PD-36, plan-10); `import aiogram` imports neither it nor `_core`, and the public
+  `aiogram.utils.converters` stays stdlib-only (`tests/test_core/test_build.py`).
 
 ## Rejected alternatives
 
 | Alternative | Why rejected | Decision |
 |---|---|---|
 | Keep pydantic for validation | pydantic is no longer a dependency | D14 |
-| Separate converters for CallbackData and FSMData | One table, flat subset vs JSON superset | D30, 04 §7 |
+| Separate converters for CallbackData and FSMData | One shared annotation resolver; separate JSON and flat *schemas* on top of it (plan-10 revises "one table") | D30, 04 §7, PD-36 |
 | Per-call reflection over annotations | Cost; table is built at class creation | 04 §7 |
 | ~~Rust converters~~ | ~~User field conversion dominates; no gain~~ — revisited: all conversion runs in Rust (Rust-only, PyPy dropped by PD-35), 2–4× faster than the pure-Python core | PD-36 |
 
@@ -116,44 +119,9 @@ make lint
   loops ≥ 0.2 s, median of 7); move it to `benchmarks/cases/fsm.py` with A-05. Measured 2026-11-18 on Apple M2 Pro,
   CPython 3.14.2: `from_json` of the 5-field flat class **1.45 µs**; 3.x pydantic `CallbackData.unpack` 3.81 µs in
   the same session (the 2.9 µs above is from another machine). No A-05 reference machine is defined yet.
-- **API for F-09 / F-11 / F-12** (`aiogram/utils/_converters.py`):
-  - `register_model(cls)` from `__init_subclass__` returns a `ModelConverter` with `fields` (tuple of
-    `FieldSpec(name, converter, default, default_factory)`), `from_json`, `to_json`, `dump(obj, exclude_unset=)`
-    and `init(instance, kwargs)` (the `__init__` body);
-  - `converter_for(annotation)` returns a `Converter` (`flat`, `to_str`/`from_str`, `to_json`/`from_json`);
-  - `model_converter(tp)` covers stdlib dataclasses too; `register_converter(tp, converter)` is the F-12 hook
-    (exact type, checked before the built-ins, affects classes compiled afterwards);
-  - errors: `ConversionError(ValueError)` with `.path`, `.value`, `.reason`. The set-fields record is the instance
-    attribute `FIELDS_SET` (`"__fields_set__"`).
-- **Semantics chosen here** (F-09 / F-11 may tighten them):
-  - `to_json` is strict and is the validation step for Python values: an `int` field rejects `"1"` and `True`, and
-    `Decimal` rejects `int`. `from_json` accepts JSON shapes: `float` also takes `int`, `list`/`tuple` take
-    either, and `Decimal`/`UUID`/`Fraction`/`datetime`/`date` take `str` only. A `date` field rejects `datetime`.
-  - `init` stores kwargs unconverted; whether the `FSMData` constructor validates is F-09's decision.
-  - On load, unknown keys are ignored and keys present in the input count as set. `exclude_unset` applies at the
-    top level only; a nested dataclass has no set record, so all its fields are dumped.
-  - Registered models are built without `__init__` (they need an instance `__dict__`). Dataclasses are built with
-    `cls(**values)`, so `__post_init__` runs, and a `ValueError` there becomes a `ConversionError`.
-  - Mutable default = unhashable default (`[]`, `{}`, `set()`, non-frozen dataclass), deep-copied per instance.
-    `dataclasses.field(default=/default_factory=)` is honoured on plain classes. Names starting with `_` and
-    `ClassVar` fields are skipped.
-  - Flat codec: `X | None` maps `None` to `""` and `""` to `None`. The 3.x rule for `str | None` with default `""`
-    stays in F-11. UUID packs as hex (as in 3.x), bool packs as `"1"`/`"0"` and reads pydantic's lax set.
-    `Literal` takes only `str`/`int`/`bool`/`None` values.
-  - Rejected at class creation: unions other than `X | None`, `Any`, bare `list`/`dict`, fixed-length tuples,
-    `set`, non-`str` dict keys, enums whose values are not JSON scalars (`str`/`int`/`float`/`bool`/`None`), and
-    dataclasses with a required `InitVar` (loading cannot supply it).
-  - A `Literal` or `Enum` whose values share a flat text (`1` and `"1"`, `True` and `1`) keeps its JSON codec but
-    has no flat-string form, so it is rejected for callback data instead of changing values on a round trip.
-  - `register_converter` matches the annotation as written, so `Annotated[float, "celsius"]` can be registered
-    apart from `float`.
-- **Forward references:** a name not yet defined when the class is created defers compilation to first use, where
-  an unresolved name raises `NameError` (mutual recursion relies on this). A class defined in a function body under
-  `from __future__ import annotations` that refers to another local class is deferred the same way, so its
-  annotation errors surface on first use, not at creation. On Python 3.14+ an unquoted self-reference needs
-  `get_type_hints(format=FORWARDREF)`; the default format raises `NameError` even with `localns`.
-- The `-X importtime` test is skipped on PyPy, which ignores the flag.
-
+- **API and semantics:** see "Plan-10 redesign" below. The `register_model` / `ModelConverter` / `converter_for` /
+  `register_converter` API, the `FIELDS_SET` attribute and the "rejected at class creation" list of the first versions
+  are gone.
 - **PD-36 (briefs 04–08, 2026-11-21)** revises this plan: Rust now, Rust-only, raw-bytes path, more kinds, stubtest.
   - **Rust-only (brief 08).** PyPy is dropped from 4.x (PD-35), so the converter has one backend. The
     first design (briefs 04–07) kept the Python code as the reference and PyPy backend, with Rust as a fast path that
@@ -217,3 +185,71 @@ make lint
     4.2 s, dev 0.44 s vs 0.56 s, release binary byte-identical (657 328 B), codegen units 29 vs 16 with the largest
     60 KB vs 28 KB, µs rows equal within noise; `cargo test` needs libpython in both. Not better enough to switch.
   - The first compile of a model imports `aiogram._core`; `import aiogram` still does not (`test_build.py`).
+
+- **Plan-10 redesign (briefs 10–11, owner 2026-11-21; PD-36).** It replaces the briefs 04–09 API above.
+  - **Declaration.** `ModelBase`, the base that F-09 / F-11 subclass:
+    - `@dataclass_transform(kw_only_default=True, field_specifiers=(field, dataclasses.field))`, with a typed
+      `__init_subclass__(*, rename=, converters=, frozen=, slots=)`;
+    - the runtime follows PEP 681: `_x` names are fields; `field(init=False / kw_only=False / default_factory / repr
+      / compare)` and the aiogram sugar `key=` / `load=` / `converter=`; inherited fields come first; `ClassVar` is
+      skipped; `KW_ONLY` / `InitVar` are a `TypeError`;
+    - the constructor checks every value (`ConversionError`) and raises dataclasses-style `TypeError`s;
+    - `__post_init__` runs after construction and after every load;
+    - frozen models hash their fields;
+    - `copy.replace`, pickle and copy work; there is no dataclasses API (`is_dataclass`, `asdict`);
+    - `fields_set(obj)` reads the `__fields_set__` slot;
+    - mypy and pyright both check a `rename=` / `frozen=True` / `slots=True` model correctly
+      (`tests/typing/test_converters.py`).
+  - **`slots=True`** goes through a metaclass on `ModelBase`: `__init_subclass__` runs after the instance layout is
+    fixed, so the metaclass moves the defaults out of the namespace and declares the slots. A user `__slots__` model
+    works as well. Every model is built through `PyObject_GenericSetAttr`.
+  - **No global registry.**
+    - The schema lives on the class (`__aiogram_core__`, `__aiogram_json__`, `__aiogram_flat__`).
+    - Lookup order: `Annotated[T, Conv]` > the class map `converters={type: Conv}` (exact type, then along the MRO
+      except through the built-in scalars) > the type's `__aiogram_converter__` hook > the built-ins.
+    - The class map reaches into containers and into foreign dataclasses / NamedTuples / TypedDicts, but not into
+      another `ModelBase`; subclasses inherit it.
+  - **One resolver, two schemas.**
+    - `json_schema(cls)`: `load`, `load_json`, `dump`, `dump_json`, `dump_fields`, `keys`.
+    - `flat_schema(cls)`: positional `load` / `dump`, `TypeError` for a non-flat field, a `Key` or `rename`.
+    - `json_codec(annotation)`: any annotation, including its flat form.
+    - The Python→Rust interface is the typed constructors in `conv/ir.rs` and `_core.pyi`. Rust reads no resolver
+      attribute by name.
+  - **Errors.**
+    - One `ConversionError(ValueError)` with `.errors`, a list of `ErrorDetail(loc, message, value)`, and `.title`
+      (`loading Form`, `dumping Form`, `constructing Form`). `str()` always starts with the header line
+      (`2 errors loading Form`); `repr` carries the errors.
+    - The JSON codec collects every error, up to 100. Unions and the flat codec stop at the first.
+    - Union member reasons become notes. A user `ValueError` becomes a line at its path, with the exception as
+      `__cause__`.
+    - Rust keeps error lines and builds the exception once at the boundary, so a union miss costs no Python object.
+  - **Keys.**
+    - `rename="camel" | "snake" | "kebab" | callable`, and `Annotated[T, Key("x", load=("old",))]`.
+    - On load the stored key wins over the `load` keys, whatever their order in the document.
+    - Error locations use stored keys. `JsonSchema.keys` gives F-09 the old keys to delete on write.
+  - **Bytes.**
+    - `load_json` is one pass with no re-parse, so user code runs once. A repeated key: the last one wins, and the
+      overwritten value's converter has also run.
+    - The input is validated as UTF-8 up front. A BOM is skipped for bytes only.
+    - `dump_json` writes compact JSON: floats as `repr`, strings as `json.dumps(ensure_ascii=False)` writes them,
+      NaN / Infinity as `json.dumps` writes them.
+    - `RedisStorage._raw_reads` / `_raw_writes` (stdlib `json_loads` / `json_dumps`) gate `_get_data_raw` /
+      `_set_data_raw`, which F-09 wires.
+  - **Native kinds.**
+    - UUID, `datetime` / `date` / `time` (Rust parse fast path, `fromisoformat` fallback, exact `isoformat` output),
+      `timedelta` (a number of seconds), Decimal (text, or an exact JSON number on the bytes paths with
+      `DecimalAsNumber`: a lossy float on the dict path), bytes (padded base64 in JSON, unpadded base64url flat).
+    - The ready-made `IsoDatetime(timespec, sep)`, `EpochDatetime(unit)`, `DecimalAsNumber`, `EnumByName` and
+      `UuidHex` select a native format, with no Python call per value.
+    - NewType and PEP 695 aliases unwrap: generic ones are substituted, recursive ones become lazy kinds.
+    - Fixed `tuple[A, B]` is supported. `dict` keys must be `str`.
+  - **Forward references.**
+    - Each field is evaluated in the namespace of its declaring class, in this order: the class, class-body types
+      that are not field names, the defining function's frame locals (kept until the class resolves), the module.
+    - `date: date = date(...)` works, also on 3.14 without `__future__`.
+    - A bad field is a `TypeError` at class creation, even next to a pending one.
+    - A class that cannot resolve raises `NameError("X is not fully defined: Y is not defined")` on first use.
+      `CallbackQueryFilter` does not swallow it.
+  - **Known limits:**
+    - jiter's 200-level limit on skipped or materialised values raises `RecursionError`.
+    - `load_json` of an escaped lone surrogate re-parses through `json.loads`, the only re-parse left.

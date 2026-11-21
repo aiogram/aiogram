@@ -5,6 +5,7 @@
 # (aiogram/utils/_converters.py builds them; F-08 plan-10): Rust never reads Python attributes
 # of the resolver's objects by name.
 from collections.abc import Callable, Mapping, Sequence
+from types import GenericAlias
 from typing import Any, Generic, Literal, Self, TypedDict, TypeVar, final, type_check_only
 
 __all__ = [
@@ -33,7 +34,9 @@ class BuildInfo(TypedDict):
     target: str
 
 def build_info() -> BuildInfo: ...
-def converters_init(error: type[ValueError], detail: type[tuple[Any, ...]], missing: object) -> None:
+def converters_init(
+    error: type[ValueError], detail: type[tuple[Any, ...]], missing: object
+) -> None:
     """Hand the converter core ``ConversionError``, ``ErrorDetail`` and ``MISSING``.
 
     ``aiogram.utils._converters`` calls it once at import; the schemas raise ``RuntimeError``
@@ -67,7 +70,9 @@ class Kind:
     @staticmethod
     def datetime(
         *,
-        timespec: Literal["auto", "hours", "minutes", "seconds", "milliseconds", "microseconds"] = "auto",
+        timespec: Literal[
+            "auto", "hours", "minutes", "seconds", "milliseconds", "microseconds"
+        ] = "auto",
         sep: str = "T",
         epoch: Literal["s", "ms"] | None = None,
     ) -> Kind:
@@ -78,7 +83,9 @@ class Kind:
     @staticmethod
     def time(
         *,
-        timespec: Literal["auto", "hours", "minutes", "seconds", "milliseconds", "microseconds"] = "auto",
+        timespec: Literal[
+            "auto", "hours", "minutes", "seconds", "milliseconds", "microseconds"
+        ] = "auto",
     ) -> Kind: ...
     @staticmethod
     def timedelta() -> Kind:
@@ -93,12 +100,17 @@ class Kind:
         """Padded base64 in JSON, unpadded base64url in the flat form."""
 
     @staticmethod
-    def text(tp: type, parse: Callable[[str], Any], format: Callable[[Any], str], *, flat: bool) -> Kind:
+    def text(
+        tp: type, parse: Callable[[str], Any], format: Callable[[Any], str], *, flat: bool
+    ) -> Kind:
         """A value stored as text through Python callables (``Fraction``)."""
 
     @staticmethod
     def enum(tp: type, *, by_name: bool = False, missing: bool = False) -> Kind:
-        """An ``Enum`` by value (``(type, value)`` match) or by name; ``missing``: call ``_missing_``."""
+        """An ``Enum`` by value (a ``(type, value)`` match) or by name.
+
+        ``missing``: call ``_missing_`` on a miss.
+        """
 
     @staticmethod
     def literal(values: Sequence[object]) -> Kind: ...
@@ -121,7 +133,9 @@ class Kind:
         """A model, dataclass, NamedTuple or TypedDict; its fields may be set later."""
 
     @staticmethod
-    def union(members: Sequence[Kind], *, nullable: bool, discriminator: str | None = None) -> Kind:
+    def union(
+        members: Sequence[Kind], *, nullable: bool, discriminator: str | None = None
+    ) -> Kind:
         """Smart union (exact type first, then left to right), or tagged by a ``Literal`` field."""
 
     @staticmethod
@@ -141,7 +155,7 @@ class KindCell:
 
 @final
 class Field:
-    """One field: attribute ``name``, stored ``key`` and fallback ``load`` keys, its kind and default."""
+    """One field: attribute ``name``, stored ``key``, fallback ``load`` keys, kind, default."""
 
     def __new__(
         cls,
@@ -149,7 +163,7 @@ class Field:
         kind: Kind,
         *,
         key: str | None = None,
-        load: Sequence[str] = (),
+        load: Sequence[str] = ...,
         default: object = None,
         has_default: bool = False,
         factory: Callable[[], Any] | None = None,
@@ -200,6 +214,8 @@ class ModelCore:
 @final
 class JsonSchema(Generic[_T]):
     def __new__(cls, core: ModelCore) -> Self: ...
+    @classmethod
+    def __class_getitem__(cls, key: Any) -> GenericAlias: ...
     @property
     def core(self) -> ModelCore: ...
     @property
@@ -219,6 +235,8 @@ class FlatSchema(Generic[_T]):
     form or with an explicit key, when the fields are known."""
 
     def __new__(cls, core: ModelCore) -> Self: ...
+    @classmethod
+    def __class_getitem__(cls, key: Any) -> GenericAlias: ...
     @property
     def core(self) -> ModelCore: ...
     def load(self, parts: Sequence[str]) -> _T: ...

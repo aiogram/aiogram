@@ -125,7 +125,6 @@ class TestRedisStorageMock:
         redis_mock.get.assert_called_once_with(storage.key_builder.build(STORAGE_KEY, "data"))
         json_loads.assert_not_called()
 
-
     async def test_raw_paths_only_with_stdlib_json(self):
         storage = RedisStorage(redis=AsyncMock())
         assert storage._raw_reads

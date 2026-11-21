@@ -271,7 +271,7 @@ fn walk<'py>(
             // the number's source text: exact
             let text = std::str::from_utf8(doc.jiter.known_number_bytes(peek)?).unwrap_or_default();
             let text = PyString::new(py, text).into_any();
-            Ok(scalars::decimal(py, &text, &kind.label)?)
+            Ok(scalars::decimal_number(py, &text, &kind.label)?)
         }
         Data::Optional(_) if peek == Peek::Null => {
             doc.jiter.known_null()?;

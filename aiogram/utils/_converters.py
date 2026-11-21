@@ -88,8 +88,8 @@ if sys.version_info >= (3, 14):
         # runs, a class defined later) becomes a ForwardRef instead of raising NameError.
         return dict(annotationlib.get_annotations(cls, format=annotationlib.Format.FORWARDREF))
 
-    def _string_annotation(cls: type, name: str) -> str | None:
-        return annotationlib.get_annotations(cls, format=annotationlib.Format.STRING).get(name)
+    def _string_annotation(cls: type, name: str, raw: Any) -> str:  # noqa: ARG001
+        return annotationlib.get_annotations(cls, format=annotationlib.Format.STRING)[name]
 
     def _namespace_annotations(namespace: Mapping[str, Any]) -> dict[str, Any]:
         annotate = annotationlib.get_annotate_from_class_namespace(namespace)
@@ -104,8 +104,13 @@ else:  # pragma: no cover
     def _own_annotations(cls: type) -> dict[str, Any]:
         return dict(cls.__dict__.get("__annotations__", {}))
 
-    def _string_annotation(cls: type, name: str) -> str | None:  # noqa: ARG001
-        return None
+    def _string_annotation(cls: type, name: str, raw: Any) -> str:  # noqa: ARG001
+        # no STRING format before PEP 649: the annotation text is gone
+        msg = (
+            f"the annotation evaluates to the field's own default ({raw!r}); quote it or use "
+            f"`from __future__ import annotations`"
+        )
+        raise TypeError(msg)
 
     def _namespace_annotations(namespace: Mapping[str, Any]) -> dict[str, Any]:
         return dict(namespace.get("__annotations__", {}))
@@ -186,14 +191,7 @@ def _field_hint(owner: type, name: str, raw: Any, scope: _Scope) -> Any:
     if own is not MISSING and raw is own and not isinstance(raw, str):
         # Without `from __future__ import annotations` the annotation is evaluated in the class
         # body, where the field's default (or slot) has already replaced a type of that name.
-        text = _string_annotation(owner, name)
-        if text is None:
-            msg = (
-                f"the annotation evaluates to the field's own default ({raw!r}); quote it or use "
-                f"`from __future__ import annotations`"
-            )
-            raise TypeError(msg)
-        raw = text
+        raw = _string_annotation(owner, name, raw)
     text = _text_of(raw)
     return _evaluate(text, scope) if text is not None else raw
 
@@ -710,6 +708,17 @@ class _ModelInfo:
             return dict(source.f_locals)
         return dict(source)
 
+    def release(self) -> None:
+        """Drop the frame once the fields resolve, keeping the local types and modules: a
+        subclass compiles the inherited fields again (with its own class map)."""
+        source = self.frame_locals() or {}
+        kept = {
+            name: value
+            for name, value in source.items()
+            if _is_typeish(value) or isinstance(value, types.ModuleType)
+        }
+        self.locals_source = kept or None
+
 
 def _info(cls: type) -> _ModelInfo:
     info: _ModelInfo = vars(cls)["__aiogram_info__"]
@@ -885,7 +894,7 @@ def _resolve(cls: type) -> None:
     with info.lock:
         if not core.ready:
             core.set_fields(_compile(cls))
-            info.locals_source = None
+            info.release()
 
 
 def _frozen_setattr(self: Any, name: str, value: Any) -> None:
@@ -956,14 +965,17 @@ def _setup(
             cls.__setattr__ = _frozen_setattr
         if "__delattr__" not in body:
             cls.__delattr__ = _frozen_delattr
-        if "__hash__" not in body or (body["__hash__"] is None and "__eq__" not in body):
+        # as dataclasses: an explicit __hash__ (also `__hash__ = None`) is kept; the None that
+        # defining __eq__ implies is not explicit
+        own_hash = body.get("__hash__", MISSING)
+        if own_hash is MISSING or (own_hash is None and "__eq__" in body):
             cls.__hash__ = _frozen_hash
     try:
         fields = _compile(cls)
     except _NotDefined:
         return  # names defined later: compiled on first use (`_resolve`)
     core.set_fields(fields)
-    info.locals_source = None
+    info.release()
 
 
 class _ModelMeta(type):

@@ -614,10 +614,22 @@ pub(crate) fn load_decimal_number<'py>(
     if !is_number(value) {
         return Err(expected(label, value));
     }
-    decimal(value.py(), &value.str()?.into_any(), label).map_err(|error| match error {
+    decimal_number(value.py(), &value.str()?.into_any(), label).map_err(|error| match error {
         ValError::Lines(_) => expected(label, value),
         fatal @ ValError::Fatal(_) => fatal,
     })
+}
+
+/// `Decimal(text)` of a JSON number, which must be finite (`DecimalAsNumber` dumps only
+/// finite values, so NaN / Infinity would not round-trip).
+pub(crate) fn decimal_number<'py>(
+    py: Python<'py>,
+    text: &Bound<'py, PyAny>,
+    label: &str,
+) -> VResult<Bound<'py, PyAny>> {
+    let value = decimal(py, text, label)?;
+    finite_decimal(&value, label).map_err(|_| expected(label, text))?;
+    Ok(value)
 }
 
 /// A finite `Decimal`, or "expected".

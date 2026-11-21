@@ -13,6 +13,12 @@ use crate::conv::scalars::{self, Num, TextIn};
 
 /// `TypeError` for a field without a flat form, or with an explicit key.
 pub(crate) fn check(py: Python<'_>, core: &ModelCore) -> PyResult<()> {
+    if core.is_dict() {
+        return Err(PyTypeError::new_err(format!(
+            "{} is a TypedDict, which has no flat-string form",
+            core.qualname
+        )));
+    }
     for field in &core.fields(py)?.list {
         let field = field.get();
         let kind = field.kind.get();
