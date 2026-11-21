@@ -223,7 +223,8 @@ class _Enum(_Native):
                 raise TypeError(msg)
         self.tp = tp
         # an overridden _missing_ (a tolerant enum: unknown values -> UNKNOWN) is called on a miss
-        self.has_missing = getattr(tp._missing_, "__func__", None) is not Enum._missing_.__func__
+        default_missing = vars(Enum)["_missing_"].__func__
+        self.has_missing = getattr(tp._missing_, "__func__", None) is not default_missing
         self._by_json = {(type(member.value), member.value): member for member in tp}
         self._by_text = {str(member.value): member for member in tp}
         # Values with the same text (1 and "1") cannot round-trip through a flat string.
