@@ -34,7 +34,7 @@ must lead with the migration path.
   - "How to migrate" (`aiogram migrate check` → `fix`, guide link);
   - breaking changes 1–24, each linked to its guide item;
   - the deferred list from J-01;
-  - platforms (Tier 1 / best-effort, ft, PyPy best-effort);
+  - platforms (Tier 1 / best-effort, ft; "PyPy is not supported in 4.x; stay on 3.x", PD-35);
   - the 3.x support dates.
 - **Dates.** `GA = <tag date>`, `full support until = GA + 12 months`, `security-only until = GA + 18 months`. They are
   published in:

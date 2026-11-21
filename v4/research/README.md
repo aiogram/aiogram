@@ -14,7 +14,7 @@ best-of-N `timeit`. Numbers marked *est.* are estimates, everything else was mea
 | D4 | Model layer | **Rust-native types** generated from the resolved butcher IR (HTML + OpenAPI adapters); pydantic interop hooks. **Conditional on the spike gate (D104)** |
 | D5 | Rust scope | **Data plane only**: models, JSON decode/encode, entity rendering. Routing / FSM / session stay Python (redesigned) |
 | D6 | Butcher | Legacy Python butcher retired; **butcher rewritten in Rust** (`cargo xtask butcher`) with **two input adapters (HTML docs + OpenAPI 3.2 schema) → one IR**, cross-checked each release. Compat ledger **reset at 4.0**, then a rolling deprecation window: removed items are kept until the later of **12 months** and **2 Bot API major versions** (`keep_position` dropped by D100: keyword-only signatures) |
-| D7 | PyPy | Best-effort `pp311` + `pp312` wheels (PyPy 8.0.1 supports both), tested in CI, no performance promise |
+| D7 | PyPy | **Superseded by PD-35:** PyPy is not supported in 4.x; no `pp311`/`pp312` wheels, no PyPy CI leg (stay on 3.x for PyPy) |
 | D8 | Free-threading | First-class on **3.14t+** (see [07](07-free-threading.md)) |
 | D9 | 3.x | Separate **quick-wins track** shipped now as bugfix PRs ([09](09-3x-quick-wins.md)) |
 | D10 | Forward compatibility | Unknown union tags / enum values / update types decode to `Unknown…` variants; per-update isolation; `.raw` / `.raw_json` on every object ([10](10-forward-compatibility.md)) |
@@ -24,7 +24,7 @@ best-of-N `timeit`. Numbers marked *est.* are estimates, everything else was mea
 | D17 | Distribution (O1) | **Single `aiogram` distribution** built by maturin, Rust core inside; no `aiogram-core` split ([08](08-build-release.md) §2) |
 | D18 | Schema-only `Input*` twins (O4) | The 7 `Input*` schemas with no Bot API docs counterpart (`InputBotCommand`, `InputMessageEntity`, `InputChatPermissions`, …) are **merged** into the documented type. The 67 documented `Input*` types are generated as they are ([02](02-butcher.md) §3) |
 | D19 | Late registration (O5) | Registering routers/handlers/middlewares **while running raises `RuntimeError`**; allowed again after stop. Copy-on-write can be added in a 4.x minor without a break ([03](03-routing.md)) (revised by D114, 19: per-Runner routing snapshots, nothing raises) |
-| D20 | Python floor (O6) | **4.0 keeps `>=3.11`** (PyPy 3.11 + 3.12; re-confirmed 2026-11-17 after checking that PyPy 3.12 exists); a 4.x minor drops 3.11 after its EOL (Oct 2027) |
+| D20 | Python floor (O6) | **4.0 keeps `>=3.11`** (CPython EOL dates only; PyPy is not a floor input, PD-35); a 4.x minor drops 3.11 after its EOL (Oct 2027) |
 | D21–D24 | Runtime | Polling/webhook leave `Dispatcher`. **One `Runner` per loop** owns lifecycle and the bot registry; `Poller`, webhook handlers, ASGI app and user sources plug in. Bots are **added/removed at runtime** (no move semantics). No Rust web server. The 3.x webhook bot lookup is kept. `dp.start_polling`/`run_polling`/`feed_webhook_update` stay as wrappers ([12](12-runtime.md)) (D22 wording revised by R13, 19 §2: removal confirms admitted updates, best-effort delivery) |
 | D25 | i18n | **Absorbed into core**: gettext and Fluent engines, `I18nContext`, locale managers, lazy text (`L`, `LazyProxy`) on display fields rendered at encode, and `LazyFilter`. 3.x `aiogram.utils.i18n` names are kept; `aiogram_i18n` becomes a migration target ([06](06-utils.md) §3) |
 | D26 | Spike gate (attribute access) | Warm raw access **≤1.6×** pydantic (was ≤1.2×), plus an end-to-end dispatch gate. Routing reads its keys in one Rust call per update ([13](13-aiogram-rust-review.md) §5) |
@@ -145,7 +145,7 @@ Rules that follow from the research (detail in [08](08-build-release.md)):
 4. Each Runner routes on an immutable **snapshot** compiled at start (D114). `include_router` / `register` /
    middleware changes after start don't affect a running Runner until restart or `runner.refresh()`; a one-time
    warning is emitted. Nothing raises.
-5. Free-threaded builds supported on 3.14t+ only; PyPy best-effort.
+5. Free-threaded builds supported on 3.14t+ only; PyPy is not supported in 4.x, stay on 3.x (PD-35).
 6. `MongoStorage` (motor) is removed; `PyMongoStorage` (already in 3.x) remains.
 7. Installing from sdist needs a Rust toolchain.
 8. All fields/entities deprecated during 3.x are removed (compat-ledger reset, [02](02-butcher.md) §4), e.g.

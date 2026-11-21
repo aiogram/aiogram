@@ -48,15 +48,6 @@ make lint
 uv run pytest tests
 ```
 
-PyPy 3.11 on macOS arm64 segfaults on `copy` / `deepcopy` of `DefaultBotProperties`, and CI
-does not reproduce it. Before pushing a change that copies or pickles models, run the
-touched tests on a local PyPy, in a separate environment so `.venv` is left alone:
-
-```bash
-UV_PROJECT_ENVIRONMENT=/tmp/aiogram-pypy uv sync --locked --all-extras --group test --python pypy3.11
-UV_PROJECT_ENVIRONMENT=/tmp/aiogram-pypy uv run --no-sync python -m pytest <touched tests> -p no:cacheprovider
-```
-
 When touching `.github/**`, also run:
 
 ```bash

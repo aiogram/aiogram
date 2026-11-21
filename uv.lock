@@ -8,7 +8,9 @@ resolution-markers = [
     "(python_full_version == '3.14.*' and platform_python_implementation == 'PyPy') or (python_full_version == '3.14.*' and sys_platform != 'darwin' and sys_platform != 'linux')",
     "(python_full_version == '3.13.*' and platform_python_implementation != 'PyPy' and sys_platform == 'darwin') or (python_full_version == '3.13.*' and platform_python_implementation != 'PyPy' and sys_platform == 'linux')",
     "(python_full_version == '3.12.*' and platform_python_implementation != 'PyPy' and sys_platform == 'darwin') or (python_full_version == '3.12.*' and platform_python_implementation != 'PyPy' and sys_platform == 'linux')",
-    "(python_full_version >= '3.12' and python_full_version < '3.14' and platform_python_implementation == 'PyPy') or (python_full_version >= '3.12' and python_full_version < '3.14' and sys_platform != 'darwin' and sys_platform != 'linux')",
+    "(python_full_version == '3.13.*' and platform_python_implementation == 'PyPy' and sys_platform == 'darwin') or (python_full_version == '3.13.*' and platform_python_implementation == 'PyPy' and sys_platform == 'linux')",
+    "(python_full_version == '3.12.*' and platform_python_implementation == 'PyPy' and sys_platform == 'darwin') or (python_full_version == '3.12.*' and platform_python_implementation == 'PyPy' and sys_platform == 'linux')",
+    "python_full_version >= '3.12' and python_full_version < '3.14' and sys_platform != 'darwin' and sys_platform != 'linux'",
     "(python_full_version >= '3.11.5' and python_full_version < '3.12' and platform_python_implementation != 'PyPy' and sys_platform == 'darwin') or (python_full_version >= '3.11.5' and python_full_version < '3.12' and platform_python_implementation != 'PyPy' and sys_platform == 'linux')",
     "(python_full_version >= '3.11.5' and python_full_version < '3.12' and platform_python_implementation == 'PyPy') or (python_full_version >= '3.11.5' and python_full_version < '3.12' and sys_platform != 'darwin' and sys_platform != 'linux')",
     "(python_full_version < '3.11.5' and platform_python_implementation != 'PyPy' and sys_platform == 'darwin') or (python_full_version < '3.11.5' and platform_python_implementation != 'PyPy' and sys_platform == 'linux')",
@@ -68,7 +70,7 @@ docs = [
 ]
 fast = [
     { name = "aiodns" },
-    { name = "uvloop", marker = "(platform_python_implementation != 'PyPy' and sys_platform == 'darwin') or (platform_python_implementation != 'PyPy' and sys_platform == 'linux')" },
+    { name = "uvloop", marker = "sys_platform == 'darwin' or sys_platform == 'linux'" },
 ]
 i18n = [
     { name = "babel" },
@@ -93,7 +95,7 @@ test = [
 [package.dev-dependencies]
 dev = [
     { name = "motor-types" },
-    { name = "mypy", marker = "platform_python_implementation != 'PyPy'" },
+    { name = "mypy" },
     { name = "packaging" },
     { name = "pre-commit" },
     { name = "ruff" },
@@ -107,7 +109,7 @@ test = [
     { name = "pytest-cov" },
     { name = "pytest-html" },
     { name = "pytest-mock" },
-    { name = "pytest-mypy", marker = "platform_python_implementation != 'PyPy'" },
+    { name = "pytest-mypy" },
     { name = "pytz" },
 ]
 
@@ -139,15 +141,15 @@ requires-dist = [
     { name = "sphinxcontrib-towncrier", marker = "extra == 'docs'", specifier = "~=0.4.0a0" },
     { name = "towncrier", marker = "extra == 'docs'", specifier = "~=24.8.0" },
     { name = "typing-extensions", specifier = ">=4.12.1,<=5.0" },
-    { name = "uvloop", marker = "(python_full_version >= '3.13' and platform_python_implementation != 'PyPy' and sys_platform == 'darwin' and extra == 'fast') or (python_full_version >= '3.13' and platform_python_implementation != 'PyPy' and sys_platform == 'linux' and extra == 'fast')", specifier = ">=0.21.0" },
-    { name = "uvloop", marker = "(python_full_version < '3.13' and platform_python_implementation != 'PyPy' and sys_platform == 'darwin' and extra == 'fast') or (python_full_version < '3.13' and platform_python_implementation != 'PyPy' and sys_platform == 'linux' and extra == 'fast')", specifier = ">=0.17.0" },
+    { name = "uvloop", marker = "(python_full_version >= '3.13' and sys_platform == 'darwin' and extra == 'fast') or (python_full_version >= '3.13' and sys_platform == 'linux' and extra == 'fast')", specifier = ">=0.21.0" },
+    { name = "uvloop", marker = "(python_full_version < '3.13' and sys_platform == 'darwin' and extra == 'fast') or (python_full_version < '3.13' and sys_platform == 'linux' and extra == 'fast')", specifier = ">=0.17.0" },
 ]
 provides-extras = ["fast", "redis", "mongo", "proxy", "i18n", "cli", "signature", "test", "docs"]
 
 [package.metadata.requires-dev]
 dev = [
     { name = "motor-types", specifier = "==1.0.0b4" },
-    { name = "mypy", marker = "platform_python_implementation != 'PyPy'", specifier = "==2.4.0" },
+    { name = "mypy", specifier = "==2.4.0" },
     { name = "packaging", specifier = "~=26.0" },
     { name = "pre-commit", specifier = "~=4.3" },
     { name = "ruff", specifier = "~=0.15" },
@@ -161,7 +163,7 @@ test = [
     { name = "pytest-cov", specifier = ">=7.1,<7.2" },
     { name = "pytest-html", specifier = ">=4.2,<4.3" },
     { name = "pytest-mock", specifier = "==3.15.1" },
-    { name = "pytest-mypy", marker = "platform_python_implementation != 'PyPy'", specifier = "==1.0.1" },
+    { name = "pytest-mypy", specifier = "==1.0.1" },
     { name = "pytz", specifier = ">=2026,<2027" },
 ]
 
@@ -535,7 +537,9 @@ resolution-markers = [
     "(python_full_version == '3.14.*' and platform_python_implementation == 'PyPy') or (python_full_version == '3.14.*' and sys_platform != 'darwin' and sys_platform != 'linux')",
     "(python_full_version == '3.13.*' and platform_python_implementation != 'PyPy' and sys_platform == 'darwin') or (python_full_version == '3.13.*' and platform_python_implementation != 'PyPy' and sys_platform == 'linux')",
     "(python_full_version == '3.12.*' and platform_python_implementation != 'PyPy' and sys_platform == 'darwin') or (python_full_version == '3.12.*' and platform_python_implementation != 'PyPy' and sys_platform == 'linux')",
-    "(python_full_version >= '3.12' and python_full_version < '3.14' and platform_python_implementation == 'PyPy') or (python_full_version >= '3.12' and python_full_version < '3.14' and sys_platform != 'darwin' and sys_platform != 'linux')",
+    "(python_full_version == '3.13.*' and platform_python_implementation == 'PyPy' and sys_platform == 'darwin') or (python_full_version == '3.13.*' and platform_python_implementation == 'PyPy' and sys_platform == 'linux')",
+    "(python_full_version == '3.12.*' and platform_python_implementation == 'PyPy' and sys_platform == 'darwin') or (python_full_version == '3.12.*' and platform_python_implementation == 'PyPy' and sys_platform == 'linux')",
+    "python_full_version >= '3.12' and python_full_version < '3.14' and sys_platform != 'darwin' and sys_platform != 'linux'",
     "(python_full_version >= '3.11.5' and python_full_version < '3.12' and platform_python_implementation != 'PyPy' and sys_platform == 'darwin') or (python_full_version >= '3.11.5' and python_full_version < '3.12' and platform_python_implementation != 'PyPy' and sys_platform == 'linux')",
     "(python_full_version >= '3.11.5' and python_full_version < '3.12' and platform_python_implementation == 'PyPy') or (python_full_version >= '3.11.5' and python_full_version < '3.12' and sys_platform != 'darwin' and sys_platform != 'linux')",
 ]
@@ -1764,7 +1768,7 @@ version = "2.4.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "ast-serialize" },
-    { name = "librt" },
+    { name = "librt", marker = "platform_python_implementation != 'PyPy'" },
     { name = "mypy-extensions" },
     { name = "pathspec" },
     { name = "typing-extensions" },
