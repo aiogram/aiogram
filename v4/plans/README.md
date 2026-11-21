@@ -179,7 +179,7 @@ Verification method and results: [_VERIFICATION.md](_VERIFICATION.md).
 | [C-23](C-butcher/C-23-check-offline-determinism.md) | `butcher check`, offline determinism and the PR CI job | `todo` | no | M | C-10, C-12, C-13, C-15, C-16, C-17, I-05 |
 | [C-24](C-butcher/C-24-scheduled-online-reextract.md) | Scheduled online re-extract job | `todo` | no | S | C-02, C-08, C-11 |
 | [C-25](C-butcher/C-25-historical-scenario-tests.md) | Historical diff and scenario tests (milestone C exit gate) | `todo` | partial: the `send_copy` and generated-runtime scenarios need C-20/C-21 | M | C-08, C-09, C-10, C-11, C-20, C-21, C-23 |
-| [C-26](C-butcher/C-26-removal-inventory-signature-table.md) | 4.0 removal inventory and 3.x signature table | `todo` | no | S | A-11 |
+| [C-26](C-butcher/C-26-removal-inventory-signature-table.md) | 4.0 removal inventory and 3.x signature table | `done` | no | S | A-11 |
 | [C-27](C-butcher/C-27-port-ext-helpers.md) | Port the remaining hand-written type helpers to `*_ext.rs` | `todo` | yes | M | B-10, B-13, C-18, D-17 |
 | [D-01](D-client/D-01-default-bot-properties-and-bot-cleanup.md) | Frozen `DefaultBotProperties`, `Bot` cleanup, `Bot.__repr__` | `todo` | no | S | A-01, A-11, C-15 |
 | [D-02](D-client/D-02-exceptions-error-reason-restarting-removal.md) | Exceptions: `ErrorReason` on `e.reason`, `RestartingTelegram` removal, `ClientDecodeError.raw` | `todo` | no | M | A-01, A-11, C-12 |

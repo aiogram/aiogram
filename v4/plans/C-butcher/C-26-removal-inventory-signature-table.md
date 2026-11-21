@@ -2,7 +2,7 @@
 
 | Field | Value |
 |---|---|
-| Status | `todo` |
+| Status | `done` |
 | Story | C — Reproducible butcher |
 | Target branch | `dev-3.x` (generated there from `.butcher/`, merged forward to `dev-4.x`; C-11 deletes `.butcher/` on `dev-4.x`) |
 | Depends on | [A-11](../A-contracts/A-11-migration-registry.md) |
