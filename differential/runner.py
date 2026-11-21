@@ -90,13 +90,7 @@ def _stub(name: str, owner: str) -> None:
 # Seeded approved differences (manifests/*.toml). Each owning plan replaces its stub with the real
 # narrow assertion and refines the entry's ``match``.
 for _name, _owner in (
-    ("equality_ignores_bot", "A-08 / B plans"),
-    ("wire_names_in_dump_json", "A-08 / B plans"),
-    ("json_shaped_extras", "A-08 / B plans"),
-    ("dump_json_equals_to_json", "A-08 / B plans"),
-    ("collections_are_tuples", "A-08 / B plans"),
-    ("malformed_member_is_unknown", "A-08 / B plans"),
-    ("as_returns_new_view", "A-08 / B plans"),
+    ("collections_are_tuples", "B plans"),
 ):
     _stub(_name, _owner)
 
@@ -307,6 +301,156 @@ def event_context_only_kwargs(left: Record, right: Record) -> tuple[Record, Reco
     asked = set(left.get("meta", {}).get("d12_params", []))
     missing = asked - {e["component"] for e in _ran(right_entries)}
     return _with(left, [e for e in entries if e["component"] not in missing]), right
+
+
+# Model kind (A-08): records of sides/aiogram3/model.py, entries in manifests/model.toml.
+
+
+def _expect(condition: bool, why: str) -> None:
+    if not condition:
+        raise Mismatch(why)
+
+
+def _ok(record: Record) -> bool:
+    return record.get("ok") is True
+
+
+def _error_type(record: Record) -> str | None:
+    return None if _ok(record) else record.get("error", {}).get("type")
+
+
+def _model_comparator(name: str) -> Callable[[Comparator], Comparator]:
+    """Register a model comparator that skips inputs no side decoded and never crashes the run."""
+
+    def register(func: Comparator) -> Comparator:
+        def compare(left: Record, right: Record) -> tuple[Record, Record]:
+            if _error_type(left) == _error_type(right) == "DecodeFailed":
+                return left, right  # neither side decoded the input: no object to compare
+            try:
+                return func(left, right)
+            except (KeyError, TypeError, AttributeError) as exc:  # a value of another shape
+                msg = f"unexpected record shape: {exc!r}"
+                raise Mismatch(msg) from exc
+
+        comparator(name)(compare)
+        return func
+
+    return register
+
+
+@_model_comparator("equality_ignores_bot")
+def equality_ignores_bot(left: Record, right: Record) -> tuple[Record, Record]:
+    """D108: equal data bound to different bots compares equal (3.x: unequal)."""
+    _expect(_ok(left) and left["value"] is False, "left does not compare the two objects unequal")
+    _expect(_ok(right) and right["value"] is True, "right does not compare the two objects equal")
+    return left, left
+
+
+@_model_comparator("wire_names_in_dump_json")
+def wire_names_in_dump_json(left: Record, right: Record) -> tuple[Record, Record]:
+    """D86 / D94: ``model_dump_json()`` is the wire-name dump without nulls, still a ``str``.
+
+    ``dump_json.default`` holds ``{type, value, nulls, wire}``: ``model_dump_json()`` without its
+    null fields, whether it had any, and ``model_dump_json(by_alias=True, exclude_unset=True)``.
+    Right's default dump must be left's wire dump.
+    """
+    _expect(_ok(left) and _ok(right), "dump_json failed on a side")
+    wire = left["value"]["wire"]
+    _expect(
+        right["value"] == {"type": "str", "value": wire, "nulls": False, "wire": wire},
+        "right model_dump_json() is not left's wire-name dump as str",
+    )
+    return left, left
+
+
+@_model_comparator("json_shaped_extras")
+def json_shaped_extras(left: Record, right: Record) -> tuple[Record, Record]:
+    """D87: a non-JSON extra is a ``TypeError`` (3.x keeps any object)."""
+    _expect(_ok(left), "left rejected the non-JSON extra")
+    _expect(_error_type(right) == "TypeError", "right did not raise TypeError")
+    return left, left
+
+
+@_model_comparator("hashable_when_fields_are")
+def hashable_when_fields_are(left: Record, right: Record) -> tuple[Record, Record]:
+    """D108 / D106: hashable when every field is (3.x: ``TypeError`` on list fields)."""
+    _expect(_ok(right) and right["value"] == "int", "right is not hashable")
+    _expect(
+        (_ok(left) and left["value"] == "int") or _error_type(left) == "TypeError",
+        "left neither hashes nor raises TypeError",
+    )
+    return right, right
+
+
+@_model_comparator("immutable_types")
+def immutable_types(left: Record, right: Record) -> tuple[Record, Record]:
+    """D15: attribute assignment raises on every type (3.x: MutableTelegramObject allows it)."""
+    _expect(
+        _error_type(right) in {"AttributeError", "TypeError", "ValidationError"},
+        "right allowed the assignment or failed otherwise",
+    )
+    _expect(
+        _ok(left) or _error_type(left) == "ValidationError",  # frozen types raise it in 3.x
+        "left neither assigned nor raised ValidationError",
+    )
+    return left, left
+
+
+@_model_comparator("replace_validates")
+def replace_validates(left: Record, right: Record) -> tuple[Record, Record]:
+    """R06: ``model_copy(update=...)`` is ``replace``, which validates (3.x stores the value).
+
+    Left is ``DecodeFailed`` for the forward-compat inputs, which only 4.0 decodes.
+    """
+    _expect(
+        (_ok(left) and left["value"]["type"] == "str") or _error_type(left) == "DecodeFailed",
+        "left validated the update",
+    )
+    _expect(
+        _error_type(right) in {"ValidationError", "TypeError", "ValueError"},
+        "right accepted an invalid value or failed otherwise",
+    )
+    return left, left
+
+
+@_model_comparator("as_returns_new_view")
+def as_returns_new_view(left: Record, right: Record) -> tuple[Record, Record]:
+    """D103: ``obj.as_(bot)`` returns a new bound view; the original keeps its bot."""
+    _expect(
+        _ok(left) and left["value"]["returns_self"] is True,
+        "left as_() did not rebind in place",
+    )
+    view = {
+        "returns_self": False,
+        "original": "bot",
+        "view": "other",
+        "view_child": "other",
+        "root": "bot",
+    }
+    _expect(_ok(right) and right["value"] == view, "right as_() is not a new view")
+    return left, left
+
+
+@_model_comparator("nesting_limit_on_dict_path")
+def nesting_limit_on_dict_path(left: Record, right: Record) -> tuple[Record, Record]:
+    """3.33.0 (GHSA-hv98-r5fx-wc83): ``model_validate`` rejects a too-deep update.
+
+    3.32.0 decoded it. The pydantic-core error type and locations depend on its version, which
+    each venv resolves on its own, so only the recursion error kind is asserted.
+    """
+    recursion = {"recursion_loop", "recursion_depth_exceeded"}
+    if _core(left) == _core(right):
+        return left, right  # no transition between the two sides (3.32.0 vs 3.32.0)
+
+    def rejected(record: Record) -> bool:
+        if _error_type(record) != "ValidationError":
+            return False
+        errors = record["error"]["attrs"].get("errors", [])
+        return bool(errors) and {item["type"] for item in errors} <= recursion
+
+    _expect(rejected(right), "right did not reject the update with a recursion error")
+    _expect(_ok(left) or rejected(left), "left failed with another error")
+    return right, right
 
 
 @comparator("json_body_without_files")

@@ -165,9 +165,13 @@ These patterns repeatedly appeared in maintainer feedback and should be treated 
 
 - `uv run python -m differential run --kind <smoke|model|request|routing> --left <side> --right <side> [--poison right]` compares two aiogram installs case by case; concepts, manifest schema and how to add an approved difference are in `differential/README.md`. Dev tooling: excluded from the sdist, never imported by `aiogram`.
 - A new top-level dev directory is linted only if it is added to the Makefile `lint` paths and the pre-commit ruff `files` regex, and shipped unless it is in the hatch sdist `exclude`; `differential/` is in all three.
-- Side scripts (`differential/sides/<adapter>/<kind>.py`) run under `python -I` in their own venv: stdlib + aiogram only, `differential/trace.py` (and `wire.py`, its sibling) loaded by path. Do not import other repository code from them.
+- Side scripts (`differential/sides/<adapter>/<kind>.py`) run under `python -I` in their own venv: stdlib + aiogram (and its runtime dependencies, such as pydantic) only, `differential/trace.py` (and `wire.py`, its sibling) loaded by path. Do not import other repository code from them.
 - Side venvs live in the gitignored `.differential/`; `pypi:`/`git:` venvs are reused, so delete it to pick up a new release.
 - A manifest entry without `when` is active in 3.x-vs-3.x runs too; list it in `THREE_X_ENTRIES` of `tests/test_differential_framework.py`, which otherwise requires `when = "aiogram4"`.
+- A probe compared against `pypi:aiogram<4` must not record every optional field (`model_dump()` / `model_dump_json()`
+  with their `None`s): after a Bot API bump the tree has fields the release lacks, and the weekly run fails until the
+  next release. Record `exclude_unset` / `exclude_none` dumps, or strip the nulls. A new corpus input of kind `update`
+  needs an access list in `differential/manifests/model.access.toml` (`tests/test_differential_model.py`).
 - A comparator decides on what the left side (the 3.x reference) records in `meta`, never on "what the right side
   did". The routing side puts its reference facts there (surviving candidates, raise paths, same-case
   registrations), and that is how its comparators stay narrow. A record matches one manifest entry, so a difference

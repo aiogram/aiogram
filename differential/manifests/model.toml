@@ -1,27 +1,77 @@
 # Model kind (A-08). Schema: differential/README.md. First matching entry wins (keep case-specific
-# entries above probe wildcards); unmatched cases are invariant.
-# Seeded 4.0 approved differences (README breaking changes): `when = "aiogram4"` keeps them inert in 3.x-vs-3.x
-# runs, and each `assert` is a stub comparator that never approves until its owning plan refines the entry.
-# `gate = true` follows the A-07 plan (D83-D87, D91-D95, D103, D106-D108): void if B-13 is a no-go.
+# entries above probe wildcards); unmatched cases are invariant. Probes: differential/README.md
+# (*Model kind*); access paths: model.access.toml.
+# 4.0 approved differences (README breaking changes): `when = "aiogram4"` keeps them inert in 3.x-vs-3.x
+# runs. `gate = true` follows the A-07 plan (D83-D87, D91-D95, D103, D106-D108, and R06 through D91):
+# void if B-13 is a no-go.
+
+# --- 3.x vs 3.x ---------------------------------------------------------------------------------
 
 [[case]]
-match = "model.update.forward_compat.*"
+match = "model.update.deep-nesting/decode.dict"
+class = "approved"
+decision = "GHSA-hv98-r5fx-wc83"
+assert = "nesting_limit_on_dict_path"
+note = "3.33.0: model_validate rejects the 200-deep chain with a recursion error; 3.32.0 decoded it"
+
+# --- 4.0 ------------------------------------------------------------------------------------------
+
+[[case]]
+match = "model.update.*/copy.invalid"
+class = "approved"
+decision = "R06"
+assert = "replace_validates"
+gate = true
+when = "aiogram4"
+note = "model_copy(update=...) maps to replace, which validates (19 R06, D91)"
+
+[[case]]
+match = "model.update.unknown-type/hash.event"
 class = "new"
 decision = "D10"
 when = "aiogram4"
-note = "10 Layer 2: element-wise getUpdates decode; a failing element becomes Update(decode_error=...)"
+note = "10 Layer 2: the event of an unknown update type exists and hashes (3.x: UpdateTypeLookupError)"
 
 [[case]]
-match = "model.union.malformed.*"
-class = "approved"
+match = "model.update.unknown-tag/*"
+class = "new"
+decision = "D10"
+when = "aiogram4"
+note = "10 Layer 2: an unknown ChatMember status decodes (3.x: ValidationError, union_tag_invalid)"
+
+[[case]]
+match = "model.update.unknown-enum/*"
+class = "new"
+decision = "D10"
+when = "aiogram4"
+note = "10 Layer 2: an unknown enum value decodes (3.x: ValidationError, literal_error)"
+
+[[case]]
+match = "model.update.unknown-type/event"
+class = "new"
+decision = "D10"
+when = "aiogram4"
+note = "10 Layer 2: an unknown update type has an event type (3.x: UpdateTypeLookupError)"
+
+[[case]]
+match = "model.update.malformed-member/*"
+class = "new"
 decision = "D107"
-assert = "malformed_member_is_unknown"
 gate = true
 when = "aiogram4"
-note = "a malformed union member becomes Unknown with .decode_error (breaking change 3/9)"
+note = "a malformed union member becomes Unknown with .decode_error, the update decodes (breaking change 3/9)"
 
 [[case]]
-match = "model.*/eq.*"
+match = "model.codex11.eq_across_bots/observe"
+class = "approved"
+decision = "D108"
+assert = "equality_ignores_bot"
+gate = true
+when = "aiogram4"
+note = "codex section 11: equality across bots is false in 3.x"
+
+[[case]]
+match = "model.*/eq.other_bot"
 class = "approved"
 decision = "D108"
 assert = "equality_ignores_bot"
@@ -30,31 +80,56 @@ when = "aiogram4"
 note = "D84 / D108: equality is class + data, ignores the bot binding (breaking change 3)"
 
 [[case]]
-match = "model.*/dump_json"
+match = "model.*/hash.event"
+class = "approved"
+decision = "D108"
+assert = "hashable_when_fields_are"
+gate = true
+when = "aiogram4"
+note = "D108 / D106: hashable when all fields are; tuples make list-field objects hashable (breaking change 23)"
+
+[[case]]
+match = "model.update.*/dump_json.default"
 class = "approved"
 decision = "D86"
 assert = "wire_names_in_dump_json"
 gate = true
 when = "aiogram4"
-note = "to_json / model_dump_json emit wire names, by_alias ignored (breaking change 18)"
+note = "D86 / D94: model_dump_json() is to_json() as str, wire names (breaking change 18)"
 
 [[case]]
-match = "model.*/extras.*"
+match = "model.construct.User/extra.non_json"
 class = "approved"
 decision = "D87"
 assert = "json_shaped_extras"
 gate = true
 when = "aiogram4"
-note = "extras must be JSON-shaped, depth > 128 is a decode error (breaking change 19)"
+note = "extras must be JSON-shaped, TypeError otherwise (breaking change 19)"
 
 [[case]]
-match = "model.*/dump_json.str"
+match = "model.mutate.*/mutate"
 class = "approved"
-decision = "D94"
-assert = "dump_json_equals_to_json"
+decision = "D15"
+assert = "immutable_types"
+when = "aiogram4"
+note = "all types are immutable, MutableTelegramObject is gone"
+
+[[case]]
+match = "model.codex11.builder_export_copy/observe"
+class = "approved"
+decision = "D15"
+assert = "immutable_types"
+when = "aiogram4"
+note = "codex section 11 (R27): assigning to an exported builder button works in 3.x"
+
+[[case]]
+match = "model.codex11.as_keeps_nested_bot/observe"
+class = "approved"
+decision = "D103"
+assert = "as_returns_new_view"
 gate = true
 when = "aiogram4"
-note = "model_dump_json() is to_json() as str; model_dump() keeps 3.x names (breaking change 18)"
+note = "codex section 11 (R02): obj.as_(bot) returns a new bound view (breaking change 22)"
 
 [[case]]
 match = "model.*/collections"
@@ -63,13 +138,4 @@ decision = "D106"
 assert = "collections_are_tuples"
 gate = true
 when = "aiogram4"
-note = "collection fields are cached tuples (breaking change 23)"
-
-[[case]]
-match = "model.*/as_"
-class = "approved"
-decision = "D103"
-assert = "as_returns_new_view"
-gate = true
-when = "aiogram4"
-note = "obj.as_(bot) returns a new bound view (breaking change 22)"
+note = "collection fields are cached tuples (breaking change 23); no probe yet, B plans add it"
