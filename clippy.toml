@@ -1,0 +1,4 @@
+# B-01 retro: the denied restriction lints would otherwise also apply inside #[cfg(test)]
+allow-unwrap-in-tests = true
+allow-expect-in-tests = true
+allow-panic-in-tests = true

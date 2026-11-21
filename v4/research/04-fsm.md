@@ -1,4 +1,4 @@
-# 04 — FSM: Python, made thread-safe (no Rust)
+# 04 — FSM: Python, made thread-safe (Rust only for typed-data conversion, PD-36)
 
 Verdict (D5): **stays Python.** The in-process FSM costs ≈8 µs of ≈29 µs dispatch. Pure Python recovers
 3–4 µs and halves memory. A Rust store must still hold user data as Python objects, so it would save ≈250 B
@@ -125,13 +125,15 @@ await state.get_data()                               # dict API unchanged
   aiogram types (stored through the core encoder as wire JSON and decoded back with `from_dict`, D91).
 - **Shared converters with `CallbackData` (D14)**: one converter table. `CallbackData` uses its flat-string
   subset and `FSMData` the JSON-shaped, nested superset. The table is built at class creation, so per call
-  there is no reflection.
+  there is no reflection. Revised by PD-36 (F-08 plan-10): one shared annotation resolver, then separate JSON and flat
+  schemas, each with its own type set and errors; `CallbackData` takes the flat schema, `FSMData` the JSON one.
 - **Typed patches (D115)**: `update_data(OrderForm, qty=2)` validates each field and needs no full model. Passing a
   model instance merges **only explicitly set fields** (`exclude_unset`), so the default `qty=1` doesn't overwrite a
   stored quantity. Mutable defaults (`tags: list[str] = []`) are copied per instance. `set_data(model)` writes the
   full model.
 - **Storage stays dict-based**: models are converted at the `FSMContext` boundary, and storages and key layouts
-  are unaffected. Keys that the model doesn't declare are ignored on load and kept on `update_data`.
+  are unaffected. Exception (PD-36): typed reads from `RedisStorage` take the stored JSON bytes through an
+  internal `_get_data_raw` hook and load them in one pass, bypassing `json_loads`; the dict API is unchanged. Keys that the model doesn't declare are ignored on load and kept on `update_data`.
 - **Pluggable adapters** for third-party models:
 
   ```python

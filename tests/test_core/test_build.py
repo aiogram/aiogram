@@ -37,7 +37,16 @@ def test_versions_match():
 
 
 def test_import_aiogram_does_not_load_core():
-    run_python("import sys, aiogram; assert 'aiogram._core' not in sys.modules")
+    run_python(
+        "import sys, aiogram; "
+        "assert 'aiogram._core' not in sys.modules; "
+        "assert 'aiogram.utils._converters' not in sys.modules"
+    )
+
+
+def test_public_converters_module_does_not_load_core():
+    # the declaration API (field, Key, Converter...) is stdlib-only (F-08 plan-10)
+    run_python("import sys, aiogram.utils.converters; assert 'aiogram._core' not in sys.modules")
 
 
 @pytest.mark.skipif(not FREE_THREADED, reason="needs a free-threaded build")

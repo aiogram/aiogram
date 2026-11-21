@@ -56,6 +56,16 @@ make lint-workflows
 
 Without a GitHub token zizmor runs in offline mode and skips its online audits (known-vulnerable-actions and friends), which CI does run. To reproduce CI exactly, prefix `make lint-workflows` with `GH_TOKEN=$(gh auth token)`.
 
+To run a test file on another interpreter of the CI matrix (3.11–3.15, 3.14t) without touching `.venv`:
+
+```bash
+UV_PROJECT_ENVIRONMENT=/tmp/venv-3.11 uv run -p 3.11 --all-extras --group test pytest tests/<path>
+```
+
+On Python 3.14+ `typing.get_type_hints` inside
+`__init_subclass__` raises `NameError` for an unquoted reference to the class itself unless it is called with
+`format=annotationlib.Format.FORWARDREF`.
+
 Full loop (run before final review request):
 
 ```bash
@@ -151,6 +161,8 @@ These patterns repeatedly appeared in maintainer feedback and should be treated 
 - The repository is public: never add text to `v4/` that names or describes an unreleased security fix. Plans for
   such fixes stay out of the tree (listed as "(held back)" in the indexes) until the fix is released.
 - The pre-commit `end-of-file-fixer` strips trailing blank lines from copied plan files; that is expected.
+- A plan that defines an API other plans consume (F-08's converter core for F-09 / F-11 / F-12) starts with a design
+  the owner approves (API sketch, layout, open questions) before any code: F-08's first implementation was redone.
 
 ## Native extension (`dev-4.x`)
 
@@ -164,6 +176,23 @@ These patterns repeatedly appeared in maintainer feedback and should be treated 
   `crates/aiogram-core/Cargo.toml`. Only change it with `make bump`: it writes both copies and refreshes
   `Cargo.lock` and `uv.lock` (`uv sync --locked` fails otherwise). `test_build.py` asserts they match.
 - `tests/typing/` holds mypy-only `assert_type` files, never collected by pytest; run them with `make typing`.
+- `aiogram/_core.pyi` is hand-written (PD-36). After changing the `_core` surface, update it and run `make stubtest`
+  (also part of `make lint`); stubtest needs the built extension.
+- Converter core (PD-36, F-08 plan-10): `aiogram/utils/converters.py` is the public, stdlib-only declaration API
+  (`field`, `Key`, `Discriminator`, `Converter`, ready-made converters, `ConversionError`); `aiogram/utils/_converters.py`
+  resolves annotations and holds `ModelBase`; `crates/aiogram-core/src/conv/` does every conversion. `import aiogram`
+  must not import `_converters` (it loads `_core`); `tests/test_core/test_build.py` checks it.
+  - The Python -> Rust interface is the typed constructors in `conv/ir.rs` (`Kind`, `Field`, `KindCell`) and
+    `ModelCore`, declared in `aiogram/_core.pyi`. Rust never reads resolver attributes by name. A new kind needs a
+    constructor (and its stub), a `Data` variant, and its arm in `json/load.rs`, `json/parse.rs`, `json/dump.rs`,
+    `json/write.rs`, `check.rs` and `flat/` (or a "no flat form" there).
+  - Errors stay Rust `Line`s until `errors::materialize` builds one `ConversionError`; message text and locs are
+    checked by the contract suite (`tests/test_utils/test_converters.py`), so change both together.
+  - `conv/native/` is pure Rust, tested against CPython-generated vectors; keep it free of the Python API.
+  - Rebuild before testing a crate change (`make dev`, then `uv run --no-sync pytest`): a stale `_core.*.so` makes
+    tests fail, crash or pass for the wrong reason.
+  - A build outside the worktree (a scratch copy, an older commit from `git archive`) goes through
+    `maturin build -i <python>` and the wheel's `_core*.so`: a plain `cargo build` cdylib segfaults at import.
 
 ## Developer design notes (`design/`)
 

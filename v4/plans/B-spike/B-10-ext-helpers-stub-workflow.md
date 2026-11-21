@@ -82,7 +82,7 @@ for the case where that hurts.
 | Alternative | Why rejected | Decision |
 |---|---|---|
 | Python helpers attached to native classes at import (aiogram_rust, 4 974 lines) | One language per type, native speed | D11, 13 §4 |
-| pyo3-stub-gen / PyO3 experimental stub generation | Experimental; stubs come from the IR plus fragments | 02 §5.1, 13 §2 |
+| pyo3-stub-gen / PyO3 experimental stub generation | Experimental; stubs come from the IR plus fragments. Re-probed for the hand-written `_core` surface only (PD-36): inspect types everything `Any` and adds no imports, pyo3-stub-gen adds 70 crates and pins pyo3; `_core.pyi` stays hand-written, checked by stubtest | 02 §5.1, 13 §2, PD-36 |
 | Regions / merge markers in generated files | Generated Rust is always fully regenerated | 02 §5.1 |
 | A glue crate by default | One crate (D102); measured only if rebuild cost hurts | D102, 08 §2 |
 | Porting the full entity kernel here | Owned by D-17 | PD-15 |
