@@ -140,6 +140,18 @@ pub(crate) fn load_json<'py>(
             Ok(()) => return Ok(value),
             Err(error) => Fail::from(error),
         },
+        Err(Fail::Val(ValError::Lines(lines))) if lines.len() >= MAX_ERRORS => {
+            // at the error cap the walk stopped early, before keys that could still replace the
+            // bad values: the dict load of the whole document decides (and reports)
+            let parse = PythonParse {
+                allow_inf_nan: true,
+                ..PythonParse::default()
+            };
+            match parse.python_parse(py, text) {
+                Ok(value) => return load::load(py, &value, kind, Ctx::new(false)),
+                Err(error) => Fail::Json(error.error_type.to_string(), error.index),
+            }
+        }
         Err(Fail::Val(ValError::Lines(lines))) => {
             // the walk may have stopped early (error cap): invalid JSON later still wins
             let mut check = Jiter::new(text).with_allow_inf_nan();
@@ -602,15 +614,17 @@ fn union<'py>(
             match member_walk(member, ctx.fast()) {
                 Ok(result) => return Ok(result),
                 // a fail-fast trial of an object (or an array of them) may stop before a repeated
-                // key or a stored key after a `load` key: the dict load of this member decides,
-                // so the member chosen is the one `load` chooses
+                // key or a stored key after a `load` key: a collecting walk reads the whole value
+                // (later keys replace earlier ones), so the member chosen is the one `load` chooses
+                // and its numbers keep their digits
                 Err(Fail::Val(ValError::Lines(_)))
                     if matches!(peek, Peek::Object | Peek::Array) =>
                 {
-                    match load::load(py, &materialised()?, member, ctx.fast()) {
+                    let whole = Ctx { fast: false, ..ctx };
+                    match member_walk(member, whole) {
                         Ok(result) => return Ok(result),
-                        Err(ValError::Lines(_)) => {}
-                        Err(fatal) => return Err(Fail::Val(fatal)),
+                        Err(Fail::Val(ValError::Lines(_))) => {}
+                        Err(other) => return Err(other),
                     }
                 }
                 Err(Fail::Val(ValError::Lines(_))) => {}

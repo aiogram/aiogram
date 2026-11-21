@@ -556,7 +556,7 @@ class TestDunders:
         with pytest.raises(ConversionError):
             obj.__replace__(a="x")
         if sys.version_info >= (3, 13):
-            assert copy.replace(obj, a=5).a == 5
+            assert copy.replace(obj, a=5).a == 5  # noqa: TID251
 
     @pytest.mark.parametrize(
         "options", [{}, {"frozen": True}, {"slots": True}, {"frozen": True, "slots": True}]
@@ -2345,3 +2345,115 @@ class TestEdgeCases:
         codec = json_codec(Movie)
         assert codec.load({"title": "x"}) == {"title": "x"}
         assert errors_of(codec.load, {"year": 1}) == [(("title",), "field required", MISSING)]
+
+
+class TestReviewRoundBrief13:
+    """The review round after the seven edge cases (fixed, not re-reviewed)."""
+
+    def test_union_retry_keeps_decimal_digits(self):
+        from aiogram.utils.converters import DecimalAsNumber  # noqa: PLC0415
+
+        class Priced(ModelBase):
+            price: Annotated[Decimal, DecimalAsNumber()]
+            a: Annotated[int, Key("a", load=("old",))]
+
+        class Empty(ModelBase):
+            pass
+
+        codec = json_codec(Priced | Empty)
+        loaded = codec.load_json(b'{"price": 0.1234567890123456789012345, "old": "bad", "a": 1}')
+        assert loaded == Priced(price=Decimal("0.1234567890123456789012345"), a=1)
+
+    def test_typeddict_subclass_redeclaring_a_key(self):
+        class Base(TypedDict):
+            x: NotRequired[int]
+
+        class Child(Base):
+            x: int  # type: ignore[misc]
+
+        assert json_codec(Base).load({}) == {}
+        assert errors_of(json_codec(Child).load, {}) == [(("x",), "field required", MISSING)]
+
+    def test_error_cap_does_not_stop_before_a_replacing_key(self):
+        class Values(ModelBase):
+            values: Annotated[list[int], Key("values", load=("old",))]
+
+        document = json.dumps({"old": ["x"] * 150, "values": []}).encode()
+        assert json_schema(Values).load_json(document) == Values(values=[])
+        repeated = b'{"a": [' + b",".join([b'"x"'] * 150) + b'], "a": [1]}'
+        assert json_codec(dict[str, list[int]]).load_json(repeated) == {"a": [1]}
+        # still capped and reported when nothing replaces the bad values
+        assert (
+            len(errors_of(json_schema(Values).load_json, json.dumps({"values": ["x"] * 150})))
+            == 100
+        )
+
+    def test_recursive_specialised_alias_in_a_set(self, module_from_source):
+        if sys.version_info < (3, 12):
+            pytest.skip("PEP 695")
+        module = module_from_source("type Tree[T] = T | tuple[Tree[T], ...]\n")
+        assert json_codec(set[module.Tree[int]]).load([1, [2, [3]]]) == {1, (2, (3,))}
+
+    def test_copies_keep_non_field_slots(self):
+        obj = Slotted(x=3)
+        for clone in (copy.copy(obj), copy.deepcopy(obj), pickle.loads(pickle.dumps(obj))):
+            assert clone.cache == 6
+
+
+class Slotted(ModelBase):
+    """Module level, so pickle finds it: a user `__slots__` model with a non-field slot."""
+
+    __slots__ = ("cache", "x")
+    x: int
+
+    def __post_init__(self) -> None:
+        self.cache = self.x * 2
+
+
+class TestReviewRoundBrief13More:
+    """The /code-review findings of the same round (fixed, not re-reviewed)."""
+
+    def test_a_local_model_does_not_pin_other_locals(self):
+        class Big:
+            pass
+
+        def make() -> tuple[type, Any]:
+            big = Big()
+            Alias = int  # noqa: N806
+
+            class Local(ModelBase):
+                a: Alias
+
+            return Local, weakref.ref(big)
+
+        local, ref = make()
+        gc.collect()
+        assert ref() is None
+        assert json_schema(local).load({"a": 1}).a == 1
+        assert local.__aiogram_info__.locals_source == {"Alias": int}
+
+    def test_untyped_namedtuple_in_a_set_is_a_type_error(self):
+        import collections  # noqa: PLC0415
+
+        Pair = collections.namedtuple("Pair", "x y")  # noqa: PYI024
+
+        with pytest.raises(TypeError, match="the field has no annotation"):
+
+            class Holder(ModelBase):
+                pairs: frozenset[Pair]  # type: ignore[valid-type]
+
+    @pytest.mark.skipif(sys.version_info < (3, 14), reason="deferred annotations (PEP 649)")
+    def test_another_fields_default_shadowing_a_type(self, module_from_source):
+        module = module_from_source(
+            """
+            from datetime import date
+            from aiogram.utils._converters import ModelBase
+
+            D1 = date(2020, 1, 1)
+
+            class Dated(ModelBase):
+                date: date = D1
+                when: date
+            """
+        )
+        assert json_schema(module.Dated).load({"when": "2024-05-06"}).when == date(2024, 5, 6)

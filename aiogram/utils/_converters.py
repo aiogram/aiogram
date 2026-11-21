@@ -92,6 +92,10 @@ if sys.version_info >= (3, 14):
     def _string_annotation(cls: type, name: str, raw: Any) -> str:  # noqa: ARG001
         return annotationlib.get_annotations(cls, format=annotationlib.Format.STRING)[name]
 
+    def _annotation_text(cls: type, name: str, raw: Any) -> str:
+        """The source of an evaluated annotation (to find the names it uses)."""
+        return _string_annotation(cls, name, raw)
+
     def _namespace_annotations(namespace: Mapping[str, Any]) -> dict[str, Any]:
         annotate = annotationlib.get_annotate_from_class_namespace(namespace)
         if annotate is None:
@@ -116,6 +120,9 @@ else:  # pragma: no cover
     def _namespace_annotations(namespace: Mapping[str, Any]) -> dict[str, Any]:
         return dict(namespace.get("__annotations__", {}))
 
+    def _annotation_text(cls: type, name: str, raw: Any) -> str:  # noqa: ARG001
+        return repr(raw)  # the repr shows quoted forward references
+
 
 if sys.version_info >= (3, 12):
     _ALIAS_TYPES: tuple[type, ...] = (typing.TypeAliasType,)
@@ -123,6 +130,7 @@ else:  # pragma: no cover
     _ALIAS_TYPES = ()
 
 _UNION_TYPES = (typing.Union, types.UnionType)
+_IDENTIFIER = re.compile(r"[A-Za-z_]\w*")
 # TypedDict key qualifiers: required-ness / read-only-ness come from the class (PEP 655, PEP 705)
 _QUALIFIERS = {Required, NotRequired, *filter(None, [getattr(typing, "ReadOnly", None)])}
 # A ClassVar written as text (`from __future__ import annotations`), the way dataclasses detects it
@@ -194,13 +202,24 @@ def _evaluate(text: str, scope: _Scope) -> Any:
         raise TypeError(msg) from None
 
 
+def _shadowed(owner: type, raw: Any, own: Any) -> bool:
+    """Whether an evaluated annotation is a class-body value that replaced a type of that name:
+    the field's own default (or slot, or ``field(...)``), or another field's default
+    (``date: date = D; when: date``)."""
+    if isinstance(raw, str):
+        return False
+    if own is not MISSING and raw is own:
+        return True
+    if isinstance(raw, (_FieldInfo, dataclasses.Field)):
+        return True
+    return not _is_typeish(raw) and any(raw is value for value in vars(owner).values())
+
+
 def _field_hint(owner: type, name: str, raw: Any, scope: _Scope) -> Any:
     """The annotation of field ``name`` declared on ``owner``, evaluated."""
     defaults = vars(owner).get("__aiogram_defaults__")  # `slots=True`: defaults moved here
     own = (defaults if defaults is not None else vars(owner)).get(name, MISSING)
-    if not isinstance(raw, str) and (
-        (own is not MISSING and raw is own) or isinstance(raw, (_FieldInfo, dataclasses.Field))
-    ):
+    if _shadowed(owner, raw, own):
         # Without `from __future__ import annotations` the annotation is evaluated in the class
         # body, where the field's default (or slot) has already replaced a type of that name.
         raw = _string_annotation(owner, name, raw)
@@ -230,7 +249,8 @@ def _typeddict_hints(cls: type) -> dict[str, tuple[Any, type]]:
         if isinstance(base, type) and is_typeddict(base):
             hints.update(_typeddict_hints(base))
     for name, raw in _own_annotations(cls).items():
-        if name not in hints:
+        # an inherited key is the same object in the merged annotations; a redeclared one is not
+        if name not in hints or raw is not hints[name][0]:
             hints[name] = (raw, cls)
     return hints
 
@@ -650,7 +670,11 @@ class _Compiler:
                 return False
             seen.add(id(tp))
             return self.unhashable(tp.__value__, scope, seen)
-        if isinstance(origin, _ALIAS_TYPES):  # `Box[int]`
+        if isinstance(origin, _ALIAS_TYPES):  # `Box[int]`; recursive ones are decided once
+            key = hash((id(origin), _args_key(args)))
+            if key in seen:
+                return False
+            seen.add(key)
             return self.unhashable(self.substitute(tp, origin), scope, seen)
         if origin in _UNION_TYPES:
             return any(self.unhashable(arg, scope, seen) for arg in args)
@@ -668,6 +692,8 @@ class _Compiler:
             return False
         hints = _class_hints(tp)
         for name in hashed:
+            if name not in hints:
+                continue  # an untyped namedtuple field: compiling it reports the error
             raw, owner = hints[name]
             owner_scope = _scope(owner, _own_annotations(owner), self.locals_of(owner))
             if self.unhashable(_field_hint(owner, name, raw, owner_scope), owner_scope, seen):
@@ -815,10 +841,22 @@ class _ModelInfo:
         return dict(source)
 
     def release(self) -> None:
-        """Drop the frame once the fields resolve, keeping a copy of its locals: a subclass
-        compiles the inherited fields again (with its own class map), and their annotations may
-        name any local (aliases, constants in ``Literal[...]``, markers in ``Annotated``)."""
-        self.locals_source = self.frame_locals() or None
+        """Drop the frame once the fields resolve, keeping the locals the annotations name: a
+        subclass compiles the inherited fields again (with its own class map), and they may name
+        any local (aliases, constants in ``Literal[...]``, markers in ``Annotated``). Nothing
+        else is kept, so the class does not pin the function's other locals."""
+        source = self.frame_locals()
+        if not source:
+            self.locals_source = None
+            return
+        named: set[str] = set()
+        for decl in self.own:
+            text = _text_of(decl.raw)
+            if text is None:
+                text = _annotation_text(decl.owner, decl.name, decl.raw)
+            named.update(_IDENTIFIER.findall(text))
+        kept = {name: value for name, value in source.items() if name in named}
+        self.locals_source = kept or None
 
 
 def _info(cls: type) -> _ModelInfo:
@@ -1204,6 +1242,9 @@ class ModelBase(metaclass=_ModelMeta):
     def __getstate__(self) -> dict[str, Any]:
         # attributes set outside the fields (in `__post_init__`) too: copies stay usable
         state = dict(getattr(self, "__dict__", {}))
+        for name in _instance_slots(type(self)):
+            if name not in state and hasattr(self, name):
+                state[name] = getattr(self, name)
         state.update((name, getattr(self, name)) for name in type(self).__aiogram_info__.names)
         state["__fields_set__"] = fields_set(self)
         return state
@@ -1211,6 +1252,19 @@ class ModelBase(metaclass=_ModelMeta):
     def __setstate__(self, state: Mapping[str, Any]) -> None:
         for name, value in state.items():
             object.__setattr__(self, name, value)
+
+
+def _instance_slots(cls: type) -> list[str]:
+    """Every slot an instance of ``cls`` has (user ``__slots__`` over the MRO)."""
+    names: list[str] = []
+    for base in cls.__mro__:
+        slots = vars(base).get("__slots__", ())
+        names.extend(
+            name
+            for name in ((slots,) if isinstance(slots, str) else slots)
+            if name not in {"__dict__", "__weakref__", "__fields_set__"}
+        )
+    return names
 
 
 def fields_set(obj: ModelBase) -> frozenset[str]:
