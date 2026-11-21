@@ -1,8 +1,14 @@
 import inspect
 from collections.abc import Iterator
+from itertools import count
 from typing import Any, no_type_check
 
 from aiogram.types import TelegramObject
+
+# Bumped whenever a group gets a new parent: every cached State.state computed before is stale.
+# next() on a count is atomic, so no update is lost without the GIL.
+_generations = count()
+_generation = next(_generations)
 
 
 class State:
@@ -14,6 +20,8 @@ class State:
         self._state = state
         self._group_name = group_name
         self._group: type[StatesGroup] | None = None
+        # (full state name, _generation it was computed in); reset by set_parent
+        self._full_state: tuple[str | None, int] | None = None
 
     @property
     def group(self) -> "type[StatesGroup]":
@@ -24,6 +32,13 @@ class State:
 
     @property
     def state(self) -> str | None:
+        full_state = self._full_state
+        if full_state is None or full_state[1] != _generation:
+            generation = _generation
+            full_state = self._full_state = (self._resolve_state(), generation)
+        return full_state[0]
+
+    def _resolve_state(self) -> str | None:
         if self._state is None or self._state == "*":
             return self._state
 
@@ -41,6 +56,7 @@ class State:
             msg = "Group must be subclass of StatesGroup"
             raise ValueError(msg)
         self._group = group
+        self._full_state = None
 
     def __set_name__(self, owner: "type[StatesGroup]", name: str) -> None:
         if self._state is None:
@@ -80,6 +96,8 @@ class StatesGroupMeta(type):
     @no_type_check
     def __new__(mcs, name, bases, namespace, **kwargs):
         cls = super().__new__(mcs, name, bases, namespace)
+        # Set before the children are prepared, so their full names never see an inherited parent
+        cls.__parent__ = None
 
         states = []
         childs = []
@@ -91,7 +109,6 @@ class StatesGroupMeta(type):
                 child = cls._prepare_child(arg)
                 childs.append(child)
 
-        cls.__parent__ = None
         cls.__childs__ = tuple(childs)
         cls.__states__ = tuple(states)
         cls.__state_names__ = tuple(state.state for state in states)
@@ -112,20 +129,30 @@ class StatesGroupMeta(type):
             return f"{cls.__parent__.__full_group_name__}.{cls.__name__}"
         return cls.__name__
 
+    def __setattr__(cls, name: str, value: Any) -> None:
+        global _generation  # noqa: PLW0603
+        super().__setattr__(name, value)
+        # A new parent changes the full name of every state below this group, including states
+        # bound with set_parent() that are not in __all_states__. During class creation (no own
+        # __all_states__ yet) nothing is cached for this class.
+        if name == "__parent__" and "__all_states__" in vars(cls):
+            _generation = next(_generations)
+            groups: tuple[StatesGroupMeta, ...] = (cls, *cls.__all_childs__)
+            for group in groups:
+                # Same value as in __new__: a state bound in a class body always has a name
+                group.__state_names__ = tuple(
+                    state.state  # type: ignore[misc]
+                    for state in group.__states__
+                )
+                group.__all_states_names__ = group._get_all_states_names()
+
     def _prepare_child(cls, child: type["StatesGroup"]) -> type["StatesGroup"]:
         """Prepare child.
 
-        While adding `cls` for its children, we also need to recalculate
-        the parameter `__all_states_names__` for each child
-        `StatesGroup`. Since the child class appears before the
-        parent, at the time of adding the parent, the child's
-        `__all_states_names__` is already recorded without taking into
-        account the name of current parent.
+        The child class is created before its parent, so its state names were computed without
+        the parent's name; assigning ``__parent__`` refreshes them (see ``__setattr__``).
         """
         child.__parent__ = cls  # type: ignore[assignment]
-        # Deeper descendants also get a new full name, so refresh them as well
-        for group in (child, *child.__all_childs__):
-            group.__all_states_names__ = group._get_all_states_names()
         return child
 
     def _get_all_childs(cls) -> tuple[type["StatesGroup"], ...]:
