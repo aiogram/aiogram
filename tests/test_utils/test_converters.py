@@ -1,9 +1,8 @@
-"""Contract suite for the shared converter core (F-08, R16), run over both backends (PD-35)."""
+"""Contract suite for the shared converter core (F-08, R16): the Python layer over the Rust core."""
 
 from __future__ import annotations
 
 import dataclasses
-import importlib.util
 import json
 import math
 import subprocess
@@ -12,7 +11,7 @@ import textwrap
 import types
 from datetime import date, datetime, timezone
 from decimal import Decimal
-from enum import Enum, IntEnum, StrEnum
+from enum import Enum, IntEnum, IntFlag, StrEnum
 from fractions import Fraction
 from pathlib import Path
 from collections import namedtuple
@@ -44,21 +43,6 @@ from aiogram.utils._converters import (
     register_converter,
     register_model,
 )
-
-
-RUST_AVAILABLE = (
-    sys.implementation.name == "cpython" and importlib.util.find_spec("aiogram._core") is not None
-)
-
-
-@pytest.fixture(autouse=True, params=["python", "rust"])
-def backend(request: pytest.FixtureRequest) -> Any:
-    rust = request.param == "rust"
-    if rust and not RUST_AVAILABLE:
-        pytest.skip("the Rust backend is CPython-only and needs aiogram._core")
-    _converters._use_backend(rust=rust)
-    yield request.param
-    _converters._use_backend(rust=True)
 
 
 class Model:
@@ -756,8 +740,9 @@ FLAT_ALL_PARTS = ["x", "-5", "0.25", "1", "b", "2", "red", "1", "", UID.hex, "1.
 
 
 class TestFlatCodec:
-    def test_backend_in_use(self, backend):
-        assert ("_schema" in vars(FlatAll.__converter__)) is (backend == "rust")
+    def test_rust_schema_in_use(self):
+        FlatAll.__converter__.to_flat(FLAT_ALL)
+        assert "_schema" in vars(FlatAll.__converter__)
 
     def test_to_flat(self):
         assert FlatAll.__converter__.to_flat(FLAT_ALL) == FLAT_ALL_PARTS
@@ -863,21 +848,29 @@ class TestLoadJson:
         )
         assert math.isnan(loaded.ratio)
 
-    def test_lone_surrogate_like_json_loads(self):
-        text = rb'{"city": "\ud800"}'  # an escaped lone surrogate: json.loads keeps it
-        assert Address.__converter__.load_json(text).city == json.loads(text)["city"] == "\ud800"
+    def test_lone_surrogate_escape_is_invalid(self):
+        # json.loads keeps an escaped lone surrogate; jiter rejects it (PD-35, F-08 Notes)
+        with pytest.raises(ConversionError, match="invalid JSON") as exc_info:
+            Address.__converter__.load_json(rb'{"city": "\ud800"}')
+        assert exc_info.value.path == "city"
 
     @pytest.mark.parametrize(
-        ("text", "error"),
+        ("text", "reason"),
         [
-            (b'{"item_id": 5', json.JSONDecodeError),
-            (b'{"item_id": 5} []', json.JSONDecodeError),
-            (b"\xff", UnicodeDecodeError),
+            (b'{"item_id": 5', "EOF while parsing an object at line 1 column 13"),
+            (b'{"item_id": 5} []', "trailing characters at line 1 column 16"),
+            (b"\xff", "expected value at line 1 column 1"),
+            (b"", "EOF while parsing a value at line 1 column 0"),
         ],
     )
-    def test_malformed(self, text, error):
-        with pytest.raises(error):
+    def test_malformed(self, text, reason):
+        with pytest.raises(ConversionError) as exc_info:
             OrderForm.__converter__.load_json(text)
+        assert exc_info.value.reason == f"invalid JSON: {reason}"
+
+    def test_not_text(self):
+        with pytest.raises(TypeError, match="must be str, bytes or bytearray, not int"):
+            OrderForm.__converter__.load_json(5)
 
     def test_error_path(self):
         with pytest.raises(ConversionError) as exc_info:
@@ -1093,13 +1086,6 @@ class TestMoreKinds:
         assert converter_for(tp).to_json(value) == expected
 
 
-@pytest.mark.skipif(sys.implementation.name == "cpython", reason="PyPy and other non-CPython")
-def test_non_cpython_never_loads_rust(backend):
-    # PyPy: through cpyext the Rust backend is 3-9x slower than Python (PD-35)
-    assert _converters._backend() is None
-    assert "aiogram._core" not in sys.modules or "_schema" not in vars(Flat.__converter__)
-
-
 class Leaf(Model):
     kind: Literal["leaf"]
 
@@ -1181,24 +1167,69 @@ class TestReviewFindings:
         )
         assert doc == {"kind": "doc", "items": [{"kind": "leaf"}, {"kind": "doc", "items": []}]}
 
+    @pytest.mark.parametrize("value", [True, 2.0])
+    def test_enum_matches_type_and_value(self, value):
+        with pytest.raises(ConversionError, match="expected a Level value"):
+            converter_for(Level).from_json(value)
+        assert converter_for(Level).from_json(2) is Level.HIGH
+
+    def test_flag_enums_rejected(self):
+        class Permission(IntFlag):
+            READ = 1
+            WRITE = 2
+
+        with pytest.raises(TypeError, match="Flag enum"):
+            converter_for(Permission)
+
+    @pytest.mark.parametrize(
+        "tp", [set[list[int] | None], set[int | list[int]], set[Point], set[tuple[list[int], ...]]]
+    )
+    def test_unhashable_set_items_rejected_at_class_creation(self, tp):
+        with pytest.raises(TypeError, match="unhashable set item"):
+            converter_for(tp)
+
+    def test_hashable_set_items(self):
+        assert converter_for(frozenset[Pair]).from_json([{"x": 1}]) == frozenset({Pair(1)})
+        assert converter_for(set[Kind | None]).from_json(["a", None]) == {Kind.A, None}
+
+    def test_float_overflow_is_a_conversion_error(self):
+        with pytest.raises(ConversionError, match="expected a number"):
+            converter_for(float).from_json(10**1000)
+        with pytest.raises(ConversionError) as exc_info:
+            FlatAll.__converter__.load_json(
+                json.dumps({**FlatAll.__converter__.dump(FLAT_ALL), "ratio": 10**1000})
+            )
+        assert exc_info.value.path == "ratio"
+
+    def test_big_integers_from_json(self):
+        assert (
+            OrderForm.__converter__.load_json(
+                b'{"item_id": 123456789012345678901234567890}'
+            ).item_id
+            == 123456789012345678901234567890
+        )
+
     def test_subclassed_builtin_converter_is_honoured(self):
         assert Shouty.__converter__.from_json({"word": "abc"}).word == "ABC"
         assert Shouty.__converter__.load_json(b'{"word": "abc"}').word == "ABC"
 
-    def test_model_refusing_setattr_loads_without_fallback(self, backend, monkeypatch):
-        calls = []
-        original = ModelConverter._py_from_json
-        monkeypatch.setattr(
-            ModelConverter, "_py_from_json", lambda s, v: (calls.append(v), original(s, v))[1]
-        )
-        assert Guarded.__converter__.from_json({"x": 1}).x == 1
-        assert calls == []
+    def test_model_refusing_setattr_loads(self):
+        guarded = Guarded.__converter__.from_json({"x": 1})
+        assert guarded.x == 1
+        assert getattr(guarded, FIELDS_SET) == {"x"}
 
-    def test_fallback_runs_user_code_at_most_twice(self, backend, monkeypatch):
+    @pytest.mark.parametrize("load", ["from_json", "load_json"])
+    def test_user_code_runs_once_per_value(self, monkeypatch, load):
         monkeypatch.setattr(Counted, "calls", [])
-        with pytest.raises(ConversionError, match="never valid"):
-            HasCounted.__converter__.load_json(b'{"inner": {"x": 1}}')
-        assert len(Counted.calls) == (2 if backend == "rust" else 1)
+        data = {"inner": {"x": 1}}
+        with pytest.raises(ConversionError, match="never valid") as exc_info:
+            if load == "from_json":
+                HasCounted.__converter__.from_json(data)
+            else:
+                HasCounted.__converter__.load_json(json.dumps(data))
+        assert Counted.calls == [1]
+        assert exc_info.value.path == "inner"
+        assert isinstance(exc_info.value.__cause__, ValueError)
 
     def test_keyboard_interrupt_is_not_retried(self, monkeypatch):
         monkeypatch.setattr(Interrupting, "calls", 0)
@@ -1247,16 +1278,37 @@ class TestReviewFindings:
             partial.from_json({"sometimes": 1})
 
 
-class TestBackendSelection:
-    def test_python_without_core(self, monkeypatch):
+class TestCoreImport:
+    def test_core_is_imported_once(self, monkeypatch):
+        monkeypatch.setattr(_converters, "_CORE", None)
+        core = _converters._rust()
+        assert core is sys.modules["aiogram._core"]
+        assert _converters._rust() is core
+
+    @pytest.mark.parametrize("first", ["load_json", "dump", "to_json", "from_flat", "to_flat"])
+    def test_any_method_compiles_the_schema(self, first):
+        class Fresh(Model):
+            value: int = 1
+
+        converter = Fresh.__converter__
+        assert "_schema" not in vars(converter)
+        calls = {
+            "load_json": lambda: converter.load_json(b'{"value": 2}').value,
+            "dump": lambda: converter.dump(Fresh(value=2)),
+            "to_json": lambda: converter.to_json(Fresh(value=2)),
+            "from_flat": lambda: converter.from_flat(["2"]).value,
+            "to_flat": lambda: converter.to_flat(Fresh(value=2)),
+        }
+        assert calls[first]() in (2, {"value": 2}, ["2"])
+        assert "_schema" in vars(converter)
+
+    def test_without_core_the_first_use_fails(self, monkeypatch):
+        monkeypatch.setattr(_converters, "_CORE", None)
         monkeypatch.setitem(sys.modules, "aiogram._core", None)
-        _converters._use_backend(rust=True)
-        assert _converters._backend() is None
-        assert "_schema" not in vars(Flat.__converter__)
-        assert Flat.__converter__.from_json({"id": 1, "name": "x", "kind": "a"}).id == 1
+        with pytest.raises(ImportError):
+            converter_for(list[int]).from_json([1])
 
 
-@pytest.mark.skipif(sys.implementation.name != "cpython", reason="-X importtime is CPython-only")
 def test_no_heavy_imports():
     """The module imports only the standard library (checked with ``-X importtime``)."""
     path = Path(_converters.__file__)

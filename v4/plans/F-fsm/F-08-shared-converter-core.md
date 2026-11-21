@@ -46,14 +46,15 @@ layer (the B gate) or on pydantic, so F-09 can ship whatever the gate decides.
 - An **independent converter contract suite** (R16) in `tests/test_utils/test_converters.py`: per type, both codecs,
   round trip, rejected inputs, field paths, defaults, recursion.
 - **Added by PD-35 (owner, 2026-11-21):**
-  - a **Rust backend**, `aiogram._core.ModelSchema` in `crates/aiogram-core/src/conv/`: dict walker
-    (`from_json`), one-pass JSON bytes (`load_json`, `jiter`) and the flat codec (`from_flat` / `to_flat`), picked at
-    runtime on CPython (3.14t included); the Python code stays the reference and the PyPy backend;
+  - **all per-value conversion in Rust** (`aiogram._core.ModelSchema` / `KindCore` in `crates/aiogram-core/src/conv/`):
+    dict walker (`from_json`), one-pass JSON bytes (`load_json`, `jiter`), `to_json` / `dump`, and the flat codec
+    (`from_flat` / `to_flat`). Rust-only: PyPy is dropped from 4.x (the `pypy-drop` PD), so there is no Python backend.
+    `_converters.py` keeps the class-creation compiler, `register_converter`, `ConversionError` and the API;
   - `ModelConverter.from_flat` / `to_flat` / `load_json`, so F-09 and F-11 never loop over fields themselves;
   - the internal `RedisStorage._get_data_raw` hook for one-pass typed reads;
   - more kinds: `set` / `frozenset`, NamedTuple, TypedDict, smart `Union` with an optional `Discriminator`, a
     per-field `Converter` in `Annotated`;
-  - the contract suite over both backends, plus differential tests (`test_converters_differential.py`);
+  - the contract suite, run against the Python layer over the Rust core;
   - `make stubtest` (in `make lint`) for the hand-written `aiogram/_core.pyi`.
 
 **Out:**
@@ -81,11 +82,9 @@ layer (the B gate) or on pydantic, so F-09 can ship whatever the gate decides.
 - Unsupported annotations fail at class creation, not at first use.
 - Loading a 5-field flat class (int, str, Enum, `int | None`, bool) from a dict ≤ 3 µs on the A-05 reference machine
   (3.x pydantic `CallbackData.unpack` is 2.9 µs; record the measured number in Notes).
-- No import of pydantic, attrs or msgspec in the module, and none of `aiogram._core` at import time: the module is
-  importable and correct without it, and picks the Rust backend at runtime, on the first compile (PD-35;
-  `python -X importtime` check in a test).
-- The contract suite passes on both backends; differential tests show the Rust backend gives the Python values,
-  `__fields_set__` and errors (PD-35).
+- No import of pydantic, attrs or msgspec in the module (`python -X importtime` check in a test). The module needs
+  `aiogram._core` by design (PD-35: Rust-only, PyPy is dropped) and imports it on first use, so importing the
+  module stays stdlib-only.
 
 ## Rejected alternatives
 
@@ -94,7 +93,7 @@ layer (the B gate) or on pydantic, so F-09 can ship whatever the gate decides.
 | Keep pydantic for validation | pydantic is no longer a dependency | D14 |
 | Separate converters for CallbackData and FSMData | One table, flat subset vs JSON superset | D30, 04 §7 |
 | Per-call reflection over annotations | Cost; table is built at class creation | 04 §7 |
-| ~~Rust converters~~ | ~~User field conversion dominates; no gain~~ — revisited: adopted as a backend, 2.3–4× faster on CPython | PD-35 |
+| ~~Rust converters~~ | ~~User field conversion dominates; no gain~~ — revisited: all conversion runs in Rust (Rust-only, PyPy dropped), 2–4× faster than the pure-Python core | PD-35 |
 
 ## Validation
 
@@ -155,26 +154,36 @@ make lint
   `get_type_hints(format=FORWARDREF)`; the default format raises `NameError` even with `localns`.
 - The `-X importtime` test is skipped on PyPy, which ignores the flag.
 
-- **PD-35 (briefs 04–07, 2026-11-21)** revises this plan: Rust backend now, raw-bytes path, more kinds, stubtest.
-  - **Fallback design.** The Rust walkers take only inputs they can convert as they are; anything else (wrong
-    types, missing fields, subclasses, values outside `i64`, NaN, a user converter that raises...) re-runs the whole
-    input through `ModelConverter._py_*`. Results and `ConversionError`s are the Python ones by construction; the
-    cost is that on an error path user converters and `__post_init__` run twice (a thread-local "inside a
-    fallback" flag keeps nested calls on Python, so never more). A `BaseException` that is not an `Exception`
-    (`KeyboardInterrupt`) propagates without a retry; nesting beyond 128 levels falls back, so deep or cyclic input
-    raises Python's `RecursionError` instead of overflowing the native stack. Rust mirrors a converter natively only
-    when its class declares `kind` itself, so a subclass that overrides a built-in's methods is called.
-  - **Production numbers** (M2 Pro, `scripts/bench_converters.py`, median µs, Python / Rust / pydantic v2):
+- **PD-35 (briefs 04–08, 2026-11-21)** revises this plan: Rust now, Rust-only, raw-bytes path, more kinds, stubtest.
+  - **Rust-only (brief 08).** PyPy is dropped from 4.x (the `pypy-drop` PD), so the converter has one backend. The
+    first design (briefs 04–07) kept the Python code as the reference and PyPy backend, with Rust as a fast path that
+    fell back to Python; it is replaced by a Python layer over Rust. Dropped with it: the Python per-value code,
+    `_use_backend`, the PyPy guard, the differential Python-vs-Rust tests and the PyPy benchmark runs.
+  - **The split.** Python compiles: annotation resolution, class-creation `TypeError`s, field specs, defaults, the
+    converter objects with their tables and labels (`_by_json`, `_text`, `label`, union type sets, the discriminator
+    tag table). Rust converts: every `from_json` / `to_json` / `from_str` / `to_str` / `dump` / `load_json`, and it
+    builds the `ConversionError`s (reason, value, path) with the messages the Python code had. User converters
+    (`register_converter`, a `Converter` in `Annotated`, a subclass of a built-in that does not declare its own
+    `kind`) are Python objects the Rust core calls.
+  - **Semantics changed with the rewrite:** `load_json` raises `ConversionError("invalid JSON: … at line L column
+    C")` instead of `json.JSONDecodeError` / `UnicodeDecodeError`, and rejects an escaped lone surrogate (`json.loads`
+    keeps it); with several invalid fields it reports the first in document order. Enums match by `(type, value)`, so
+    `true` / `1.0` no longer load an `IntEnum`; `Flag` enums are rejected (composite values could not round-trip).
+    `float` fields turn an overflow (`10 ** 1000`) into "expected a number". Set items that can be unhashable
+    (through a union, `| None`, a non-frozen dataclass) are rejected at class creation. Nesting beyond 512 levels
+    raises `RecursionError` instead of overflowing the native stack.
+  - **Numbers** (M2 Pro, `scripts/bench_converters.py`, median µs, Rust / pydantic v2; the pure-Python core of this
+    PR's first version in brackets):
 
-    | Case | CPython 3.14.2 | 3.14t (no GIL) | PyPy 3.11 (Python only) |
-    |---|---|---|---|
-    | a. callback unpack (`split` + `from_flat`) | 1.24 / 0.55 / 2.84 | 1.29 / 0.66 / 2.99 | 0.63 / – / 11.10 |
-    | b. 5 fields from dict | 1.37 / 0.33 / 0.60 | 1.49 / 0.38 / 0.74 | 0.64 / – / 4.36 |
-    | c. 5 fields from JSON | 2.59 / 0.60 / 0.71 | 2.64 / 0.63 / 0.84 | 0.99 / – / 5.91 |
-    | c′. + nested dataclass, JSON | 3.77 / 0.95 / 1.08 | 3.88 / 0.99 / 1.26 | 1.46 / – / 8.63 |
-    | d. 20 fields, JSON | 12.42 / 3.71 / 3.54 | 12.94 / 4.20 / 4.06 | 6.61 / – / 24.05 |
-    | d. 20 fields, dict | 8.53 / 1.89 / 2.63 | 8.66 / 2.25 / 3.39 | 4.25 / – / 21.92 |
-    | d′. 20 fields, 3 via Python converters, JSON | 12.89 / 4.47 / 3.74 | 13.69 / 5.01 / 4.39 | 7.71 / – / 24.96 |
+    | Case | CPython 3.14.2 | 3.14t (no GIL) |
+    |---|---|---|
+    | a. callback unpack (`split` + `from_flat`) | 0.58 / 2.91 [1.24] | 0.66 / 3.05 |
+    | b. 5 fields from dict | 0.41 / 0.62 [1.37] | 0.44 / 0.75 |
+    | c. 5 fields from JSON | 0.65 / 0.71 [2.59] | 0.68 / 0.86 |
+    | c′. + nested dataclass, JSON | 1.05 / 1.07 [3.77] | 1.08 / 1.27 |
+    | d. 20 fields, JSON | 3.80 / 3.75 [12.42] | 4.17 / 4.17 |
+    | d. 20 fields, dict | 2.15 / 2.68 [8.53] | 2.53 / 3.42 |
+    | d′. 20 fields, 3 via Python converters, JSON | 4.50 / 3.83 [12.89] | 4.71 / 4.35 |
 
   - **Raw-bytes path (owner):** an internal hook on the built-in `RedisStorage` only; typed reads always parse the
     raw bytes and **bypass a custom `json_loads`**; Memory and Mongo storages use the dict walker. F-09 wires
@@ -182,29 +191,27 @@ make lint
   - **New kinds (owner + defaults):**
     - smart `Union` (owner): exact JSON / Python type first, then left to right; an optional
       `Annotated[A | B, Discriminator("kind")]` picks by a `Literal` tag field (owner answer read as "smart, plus an
-      optional discriminator");
+      optional discriminator"); a tag shared by two members is rejected;
     - per-field converter (owner): a `Converter` instance in `Annotated` metadata, checked after an exact
       `register_converter` entry for the whole annotation and before the inner type;
     - constraints (owner): not added;
-    - TypedDict (default): a plain `dict` of the declared keys present; `Required` / `NotRequired` honoured (the
-      hint's wrapper wins over `__required_keys__`, which misses it under string annotations); unknown keys dropped;
-      the dict is its own "set fields" record;
-    - `set` / `frozenset` (default): a JSON list; unhashable items (`list`, `dict`, TypedDict) rejected at class
-      creation;
-    - NamedTuple (default): like a dataclass, a JSON object built with `cls(**values)`; an untyped
-      `collections.namedtuple` is rejected;
+    - TypedDict (default): a plain `dict` of the declared keys present; `Required` / `NotRequired` honoured, also
+      inside `Annotated` (the hint's wrapper wins over `__required_keys__`, which misses it under string
+      annotations); unknown keys dropped; the dict is its own "set fields" record;
+    - `set` / `frozenset` (default): a JSON list; NamedTuple (default): a JSON object built with `cls(**values)`;
     - flat codec (default): none of the new kinds has a flat form (F-11 rejects them at class creation through
       `.flat`), except a per-field converter whose `flat` is true.
-  - **In Rust natively:** set / frozenset and NamedTuple; unions, TypedDicts and per-field converters run as Python
-    converters called from Rust (the "python" kind, about 0.3 µs per value).
+  - **Compile under threads:** a model's / TypedDict's lazy field compile takes a per-converter `RLock`, so another
+    thread waits instead of seeing a spurious "not ready"; a recursive reference in the same thread defers (the
+    discriminator tag table of a recursive union is built on first use).
   - **Stubs (owner, after a probe):** `aiogram/_core.pyi` stays hand-written, as pydantic-core does; `make stubtest`
     runs in `make lint` (and so in CI's Lint job). PyO3 `experimental-inspect` + `maturin --generate-stubs` needs a
     declarative module, types `Bound<PyAny>` as `Any` and adds no imports; pyo3-stub-gen 0.23.3 adds 70 crates, pins
     `pyo3 < 0.31`, writes `_core/__init__.pyi` and drops `__version__`. aiogram_rust dropped pyo3-stub-gen for
     IR-emitted stubs.
-  - **Layout (owner):** one `_core`; the converter is `src/conv/` (`fallback`, `kind`, `compile`, `schema`, `dict`,
-    `json`, `flat`). A separate `crates/aiogram-conv` rlib (scratch, M2 Pro, sccache off): cold release ≈ 9.5 s in
-    both, incremental release after touching a converter file 3.0 s vs 4.2 s, dev 0.44 s vs 0.56 s, release binary
-    byte-identical (657 328 B), codegen units 29 vs 16 with the largest 60 KB vs 28 KB, µs rows equal within noise;
-    `cargo test` needs libpython in both. Not better enough to switch.
+  - **Layout (owner):** one `_core`; the converter is `src/conv/` (`errors`, `kind`, `compile`, `load`, `dump`,
+    `json`, `flat`, `schema`). A separate `crates/aiogram-conv` rlib (scratch, measured on the dual-backend version,
+    M2 Pro, sccache off): cold release ≈ 9.5 s in both, incremental release after touching a converter file 3.0 s vs
+    4.2 s, dev 0.44 s vs 0.56 s, release binary byte-identical (657 328 B), codegen units 29 vs 16 with the largest
+    60 KB vs 28 KB, µs rows equal within noise; `cargo test` needs libpython in both. Not better enough to switch.
   - The first compile of a model imports `aiogram._core`; `import aiogram` still does not (`test_build.py`).

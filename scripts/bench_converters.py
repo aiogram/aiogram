@@ -1,5 +1,5 @@
 """
-F-08 micro-benchmarks: the converter core's Python and Rust backends against pydantic v2.
+F-08 micro-benchmarks: the converter core (Rust, PD-35) against pydantic v2.
 
 Same cases as tasks/F-08 report-03 (a: callback unpack, b: flat dict, c/c': flat JSON,
 d/d': 20 fields), A-05 method (warm-up, GC off, loops >= 0.2 s, median of 7).
@@ -29,7 +29,7 @@ from aiogram.utils._converters import FIELDS_SET, ModelConverter, register_model
 
 try:
     import pydantic
-except ImportError:  # PyPy env without the 3.x stack
+except ImportError:  # an environment without the 3.x stack
     pydantic = None
 
 
@@ -232,9 +232,8 @@ def pydantic_models() -> dict[str, Any]:
     }
 
 
-def main() -> None:  # noqa: C901, PLR0914
+def main() -> None:  # noqa: C901
     p = pydantic_models()
-    rust_available = _converters._backend() is not None
     packed = "flat:42:item:a:3:1"
 
     def unpack(value: str) -> Any:
@@ -260,29 +259,10 @@ def main() -> None:  # noqa: C901, PLR0914
                 (case, "from_json(dict)", lambda conv=conv, data=data: conv.from_json(data))
             )
 
-    backends = ["python", "rust"] if rust_available else ["python"]
-    results: dict[tuple[str, str], dict[str, float]] = {}
-    for backend in backends:
-        _converters._use_backend(rust=backend == "rust")
-        for case, label, fn in cases:
-            results.setdefault((case, label), {})[backend] = measure(fn)[0]
-    _converters._use_backend(rust=True)
-
-    # the backends build the same objects
-    _converters._use_backend(rust=False)
-    expected = {(c, lbl): fn() for c, lbl, fn in cases}
-    _converters._use_backend(rust=True)
-    for case, label, fn in cases:
-        got, want = fn(), expected[case, label]
-        conv = type(want).__converter__
-        assert conv.dump(got) == conv.dump(want) and getattr(got, FIELDS_SET) == getattr(
-            want, FIELDS_SET
-        )
-
-    reference: dict[tuple[str, str], float] = {}
+    reference: dict[tuple[str, str], Callable[[], Any]] = {}
     if p:
-        reference["a", "split + from_flat"] = measure(lambda: p["callback"].unpack(packed))[0]
-        reference["b", "from_json(dict)"] = measure(lambda: p["flat"].model_validate(FLAT))[0]
+        reference["a", "split + from_flat"] = lambda: p["callback"].unpack(packed)
+        reference["b", "from_json(dict)"] = lambda: p["flat"].model_validate(FLAT)
         for case, key, data in (
             ("c", "flat", FLAT),
             ("c'", "flat_point", FLAT_POINT),
@@ -290,27 +270,22 @@ def main() -> None:  # noqa: C901, PLR0914
             ("d'", "order", ORDER),
         ):
             raw = json.dumps(data).encode()
-            reference[case, "load_json(bytes)"] = measure(
-                lambda key=key, raw=raw: p[key].model_validate_json(raw)
-            )[0]
+            reference[case, "load_json(bytes)"] = lambda key=key, raw=raw: p[
+                key
+            ].model_validate_json(raw)
             if case.startswith("d"):
-                reference[case, "from_json(dict)"] = measure(
-                    lambda key=key, data=data: p[key].model_validate(data)
-                )[0]
+                reference[case, "from_json(dict)"] = lambda key=key, data=data: p[
+                    key
+                ].model_validate(data)
 
-    print(  # noqa: T201
-        f"{'case':<5}{'path':<20}{'python':>10}{'rust':>10}{'pydantic':>10}  (median us)"
-    )
-    for (case, label), row in results.items():
-        cells = [f"{row.get(b, float('nan')):10.2f}" for b in ("python", "rust")]
+    print(f"{'case':<5}{'path':<20}{'rust':>10}{'pydantic':>10}  (median us)")  # noqa: T201
+    for case, label, fn in cases:
+        rust = measure(fn)[0]
         ref = reference.get((case, label))
-        print(  # noqa: T201
-            f"{case:<5}{label:<20}{''.join(cells)}{'' if ref is None else f'{ref:10.2f}'}"
-        )
+        cell = "" if ref is None else f"{measure(ref)[0]:10.2f}"
+        print(f"{case:<5}{label:<20}{rust:10.2f}{cell}")  # noqa: T201
     gil = getattr(sys, "_is_gil_enabled", lambda: True)()
-    print(  # noqa: T201
-        sys.implementation.name, sys.version.split()[0], "GIL" if gil else "no-GIL"
-    )
+    print(sys.implementation.name, sys.version.split()[0], "GIL" if gil else "no-GIL")  # noqa: T201
 
 
 if __name__ == "__main__":

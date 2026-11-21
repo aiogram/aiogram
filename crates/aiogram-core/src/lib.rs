@@ -30,6 +30,7 @@ fn py_build_info(py: Python<'_>) -> PyResult<Bound<'_, PyDict>> {
 fn _core(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add("__version__", VERSION)?;
     m.add_class::<conv::ModelSchema>()?;
+    m.add_class::<conv::KindCore>()?;
     m.add_function(wrap_pyfunction!(py_build_info, m)?)
 }
 

@@ -1,135 +1,150 @@
-//! Flat codec: callback-data parts <-> instance (`ModelConverter.from_flat` / `to_flat`).
+//! The flat-string codec: callback-data parts (`to_str` / `from_str`).
 
+use pyo3::exceptions::PyValueError;
 use pyo3::prelude::*;
-use pyo3::types::{PyBool, PyFloat, PyInt, PyList, PyString, PyTuple};
+use pyo3::types::{PyBool, PyDict, PyFloat, PyInt, PyString};
 
-use super::fallback::{Fallback, Fast};
-use super::kind::Kind;
-use super::schema::ModelSchema;
+use super::dump::check_text;
+use super::errors::{self, expected, no_flat_form};
+use super::kind::{Data, Kind};
+use super::load::{boolean, float, int, literal_value, parse_text, string};
 
-pub(crate) fn from_parts<'py>(
+pub(crate) fn from_str<'py>(
     py: Python<'py>,
-    parts: &Bound<'py, PyAny>,
-    schema: &ModelSchema,
-) -> Fast<Bound<'py, PyAny>> {
-    let parts: Vec<Bound<'py, PyAny>> = if let Ok(list) = parts.cast_exact::<PyList>() {
-        list.iter().collect()
-    } else if let Ok(tuple) = parts.cast_exact::<PyTuple>() {
-        tuple.iter().collect()
-    } else {
-        return Err(Fallback::Retry);
-    };
-    if parts.len() != schema.fields.len() {
-        return Err(Fallback::Retry);
-    }
-    let mut values = Vec::with_capacity(parts.len());
-    for (field, part) in schema.fields.iter().zip(&parts) {
-        let text = part.cast_exact::<PyString>().map_err(|_| Fallback::Retry)?;
-        values.push(Some(from_str(py, text, &field.kind)?));
-    }
-    schema.build(py, values)
-}
-
-fn from_str<'py>(
-    py: Python<'py>,
-    part: &Bound<'py, PyString>,
+    part: &Bound<'py, PyAny>,
     kind: &Kind,
-) -> Fast<Bound<'py, PyAny>> {
-    match kind {
-        Kind::Str => Ok(part.clone().into_any()),
-        Kind::Int => {
-            Ok(PyInt::new(py, parse_int(part.to_str()?).ok_or(Fallback::Retry)?).into_any())
+) -> PyResult<Bound<'py, PyAny>> {
+    let converter = kind.converter.bind(py);
+    match &kind.data {
+        Data::Str => Ok(part.clone()),
+        Data::Int => {
+            if let Some(int) = exact_str(part).and_then(parse_int) {
+                return Ok(PyInt::new(py, int).into_any());
+            }
+            convert_text(py, py.get_type::<PyInt>().as_any(), part, "an integer")
         }
-        Kind::Float => {
-            Ok(PyFloat::new(py, parse_float(part.to_str()?).ok_or(Fallback::Retry)?).into_any())
+        Data::Float => {
+            if let Some(float) = exact_str(part).and_then(parse_float) {
+                return Ok(PyFloat::new(py, float).into_any());
+            }
+            convert_text(py, py.get_type::<PyFloat>().as_any(), part, "a number")
         }
-        Kind::Bool => match part.to_str()? {
-            "1" => Ok(PyBool::new(py, true).to_owned().into_any()),
-            "0" => Ok(PyBool::new(py, false).to_owned().into_any()),
-            _ => Err(Fallback::Retry), // the lax set ("true", "Off", ...) stays in Python
+        Data::Bool => match exact_str(part) {
+            Some("1") => Ok(PyBool::new(py, true).to_owned().into_any()),
+            Some("0") => Ok(PyBool::new(py, false).to_owned().into_any()),
+            _ => {
+                // the lax set ("true", "Off", ...) is `_BOOL_TEXT[value.lower()]`
+                let lowered = part.call_method0(pyo3::intern!(py, "lower"))?;
+                let table = errors::module(py)?
+                    .getattr("_BOOL_TEXT")?
+                    .cast_into::<PyDict>()?;
+                table
+                    .get_item(lowered)?
+                    .ok_or_else(|| expected(py, "a boolean", part))
+            }
         },
-        Kind::Optional { flat: true, .. } if part.to_str()?.is_empty() => {
-            Ok(py.None().into_bound(py))
+        Data::Text(text) if text.flat => parse_text(py, text, part),
+        Data::Enum(enumeration) => match &enumeration.by_text {
+            Some(by_text) => by_text
+                .bind(py)
+                .get_item(part)?
+                .ok_or_else(|| expected(py, &format!("a {} value", enumeration.name), part)),
+            None => Err(no_flat_form(converter)),
+        },
+        Data::Literal(literal) => match &literal.text {
+            Some(text) => text
+                .bind(py)
+                .get_item(part)?
+                .ok_or_else(|| expected(py, &literal.label, part)),
+            None => Err(no_flat_form(converter)),
+        },
+        Data::Optional { inner, flat: true } => {
+            if part.eq("")? {
+                Ok(py.None().into_bound(py))
+            } else {
+                from_str(py, part, inner)
+            }
         }
-        Kind::Optional { inner, flat: true } => from_str(py, part, inner),
-        Kind::Enum {
-            by_text: Some(by_text),
-            ..
-        } => by_text.bind(py).get_item(part)?.ok_or(Fallback::Retry),
-        Kind::Literal {
-            text: Some(text), ..
-        } => text.bind(py).get_item(part)?.ok_or(Fallback::Retry),
-        Kind::Python(converter) => Ok(converter
-            .bind(py)
-            .call_method1(pyo3::intern!(py, "from_str"), (part,))?),
-        _ => Err(Fallback::Retry), // no flat-string form: Python raises TypeError
+        Data::Python => converter.call_method1(pyo3::intern!(py, "from_str"), (part,)),
+        _ => Err(no_flat_form(converter)),
     }
 }
 
-pub(crate) fn to_parts<'py>(
+pub(crate) fn to_str<'py>(
     py: Python<'py>,
     value: &Bound<'py, PyAny>,
-    schema: &ModelSchema,
-) -> Fast<Bound<'py, PyList>> {
-    if !value.is_instance(schema.cls(py))? {
-        return Err(Fallback::Retry);
-    }
-    let parts = PyList::empty(py);
-    for field in &schema.fields {
-        parts.append(to_str(
-            py,
-            &value.getattr(field.name.bind(py))?,
-            &field.kind,
-        )?)?;
-    }
-    Ok(parts)
-}
-
-fn to_str<'py>(py: Python<'py>, value: &Bound<'py, PyAny>, kind: &Kind) -> Fast<Bound<'py, PyAny>> {
-    match kind {
-        Kind::Str if value.is_instance_of::<PyString>() => Ok(value.clone()),
-        Kind::Int if value.is_exact_instance_of::<PyInt>() => Ok(value.str()?.into_any()),
-        Kind::Float if value.is_exact_instance_of::<PyFloat>() => Ok(value.str()?.into_any()),
-        Kind::Bool if value.is_exact_instance_of::<PyBool>() => Ok(match value.is_truthy()? {
-            true => pyo3::intern!(py, "1").clone().into_any(),
-            false => pyo3::intern!(py, "0").clone().into_any(),
-        }),
-        Kind::Optional { flat: true, .. } if value.is_none() => {
-            Ok(pyo3::intern!(py, "").clone().into_any())
+    kind: &Kind,
+) -> PyResult<Bound<'py, PyAny>> {
+    let converter = kind.converter.bind(py);
+    match &kind.data {
+        Data::Str => string(py, value),
+        Data::Int => Ok(int(py, value)?.str()?.into_any()),
+        Data::Float => Ok(float(py, value)?.str()?.into_any()),
+        Data::Bool => Ok(bool_text(py, boolean(py, value)?.is_truthy()?)),
+        Data::Text(text) if text.flat => {
+            text.to_flat.bind(py).call1((check_text(py, text, value)?,))
         }
-        Kind::Optional { inner, flat: true } => to_str(py, value, inner),
-        Kind::Enum {
-            tp,
-            by_text: Some(_),
-            ..
-        } if value.is_instance(tp.bind(py))? => {
+        Data::Enum(enumeration) if enumeration.by_text.is_some() => {
+            if !value.is_instance(enumeration.tp.bind(py))? {
+                return Err(expected(
+                    py,
+                    &format!("a {} member", enumeration.name),
+                    value,
+                ));
+            }
             Ok(value.getattr(pyo3::intern!(py, "value"))?.str()?.into_any())
         }
-        Kind::Literal {
-            json,
-            text: Some(_),
-        } => {
-            let key = PyTuple::new(py, [value.get_type().into_any(), value.clone()])?;
-            if !json.bind(py).contains(key)? {
-                return Err(Fallback::Retry);
-            }
-            // `_literal_text`: None -> "", bool -> "1"/"0", else str(value)
+        Data::Literal(literal) if literal.text.is_some() => {
+            // `_literal_text`: None -> "", bool -> "1" / "0", else str(value)
+            let value = literal_value(py, literal, value)?;
             if value.is_none() {
-                Ok(pyo3::intern!(py, "").clone().into_any())
-            } else if value.is_exact_instance_of::<PyBool>() {
-                to_str(py, value, &Kind::Bool)
+                Ok(PyString::new(py, "").into_any())
+            } else if value.is_instance_of::<PyBool>() {
+                Ok(bool_text(py, value.is_truthy()?))
             } else {
                 Ok(value.str()?.into_any())
             }
         }
-        Kind::Python(converter) => Ok(converter
-            .bind(py)
-            .call_method1(pyo3::intern!(py, "to_str"), (value,))?),
-        _ => Err(Fallback::Retry), // every rejection stays in Python
+        Data::Optional { inner, flat: true } => {
+            if value.is_none() {
+                Ok(PyString::new(py, "").into_any())
+            } else {
+                to_str(py, value, inner)
+            }
+        }
+        Data::Python => converter.call_method1(pyo3::intern!(py, "to_str"), (value,)),
+        _ => Err(no_flat_form(converter)),
     }
 }
 
-/// `int(text)` for plain ASCII digits with an optional sign; anything else falls back.
+fn bool_text(py: Python<'_>, value: bool) -> Bound<'_, PyAny> {
+    PyString::new(py, if value { "1" } else { "0" }).into_any()
+}
+
+fn exact_str<'a>(part: &'a Bound<'_, PyAny>) -> Option<&'a str> {
+    part.cast_exact::<PyString>()
+        .ok()
+        .and_then(|text| text.to_str().ok())
+}
+
+/// `int(text)` / `float(text)` for anything the plain-ASCII fast path does not take; a
+/// `ValueError` there is a conversion error.
+fn convert_text<'py>(
+    py: Python<'py>,
+    convert: &Bound<'py, PyAny>,
+    part: &Bound<'py, PyAny>,
+    what: &str,
+) -> PyResult<Bound<'py, PyAny>> {
+    convert.call1((part,)).map_err(|error| {
+        if error.is_instance_of::<PyValueError>(py) {
+            expected(py, what, part)
+        } else {
+            error
+        }
+    })
+}
+
+/// `int(text)` for plain ASCII digits with an optional sign; anything else goes through `int()`.
 fn parse_int(text: &str) -> Option<i64> {
     let digits = text.strip_prefix(['+', '-']).unwrap_or(text);
     if digits.is_empty() || !digits.bytes().all(|byte| byte.is_ascii_digit()) {
@@ -138,7 +153,7 @@ fn parse_int(text: &str) -> Option<i64> {
     text.parse().ok()
 }
 
-/// `float(text)` for plain decimal notation; `inf`, `nan`, `1_0`, spaces... fall back.
+/// `float(text)` for plain decimal notation; `inf`, `nan`, `1_0`, spaces... go through `float()`.
 fn parse_float(text: &str) -> Option<f64> {
     if text.is_empty()
         || !text

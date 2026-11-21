@@ -78,8 +78,8 @@ class Item(CallbackData, prefix="item"):
   `Literal`), plus defaults. `pack`/`unpack` and the 64-byte limit work as today. `filter()` and the magic `F`
   rule are unchanged.
 - ~~No Rust: pack/unpack cost (2–3 µs) is the user's field conversion~~ — revised by PD-35: the shared converter
-  core has a Rust backend on CPython (unpack 0.55 µs vs 1.28 µs in Python), Python on PyPy. The prefix fast-fail
-  (09 #16) still removes most of the filter cost.
+  core converts in Rust (unpack 0.58 µs; 1.24 µs in its first, pure-Python version), Rust-only since PyPy is dropped.
+  The prefix fast-fail (09 #16) still removes most of the filter cost.
 - Breaks: pydantic `Field(...)`, validators and `model_*` methods on user `CallbackData` classes. The migration
   guide shows how to replace a validator with a `__post_init__` check.
 

@@ -1,18 +1,21 @@
-//! [`ModelSchema`]: the compiled field table, the Python-facing class, and instance building.
+//! The Python-facing classes: [`ModelSchema`] (a model's field table) and [`KindCore`] (one
+//! built-in converter), plus model loading, building and dumping.
 
+use pyo3::exceptions::{PyAttributeError, PyValueError};
 use pyo3::prelude::*;
 use pyo3::sync::PyOnceLock;
-use pyo3::types::{PyDict, PyFrozenSet, PyString, PyType};
+use pyo3::types::{PyDict, PyFrozenSet, PyList, PyType};
 
-use super::fallback::{self, Fallback, Fast};
-use super::kind::Field;
-use super::{compile, dict, flat, json};
+use super::errors::{self, at, expected};
+use super::kind::{Field, Kind};
+use super::load::Getter;
+use super::{compile, dump, flat, json, load};
 
 /// Compiled field table of one `ModelConverter` (`aiogram/utils/_converters.py`).
 #[pyclass(frozen, module = "aiogram._core")]
 pub struct ModelSchema {
-    converter: Py<PyAny>,
     cls: Py<PyType>,
+    qualname: String,
     is_model: bool,
     pub(crate) fields: Vec<Field>,
     /// `frozenset` of every field name, shared by loads that set all fields
@@ -21,87 +24,161 @@ pub struct ModelSchema {
 
 static OBJECT_NEW: PyOnceLock<Py<PyAny>> = PyOnceLock::new();
 
+fn field_at(py: Python<'_>, error: PyErr, field: &Field) -> PyErr {
+    at(py, error, || Ok(format!(".{}", field.key)))
+}
+
 impl ModelSchema {
-    pub(crate) fn cls<'py>(&self, py: Python<'py>) -> &Bound<'py, PyType> {
-        self.cls.bind(py)
+    /// `ModelConverter.from_json`.
+    pub(crate) fn load<'py>(
+        &self,
+        py: Python<'py>,
+        value: &Bound<'py, PyAny>,
+        depth: u32,
+    ) -> PyResult<Bound<'py, PyAny>> {
+        errors::check_depth(depth)?;
+        let getter = Getter::new(py, value)?;
+        let mut values = Vec::with_capacity(self.fields.len());
+        let mut set = Vec::with_capacity(self.fields.len());
+        for field in &self.fields {
+            let name = field.name.bind(py);
+            let raw = getter.get(name)?;
+            set.push(getter.contains(name, raw.is_some())?);
+            values.push(match raw {
+                Some(raw) => load::load(py, &raw, &field.kind, depth + 1)
+                    .map_err(|e| field_at(py, e, field))?,
+                None => self.default(py, field)?,
+            });
+        }
+        self.build(py, values, &set, Some(value))
     }
 
-    /// Build the instance the way `ModelConverter._build` does.
+    /// The default of a field missing from the input, or "field required".
+    pub(crate) fn default<'py>(
+        &self,
+        py: Python<'py>,
+        field: &Field,
+    ) -> PyResult<Bound<'py, PyAny>> {
+        match (&field.default, &field.factory) {
+            (Some(default), _) => Ok(default.bind(py).clone()),
+            (None, Some(factory)) => factory.bind(py).call0(),
+            (None, None) => Err(field_at(
+                py,
+                errors::conversion(py, "field required", None),
+                field,
+            )),
+        }
+    }
+
+    /// `ModelConverter._build`: a registered model gets its fields and the "set fields"
+    /// record in its own `__dict__` (no `__init__`, no `__setattr__`); a dataclass or
+    /// NamedTuple is called, and a `ValueError` from it becomes a `ConversionError`.
     pub(crate) fn build<'py>(
         &self,
         py: Python<'py>,
-        values: Vec<Option<Bound<'py, PyAny>>>,
-    ) -> Fast<Bound<'py, PyAny>> {
+        values: Vec<Bound<'py, PyAny>>,
+        set: &[bool],
+        source: Option<&Bound<'py, PyAny>>,
+    ) -> PyResult<Bound<'py, PyAny>> {
         let cls = self.cls.bind(py);
-        // A model: fill the new instance's own __dict__, as `instance.__dict__.update(...)`
-        // does, so a guarded __setattr__ (a frozen FSMData) is never called.
-        let instance = if self.is_model {
-            let object_new = OBJECT_NEW.get_or_try_init(py, || {
-                py.get_type::<PyAny>().getattr("__new__").map(Bound::unbind)
-            })?;
-            Some(object_new.bind(py).call1((cls,))?)
-        } else {
-            None
-        };
-        let dict = match &instance {
-            Some(instance) => instance
-                .getattr(pyo3::intern!(py, "__dict__"))?
-                .cast_into::<PyDict>()
-                .map_err(|_| Fallback::Retry)?,
-            None => PyDict::new(py),
-        };
-        let mut set = Vec::new();
-        let mut all = true;
-        for (field, value) in self.fields.iter().zip(values) {
+        if !self.is_model {
+            let kwargs = PyDict::new(py);
+            for (field, value) in self.fields.iter().zip(values) {
+                kwargs.set_item(field.name.bind(py), value)?;
+            }
+            return cls.call((), Some(&kwargs)).map_err(|error| {
+                if !error.is_instance_of::<PyValueError>(py) {
+                    return error;
+                }
+                let reason = error
+                    .value(py)
+                    .str()
+                    .map(|text| text.to_string())
+                    .unwrap_or_default();
+                let wrapped = errors::conversion(py, &reason, source);
+                wrapped.set_cause(py, Some(error));
+                wrapped
+            });
+        }
+        let object_new = OBJECT_NEW.get_or_try_init(py, || {
+            py.get_type::<PyAny>().getattr("__new__").map(Bound::unbind)
+        })?;
+        let instance = object_new.bind(py).call1((cls,))?;
+        let dict = instance
+            .getattr(pyo3::intern!(py, "__dict__"))?
+            .cast_into::<PyDict>()?;
+        let mut names = Vec::new();
+        for ((field, value), set) in self.fields.iter().zip(values).zip(set) {
             let name = field.name.bind(py);
-            match value {
-                Some(value) => {
-                    dict.set_item(name, value)?;
-                    if self.is_model {
-                        set.push(name.clone());
-                    }
-                }
-                None => {
-                    all = false;
-                    match (&field.default, &field.factory) {
-                        (Some(default), _) => dict.set_item(name, default.bind(py))?,
-                        (None, Some(factory)) => dict.set_item(name, factory.bind(py).call0()?)?,
-                        (None, None) => return Err(Fallback::Retry), // required: Python raises
-                    }
-                }
+            dict.set_item(name, value)?;
+            if *set {
+                names.push(name.clone());
             }
         }
-        let Some(instance) = instance else {
-            // dataclass / NamedTuple; a ValueError from __post_init__ falls back too, so
-            // Python wraps it identically
-            return Ok(cls.call((), Some(&dict))?);
-        };
-        let fields_set = if all {
+        let fields_set = if names.len() == self.fields.len() {
             self.all_set.bind(py).clone()
         } else {
-            PyFrozenSet::new(py, &set)?
+            PyFrozenSet::new(py, &names)?
         };
         dict.set_item(pyo3::intern!(py, "__fields_set__"), fields_set)?;
         Ok(instance)
     }
 
-    /// The fast path, or the Python implementation (`fallback`) when it does not apply or
-    /// when this thread is already inside a fallback.
-    fn run<'py>(
+    fn check_instance(&self, py: Python<'_>, value: &Bound<'_, PyAny>) -> PyResult<()> {
+        if value.is_instance(self.cls.bind(py))? {
+            Ok(())
+        } else {
+            Err(expected(
+                py,
+                &format!("a {} instance", self.qualname),
+                value,
+            ))
+        }
+    }
+
+    /// `ModelConverter.to_json`.
+    pub(crate) fn to_json<'py>(
         &self,
-        fast: impl FnOnce() -> Fast<Bound<'py, PyAny>>,
-        fallback: &Bound<'py, PyString>,
-        arg: &Bound<'py, PyAny>,
+        py: Python<'py>,
+        value: &Bound<'py, PyAny>,
+        depth: u32,
     ) -> PyResult<Bound<'py, PyAny>> {
-        let python = || self.converter.bind(arg.py()).call_method1(fallback, (arg,));
-        if fallback::python_only() {
-            return python();
+        self.check_instance(py, value)?;
+        Ok(self.dump_fields(py, value, false, depth)?.into_any())
+    }
+
+    /// `ModelConverter.dump`.
+    fn dump_fields<'py>(
+        &self,
+        py: Python<'py>,
+        value: &Bound<'py, PyAny>,
+        exclude_unset: bool,
+        depth: u32,
+    ) -> PyResult<Bound<'py, PyDict>> {
+        errors::check_depth(depth)?;
+        let fields_set = if exclude_unset {
+            match value.getattr(pyo3::intern!(py, "__fields_set__")) {
+                Ok(fields_set) => Some(fields_set),
+                Err(error) if error.is_instance_of::<PyAttributeError>(py) => None,
+                Err(error) => return Err(error),
+            }
+        } else {
+            None
+        };
+        let out = PyDict::new(py);
+        for field in &self.fields {
+            let name = field.name.bind(py);
+            if let Some(fields_set) = &fields_set
+                && !fields_set.contains(name)?
+            {
+                continue;
+            }
+            let attribute = value.getattr(name)?;
+            let converted = dump::dump(py, &attribute, &field.kind, depth + 1)
+                .map_err(|e| field_at(py, e, field))?;
+            out.set_item(name, converted)?;
         }
-        match fast() {
-            Ok(result) => Ok(result),
-            Err(Fallback::Retry) => fallback::in_python(python),
-            Err(Fallback::Raise(error)) => Err(error),
-        }
+        Ok(out)
     }
 }
 
@@ -111,53 +188,109 @@ impl ModelSchema {
     fn new(converter: &Bound<'_, PyAny>) -> PyResult<Self> {
         let py = converter.py();
         let (fields, names) = compile::fields(converter)?;
+        let cls = converter.getattr("tp")?.cast_into::<PyType>()?;
         Ok(Self {
-            converter: converter.clone().unbind(),
-            cls: converter.getattr("tp")?.cast_into::<PyType>()?.unbind(),
+            qualname: cls.getattr("__qualname__")?.extract()?,
+            cls: cls.unbind(),
             is_model: converter.getattr("is_model")?.extract()?,
             fields,
             all_set: PyFrozenSet::new(py, &names)?.unbind(),
         })
     }
 
-    /// `ModelConverter.from_json`: a JSON-shaped dict -> instance.
+    /// `ModelConverter.from_json`: a JSON-shaped mapping -> instance.
     fn load_dict<'py>(&self, value: &Bound<'py, PyAny>) -> PyResult<Bound<'py, PyAny>> {
-        let py = value.py();
-        self.run(
-            || dict::load_model(py, value, self, 0),
-            pyo3::intern!(py, "_py_from_json"),
-            value,
-        )
+        self.load(value.py(), value, 0)
     }
 
-    /// `ModelConverter.load_json`: JSON `bytes` / `str` -> instance in one pass.
+    /// `ModelConverter.load_json`: JSON `bytes` / `bytearray` / `str` -> instance in one pass.
     fn load_json<'py>(&self, data: &Bound<'py, PyAny>) -> PyResult<Bound<'py, PyAny>> {
-        let py = data.py();
-        self.run(
-            || json::load_document(py, data, self),
-            pyo3::intern!(py, "_py_load_json"),
-            data,
-        )
+        json::load_document(data.py(), data, self)
     }
 
-    /// `ModelConverter.from_flat`: callback-data parts -> instance.
+    /// `ModelConverter.to_json`: instance -> JSON-shaped dict (validates the values).
+    #[pyo3(name = "to_json")]
+    fn py_to_json<'py>(&self, value: &Bound<'py, PyAny>) -> PyResult<Bound<'py, PyAny>> {
+        self.to_json(value.py(), value, 0)
+    }
+
+    /// `ModelConverter.dump`.
+    #[pyo3(signature = (value, *, exclude_unset = false))]
+    fn dump<'py>(
+        &self,
+        value: &Bound<'py, PyAny>,
+        exclude_unset: bool,
+    ) -> PyResult<Bound<'py, PyDict>> {
+        self.dump_fields(value.py(), value, exclude_unset, 0)
+    }
+
+    /// `ModelConverter.from_flat`: callback-data parts (one string per field) -> instance.
     #[pyo3(name = "from_flat")]
     fn load_flat<'py>(&self, parts: &Bound<'py, PyAny>) -> PyResult<Bound<'py, PyAny>> {
         let py = parts.py();
-        self.run(
-            || flat::from_parts(py, parts, self),
-            pyo3::intern!(py, "_py_from_flat"),
-            parts,
-        )
+        if parts.len()? != self.fields.len() {
+            let given = py.get_type::<PyList>().call1((parts,))?;
+            return Err(errors::conversion(
+                py,
+                &format!("expected {} parts", self.fields.len()),
+                Some(&given),
+            ));
+        }
+        let mut values = Vec::with_capacity(self.fields.len());
+        for (field, part) in self.fields.iter().zip(parts.try_iter()?) {
+            values
+                .push(flat::from_str(py, &part?, &field.kind).map_err(|e| field_at(py, e, field))?);
+        }
+        let set = vec![true; values.len()];
+        self.build(py, values, &set, Some(parts))
     }
 
     /// `ModelConverter.to_flat`: instance -> callback-data parts.
-    fn to_flat<'py>(&self, value: &Bound<'py, PyAny>) -> PyResult<Bound<'py, PyAny>> {
+    fn to_flat<'py>(&self, value: &Bound<'py, PyAny>) -> PyResult<Bound<'py, PyList>> {
         let py = value.py();
-        self.run(
-            || flat::to_parts(py, value, self).map(Bound::into_any),
-            pyo3::intern!(py, "_py_to_flat"),
-            value,
-        )
+        self.check_instance(py, value)?;
+        let parts = PyList::empty(py);
+        for field in &self.fields {
+            let attribute = value.getattr(field.name.bind(py))?;
+            parts.append(
+                flat::to_str(py, &attribute, &field.kind).map_err(|e| field_at(py, e, field))?,
+            )?;
+        }
+        Ok(parts)
+    }
+}
+
+/// The compiled core of one built-in converter (`_Str`, `_Sequence`, `_Union`...): its
+/// `to_json` / `from_json` / `to_str` / `from_str` methods call these.
+#[pyclass(frozen, module = "aiogram._core")]
+pub struct KindCore {
+    kind: Kind,
+}
+
+#[pymethods]
+impl KindCore {
+    #[new]
+    fn new(converter: &Bound<'_, PyAny>) -> PyResult<Self> {
+        Ok(Self {
+            kind: compile::kind(converter, true)?,
+        })
+    }
+
+    #[pyo3(name = "from_json")]
+    fn load_value<'py>(&self, value: &Bound<'py, PyAny>) -> PyResult<Bound<'py, PyAny>> {
+        load::load(value.py(), value, &self.kind, 0)
+    }
+
+    fn to_json<'py>(&self, value: &Bound<'py, PyAny>) -> PyResult<Bound<'py, PyAny>> {
+        dump::dump(value.py(), value, &self.kind, 0)
+    }
+
+    #[pyo3(name = "from_str")]
+    fn load_str<'py>(&self, value: &Bound<'py, PyAny>) -> PyResult<Bound<'py, PyAny>> {
+        flat::from_str(value.py(), value, &self.kind)
+    }
+
+    fn to_str<'py>(&self, value: &Bound<'py, PyAny>) -> PyResult<Bound<'py, PyAny>> {
+        flat::to_str(value.py(), value, &self.kind)
     }
 }

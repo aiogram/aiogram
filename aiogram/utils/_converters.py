@@ -11,9 +11,9 @@ Field specs are compiled once per class (:func:`register_model` from
 annotation raises :class:`TypeError` at class creation; bad input raises
 :class:`ConversionError` carrying the field path (``address.zip``, ``tags[2]``).
 
-The module imports only the standard library. On CPython, :class:`ModelConverter`
-switches to the Rust backend in ``aiogram._core`` (imported lazily, on first compile)
-when it is available; the Python code here is the reference and the PyPy backend.
+This module compiles annotations into converters; all per-value conversion runs in
+Rust, in ``aiogram._core`` (PD-35: Rust-only, since PyPy is dropped from 4.x). The
+module imports only the standard library: ``aiogram._core`` is imported on first use.
 """
 
 from __future__ import annotations
@@ -21,15 +21,15 @@ from __future__ import annotations
 import contextlib
 import dataclasses
 import importlib
-import json
 import sys
+import threading
 import types
 import typing
-from collections.abc import Callable, Iterable, Mapping, Sequence
+from collections.abc import Callable, Mapping, Sequence
 from copy import deepcopy
 from datetime import date, datetime
 from decimal import Decimal
-from enum import Enum
+from enum import Enum, Flag
 from fractions import Fraction
 from functools import partial
 from typing import (
@@ -88,16 +88,17 @@ class ConversionError(ValueError):
         return text
 
 
-def _expected(what: str, value: Any) -> ConversionError:
-    return ConversionError(f"expected {what}", value)
-
-
 class Converter:
-    """Base converter. ``flat`` converters also implement the string codec."""
+    """A converter: ``to_json`` / ``from_json``, and, when ``flat``, ``to_str`` / ``from_str``.
+
+    Subclass it for :func:`register_converter` or a per-field ``Annotated[T, MyConverter()]``;
+    the Rust core calls these methods. The built-in converters below carry only compile data
+    (a ``kind`` tag, types, tables): their per-value work runs in Rust (PD-35).
+    """
 
     flat: bool = False
     kind: ClassVar[str] = "python"
-    """Tag the Rust backend dispatches on; ``"python"`` means "call this converter"."""
+    """Tag the Rust core dispatches on; ``"python"`` means "call this converter's methods"."""
 
     def to_json(self, value: Any) -> Any:  # pragma: no cover
         raise NotImplementedError
@@ -117,68 +118,44 @@ class Converter:
         return f"<{type(self).__name__}>"
 
 
-class _Str(Converter):
+class _Native(Converter):
+    """A built-in converter: its methods run on its compiled Rust core."""
+
+    def _core(self) -> Any:
+        core = self.__dict__.get("_core_")
+        if core is None:
+            core = self.__dict__["_core_"] = _rust().KindCore(self)
+        return core
+
+    def to_json(self, value: Any) -> Any:
+        return self._core().to_json(value)
+
+    def from_json(self, value: Any) -> Any:
+        return self._core().from_json(value)
+
+    def to_str(self, value: Any) -> str:
+        return self._core().to_str(value)  # type: ignore[no-any-return]
+
+    def from_str(self, value: str) -> Any:
+        return self._core().from_str(value)
+
+
+class _Str(_Native):
     flat = True
     kind = "str"
 
-    def to_json(self, value: Any) -> Any:
-        if isinstance(value, str):
-            return value
-        raise _expected("a string", value)
 
-    from_json = to_json
-    to_str = to_json
-
-    def from_str(self, value: str) -> Any:
-        return value
-
-
-class _Int(Converter):
+class _Int(_Native):
     flat = True
     kind = "int"
 
-    def to_json(self, value: Any) -> Any:
-        if type(value) is int:
-            return value
-        if isinstance(value, int) and not isinstance(value, bool):
-            return int(value)
-        raise _expected("an integer", value)
 
-    from_json = to_json
-
-    def to_str(self, value: Any) -> str:
-        return str(self.to_json(value))
-
-    def from_str(self, value: str) -> Any:
-        try:
-            return int(value)
-        except ValueError:
-            raise _expected("an integer", value) from None
-
-
-class _Float(Converter):
+class _Float(_Native):
     flat = True
     kind = "float"
 
-    def to_json(self, value: Any) -> Any:
-        if type(value) is float:
-            return value
-        if isinstance(value, (int, float)) and not isinstance(value, bool):
-            return float(value)
-        raise _expected("a number", value)
 
-    from_json = to_json
-
-    def to_str(self, value: Any) -> str:
-        return str(self.to_json(value))
-
-    def from_str(self, value: str) -> Any:
-        try:
-            return float(value)
-        except ValueError:
-            raise _expected("a number", value) from None
-
-
+# The flat bool text: 3.x packs "1"/"0"; the rest is pydantic's lax set, kept for hand-built data.
 _BOOL_TEXT = {
     "1": True,
     "0": False,
@@ -195,30 +172,20 @@ _BOOL_TEXT = {
 }
 
 
-class _Bool(Converter):
+class _Bool(_Native):
     flat = True
     kind = "bool"
 
-    def to_json(self, value: Any) -> Any:
-        if isinstance(value, bool):
-            return value
-        raise _expected("a boolean", value)
 
-    from_json = to_json
+class _Text(_Native):
+    """A value stored as text in both codecs (``Decimal``, ``UUID``, ``datetime``...).
 
-    def to_str(self, value: Any) -> str:
-        return "1" if self.to_json(value) else "0"
+    ``parse`` reads the text (a ``ValueError`` / ``ArithmeticError`` is a conversion error),
+    ``to_text`` / ``to_flat`` write it; an instance of ``reject`` (``datetime`` for ``date``)
+    is refused.
+    """
 
-    def from_str(self, value: str) -> Any:
-        # 3.x packs "1"/"0"; the rest is pydantic's lax set, kept for hand-built data.
-        try:
-            return _BOOL_TEXT[value.lower()]
-        except KeyError:
-            raise _expected("a boolean", value) from None
-
-
-class _Text(Converter):
-    """A value stored as text in both codecs (``Decimal``, ``UUID``, ``datetime``...)."""
+    kind = "text"
 
     def __init__(
         self,
@@ -237,76 +204,28 @@ class _Text(Converter):
         self.to_flat = to_flat or to_text
         self.reject = reject
 
-    def _check(self, value: Any) -> Any:
-        if isinstance(value, self.tp) and not (self.reject and isinstance(value, self.reject)):
-            return value
-        raise _expected(f"a {self.tp.__name__}", value)
 
-    def to_json(self, value: Any) -> Any:
-        return self.to_text(self._check(value))
+class _Enum(_Native):
+    """An ``Enum``: its JSON form is the member value, matched by ``(type, value)`` so that
+    ``true`` or ``1.0`` never load an ``IntEnum`` member."""
 
-    def from_json(self, value: Any) -> Any:
-        if not isinstance(value, str):
-            raise _expected(f"a {self.tp.__name__} string", value)
-        return self._parse(value)
-
-    def to_str(self, value: Any) -> str:
-        if not self.flat:
-            return super().to_str(value)
-        return self.to_flat(self._check(value))
-
-    def from_str(self, value: str) -> Any:
-        if not self.flat:
-            return super().from_str(value)
-        return self._parse(value)
-
-    def _parse(self, value: str) -> Any:
-        try:
-            return self.parse(value)
-        except (ValueError, ArithmeticError):  # InvalidOperation, ZeroDivisionError
-            raise _expected(f"a {self.tp.__name__} string", value) from None
-
-
-class _Enum(Converter):
     flat = True
     kind = "enum"
 
     def __init__(self, tp: type[Enum]) -> None:
+        if issubclass(tp, Flag):
+            # composite and zero flags are not members: they could not round-trip
+            msg = f"{tp.__name__} is a Flag enum, which is not supported"
+            raise TypeError(msg)
         for member in tp:
             if type(member.value) not in _JSON_SCALARS:
                 msg = f"{tp.__name__}.{member.name} value {member.value!r} is not a JSON scalar"
                 raise TypeError(msg)
         self.tp = tp
+        self._by_json = {(type(member.value), member.value): member for member in tp}
         self._by_text = {str(member.value): member for member in tp}
         # Values with the same text (1 and "1") cannot round-trip through a flat string.
         self.flat = len(self._by_text) == len(tp)
-
-    def _check(self, value: Any) -> Enum:
-        if isinstance(value, self.tp):
-            return value
-        raise _expected(f"a {self.tp.__name__} member", value)
-
-    def to_json(self, value: Any) -> Any:
-        return self._check(value).value
-
-    def from_json(self, value: Any) -> Any:
-        try:
-            return self.tp(value)
-        except ValueError:
-            raise _expected(f"a {self.tp.__name__} value", value) from None
-
-    def to_str(self, value: Any) -> str:
-        if not self.flat:
-            return super().to_str(value)
-        return str(self._check(value).value)
-
-    def from_str(self, value: str) -> Any:
-        if not self.flat:
-            return super().from_str(value)
-        try:
-            return self._by_text[value]
-        except KeyError:
-            raise _expected(f"a {self.tp.__name__} value", value) from None
 
 
 _JSON_SCALARS = {str, int, float, bool, types.NoneType}
@@ -320,7 +239,7 @@ def _literal_text(value: Any) -> str:
     return str(value)
 
 
-class _Literal(Converter):
+class _Literal(_Native):
     flat = True
     kind = "literal"
 
@@ -330,61 +249,22 @@ class _Literal(Converter):
                 msg = f"unsupported Literal value {value!r}; use str, int, bool or None"
                 raise TypeError(msg)
         self.values = values
+        self.label = f"one of {list(values)}"
         # Keyed by type too, so True does not match Literal[1].
         self._json = {(type(value), value) for value in values}
         self._text = {_literal_text(value): value for value in values}
         self.flat = len(self._text) == len(values)  # Literal[1, "1"]: same text
 
-    def to_json(self, value: Any) -> Any:
-        try:
-            if (type(value), value) in self._json:
-                return value
-        except TypeError:  # unhashable
-            pass
-        raise _expected(f"one of {list(self.values)}", value)
 
-    from_json = to_json
-
-    def to_str(self, value: Any) -> str:
-        if not self.flat:
-            return super().to_str(value)
-        return _literal_text(self.to_json(value))
-
-    def from_str(self, value: str) -> Any:
-        if not self.flat:
-            return super().from_str(value)
-        try:
-            return self._text[value]
-        except KeyError:
-            raise _expected(f"one of {list(self.values)}", value) from None
-
-
-class _Optional(Converter):
+class _Optional(_Native):
     kind = "optional"
 
     def __init__(self, inner: Converter) -> None:
         self.inner = inner
-        self.flat = inner.flat
-
-    def to_json(self, value: Any) -> Any:
-        return None if value is None else self.inner.to_json(value)
-
-    def from_json(self, value: Any) -> Any:
-        return None if value is None else self.inner.from_json(value)
-
-    def to_str(self, value: Any) -> str:
-        # An empty part means None (3.x pack writes None as "").
-        if not self.flat:
-            return super().to_str(value)
-        return "" if value is None else self.inner.to_str(value)
-
-    def from_str(self, value: str) -> Any:
-        if not self.flat:
-            return super().from_str(value)
-        return None if value == "" else self.inner.from_str(value)
+        self.flat = inner.flat  # "" is None in the flat codec (3.x pack writes None as "")
 
 
-class _Sequence(Converter):
+class _Sequence(_Native):
     """``list[T]``, ``tuple[T, ...]``, ``set[T]``, ``frozenset[T]``; the JSON form is a list."""
 
     kind = "sequence"
@@ -393,28 +273,8 @@ class _Sequence(Converter):
         self.item = item
         self.tp: Any = tp
 
-    def _convert(self, values: Iterable[Any], convert: Callable[[Any], Any]) -> list[Any]:
-        result = []
-        for index, value in enumerate(values):
-            try:
-                result.append(convert(value))
-            except ConversionError as e:
-                raise e._at(f"[{index}]") from None
-        return result
 
-    def to_json(self, value: Any) -> Any:
-        if not isinstance(value, self.tp):
-            raise _expected(f"a {self.tp.__name__}", value)
-        return self._convert(value, self.item.to_json)
-
-    def from_json(self, value: Any) -> Any:
-        if not isinstance(value, (list, tuple)):
-            raise _expected("an array", value)
-        result = self._convert(value, self.item.from_json)
-        return result if self.tp is list else self.tp(result)
-
-
-class _Dict(Converter):
+class _Dict(_Native):
     """``dict[str, T]``."""
 
     kind = "dict"
@@ -422,49 +282,36 @@ class _Dict(Converter):
     def __init__(self, item: Converter) -> None:
         self.item = item
 
-    def _convert(self, value: Any, convert: Callable[[Any], Any]) -> dict[str, Any]:
-        if not isinstance(value, dict):
-            raise _expected("an object", value)
-        result = {}
-        for key, item in value.items():
-            if not isinstance(key, str):
-                raise _expected("a string key", key)
-            try:
-                result[key] = convert(item)
-            except ConversionError as e:
-                raise e._at(f"[{key!r}]") from None
-        return result
 
-    def to_json(self, value: Any) -> Any:
-        return self._convert(value, self.item.to_json)
-
-    def from_json(self, value: Any) -> Any:
-        return self._convert(value, self.item.from_json)
-
-
-class _TypedDict(Converter):
+class _TypedDict(_Native):
     """A ``TypedDict``: a plain ``dict`` of the declared keys present in the input.
 
     ``Required`` keys must be there; ``NotRequired`` keys that are missing stay missing (the
     dict is its own "set fields" record). Unknown keys are dropped, as for models.
     """
 
+    kind = "typeddict"
+
     def __init__(self, tp: type) -> None:
         self.tp = tp
         self._fields: tuple[tuple[str, Converter, bool], ...] | None = None
         self._compiling = False
+        self._lock = threading.RLock()
 
     @property
     def fields(self) -> tuple[tuple[str, Converter, bool], ...]:
-        if self._fields is None and self._compiling:
-            raise _NotReady(self.tp)
-        if self._fields is None:  # lazy: a TypedDict may refer to itself
-            self._compiling = True
-            try:
-                self._fields = self._compile()
-            finally:
-                self._compiling = False
-        return self._fields
+        if self._fields is not None:
+            return self._fields
+        with self._lock:  # another thread waits; a recursive reference in this one is _NotReady
+            if self._fields is None:
+                if self._compiling:
+                    raise _NotReady(self.tp)
+                self._compiling = True
+                try:
+                    self._fields = self._compile()
+                finally:
+                    self._compiling = False
+            return self._fields
 
     def _compile(self) -> tuple[tuple[str, Converter, bool], ...]:
         hints = typing.get_type_hints(
@@ -487,28 +334,6 @@ class _TypedDict(Converter):
                 msg = f"{self.tp.__qualname__}.{name}: {e}"
                 raise TypeError(msg) from None
         return tuple(fields)
-
-    def _convert(self, value: Any, method: str) -> dict[str, Any]:
-        if not isinstance(value, Mapping):
-            raise _expected("an object", value)
-        result = {}
-        for name, converter, required in self.fields:
-            raw = value.get(name, MISSING)
-            if raw is MISSING:
-                if required:
-                    raise ConversionError("field required")._at("." + name)
-                continue
-            try:
-                result[name] = getattr(converter, method)(raw)
-            except ConversionError as e:
-                raise e._at("." + name) from None
-        return result
-
-    def to_json(self, value: Any) -> Any:
-        return self._convert(value, "to_json")
-
-    def from_json(self, value: Any) -> Any:
-        return self._convert(value, "from_json")
 
 
 @dataclasses.dataclass(frozen=True, slots=True)
@@ -548,13 +373,15 @@ def _types(converter: Converter, *, json_form: bool) -> frozenset[type]:
     return frozenset()  # a user converter: tried in order, after the exact matches
 
 
-class _Union(Converter):
+class _Union(_Native):
     """``A | B | ...`` (with or without ``None``), smart mode (PD-35).
 
     A member whose type matches the value exactly is tried first (``int | str`` keeps ``1`` and
     ``"1"`` apart, ``float | int`` keeps ``1`` an int), then every member left to right; the
     first that accepts wins. With a :class:`Discriminator`, the tag field picks the member.
     """
+
+    kind = "union"
 
     def __init__(
         self,
@@ -571,6 +398,7 @@ class _Union(Converter):
         self._json = [(member, _types(member, json_form=True)) for member in members]
         self._python = [(member, _types(member, json_form=False)) for member in members]
         self._tags: dict[tuple[type, Any], Converter] | None = None
+        self.tag_label = ""
         if discriminator is not None:
             with contextlib.suppress(NameError):  # a member defined later: built on first use
                 self._tag_table()
@@ -594,43 +422,9 @@ class _Union(Converter):
                     if tags.setdefault((type(value), value), member) is not member:
                         msg = f"{self.label}: tag {value!r} is used by more than one member"
                         raise TypeError(msg)
+            self.tag_label = f"one of {[value for _, value in tags]}"
             self._tags = tags
         return self._tags
-
-    @staticmethod
-    def _order(table: list[tuple[Converter, frozenset[type]]], tp: type) -> list[Converter]:
-        exact = [member for member, types_ in table if tp in types_]
-        return exact + [member for member, _ in table if member not in exact]
-
-    def _first(self, members: list[Converter], method: str, value: Any) -> Any:
-        for member in members:
-            try:
-                return getattr(member, method)(value)
-            except ConversionError:
-                continue
-        raise _expected(self.label, value)
-
-    def from_json(self, value: Any) -> Any:
-        if value is None and self.nullable:
-            return None
-        if self.discriminator is None:
-            return self._first(self._order(self._json, type(value)), "from_json", value)
-        if not isinstance(value, Mapping):
-            raise _expected("an object", value)
-        tag = value.get(self.discriminator, MISSING)
-        if tag is MISSING:
-            raise ConversionError("field required")._at("." + self.discriminator)
-        try:
-            member = self._tag_table()[type(tag), tag]
-        except (KeyError, TypeError):
-            expected = [value for _, value in self._tag_table()]
-            raise _expected(f"one of {expected}", tag)._at("." + self.discriminator) from None
-        return member.from_json(value)
-
-    def to_json(self, value: Any) -> Any:
-        if value is None and self.nullable:
-            return None
-        return self._first(self._order(self._python, type(value)), "to_json", value)
 
 
 @dataclasses.dataclass(frozen=True, slots=True)
@@ -642,16 +436,13 @@ class FieldSpec:
 
 
 class ModelConverter(Converter):
-    """Converter for a registered model class or a stdlib dataclass.
+    """Converter for a registered model class, a stdlib dataclass or a NamedTuple.
 
-    Registered models are built without calling ``__init__`` and must have an
-    instance ``__dict__``; dataclasses are built with ``tp(**values)`` so
+    The fields are compiled here, in Python; loading and dumping run on the compiled Rust
+    schema (``aiogram._core.ModelSchema``), which replaces these methods per instance on first
+    use. Registered models are built without calling ``__init__`` and must have an instance
+    ``__dict__``; dataclasses and NamedTuples are built with ``tp(**values)``, so
     ``__post_init__`` runs (a ``ValueError`` there becomes a :class:`ConversionError`).
-
-    On the Rust backend, :meth:`from_json`, :meth:`load_json`, :meth:`from_flat` and
-    :meth:`to_flat` are replaced per instance by the compiled schema. It handles the common
-    shapes and hands anything else (bad input included) back to the ``_py_*`` methods, so
-    results and errors are the Python ones.
     """
 
     kind = "model"
@@ -661,117 +452,64 @@ class ModelConverter(Converter):
         self.is_model = is_model
         self._fields: tuple[FieldSpec, ...] | None = None
         self._compiling = False
+        self._lock = threading.RLock()
 
     @property
     def fields(self) -> tuple[FieldSpec, ...]:
         # Lazy: a class may refer to itself (or to a class defined later) through its fields.
-        if self._fields is None:
-            if self._compiling:
-                raise _NotReady(self.tp)
-            self._compiling = True
-            try:
-                self._fields = _compile(self.tp)
-            finally:
-                self._compiling = False
-            self._accelerate()
-        return self._fields
-
-    def _accelerate(self) -> None:
-        core = _backend()
-        if core is None:
-            return
-        schema = core.ModelSchema(self)
-        # Instance attributes shadow the Python methods; the Rust backend calls the _py_* ones.
-        vars(self).update(
-            _schema=schema,
-            from_json=schema.load_dict,
-            load_json=schema.load_json,
-            from_flat=schema.from_flat,
-            to_flat=schema.to_flat,
-        )
+        if self._fields is not None:
+            return self._fields
+        with self._lock:  # another thread waits; a recursive reference in this one is _NotReady
+            if self._fields is None:
+                if self._compiling:
+                    raise _NotReady(self.tp)
+                self._compiling = True
+                try:
+                    self._fields = _compile(self.tp)
+                finally:
+                    self._compiling = False
+            return self._fields
 
     def _rust_schema(self) -> Any:
-        """The compiled Rust schema (compiling the fields first); used for nested models."""
-        self.fields  # noqa: B018
-        return vars(self)["_schema"]
-
-    def _build(self, values: dict[str, Any], fields_set: Iterable[str], source: Any) -> Any:
-        if not self.is_model:
-            try:
-                return self.tp(**values)
-            except ValueError as e:
-                raise ConversionError(str(e), source) from e
-        instance: Any = object.__new__(self.tp)
-        instance.__dict__.update(values)
-        instance.__dict__[FIELDS_SET] = frozenset(fields_set)
-        return instance
+        """The compiled Rust schema (compiling the fields first); also used for nested models."""
+        schema = self.__dict__.get("_schema")
+        if schema is None:
+            self.fields  # noqa: B018
+            schema = _rust().ModelSchema(self)
+            # Instance attributes shadow the methods below: later calls go straight to Rust.
+            vars(self).update(
+                _schema=schema,
+                from_json=schema.load_dict,
+                load_json=schema.load_json,
+                to_json=schema.to_json,
+                dump=schema.dump,
+                from_flat=schema.from_flat,
+                to_flat=schema.to_flat,
+            )
+        return schema
 
     def from_json(self, value: Any) -> Any:
-        if not isinstance(value, Mapping):
-            raise _expected("an object", value)
-        values: dict[str, Any] = {}
-        get = value.get
-        for field in self._fields or self.fields:
-            raw = get(field.name, MISSING)
-            if raw is not MISSING:
-                try:
-                    values[field.name] = field.converter.from_json(raw)
-                except ConversionError as e:
-                    raise e._at("." + field.name) from None
-            elif field.default is not MISSING:
-                values[field.name] = field.default
-            elif field.default_factory is not None:
-                values[field.name] = field.default_factory()
-            else:
-                raise ConversionError("field required")._at("." + field.name)
-        # Keys present in the input count as set, so a round trip keeps exclude_unset.
-        return self._build(values, (name for name in values if name in value), value)
+        """A JSON-shaped mapping -> instance (unknown keys ignored)."""
+        return self._rust_schema().load_dict(value)
 
-    def load_json(self, data: bytes | str) -> Any:
-        """JSON text (``bytes`` or ``str``) -> instance; one pass on the Rust backend."""
-        return self._py_from_json(json.loads(data))
+    def load_json(self, data: bytes | bytearray | str) -> Any:
+        """JSON text -> instance in one pass, as ``json.loads`` + :meth:`from_json` would."""
+        return self._rust_schema().load_json(data)
+
+    def to_json(self, value: Any) -> Any:
+        return self._rust_schema().to_json(value)
+
+    def dump(self, value: Any, *, exclude_unset: bool = False) -> dict[str, Any]:
+        """Instance -> JSON-shaped dict; validates the values."""
+        return self._rust_schema().dump(value, exclude_unset=exclude_unset)  # type: ignore[no-any-return]
 
     def from_flat(self, parts: Sequence[str]) -> Any:
         """Callback-data parts (one string per field, in field order) -> instance."""
-        fields = self._fields or self.fields
-        if len(parts) != len(fields):
-            raise ConversionError(f"expected {len(fields)} parts", list(parts))
-        values = {}
-        for field, part in zip(fields, parts, strict=True):
-            try:
-                values[field.name] = field.converter.from_str(part)
-            except ConversionError as e:
-                raise e._at("." + field.name) from None
-        return self._build(values, values, parts)
+        return self._rust_schema().from_flat(parts)
 
     def to_flat(self, value: Any) -> list[str]:
         """Instance -> callback-data parts, one string per field in field order."""
-        if not isinstance(value, self.tp):
-            raise _expected(f"a {self.tp.__qualname__} instance", value)
-        result = []
-        for field in self._fields or self.fields:
-            try:
-                result.append(field.converter.to_str(getattr(value, field.name)))
-            except ConversionError as e:
-                raise e._at("." + field.name) from None
-        return result
-
-    def to_json(self, value: Any) -> Any:
-        if not isinstance(value, self.tp):
-            raise _expected(f"a {self.tp.__qualname__} instance", value)
-        return self.dump(value)
-
-    def dump(self, value: Any, *, exclude_unset: bool = False) -> dict[str, Any]:
-        fields_set = getattr(value, FIELDS_SET, None) if exclude_unset else None
-        result = {}
-        for field in self._fields or self.fields:
-            if fields_set is not None and field.name not in fields_set:
-                continue
-            try:
-                result[field.name] = field.converter.to_json(getattr(value, field.name))
-            except ConversionError as e:
-                raise e._at("." + field.name) from None
-        return result
+        return self._rust_schema().to_flat(value)  # type: ignore[no-any-return]
 
     def init(self, instance: Any, kwargs: Mapping[str, Any]) -> None:
         """``__init__`` body for a registered model: store kwargs, fill defaults, record set
@@ -796,12 +534,6 @@ class ModelConverter(Converter):
         instance.__dict__.update(values)
         instance.__dict__[FIELDS_SET] = frozenset(kwargs)
 
-    # The Python implementations, kept reachable for the Rust backend's fallback.
-    _py_from_json = from_json
-    _py_load_json = load_json
-    _py_from_flat = from_flat
-    _py_to_flat = to_flat
-
 
 # ponytail: plain dicts keep compiled classes alive; classes are module-level and immortal anyway.
 _models: dict[type, ModelConverter] = {}
@@ -821,30 +553,34 @@ _SCALARS: dict[Any, Converter] = {
 }
 _UNION_TYPES = (typing.Union, types.UnionType)
 
-
-_RUST: Any = MISSING  # aiogram._core once resolved, None for the Python backend
-
-
-def _backend() -> Any:
-    global _RUST  # noqa: PLW0603
-    if _RUST is MISSING:
-        _RUST = None
-        # ponytail: PyPy keeps the Python backend: through cpyext Rust is 3-9x slower (PD-35).
-        if sys.implementation.name == "cpython":  # pragma: no branch
-            with contextlib.suppress(ImportError):
-                _RUST = importlib.import_module("aiogram._core")
-    return _RUST
+_CORE: Any = None
 
 
-def _use_backend(*, rust: bool) -> None:
-    """Switch every compiled model to the Rust (if available) or the Python backend (tests)."""
-    global _RUST  # noqa: PLW0603
-    _RUST = MISSING if rust else None
-    for converter in _models.values():
-        for name in ("_schema", "from_json", "load_json", "from_flat", "to_flat"):
-            vars(converter).pop(name, None)
-        if converter._fields is not None:
-            converter._accelerate()
+def _rust() -> Any:
+    """``aiogram._core``, imported on first use: importing this module stays stdlib-only."""
+    global _CORE  # noqa: PLW0603
+    if _CORE is None:
+        _CORE = importlib.import_module("aiogram._core")
+    return _CORE
+
+
+def _unhashable(converter: Converter) -> bool:
+    """Whether ``converter`` can produce a value that cannot go in a set."""
+    if isinstance(converter, (_Dict, _TypedDict)):
+        return True
+    if isinstance(converter, _Sequence):
+        return converter.tp in {list, set} or _unhashable(converter.item)
+    if isinstance(converter, _Optional):
+        return _unhashable(converter.inner)
+    if isinstance(converter, _Union):
+        return any(_unhashable(member) for member in converter.members)
+    if isinstance(converter, ModelConverter):
+        if getattr(converter.tp, "__hash__", None) is None:  # a non-frozen dataclass
+            return True
+        if _is_namedtuple(converter.tp):
+            with contextlib.suppress(NameError):  # a NamedTuple field defined later
+                return any(_unhashable(field.converter) for field in converter.fields)
+    return False
 
 
 def register_converter(tp: Any, converter: Converter) -> None:
@@ -918,9 +654,7 @@ def converter_for(tp: Any) -> Converter:
         return _Dict(converter_for(args[-1]))
     if origin in {set, frozenset} and len(args) == 1:
         item = converter_for(args[0])
-        if isinstance(item, (_Dict, _TypedDict)) or (
-            isinstance(item, _Sequence) and item.tp in {list, set}
-        ):
+        if _unhashable(item):
             msg = f"unhashable set item {args[0]!r}"
             raise TypeError(msg)
         return _Sequence(item, origin)
