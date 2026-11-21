@@ -161,6 +161,8 @@ These patterns repeatedly appeared in maintainer feedback and should be treated 
 - The repository is public: never add text to `v4/` that names or describes an unreleased security fix. Plans for
   such fixes stay out of the tree (listed as "(held back)" in the indexes) until the fix is released.
 - The pre-commit `end-of-file-fixer` strips trailing blank lines from copied plan files; that is expected.
+- A plan that defines an API other plans consume (F-08's converter core for F-09 / F-11 / F-12) starts with a design
+  the owner approves (API sketch, layout, open questions) before any code: F-08's first implementation was redone.
 
 ## Native extension (`dev-4.x`)
 
@@ -189,6 +191,8 @@ These patterns repeatedly appeared in maintainer feedback and should be treated 
   - `conv/native/` is pure Rust, tested against CPython-generated vectors; keep it free of the Python API.
   - Rebuild before testing a crate change (`make dev`, then `uv run --no-sync pytest`): a stale `_core.*.so` makes
     tests fail, crash or pass for the wrong reason.
+  - A build outside the worktree (a scratch copy, an older commit from `git archive`) goes through
+    `maturin build -i <python>` and the wheel's `_core*.so`: a plain `cargo build` cdylib segfaults at import.
 
 ## Developer design notes (`design/`)
 

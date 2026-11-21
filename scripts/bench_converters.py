@@ -7,6 +7,9 @@ h: dumps, i: the validating constructor). A-05 method (warm-up, GC off, loops >=
 median of 7).
 
     uv run python scripts/bench_converters.py
+
+Compare against another build (an older commit, pydantic) only within one quiet session, run back
+to back: timings drift by tens of percent while other builds compile.
 """
 
 # ponytail: stand-in until the A-05 harness exists; move to benchmarks/cases/fsm.py then.

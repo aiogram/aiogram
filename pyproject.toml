@@ -178,6 +178,7 @@ select = [
     "SIM", # flake8-simplify
     "T10", # flake8-debugger
     "T20", # flake8-print
+    "TID251", # banned-api (see flake8-tidy-imports below)
     "UP", # pyupgrade
 ]
 ignore = [
@@ -197,6 +198,10 @@ ignore = [
     "PLW2901", # redefined-loop-name (intentional pattern in this codebase)
     "PLW3201", # bad-dunder-method-name (custom dunders for framework design)
 ]
+
+[tool.ruff.lint.flake8-tidy-imports.banned-api]
+# APIs newer than requires-python (3.11): CI runs 3.11 and fails there, a local 3.14 run does not
+"copy.replace".msg = "Python 3.13+ only; call obj.__replace__(...) or gate on sys.version_info"
 
 [tool.ruff.lint.isort]
 known-first-party = [
