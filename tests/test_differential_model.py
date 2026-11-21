@@ -208,8 +208,19 @@ VIEW_4X = {
     "view_child": "other",
     "root": "bot",
 }
-DUMP_3X = {"type": "str", "value": {"from_user": None, "id": 1}, "wire": {"id": 1}}
-DUMP_4X = {"type": "str", "value": {"id": 1}, "wire": {"id": 1}}
+DUMP_3X = {"type": "str", "value": {"from_user": 1}, "nulls": True, "wire": {"from": 1}}
+DUMP_4X = {"type": "str", "value": {"from": 1}, "nulls": False, "wire": {"from": 1}}
+SKIPPED = err("DecodeFailed")
+MODEL_COMPARATORS = (
+    "equality_ignores_bot",
+    "wire_names_in_dump_json",
+    "json_shaped_extras",
+    "hashable_when_fields_are",
+    "immutable_types",
+    "replace_validates",
+    "as_returns_new_view",
+    "nesting_limit_on_dict_path",
+)
 
 
 class TestComparators:
@@ -224,6 +235,7 @@ class TestComparators:
             ("immutable_types", ok({"text": "b"}), err("AttributeError")),
             ("immutable_types", err("ValidationError"), err("AttributeError")),
             ("replace_validates", ok({"type": "str", "update_id": "x"}), err("ValidationError")),
+            ("replace_validates", SKIPPED, err("ValidationError")),  # forward-compat input
             ("as_returns_new_view", ok(VIEW_3X), ok(VIEW_4X)),
             ("nesting_limit_on_dict_path", ok({"type": "Update"}), err("ValidationError", DEPTH)),
             (
@@ -231,6 +243,7 @@ class TestComparators:
                 err("ValidationError", RECURSION),
                 err("ValidationError", DEPTH),
             ),
+            ("nesting_limit_on_dict_path", ok({"type": "Update"}), ok({"type": "Update"})),
         ],
     )
     def test_holds(self, name, left, right):
@@ -255,6 +268,13 @@ class TestComparators:
             ("hashable_when_fields_are", ok("int"), err("TypeError"), "right is not"),
             ("hashable_when_fields_are", err("ValueError"), ok("int"), "left neither"),
             ("immutable_types", ok({"text": "b"}), ok({"text": "b"}), "allowed"),
+            ("immutable_types", ok({"text": "b"}), err("NameError"), "allowed"),
+            ("replace_validates", ok({"type": "str"}), err("RuntimeError"), "accepted"),
+            ("replace_validates", ok({"type": "str"}), SKIPPED, "accepted"),
+            ("replace_validates", err("TypeError"), err("ValidationError"), "left validated"),
+            ("wire_names_in_dump_json", ok(DUMP_3X), ok({**DUMP_4X, "nulls": True}), "not left's"),
+            ("as_returns_new_view", ok("not a dict"), ok(VIEW_4X), "record shape"),
+            ("wire_names_in_dump_json", ok({}), ok(DUMP_4X), "record shape"),
             ("replace_validates", ok({"type": "int"}), err("ValidationError"), "left validated"),
             ("replace_validates", ok({"type": "str"}), ok({"type": "str"}), "accepted"),
             (
@@ -264,7 +284,7 @@ class TestComparators:
                 "in place",
             ),
             ("as_returns_new_view", ok(VIEW_3X), ok(VIEW_3X), "not a new view"),
-            ("nesting_limit_on_dict_path", ok({}), ok({}), "right did not"),
+            ("nesting_limit_on_dict_path", ok({}), ok({"type": "X"}), "right did not"),
             (
                 "nesting_limit_on_dict_path",
                 ok({}),
@@ -283,3 +303,7 @@ class TestComparators:
     def test_fails(self, name, left, right, why):
         with pytest.raises(Mismatch, match=why):
             judge(name, left, right)
+
+    @pytest.mark.parametrize("name", MODEL_COMPARATORS)
+    def test_input_decoded_on_neither_side(self, name):
+        judge(name, SKIPPED, SKIPPED)

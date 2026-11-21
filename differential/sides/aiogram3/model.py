@@ -125,7 +125,7 @@ class Recorder:
             return
         if self.poison and probe.startswith("dump.") and isinstance(value, dict) and value:
             value = dict(value)
-            del value[min(value)]  # drop one field from every dump.* record
+            del value[min(value)]  # drop one field, the alphabetically first, from every dump.*
         self.records.append(self.trace.ok(case, probe, value))
 
     def failed(self, case: str, probe: str) -> None:
@@ -155,10 +155,26 @@ UPDATE_PROBES = (
 )
 
 
+def without_nulls(value: Any) -> Any:
+    if isinstance(value, dict):
+        return {key: without_nulls(item) for key, item in value.items() if item is not None}
+    if isinstance(value, list):
+        return [without_nulls(item) for item in value]
+    return value
+
+
 def dump_json(obj: TelegramObject) -> dict[str, Any]:
     text = obj.model_dump_json()
     wire = obj.model_dump_json(by_alias=True, exclude_unset=True)
-    return {"type": type(text).__name__, "value": json.loads(text), "wire": json.loads(wire)}
+    value = json.loads(text)
+    stripped = without_nulls(value)
+    # nulls dropped: a field added to the tree but not to the release would differ otherwise
+    return {
+        "type": type(text).__name__,
+        "value": stripped,
+        "nulls": stripped != value,
+        "wire": json.loads(wire),
+    }
 
 
 def access(obj: Any, paths: list[str]) -> dict[str, Any]:
@@ -285,7 +301,8 @@ CONSTRUCT: dict[str, Callable[[], BaseModel]] = {
 
 
 def dump_python(build: Callable[[], BaseModel]) -> dict[str, Any]:
-    return build().model_dump()
+    # exclude_none, not exclude_unset: keeps Default(...), drops fields a release lacks
+    return build().model_dump(exclude_none=True)
 
 
 def dump_wire(build: Callable[[], BaseModel]) -> dict[str, Any]:

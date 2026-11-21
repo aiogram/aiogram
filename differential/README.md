@@ -137,7 +137,7 @@ cases and probe names. Bots carry fabricated tokens and send nothing.
   (`Update.model_validate_json` with a bot in the context), `decode.dict` (`json.loads` +
   `model_validate`, the webhook path), `dump.python`, `dump.wire` (`model_dump(mode="json",
   exclude_unset=True)`, without and with `by_alias`), `dump_json.default` (`{type, value: model_dump_json(),
-  wire: model_dump_json(by_alias=True, exclude_unset=True)}`), `event`, `access` (the paths in
+  nulls, wire: model_dump_json(by_alias=True, exclude_unset=True)}`), `event`, `access` (the paths in
   `manifests/model.access.toml`, which needs a list for every new update input), `extra`
   (`model_extra` of the root and of nested objects that have extras), `eq.same_bot`, `eq.same_token`,
   `eq.other_bot`, `hash` / `hash.event` (the class of `hash()`, never its salted value),
@@ -149,4 +149,12 @@ cases and probe names. Bots carry fabricated tokens and send nothing.
 - `model.codex11.<name>/observe`: the model probes of `v4/research/codex-review.md` section 11.
 
 ValidationError attrs are `error_count` plus each error's `type` and `loc`: no messages. `--poison`
-drops the first key of every `dump.*` value.
+drops one key from every `dump.*` value.
+
+The model comparators are tested in `tests/test_differential_model.py`. They pass a probe that
+both sides record as `DecodeFailed`, and they report a record of another shape as a mismatch, not
+a harness error. Unlike the 4.0 entries, the one 3.x-vs-3.x entry (`deep-nesting/decode.dict`,
+3.32.0 vs later) has no `when`. The poison drops the alphabetically first key, not the first in
+insertion order. `dump_json.default` records the dump without its null fields, plus a `nulls` flag
+for whether it had any, so a field the tree has and the release lacks does not differ. The
+constructor `dump.python` uses `exclude_none` for the same reason.
