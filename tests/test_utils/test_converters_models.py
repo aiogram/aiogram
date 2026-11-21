@@ -1868,8 +1868,8 @@ class TestReviewRegressions:
             y: int = 2
             z: int = 3
 
-        assert fields_set(copy.replace(Z(x=1), y=5)) == {"x", "y"}
-        assert json_schema(Z).dump(copy.replace(Z(x=1), y=5), exclude_unset=True) == {
+        assert fields_set(Z(x=1).__replace__(y=5)) == {"x", "y"}
+        assert json_schema(Z).dump(Z(x=1).__replace__(y=5), exclude_unset=True) == {
             "x": 1,
             "y": 5,
         }
@@ -2000,7 +2000,7 @@ class TestReviewRegressions:
         class Small(ModelBase):
             a: int = 0
 
-        assert type(fields_set(copy.replace(Small(), a=2))) is frozenset
+        assert type(fields_set(Small().__replace__(a=2))) is frozenset
 
     def test_union_notes_cut_long_values(self):
         with pytest.raises(ConversionError) as exc_info:
