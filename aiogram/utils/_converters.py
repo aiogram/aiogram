@@ -457,13 +457,16 @@ class _Compiler:
 
     def unwrap(self, tp: Any, scope: _Scope) -> Any:
         """The class under text, ``NewType`` and aliases (to check a converter applies)."""
-        seen: set[int] = set()
+        seen: set[Any] = set()
         while True:
-            if isinstance(tp, _ALIAS_TYPES):
-                if id(tp) in seen:
-                    msg = f"type alias {tp.__name__} refers to itself"
+            origin = get_origin(tp)
+            if isinstance(tp, _ALIAS_TYPES) or isinstance(origin, _ALIAS_TYPES):
+                # a bare alias, or a specialised one (`Loop[int]`)
+                key = (id(tp), ()) if origin is None else (id(origin), _args_key(get_args(tp)))
+                if key in seen:
+                    msg = f"type alias {_name(tp)} refers to itself"
                     raise TypeError(msg)
-                seen.add(id(tp))
+                seen.add(key)
             text = _text_of(tp)
             if text is not None:
                 tp = _evaluate(text, scope)
@@ -1177,7 +1180,9 @@ class ModelBase(metaclass=_ModelMeta):
         return new
 
     def __getstate__(self) -> dict[str, Any]:
-        state = {name: getattr(self, name) for name in type(self).__aiogram_info__.names}
+        # attributes set outside the fields (in `__post_init__`) too: copies stay usable
+        state = dict(getattr(self, "__dict__", {}))
+        state.update((name, getattr(self, name)) for name in type(self).__aiogram_info__.names)
         state["__fields_set__"] = fields_set(self)
         return state
 

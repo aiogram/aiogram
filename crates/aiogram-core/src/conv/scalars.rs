@@ -142,7 +142,10 @@ pub(crate) fn py_bool(py: Python<'_>, value: bool) -> Bound<'_, PyAny> {
 
 /// Append the decimal text of an `int` (any size; subclasses as `int(value)`).
 pub(crate) fn write_int(value: &Bound<'_, PyAny>, out: &mut Vec<u8>) -> PyResult<()> {
-    if let Ok(small) = value.extract::<i64>() {
+    // exact ints only: a subclass goes through `int(value)`, as the dict dump does
+    if value.is_exact_instance_of::<PyInt>()
+        && let Ok(small) = value.extract::<i64>()
+    {
         let _ = write!(out, "{small}");
         return Ok(());
     }

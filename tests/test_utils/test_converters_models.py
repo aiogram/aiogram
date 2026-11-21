@@ -2179,3 +2179,36 @@ class TestFinalRound:
         assert codec.dump(delta) == delta.total_seconds()
         assert json.loads(codec.dump_json(delta)) == delta.total_seconds()
         assert float(codec.dump_flat(delta)) == delta.total_seconds()
+
+    def test_specialised_alias_cycle_under_a_marker(self, module_from_source):
+        if sys.version_info < (3, 12):
+            pytest.skip("PEP 695")
+        module = module_from_source("type Loop[T] = Loop[T]\n")
+        with pytest.raises(TypeError, match="refers to itself"):
+            json_codec(Annotated[module.Loop[int], Discriminator("k")])
+
+    def test_copies_keep_attributes_set_in_post_init(self):
+        obj = Cached(x=2)
+        for clone in (copy.copy(obj), copy.deepcopy(obj), pickle.loads(pickle.dumps(obj))):
+            assert clone.cache == 4
+            assert fields_set(clone) == {"x"}
+
+    def test_int_subclass_writes_its_int_value(self):
+        class Odd(int):
+            def __int__(self) -> int:
+                return 99
+
+            def __index__(self) -> int:
+                return 99
+
+        codec = json_codec(int)
+        assert codec.dump_json(Odd(3)) == str(codec.dump(Odd(3))).encode()
+
+
+class Cached(ModelBase):
+    """Module level, so pickle finds it."""
+
+    x: int
+
+    def __post_init__(self) -> None:
+        self.cache = self.x * 2
