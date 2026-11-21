@@ -184,8 +184,8 @@ def _evaluate(text: str, scope: _Scope) -> Any:
     """Evaluate an annotation written as text; ``NameError`` for a name not defined yet."""
     try:
         return eval(text, scope.globals, scope.locals)  # noqa: S307
-    except NameError:
-        raise
+    except NameError as e:
+        raise _Unresolved(e.name or text) from None
     except Exception as e:  # noqa: BLE001
         msg = f"cannot evaluate annotation {text!r}: {e}"
         raise TypeError(msg) from None
@@ -307,10 +307,10 @@ class _Compiler:
         self.converters = converters
         self.frame_locals = frame_locals
         self.memo: dict[type, _core.ModelCore] = {}
-        self.aliases: dict[int, tuple[_core.KindCell | None, _core.Kind | None]] = {}
+        self.aliases: dict[Any, tuple[_core.KindCell | None, _core.Kind | None]] = {}
         # aliases being resolved with no container (list, tuple, dict, model) passed yet: a
         # reference to one of them is a cycle that never reaches a value (`type X = X | int`)
-        self.unguarded: set[int] = set()
+        self.unguarded: set[Any] = set()
 
     # annotations -> kinds
 
@@ -326,9 +326,11 @@ class _Compiler:
         if isinstance(tp, typing.NewType):
             return self.kind(tp.__supertype__, scope)
         if isinstance(tp, _ALIAS_TYPES):
-            return self.alias(tp, scope)
+            return self.alias(id(tp), tp.__name__, lambda: tp.__value__, scope)
         if origin is not None and isinstance(origin, _ALIAS_TYPES):
-            return self.kind(self.substitute(tp, origin), scope)
+            # a specialisation (`Tree[int]`) is memoised too, so a recursive one becomes lazy
+            key = (id(origin), _args_key(get_args(tp)))
+            return self.alias(key, _name(tp), lambda: self.substitute(tp, origin), scope)
         if origin is None and isinstance(tp, type):
             return self.class_kind(tp)
         args = get_args(tp)
@@ -455,6 +457,10 @@ class _Compiler:
                 tp = tp.__supertype__
             elif isinstance(tp, _ALIAS_TYPES):
                 tp = tp.__value__
+            elif get_origin(tp) is Annotated and not any(
+                isinstance(marker, (Converter, Discriminator)) for marker in get_args(tp)[1:]
+            ):
+                tp = get_args(tp)[0]  # unrelated metadata
             else:
                 return tp
 
@@ -474,43 +480,48 @@ class _Compiler:
         members = [self.kind(arg, scope) for arg in rest]
         return _core.Kind.union(members, nullable=nullable, discriminator=discriminator)
 
-    def alias(self, alias: Any, scope: _Scope) -> _core.Kind:
+    def alias(self, key: Any, name: str, value: Callable[[], Any], scope: _Scope) -> _core.Kind:
         """``type X = ...``: a recursive reference to ``X`` inside its value is a lazy kind."""
-        entry = self.aliases.get(id(alias))
+        entry = self.aliases.get(key)
         if entry is not None:
             cell, kind = entry
             if kind is not None:
                 return kind
-            if id(alias) in self.unguarded:
-                msg = (
-                    f"type alias {alias.__name__} refers to itself outside a list, tuple, dict "
-                    f"or model"
-                )
+            if key in self.unguarded:
+                msg = f"type alias {name} refers to itself outside a list, tuple, dict or model"
                 raise TypeError(msg)
             if cell is None:
                 cell = _core.KindCell()
-                self.aliases[id(alias)] = (cell, None)
-            return _core.Kind.lazy(cell, alias.__name__)
-        self.aliases[id(alias)] = (None, None)
-        self.unguarded.add(id(alias))
+                self.aliases[key] = (cell, None)
+            return _core.Kind.lazy(cell, name)
+        self.aliases[key] = (None, None)
+        self.unguarded.add(key)
         try:
-            kind = self.kind(alias.__value__, scope)
+            kind = self.kind(value(), scope)
         finally:
-            self.unguarded.discard(id(alias))
-        cell, _ = self.aliases[id(alias)]
+            self.unguarded.discard(key)
+        cell, _ = self.aliases[key]
         if cell is not None:
             cell.set(kind)
-        self.aliases[id(alias)] = (cell, kind)
+        self.aliases[key] = (cell, kind)
         return kind
 
     @staticmethod
     def substitute(tp: Any, origin: Any) -> Any:
-        """``Pair[int]`` for ``type Pair[T] = tuple[T, T]``."""
-        try:
-            return origin.__value__[get_args(tp)]
-        except TypeError as e:
-            msg = f"cannot apply {_name(origin)} to {get_args(tp)}: {e}"
-            raise TypeError(msg) from None
+        """``Pair[int]`` for ``type Pair[T] = tuple[T, T]``: the arguments bind to the alias's
+        declared parameters (``type Swap[T, U] = tuple[U, T]``), then the value is subscripted
+        in its own parameter order."""
+        params, args = origin.__type_params__, get_args(tp)
+        if len(params) != len(args):
+            msg = f"{_name(origin)} takes {len(params)} type arguments, got {len(args)}"
+            raise TypeError(msg)
+        bound = dict(zip(params, args, strict=True))
+        value = origin.__value__
+        for param in params:
+            if value is param:  # `type Identity[T] = T`
+                return bound[param]
+        used = getattr(value, "__parameters__", ())
+        return value[tuple(bound[param] for param in used)] if used else value
 
     # foreign classes
 
@@ -652,6 +663,15 @@ def _hashed_fields(tp: type) -> list[str]:
     return []
 
 
+def _args_key(args: tuple[Any, ...]) -> Any:
+    """A memo key for type arguments (typing objects are hashable, but be safe)."""
+    try:
+        hash(args)
+    except TypeError:
+        return tuple(map(id, args))
+    return args
+
+
 def _is_hashable(value: Any) -> bool:
     try:
         hash(value)
@@ -762,15 +782,10 @@ class _ModelInfo:
         return dict(source)
 
     def release(self) -> None:
-        """Drop the frame once the fields resolve, keeping the local types and modules: a
-        subclass compiles the inherited fields again (with its own class map)."""
-        source = self.frame_locals() or {}
-        kept = {
-            name: value
-            for name, value in source.items()
-            if _is_typeish(value) or isinstance(value, types.ModuleType)
-        }
-        self.locals_source = kept or None
+        """Drop the frame once the fields resolve, keeping a copy of its locals: a subclass
+        compiles the inherited fields again (with its own class map), and their annotations may
+        name any local (aliases, constants in ``Literal[...]``, markers in ``Annotated``)."""
+        self.locals_source = self.frame_locals() or None
 
 
 def _info(cls: type) -> _ModelInfo:
@@ -788,6 +803,14 @@ def _parent_info(cls: type) -> _ModelInfo | None:
 
 class _NotDefined(NameError):
     """A model refers to names that are not defined (yet)."""
+
+
+class _Unresolved(NameError):
+    """An annotation names something not defined (yet); only this defers a field. A
+    ``NameError`` raised by user code (a hook, a ``rename`` callable) propagates instead."""
+
+    def __init__(self, name: str) -> None:
+        super().__init__(name, name=name)
 
 
 def _locals_source() -> Any:
@@ -927,7 +950,7 @@ def _compile(cls: type) -> list[_core.Field]:
             )
         try:
             fields.append(_model_field(compiler, cls, decl, scopes[decl.owner], rename))
-        except NameError as e:
+        except _Unresolved as e:
             missing.append(e.name or str(e))
         except TypeError as e:
             msg = f"{cls.__qualname__}.{decl.name}: {e}"
@@ -1118,7 +1141,10 @@ class ModelBase(metaclass=_ModelMeta):
                 raise ValueError(msg)
         kwargs = {name: getattr(self, name) for name in info.init if name not in changes}
         kwargs.update(changes)
-        return type(self)(**kwargs)
+        new = type(self)(**kwargs)
+        # set fields: the original's plus the changes (D115 exclude_unset), not every field
+        object.__setattr__(new, "__fields_set__", fields_set(self) | changes.keys())
+        return new
 
     def __getstate__(self) -> dict[str, Any]:
         state = {name: getattr(self, name) for name in type(self).__aiogram_info__.names}

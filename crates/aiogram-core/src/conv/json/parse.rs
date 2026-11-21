@@ -100,10 +100,22 @@ pub(crate) fn load_json<'py>(
         owned.strip_prefix(BOM).unwrap_or(&owned)
     } else if let Ok(string) = data.cast::<PyString>() {
         // a temporary copy: `to_str` would cache the UTF-8 form on the str for its lifetime
-        encoded = string
-            .encode_utf8()
-            .map_err(|_| ValError::new("invalid JSON: the str contains a lone surrogate", None))?;
-        encoded.as_bytes()
+        match string.encode_utf8() {
+            Ok(bytes) => {
+                encoded = bytes;
+                encoded.as_bytes()
+            }
+            // lone surrogates are not UTF-8, but `json.loads` takes such a str: as it does
+            Err(_) => {
+                return match loads(py, data)? {
+                    Some(value) => load::load(py, &value, kind, Ctx::new(false)),
+                    None => Err(ValError::new(
+                        "invalid JSON: the str contains a lone surrogate",
+                        None,
+                    )),
+                };
+            }
+        }
     } else {
         return Err(ValError::Fatal(PyTypeError::new_err(format!(
             "the JSON object must be str, bytes or bytearray, not {}",
@@ -159,14 +171,20 @@ fn surrogates<'py>(
     problem: &str,
     index: usize,
 ) -> VResult<Bound<'py, PyAny>> {
-    let value = py
+    match loads(py, &PyBytes::new(py, text).into_any())? {
+        Some(value) => load::load(py, &value, kind, Ctx::new(false)),
+        None => Err(invalid(text, problem, index)),
+    }
+}
+
+/// `json.loads(data)` (input jiter cannot take: lone surrogates); `None` when it rejects it.
+fn loads<'py>(py: Python<'py>, data: &Bound<'py, PyAny>) -> VResult<Option<Bound<'py, PyAny>>> {
+    match py
         .import(pyo3::intern!(py, "json"))?
-        .call_method1(pyo3::intern!(py, "loads"), (PyBytes::new(py, text),));
-    match value {
-        Ok(value) => load::load(py, &value, kind, Ctx::new(false)),
-        Err(error) if error.is_instance_of::<pyo3::exceptions::PyValueError>(py) => {
-            Err(invalid(text, problem, index))
-        }
+        .call_method1(pyo3::intern!(py, "loads"), (data,))
+    {
+        Ok(value) => Ok(Some(value)),
+        Err(error) if error.is_instance_of::<pyo3::exceptions::PyValueError>(py) => Ok(None),
         Err(error) => Err(ValError::Fatal(error)),
     }
 }
@@ -377,7 +395,8 @@ fn dict<'py>(
                 }
                 count += error.len();
                 let error = error.at(|| errors::Loc::Key(name.clone().unbind()));
-                if ctx.fast || count >= MAX_ERRORS {
+                // not at the first error in fast mode either: a repeated key may still replace it
+                if count >= MAX_ERRORS {
                     failed.push((name, error));
                     break;
                 }
@@ -437,7 +456,9 @@ fn model<'py>(
                     count += error.len();
                 }
                 read[index] = Some((priority, result));
-                if count > 0 && (ctx.fast || count >= MAX_ERRORS) {
+                // not at the first error in fast mode either: a repeated key or a stored key after a
+                // `load` key may still replace the bad value
+                if count >= MAX_ERRORS {
                     stopped = true;
                     break;
                 }

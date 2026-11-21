@@ -1832,3 +1832,85 @@ class TestReviewRegressions:
 
         errors = errors_of(json_schema(Holder).load, {"value": 1})
         assert [error[:1] for error in errors] == [(("value",),)]
+
+    def test_union_member_reads_the_whole_object_before_failing(self):
+        class Keyed(ModelBase):
+            a: Annotated[int, Key("a", load=("old",))]
+
+        class Holder(ModelBase):
+            v: Keyed | int
+
+        schema = json_schema(Holder)
+        assert schema.load_json(b'{"v": {"old": "x", "a": 1}}').v == Keyed(a=1)
+        assert schema.load_json(b'{"v": {"a": "x", "a": 1}}').v == Keyed(a=1)
+        assert json_codec(dict[str, int] | int).load_json(b'{"a": "x", "a": 1}') == {"a": 1}
+
+    def test_released_locals_keep_constants_and_markers(self):
+        def make() -> type:
+            MODE = "a"  # noqa: N806
+            KEY = Key("k")  # noqa: N806
+
+            class Based(ModelBase):
+                m: Literal[MODE] = "a"
+                n: Annotated[int, KEY] = 0
+
+            json_schema(Based).dump(Based())
+            return Based
+
+        class Sub(make()):  # type: ignore[misc]
+            extra: int = 0
+
+        assert json_schema(Sub).dump(Sub()) == {"m": "a", "k": 0, "extra": 0}
+
+    def test_replace_keeps_the_set_fields(self):
+        class Z(ModelBase):
+            x: int = 1
+            y: int = 2
+            z: int = 3
+
+        assert fields_set(copy.replace(Z(x=1), y=5)) == {"x", "y"}
+        assert json_schema(Z).dump(copy.replace(Z(x=1), y=5), exclude_unset=True) == {
+            "x": 1,
+            "y": 5,
+        }
+
+    def test_name_error_from_user_code_is_not_a_pending_name(self):
+        class Hooked:
+            @classmethod
+            def __aiogram_converter__(cls) -> Converter:
+                raise NameError("typo")
+
+        with pytest.raises(NameError, match="typo"):
+
+            class Uses(ModelBase):
+                h: Hooked
+
+    def test_load_json_str_with_a_lone_surrogate(self):
+        codec = json_codec(str)
+        assert codec.load_json('"a\ud800"') == "a\ud800"
+        with pytest.raises(ConversionError, match="lone surrogate"):
+            codec.load_json('"a\ud800')
+
+    def test_pep695_generic_parameter_order_identity_and_recursion(self, module_from_source):
+        if sys.version_info < (3, 12):
+            pytest.skip("PEP 695")
+        module = module_from_source(
+            """
+            type Swap[T, U] = tuple[U, T]
+            type Identity[T] = T
+            type Tree[T] = T | list[Tree[T]]
+            """
+        )
+        assert json_codec(module.Swap[int, str]).load(["x", 1]) == ("x", 1)
+        assert json_codec(module.Identity[int]).load(5) == 5
+        # unhashable Annotated metadata in a type argument: memoised by identity
+        assert json_codec(module.Identity[Annotated[int, {"meta": []}]]).load(5) == 5
+        assert json_codec(module.Tree[int]).load([1, [2, [3]]]) == [1, [2, [3]]]
+
+    def test_field_converter_next_to_unrelated_metadata(self):
+        class Meta(ModelBase):
+            at: Annotated[datetime, "meta"] = field(
+                default=EPOCH_2, converter=IsoDatetime(timespec="seconds")
+            )
+
+        assert json_schema(Meta).dump(Meta()) == {"at": "1970-01-01T00:00:02+00:00"}

@@ -1505,7 +1505,7 @@ class TestAliases:
         codec = json_codec(pep695["Pair"][int])
         assert codec.load([1, 2]) == (1, 2)
         assert errors_of(codec.load, [1, "x"]) == [((1,), "expected int", "x")]
-        with pytest.raises(TypeError, match="cannot apply Bad"):
+        with pytest.raises(TypeError, match="Bad takes 1 type arguments, got 2"):
             json_codec(pep695["Bad"][int, str])
 
     def test_pep695_recursive(self, pep695):
