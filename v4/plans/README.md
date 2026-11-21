@@ -136,7 +136,7 @@ Verification method and results: [_VERIFICATION.md](_VERIFICATION.md).
 | [A-06](A-contracts/A-06-record-3x-baselines.md) | Record the 3.x baselines (stock + "optimised 3.x" tag) | `todo` | no | S | 3x-01, 3x-03, 3x-07, 3x-08, 3x-09, 3x-11, 3x-12, 3x-14, A-04, A-05 |
 | [A-07](A-contracts/A-07-differential-framework.md) | Differential harness framework (two venvs, canonical traces, difference manifests, poison control) | `done` | no | M | A-04 |
 | [A-08](A-contracts/A-08-model-oracle.md) | Model oracle, 3.x side | `todo` | no | M | A-04, A-07 |
-| [A-09](A-contracts/A-09-request-oracle.md) | Request/response oracle, 3.x side | `todo` | no | M | A-04, A-07 |
+| [A-09](A-contracts/A-09-request-oracle.md) | Request/response oracle, 3.x side | `done` | no | M | A-04, A-07 |
 | [A-10](A-contracts/A-10-routing-oracle.md) | Routing oracle, 3.x side | `done` | no | L | A-04, A-07 |
 | [A-11](A-contracts/A-11-migration-registry.md) | Migration registry: `registry.toml` schema, id allocation, seed | `done` | no | M | A-01 |
 | [B-00](B-spike/B-00-freeze-gate-spec.md) | Freeze the gate spec | `todo` | no | M | A-04, A-05, A-06 |

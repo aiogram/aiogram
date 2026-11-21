@@ -97,7 +97,6 @@ for _name, _owner in (
     ("collections_are_tuples", "A-08 / B plans"),
     ("malformed_member_is_unknown", "A-08 / B plans"),
     ("as_returns_new_view", "A-08 / B plans"),
-    ("json_body_without_files", "A-09 / D-15"),
 ):
     _stub(_name, _owner)
 
@@ -308,6 +307,56 @@ def event_context_only_kwargs(left: Record, right: Record) -> tuple[Record, Reco
     asked = set(left.get("meta", {}).get("d12_params", []))
     missing = asked - {e["component"] for e in _ran(right_entries)}
     return _with(left, [e for e in entries if e["component"] not in missing]), right
+
+
+@comparator("json_body_without_files")
+def json_body_without_files(left: Record, right: Record) -> tuple[Record, Record]:
+    """R18 (3x-09, D-07 / D-08): a request without files may move from a form to a JSON body.
+
+    Only ``encoding`` and ``content_type`` may differ; ``fields`` (and so the absence of file
+    parts) must still match.
+    """
+    if _core(left) == _core(right):
+        return left, right
+    lval, rval = left.get("value"), right.get("value")
+    if not (
+        left.get("ok") and right.get("ok") and isinstance(lval, dict) and isinstance(rval, dict)
+    ):
+        msg = "both sides must have encoded the request"
+        raise Mismatch(msg)
+    if lval.get("encoding") not in {"urlencoded", "multipart"}:
+        msg = "left is not a form"
+        raise Mismatch(msg)
+    if any(str(name).startswith("file#") for name in lval.get("fields", [])):
+        msg = "the request has files: it must stay multipart"
+        raise Mismatch(msg)
+    if (rval.get("encoding"), rval.get("content_type")) != ("json", "application/json"):
+        msg = "right is not a JSON body"
+        raise Mismatch(msg)
+    keep = {"encoding": lval.get("encoding"), "content_type": lval.get("content_type")}
+    return left, {**right, "value": {**rval, **keep}}
+
+
+# the key the request side's custom ``json_dumps`` hook adds (sides/aiogram3/request.py)
+HOOK_MARK = "differential_hook"
+
+
+def _strip_key(value: Any, key: str) -> Any:
+    if isinstance(value, dict):
+        return {name: _strip_key(item, key) for name, item in value.items() if name != key}
+    if isinstance(value, list):
+        return [_strip_key(item, key) for item in value]
+    return value
+
+
+@comparator("json_dumps_hook_ignored")
+def json_dumps_hook_ignored(left: Record, right: Record) -> tuple[Record, Record]:
+    """PD-08: a custom ``json_dumps`` has no effect on the wire: the right lacks its mark."""
+    stripped = _strip_key(left.get("value"), HOOK_MARK)
+    if right.get("value") != stripped or stripped == left.get("value"):
+        msg = "right is not left without the custom json_dumps mark"
+        raise Mismatch(msg)
+    return {**left, "value": stripped}, right
 
 
 # ------------------------------------------------------------------------------------------------

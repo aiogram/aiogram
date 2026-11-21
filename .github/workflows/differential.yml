@@ -59,10 +59,57 @@ jobs:
             exit 1
           fi
 
+  request:
+    name: request (3.x release vs tree, plus poison)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - uses: astral-sh/setup-uv@v10.3.3
+        with:
+          python-version: "3.11"
+
+      - name: Install project
+        run: uv sync --locked
+
+      - name: Request, expect 0 mismatches
+        run: uv run python -m differential run --kind request --left 'pypi:aiogram<4' --right path:.
+
+      - name: Request with the right side poisoned, expect exit 1
+        # exit 1 = mismatches found; 2 = poison not detected, 3 = harness error: both fail here
+        run: |
+          set +e
+          uv run python -m differential run --kind request --left 'pypi:aiogram<4' --right path:. --poison right
+          code=$?
+          if [ "$code" -ne 1 ]; then
+            echo "::error::poisoned run exited $code, expected 1"
+            exit 1
+          fi
+
+  routing:
+    name: routing (3.x release vs tree, plus poison)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - uses: astral-sh/setup-uv@v10.3.3
+        with:
+          python-version: "3.11"
+
+      - name: Install project
+        run: uv sync --locked
+
       - name: Routing, expect 0 mismatches
         run: uv run python -m differential run --kind routing --left 'pypi:aiogram<4' --right path:.
 
       - name: Routing with the right side poisoned, expect exit 1
+        # exit 1 = mismatches found; 2 = poison not detected, 3 = harness error: both fail here
         run: |
           set +e
           uv run python -m differential run --kind routing --left 'pypi:aiogram<4' --right path:. --poison right
