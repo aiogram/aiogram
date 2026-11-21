@@ -1,9 +1,7 @@
 # Hand-written stub for the native extension (crates/aiogram-core), checked against the
 # built module by `make stubtest` (PD-35, as pydantic-core does).
 from collections.abc import Sequence
-from typing import Any, TypedDict, final, type_check_only
-
-from typing_extensions import Self
+from typing import Any, Self, TypedDict, final, type_check_only
 
 __all__ = ["__version__", "ModelSchema", "build_info"]
 
@@ -18,6 +16,7 @@ class BuildInfo(TypedDict):
     target: str
 
 def build_info() -> BuildInfo: ...
+
 @final
 class ModelSchema:
     """Rust backend of ``aiogram.utils._converters.ModelConverter`` (F-08, PD-35)."""

@@ -183,6 +183,18 @@ These patterns repeatedly appeared in maintainer feedback and should be treated 
   `crates/aiogram-core/Cargo.toml`. Only change it with `make bump`: it writes both copies and refreshes
   `Cargo.lock` and `uv.lock` (`uv sync --locked` fails otherwise). `test_build.py` asserts they match.
 - `tests/typing/` holds mypy-only `assert_type` files, never collected by pytest; run them with `make typing`.
+- `aiogram/_core.pyi` is hand-written (PD-35). After changing the `_core` surface, update it and run `make stubtest`
+  (also part of `make lint`); stubtest needs the built extension.
+- Converter core (`aiogram/utils/_converters.py` + `crates/aiogram-core/src/conv/`, PD-35) has two backends: Rust on
+  CPython, Python on PyPy and as the reference.
+  - A Rust walker never raises its own errors: an input it cannot take as it is returns `Fallback`, and the schema
+    re-runs it through `ModelConverter._py_*`. Keep it that way. Error text lives only in Python.
+  - A new converter kind needs a `kind` tag. Without a Rust kind, `"python"` (the default) makes Rust call the
+    Python converter, which is correct but slower.
+  - `tests/test_utils/test_converters.py` runs every test on both backends (autouse `backend` fixture);
+    `test_converters_differential.py` compares them on edge inputs. Add cases to both for a new kind.
+  - Rebuild before testing a crate change (`make dev`, then `uv run --no-sync pytest`): a stale `_core.*.so` makes
+    the Rust tests fail or pass for the wrong reason.
 
 ## Developer design notes (`design/`)
 

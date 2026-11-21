@@ -8,6 +8,7 @@
 use pyo3::PyErr;
 
 /// "Take the Python path": the fast path does not apply to this input.
+#[derive(Debug)]
 pub(crate) struct Fallback;
 
 /// The result of a fast path.

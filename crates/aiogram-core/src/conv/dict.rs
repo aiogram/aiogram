@@ -94,3 +94,97 @@ pub(crate) fn load<'py>(
         _ => Err(Fallback),
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use pyo3::prelude::*;
+    use pyo3::types::{PyDict, PyFrozenSet, PyList, PySet};
+
+    use super::load;
+    use crate::conv::kind::{Collect, Kind};
+
+    fn with_python(test: impl for<'py> FnOnce(Python<'py>)) {
+        Python::initialize();
+        Python::attach(test);
+    }
+
+    #[test]
+    fn exact_scalars_pass_through_and_others_fall_back() {
+        with_python(|py| {
+            let one = 1i64.into_pyobject(py).unwrap().into_any();
+            assert!(load(py, &one, &Kind::Int).unwrap().is(&one));
+            let float = load(py, &one, &Kind::Float).unwrap();
+            assert_eq!(float.extract::<f64>().unwrap(), 1.0);
+            let flag = true.into_pyobject(py).unwrap().to_owned().into_any();
+            assert!(
+                load(py, &flag, &Kind::Int).is_err(),
+                "bool is not an int field"
+            );
+            let text = "x".into_pyobject(py).unwrap().into_any();
+            assert!(load(py, &text, &Kind::Float).is_err());
+        });
+    }
+
+    #[test]
+    fn sequences_build_their_container() {
+        with_python(|py| {
+            let items = PyList::new(py, [1i64, 2, 2]).unwrap().into_any();
+            let int = || Box::new(Kind::Int);
+            let set = load(
+                py,
+                &items,
+                &Kind::Sequence {
+                    item: int(),
+                    collect: Collect::Set,
+                },
+            )
+            .unwrap();
+            assert!(set.is_instance_of::<PySet>());
+            assert_eq!(set.len().unwrap(), 2);
+            let frozen = load(
+                py,
+                &items,
+                &Kind::Sequence {
+                    item: int(),
+                    collect: Collect::FrozenSet,
+                },
+            )
+            .unwrap();
+            assert!(frozen.is_instance_of::<PyFrozenSet>());
+            let mixed = PyList::new(
+                py,
+                [
+                    1i64.into_pyobject(py).unwrap().into_any(),
+                    "x".into_pyobject(py).unwrap().into_any(),
+                ],
+            )
+            .unwrap()
+            .into_any();
+            assert!(
+                load(
+                    py,
+                    &mixed,
+                    &Kind::Sequence {
+                        item: int(),
+                        collect: Collect::List
+                    }
+                )
+                .is_err()
+            );
+        });
+    }
+
+    #[test]
+    fn dicts_need_string_keys() {
+        with_python(|py| {
+            let good = PyDict::new(py);
+            good.set_item("a", 1i64).unwrap();
+            let loaded = load(py, good.as_any(), &Kind::Dict(Box::new(Kind::Float))).unwrap();
+            let value: f64 = loaded.get_item("a").unwrap().extract().unwrap();
+            assert_eq!(value, 1.0);
+            let bad = PyDict::new(py);
+            bad.set_item(1i64, 1i64).unwrap();
+            assert!(load(py, bad.as_any(), &Kind::Dict(Box::new(Kind::Int))).is_err());
+        });
+    }
+}

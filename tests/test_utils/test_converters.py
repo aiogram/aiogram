@@ -1093,6 +1093,13 @@ class TestMoreKinds:
         assert converter_for(tp).to_json(value) == expected
 
 
+@pytest.mark.skipif(sys.implementation.name == "cpython", reason="PyPy and other non-CPython")
+def test_non_cpython_never_loads_rust(backend):
+    # PyPy: through cpyext the Rust backend is 3-9x slower than Python (PD-35)
+    assert _converters._backend() is None
+    assert "aiogram._core" not in sys.modules or "_schema" not in vars(Flat.__converter__)
+
+
 class TestBackendSelection:
     def test_python_without_core(self, monkeypatch):
         monkeypatch.setitem(sys.modules, "aiogram._core", None)
