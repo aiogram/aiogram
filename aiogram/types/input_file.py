@@ -4,7 +4,6 @@ import io
 import os
 from abc import ABC, abstractmethod
 from collections.abc import AsyncGenerator
-from contextlib import aclosing
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, ClassVar
 
@@ -112,10 +111,9 @@ class FSInputFile(InputFile):
 
         self.path = path
 
-    async def read(self, bot: Bot) -> AsyncGenerator[bytes, None]:
-        async with aclosing(iter_file(self.path, self.chunk_size)) as chunks:
-            async for chunk in chunks:
-                yield chunk
+    def read(self, bot: Bot) -> AsyncGenerator[bytes, None]:
+        # returned as is: a wrapping generator would be finalized concurrently with the inner one
+        return iter_file(self.path, self.chunk_size)
 
 
 class URLInputFile(InputFile):
