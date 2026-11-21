@@ -272,7 +272,7 @@ pub(crate) fn model<'py>(
     construct::build(py, core, fields, slots, &|| Ok(value.clone()))
 }
 
-fn union<'py>(
+pub(crate) fn union<'py>(
     py: Python<'py>,
     value: &Bound<'py, PyAny>,
     union: &Union,

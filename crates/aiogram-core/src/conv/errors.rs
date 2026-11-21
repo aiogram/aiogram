@@ -324,9 +324,20 @@ fn note(py: Python<'_>, at: &str, label: &str, reason: &Line) -> PyResult<String
     text.push_str(&reason.message);
     if let Some(value) = &reason.value {
         text.push_str(", got ");
-        text.push_str(&value.bind(py).repr()?.to_string());
+        text.push_str(&short_repr(&value.bind(py).repr()?.to_string()));
     }
     Ok(text)
+}
+
+/// A repr cut to 80 characters, as `ConversionError.__str__` cuts values (`reprlib`).
+fn short_repr(text: &str) -> String {
+    const LIMIT: usize = 80;
+    if text.chars().count() <= LIMIT {
+        return text.to_owned();
+    }
+    let mut short: String = text.chars().take(LIMIT - 3).collect();
+    short.push_str("...");
+    short
 }
 
 /// The path of a line as `ConversionError` renders it (`address.zip`, `tags[2]`), for notes.

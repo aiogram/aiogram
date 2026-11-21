@@ -557,7 +557,14 @@ pub(crate) fn dump_epoch<'py>(
         let whole = (stamp - micros as f64 / 1e6).round() as i64;
         whole * 1_000_000 + micros
     };
-    Ok(Num::ratio(total, epoch_unit(epoch)))
+    let unit = epoch_unit(epoch);
+    if total % unit != 0 && total.unsigned_abs() >= (1 << 53) {
+        // beyond 2**53 microseconds a float division rounds twice: Python's int / int does not
+        let quotient =
+            PyInt::new(py, total).call_method1(pyo3::intern!(py, "__truediv__"), (unit,))?;
+        return Ok(Num::Obj(quotient.into_any()));
+    }
+    Ok(Num::ratio(total, unit))
 }
 
 /// `timedelta(seconds=x)` of an `int` / `float` (not `bool`).

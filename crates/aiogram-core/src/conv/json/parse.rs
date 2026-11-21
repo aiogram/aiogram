@@ -395,8 +395,9 @@ fn dict<'py>(
                 }
                 count += error.len();
                 let error = error.at(|| errors::Loc::Key(name.clone().unbind()));
-                // not at the first error in fast mode either: a repeated key may still replace it
-                if count >= MAX_ERRORS {
+                // fast mode (a union member trial) stops here; the union decides with the dict load
+                // when no member takes the value (a repeated key may still replace this one)
+                if ctx.fast || count >= MAX_ERRORS {
                     failed.push((name, error));
                     break;
                 }
@@ -456,9 +457,8 @@ fn model<'py>(
                     count += error.len();
                 }
                 read[index] = Some((priority, result));
-                // not at the first error in fast mode either: a repeated key or a stored key after a
-                // `load` key may still replace the bad value
-                if count >= MAX_ERRORS {
+                // fast mode (a union member trial) stops here, see `union`
+                if count > 0 && (ctx.fast || count >= MAX_ERRORS) {
                     stopped = true;
                     break;
                 }
@@ -577,14 +577,23 @@ fn union<'py>(
             }
         }
     }
+    // no member took the value in one pass: a member trial stops at its first error, so a
+    // repeated key or a stored key after a `load` key may not have been seen. The dict load of
+    // the materialised value decides (it reads whole objects; numbers become floats here)
     let value = parse_slice(py, doc.data, start, end)?;
-    Err(Fail::Val(ValError::Lines(vec![errors::Line {
-        loc: Vec::new(),
-        message: format!("expected {label}"),
-        value: Some(value.unbind()),
-        cause: None,
-        notes,
-    }])))
+    match load::union(py, &value, union, label, ctx) {
+        Ok(result) => Ok(result),
+        Err(ValError::Lines(mut lines)) => {
+            // keep the member reasons of this pass, which saw the exact JSON
+            if let Some(line) = lines.first_mut()
+                && line.loc.is_empty()
+            {
+                line.notes = notes;
+            }
+            Err(Fail::Val(ValError::Lines(lines)))
+        }
+        Err(fatal) => Err(Fail::Val(fatal)),
+    }
 }
 
 #[cfg(test)]

@@ -280,7 +280,7 @@ make lint
   - **Known limits:**
     - jiter's 200-level limit on skipped or materialised values raises `RecursionError`.
     - `load_json` of an escaped lone surrogate re-parses through `json.loads`, the only re-parse left.
-    - Flat form: `str | None` and `bytes | None` pack `None` as `""`, so `""` / `b""` unpack as `None` (3.x
-      `CallbackData` behaved the same; F-11 owns the #2007 empty-part rule). An enum or `Literal` with a `""` text
-      has no flat form under `| None`.
+    - Flat form: `str | None` packs `None` as `""`, so `""` unpacks as `None` (3.x `CallbackData` behaved the same;
+      F-11 owns the #2007 empty-part rule). `bytes | None`, and an enum or `Literal` with a `""` text, have no flat
+      form under `| None`. A flat user converter whose `to_str` returns `""` under `| None` has the `str` behaviour.
     - `type X = X | int` (a self-reference outside a container) is a `TypeError` at class creation.

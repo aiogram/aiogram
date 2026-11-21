@@ -725,6 +725,8 @@ impl Kind {
                 Some(text) => text.bind(py).contains("")?,
                 None => false,
             },
+            // `b""` packs as `""` too
+            Data::Bytes => true,
             _ => false,
         };
         let mut py_types: Vec<Py<PyType>> =

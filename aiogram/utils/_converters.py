@@ -194,7 +194,9 @@ def _evaluate(text: str, scope: _Scope) -> Any:
 def _field_hint(owner: type, name: str, raw: Any, scope: _Scope) -> Any:
     """The annotation of field ``name`` declared on ``owner``, evaluated."""
     own = vars(owner).get(name, MISSING)
-    if own is not MISSING and raw is own and not isinstance(raw, str):
+    if not isinstance(raw, str) and (
+        (own is not MISSING and raw is own) or isinstance(raw, (_FieldInfo, dataclasses.Field))
+    ):
         # Without `from __future__ import annotations` the annotation is evaluated in the class
         # body, where the field's default (or slot) has already replaced a type of that name.
         raw = _string_annotation(owner, name, raw)
@@ -457,6 +459,8 @@ class _Compiler:
                 tp = tp.__supertype__
             elif isinstance(tp, _ALIAS_TYPES):
                 tp = tp.__value__
+            elif isinstance(get_origin(tp), _ALIAS_TYPES):
+                tp = self.substitute(tp, get_origin(tp))  # `Maybe[str]`
             elif get_origin(tp) is Annotated and not any(
                 isinstance(marker, (Converter, Discriminator)) for marker in get_args(tp)[1:]
             ):
@@ -769,6 +773,8 @@ class _ModelInfo:
     locals_source: Any
     lock: threading.RLock
     names: tuple[str, ...] = ()
+    # own ClassVar names: an inherited field redeclared as a ClassVar is no field here
+    classvars: frozenset[str] = frozenset()
     init: tuple[str, ...] = ()
     repr: tuple[str, ...] = ()
     compare: tuple[str, ...] = ()
@@ -880,6 +886,8 @@ def _all_declarations(cls: type) -> list[_Decl]:
     for base in reversed(cls.__mro__):
         info = vars(base).get("__aiogram_info__")
         if info is not None:
+            for name in info.classvars:
+                fields.pop(name, None)
             for decl in info.own:
                 fields[decl.name] = decl
     return list(fields.values())
@@ -1016,6 +1024,9 @@ def _setup(
     )
     cls.__aiogram_info__ = info
     info.own = _declarations(cls)
+    info.classvars = frozenset(
+        name for name, raw in _own_annotations(cls).items() if _is_classvar(raw)
+    )
     decls = _all_declarations(cls)
     info.names = tuple(d.name for d in decls)
     info.init = tuple(d.name for d in decls if d.init)
@@ -1143,7 +1154,7 @@ class ModelBase(metaclass=_ModelMeta):
         kwargs.update(changes)
         new = type(self)(**kwargs)
         # set fields: the original's plus the changes (D115 exclude_unset), not every field
-        object.__setattr__(new, "__fields_set__", fields_set(self) | changes.keys())
+        object.__setattr__(new, "__fields_set__", fields_set(self).union(changes))
         return new
 
     def __getstate__(self) -> dict[str, Any]:

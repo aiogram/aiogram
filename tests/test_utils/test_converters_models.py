@@ -1914,3 +1914,95 @@ class TestReviewRegressions:
             )
 
         assert json_schema(Meta).dump(Meta()) == {"at": "1970-01-01T00:00:02+00:00"}
+
+    def test_union_member_with_a_failed_nested_list(self):
+        class WithInts(ModelBase):
+            x: list[int]
+
+        class WithStrs(ModelBase):
+            x: list[str]
+
+        codec = json_codec(WithInts | WithStrs)
+        assert codec.load_json(b'{"x": ["a", "b"]}') == WithStrs(x=["a", "b"])
+        assert codec.load({"x": ["a", "b"]}) == WithStrs(x=["a", "b"])
+        with pytest.raises(ConversionError) as exc_info:
+            codec.load_json(b'{"x": [1.5]}')
+        loc, message, _ = exc_info.value.errors[0]
+        assert loc == ()
+        assert message.startswith("expected ") and "WithInts |" in message
+        assert len(exc_info.value.__notes__) == 2
+
+    def test_converter_on_a_generic_alias(self, module_from_source):
+        if sys.version_info < (3, 12):
+            pytest.skip("PEP 695")
+        module = module_from_source(
+            """
+            type Identity[T] = T
+            type Maybe[T] = T | None
+            """
+        )
+
+        class Up(Converter):
+            def to_json(self, value: str) -> str:
+                return value.upper()
+
+            def from_json(self, value: Any) -> str:
+                return str(value)
+
+        stamped = json_codec(Annotated[module.Identity[datetime], EpochDatetime()])
+        assert stamped.dump(EPOCH_2) == 2
+        maybe = json_codec(Annotated[module.Maybe[str], Up()])
+        assert maybe.dump(None) is None
+        assert maybe.dump("a") == "A"
+
+    def test_inherited_field_redeclared_as_classvar(self):
+        class Parent(ModelBase):
+            x: int
+            y: int = 0
+
+        class Child(Parent):
+            x: ClassVar[int] = 42
+
+        assert Child(y=1).y == 1
+        assert json_schema(Child).dump(Child()) == {"y": 0}
+        assert Child.x == 42
+
+    def test_epoch_dump_beyond_float_exact_microseconds(self):
+        stamp = datetime(2300, 1, 1, 0, 0, 0, 1, tzinfo=UTC)
+        codec = json_codec(Annotated[datetime, EpochDatetime()])
+        assert codec.dump(stamp) == stamp.timestamp()
+        assert json.loads(codec.dump_json(stamp)) == stamp.timestamp()
+
+    @pytest.mark.skipif(sys.version_info < (3, 14), reason="deferred annotations (PEP 649)")
+    def test_field_named_like_its_type_with_a_field_specifier(self, module_from_source):
+        module = module_from_source(
+            """
+            import dataclasses
+            from datetime import date
+            from aiogram.utils._converters import ModelBase
+            from aiogram.utils.converters import field
+
+            class Dated(ModelBase):
+                date: date = field(default=date(2020, 1, 1))
+
+            class Factory(ModelBase):
+                date: date = dataclasses.field(default_factory=lambda: date(2020, 1, 2))
+            """
+        )
+        assert json_schema(module.Dated).dump(module.Dated()) == {"date": "2020-01-01"}
+        assert json_schema(module.Factory).dump(module.Factory()) == {"date": "2020-01-02"}
+
+    def test_optional_bytes_has_no_flat_form(self):
+        assert not json_codec(bytes | None).kind.flat
+        assert json_codec(bytes).kind.flat
+
+    def test_replace_keeps_a_frozenset(self):
+        class Small(ModelBase):
+            a: int = 0
+
+        assert type(fields_set(copy.replace(Small(), a=2))) is frozenset
+
+    def test_union_notes_cut_long_values(self):
+        with pytest.raises(ConversionError) as exc_info:
+            json_codec(int | bool).load("x" * 10_000)
+        assert all(len(note) < 200 for note in exc_info.value.__notes__)
