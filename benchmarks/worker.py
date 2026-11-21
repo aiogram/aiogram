@@ -92,6 +92,12 @@ class Worker:
         self.adapter = load_adapter()
         return process_env(self.loop_name, self.corpus)
 
+    def op_close(self) -> None:
+        if self.loop is not None:
+            self.loop.close()
+            asyncio.set_event_loop(None)
+            self.loop = None
+
     def op_cases(self) -> dict[str, list[dict[str, str]]]:
         return {case_id: case.expand() for case_id, case in self.registry.items()}
 

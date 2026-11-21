@@ -11,6 +11,7 @@ import gc
 import hashlib
 import inspect
 import json
+import math
 import os
 import platform
 import random
@@ -20,6 +21,7 @@ import sys
 import sysconfig
 import time
 import tomllib
+from collections import Counter
 from collections.abc import Callable, Iterable
 from dataclasses import asdict, dataclass, field
 from datetime import UTC, datetime
@@ -250,48 +252,75 @@ def summarize(samples: list[float]) -> dict[str, float]:
 
 def bootstrap_ci(
     base: list[float], head: list[float], resamples: int = 10_000, seed: int = 0
-) -> tuple[float, float]:
-    """95% percentile-bootstrap CI of median(head) / median(base) - 1."""
+) -> tuple[float, float] | None:
+    """95% percentile-bootstrap CI of median(head) / median(base) - 1.
+
+    Resamples whose base median is not positive have no ratio and are dropped; ``None`` when
+    most of them are (RSS-delta samples can be zero or negative).
+    """
     rng = random.Random(seed)
     n, m = len(base), len(head)
-    ratios = sorted(
-        statistics.median(rng.choices(head, k=m)) / statistics.median(rng.choices(base, k=n)) - 1
-        for _ in range(resamples)
-    )
-    return ratios[int(0.025 * resamples)], ratios[int(0.975 * resamples) - 1]
+    ratios = []
+    for _ in range(resamples):
+        b = statistics.median(rng.choices(base, k=n))
+        if b > 0:
+            ratios.append(statistics.median(rng.choices(head, k=m)) / b - 1)
+    if len(ratios) < resamples // 2:
+        return None
+    ratios.sort()
+    return ratios[int(0.025 * len(ratios))], ratios[int(0.975 * len(ratios)) - 1]
+
+
+EXACT_MAX = 20  # exact Mann-Whitney table up to 20 vs 20 samples (~180k ints)
 
 
 def mann_whitney_p(base: list[float], head: list[float]) -> float:
-    """Two-sided exact Mann-Whitney U p-value.
+    """Two-sided Mann-Whitney U p-value.
 
-    ponytail: exact null distribution assumes no ties (float timings); ties count as 0.5 and are
-    rounded down, which only makes the test slightly conservative.
+    Exact null distribution for small samples without ties (the 7-vs-7 timing case); the normal
+    approximation with tie and continuity corrections otherwise (sustained runs, RSS samples).
     """
     n, m = len(base), len(head)
-    u = int(sum(1.0 if h > b else 0.5 if h == b else 0.0 for b in base for h in head))
-    # counts[k][j][u]: arrangements of k base and j head values with statistic u
-    counts = [[[0] * (n * m + 1) for _ in range(m + 1)] for _ in range(n + 1)]
-    for k in range(n + 1):
-        counts[k][0][0] = 1
-    for j in range(m + 1):
-        counts[0][j][0] = 1
-    for k in range(1, n + 1):
-        for j in range(1, m + 1):
-            for s in range(n * m + 1):
-                # the largest value is a head value (beats all k base values) or a base value
-                counts[k][j][s] = (counts[k][j - 1][s - k] if s >= k else 0) + counts[k - 1][j][s]
-    dist = counts[n][m]
-    total = sum(dist)
-    low = sum(dist[: u + 1]) / total
-    high = sum(dist[u:]) / total
-    return min(1.0, 2 * min(low, high))
+    u = sum(1.0 if h > b else 0.5 if h == b else 0.0 for b in base for h in head)
+    pooled = base + head
+    ties = len(set(pooled)) < len(pooled)
+    if not ties and max(n, m) <= EXACT_MAX:
+        # counts[k][j][s]: orderings of k base and j head values with statistic s; the largest
+        # value is either a head value (beating all k base values) or a base value
+        counts = [[[0] * (n * m + 1) for _ in range(m + 1)] for _ in range(n + 1)]
+        for k in range(n + 1):
+            counts[k][0][0] = 1
+        for j in range(m + 1):
+            counts[0][j][0] = 1
+        for k in range(1, n + 1):
+            for j in range(1, m + 1):
+                for s in range(n * m + 1):
+                    head_last = counts[k][j - 1][s - k] if s >= k else 0
+                    counts[k][j][s] = head_last + counts[k - 1][j][s]
+        dist = counts[n][m]
+        total = sum(dist)
+        k = int(u)
+        return min(1.0, 2 * min(sum(dist[: k + 1]), sum(dist[k:])) / total)
+    size = n + m
+    tie_term = sum(t**3 - t for t in Counter(pooled).values()) / (size * (size - 1))
+    variance = n * m / 12 * ((size + 1) - tie_term)
+    if variance <= 0:
+        return 1.0
+    z = max(0.0, abs(u - n * m / 2) - 0.5) / math.sqrt(variance)
+    return min(1.0, 2 * (1 - statistics.NormalDist().cdf(z)))
 
 
 def compare_samples(base: list[float], head: list[float]) -> dict[str, Any]:
-    lo, hi = bootstrap_ci(base, head)
+    """Relative median delta, its bootstrap CI and the MWU p-value, plus the absolute delta.
+
+    The ratio and its CI are ``None`` when the base median is not positive.
+    """
+    base_median, head_median = statistics.median(base), statistics.median(head)
+    ci = bootstrap_ci(base, head) if base_median > 0 else None
     return {
-        "delta_median": statistics.median(head) / statistics.median(base) - 1,
-        "ci95": [lo, hi],
+        "delta_median": head_median / base_median - 1 if base_median > 0 else None,
+        "ci95": list(ci) if ci else None,
+        "delta_abs": head_median - base_median,
         "mwu_p": mann_whitney_p(base, head),
     }
 

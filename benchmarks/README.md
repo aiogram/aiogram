@@ -77,7 +77,16 @@ update.realistic           us  88.94   88.36   0.993     -0.7%      [-9.7%, +8.9
 - **Δ median:** `median(head) / median(base) - 1`. Negative means the head is faster.
 - **95% CI:** a percentile bootstrap of that ratio, with 10 000 resamples and a fixed seed. When
   the interval contains 0, the run shows no change.
-- **MWU p:** an exact two-sided Mann-Whitney U test on the two sets of 7 samples.
+- **MWU p:** a two-sided Mann-Whitney U test. It is exact for up to 20 samples per side when there are
+  no ties, which covers the usual 7 vs 7. Otherwise it uses the normal approximation with tie and
+  continuity corrections, for sustained runs and RSS samples.
+- **Non-positive base median.** RSS deltas can be 0 or negative. When the base median is 0 or
+  less, there is no ratio: the row shows the absolute delta, and the ratio and CI read `n/a`.
+- **Unmeasured cases.** A case that was not measured on both sides is still listed, with each
+  side's status (`missing`, `unpaired`).
+- **Interpreter and loop.** Both sides run the same interpreter and the same event loop. The base
+  venv is built on the invoking Python, a different Python on the two sides is an error, and the
+  loop that `auto` picks on the first side is required on the second.
 - **Thresholds.** `compare` always exits 0. The threshold for each change is in its plan.
 
 Do **not** compare these numbers with the best-of-N `timeit` figures in READMEs, issues or

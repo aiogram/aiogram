@@ -14,7 +14,14 @@ from benchmarks.runner import WORKTREE, compare, report, run
 def duration(value: str) -> float:
     """``30`` / ``30s`` / ``5m`` -> seconds."""
     scale = {"s": 1, "m": 60, "h": 3600}.get(value[-1:])
-    return float(value[:-1]) * scale if scale else float(value)
+    try:
+        seconds = float(value[:-1]) * scale if scale else float(value)
+    except ValueError:
+        seconds = 0
+    if not seconds > 0:
+        msg = f"expected a positive duration such as 30, 30s or 5m, got {value!r}"
+        raise argparse.ArgumentTypeError(msg)
+    return seconds
 
 
 def main(argv: list[str] | None = None) -> None:

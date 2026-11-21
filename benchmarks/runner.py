@@ -50,7 +50,7 @@ class LocalSide:
         return getattr(self.worker, f"op_{op}")(**args)
 
     def close(self) -> None:
-        pass
+        self.worker.op_close()
 
 
 class ProcessSide:
@@ -81,7 +81,11 @@ class ProcessSide:
     def close(self) -> None:
         if self.proc.stdin:
             self.proc.stdin.close()
-        self.proc.wait(timeout=60)
+        try:
+            self.proc.wait(timeout=60)
+        except subprocess.TimeoutExpired:
+            self.proc.kill()
+            self.proc.wait()
 
 
 # ---------------------------------------------------------------------------------------------
@@ -128,8 +132,8 @@ def measure(
                 for _ in range(settings.repeats):
                     for name, side in sides.items():
                         samples[name].append(side.call("sample"))
-            for name, side in sides.items():
-                extras[name].update(side.call("finish"))
+        for name in ready:  # runs the case's cleanups, also on a side left unpaired
+            extras[name].update(sides[name].call("finish"))
         for name, prep in preps.items():
             entry: dict[str, Any] = {"case": case_id, "variant": variant, "label": label}
             if not single:
@@ -201,14 +205,19 @@ def export_tree(ref: str) -> tuple[str, Path]:
 
 
 def ensure_venv(sha: str, tree: Path) -> str:
-    """``uv sync --locked`` of an exported tree into ``.benchmarks/venvs/<sha>``, cached."""
-    venv = STATE / "venvs" / sha
+    """``uv sync --locked`` of an exported tree into ``.benchmarks/venvs/<sha>-<python>``, cached.
+
+    The venv is built on this interpreter, so both sides of a compare run the same Python.
+    """
+    python_tag = f"{sys.implementation.name}{'.'.join(map(str, sys.version_info[:3]))}"
+    venv = STATE / "venvs" / f"{sha}-{python_tag}"
     marker = venv / ".benchmarks-complete"
     if not marker.exists():
         env = {k: v for k, v in os.environ.items() if k not in {"VIRTUAL_ENV", "UV_NO_SYNC"}}
         env["UV_PROJECT_ENVIRONMENT"] = str(venv)
         subprocess.run(
-            ["uv", "sync", "--locked", "--no-dev", "--all-extras", "--quiet"],
+            ["uv", "sync", "--locked", "--no-dev", "--all-extras", "--quiet"]
+            + ["--python", sys.executable],
             cwd=tree,
             env=env,
             check=True,
@@ -245,11 +254,14 @@ def run(
     spec: str, settings: Settings, log: TextIO | None = None, side: Side | None = None
 ) -> dict[str, Any]:
     side = side or LocalSide()
-    env = side.call("init", settings=asdict(settings))
-    env.update(tree_env(REPO))
-    doc = new_document("run", settings, env)
-    cases = select(side.call("cases"), spec, set(Corpus().entries))
-    doc["results"], _ = measure({"run": side}, cases, settings, log)
+    try:
+        env = side.call("init", settings=asdict(settings))
+        env.update(tree_env(REPO))
+        doc = new_document("run", settings, env)
+        cases = select(side.call("cases"), spec, set(Corpus().entries))
+        doc["results"], _ = measure({"run": side}, cases, settings, log)
+    finally:
+        side.close()
     return doc
 
 
@@ -265,30 +277,31 @@ def compare(
                 python, env = resolve(ref)
                 sides[name] = ProcessSide(python, harness)
                 envs[name] = {**env, **sides[name].call("init", settings=asdict(settings))}
+                # the first side resolves `auto`; the second must run the same loop or fail
+                settings.loop = envs[name]["loop"]["name"]
+            versions = {name: env["python"]["version"] for name, env in envs.items()}
+            if len(set(versions.values())) > 1:
+                msg = f"base and head run different Pythons: {versions}"
+                raise SideError(msg)
             available = sides["head"].call("cases")
             cases = select(available, spec, set(Corpus().entries))
             doc = new_document("compare", settings, envs)
             doc["results"], doc["comparison"] = measure(sides, cases, settings, log)
         finally:
             for side in sides.values():
-                side.close()
+                try:
+                    side.close()
+                except Exception as e:  # noqa: BLE001  close the others, keep the first error
+                    sys.stderr.write(f"closing a worker failed: {e}\n")
     return doc
 
 
 def report(docs: list[dict[str, Any]], out: TextIO) -> None:
-    """One document: its table (and comparison); two: compare ``a`` (base) with ``b`` (head)."""
-    if len(docs) == 1 and docs[0]["kind"] == "compare":
-        rows = docs[0]["comparison"]
-        meds = _medians(docs[0]["results"])
-        _table(
-            out,
-            [
-                (r["label"], meds.get((r["label"], "base")), meds.get((r["label"], "head")), r)
-                for r in rows
-            ],
-        )
-        return
-    if len(docs) == 1:
+    """One run: its table. One compare, or two runs (``a`` = base, ``b`` = head): A/B rows.
+
+    Cases that were not measured on both sides are listed with their status, never dropped.
+    """
+    if len(docs) == 1 and docs[0]["kind"] == "run":
         out.write(
             f"{'case':44} {'unit':>4} {'median':>12} {'iqr':>10} {'p5':>12} {'p95':>12}  status\n"
         )
@@ -303,13 +316,30 @@ def report(docs: list[dict[str, Any]], out: TextIO) -> None:
                     f"{r['label']:44} {'':>4} {'':>12} {'':>10} {'':>12} {'':>12}  {r['status']}\n"
                 )
         return
-    a, b = (_by_label(d) for d in docs)
-    rows = []
-    for label, ra in a.items():
-        rb = b.get(label)
-        if rb and "median" in ra and "median" in rb and ra["unit"] == rb["unit"]:
-            rows.append((label, ra, rb, compare_samples(ra["samples"], rb["samples"])))
-    _table(out, rows)
+    if len(docs) == 1:
+        doc = docs[0]
+        base = {r["label"]: r for r in doc["results"] if r.get("side") == "base"}
+        head = {r["label"]: r for r in doc["results"] if r.get("side") == "head"}
+        stats = {c["label"]: c for c in doc.get("comparison", [])}
+    else:
+        base, head = (_by_label(d) for d in docs)
+        stats = {
+            label: compare_samples(ra["samples"], head[label]["samples"])
+            for label, ra in base.items()
+            if label in head and _comparable(ra, head[label])
+        }
+    labels = list(dict.fromkeys([*base, *head]))
+    _table(out, [(label, base.get(label), head.get(label), stats.get(label)) for label in labels])
+
+
+def _comparable(ra: dict[str, Any], rb: dict[str, Any]) -> bool:
+    return (
+        "median" in ra
+        and "median" in rb
+        and ra["unit"] == rb["unit"]
+        and _finite(ra["samples"])
+        and _finite(rb["samples"])
+    )
 
 
 def _by_label(doc: dict[str, Any]) -> dict[str, dict[str, Any]]:
@@ -321,21 +351,25 @@ def _by_label(doc: dict[str, Any]) -> dict[str, dict[str, Any]]:
     }
 
 
-def _medians(results: list[dict[str, Any]]) -> dict[tuple[str, str], dict[str, Any]]:
-    return {(r["label"], r["side"]): r for r in results if "median" in r}
-
-
 def _table(out: TextIO, rows: list[Any]) -> None:
     out.write(
         f"{'case':44} {'unit':>4} {'base':>12} {'head':>12} {'ratio':>7} {'Δ median':>9} "
         f"{'95% CI (bootstrap)':>20} {'MWU p':>7}  {'head p5..p95':>22}\n"
     )
     for label, ra, rb, c in rows:
-        lo, hi = c["ci95"]
-        ci = f"[{lo:+.1%}, {hi:+.1%}]"
+        if c is None:
+            base_status = ra["status"] if ra else "absent"
+            head_status = rb["status"] if rb else "absent"
+            out.write(f"{label:44} base: {base_status}, head: {head_status}\n")
+            continue
+        if c["delta_median"] is None:  # base median <= 0: no ratio, absolute delta instead
+            ratio, delta, ci = "n/a", f"{c['delta_abs']:+.1f}", "n/a"
+        else:
+            ratio = f"{rb['median'] / ra['median']:.3f}"
+            delta = f"{c['delta_median']:+.1%}"
+            ci = f"[{c['ci95'][0]:+.1%}, {c['ci95'][1]:+.1%}]" if c["ci95"] else "n/a"
         spread = f"{rb['p5']:.3f}..{rb['p95']:.3f}"
         out.write(
             f"{label:44} {rb['unit']:>4} {ra['median']:12.3f} {rb['median']:12.3f} "
-            f"{rb['median'] / ra['median']:7.3f} {c['delta_median']:+9.1%} "
-            f"{ci:>20} {c['mwu_p']:7.3f}  {spread:>22}\n"
+            f"{ratio:>7} {delta:>9} {ci:>20} {c['mwu_p']:7.3f}  {spread:>22}\n"
         )
