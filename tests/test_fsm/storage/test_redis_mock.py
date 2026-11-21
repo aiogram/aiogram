@@ -115,6 +115,16 @@ class TestRedisStorageMock:
         result = await storage.get_value(storage_key=STORAGE_KEY, dict_key="missing", default="x")
         assert result == "x"
 
+    @pytest.mark.parametrize("stored", [b'{"a": 1}', '{"a": 1}', None])
+    async def test_get_data_raw_bypasses_json_loads(self, stored):
+        redis_mock = AsyncMock()
+        redis_mock.get.return_value = stored
+        json_loads = MagicMock()
+        storage = RedisStorage(redis=redis_mock, json_loads=json_loads)
+        assert await storage._get_data_raw(key=STORAGE_KEY) == stored
+        redis_mock.get.assert_called_once_with(storage.key_builder.build(STORAGE_KEY, "data"))
+        json_loads.assert_not_called()
+
 
 class TestRedisEventIsolationLockMock:
     async def test_lock(self):

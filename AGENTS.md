@@ -56,6 +56,16 @@ make lint-workflows
 
 Without a GitHub token zizmor runs in offline mode and skips its online audits (known-vulnerable-actions and friends), which CI does run. To reproduce CI exactly, prefix `make lint-workflows` with `GH_TOKEN=$(gh auth token)`.
 
+To run a test file on another interpreter of the CI matrix (3.11–3.15, 3.14t) without touching `.venv`:
+
+```bash
+UV_PROJECT_ENVIRONMENT=/tmp/venv-3.11 uv run -p 3.11 --all-extras --group test pytest tests/<path>
+```
+
+On Python 3.14+ `typing.get_type_hints` inside
+`__init_subclass__` raises `NameError` for an unquoted reference to the class itself unless it is called with
+`format=annotationlib.Format.FORWARDREF`.
+
 Full loop (run before final review request):
 
 ```bash
@@ -164,6 +174,17 @@ These patterns repeatedly appeared in maintainer feedback and should be treated 
   `crates/aiogram-core/Cargo.toml`. Only change it with `make bump`: it writes both copies and refreshes
   `Cargo.lock` and `uv.lock` (`uv sync --locked` fails otherwise). `test_build.py` asserts they match.
 - `tests/typing/` holds mypy-only `assert_type` files, never collected by pytest; run them with `make typing`.
+- `aiogram/_core.pyi` is hand-written (PD-36). After changing the `_core` surface, update it and run `make stubtest`
+  (also part of `make lint`); stubtest needs the built extension.
+- Converter core (`aiogram/utils/_converters.py` + `crates/aiogram-core/src/conv/`, PD-36): Python compiles
+  annotations into converter objects (tags, tables, labels); Rust does every conversion and builds the
+  `ConversionError`s. There is no Python backend (PyPy is dropped).
+  - A new kind needs a `kind` tag, a Rust `Data` variant and its arm in `load`, `dump`, `json` and `flat`. Without
+    one, a converter is `"python"`: Rust calls its methods, which is right for user converters only.
+  - Error text is ported word for word from the Python code into Rust (`errors.rs` and the walkers). The contract
+    suite (`tests/test_utils/test_converters.py`) checks messages and paths, so change both together.
+  - Rebuild before testing a crate change (`make dev`, then `uv run --no-sync pytest`): a stale `_core.*.so` makes
+    tests fail, crash or pass for the wrong reason.
 
 ## Developer design notes (`design/`)
 

@@ -136,6 +136,15 @@ class RedisStorage(BaseStorage):
             value = value.decode("utf-8")
         return cast(dict[str, Any], self.json_loads(value))
 
+    async def _get_data_raw(self, key: StorageKey) -> bytes | str | None:
+        """Internal hook (PD-36): the stored data as JSON text, ``None`` when there is none.
+
+        Typed reads parse it in one pass (``ModelConverter.load_json``), bypassing
+        ``json_loads``; the dict API above keeps using the hooks.
+        """
+        value = await self.redis.get(self.key_builder.build(key, "data"))
+        return cast(bytes | str | None, value)
+
 
 class RedisEventIsolation(BaseEventIsolation):
     def __init__(
