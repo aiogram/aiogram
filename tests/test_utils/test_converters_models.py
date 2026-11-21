@@ -2091,3 +2091,83 @@ class TestFlatTemporal:
             json_codec(Annotated[datetime, IsoTime()])
         with pytest.raises(ConversionError):
             json_codec(time).dump_flat("12:00")
+
+
+class TestFinalRound:
+    """Review fixes before the last review pass."""
+
+    def test_cyclic_alias_under_a_marker_is_a_type_error(self, module_from_source):
+        if sys.version_info < (3, 12):
+            pytest.skip("PEP 695")
+        module = module_from_source(
+            """
+            type A = B
+            type B = A
+            type Same = Same
+            """
+        )
+
+        class Up(Converter):
+            def to_json(self, value: Any) -> Any:
+                return value
+
+            def from_json(self, value: Any) -> Any:
+                return value
+
+        with pytest.raises(TypeError, match="refers to itself"):
+            json_codec(Annotated[module.A, Discriminator("k")])
+        with pytest.raises(TypeError, match="refers to itself"):
+            json_codec(Annotated[module.Same, Up()])
+
+    def test_alias_naming_a_later_class_stays_pending(self, module_from_source):
+        if sys.version_info < (3, 12):
+            pytest.skip("PEP 695")
+        module = module_from_source(
+            """
+            from aiogram.utils._converters import ModelBase
+
+            type Alias = Later
+
+            class Uses(ModelBase):
+                v: Alias
+
+            class Later(ModelBase):
+                x: int
+            """
+        )
+        assert json_schema(module.Uses).load({"v": {"x": 1}}).v.x == 1
+
+    def test_bad_converter_option_names_the_field(self):
+        with pytest.raises(TypeError, match=r"\.when: unknown timespec"):
+
+            class Bad(ModelBase):
+                when: Annotated[datetime, IsoDatetime(timespec="days")]  # type: ignore[arg-type]
+
+    @pytest.mark.skipif(sys.version_info >= (3, 14), reason="eager annotations only")
+    def test_slots_field_named_like_its_type_before_pep649(self, module_from_source):
+        with pytest.raises(TypeError, match="the annotation evaluates to the field's own default"):
+            module_from_source(
+                """
+                from datetime import date
+                from aiogram.utils._converters import ModelBase
+
+                class Dated(ModelBase, slots=True):
+                    date: date = date(2020, 1, 1)
+                """
+            )
+
+    def test_custom_hash_on_a_frozen_model_set_item(self):
+        class Tagged(ModelBase, frozen=True):
+            values: list[int]
+
+            def __hash__(self) -> int:
+                return hash(tuple(self.values))
+
+        assert json_codec(set[Tagged]).load([{"values": [1]}]) == {Tagged(values=[1])}
+
+    def test_specialised_alias_set_item_is_checked(self, module_from_source):
+        if sys.version_info < (3, 12):
+            pytest.skip("PEP 695")
+        module = module_from_source("type Box[T] = list[T]\n")
+        with pytest.raises(TypeError, match="unhashable set item"):
+            json_codec(set[module.Box[int]])

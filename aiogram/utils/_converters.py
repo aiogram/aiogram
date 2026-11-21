@@ -194,7 +194,8 @@ def _evaluate(text: str, scope: _Scope) -> Any:
 
 def _field_hint(owner: type, name: str, raw: Any, scope: _Scope) -> Any:
     """The annotation of field ``name`` declared on ``owner``, evaluated."""
-    own = vars(owner).get(name, MISSING)
+    defaults = vars(owner).get("__aiogram_defaults__")  # `slots=True`: defaults moved here
+    own = (defaults if defaults is not None else vars(owner)).get(name, MISSING)
     if not isinstance(raw, str) and (
         (own is not MISSING and raw is own) or isinstance(raw, (_FieldInfo, dataclasses.Field))
     ):
@@ -456,7 +457,13 @@ class _Compiler:
 
     def unwrap(self, tp: Any, scope: _Scope) -> Any:
         """The class under text, ``NewType`` and aliases (to check a converter applies)."""
+        seen: set[int] = set()
         while True:
+            if isinstance(tp, _ALIAS_TYPES):
+                if id(tp) in seen:
+                    msg = f"type alias {tp.__name__} refers to itself"
+                    raise TypeError(msg)
+                seen.add(id(tp))
             text = _text_of(tp)
             if text is not None:
                 tp = _evaluate(text, scope)
@@ -506,7 +513,11 @@ class _Compiler:
         self.aliases[key] = (None, None)
         self.unguarded.add(key)
         try:
-            kind = self.kind(value(), scope)
+            try:
+                target = value()
+            except NameError as e:  # a name in `type X = ...` not defined yet
+                raise _Unresolved(e.name or name) from None
+            kind = self.kind(target, scope)
         finally:
             self.unguarded.discard(key)
         cell, _ = self.aliases[key]
@@ -557,7 +568,7 @@ class _Compiler:
             try:
                 hint = _field_hint(owner, name, raw, scopes[owner])
                 return hint, self.kind(hint, scopes[owner])
-            except TypeError as e:
+            except (TypeError, ValueError) as e:
                 msg = f"{tp.__qualname__}.{name}: {e}"
                 raise TypeError(msg) from None
 
@@ -631,6 +642,8 @@ class _Compiler:
                 return False
             seen.add(id(tp))
             return self.unhashable(tp.__value__, scope, seen)
+        if isinstance(origin, _ALIAS_TYPES):  # `Box[int]`
+            return self.unhashable(self.substitute(tp, origin), scope, seen)
         if origin in _UNION_TYPES:
             return any(self.unhashable(arg, scope, seen) for arg in args)
         if origin in {list, dict, set}:
@@ -658,7 +671,8 @@ def _hashed_fields(tp: type) -> list[str]:
     """The fields a field-based ``__hash__`` of ``tp`` uses (empty: not field-based)."""
     info = vars(tp).get("__aiogram_info__")
     if info is not None:
-        return list(info.compare) if info.frozen else []
+        # only our generated hash uses the fields; an explicit __hash__ decides for itself
+        return list(info.compare) if info.frozen and tp.__hash__ is _frozen_hash else []
     if _is_namedtuple(tp):
         return list(tp._fields)  # type: ignore[attr-defined]
     if dataclasses.is_dataclass(tp):
@@ -965,7 +979,7 @@ def _compile(cls: type) -> list[_core.Field]:
             fields.append(_model_field(compiler, cls, decl, scopes[decl.owner], rename))
         except _Unresolved as e:
             missing.append(e.name or str(e))
-        except TypeError as e:
+        except (TypeError, ValueError) as e:  # ValueError: a ready-made converter's options
             msg = f"{cls.__qualname__}.{decl.name}: {e}"
             raise TypeError(msg) from None
     if missing:
