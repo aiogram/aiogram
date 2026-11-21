@@ -19,6 +19,8 @@ from differential import runner, trace  # noqa: E402
 from differential.runner import Entry, HarnessError, Mismatch  # noqa: E402
 
 Record = dict[str, Any]
+# manifest entries that are active in 3.x-vs-3.x runs too (no `when`): (kind, decision)
+THREE_X_ENTRIES = {("request", "R18"), ("request", "PD-11")}
 
 
 def fake_side(poison: bool = False) -> list[Record]:
@@ -255,7 +257,10 @@ class TestManifest:
                 if entry.cls == "approved":
                     assert entry.assert_ in runner.COMPARATORS
                 assert entry.gate is (entry.decision in gated)
-                assert entry.when == "aiogram4"  # 4.0 stubs never apply to 3.x-vs-3.x runs
+                if (kind, entry.decision) in THREE_X_ENTRIES:
+                    assert entry.when is None  # also checks 3.x-vs-3.x runs
+                else:
+                    assert entry.when == "aiogram4"  # 4.0 stubs never apply to 3.x-vs-3.x runs
         expected = {
             "D108",
             "D86",
@@ -269,7 +274,7 @@ class TestManifest:
             "BC13",
             "D48",
         }
-        expected |= {"D34", "D28", "D114", "D12", "R18"}
+        expected |= {"D34", "D28", "D114", "D12", "R18", "PD-08", "PD-11"}
         assert decisions == expected
 
     def test_stub_comparators_never_approve(self):
