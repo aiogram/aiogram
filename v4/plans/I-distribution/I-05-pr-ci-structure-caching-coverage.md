@@ -8,7 +8,7 @@
 | Depends on | [B-01](../B-spike/B-01-crate-maturin-skeleton.md) |
 | Blocks | [I-02](I-02-tier1-wheel-matrix-release.md), [I-06](I-06-largest-codegen-unit-guard.md), [I-07](I-07-dependencies-extras-restructure.md), [I-08](I-08-contributor-workflow.md), [C-23](../C-butcher/C-23-check-offline-determinism.md) |
 | Gate-conditional | no |
-| Decisions | D1, D7, D119, 13 B11, 13 B12, R25, R26 |
+| Decisions | D1, D119, PD-35, 13 B11, 13 B12, R25, R26 |
 | Sources | [08-build-release.md §5](../../research/08-build-release.md), [13-aiogram-rust-review.md B11–B12](../../research/13-aiogram-rust-review.md), [19 R25](../../research/19-review-resolutions.md) |
 | Size | M (2–3 days) |
 
@@ -66,9 +66,8 @@ PR-time matrix: 08 §5 lists the full matrix; PyPy is not part of it (PD-35), so
 - [ ] **Decide the PR vs nightly matrix** (proposed default). Record the measured PR wall-clock in Notes and flag it to
       the owner.
       - **PR, required:** Linux cp311, cp314 and cp314t, full suite plus Redis/Mongo; macOS arm64 cp314; Windows x64 cp314.
-      - **PR, non-required:** Linux pp311.
       - **Nightly (scheduled) and on push to `dev-4.x`:** the full 08 §5 matrix (3.11–3.15, 3.14t/3.15t,
-        pp311/pp312, all three OSes).
+        all three OSes; no PyPy, PD-35).
 - [ ] **Decide the stale "Python fallback encoder" wording** in 08 §5 ("request encoding, Rust vs the Python fallback
       encoder"). It contradicts D1, which allows no pure-Python fallback. Proposed default: there is no in-tree Python
       encoder. The request differential compares the Rust encoder against the external pinned 3.x oracle (A-09, PD-12),

@@ -8,7 +8,7 @@
 | Depends on | [I-01](I-01-packaging-hardening.md), [I-05](I-05-pr-ci-structure-caching-coverage.md), [C-18](../C-butcher/C-18-rust-type-emitter.md), [C-02](../C-butcher/C-02-fetch-provenance.md) |
 | Blocks | [I-03](I-03-free-threaded-wheels-ci.md), [I-21](I-21-fresh-machine-install-rehearsal.md), [I-23](I-23-beta-pre-release.md), [J-05](../J-ga/J-05-release-ownership-runbook-rollback.md), [J-07](../J-ga/J-07-ga-cut-rtd-switch.md) |
 | Gate-conditional | no |
-| Decisions | D7, D17, D119, PD-27, R25 |
+| Decisions | D17, D119, PD-35, PD-27, R25 |
 | Sources | [08-build-release.md §3–5](../../research/08-build-release.md), [19 D119, R25](../../research/19-review-resolutions.md), [codex-review R25](../../research/codex-review.md) |
 | Size | L (4–5 days) |
 
@@ -32,7 +32,7 @@ frozenlist has no cp315t wheel, cryptography is 314t-only, 07 §4) are documente
 **In:**
 - **Tier 1, release-blocking:** cp311, cp312, cp313, cp314, cp315, cp314t, cp315t ×
   manylinux x86_64/aarch64, musllinux x86_64/aarch64, macOS arm64/x86_64, Windows x64.
-- **Best-effort, non-blocking:** pp311, pp312, Windows arm64, manylinux i686/armv7l/ppc64le/s390x.
+- **Best-effort, non-blocking:** Windows arm64, manylinux i686/armv7l/ppc64le/s390x.
 - Always one sdist.
 - Built with `PyO3/maturin-action` (start from `maturin generate-ci github`), rust-cache keyed with
   `PYO3_ENVIRONMENT_SIGNATURE` (13 B12).
