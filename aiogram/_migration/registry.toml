@@ -208,8 +208,8 @@ warn_3x = { site = "none", target = "", since = "" }
 [[entry]]
 id = "AG4010"
 kind = "removal-4.0"
-title = "free-threaded builds need CPython 3.14t or newer; PyPy is best-effort"
-decisions = ["D7", "D8", "D119"]
+title = "free-threaded builds need CPython 3.14t or newer; PyPy is not supported (PD-35)"
+decisions = ["D8", "D119", "PD-35"]
 area = "packaging"
 change = "behaviour"
 replacement = "CPython 3.14t+ for free-threading; a Tier 1 platform for supported wheels"
