@@ -48,6 +48,13 @@ fn register_submodule(
     let py = parent.py();
     let qualified = format!("{}.{name}", parent.name()?);
     let module = PyModule::new(py, &qualified)?;
+    // a spec (no loader: nothing to reload) keeps `importlib.util.find_spec` and pydoc working
+    let spec = py
+        .import("importlib.machinery")?
+        .getattr("ModuleSpec")?
+        .call1((&qualified, py.None()))?;
+    module.setattr("__spec__", spec)?;
+    module.setattr("__package__", parent.name()?)?;
     fill(&module)?;
     parent.add(name, &module)?;
     py.import("sys")?

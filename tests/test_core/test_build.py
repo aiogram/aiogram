@@ -5,6 +5,7 @@ import sys
 import sysconfig
 import tomllib
 import types
+from importlib.machinery import EXTENSION_SUFFIXES
 from pathlib import Path
 
 import pytest
@@ -23,6 +24,12 @@ SUBMODULES = sorted(
 def run_python(code: str) -> None:
     env = {key: value for key, value in os.environ.items() if key != "PYTHON_GIL"}
     subprocess.run([sys.executable, "-c", code], env=env, check=True)
+
+
+def test_core_is_the_extension():
+    # without a built .so the stub-only aiogram/_core/ directory imports as an empty namespace
+    assert _core.__file__ is not None, "aiogram._core is not built for this interpreter"
+    assert _core.__file__.endswith(tuple(EXTENSION_SUFFIXES))
 
 
 def test_build_info():
@@ -86,6 +93,7 @@ def test_submodule_imports_in_fresh_process(name: str):
     run_python(
         f"import sys; from {module} import {', '.join(names)}; "
         f"m = sys.modules[{module!r}]; assert m.__name__ == {module!r}; "
+        f"import importlib.util; assert importlib.util.find_spec({module!r}).name == {module!r}; "
         f"assert all(getattr(m, n).__module__ == {module!r} for n in {names!r}); "
         f"assert not {FREE_THREADED} or not sys._is_gil_enabled()"
     )
