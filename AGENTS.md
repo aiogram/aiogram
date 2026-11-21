@@ -49,8 +49,10 @@ uv run pytest tests
 ```
 
 PyPy 3.11 on macOS arm64 segfaults on `copy` / `deepcopy` of `DefaultBotProperties`, and CI
-does not reproduce it. Before pushing a change that copies or pickles models, run the
-touched tests on a local PyPy, in a separate environment so `.venv` is left alone:
+does not reproduce it. PyPy also lacks some stdlib modules CPython has (`tracemalloc`), and the
+PyPy CI jobs collect every test module, `benchmarks/` self-tests included. Before pushing a change
+that copies or pickles models, or imports such a module, run the touched tests on a local PyPy,
+in a separate environment so `.venv` is left alone:
 
 ```bash
 UV_PROJECT_ENVIRONMENT=/tmp/aiogram-pypy uv sync --locked --all-extras --group test --python pypy3.11
