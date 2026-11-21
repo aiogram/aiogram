@@ -16,8 +16,8 @@ uv run python -m differential run --kind model --left pypi:aiogram==3.32.0 --rig
     [--manifest FILE] [--corpus DIR] [--max-diffs N]
 ```
 
-- `--kind`: `smoke | model | request | routing`. Only `smoke` has a probe so far; A-08 (model), A-09
-  (request) and A-10 (routing) add theirs as `sides/aiogram3/<kind>.py`.
+- `--kind`: `smoke | model | request | routing`. Each kind's probe is `sides/aiogram3/<kind>.py`:
+  `smoke` (A-07), `request` (A-09, see *Request kind*); A-08 (model) and A-10 (routing) add theirs.
 - A side is `pypi:<requirement>`, `git:<ref>` or `path:<dir>`.
 - `--manifest` defaults to `differential/manifests/<kind>.toml`; `--corpus` to `benchmarks/corpus`.
 
@@ -122,9 +122,22 @@ The seeded entries carry `when = "aiogram4"`, so they stay inert in 3.x-vs-3.x r
 patterns are placeholders for A-08..A-10 and the 4.0 plans to refine. `gate = true` entries are void
 if B-13 is a no-go.
 
+## Request kind
+
+`sides/aiogram3/request.py` (A-09) sends every case through `bot(method)` to a local aiohttp
+`TestServer` playing the Bot API and records the raw HTTP request (R26). Cases: the A-04
+`requests/*` and `response.*` inputs, plus `request.defaults.*`, `request.hooks.*`,
+`request.datetime.*` and `webhook.reply.*`. Probes: `resolved` and `encoding` (from the body,
+through `wire.canonical_request`), `decode` (responses: result dump or exception attributes) and
+`serialize` (`deserialize_telegram_object`). `wire.py` is the body canonicaliser D-15 reuses:
+stdlib only, loaded by path from the directory of `--trace-module`. A `timedelta` param is recorded
+as `{"now_plus": seconds}` when the wire value falls inside the send window, so runs at different
+times compare equal. `--poison` drops one param from every `resolved` record.
+
 ## Self-tests
 
-`uv run pytest tests/test_differential_framework.py`: fake in-process sides, no venvs or network.
+`uv run pytest tests/test_differential_framework.py tests/test_differential_request.py`: fake or
+in-process sides, no venvs or network.
 They cover the trace encoding, each comparator, manifest matching and validation, the poison
 self-check, and the smoke side run in-process.
 

@@ -19,6 +19,8 @@ from differential import runner, trace  # noqa: E402
 from differential.runner import Entry, HarnessError, Mismatch  # noqa: E402
 
 Record = dict[str, Any]
+# manifest entries that are active in 3.x-vs-3.x runs too (no `when`): (kind, decision)
+THREE_X_ENTRIES = {("request", "R18"), ("request", "PD-11"), ("model", "GHSA-hv98-r5fx-wc83")}
 
 
 def fake_side(poison: bool = False) -> list[Record]:
@@ -246,7 +248,6 @@ class TestManifest:
             "D108",
         }
         gated.add("R06")  # A-08: model_copy -> replace, through D91
-        three_x = {"GHSA-hv98-r5fx-wc83"}  # A-08: 3.32.0 vs later 3.x
         decisions = set()
         for kind in ("model", "request", "routing"):
             for entry in runner.load_manifest(
@@ -257,8 +258,10 @@ class TestManifest:
                 if entry.cls == "approved":
                     assert entry.assert_ in runner.COMPARATORS
                 assert entry.gate is (entry.decision in gated)
-                # 4.0 entries never apply to 3.x-vs-3.x runs
-                assert entry.when == "aiogram4" or entry.decision in three_x
+                if (kind, entry.decision) in THREE_X_ENTRIES:
+                    assert entry.when is None  # also checks 3.x-vs-3.x runs
+                else:
+                    assert entry.when == "aiogram4"  # 4.0 stubs never apply to 3.x-vs-3.x runs
         expected = {
             "D108",
             "D86",
@@ -272,8 +275,8 @@ class TestManifest:
             "BC13",
             "D48",
         }
-        expected |= {"D34", "D28", "D114", "D12", "R18"}
-        expected = (expected - {"D94"}) | {"D15", "R06", *three_x}  # A-08
+        expected |= {"D34", "D28", "D114", "D12", "R18", "PD-08", "PD-11"}
+        expected = (expected - {"D94"}) | {"D15", "R06", "GHSA-hv98-r5fx-wc83"}  # A-08
         assert decisions == expected
 
     def test_stub_comparators_never_approve(self):

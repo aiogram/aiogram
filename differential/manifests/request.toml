@@ -2,11 +2,27 @@
 # are invariant. Seeded 4.0 approved differences: `when = "aiogram4"` keeps them inert in 3.x-vs-3.x runs, and
 # each `assert` is a stub comparator that never approves until its owning plan refines the entry. 3.x-vs-3.x
 # entries (for example 3x-09) omit `when` and name the plan id as `decision`.
+#
+# Positional construction is impossible in 4.0 (D100); the 3.x side always uses keywords, so every case stays
+# invariant on that account and needs no entry.
+
+[[case]]
+match = "request.hooks.json_dumps/resolved"
+class = "approved"
+decision = "PD-08"
+assert = "json_dumps_hook_ignored"
+when = "aiogram4"
+note = "a custom json_dumps has no effect on the wire in 4.0"
+
+[[case]]
+match = "request.datetime.timedelta/resolved"
+class = "invariant"
+decision = "PD-11"
+note = "a timedelta (until_date) is sent as now + delta, recorded as now_plus; 4.0 must match 3.x"
 
 [[case]]
 match = "request.*/encoding"
 class = "approved"
 decision = "R18"
 assert = "json_body_without_files"
-when = "aiogram4"
-note = "JSON body when there are no files, multipart otherwise"
+note = "JSON body when there are no files, multipart otherwise: 3x-09 for 3.x vs 3.x, D-07 / D-08 for 4.0"
