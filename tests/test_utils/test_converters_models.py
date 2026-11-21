@@ -2239,3 +2239,109 @@ class TestLastPass:
             datetime(1900, 1, 1, 0, 0, 0, 999000, tzinfo=UTC),
         ):
             assert codec.load(codec.dump(value)) == value
+
+
+class TestEdgeCases:
+    """Brief 13: the seven open edge cases."""
+
+    def test_bytes_union_picks_the_member_load_picks(self):
+        class Fallback(ModelBase):
+            a: Annotated[int, Key("a", load=("old",))]
+
+        class Empty(ModelBase):
+            pass
+
+        codec = json_codec(Fallback | Empty)
+        for document in (b'{"old": "x", "a": 1}', b'{"a": "x", "a": 1}'):
+            assert codec.load_json(document) == codec.load(json.loads(document)) == Fallback(a=1)
+        nested = json_codec(list[Fallback] | list[Empty])
+        document = b'[{"old": "x", "a": 1}]'
+        assert nested.load_json(document) == nested.load(json.loads(document))
+
+    @pytest.mark.parametrize(
+        ("annotation", "document"),
+        [
+            (tuple[int, int] | str, b'["x"]'),
+            ("pair", b'{"b": "x"}'),
+        ],
+    )
+    def test_union_notes_match_the_dict_load(self, annotation, document):
+        class Pair(ModelBase):
+            a: int
+            b: int
+
+        codec = json_codec(Pair | str if annotation == "pair" else annotation)
+        with pytest.raises(ConversionError) as from_bytes:
+            codec.load_json(document)
+        with pytest.raises(ConversionError) as from_dict:
+            codec.load(json.loads(document))
+        assert from_bytes.value.errors == from_dict.value.errors
+        assert from_bytes.value.__notes__ == from_dict.value.__notes__
+
+    def test_repeated_dict_key_keeps_first_position(self):
+        codec = json_codec(dict[str, int])
+        failing = b'{"a": "x", "b": "y", "a": "z"}'
+        assert [error[0] for error in errors_of(codec.load_json, failing)] == [
+            error[0] for error in errors_of(codec.load, json.loads(failing))
+        ]
+        loaded = codec.load_json(b'{"a": "x", "b": 1, "a": 2}')
+        assert list(loaded) == list(json.loads(b'{"a": "x", "b": 1, "a": 2}')) == ["a", "b"]
+        assert loaded == {"a": 2, "b": 1}
+
+    def test_user_converter_resizing_the_dict(self):
+        source = {"a": 1, "b": 2}
+
+        class Grow(Converter):
+            def to_json(self, value: Any) -> Any:
+                return value
+
+            def from_json(self, value: Any) -> Any:
+                source["grown"] = 0
+                return value
+
+        codec = json_codec(dict[str, Annotated[int, Grow()]])
+        assert codec.load(source) == {"a": 1, "b": 2}
+
+    @pytest.mark.parametrize("text", ["NaN", "Infinity", "-Infinity", "sNaN"])
+    def test_flat_decimal_as_number_is_finite_only(self, text):
+        from aiogram.utils.converters import DecimalAsNumber  # noqa: PLC0415
+
+        codec = json_codec(Annotated[Decimal, DecimalAsNumber()])
+        with pytest.raises(ConversionError, match="expected Decimal"):
+            codec.load_flat(text)
+        with pytest.raises(ConversionError, match="expected Decimal"):
+            codec.dump_flat(Decimal(text))
+        assert codec.load_flat("1.5") == Decimal("1.5")
+
+    def test_enum_by_name_takes_alias_names(self):
+        class Color(enum.Enum):
+            RED = 1
+            CRIMSON = 1
+
+        codec = json_codec(Annotated[Color, EnumByName()])
+        assert codec.load("CRIMSON") is Color.RED
+        assert codec.load_flat("CRIMSON") is Color.RED
+        assert codec.dump(Color.CRIMSON) == "RED"
+
+    def test_rename_collision_is_a_clear_type_error(self):
+        with pytest.raises(TypeError, match=r"both read the key 'aB' \(rename='camel'\)"):
+
+            class Doubled(ModelBase, rename="camel"):
+                a_b: int
+                a__b: int
+
+        class Fixed(ModelBase, rename="camel"):
+            a_b: int
+            a__b: Annotated[int, Key("aDoubleB")]
+
+        assert json_schema(Fixed).dump(Fixed(a_b=1, a__b=2)) == {"aB": 1, "aDoubleB": 2}
+
+    @pytest.mark.skipif(sys.version_info < (3, 13), reason="PEP 705 ReadOnly")
+    def test_readonly_typeddict_keys(self):
+        class Movie(TypedDict, total=False):
+            title: typing.ReadOnly[typing.Required[str]]
+            year: typing.ReadOnly[int]
+
+        codec = json_codec(Movie)
+        assert codec.load({"title": "x"}) == {"title": "x"}
+        assert errors_of(codec.load, {"year": 1}) == [(("title",), "field required", MISSING)]

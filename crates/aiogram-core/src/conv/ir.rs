@@ -646,14 +646,25 @@ impl Kind {
         let text = PyDict::new(py);
         let mut json_types = 0;
         let mut count = 0usize;
+        if by_name {
+            // every name `Enum[name]` takes, aliases too (`__members__`); dump writes the
+            // canonical `.name`
+            for item in tp
+                .getattr(pyo3::intern!(py, "__members__"))?
+                .call_method0("items")?
+                .try_iter()?
+            {
+                let (name, member): (Bound<'_, PyAny>, Bound<'_, PyAny>) = item?.extract()?;
+                json.set_item(&name, &member)?;
+                text.set_item(&name, &member)?;
+            }
+            json_types |= json_type::STR;
+        }
         for member in tp.try_iter()? {
             let member = member?;
             count += 1;
             if by_name {
-                let name = member.getattr(pyo3::intern!(py, "name"))?;
-                json.set_item(&name, &member)?;
-                text.set_item(&name, &member)?;
-                json_types |= json_type::STR;
+                continue;
             } else {
                 let value = member.getattr(pyo3::intern!(py, "value"))?;
                 json.set_item(type_and_value(&value)?, &member)?;
@@ -661,7 +672,8 @@ impl Kind {
                 json_types |= json_type_of(&value);
             }
         }
-        let flat = text.len() == count;
+        // names are unique; values may share a text (`1` and `"1"`)
+        let flat = by_name || text.len() == count;
         let label = tp.name()?.to_string();
         Ok(Kind::new(
             Data::Enum(Box::new(Enumeration {

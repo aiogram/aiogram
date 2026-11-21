@@ -123,6 +123,8 @@ else:  # pragma: no cover
     _ALIAS_TYPES = ()
 
 _UNION_TYPES = (typing.Union, types.UnionType)
+# TypedDict key qualifiers: required-ness / read-only-ness come from the class (PEP 655, PEP 705)
+_QUALIFIERS = {Required, NotRequired, *filter(None, [getattr(typing, "ReadOnly", None)])}
 # A ClassVar written as text (`from __future__ import annotations`), the way dataclasses detects it
 _CLASSVAR_TEXT = re.compile(r"^\s*(?:\w+\s*\.\s*)*ClassVar\b")
 _KW_ONLY_TEXT = re.compile(r"^\s*(?:\w+\s*\.\s*)*KW_ONLY\s*$")
@@ -325,7 +327,7 @@ class _Compiler:
         origin = get_origin(tp)
         if origin is Annotated:
             return self.annotated(tp, scope)
-        if origin in {Required, NotRequired}:  # TypedDict keys; required-ness comes from the class
+        if origin in _QUALIFIERS:  # TypedDict keys; the class records what they mean
             return self.kind(get_args(tp)[0], scope)
         if isinstance(tp, typing.NewType):
             return self.kind(tp.__supertype__, scope)
@@ -611,8 +613,11 @@ class _Compiler:
     def required(hint: Any, default: bool) -> bool:
         """A TypedDict key's required-ness from its evaluated annotation: the wrapper wins
         (``__required_keys__`` misses ``Required`` / ``NotRequired`` under string annotations)."""
-        while get_origin(hint) is Annotated:
-            hint = get_args(hint)[0]
+        while get_origin(hint) is Annotated or get_origin(hint) in _QUALIFIERS - {
+            Required,
+            NotRequired,
+        }:
+            hint = get_args(hint)[0]  # `ReadOnly[Required[int]]`
         if get_origin(hint) is Required:
             return True
         if get_origin(hint) is NotRequired:
@@ -990,7 +995,24 @@ def _compile(cls: type) -> list[_core.Field]:
         verb = "is" if len(names) == 1 else "are"
         msg = f"{cls.__qualname__} is not fully defined: {', '.join(names)} {verb} not defined"
         raise _NotDefined(msg)
+    if rename is not None:
+        _check_renamed(cls, fields, info.rename)
     return fields
+
+
+def _check_renamed(cls: type, fields: list[_core.Field], policy: Any) -> None:
+    """Two fields that ``rename`` maps to one key (``a_b`` and ``a__b`` under ``"camel"``): a
+    ``TypeError`` that names the policy and the way out, before the generic key check."""
+    owners: dict[str, str] = {}
+    for spec in fields:
+        for key in (spec.key, *spec.load):
+            other = owners.setdefault(key, spec.name)
+            if other != spec.name:
+                msg = (
+                    f"{cls.__qualname__}: fields {other!r} and {spec.name!r} both read the key "
+                    f"{key!r} (rename={policy!r}); give one of them a Key(...)"
+                )
+                raise TypeError(msg)
 
 
 def _resolve(cls: type) -> None:

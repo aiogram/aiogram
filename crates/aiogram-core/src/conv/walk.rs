@@ -3,7 +3,6 @@
 
 use std::cell::RefCell;
 
-use pyo3::exceptions::PyStopIteration;
 use pyo3::prelude::*;
 use pyo3::sync::PyOnceLock;
 use pyo3::types::{PyBool, PyDict, PyFloat, PyInt, PyList, PyString, PyTuple, PyType};
@@ -44,17 +43,18 @@ pub(crate) fn dict_for_each<'py>(
     dict: &Bound<'py, PyDict>,
     f: impl Fn(Bound<'py, PyAny>, Bound<'py, PyAny>) -> VResult<()>,
 ) -> VResult<()> {
-    let stopped = RefCell::new(None);
-    let result = dict.locked_for_each(|key, value| {
-        f(key, value).map_err(|error| {
-            *stopped.borrow_mut() = Some(error);
-            PyStopIteration::new_err(())
-        })
-    });
-    match stopped.into_inner() {
-        Some(error) => Err(error),
-        None => result.map_err(ValError::Fatal),
+    // the items are taken under the dict's lock (a critical section on free-threaded builds),
+    // then walked outside it: user code may change the dict without breaking the iteration
+    let items = RefCell::new(Vec::with_capacity(dict.len()));
+    dict.locked_for_each(|key, value| {
+        items.borrow_mut().push((key, value));
+        Ok(())
+    })
+    .map_err(ValError::Fatal)?;
+    for (key, value) in items.into_inner() {
+        f(key, value)?;
     }
+    Ok(())
 }
 
 static MAPPING: PyOnceLock<Py<PyType>> = PyOnceLock::new();

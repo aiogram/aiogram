@@ -278,6 +278,10 @@ make lint
     the C constructors and stay level. `dump_json` costs a third of `dump` + `json.dumps`. Row g is slower because
     the load now collects every error (one pass); the old core stopped at the first one and re-parsed.
   - **Known limits:**
+    - Brief 13 (owner 2026-11-21): on the bytes path a union picks the member `load` picks (a failed object trial is
+      decided by the dict load) and its errors and notes are the dict load's; a repeated dict key keeps its first
+      position; dicts are iterated over a snapshot; flat `DecimalAsNumber` is finite-only; `EnumByName` takes alias
+      names; a `rename` collision is a `TypeError` that suggests a `Key`; TypedDict `ReadOnly[...]` keys work.
     - jiter's 200-level limit on skipped or materialised values raises `RecursionError`.
     - `load_json` of an escaped lone surrogate re-parses through `json.loads`, the only re-parse left.
     - Flat form of temporal types (brief 12, owner 2026-11-21): `datetime` / `date` / `time` are ISO 8601 basic

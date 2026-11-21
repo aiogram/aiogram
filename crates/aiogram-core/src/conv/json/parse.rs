@@ -368,48 +368,72 @@ fn dict<'py>(
     ctx: Ctx,
 ) -> PResult<Bound<'py, PyAny>> {
     let ctx = ctx.deeper()?;
+    // keys keep the position of their first occurrence and a repeated key replaces the earlier
+    // value (and its errors), as `json.loads` gives them; a failed key holds a `None` placeholder
     let out = PyDict::new(py);
-    // errors by key: a repeated key replaces the earlier value and its errors
     let mut failed: Vec<(Bound<'py, PyString>, ValError)> = Vec::new();
     let mut count = 0;
     let mut key = doc.jiter.known_object()?.map(|key| PyString::new(py, key));
     while let Some(name) = key {
         let peek = doc.jiter.peek()?;
         let result = walk(py, doc, peek, item, ctx);
-        if !failed.is_empty() {
-            let mut kept = Vec::with_capacity(failed.len());
-            for (known, error) in failed.drain(..) {
-                if known.as_any().eq(&name)? {
-                    count -= error.len();
-                } else {
-                    kept.push((known, error));
-                }
-            }
-            failed = kept;
-        }
-        match result {
-            Ok(value) => out.set_item(&name, value)?,
-            Err(Fail::Val(error @ ValError::Lines(_))) => {
-                if out.contains(&name)? {
-                    out.del_item(&name)?;
-                }
-                count += error.len();
-                let error = error.at(|| errors::Loc::Key(name.clone().unbind()));
-                // fast mode (a union member trial) stops here; the union decides with the dict load
-                // when no member takes the value (a repeated key may still replace this one)
-                if ctx.fast || count >= MAX_ERRORS {
-                    failed.push((name, error));
+        let known = if failed.is_empty() {
+            None
+        } else {
+            let mut found = None;
+            for (position, (other, _)) in failed.iter().enumerate() {
+                if other.as_any().eq(&name)? {
+                    found = Some(position);
                     break;
                 }
-                failed.push((name, error));
+            }
+            found
+        };
+        match result {
+            Ok(value) => {
+                if let Some(position) = known {
+                    count -= failed.remove(position).1.len();
+                }
+                out.set_item(&name, value)?;
+            }
+            Err(Fail::Val(error @ ValError::Lines(_))) => {
+                count += error.len();
+                let error = error.at(|| errors::Loc::Key(name.clone().unbind()));
+                match known {
+                    Some(position) => {
+                        count -= failed[position].1.len();
+                        failed[position].1 = error;
+                    }
+                    None => {
+                        out.set_item(&name, py.None())?;
+                        failed.push((name, error));
+                    }
+                }
+                // fast mode (a union member trial) stops here; the union decides with the dict load
+                if ctx.fast || count >= MAX_ERRORS {
+                    break;
+                }
             }
             Err(other) => return Err(other),
         }
         key = doc.jiter.next_key()?.map(|key| PyString::new(py, key));
     }
+    if failed.is_empty() {
+        return Ok(out.into_any());
+    }
+    // errors in key order (first occurrence)
     let mut errors = Errors::new();
-    for (_, error) in failed {
-        errors.push(error, ctx)?;
+    for name in out.keys() {
+        let mut position = None;
+        for (index, (other, _)) in failed.iter().enumerate() {
+            if other.as_any().eq(&name)? {
+                position = Some(index);
+                break;
+            }
+        }
+        if let Some(index) = position {
+            errors.push(failed.swap_remove(index).1, ctx)?;
+        }
     }
     errors.finish()?;
     Ok(out.into_any())
@@ -559,7 +583,16 @@ fn union<'py>(
         return member_walk(member, ctx);
     }
     let json_type = json_type_of(peek, text);
-    let mut notes = Vec::new();
+    // the materialised value, built on first need
+    let mut value: Option<Bound<'py, PyAny>> = None;
+    let mut materialised = || -> PResult<Bound<'py, PyAny>> {
+        if let Some(value) = &value {
+            return Ok(value.clone());
+        }
+        let parsed = parse_slice(py, doc.data, start, end)?;
+        value = Some(parsed.clone());
+        Ok(parsed)
+    };
     for pass in [true, false] {
         for member in &union.members {
             let member = member.get();
@@ -568,31 +601,27 @@ fn union<'py>(
             }
             match member_walk(member, ctx.fast()) {
                 Ok(result) => return Ok(result),
-                Err(Fail::Val(ValError::Lines(lines))) => {
-                    if let Some(line) = lines.into_iter().next() {
-                        notes.push((member.label.clone(), line));
+                // a fail-fast trial of an object (or an array of them) may stop before a repeated
+                // key or a stored key after a `load` key: the dict load of this member decides,
+                // so the member chosen is the one `load` chooses
+                Err(Fail::Val(ValError::Lines(_)))
+                    if matches!(peek, Peek::Object | Peek::Array) =>
+                {
+                    match load::load(py, &materialised()?, member, ctx.fast()) {
+                        Ok(result) => return Ok(result),
+                        Err(ValError::Lines(_)) => {}
+                        Err(fatal) => return Err(Fail::Val(fatal)),
                     }
                 }
+                Err(Fail::Val(ValError::Lines(_))) => {}
                 Err(other) => return Err(other),
             }
         }
     }
-    // no member took the value in one pass: a member trial stops at its first error, so a
-    // repeated key or a stored key after a `load` key may not have been seen. The dict load of
-    // the materialised value decides (it reads whole objects; numbers become floats here)
-    let value = parse_slice(py, doc.data, start, end)?;
-    match load::union(py, &value, union, label, ctx) {
+    // no member took the value: the error (and its member notes) is the one `load` gives
+    match load::union(py, &materialised()?, union, label, ctx) {
         Ok(result) => Ok(result),
-        Err(ValError::Lines(mut lines)) => {
-            // keep the member reasons of this pass, which saw the exact JSON
-            if let Some(line) = lines.first_mut()
-                && line.loc.is_empty()
-            {
-                line.notes = notes;
-            }
-            Err(Fail::Val(ValError::Lines(lines)))
-        }
-        Err(fatal) => Err(Fail::Val(fatal)),
+        Err(error) => Err(Fail::Val(error)),
     }
 }
 

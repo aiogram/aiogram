@@ -147,6 +147,7 @@ pub(crate) fn load<'py>(
                 fatal @ ValError::Fatal(_) => fatal,
             })
         }
+        Data::Decimal { number: true } => scalars::decimal_number(py, part, label),
         Data::Decimal { .. } => scalars::decimal(py, part, label),
         Data::Bytes => match text
             .to_str()
@@ -257,7 +258,11 @@ pub(crate) fn dump<'py>(
             }
             text(&out)
         }
-        Data::Decimal { .. } => {
+        Data::Decimal { number } => {
+            if *number {
+                // as its JSON paths: finite numbers only
+                scalars::finite_decimal(value, label)?;
+            }
             let mut out = String::new();
             scalars::dump_text(py, value, kind, &mut out)?;
             PyString::new(py, &out)
