@@ -22,6 +22,7 @@ serde_json = { version = "1.0.154", features = ["float_roundtrip"] }
 serde_path_to_error = "0.1.20"
 toml = "1.2.2"
 clap = { version = "4.6.9", features = ["derive"] }
+regex = "1.12.2"
 
 [workspace.lints.clippy]
 # v4/research/13 B11: also enforced in generated code, `allow(clippy::all)` does not mask them
