@@ -88,3 +88,32 @@ jobs:
             echo "::error::poisoned run exited $code, expected 1"
             exit 1
           fi
+
+  model:
+    name: model (3.x release vs tree, plus poison)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - uses: astral-sh/setup-uv@v10.3.3
+        with:
+          python-version: "3.11"
+
+      - name: Install project
+        run: uv sync --locked
+
+      - name: Model, expect 0 mismatches
+        run: uv run python -m differential run --kind model --left 'pypi:aiogram<4' --right path:.
+
+      - name: Model with the right side poisoned, expect exit 1
+        run: |
+          set +e
+          uv run python -m differential run --kind model --left 'pypi:aiogram<4' --right path:. --poison right --max-diffs 3
+          code=$?
+          if [ "$code" -ne 1 ]; then
+            echo "::error::poisoned run exited $code, expected 1"
+            exit 1
+          fi

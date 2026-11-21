@@ -20,7 +20,7 @@ from differential.runner import Entry, HarnessError, Mismatch  # noqa: E402
 
 Record = dict[str, Any]
 # manifest entries that are active in 3.x-vs-3.x runs too (no `when`): (kind, decision)
-THREE_X_ENTRIES = {("request", "R18"), ("request", "PD-11")}
+THREE_X_ENTRIES = {("request", "R18"), ("request", "PD-11"), ("model", "GHSA-hv98-r5fx-wc83")}
 
 
 def fake_side(poison: bool = False) -> list[Record]:
@@ -247,6 +247,7 @@ class TestManifest:
             "D107",
             "D108",
         }
+        gated.add("R06")  # A-08: model_copy -> replace, through D91
         decisions = set()
         for kind in ("model", "request", "routing"):
             for entry in runner.load_manifest(
@@ -275,12 +276,13 @@ class TestManifest:
             "D48",
         }
         expected |= {"D34", "D28", "D114", "D12", "R18", "PD-08", "PD-11"}
+        expected = (expected - {"D94"}) | {"D15", "R06", "GHSA-hv98-r5fx-wc83"}  # A-08
         assert decisions == expected
 
     def test_stub_comparators_never_approve(self):
         record = trace.ok("a", "b", 1)
         with pytest.raises(Mismatch, match="refine in"):
-            runner.COMPARATORS["wire_names_in_dump_json"](record, record)
+            runner.COMPARATORS["collections_are_tuples"](record, record)
 
     def test_comparator_registered_twice(self):
         with pytest.raises(ValueError, match="twice"):
