@@ -283,20 +283,8 @@ fn union<'py>(
         return Ok(value.clone());
     }
     if union.discriminator.is_some() {
-        let tags = model::union_tags(py, union, label)?;
-        let getter = Getter::new(value)?.ok_or_else(|| expected(label, value))?;
-        let Some(tag) = getter.get(tags.key.bind(py))? else {
-            return Err(field_required(py, &tags.key));
-        };
-        let index = match tags.by_tag.bind(py).get_item(type_and_value(&tag)?) {
-            Ok(Some(index)) => index.extract::<usize>()?,
-            _ => return Err(expected(&tags.label, &tag).at_key(py, &tags.key)),
-        };
-        let member = union
-            .members
-            .get(index)
-            .ok_or_else(|| PyRuntimeError::new_err("discriminator tag out of range"))?;
-        return load(py, value, member.get(), ctx);
+        let member = discriminated(py, union, label, value)?;
+        return load(py, value, member, ctx);
     }
     let json_type = json_type_of(value)?;
     walk::smart(
@@ -308,4 +296,35 @@ fn union<'py>(
         |member| member.json_types & json_type != 0,
         |value, member, ctx| load(py, value, member, ctx),
     )
+}
+
+/// The member a discriminated union's tag selects: the tag is read at its stored key, then at
+/// its fallback `load` keys (data stored before a rename).
+pub(crate) fn discriminated<'a>(
+    py: Python<'_>,
+    union: &'a Union,
+    label: &str,
+    value: &Bound<'_, PyAny>,
+) -> VResult<&'a Kind> {
+    let tags = model::union_tags(py, union, label)?;
+    let getter = Getter::new(value)?.ok_or_else(|| expected(label, value))?;
+    let mut found = None;
+    for key in std::iter::once(&tags.key).chain(&tags.load) {
+        if let Some(tag) = getter.get(key.bind(py))? {
+            found = Some((key, tag));
+            break;
+        }
+    }
+    let Some((key, tag)) = found else {
+        return Err(field_required(py, &tags.key));
+    };
+    let index = match tags.by_tag.bind(py).get_item(type_and_value(&tag)?) {
+        Ok(Some(index)) => index.extract::<usize>()?,
+        _ => return Err(expected(&tags.label, &tag).at_key(py, key)),
+    };
+    Ok(union
+        .members
+        .get(index)
+        .ok_or_else(|| PyRuntimeError::new_err("discriminator tag out of range"))?
+        .get())
 }

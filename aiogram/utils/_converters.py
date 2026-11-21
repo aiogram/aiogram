@@ -142,8 +142,14 @@ def _is_classvar(raw: Any) -> bool:
 
 
 def _is_typeish(value: Any) -> bool:
-    """A class-body name an annotation may refer to: a nested class or a type alias."""
-    return isinstance(value, (type, typing.NewType, types.GenericAlias, *_ALIAS_TYPES))
+    """A name an annotation may refer to: a class, or a type alias (``NewType``, ``type X``,
+    ``list[int]``, ``int | str``, ``Annotated[...]``)."""
+    return (
+        isinstance(
+            value, (type, typing.NewType, types.GenericAlias, types.UnionType, *_ALIAS_TYPES)
+        )
+        or get_origin(value) is not None
+    )
 
 
 @dataclasses.dataclass(slots=True)
@@ -476,12 +482,13 @@ class _Compiler:
         hints = _class_hints(tp)
         scopes: dict[type, _Scope] = {}
 
-        def resolve(name: str) -> _core.Kind:
+        def resolve(name: str) -> tuple[Any, _core.Kind]:
             raw, owner = hints[name]
             if owner not in scopes:
                 scopes[owner] = _scope(owner, _own_annotations(owner), self.frame_locals)
             try:
-                return self.kind(_field_hint(owner, name, raw, scopes[owner]), scopes[owner])
+                hint = _field_hint(owner, name, raw, scopes[owner])
+                return hint, self.kind(hint, scopes[owner])
             except TypeError as e:
                 msg = f"{tp.__qualname__}.{name}: {e}"
                 raise TypeError(msg) from None
@@ -489,11 +496,10 @@ class _Compiler:
         fields = []
         if is_typeddict(tp):
             required_keys = tp.__required_keys__  # type: ignore[attr-defined]
-            for name, (raw, _) in hints.items():
+            for name in hints:
+                hint, kind = resolve(name)
                 fields.append(
-                    _core.Field(
-                        name, resolve(name), required=self.required(raw, name in required_keys)
-                    )
+                    _core.Field(name, kind, required=self.required(hint, name in required_keys))
                 )
             return fields
         if _is_namedtuple(tp):
@@ -516,25 +522,18 @@ class _Compiler:
             if name not in hints:  # an untyped collections.namedtuple field
                 msg = f"{tp.__qualname__}.{name}: the field has no annotation"
                 raise TypeError(msg)
-            fields.append(_field(name, resolve(name), default=default, factory=factory))
+            fields.append(_field(name, resolve(name)[1], default=default, factory=factory))
         return fields
 
     @staticmethod
-    def required(raw: Any, default: bool) -> bool:
-        """A TypedDict key's required-ness: the hint's wrapper wins (``__required_keys__``
-        misses ``Required`` / ``NotRequired`` inside ``Annotated`` under string annotations)."""
-        text = _text_of(raw)
-        if text is not None:
-            if re.match(r"^\s*(?:\w+\.)*Required\b", text) or "Annotated[Required" in text:
-                return True
-            if re.match(r"^\s*(?:\w+\.)*NotRequired\b", text) or "Annotated[NotRequired" in text:
-                return False
-            return default
-        while get_origin(raw) is Annotated:
-            raw = get_args(raw)[0]
-        if get_origin(raw) is Required:
+    def required(hint: Any, default: bool) -> bool:
+        """A TypedDict key's required-ness from its evaluated annotation: the wrapper wins
+        (``__required_keys__`` misses ``Required`` / ``NotRequired`` under string annotations)."""
+        while get_origin(hint) is Annotated:
+            hint = get_args(hint)[0]
+        if get_origin(hint) is Required:
             return True
-        if get_origin(raw) is NotRequired:
+        if get_origin(hint) is NotRequired:
             return False
         return default
 

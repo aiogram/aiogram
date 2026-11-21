@@ -188,6 +188,7 @@ pub(crate) fn union_tags<'a>(py: Python<'_>, union: &'a Union, label: &str) -> P
     let name = discriminator.name.bind(py);
     let by_tag = PyDict::new(py);
     let mut key: Option<Py<PyString>> = None;
+    let mut load: Vec<Py<PyString>> = Vec::new();
     let mut reprs = Vec::new();
     for (position, member) in union.members.iter().enumerate() {
         let core = member.get().core().ok_or_else(|| {
@@ -209,9 +210,24 @@ pub(crate) fn union_tags<'a>(py: Python<'_>, union: &'a Union, label: &str) -> P
                 name.to_string_lossy()
             )));
         };
+        let same_load = |known: &[Py<PyString>]| -> PyResult<bool> {
+            if known.len() != field.load.len() {
+                return Ok(false);
+            }
+            for (a, b) in known.iter().zip(&field.load) {
+                if !a.bind(py).as_any().eq(b.bind(py))? {
+                    return Ok(false);
+                }
+            }
+            Ok(true)
+        };
         match &key {
-            None => key = Some(field.key.clone_ref(py)),
-            Some(known) if known.bind(py).as_any().eq(field.key.bind(py))? => {}
+            None => {
+                key = Some(field.key.clone_ref(py));
+                load = field.load.iter().map(|k| k.clone_ref(py)).collect();
+            }
+            Some(known) if known.bind(py).as_any().eq(field.key.bind(py))? && same_load(&load)? => {
+            }
             Some(_) => {
                 return Err(PyTypeError::new_err(format!(
                     "{label}: the members store the tag '{}' under different keys",
@@ -234,6 +250,7 @@ pub(crate) fn union_tags<'a>(py: Python<'_>, union: &'a Union, label: &str) -> P
     let key = key.ok_or_else(|| PyTypeError::new_err(format!("{label}: a union needs members")))?;
     let _ = discriminator.tags.set(Tags {
         key,
+        load,
         by_tag: by_tag.unbind(),
         label: format!("one of [{}]", reprs.join(", ")),
     });

@@ -11,7 +11,7 @@ use pyo3::prelude::*;
 use pyo3::types::{PyByteArray, PyBytes, PyDict, PyFloat, PyInt, PyString};
 
 use crate::conv::errors::{Ctx, MAX_ERRORS, VResult, ValError, expected};
-use crate::conv::ir::{Data, Kind};
+use crate::conv::ir::{Data, Kind, Union, json_type};
 use crate::conv::json::load::{self, collect};
 use crate::conv::model::ModelCore;
 use crate::conv::scalars::{self, TextIn};
@@ -333,7 +333,8 @@ fn walk<'py>(
             model(py, doc, core.get(), ctx)
         }
         Data::Lazy(_) => walk(py, doc, peek, kind.resolved(py)?, ctx),
-        // unions, user converters, text, enums, literals, numbers of the number kinds, and every
+        Data::Union(union) => self::union(py, doc, peek, union, &kind.label, ctx),
+        // user converters, text, enums, literals, numbers of the number kinds, and every
         // value of the wrong JSON type: materialised, then the dict load
         _ => {
             let value = doc.value(py, peek)?;
@@ -480,6 +481,85 @@ fn parse_slice<'py>(
     }
     .python_parse(py, &data[start..end])
     .map_err(|error| Fail::json(&error.error_type, start + error.index))
+}
+
+/// The JSON type bits of a value from its source text (unions try exact matches first).
+fn json_type_of(peek: Peek, text: &[u8]) -> u8 {
+    match peek {
+        Peek::Null => json_type::NULL,
+        Peek::True | Peek::False => json_type::BOOL,
+        Peek::String => json_type::STR,
+        Peek::Array => json_type::ARRAY,
+        Peek::Object => json_type::OBJECT,
+        _ if text
+            .iter()
+            .any(|b| matches!(b, b'.' | b'e' | b'E' | b'N' | b'I')) =>
+        {
+            json_type::FLOAT
+        }
+        _ => json_type::INT,
+    }
+}
+
+/// A union: the value's source text is walked again for each member tried, so every member sees
+/// the exact JSON (a `DecimalAsNumber` member keeps its digits); the discriminator and the error
+/// value use the materialised value.
+fn union<'py>(
+    py: Python<'py>,
+    doc: &mut Doc<'_>,
+    peek: Peek,
+    union: &Union,
+    label: &str,
+    ctx: Ctx,
+) -> PResult<Bound<'py, PyAny>> {
+    if union.nullable && peek == Peek::Null {
+        doc.jiter.known_null()?;
+        return Ok(py.None().into_bound(py));
+    }
+    let start = doc.jiter.current_index();
+    doc.jiter.known_skip(peek)?;
+    let end = doc.jiter.current_index();
+    let text = &doc.data[start..end];
+    let member_walk = |member: &Kind, ctx: Ctx| -> PResult<Bound<'py, PyAny>> {
+        let mut sub = Doc {
+            jiter: Jiter::new(text).with_allow_inf_nan(),
+            data: text,
+        };
+        let peek = sub.jiter.peek()?;
+        walk(py, &mut sub, peek, member, ctx)
+    };
+    if union.discriminator.is_some() {
+        let value = parse_slice(py, doc.data, start, end)?;
+        let member = load::discriminated(py, union, label, &value)?;
+        return member_walk(member, ctx);
+    }
+    let json_type = json_type_of(peek, text);
+    let mut notes = Vec::new();
+    for pass in [true, false] {
+        for member in &union.members {
+            let member = member.get();
+            if (member.resolved(py)?.json_types & json_type != 0) != pass {
+                continue;
+            }
+            match member_walk(member, ctx.fast()) {
+                Ok(result) => return Ok(result),
+                Err(Fail::Val(ValError::Lines(lines))) => {
+                    if let Some(line) = lines.into_iter().next() {
+                        notes.push((member.label.clone(), line));
+                    }
+                }
+                Err(other) => return Err(other),
+            }
+        }
+    }
+    let value = parse_slice(py, doc.data, start, end)?;
+    Err(Fail::Val(ValError::Lines(vec![errors::Line {
+        loc: Vec::new(),
+        message: format!("expected {label}"),
+        value: Some(value.unbind()),
+        cause: None,
+        notes,
+    }])))
 }
 
 #[cfg(test)]

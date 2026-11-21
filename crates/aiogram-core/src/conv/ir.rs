@@ -231,6 +231,8 @@ pub(crate) struct Discriminator {
 pub(crate) struct Tags {
     /// The tag field's stored key (the same in every member)
     pub(crate) key: Py<PyString>,
+    /// Its fallback `load` keys (the same in every member)
+    pub(crate) load: Vec<Py<PyString>>,
     /// `(type(tag), tag) -> member index`
     pub(crate) by_tag: Py<PyDict>,
     /// `one of ['cat', 'dog']`
@@ -432,6 +434,9 @@ impl Kind {
                     visit.call(&discriminator.name)?;
                     if let Some(tags) = discriminator.tags.get() {
                         visit.call(&tags.key)?;
+                        for key in &tags.load {
+                            visit.call(key)?;
+                        }
                         visit.call(&tags.by_tag)?;
                     }
                 }

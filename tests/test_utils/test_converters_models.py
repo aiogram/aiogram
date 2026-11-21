@@ -18,6 +18,7 @@ import sys
 import textwrap
 import threading
 import types
+import typing
 import weakref
 from collections.abc import Iterator
 from datetime import date, datetime, timezone
@@ -1626,3 +1627,87 @@ def test_threads_compile_and_resolve_concurrently(module_from_source):
     for thread in threads:
         thread.join()
     assert errors == []
+
+
+class TestReviewRegressions:
+    """Codex review of plan-10 (2026-11-21)."""
+
+    def test_decimal_number_in_a_union_keeps_its_digits(self):
+        from aiogram.utils.converters import DecimalAsNumber  # noqa: PLC0415
+
+        exact = Decimal("0.12345678901234567890123456789")
+        codec = json_codec(Annotated[Decimal, DecimalAsNumber()] | str)
+        assert codec.load_json(codec.dump_json(exact)) == exact
+        assert codec.load_json(b'"x"') == "x"
+
+        class Priced(ModelBase):
+            kind: Literal["priced"]
+            price: Annotated[Decimal, DecimalAsNumber()]
+
+        class Free(ModelBase):
+            kind: Literal["free"]
+
+        tagged = json_codec(Annotated[Priced | Free, Discriminator("kind")])
+        loaded = tagged.load_json(b'{"kind": "priced", "price": 0.12345678901234567890123456789}')
+        assert loaded.price == exact
+
+    def test_local_union_and_annotated_aliases_reach_subclasses(self):
+        def make() -> type:
+            Number = int | str  # noqa: N806
+            Tagged = Annotated[int, "meta"]  # noqa: N806
+
+            class Base(ModelBase):
+                number: Number
+                tagged: Tagged
+
+            json_schema(Base).load({"number": 1, "tagged": 2})  # resolved, locals released
+
+            class Child(Base):
+                extra: Number = 0
+
+            return Child
+
+        assert json_schema(make()).load({"number": "x", "tagged": 2}).number == "x"
+
+    def test_typeddict_required_from_the_evaluated_annotation(self):
+        class Movie(TypedDict):
+            title: str
+            year: typing.Annotated[typing.NotRequired[int], "meta"]
+
+        class Partial(TypedDict, total=False):
+            title: typing.Annotated[typing.Required[str], "meta"]
+            year: int
+
+        assert json_codec(Movie).load({"title": "x"}) == {"title": "x"}
+        assert errors_of(json_codec(Partial).load, {"year": 1}) == [
+            (("title",), "field required", MISSING)
+        ]
+
+    @pytest.mark.parametrize("bytes_path", [False, True])
+    def test_discriminator_reads_fallback_keys(self, bytes_path):
+        class CatK(ModelBase):
+            kind: Annotated[Literal["cat"], Key("type", load=("kind",))]
+
+        class DogK(ModelBase):
+            kind: Annotated[Literal["dog"], Key("type", load=("kind",))]
+
+        codec = json_codec(Annotated[CatK | DogK, Discriminator("kind")])
+
+        def load(value: dict[str, Any]) -> Any:
+            return codec.load_json(json.dumps(value).encode()) if bytes_path else codec.load(value)
+
+        assert isinstance(load({"kind": "cat"}), CatK)
+        assert isinstance(load({"kind": "cat", "type": "dog"}), DogK)  # the stored key wins
+        assert errors_of(load, {"kind": "cow"}) == [
+            (("kind",), "expected one of ['cat', 'dog']", "cow")
+        ]
+
+    def test_discriminator_fallback_keys_must_agree(self):
+        class CatK(ModelBase):
+            kind: Annotated[Literal["cat"], Key("type", load=("kind",))]
+
+        class DogK(ModelBase):
+            kind: Annotated[Literal["dog"], Key("type")]
+
+        with pytest.raises(TypeError, match="under different keys"):
+            json_codec(Annotated[CatK | DogK, Discriminator("kind")])
