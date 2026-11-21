@@ -1,6 +1,7 @@
 //! `aiogram._core`: the native core of aiogram.
 
 mod conv;
+mod decode;
 
 use pyo3::prelude::*;
 use pyo3::types::PyDict;

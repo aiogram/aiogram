@@ -208,6 +208,10 @@ These patterns repeatedly appeared in maintainer feedback and should be treated 
     tests fail, crash or pass for the wrong reason.
   - A build outside the worktree (a scratch copy, an older commit from `git archive`) goes through
     `maturin build -i <python>` and the wheel's `_core*.so`: a plain `cargo build` cdylib segfaults at import.
+- Decode core of the Telegram types (B-03): `crates/aiogram-core/src/decode/`, pure Rust with no Python surface.
+  `decode/tests/types.rs` holds hand-written types in the shape B-04 writes and C-18 emits. The corpus tests read
+  `benchmarks/corpus/wire/<id>.json` from disk. jiter checks `\u` escapes even in skipped values (`known_skip`), so a
+  lone surrogate anywhere in the input is a decode error, not only in decoded strings.
 - The A-02 link-check script (in `v4/plans/A-contracts/A-02-apply-resolutions.md`, *Validation*) reports 9 known
   broken links in files no plan may edit: `v4/research/codex-review.md` (`../../../aiogram/...`) and
   `v4/plans/_TEMPLATE.md` (paths relative to a story folder). Any other hit is yours.
