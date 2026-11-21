@@ -1,0 +1,26 @@
+# D57 / D58 invariant: handler flags, flags added by Filter.update_handler_flags, get_flag in an
+# inner middleware and in the handler.
+schema = 1
+
+[variants]
+fsm = ["on", "off"]
+
+[[router]]
+name = "dp"
+inner_middlewares = [{ id = "dp.m0", event = "message", kind = "get_flag", name = "rate" }]
+
+[[router]]
+name = "r1"
+parent = "dp"
+
+[[router.handler]]
+id = "h1"
+event = "message"
+flags = { rate = 1 }
+filters = [{ id = "h1.f0", kind = "flags", flags = { extra = "from-filter" } }]
+action = { kind = "get_flag", name = "extra" }
+
+[[event]]
+name = "first"
+update = "update.text.small"
+expect = "h1"

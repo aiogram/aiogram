@@ -1,0 +1,35 @@
+# D28 / D110: two updates of one FSM key fed concurrently; the first handler yields to the loop.
+# 3.x defaults to DisabledEventIsolation, so the second runs in between; 4.0 serialises them.
+# Command filters only: a sync filter would hop to a thread and make the interleaving timing-bound.
+schema = 1
+
+[variants]
+fsm = ["on"]
+
+[[router]]
+name = "dp"
+
+[[router.handler]]
+id = "h1"
+event = "message"
+filters = [{ kind = "command", commands = ["first"] }]
+action = { kind = "await_yield", yields = 3 }
+
+[[router.handler]]
+id = "h2"
+event = "message"
+filters = [{ kind = "command", commands = ["second"] }]
+
+[[event]]
+name = "first"
+group = "pair"
+update = "update.text.small"
+patch = { "message.text" = "/first" }
+expect = "h1"
+
+[[event]]
+name = "second"
+group = "pair"
+update = "update.text.small"
+patch = { update_id = 10002, "message.message_id" = 2, "message.text" = "/second" }
+expect = "h2"

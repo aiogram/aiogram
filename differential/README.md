@@ -127,3 +127,34 @@ if B-13 is a no-go.
 `uv run pytest tests/test_differential_framework.py`: fake in-process sides, no venvs or network.
 They cover the trace encoding, each comparator, manifest matching and validation, the poison
 self-check, and the smoke side run in-process.
+
+## Routing probes (A-10)
+
+`sides/aiogram3/routing.py` builds every `routing` topology of the corpus (schema in
+`benchmarks/corpus/README.md`) into a `Dispatcher` and feeds its events through `feed_update`, or
+`feed_webhook_update` for the `webhook` feed variant. The bot has a session that refuses every
+request, so nothing reaches the network.
+
+- **Instrumented components.** User filters, middlewares, handlers, `errors` handlers and scene
+  actions record each call into a per-feed list. That list is a `ContextVar`, so
+  `asyncio.to_thread` carries it into the worker thread. `command`, `text_eq` and `magic_*` are
+  registered unwrapped, so the framework runs its own code for them. They are not recorded; their
+  effect shows in what runs next.
+- **Cases.** A case is `<topology id>.<feed>.fsm-<on|off>.<event>`, or `.<group>` for events fed
+  concurrently. Each case has these probes:
+  - `trace`: the ordered calls, `{component, kind, router, path, update, result}`. A filter's entry
+    also has `owner` (its handler). A component added while handling has `late` (the registration
+    id), and the call that added it has `registers`.
+  - `kwargs`: the same calls, each with the data it saw and its event. JSON values are kept as they
+    are, routers and handlers are recorded by name, and any other object by its type name.
+  - `threads`: `on_loop` per filter and handler call. These are the thread fields; 3x-03 and D34
+    approve differences in this probe only.
+  - `result`: per update, `{returned: ...}` or `{raised: {type, message}}` for an exception that
+    escapes the feed.
+
+  Each topology and variant also has a `used_update_types` probe. Timings go to `meta` and are
+  never compared.
+- **Poison** swaps the first two handlers of every observer that has two or more.
+- **Comparators.** One record matches one manifest entry. So every routing comparator also applies
+  the two 4.0 differences that hold everywhere: D12 on `kwargs` (no `event_from_user` /
+  `event_chat` / `event_thread_id`) and D34 on `threads` (sync filters on the loop).

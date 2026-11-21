@@ -1,0 +1,19 @@
+# D12: a handler that asks for `event_from_user` by signature (no **kwargs).
+schema = 1
+
+[variants]
+fsm = ["on", "off"]
+
+[[router]]
+name = "dp"
+
+[[router.handler]]
+id = "h1"
+event = "message"
+params = ["event_from_user"]
+filters = []
+
+[[event]]
+name = "first"
+update = "update.text.small"
+expect = "h1"

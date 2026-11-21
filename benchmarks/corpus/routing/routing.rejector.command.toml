@@ -1,0 +1,24 @@
+# Breaking change 13: a user filter placed before a certainly-false Command. 3.x runs the user
+# filter; 4.0's compiled rejector skips the candidate first.
+schema = 1
+
+[variants]
+fsm = ["on", "off"]
+
+[[router]]
+name = "dp"
+
+[[router.handler]]
+id = "h1"
+event = "message"
+filters = [{ id = "h1.f0", kind = "async", result = true }, { kind = "command", commands = ["c9"] }]
+
+[[router.handler]]
+id = "h2"
+event = "message"
+filters = []
+
+[[event]]
+name = "first"
+update = "update.text.small"
+expect = "h2"

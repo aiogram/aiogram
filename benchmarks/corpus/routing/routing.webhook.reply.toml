@@ -1,0 +1,40 @@
+# The same topology fed through feed_update and feed_webhook_update: a handler that returns a Bot API
+# method (the webhook reply), one that returns a value, and an unhandled update.
+schema = 1
+
+[variants]
+fsm = ["on", "off"]
+feed = ["polling", "webhook"]
+
+[[router]]
+name = "dp"
+outer_middlewares = [{ id = "dp.m0", event = "message", kind = "pass" }]
+
+[[router.handler]]
+id = "h1"
+event = "message"
+filters = [{ kind = "command", commands = ["reply"] }]
+action = { kind = "reply", text = "replied" }
+
+[[router.handler]]
+id = "h2"
+event = "message"
+filters = [{ kind = "text_eq", value = "hello" }]
+
+[[event]]
+name = "reply"
+update = "update.text.small"
+patch = { "message.text" = "/reply" }
+expect = "h1"
+
+[[event]]
+name = "value"
+update = "update.text.small"
+patch = { update_id = 10002, "message.message_id" = 2 }
+expect = "h2"
+
+[[event]]
+name = "unhandled"
+update = "update.text.small"
+patch = { update_id = 10003, "message.message_id" = 3, "message.text" = "other" }
+expect = "unhandled"

@@ -1,0 +1,123 @@
+# D33 invariant: scenes. /start enters s1; /next goes to s2; the callback query exits s2 (actions
+# picked by update type); /start, /next, /back returns to s1; /leave leaves it; a last message is
+# handled outside any scene.
+schema = 1
+
+[variants]
+fsm = ["on"]
+
+[[router]]
+name = "dp"
+
+[[router.handler]]
+id = "start"
+event = "message"
+filters = [{ kind = "command", commands = ["start"] }]
+action = { kind = "scene_enter", scene = "s1" }
+
+[[router.handler]]
+id = "outside"
+event = "message"
+filters = [{ kind = "text_eq", value = "plain" }]
+
+[[scene]]
+name = "s1"
+
+[[scene.handler]]
+id = "s1.next"
+event = "message"
+filters = [{ kind = "command", commands = ["next"] }]
+action = { kind = "scene_goto", scene = "s2" }
+
+[[scene.handler]]
+id = "s1.leave"
+event = "message"
+filters = [{ kind = "command", commands = ["leave"] }]
+action = { kind = "scene_leave" }
+
+[[scene.action]]
+id = "s1.enter"
+event = "message"
+on = "enter"
+
+[[scene.action]]
+id = "s1.left"
+event = "message"
+on = "leave"
+
+[[scene]]
+name = "s2"
+
+[[scene.handler]]
+id = "s2.back"
+event = "message"
+filters = [{ kind = "command", commands = ["back"] }]
+action = { kind = "scene_back" }
+
+[[scene.handler]]
+id = "s2.exit"
+event = "callback_query"
+filters = []
+action = { kind = "scene_exit" }
+
+[[scene.action]]
+id = "s2.enter.message"
+event = "message"
+on = "enter"
+
+[[scene.action]]
+id = "s2.left"
+event = "message"
+on = "leave"
+
+[[scene.action]]
+id = "s2.exit.callback"
+event = "callback_query"
+on = "exit"
+
+[[event]]
+name = "e1-start"
+update = "update.text.small"
+patch = { "message.text" = "/start" }
+expect = "start"
+
+[[event]]
+name = "e2-next"
+update = "update.text.small"
+patch = { update_id = 10002, "message.message_id" = 2, "message.text" = "/next" }
+expect = "s1.next"
+
+[[event]]
+name = "e3-exit"
+update = "update.callback"
+expect = "s2.exit"
+
+[[event]]
+name = "e4-start"
+update = "update.text.small"
+patch = { update_id = 10004, "message.message_id" = 4, "message.text" = "/start" }
+expect = "start"
+
+[[event]]
+name = "e5-next"
+update = "update.text.small"
+patch = { update_id = 10005, "message.message_id" = 5, "message.text" = "/next" }
+expect = "s1.next"
+
+[[event]]
+name = "e6-back"
+update = "update.text.small"
+patch = { update_id = 10006, "message.message_id" = 6, "message.text" = "/back" }
+expect = "s2.back"
+
+[[event]]
+name = "e7-leave"
+update = "update.text.small"
+patch = { update_id = 10007, "message.message_id" = 7, "message.text" = "/leave" }
+expect = "s1.leave"
+
+[[event]]
+name = "e8-outside"
+update = "update.text.small"
+patch = { update_id = 10008, "message.message_id" = 8, "message.text" = "plain" }
+expect = "outside"

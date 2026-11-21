@@ -1,0 +1,29 @@
+# D111: a router outer middleware replaces the event (text "hello" -> "/c1"). In 3.x the
+# replacement routes: h1's Command matches. 4.0 computes routing keys once, before it.
+schema = 1
+
+[variants]
+fsm = ["on", "off"]
+
+[[router]]
+name = "dp"
+
+[[router]]
+name = "r1"
+parent = "dp"
+outer_middlewares = [{ id = "r1.m0", event = "message", kind = "replace", patch = { text = "/c1" } }]
+
+[[router.handler]]
+id = "h1"
+event = "message"
+filters = [{ kind = "command", commands = ["c1"] }]
+
+[[router.handler]]
+id = "h2"
+event = "message"
+filters = [{ kind = "text_eq", value = "hello" }]
+
+[[event]]
+name = "first"
+update = "update.text.small"
+expect = "h1"

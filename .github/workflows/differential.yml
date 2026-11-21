@@ -58,3 +58,16 @@ jobs:
             echo "::error::poisoned run exited $code, expected 1"
             exit 1
           fi
+
+      - name: Routing, expect 0 mismatches
+        run: uv run python -m differential run --kind routing --left 'pypi:aiogram<4' --right path:.
+
+      - name: Routing with the right side poisoned, expect exit 1
+        run: |
+          set +e
+          uv run python -m differential run --kind routing --left 'pypi:aiogram<4' --right path:. --poison right
+          code=$?
+          if [ "$code" -ne 1 ]; then
+            echo "::error::poisoned run exited $code, expected 1"
+            exit 1
+          fi

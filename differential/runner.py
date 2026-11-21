@@ -97,16 +97,214 @@ for _name, _owner in (
     ("collections_are_tuples", "A-08 / B plans"),
     ("malformed_member_is_unknown", "A-08 / B plans"),
     ("as_returns_new_view", "A-08 / B plans"),
-    ("outer_middleware_skipped_without_handler", "A-10 / E plans"),
-    ("compiled_rejector_skips_handler", "A-10 / E plans"),
-    ("errors_bubble_to_raising_router", "A-10 / E plans"),
-    ("sync_filters_inline", "A-10 / E plans"),
-    ("event_isolation_default", "A-10 / E plans"),
-    ("routing_snapshot_per_runner", "A-10 / E plans"),
-    ("event_context_only_kwargs", "A-10 / E plans"),
     ("json_body_without_files", "A-09 / D-15"),
 ):
     _stub(_name, _owner)
+
+
+# Routing (A-10). The records are those of ``sides/aiogram3/routing.py``: ``trace``, ``kwargs`` and
+# ``threads`` hold one entry per component call ({component, kind, router, path, update, ...});
+# ``result`` one outcome per update. One record matches one manifest entry, so every routing
+# comparator first applies the two 4.0 differences that hold everywhere: D12 on ``kwargs`` and D34
+# on ``threads``.
+
+D12_KEYS = ("event_from_user", "event_chat", "event_thread_id")
+
+
+def _entries(record: Record) -> list[dict[str, Any]] | None:
+    value = record.get("value")
+    if record.get("ok") is not True or record.get("probe") not in {"trace", "kwargs", "threads"}:
+        return None
+    if not isinstance(value, list):
+        msg = f"{record.get('probe')} value is not a list"
+        raise Mismatch(msg)
+    return value
+
+
+def _with(record: Record, entries: list[dict[str, Any]]) -> Record:
+    return {**record, "value": entries}
+
+
+def _global_4x(left: Record, right: Record) -> tuple[Record, Record]:
+    """D12 on ``kwargs`` and D34 on ``threads``; other records unchanged."""
+    if (entries := _entries(left)) is None:
+        return left, right
+    if left["probe"] == "kwargs":
+        for entry in _entries(right) or []:
+            if found := [key for key in D12_KEYS if key in entry.get("data", {})]:
+                msg = f"right still injects {found} at {entry.get('component')}"
+                raise Mismatch(msg)
+        entries = [
+            {**e, "data": {k: v for k, v in e["data"].items() if k not in D12_KEYS}}
+            for e in entries
+        ]
+    elif left["probe"] == "threads":
+        entries = [{**e, "on_loop": True} if e["kind"] == "filter" else e for e in entries]
+    return _with(left, entries), right
+
+
+def _drop_groups(
+    left: Record, right: Record, group: Callable[[dict[str, Any]], str | None]
+) -> tuple[Record, Record]:
+    """Right may lack whole groups of left's entries; nothing else.
+
+    ``group`` names the droppable group of an entry (``None``: not droppable). A group that has
+    any entry on the right is kept whole on the left, so a partial drop still mismatches.
+    """
+    left_entries, right_entries = _entries(left), _entries(right)
+    if left_entries is None or right_entries is None:
+        return left, right
+    kept = {group(entry) for entry in right_entries} - {None}
+    return _with(left, [e for e in left_entries if group(e) is None or group(e) in kept]), right
+
+
+def _ran(entries: list[dict[str, Any]], kind: str = "handler") -> list[dict[str, Any]]:
+    return [entry for entry in entries if entry["kind"] == kind]
+
+
+@comparator("sync_filters_inline")
+def sync_filters_inline(left: Record, right: Record) -> tuple[Record, Record]:
+    """D34: sync filters run on the loop (``threads`` only); sync handlers stay in a thread."""
+    return _global_4x(left, right)
+
+
+@comparator("outer_middleware_skipped_without_handler")
+def outer_middleware_skipped_without_handler(left: Record, right: Record) -> tuple[Record, Record]:
+    """D111 / PD-19: right may skip a router (its outer middlewares and everything under them)
+    whose subtree called no handler on the left."""
+    left, right = _global_4x(left, right)
+    entries = _entries(left) or []
+    called = {(e["update"], r) for e in _ran(entries) for r in e["path"]}
+
+    def group(entry: dict[str, Any]) -> str | None:
+        for router in entry["path"]:  # outermost skippable router first
+            if (entry["update"], router) not in called:
+                return f"{entry['update']}/{router}"
+        return None
+
+    return _drop_groups(left, right, group)
+
+
+@comparator("compiled_rejector_skips_handler")
+def compiled_rejector_skips_handler(left: Record, right: Record) -> tuple[Record, Record]:
+    """Breaking change 13: right may skip all user filters of a candidate whose handler the left
+    did not call (a compiled rejector rejected it first)."""
+    left, right = _global_4x(left, right)
+    entries = _entries(left) or []
+    called = {(e["update"], e["component"]) for e in _ran(entries)}
+
+    def group(entry: dict[str, Any]) -> str | None:
+        owner = entry.get("owner")
+        if entry["kind"] != "filter" or owner is None or (entry["update"], owner) in called:
+            return None
+        return f"{entry['update']}/{owner}"
+
+    return _drop_groups(left, right, group)
+
+
+@comparator("errors_bubble_to_raising_router")
+def errors_bubble_to_raising_router(left: Record, right: Record) -> tuple[Record, Record]:
+    """D48: the ``errors`` handlers called are those on the raising router's path, innermost
+    first, up to the first that handles it; everything else is equal."""
+    left, right = _global_4x(left, right)
+    if left.get("probe") == "result":
+        return _error_result(left, right)
+    entries, right_entries = _entries(left), _entries(right)
+    if entries is None or right_entries is None:
+        return left, right
+    errors = _ran(entries, "error")
+    if not errors:
+        return left, right
+    if left["probe"] == "trace":
+        raising = next(
+            (e for e in entries if isinstance(e["result"], dict) and "raised" in e["result"]), None
+        )
+        if raising is None:
+            msg = "left has errors handlers but nothing raised"
+            raise Mismatch(msg)
+        by_router: dict[str, list[dict[str, Any]]] = {}
+        for entry in errors:
+            by_router.setdefault(entry["router"], []).append(entry)
+        expected: list[dict[str, Any]] = []
+        for router in reversed(raising["path"]):
+            handled = False
+            for entry in by_router.get(router, []):
+                expected.append(entry)
+                if entry["result"] != "UNHANDLED":
+                    handled = True
+                    break
+            if handled:
+                break
+    else:  # kwargs: the same handlers as right's, in left's data
+        wanted = [(e["component"], e["update"]) for e in _ran(right_entries, "error")]
+        index = {(e["component"], e["update"]): e for e in errors}
+        if any(key not in index for key in wanted):
+            msg = "right calls an errors handler the left did not reach"
+            raise Mismatch(msg)
+        expected = [index[key] for key in wanted]
+    first = entries.index(errors[0])
+    rest = [e for e in entries if e["kind"] != "error"]
+    return _with(left, [*rest[:first], *expected, *rest[first:]]), right
+
+
+def _error_result(left: Record, right: Record) -> tuple[Record, Record]:
+    """D48 on ``result``: an update the left's sibling handled may escape on the right."""
+    lefts, rights = left.get("value"), right.get("value")
+    if not isinstance(lefts, list) or not isinstance(rights, list) or len(lefts) != len(rights):
+        return left, right
+    merged = [
+        r if l_out != r and isinstance(r, dict) and "raised" in r else l_out
+        for l_out, r in zip(lefts, rights, strict=True)
+    ]
+    return {**left, "value": merged}, right
+
+
+@comparator("event_isolation_default")
+def event_isolation_default(left: Record, right: Record) -> tuple[Record, Record]:
+    """D28 / D110: updates of one key are serialised: right is left stably sorted by update."""
+    left, right = _global_4x(left, right)
+    if (entries := _entries(left)) is None:
+        return left, right
+    return _with(left, sorted(entries, key=lambda entry: entry["update"])), right
+
+
+@comparator("routing_snapshot_per_runner")
+def routing_snapshot_per_runner(left: Record, right: Record) -> tuple[Record, Record]:
+    """D114: a component registered while handling applies from the next update: right lacks
+    the entries of registrations made in the same case; a later case is equal."""
+    left, right = _global_4x(left, right)
+    if left.get("probe") == "result":
+        lefts, rights = left.get("value"), right.get("value")
+        if isinstance(lefts, list) and rights == [{"returned": "UNHANDLED"}] * len(lefts):
+            return {**left, "value": rights}, right  # the late router was the only match
+        return left, right
+    if (entries := _entries(left)) is None:
+        return left, right
+    here = {e["registers"] for e in entries if "registers" in e}
+    return _with(left, [e for e in entries if e.get("late") not in here]), right
+
+
+@comparator("event_context_only_kwargs")
+def event_context_only_kwargs(left: Record, right: Record) -> tuple[Record, Record]:
+    """D12: no ``event_from_user`` / ``event_chat`` / ``event_thread_id`` in the data. A handler
+    asking for one by signature may fail with a DI error or run without it (E-21 narrows this)."""
+    left, right = _global_4x(left, right)
+    if left.get("probe") == "result":
+        rights = right.get("value")
+        if isinstance(rights, list) and all(isinstance(r, dict) and "raised" in r for r in rights):
+            return {**left, "value": rights}, right
+        return left, right
+    entries, right_entries = _entries(left), _entries(right)
+    if entries is None or right_entries is None:
+        return left, right
+    asked = {e["component"] for e in _ran(entries) if e.get("data") == {}}
+    if left["probe"] == "kwargs":  # data was only the stripped key
+        present = {e["component"] for e in _ran(right_entries)}
+        entries = [e for e in entries if e["component"] not in asked - present]
+    elif left["probe"] in {"trace", "threads"}:
+        present = {e["component"] for e in _ran(right_entries)}
+        entries = [e for e in entries if e["kind"] != "handler" or e["component"] in present]
+    return _with(left, entries), right
 
 
 # ------------------------------------------------------------------------------------------------

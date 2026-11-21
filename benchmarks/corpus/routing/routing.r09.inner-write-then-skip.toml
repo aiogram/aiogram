@@ -1,0 +1,33 @@
+# Codex §11 R09 probe 3: an inner middleware on the real Router.message observer writes data, then
+# raises SkipHandler for the first candidate; the next candidate sees the write. The middleware sits
+# on the parent router, so the child's handlers reach it through inherited inner-middleware
+# resolution, which the discarded standalone-observer probe did not exercise.
+schema = 1
+
+[variants]
+fsm = ["on", "off"]
+
+[[router]]
+name = "dp"
+inner_middlewares = [
+    { id = "m1", event = "message", kind = "skip_after_write", handler = "h1", key = "mw", value = "m1" },
+]
+
+[[router]]
+name = "r1"
+parent = "dp"
+
+[[router.handler]]
+id = "h1"
+event = "message"
+filters = []
+
+[[router.handler]]
+id = "h2"
+event = "message"
+filters = []
+
+[[event]]
+name = "first"
+update = "update.text.small"
+expect = "h2"

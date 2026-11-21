@@ -1,0 +1,43 @@
+# D48: a handler in r11 (dp > r1 > r11) raises. 3.x propagates the error event from the dispatcher
+# down the whole tree: dp and r1 decline, the sibling r2 handles it. 4.0 bubbles from r11 up to dp.
+schema = 1
+
+[variants]
+fsm = ["on", "off"]
+
+[[router]]
+name = "dp"
+
+[[router.error_handler]]
+id = "dp.e0"
+action = { kind = "unhandled" }
+
+[[router]]
+name = "r1"
+parent = "dp"
+
+[[router.error_handler]]
+id = "r1.e0"
+action = { kind = "unhandled" }
+
+[[router]]
+name = "r11"
+parent = "r1"
+
+[[router.handler]]
+id = "h1"
+event = "message"
+filters = []
+action = { kind = "raise", error = "handler failed" }
+
+[[router]]
+name = "r2"
+parent = "dp"
+
+[[router.error_handler]]
+id = "r2.e0"
+
+[[event]]
+name = "first"
+update = "update.text.small"
+expect = "r2.e0"
