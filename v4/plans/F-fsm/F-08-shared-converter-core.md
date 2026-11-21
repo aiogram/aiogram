@@ -250,6 +250,33 @@ make lint
     - A bad field is a `TypeError` at class creation, even next to a pending one.
     - A class that cannot resolve raises `NameError("X is not fully defined: Y is not defined")` on first use.
       `CallbackQueryFilter` does not swallow it.
+  - **Numbers.** M2 Pro, `scripts/bench_converters.py`, median µs. The release build of this code, the release build
+    of `6045e6d1` (from `git archive`) and pydantic v2 were run back to back in one session; the machine was slower
+    that day than for the table above, so compare within a row:
+
+    | Case | 3.14.2: new / `6045e6d1` / pydantic | 3.14t (no GIL): new / pydantic |
+    |---|---|---|
+    | a. callback unpack | 0.59 / 0.59 / 3.02 | 0.65 / 2.98 |
+    | b. 5 fields, dict | 0.40 / 0.41 / 0.63 | 0.45 / 0.75 |
+    | c. 5 fields, JSON | 0.48 / 0.68 / 0.73 | 0.52 / 0.82 |
+    | c′. + nested dataclass, JSON | 0.89 / 1.07 / 1.11 | 0.90 / 1.27 |
+    | d. 20 fields, JSON | 3.25 / 3.80 / 3.54 | 3.44 / 4.18 |
+    | d. 20 fields, dict | 1.80 / 2.10 / 2.61 | 2.16 / 3.45 |
+    | d′. with datetime / UUID / Decimal, JSON | 3.39 / 4.45 / 3.87 | 3.64 / 4.43 |
+    | d′. same, dict | 2.00 / 2.69 / 2.80 | 2.38 / 3.71 |
+    | e. UUID ×100, load / dump | 11.95 / 49.28; 9.85 / 31.61 | 13.41; 10.35 |
+    | e. datetime ×100, load / dump | 4.76 / 4.89; 14.30 / 63.97 | 5.34; 14.56 |
+    | e. Decimal ×100, load / dump | 8.64 / 8.65; 5.18 / 5.75 | 10.05; 5.17 |
+    | f. `list[UUID \| str]`, 100 misses | 21.07 / 80.60 | 22.44 |
+    | g. invalid `load_json` (3 errors) | 6.05 / 3.79 | 5.93 |
+    | h. `dump` of d′ | 1.73 / 2.39 / 3.03 | 2.00 / 3.95 |
+    | h. `dump` + `json.dumps` | 5.58 / 6.36 | 5.74 |
+    | h. `dump_json` | 2.11 / — / 3.01 | 2.33 / 3.61 |
+    | i. the validating constructor (5 fields) | 0.57 / — / 0.53 | 0.65 / 0.65 |
+
+    UUID loads and dumps are 3–4× faster, datetime dumps 4.5× faster; `datetime` and `Decimal` loads already used
+    the C constructors and stay level. `dump_json` costs a third of `dump` + `json.dumps`. Row g is slower because
+    the load now collects every error (one pass); the old core stopped at the first one and re-parsed.
   - **Known limits:**
     - jiter's 200-level limit on skipped or materialised values raises `RecursionError`.
     - `load_json` of an escaped lone surrogate re-parses through `json.loads`, the only re-parse left.
