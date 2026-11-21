@@ -1,0 +1,12 @@
+# Request / response kind (A-09). Schema: differential/README.md. First matching entry wins; unmatched cases
+# are invariant. Seeded 4.0 approved differences: `when = "aiogram4"` keeps them inert in 3.x-vs-3.x runs, and
+# each `assert` is a stub comparator that never approves until its owning plan refines the entry. 3.x-vs-3.x
+# entries (for example 3x-09) omit `when` and name the plan id as `decision`.
+
+[[case]]
+match = "request.*/encoding"
+class = "approved"
+decision = "R18"
+assert = "json_body_without_files"
+when = "aiogram4"
+note = "JSON body when there are no files, multipart otherwise"

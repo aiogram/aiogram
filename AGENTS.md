@@ -48,6 +48,10 @@ make lint
 uv run pytest tests
 ```
 
+The CI test jobs sync with `--no-group dev`, but your local `.venv` has the `dev` group: a test that imports a dev-only
+package (PyYAML, for one) passes locally and fails in CI with `ModuleNotFoundError`. Import only runtime, extra or
+`test`-group packages in `tests/`.
+
 PyPy 3.11 on macOS arm64 segfaults on `copy` / `deepcopy` of `DefaultBotProperties`, and CI
 does not reproduce it. PyPy also lacks some stdlib modules CPython has (`tracemalloc`), and the
 PyPy CI jobs collect every test module, `benchmarks/` self-tests included. Before pushing a change
@@ -150,6 +154,13 @@ These patterns repeatedly appeared in maintainer feedback and should be treated 
   in `benchmarks/README.md`. Cases are keyed by corpus ids and reach aiogram only through
   `benchmarks/adapters/aiogram3.py`. `compare` caches exported trees and venvs per sha in the gitignored `.benchmarks/`
   (delete it to rebuild), and `make bench` runs every case (about 10 minutes).
+
+## Differential harness (`differential/`)
+
+- `uv run python -m differential run --kind <smoke|model|request|routing> --left <side> --right <side> [--poison right]` compares two aiogram installs case by case; concepts, manifest schema and how to add an approved difference are in `differential/README.md`. Dev tooling: excluded from the sdist, never imported by `aiogram`.
+- A new top-level dev directory is linted only if it is added to the Makefile `lint` paths and the pre-commit ruff `files` regex, and shipped unless it is in the hatch sdist `exclude`; `differential/` is in all three.
+- Side scripts (`differential/sides/<adapter>/<kind>.py`) run under `python -I` in their own venv: stdlib + aiogram only, `differential/trace.py` loaded by path. Do not import other repository code from them.
+- Side venvs live in the gitignored `.differential/`; `pypi:`/`git:` venvs are reused, so delete it to pick up a new release.
 
 ## 4.0 planning tree (`v4/`)
 
