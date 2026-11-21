@@ -59,7 +59,7 @@ def build() -> list[dict[str, str | None]]:
             records.append(
                 {
                     "entity": entity,
-                    "kind": "type",
+                    "kind": "method" if kind == "methods" else "type",
                     "field": None,
                     "removed_in": data["meta"]["deprecated"]["version"],
                     "replacement": _replacement(entity, kind, None),
