@@ -7,8 +7,8 @@ resolution-markers = [
     "(python_full_version == '3.14.*' and platform_python_implementation != 'PyPy' and sys_platform == 'darwin') or (python_full_version == '3.14.*' and platform_python_implementation != 'PyPy' and sys_platform == 'linux')",
     "(python_full_version == '3.14.*' and platform_python_implementation == 'PyPy') or (python_full_version == '3.14.*' and sys_platform != 'darwin' and sys_platform != 'linux')",
     "(python_full_version == '3.13.*' and platform_python_implementation != 'PyPy' and sys_platform == 'darwin') or (python_full_version == '3.13.*' and platform_python_implementation != 'PyPy' and sys_platform == 'linux')",
-    "(python_full_version == '3.12.*' and platform_python_implementation != 'PyPy' and sys_platform == 'darwin') or (python_full_version == '3.12.*' and platform_python_implementation != 'PyPy' and sys_platform == 'linux')",
     "(python_full_version == '3.13.*' and platform_python_implementation == 'PyPy' and sys_platform == 'darwin') or (python_full_version == '3.13.*' and platform_python_implementation == 'PyPy' and sys_platform == 'linux')",
+    "(python_full_version == '3.12.*' and platform_python_implementation != 'PyPy' and sys_platform == 'darwin') or (python_full_version == '3.12.*' and platform_python_implementation != 'PyPy' and sys_platform == 'linux')",
     "(python_full_version == '3.12.*' and platform_python_implementation == 'PyPy' and sys_platform == 'darwin') or (python_full_version == '3.12.*' and platform_python_implementation == 'PyPy' and sys_platform == 'linux')",
     "python_full_version >= '3.12' and python_full_version < '3.14' and sys_platform != 'darwin' and sys_platform != 'linux'",
     "(python_full_version >= '3.11.5' and python_full_version < '3.12' and platform_python_implementation != 'PyPy' and sys_platform == 'darwin') or (python_full_version >= '3.11.5' and python_full_version < '3.12' and platform_python_implementation != 'PyPy' and sys_platform == 'linux')",
@@ -30,20 +30,10 @@ wheels = [
 ]
 
 [[package]]
-name = "aiofiles"
-version = "25.1.0"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/41/c3/534eac40372d8ee36ef40df62ec129bee4fdb5ad9706e58a29be53b2c970/aiofiles-25.1.0.tar.gz", hash = "sha256:a8d728f0a29de45dc521f18f07297428d56992a742f0cd2701ba86e44d23d5b2", size = 46354, upload-time = "2025-10-09T20:51:04.358Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/bc/8a/340a1555ae33d7354dbca4faa54948d76d89a27ceef032c8c3bc661d003e/aiofiles-25.1.0-py3-none-any.whl", hash = "sha256:abe311e527c862958650f9438e859c1fa7568a141b22abcd015e120e86a85695", size = 14668, upload-time = "2025-10-09T20:51:03.174Z" },
-]
-
-[[package]]
 name = "aiogram"
 version = "3.33.0"
 source = { editable = "." }
 dependencies = [
-    { name = "aiofiles" },
     { name = "aiohttp" },
     { name = "certifi" },
     { name = "magic-filter" },
@@ -116,7 +106,6 @@ test = [
 [package.metadata]
 requires-dist = [
     { name = "aiodns", marker = "extra == 'fast'", specifier = ">=4.0.0" },
-    { name = "aiofiles", specifier = ">=23.2.1,<26.0" },
     { name = "aiogram-cli", marker = "extra == 'cli'", specifier = ">=1.1.0,<2.0.0" },
     { name = "aiohttp", specifier = ">=3.9.0,<3.15" },
     { name = "aiohttp-socks", marker = "extra == 'proxy'", specifier = ">=0.10.1,<1.12.0" },
@@ -536,8 +525,8 @@ resolution-markers = [
     "(python_full_version == '3.14.*' and platform_python_implementation != 'PyPy' and sys_platform == 'darwin') or (python_full_version == '3.14.*' and platform_python_implementation != 'PyPy' and sys_platform == 'linux')",
     "(python_full_version == '3.14.*' and platform_python_implementation == 'PyPy') or (python_full_version == '3.14.*' and sys_platform != 'darwin' and sys_platform != 'linux')",
     "(python_full_version == '3.13.*' and platform_python_implementation != 'PyPy' and sys_platform == 'darwin') or (python_full_version == '3.13.*' and platform_python_implementation != 'PyPy' and sys_platform == 'linux')",
-    "(python_full_version == '3.12.*' and platform_python_implementation != 'PyPy' and sys_platform == 'darwin') or (python_full_version == '3.12.*' and platform_python_implementation != 'PyPy' and sys_platform == 'linux')",
     "(python_full_version == '3.13.*' and platform_python_implementation == 'PyPy' and sys_platform == 'darwin') or (python_full_version == '3.13.*' and platform_python_implementation == 'PyPy' and sys_platform == 'linux')",
+    "(python_full_version == '3.12.*' and platform_python_implementation != 'PyPy' and sys_platform == 'darwin') or (python_full_version == '3.12.*' and platform_python_implementation != 'PyPy' and sys_platform == 'linux')",
     "(python_full_version == '3.12.*' and platform_python_implementation == 'PyPy' and sys_platform == 'darwin') or (python_full_version == '3.12.*' and platform_python_implementation == 'PyPy' and sys_platform == 'linux')",
     "python_full_version >= '3.12' and python_full_version < '3.14' and sys_platform != 'darwin' and sys_platform != 'linux'",
     "(python_full_version >= '3.11.5' and python_full_version < '3.12' and platform_python_implementation != 'PyPy' and sys_platform == 'darwin') or (python_full_version >= '3.11.5' and python_full_version < '3.12' and platform_python_implementation != 'PyPy' and sys_platform == 'linux')",

@@ -81,3 +81,17 @@ class TestInputFile:
                 assert chunk_size == 1
                 size += chunk_size
             assert size == 10
+
+
+class TestReplayable:
+    def test_builtins_are_replayable(self):
+        assert BufferedInputFile(b"", "f").replayable is True
+        assert FSInputFile(__file__).replayable is True
+        assert URLInputFile("https://example.com/f").replayable is True
+
+    def test_custom_subclass_defaults_to_not_replayable(self):
+        class Custom(InputFile):
+            async def read(self, bot):
+                yield b""
+
+        assert Custom().replayable is False

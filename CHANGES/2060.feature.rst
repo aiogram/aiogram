@@ -1,0 +1,1 @@
+Added ``InputFile.replayable``: ``True`` for ``BufferedInputFile``, ``FSInputFile`` and ``URLInputFile``, ``False`` by default for custom subclasses, which opt in by setting ``replayable = True``.

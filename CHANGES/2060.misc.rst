@@ -1,0 +1,1 @@
+Removed the ``aiofiles`` dependency: path uploads and downloads now read and write in chunks through ``asyncio.to_thread``.
