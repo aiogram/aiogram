@@ -11,7 +11,7 @@ StateType = str | State | None
 DEFAULT_DESTINY = "default"
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class StorageKey:
     bot_id: int
     chat_id: int
@@ -183,6 +183,9 @@ class BaseStorage(ABC):
     async def update_data(self, key: StorageKey, data: Mapping[str, Any]) -> dict[str, Any]:
         """
         Update date in the storage for key (like dict.update)
+
+        This fallback reads and then writes the data, so it is not atomic;
+        storages that can merge in one step override it.
 
         :param key: storage key
         :param data: partial data

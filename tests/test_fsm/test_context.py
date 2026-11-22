@@ -2,7 +2,7 @@ import pytest
 
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.storage.base import StorageKey
-from aiogram.fsm.storage.memory import MemoryStorage
+from aiogram.fsm.storage.memory import MemoryStorage, MemoryStorageRecord
 from tests.mocked_bot import MockedBot
 
 
@@ -10,18 +10,16 @@ from tests.mocked_bot import MockedBot
 def state(bot: MockedBot):
     storage = MemoryStorage()
     key = StorageKey(user_id=42, chat_id=-42, bot_id=bot.id)
-    ctx = storage.storage[key]
-    ctx.state = "test"
-    ctx.data = {"foo": "bar"}
+    storage.storage[key] = MemoryStorageRecord(state="test", data={"foo": "bar"})
     return FSMContext(storage=storage, key=key)
 
 
 class TestFSMContext:
     async def test_address_mapping(self, bot: MockedBot):
         storage = MemoryStorage()
-        ctx = storage.storage[StorageKey(chat_id=-42, user_id=42, bot_id=bot.id)]
-        ctx.state = "test"
-        ctx.data = {"foo": "bar"}
+        storage.storage[StorageKey(chat_id=-42, user_id=42, bot_id=bot.id)] = MemoryStorageRecord(
+            state="test", data={"foo": "bar"}
+        )
         state = FSMContext(storage=storage, key=StorageKey(chat_id=-42, user_id=42, bot_id=bot.id))
         state2 = FSMContext(storage=storage, key=StorageKey(chat_id=42, user_id=42, bot_id=bot.id))
         state3 = FSMContext(storage=storage, key=StorageKey(chat_id=69, user_id=69, bot_id=bot.id))
