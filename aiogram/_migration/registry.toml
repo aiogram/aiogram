@@ -907,3 +907,19 @@ suppress = "aiogram: ignore[AG4050]"
 gate = false
 generated = false
 warn_3x = { site = "none", target = "", since = "" }
+
+[[entry]]
+id = "AG4051"
+kind = "removal-4.0"
+title = "download errors, timeouts included, are TelegramNetworkError, not aiohttp.ClientError or TimeoutError"
+decisions = ["R22", "PD-14"]
+area = "errors"
+change = "behaviour"
+replacement = "catch aiogram.exceptions.TelegramNetworkError around Bot.download_file(), Bot.download() and URLInputFile reads, instead of aiohttp.ClientError or asyncio.TimeoutError; the original error is on .original"
+detection = "heuristic"
+confidence = "medium"
+codemod = "none"
+suppress = "aiogram: ignore[AG4051]"
+gate = false
+generated = false
+warn_3x = { site = "none", target = "", since = "" }

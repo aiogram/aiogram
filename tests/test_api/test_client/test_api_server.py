@@ -4,6 +4,7 @@ import pytest
 
 from aiogram.client.telegram import (
     PRODUCTION,
+    TEST,
     BareFilesPathWrapper,
     SimpleFilesPathWrapper,
     TelegramAPIServer,
@@ -30,6 +31,82 @@ class TestAPIServer:
         assert method_url == "http://localhost:8081/bot42:TEST/apiMethod"
         assert file_url == "http://localhost:8081/file/bot42:TEST/path"
         assert local_server.is_local
+
+    @pytest.mark.parametrize(
+        ("server", "url", "expected"),
+        [
+            (
+                PRODUCTION,
+                "https://api.telegram.org/bot42:TEST/getMe",
+                "https://api.telegram.org/bot42:***/getMe",
+            ),
+            (
+                PRODUCTION,
+                "https://api.telegram.org/file/bot42:TEST/documents/a.pdf",
+                "https://api.telegram.org/file/bot42:***/documents/a.pdf",
+            ),
+            (
+                TEST,
+                "https://api.telegram.org/bot42:TEST/test/getMe",
+                "https://api.telegram.org/bot42:***/test/getMe",
+            ),
+            (
+                TelegramAPIServer.from_base("http://localhost:8081/", is_local=True),
+                "http://localhost:8081/file/bot42:TEST/x",
+                "http://localhost:8081/file/bot42:***/x",
+            ),
+            # Query and fragment may carry other secrets
+            (
+                PRODUCTION,
+                "https://api.telegram.org/file/bot42:TEST/a.jpg?sig=SECRET#SECRET",
+                "https://api.telegram.org/file/bot42:***/a.jpg",
+            ),
+            # Not shaped like a token where the template puts one: origin only
+            (
+                PRODUCTION,
+                "https://api.telegram.org/botSECRET/getMe",
+                "https://api.telegram.org/...",
+            ),
+            (
+                PRODUCTION,
+                "https://api.telegram.org/bot/../x?k=SECRET",
+                "https://api.telegram.org/...",
+            ),
+            (
+                PRODUCTION,
+                "https://api.telegram.org/botab:SECRET/getMe",
+                "https://api.telegram.org/...",
+            ),
+            # The secret again later in the URL
+            (
+                PRODUCTION,
+                "https://api.telegram.org/file/bot42:TEST/42:TEST",
+                "https://api.telegram.org/...",
+            ),
+            # A foreign URL may carry other secrets: origin only, no credentials
+            (
+                PRODUCTION,
+                "https://u:p@example.com:8443/a?sig=SECRET",
+                "https://example.com:8443/...",
+            ),
+            (PRODUCTION, "not a url", "<invalid URL>"),
+        ],
+    )
+    def test_redact_url(self, server: TelegramAPIServer, url: str, expected: str):
+        assert server.redact_url(url) == expected
+
+    def test_redact_url_overlapping_prefixes(self):
+        server = TelegramAPIServer(
+            base="https://h/{token}/{method}", file="https://h/file/{token}/{path}"
+        )
+        assert server.redact_url("https://h/file/42:TEST/a.jpg") == "https://h/file/42:***/a.jpg"
+        assert server.redact_url("https://h/42:TEST/getMe") == "https://h/42:***/getMe"
+
+    def test_redact_url_token_at_template_end(self):
+        server = TelegramAPIServer(base="https://h/{method}?t={token}", file="https://h/f/{token}")
+        assert server.redact_url("https://h/f/42:TEST") == "https://h/f/42:***"
+        # `{method}` before `{token}` does not match the template prefix literally
+        assert server.redact_url("https://h/getMe?t=42:TEST") == "https://h/..."
 
 
 class TestBareFilesPathWrapper:

@@ -137,7 +137,7 @@ class BaseSession(abc.ABC):
         if status_code == HTTPStatus.FORBIDDEN:
             raise TelegramForbiddenError(method=method, message=description)
         if status_code == HTTPStatus.REQUEST_ENTITY_TOO_LARGE:
-            raise TelegramEntityTooLarge(method=method, message=description)
+            raise TelegramEntityTooLarge(method=method, message=description, request_sent=True)
         if status_code >= HTTPStatus.INTERNAL_SERVER_ERROR:
             if "restart" in description:
                 raise RestartingTelegram(method=method, message=description)
