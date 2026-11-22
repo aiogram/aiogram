@@ -384,9 +384,9 @@ class TestTopicAddressing:
         seen = {}
 
         @dp.stopped_message_generation()
-        async def handler(event, event_from_user):
+        async def handler(event, event_context):
             seen["thread"] = event.message_thread_id
-            seen["user"] = event_from_user.id
+            seen["user"] = event_context.user.id
 
         try:
             actor = environment.user(alice).in_(private, topic=ideas)

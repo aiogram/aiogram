@@ -46,7 +46,7 @@ contextual data.
 
 #### Scenario: Magic on contextual data
 
-- **WHEN** `MagicData(F.event_from_user.id == 42)` is used
+- **WHEN** `MagicData(F.event_context.user.id == 42)` is used
 - **THEN** the check is resolved against contextual data rather than the event
 
 ### Requirement: Command filter

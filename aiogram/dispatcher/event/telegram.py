@@ -4,7 +4,6 @@ from collections.abc import Callable
 from typing import TYPE_CHECKING, Any
 
 from aiogram.dispatcher.middlewares.manager import MiddlewareManager
-from aiogram.exceptions import UnsupportedKeywordArgument
 from aiogram.filters.base import Filter
 
 from .bases import UNHANDLED, MiddlewareType, SkipHandler
@@ -74,7 +73,7 @@ class TelegramEventObserver:
                 "documentation pages.\n"
                 f"Please remove the {set(kwargs.keys())} arguments from this call.\n"
             )
-            raise UnsupportedKeywordArgument(msg)
+            raise TypeError(msg)
 
         if flags is None:
             flags = {}

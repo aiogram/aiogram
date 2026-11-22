@@ -1763,7 +1763,7 @@ leaves a test staring at a missing reply with no clue that a handler ever raised
 ``SkipHandler`` is control flow, not an error. A handler that raises it is not reported as
 the handler that ran, and the exception is not recorded as its error: when a skipping
 handler falls through to a later one, ``handler`` names the later one and ``exception``
-stays ``None``. aiogram catches nothing else, so a ``CancelHandler`` raised by a handler
+stays ``None``. aiogram catches nothing else, so any other exception raised by a handler
 fails the update, and the route names that handler with the exception.
 
 One thing a test does is often more than one update. A real join delivers a ``chat_member``

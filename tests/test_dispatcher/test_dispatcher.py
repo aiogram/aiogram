@@ -145,15 +145,17 @@ class TestDispatcher:
             Dispatcher(storage=bot)
 
     def test_data_bind(self):
-        dp = Dispatcher()
-        assert dp.get("foo") is None
-        assert dp.get("foo", 42) == 42
-
-        dp["foo"] = 1
-        assert dp.workflow_data["foo"] == 1
+        dp = Dispatcher(foo=1)
         assert dp["foo"] == 1
+        assert dp.get("bar") is None
+        assert dp.get("bar", 42) == 42
 
-        del dp["foo"]
+    def test_data_is_read_only_through_item_access(self):
+        dp = Dispatcher()
+        with pytest.raises(TypeError):
+            dp["foo"] = 1
+        with pytest.raises(TypeError):
+            del dp["foo"]
         assert "foo" not in dp.workflow_data
 
     def test_storage_property(self, dispatcher: Dispatcher):
@@ -846,10 +848,12 @@ class TestDispatcher:
             assert event.model_dump(exclude_defaults=True) == getattr(
                 update, event_type
             ).model_dump(exclude_defaults=True)
+            event_context = kwargs["event_context"]
             if has_chat:
-                assert kwargs["event_chat"]
+                assert event_context.chat
             if has_user:
-                assert kwargs["event_from_user"]
+                assert event_context.user
+            assert not kwargs.keys() & {"event_from_user", "event_chat", "event_thread_id"}
             return kwargs
 
         result = await router.feed_update(bot, update, test="PASS")

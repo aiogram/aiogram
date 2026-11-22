@@ -156,7 +156,7 @@ Format: **Decision**, **Why**, **Rejected** (alternatives the design considered)
 
 ### TW-25 Chat-level events are triggered by the actor who caused them
 **Decision:** Community service messages and business-connection enable/disable go through the actor (`add_chat_to_community`, `disable_business_connection`). Forum service messages are side effects of the modeled forum methods, not triggers.
-**Why:** `event_from_user` then resolves like any other trigger. In production only the API emits forum service messages.
+**Why:** `event_context.user` then resolves like any other trigger. In production only the API emits forum service messages.
 **Code:** `aiogram/test/actors.py` `UserActor`. **Source:** 2026-08-20-extend-testing-toolkit-api-surface
 
 ### TW-26 `state()` takes topic and business connection as keyword-only arguments
@@ -819,9 +819,9 @@ Format: **Decision**, **Why**, **Rejected** (alternatives the design considered)
 **Why:** A raising handler leaves its record "not handled" while another update of the trigger is handled, so the docs' idiom would pass while the bot is broken. `member.join()` still reports the `chat_member` record. For a multi-update trigger, either update claiming the handler is correct behavior.
 **Code:** `aiogram/test/environment.py` `last_route`, `assert_handled_by` · **Source:** 2026-08-25-review-wave-4-hardening
 
-### TW-142 `SkipHandler` is control flow; `CancelHandler` is a failure
-**Decision:** `_HandlerMiddleware` catches `SkipHandler`, clears handler, module and router, and re-raises without an exception. `CancelHandler` is recorded like any exception.
-**Why:** aiogram's handler loop catches only `SkipHandler`, so a raised `CancelHandler` fails the update.
+### TW-142 `SkipHandler` is control flow; any other exception is a failure
+**Decision:** `_HandlerMiddleware` catches `SkipHandler`, clears handler, module and router, and re-raises without an exception. Any other exception is recorded. (4.0 removed `CancelHandler`, which this entry used to name as the example: E-01.)
+**Why:** aiogram's handler loop catches only `SkipHandler`, so any other raised exception fails the update.
 **Code:** `aiogram/test/environment.py` `_HandlerMiddleware` · **Source:** 2026-10-14-align-actor-triggers-with-bot-api
 
 ### TW-143 The history keeps frames, and the unhandled check reasons per trigger

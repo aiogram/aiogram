@@ -58,7 +58,7 @@ contextual data.
 #### Scenario: Resolved context
 
 - **WHEN** any update is processed
-- **THEN** `event_from_user`, `event_chat`, `event_thread_id`, `event_context` and `event_update` are present in contextual data where applicable
+- **THEN** `event_context` (with `user`, `chat` and `thread_id` where applicable) and `event_update` are present in contextual data
 
 ### Requirement: Built-in error middleware
 

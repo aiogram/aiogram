@@ -11,7 +11,7 @@ import datetime
 
 import pytest
 
-from aiogram.dispatcher.event.bases import CancelHandler, SkipHandler
+from aiogram.dispatcher.event.bases import SkipHandler
 from aiogram.enums import ChatMemberStatus
 from aiogram.methods import AnswerGuestQuery
 from aiogram.test import Blueprint, BotTestEnvironment, WorldLookupError
@@ -150,20 +150,6 @@ class TestSkippedHandlers:
         assert route.handler is None
         assert route.router is None
         assert route.exception is None
-
-    async def test_a_cancelling_handler_is_the_one_that_failed(self, env, dp, alice):
-        """aiogram catches only `SkipHandler`; a cancel fails the update."""
-
-        @dp.message()
-        async def cancelling(message):
-            raise CancelHandler
-
-        with pytest.raises(CancelHandler):
-            await alice.send("hi")
-
-        route = env.last_route
-        assert route.handler.endswith("cancelling")
-        assert isinstance(route.exception, CancelHandler)
 
 
 class TestUserEdits:

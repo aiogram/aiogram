@@ -10,9 +10,7 @@ from magic_filter import F as A
 from aiogram import F
 from aiogram.dispatcher.event.handler import CallableObject, FilterObject, HandlerObject
 from aiogram.filters import Filter, invert_f
-from aiogram.handlers import BaseHandler
 from aiogram.types import Update
-from aiogram.utils.warnings import Recommendation
 
 
 def callback1(foo: int, bar: int, baz: int):
@@ -288,21 +286,7 @@ class TestHandlerObject:
         result, data = await handler.check(42, foo=True)
         assert not result
 
-    async def test_class_based_handler(self):
-        class MyHandler(BaseHandler):
-            event: Update
-
-            async def handle(self) -> Any:
-                return self.event.update_id
-
-        handler = HandlerObject(MyHandler, filters=[FilterObject(lambda event: True)])
-
-        assert handler.awaitable
-        assert handler.callback == MyHandler
-        assert len(handler.filters) == 1
-        result = await handler.call(Update(update_id=42))
-        assert result == 42
-
-    def test_warn_another_magic(self):
-        with pytest.warns(Recommendation):
-            FilterObject(callback=A.test.is_(True))
+    def test_plain_magic_filter_is_accepted_silently(self):
+        # No Recommendation warning any more; filterwarnings=error fails on any warning
+        magic = A.test.is_(True)
+        assert FilterObject(callback=magic).magic is magic

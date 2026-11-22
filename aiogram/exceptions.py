@@ -2,7 +2,6 @@ from typing import Any
 
 from aiogram.methods import TelegramMethod
 from aiogram.methods.base import TelegramType
-from aiogram.utils.link import docs_url
 
 
 class AiogramError(Exception):
@@ -41,14 +40,6 @@ class SceneException(AiogramError):
     """
     Exception for scenes.
     """
-
-
-class UnsupportedKeywordArgument(DetailedAiogramError):
-    """
-    Exception raised when a keyword argument is passed as filter.
-    """
-
-    url = docs_url("migration_2_to_3.html", fragment_="filtering-events")
 
 
 class TelegramAPIError(DetailedAiogramError):

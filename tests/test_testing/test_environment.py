@@ -402,14 +402,14 @@ class TestTriggers:
 
     async def test_event_context_is_resolved(self, env, dp, alice, private):
         @dp.message()
-        async def handler(message, event_from_user, event_chat):
-            return event_from_user.id, event_chat.id
+        async def handler(message, event_context):
+            return event_context.user.id, event_context.chat.id
 
         assert await alice.send("hi") == (alice.user.id, private.id)
 
     async def test_edit_triggers_edited_message(self, env, dp, alice, private):
         @dp.edited_message()
-        async def handler(message, event_from_user):
+        async def handler(message, event_context):
             return "edited"
 
         await alice.send("before", fields={})

@@ -1,8 +1,9 @@
 from typing import Any
 
 from aiogram import Router
+from aiogram.dispatcher.middlewares.user_context import EventContext
 from aiogram.filters import Filter
-from aiogram.types import Message, User
+from aiogram.types import Message
 
 router = Router(name=__name__)
 
@@ -14,12 +15,12 @@ class HelloFilter(Filter):
     async def __call__(
         self,
         message: Message,
-        event_from_user: User,
+        event_context: EventContext,
         # Filters also can accept keyword parameters like in handlers
     ) -> bool | dict[str, Any]:
-        if message.text.casefold() == "hello":
+        if message.text.casefold() == "hello" and event_context.user:
             # Returning a dictionary that will update the context data
-            return {"name": event_from_user.mention_html(name=self.name)}
+            return {"name": event_context.user.mention_html(name=self.name)}
         return False
 
 

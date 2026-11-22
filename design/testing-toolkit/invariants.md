@@ -72,7 +72,7 @@ Terms used below:
 - A trigger builds a schema-valid `Update` and feeds it through `Dispatcher.feed_update`. Filters, middlewares, DI, FSM and routers all run. [test_triggers.py]
 - A trigger returns the handler's return value. [test_triggers.py]
 - Extra keyword arguments to a trigger reach filters, middlewares and handlers through DI. [test_triggers.py]
-- The update's sender and chat come from the actor and its binding; `event_from_user` and `event_chat` resolve to them. [test_triggers.py]
+- The update's sender and chat come from the actor and its binding; `event_context.user` and `event_context.chat` resolve to them. [test_triggers.py]
 - Every `Update` variant the framework defines has a trigger. The test over the full set declares no exemptions. [test_triggers.py]
 - Each trigger produces an update shaped as Telegram would deliver it. [test_triggers.py]
 - A post in a declared channel is a `channel_post`, not a `message`. Editing one is an `edited_channel_post`. [test_triggers.py]

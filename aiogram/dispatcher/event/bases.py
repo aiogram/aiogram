@@ -19,14 +19,9 @@ MiddlewareType = (
 
 
 UNHANDLED = sentinel.UNHANDLED
-REJECTED = sentinel.REJECTED
 
 
 class SkipHandler(Exception):
-    pass
-
-
-class CancelHandler(Exception):
     pass
 
 

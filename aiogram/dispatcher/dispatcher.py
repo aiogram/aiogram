@@ -111,12 +111,6 @@ class Dispatcher(Router):
     def __getitem__(self, item: str) -> Any:
         return self.workflow_data[item]
 
-    def __setitem__(self, key: str, value: Any) -> None:
-        self.workflow_data[key] = value
-
-    def __delitem__(self, key: str) -> None:
-        del self.workflow_data[key]
-
     def get(self, key: str, /, default: Any | None = None) -> Any | None:
         return self.workflow_data.get(key, default)
 

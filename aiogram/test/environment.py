@@ -383,7 +383,7 @@ class _HandlerMiddleware:
         except SkipHandler:
             # Control flow, not a failure: a skipping handler did not
             # claim the update, so it is not the handler that ran.
-            # aiogram catches nothing else, so a `CancelHandler` the
+            # aiogram catches nothing else, so any other exception the
             # handler raised fails the update and is recorded below.
             if record is not None:
                 record.handler = None
