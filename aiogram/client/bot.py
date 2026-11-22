@@ -188,6 +188,7 @@ from ..methods import (
     SetMyDescription,
     SetMyName,
     SetMyProfilePhoto,
+    SetMySettings,
     SetMyShortDescription,
     SetPassportDataErrors,
     SetStickerEmojiList,
@@ -221,6 +222,7 @@ from ..types import (
     BotCommand,
     BotCommandScopeUnion,
     BotDescription,
+    BotFullInfo,
     BotName,
     BotShortDescription,
     BusinessConnection,
@@ -404,10 +406,20 @@ class Bot:
         """
         Cached alias for getMe method
 
+        getMe returns :class:`aiogram.types.bot_full_info.BotFullInfo` since Bot API 10.5;
+        the cached value stays a :class:`aiogram.types.user.User` with the identity fields,
+        call :meth:`get_me` for the full settings.
+
         :return:
         """
         if self._me is None:  # pragma: no cover
-            self._me = await self.get_me()
+            info = await self.get_me()
+            self._me = User(
+                id=info.id,
+                is_bot=info.is_bot,
+                first_name=info.first_name,
+                username=info.username,
+            )
         return self._me
 
     async def usernames(self) -> tuple[str, ...]:
@@ -633,7 +645,7 @@ class Bot:
         request_timeout: int | None = None,
     ) -> bool:
         """
-        Use this method to send answers to callback queries sent from `inline keyboards <https://core.telegram.org/bots/features#inline-keyboards>`_. The answer will be displayed to the user as a notification at the top of the chat screen or as an alert. On success, :code:`True` is returned.
+        Use this method to send answers to callback queries sent from `inline keyboards <https://core.telegram.org/bots/features#inline-keyboards>`_ or `rich messages <https://core.telegram.org/bots/api#richmessage>`_. The answer will be displayed to the user as a notification at the top of the chat screen or as an alert. On success, :code:`True` is returned.
 
          Alternatively, the user can be redirected to the specified Game URL. For this option to work, you must first create a game for your bot via `@BotFather <https://t.me/botfather>`_ and accept the terms. Otherwise, you may use links like :code:`t.me/your_bot?start=XXXX` that open your bot with a parameter.
 
@@ -1881,14 +1893,14 @@ class Bot:
     async def get_me(
         self,
         request_timeout: int | None = None,
-    ) -> User:
+    ) -> BotFullInfo:
         """
-        A simple method for testing your bot's authentication token. Requires no parameters. Returns basic information about the bot in form of a :class:`aiogram.types.user.User` object.
+        A simple method for testing your bot's authentication token. Requires no parameters. Returns information about the bot in form of a :class:`aiogram.types.bot_full_info.BotFullInfo` object.
 
         Source: https://core.telegram.org/bots/api#getme
 
         :param request_timeout: Request timeout
-        :return: Returns basic information about the bot in form of a :class:`aiogram.types.user.User` object.
+        :return: Returns information about the bot in form of a :class:`aiogram.types.bot_full_info.BotFullInfo` object.
         """
 
         call = GetMe()
@@ -7070,5 +7082,67 @@ class Bot:
             message_effect_id=message_effect_id,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
+        )
+        return await self(call, request_timeout=request_timeout)
+
+    async def set_my_settings(
+        self,
+        supports_inline_queries: bool | None = None,
+        inline_query_placeholder: str | None = None,
+        needs_inline_query_location: bool | None = None,
+        inline_feedback_share_denominator: int | None = None,
+        can_join_groups: bool | None = None,
+        can_read_all_group_messages: bool | None = None,
+        can_connect_to_business: bool | None = None,
+        can_manage_bots: bool | None = None,
+        supports_guest_queries: bool | None = None,
+        supports_join_request_queries: bool | None = None,
+        has_topics_enabled: bool | None = None,
+        allows_users_to_create_topics: bool | None = None,
+        has_topic_sidebar: bool | None = None,
+        can_communicate_with_bots: bool | None = None,
+        callback_query_mode: str | None = None,
+        request_timeout: int | None = None,
+    ) -> bool:
+        """
+        Use this method to change settings of the bot. Settings that aren't specified remain unchanged. Returns :code:`True` on success.
+
+        Source: https://core.telegram.org/bots/api#setmysettings
+
+        :param supports_inline_queries: Pass :code:`True` to enable `inline mode <https://core.telegram.org/bots/api#inline-mode>`_ for the bot or :code:`False` to disable it
+        :param inline_query_placeholder: New placeholder for inline queries, which is shown in the input field after the bot's username. Pass an empty string to use the default placeholder.
+        :param needs_inline_query_location: Pass :code:`True` to request the location of the user with every inline query to the bot or :code:`False` to stop requesting it
+        :param inline_feedback_share_denominator: Denominator of the share of `chosen inline results <https://core.telegram.org/bots/api#choseninlineresult>`_ received by the bot; the bot receives 1 out of *inline_feedback_share_denominator* chosen results. Must be one of 1, 10, 100, or 1000. Pass 0 to stop receiving chosen inline results.
+        :param can_join_groups: Pass :code:`True` to allow adding the bot to groups or :code:`False` to disallow it
+        :param can_read_all_group_messages: Pass :code:`True` to disable `privacy mode <https://core.telegram.org/bots/features#privacy-mode>`_ for the bot or :code:`False` to enable it
+        :param can_connect_to_business: Pass :code:`True` to allow connecting the bot to user accounts to manage them or :code:`False` to disallow it
+        :param can_manage_bots: Pass :code:`True` to allow creating other bots that will be controlled by the bot or :code:`False` to disallow it
+        :param supports_guest_queries: Pass :code:`True` to allow guest queries to the bot from chats it isn't a member of or :code:`False` to disallow them
+        :param supports_join_request_queries: Pass :code:`True` to allow assigning the bot to process join request queries or :code:`False` to disallow it
+        :param has_topics_enabled: Pass :code:`True` to enable forum topic mode in private chats with the bot or :code:`False` to disable it
+        :param allows_users_to_create_topics: Pass :code:`True` to allow users to create and delete topics in private chats with the bot or :code:`False` to disallow it
+        :param has_topic_sidebar: Pass :code:`True` to show topics in private chats with the bot in a sidebar or :code:`False` to stop showing them in a sidebar
+        :param can_communicate_with_bots: Pass :code:`True` to allow the bot to communicate with other bots in groups, private chats, and through business accounts or :code:`False` to disallow it
+        :param callback_query_mode: Mode in which the bot receives `callback queries <https://core.telegram.org/bots/api#callbackquery>`_ from buttons in messages sent by the bot. Must be one of 'default' (the field *message* is always used and contains an :class:`aiogram.types.inaccessible_message.InaccessibleMessage` if the message is inaccessible to the bot), 'auto' (the field *inline_message_id* is used instead of the field *message* if the message is inaccessible to the bot; the field *message* can still contain an inaccessible message if the message has just been deleted), or 'inline' (the field *inline_message_id* is always used instead of the field *message*).
+        :param request_timeout: Request timeout
+        :return: Returns :code:`True` on success.
+        """
+
+        call = SetMySettings(
+            supports_inline_queries=supports_inline_queries,
+            inline_query_placeholder=inline_query_placeholder,
+            needs_inline_query_location=needs_inline_query_location,
+            inline_feedback_share_denominator=inline_feedback_share_denominator,
+            can_join_groups=can_join_groups,
+            can_read_all_group_messages=can_read_all_group_messages,
+            can_connect_to_business=can_connect_to_business,
+            can_manage_bots=can_manage_bots,
+            supports_guest_queries=supports_guest_queries,
+            supports_join_request_queries=supports_join_request_queries,
+            has_topics_enabled=has_topics_enabled,
+            allows_users_to_create_topics=allows_users_to_create_topics,
+            has_topic_sidebar=has_topic_sidebar,
+            can_communicate_with_bots=can_communicate_with_bots,
+            callback_query_mode=callback_query_mode,
         )
         return await self(call, request_timeout=request_timeout)

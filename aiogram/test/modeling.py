@@ -231,6 +231,7 @@ from aiogram.methods import (
 from aiogram.types import (
     BotCommand,
     BotDescription,
+    BotFullInfo,
     BotName,
     BotShortDescription,
     BusinessConnection,
@@ -2801,8 +2802,26 @@ def handle_get_chat(env: BotTestEnvironment, method: GetChat) -> ChatFullInfo:
 
 
 @models(GetMe)
-def handle_get_me(env: BotTestEnvironment, method: GetMe) -> User:
-    return env.world.bot_me()
+def handle_get_me(env: BotTestEnvironment, method: GetMe) -> BotFullInfo:
+    me = env.world.bot_me()
+    return BotFullInfo(
+        id=me.id,
+        is_bot=True,
+        first_name=me.first_name,
+        username=me.username,
+        can_join_groups=True,
+        can_read_all_group_messages=bool(me.can_read_all_group_messages),
+        supports_guest_queries=False,
+        supports_inline_queries=False,
+        needs_inline_query_location=False,
+        can_connect_to_business=False,
+        has_main_web_app=False,
+        has_topics_enabled=False,
+        allows_users_to_create_topics=False,
+        has_topic_sidebar=False,
+        can_manage_bots=False,
+        supports_join_request_queries=False,
+    )
 
 
 # -- sticker sets ----------------------------------------------------------------------

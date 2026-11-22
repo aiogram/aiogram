@@ -12,7 +12,7 @@ from aiogram import Bot
 from aiogram.client.telegram import TelegramAPIServer
 from aiogram.exceptions import ClientDecodeError
 from aiogram.methods import SendMessage, SendPhoto
-from aiogram.types import BufferedInputFile
+from aiogram.types import BotFullInfo, BufferedInputFile
 
 redact = pytest.importorskip("benchmarks.record.redact")
 recorder = pytest.importorskip("benchmarks.record.recorder")
@@ -179,7 +179,12 @@ async def test_record_stops_once_and_drains_replies(aiohttp_server, tmp_path):
     async def bot_api(request: web.Request) -> web.Response:
         method = request.match_info["method"]
         if method == "getMe":
-            result = {"id": 42, "is_bot": True, "first_name": "Recorder"}
+            result = {
+                **{n: False for n, f in BotFullInfo.model_fields.items() if f.is_required()},
+                "id": 42,
+                "is_bot": True,
+                "first_name": "Recorder",
+            }
         elif method == "getUpdates":
             await asyncio.sleep(0.05)
             result = batches.pop() if batches else []

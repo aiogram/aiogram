@@ -324,6 +324,13 @@
       "replacement": null
     },
     {
+      "entity": "InputRichBlockExpandableBlockQuotation",
+      "kind": "type",
+      "field": "text",
+      "removed_in": "10.5",
+      "replacement": null
+    },
+    {
       "entity": "InputTextMessageContent",
       "kind": "type",
       "field": "disable_web_page_preview",
@@ -398,6 +405,13 @@
       "kind": "type",
       "field": "correct_option_id",
       "removed_in": "9.6",
+      "replacement": null
+    },
+    {
+      "entity": "RichBlockExpandableBlockQuotation",
+      "kind": "type",
+      "field": "text",
+      "removed_in": "10.5",
       "replacement": null
     },
     {
@@ -860,6 +874,76 @@
       "kind": "type",
       "field": "last_resale_star_count",
       "removed_in": "9.3",
+      "replacement": null
+    },
+    {
+      "entity": "User",
+      "kind": "type",
+      "field": "allows_users_to_create_topics",
+      "removed_in": "10.5",
+      "replacement": null
+    },
+    {
+      "entity": "User",
+      "kind": "type",
+      "field": "can_connect_to_business",
+      "removed_in": "10.5",
+      "replacement": null
+    },
+    {
+      "entity": "User",
+      "kind": "type",
+      "field": "can_join_groups",
+      "removed_in": "10.5",
+      "replacement": null
+    },
+    {
+      "entity": "User",
+      "kind": "type",
+      "field": "can_manage_bots",
+      "removed_in": "10.5",
+      "replacement": null
+    },
+    {
+      "entity": "User",
+      "kind": "type",
+      "field": "can_read_all_group_messages",
+      "removed_in": "10.5",
+      "replacement": null
+    },
+    {
+      "entity": "User",
+      "kind": "type",
+      "field": "has_main_web_app",
+      "removed_in": "10.5",
+      "replacement": null
+    },
+    {
+      "entity": "User",
+      "kind": "type",
+      "field": "has_topics_enabled",
+      "removed_in": "10.5",
+      "replacement": null
+    },
+    {
+      "entity": "User",
+      "kind": "type",
+      "field": "supports_guest_queries",
+      "removed_in": "10.5",
+      "replacement": null
+    },
+    {
+      "entity": "User",
+      "kind": "type",
+      "field": "supports_inline_queries",
+      "removed_in": "10.5",
+      "replacement": null
+    },
+    {
+      "entity": "User",
+      "kind": "type",
+      "field": "supports_join_request_queries",
+      "removed_in": "10.5",
       "replacement": null
     },
     {

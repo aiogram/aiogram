@@ -1,0 +1,18 @@
+Added full support for `Bot API 10.5 <https://core.telegram.org/bots/api-changelog#november-22-2026>`_
+
+**Bot Settings**
+
+*New types and methods:*
+
+- Added :class:`aiogram.methods.set_my_settings.SetMySettings` method (:code:`Bot.set_my_settings`) - changes the bot settings: inline mode, privacy mode, adding to groups, forum topic mode in private chats, topic sidebar and the callback query mode
+- Added :class:`aiogram.types.bot_full_info.BotFullInfo` type, the new return type of :class:`aiogram.methods.get_me.GetMe`, with the new fields :code:`active_usernames`, :code:`inline_query_placeholder`, :code:`needs_inline_query_location` and :code:`has_topic_sidebar`
+
+*Changed:*
+
+- :class:`aiogram.methods.get_me.GetMe` (and :code:`Bot.get_me()`) now returns :class:`aiogram.types.bot_full_info.BotFullInfo`; the fields that were returned only by getMe are deprecated in :class:`aiogram.types.user.User`. :code:`Bot.me()` still returns a :class:`aiogram.types.user.User` with the identity fields (id, is_bot, first_name, username); call :code:`Bot.get_me()` for the full settings
+- :class:`aiogram.types.callback_query.CallbackQuery` can carry :code:`inline_message_id` instead of :code:`message` for messages sent by the bot, depending on the :code:`callback_query_mode` parameter of :code:`set_my_settings`
+
+**General**
+
+- Added the field :code:`inviter` to :class:`aiogram.types.write_access_allowed.WriteAccessAllowed` for users invited to the private chat with the bot by its owner
+- Replaced the field :code:`text` with :code:`blocks` in :class:`aiogram.types.rich_block_expandable_block_quotation.RichBlockExpandableBlockQuotation` and :class:`aiogram.types.input_rich_block_expandable_block_quotation.InputRichBlockExpandableBlockQuotation`; :code:`text` is deprecated

@@ -1503,6 +1503,24 @@
       "photo",
       "request_timeout"
     ],
+    "Bot.set_my_settings": [
+      "supports_inline_queries",
+      "inline_query_placeholder",
+      "needs_inline_query_location",
+      "inline_feedback_share_denominator",
+      "can_join_groups",
+      "can_read_all_group_messages",
+      "can_connect_to_business",
+      "can_manage_bots",
+      "supports_guest_queries",
+      "supports_join_request_queries",
+      "has_topics_enabled",
+      "allows_users_to_create_topics",
+      "has_topic_sidebar",
+      "can_communicate_with_bots",
+      "callback_query_mode",
+      "request_timeout"
+    ],
     "Bot.set_my_short_description": [
       "short_description",
       "language_code",
@@ -1689,6 +1707,7 @@
     "BotCommandScopeChatMember": [],
     "BotCommandScopeDefault": [],
     "BotDescription": [],
+    "BotFullInfo": [],
     "BotName": [],
     "BotShortDescription": [],
     "BotSubscriptionUpdated": [],
@@ -2169,6 +2188,7 @@
     "SetMyDescription": [],
     "SetMyName": [],
     "SetMyProfilePhoto": [],
+    "SetMySettings": [],
     "SetMyShortDescription": [],
     "SetPassportDataErrors": [],
     "SetStickerEmojiList": [],
@@ -5800,6 +5820,9 @@
     "BotAccessSettings": [
       "added_users"
     ],
+    "BotFullInfo": [
+      "active_usernames"
+    ],
     "BusinessMessagesDeleted": [
       "message_ids"
     ],
@@ -5953,6 +5976,9 @@
     "InputRichBlockDetails": [
       "blocks"
     ],
+    "InputRichBlockExpandableBlockQuotation": [
+      "blocks"
+    ],
     "InputRichBlockList": [
       "items"
     ],
@@ -6061,6 +6087,9 @@
       "blocks"
     ],
     "RichBlockDetails": [
+      "blocks"
+    ],
+    "RichBlockExpandableBlockQuotation": [
       "blocks"
     ],
     "RichBlockList": [
