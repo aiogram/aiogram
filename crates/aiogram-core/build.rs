@@ -31,6 +31,8 @@ fn main() {
         .and_then(|text| locked_version(&text, "pyo3"))
         .unwrap_or_else(|| "unknown".to_owned());
 
+    let version = pep440(&env::var("CARGO_PKG_VERSION").unwrap_or_default());
+    println!("cargo::rustc-env=AIOGRAM_CORE_VERSION={version}");
     println!("cargo::rustc-env=AIOGRAM_CORE_PROFILE={profile}");
     println!("cargo::rustc-env=AIOGRAM_CORE_LTO={lto}");
     println!("cargo::rustc-env=AIOGRAM_CORE_PYO3_VERSION={pyo3}");
@@ -38,6 +40,19 @@ fn main() {
         "cargo::rustc-env=AIOGRAM_CORE_TARGET={}",
         env::var("TARGET").unwrap_or_default()
     );
+}
+
+/// PEP 440 form of a crate version, as in `aiogram.__version__`: `4.0.0-alpha.1` -> `4.0.0a1`.
+/// The inverse of `cargo_version` in `scripts/bump_version.py`; test_build.py checks they agree.
+fn pep440(version: &str) -> String {
+    let Some((release, pre)) = version.split_once('-') else {
+        return version.to_owned();
+    };
+    let pre = [("alpha.", "a"), ("beta.", "b"), ("rc.", "rc")]
+        .iter()
+        .find_map(|(semver, pep)| pre.strip_prefix(semver).map(|n| format!("{pep}{n}")))
+        .unwrap_or_else(|| format!("-{pre}"));
+    format!("{release}{pre}")
 }
 
 /// `key = value` inside `[section]`, with quotes stripped.

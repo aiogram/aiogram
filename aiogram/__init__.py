@@ -1,3 +1,5 @@
+# first: a clear ImportError when the compiled core is missing for this interpreter
+from . import _native  # isort: skip
 from aiogram.dispatcher.flags import FlagGenerator
 
 from . import enums, methods, types

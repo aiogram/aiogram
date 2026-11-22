@@ -1,69 +1,102 @@
 #!/usr/bin/env python3
-"""Version bumping script for aiogram (replaces hatch version)."""
+"""Version bumping script for aiogram (replaces hatch version).
+
+``aiogram/__meta__.py`` is the source of truth. This script also writes the static copies:
+``pyproject.toml`` (PEP 440, read by maturin) with its ``Development Status`` classifier, and
+``crates/aiogram-core/Cargo.toml`` (semver, the ``aiogram._core.__version__`` that build.rs turns
+back into PEP 440). tests/test_core/test_build.py checks they all match.
+"""
 
 import re
 import sys
 from pathlib import Path
 
+from packaging.version import Version
 
-# static copies of the version: maturin reads pyproject.toml, `aiogram._core.__version__` comes
-# from the crate (tests/test_core/test_build.py checks they all match __meta__.py)
-VERSION_COPIES = (Path("pyproject.toml"), Path("crates/aiogram-core/Cargo.toml"))
+META = Path("aiogram/__meta__.py")
+PYPROJECT = Path("pyproject.toml")
+CARGO = Path("crates/aiogram-core/Cargo.toml")
+
+META_VERSION = re.compile(r'^__version__ = "(.+)"$', flags=re.M)
+COPY_VERSION = re.compile(r'^version = ".+"$', flags=re.M)
+DEVELOPMENT_STATUS = re.compile(r'"Development Status :: [^"]+"')
+
+# PEP 440 pre-release letter -> semver pre-release tag (build.rs maps it back)
+SEMVER_PRE = {"a": "alpha", "b": "beta", "rc": "rc"}
+# alpha and beta are not GA (D121); Production/Stable from the final release on
+STATUS = {"a": "3 - Alpha", "b": "4 - Beta", "rc": "4 - Beta", None: "5 - Production/Stable"}
 
 
-def write_version_copies(version: str) -> None:
-    for path in VERSION_COPIES:
-        content, count = re.subn(
-            r'^version = ".+"$', f'version = "{version}"', path.read_text(), count=1, flags=re.M
-        )
-        if not count:
-            raise ValueError(f"Could not find version in {path}")
-        path.write_text(content)
+def parse(version: str) -> Version:
+    parsed = Version(version)
+    if (
+        str(parsed) != version
+        or parsed.epoch
+        or parsed.dev is not None
+        or parsed.post is not None
+        or parsed.local
+    ):
+        raise ValueError(f"{version!r}: use X.Y.Z, X.Y.ZaN, X.Y.ZbN or X.Y.ZrcN")
+    return parsed
+
+
+def cargo_version(version: str) -> str:
+    """Semver form of a PEP 440 version: ``4.0.0a1`` -> ``4.0.0-alpha.1``."""
+    parsed = parse(version)
+    if parsed.pre is None:
+        return parsed.base_version
+    stage, number = parsed.pre
+    return f"{parsed.base_version}-{SEMVER_PRE[stage]}.{number}"
+
+
+def development_status(version: str) -> str:
+    pre = parse(version).pre
+    return f"Development Status :: {STATUS[pre[0] if pre else None]}"
+
+
+def substitute(path: Path, pattern: re.Pattern[str], line: str) -> None:
+    content, count = pattern.subn(line, path.read_text(), count=1)
+    if not count:
+        raise ValueError(f"Could not find {pattern.pattern} in {path}")
+    path.write_text(content)
+
+
+def write_version(version: str) -> None:
+    parse(version)
+    substitute(META, META_VERSION, f'__version__ = "{version}"')
+    substitute(PYPROJECT, COPY_VERSION, f'version = "{version}"')
+    substitute(PYPROJECT, DEVELOPMENT_STATUS, f'"{development_status(version)}"')
+    substitute(CARGO, COPY_VERSION, f'version = "{cargo_version(version)}"')
 
 
 def bump_version(part: str) -> str:
-    """Bump version in __meta__.py."""
-    meta_path = Path("aiogram/__meta__.py")
-    content = meta_path.read_text()
+    match = META_VERSION.search(META.read_text())
+    if not match:
+        raise ValueError(f"Could not find version in {META}")
+    current = parse(match.group(1))
+    major, minor, patch = current.release
 
-    # Extract current version
-    version_match = re.search(r'__version__ = "(\d+)\.(\d+)\.(\d+)"', content)
-    if not version_match:
-        raise ValueError("Could not find version in __meta__.py")
-
-    major, minor, patch = map(int, version_match.groups())
-
-    # Bump appropriate part
+    if current.pre is not None and not part.startswith("to:"):
+        # 4.0.0rc1 + patch would skip 4.0.0 itself
+        raise ValueError(f"{current} is a pre-release: name the next version with to:X.Y.Z")
     if part == "major":
-        major += 1
-        minor = 0
-        patch = 0
+        new_version = f"{major + 1}.0.0"
     elif part == "minor":
-        minor += 1
-        patch = 0
+        new_version = f"{major}.{minor + 1}.0"
     elif part == "patch":
-        patch += 1
+        new_version = f"{major}.{minor}.{patch + 1}"
     elif part.startswith("to:"):
-        new_version = part.replace("to:", "")
-        content = re.sub(
-            r'__version__ = "\d+\.\d+\.\d+"', f'__version__ = "{new_version}"', content
-        )
-        meta_path.write_text(content)
-        write_version_copies(new_version)
-        return new_version
+        new_version = part.removeprefix("to:")
     else:
-        raise ValueError(f"Unknown part: {part}. Use major, minor, patch, or to:X.Y.Z")
+        raise ValueError(f"Unknown part: {part}. Use major, minor, patch, or to:X.Y.Z[aN|bN|rcN]")
 
-    new_version = f"{major}.{minor}.{patch}"
-    content = re.sub(r'__version__ = "\d+\.\d+\.\d+"', f'__version__ = "{new_version}"', content)
-    meta_path.write_text(content)
-    write_version_copies(new_version)
+    write_version(new_version)
     return new_version
 
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:  # noqa: PLR2004
-        print("Usage: python scripts/bump_version.py [major|minor|patch|to:X.Y.Z]")  # noqa: T201
+        print("Usage: python scripts/bump_version.py [major|minor|patch|to:X.Y.Z[aN|bN|rcN]]")  # noqa: T201
         sys.exit(1)
 
     new_version = bump_version(sys.argv[1])

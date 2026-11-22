@@ -46,8 +46,9 @@ dependencies = [
     "certifi>=2023.7.22",
     "typing-extensions>=4.12.1,<=5.0",
 ]
-# aiogram/__meta__.py is the source of truth; scripts/bump_version.py writes this copy and the
-# crate version in crates/aiogram-core/Cargo.toml, tests/test_core/test_build.py checks they match
+# aiogram/__meta__.py is the source of truth; `make bump` (scripts/bump_version.py) writes this copy,
+# the Development Status classifier and the crate version in crates/aiogram-core/Cargo.toml;
+# tests/test_core/test_build.py checks they match
 version = "3.33.0"
 
 [tool.maturin]
