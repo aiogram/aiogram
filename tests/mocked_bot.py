@@ -6,7 +6,7 @@ from aiogram import Bot
 from aiogram.client.session.base import BaseSession
 from aiogram.methods import TelegramMethod
 from aiogram.methods.base import Response, TelegramType
-from aiogram.types import UNSET_PARSE_MODE, ResponseParameters, User
+from aiogram.types import UNSET_PARSE_MODE, BotFullInfo, ResponseParameters, User
 
 
 class MockedSession(BaseSession):
@@ -60,14 +60,7 @@ class MockedBot(Bot):
 
     def __init__(self, **kwargs):
         super().__init__(kwargs.pop("token", "42:TEST"), session=MockedSession(), **kwargs)
-        self._me = User(
-            id=self.id,
-            is_bot=True,
-            first_name="FirstName",
-            last_name="LastName",
-            username="tbot",
-            language_code="uk-UA",
-        )
+        self._me = bot_full_info(id=self.id, first_name="FirstName", username="tbot")
 
     def add_result_for(
         self,
@@ -94,3 +87,13 @@ class MockedBot(Bot):
 
     def get_request(self) -> TelegramMethod[TelegramType]:
         return self.session.get_request()
+
+
+def bot_full_info(**kwargs: Any) -> BotFullInfo:
+    """A getMe result: all the required BotFullInfo flags are False unless overridden."""
+    flags = {
+        name: False
+        for name, field in BotFullInfo.model_fields.items()
+        if field.annotation is bool and name != "is_bot"
+    }
+    return BotFullInfo(**{"id": 42, "is_bot": True, "first_name": "Test", **flags, **kwargs})

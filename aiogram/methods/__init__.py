@@ -167,6 +167,7 @@ from .set_my_default_administrator_rights import SetMyDefaultAdministratorRights
 from .set_my_description import SetMyDescription
 from .set_my_name import SetMyName
 from .set_my_profile_photo import SetMyProfilePhoto
+from .set_my_settings import SetMySettings
 from .set_my_short_description import SetMyShortDescription
 from .set_passport_data_errors import SetPassportDataErrors
 from .set_sticker_emoji_list import SetStickerEmojiList
@@ -364,6 +365,7 @@ __all__ = (
     "SetMyDescription",
     "SetMyName",
     "SetMyProfilePhoto",
+    "SetMySettings",
     "SetMyShortDescription",
     "SetPassportDataErrors",
     "SetStickerEmojiList",

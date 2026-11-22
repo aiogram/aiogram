@@ -1,0 +1,137 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available methods",
+    "anchor": "available-methods"
+  },
+  "object": {
+    "anchor": "setmysettings",
+    "name": "setMySettings",
+    "description": "Use this method to change settings of the bot. Settings that aren't specified remain unchanged. Returns True on success.",
+    "html_description": "<p>Use this method to change settings of the bot. Settings that aren't specified remain unchanged. Returns <em>True</em> on success.</p>",
+    "rst_description": "Use this method to change settings of the bot. Settings that aren't specified remain unchanged. Returns :code:`True` on success.",
+    "annotations": [
+      {
+        "type": "Boolean",
+        "required": false,
+        "description": "Pass True to enable inline mode for the bot or False to disable it",
+        "html_description": "<td>Pass <em>True</em> to enable <a href=\"#inline-mode\">inline mode</a> for the bot or <em>False</em> to disable it</td>",
+        "rst_description": "Pass :code:`True` to enable `inline mode <https://core.telegram.org/bots/api#inline-mode>`_ for the bot or :code:`False` to disable it\n",
+        "name": "supports_inline_queries"
+      },
+      {
+        "type": "String",
+        "required": false,
+        "description": "New placeholder for inline queries, which is shown in the input field after the bot's username. Pass an empty string to use the default placeholder.",
+        "html_description": "<td>New placeholder for inline queries, which is shown in the input field after the bot's username. Pass an empty string to use the default placeholder.</td>",
+        "rst_description": "New placeholder for inline queries, which is shown in the input field after the bot's username. Pass an empty string to use the default placeholder.\n",
+        "name": "inline_query_placeholder"
+      },
+      {
+        "type": "Boolean",
+        "required": false,
+        "description": "Pass True to request the location of the user with every inline query to the bot or False to stop requesting it",
+        "html_description": "<td>Pass <em>True</em> to request the location of the user with every inline query to the bot or <em>False</em> to stop requesting it</td>",
+        "rst_description": "Pass :code:`True` to request the location of the user with every inline query to the bot or :code:`False` to stop requesting it\n",
+        "name": "needs_inline_query_location"
+      },
+      {
+        "type": "Integer",
+        "required": false,
+        "description": "Denominator of the share of chosen inline results received by the bot; the bot receives 1 out of inline_feedback_share_denominator chosen results. Must be one of 1, 10, 100, or 1000. Pass 0 to stop receiving chosen inline results.",
+        "html_description": "<td>Denominator of the share of <a href=\"#choseninlineresult\">chosen inline results</a> received by the bot; the bot receives 1 out of <em>inline_feedback_share_denominator</em> chosen results. Must be one of 1, 10, 100, or 1000. Pass 0 to stop receiving chosen inline results.</td>",
+        "rst_description": "Denominator of the share of `chosen inline results <https://core.telegram.org/bots/api#choseninlineresult>`_ received by the bot; the bot receives 1 out of *inline_feedback_share_denominator* chosen results. Must be one of 1, 10, 100, or 1000. Pass 0 to stop receiving chosen inline results.\n",
+        "name": "inline_feedback_share_denominator"
+      },
+      {
+        "type": "Boolean",
+        "required": false,
+        "description": "Pass True to allow adding the bot to groups or False to disallow it",
+        "html_description": "<td>Pass <em>True</em> to allow adding the bot to groups or <em>False</em> to disallow it</td>",
+        "rst_description": "Pass :code:`True` to allow adding the bot to groups or :code:`False` to disallow it\n",
+        "name": "can_join_groups"
+      },
+      {
+        "type": "Boolean",
+        "required": false,
+        "description": "Pass True to disable privacy mode for the bot or False to enable it",
+        "html_description": "<td>Pass <em>True</em> to disable <a href=\"/bots/features#privacy-mode\">privacy mode</a> for the bot or <em>False</em> to enable it</td>",
+        "rst_description": "Pass :code:`True` to disable `privacy mode <https://core.telegram.org/bots/features#privacy-mode>`_ for the bot or :code:`False` to enable it\n",
+        "name": "can_read_all_group_messages"
+      },
+      {
+        "type": "Boolean",
+        "required": false,
+        "description": "Pass True to allow connecting the bot to user accounts to manage them or False to disallow it",
+        "html_description": "<td>Pass <em>True</em> to allow connecting the bot to user accounts to manage them or <em>False</em> to disallow it</td>",
+        "rst_description": "Pass :code:`True` to allow connecting the bot to user accounts to manage them or :code:`False` to disallow it\n",
+        "name": "can_connect_to_business"
+      },
+      {
+        "type": "Boolean",
+        "required": false,
+        "description": "Pass True to allow creating other bots that will be controlled by the bot or False to disallow it",
+        "html_description": "<td>Pass <em>True</em> to allow creating other bots that will be controlled by the bot or <em>False</em> to disallow it</td>",
+        "rst_description": "Pass :code:`True` to allow creating other bots that will be controlled by the bot or :code:`False` to disallow it\n",
+        "name": "can_manage_bots"
+      },
+      {
+        "type": "Boolean",
+        "required": false,
+        "description": "Pass True to allow guest queries to the bot from chats it isn't a member of or False to disallow them",
+        "html_description": "<td>Pass <em>True</em> to allow guest queries to the bot from chats it isn't a member of or <em>False</em> to disallow them</td>",
+        "rst_description": "Pass :code:`True` to allow guest queries to the bot from chats it isn't a member of or :code:`False` to disallow them\n",
+        "name": "supports_guest_queries"
+      },
+      {
+        "type": "Boolean",
+        "required": false,
+        "description": "Pass True to allow assigning the bot to process join request queries or False to disallow it",
+        "html_description": "<td>Pass <em>True</em> to allow assigning the bot to process join request queries or <em>False</em> to disallow it</td>",
+        "rst_description": "Pass :code:`True` to allow assigning the bot to process join request queries or :code:`False` to disallow it\n",
+        "name": "supports_join_request_queries"
+      },
+      {
+        "type": "Boolean",
+        "required": false,
+        "description": "Pass True to enable forum topic mode in private chats with the bot or False to disable it",
+        "html_description": "<td>Pass <em>True</em> to enable forum topic mode in private chats with the bot or <em>False</em> to disable it</td>",
+        "rst_description": "Pass :code:`True` to enable forum topic mode in private chats with the bot or :code:`False` to disable it\n",
+        "name": "has_topics_enabled"
+      },
+      {
+        "type": "Boolean",
+        "required": false,
+        "description": "Pass True to allow users to create and delete topics in private chats with the bot or False to disallow it",
+        "html_description": "<td>Pass <em>True</em> to allow users to create and delete topics in private chats with the bot or <em>False</em> to disallow it</td>",
+        "rst_description": "Pass :code:`True` to allow users to create and delete topics in private chats with the bot or :code:`False` to disallow it\n",
+        "name": "allows_users_to_create_topics"
+      },
+      {
+        "type": "Boolean",
+        "required": false,
+        "description": "Pass True to show topics in private chats with the bot in a sidebar or False to stop showing them in a sidebar",
+        "html_description": "<td>Pass <em>True</em> to show topics in private chats with the bot in a sidebar or <em>False</em> to stop showing them in a sidebar</td>",
+        "rst_description": "Pass :code:`True` to show topics in private chats with the bot in a sidebar or :code:`False` to stop showing them in a sidebar\n",
+        "name": "has_topic_sidebar"
+      },
+      {
+        "type": "Boolean",
+        "required": false,
+        "description": "Pass True to allow the bot to communicate with other bots in groups, private chats, and through business accounts or False to disallow it",
+        "html_description": "<td>Pass <em>True</em> to allow the bot to communicate with other bots in groups, private chats, and through business accounts or <em>False</em> to disallow it</td>",
+        "rst_description": "Pass :code:`True` to allow the bot to communicate with other bots in groups, private chats, and through business accounts or :code:`False` to disallow it\n",
+        "name": "can_communicate_with_bots"
+      },
+      {
+        "type": "String",
+        "required": false,
+        "description": "Mode in which the bot receives callback queries from buttons in messages sent by the bot. Must be one of 'default' (the field message is always used and contains an InaccessibleMessage if the message is inaccessible to the bot), 'auto' (the field inline_message_id is used instead of the field message if the message is inaccessible to the bot; the field message can still contain an inaccessible message if the message has just been deleted), or 'inline' (the field inline_message_id is always used instead of the field message).",
+        "html_description": "<td>Mode in which the bot receives <a href=\"#callbackquery\">callback queries</a> from buttons in messages sent by the bot. Must be one of &#8220;default&#8221; (the field <em>message</em> is always used and contains an <a href=\"#inaccessiblemessage\">InaccessibleMessage</a> if the message is inaccessible to the bot), &#8220;auto&#8221; (the field <em>inline_message_id</em> is used instead of the field <em>message</em> if the message is inaccessible to the bot; the field <em>message</em> can still contain an inaccessible message if the message has just been deleted), or &#8220;inline&#8221; (the field <em>inline_message_id</em> is always used instead of the field <em>message</em>).</td>",
+        "rst_description": "Mode in which the bot receives `callback queries <https://core.telegram.org/bots/api#callbackquery>`_ from buttons in messages sent by the bot. Must be one of 'default' (the field *message* is always used and contains an :class:`aiogram.types.inaccessible_message.InaccessibleMessage` if the message is inaccessible to the bot), 'auto' (the field *inline_message_id* is used instead of the field *message* if the message is inaccessible to the bot; the field *message* can still contain an inaccessible message if the message has just been deleted), or 'inline' (the field *inline_message_id* is always used instead of the field *message*).\n",
+        "name": "callback_query_mode"
+      }
+    ],
+    "category": "methods"
+  }
+}

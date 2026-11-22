@@ -51,6 +51,12 @@ rtk git status --short -- aiogram/          # new files = new types/methods/enum
   field also needs a `UserActor` trigger (`aiogram/test/actors.py`) and a `TRIGGERS` row
   (`tests/test_testing/test_triggers.py`); the every-variant-has-a-trigger guard fails otherwise. Details and
   the grep to find the rest: skill `test-bot-api-codegen`, step 2.
+- **Migration data.** Deprecated fields land in `aiogram/_migration/data/*.json`: rerun
+  `uv run python scripts/butcher_removal_inventory.py` and `scripts/butcher_signatures_3x.py`
+  (no args), or `tests/test_migration_data` fails.
+- **A method whose return type changed** (`getMe` → `BotFullInfo` in 10.5) breaks the tests that stub it
+  with the old type (`tests/mocked_bot.py::bot_full_info`), the test toolkit's handler in
+  `aiogram/test/modeling.py`, and `Bot.me()`, which keeps returning `User`.
 - **Enums scraped by regexp** from a doc sentence can silently contain another enum's
   members. Eyeball every new `aiogram/enums/*.py` against its source docstring.
 - **`Default()` sentinels.** New `parse_mode`/`*_parse_mode` fields and the shortcuts
