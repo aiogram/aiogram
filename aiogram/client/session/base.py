@@ -2,9 +2,14 @@ from __future__ import annotations
 
 import abc
 import datetime
+import functools
+import inspect
 import json
 import secrets
+import sys
+import warnings
 from collections.abc import AsyncGenerator, Callable
+from dataclasses import dataclass
 from enum import Enum
 from http import HTTPStatus
 from typing import TYPE_CHECKING, Any, Final, Self, cast
@@ -42,6 +47,66 @@ _JsonLoads = Callable[..., Any]
 _JsonDumps = Callable[..., str]
 
 DEFAULT_TIMEOUT: Final[float] = 60.0
+
+
+@dataclass(frozen=True, slots=True)
+class DownloadTimeout:
+    """
+    Per-phase timeouts of a file download, in seconds; :code:`None` disables a phase.
+
+    :param connect: getting a connection: pool wait, DNS, TCP and TLS
+    :param sock_read: idle time between two reads, so a stalled transfer fails while a slow one
+        keeps going
+    :param total: cap on the whole download, off by default so large files on slow links finish
+    """
+
+    connect: float | None = 30.0
+    sock_read: float | None = 60.0
+    total: float | None = None
+
+    @classmethod
+    def of(cls, value: DownloadTimeout | float) -> DownloadTimeout:
+        """A plain number is the 3.x total timeout: :code:`total=value` and nothing else."""
+        if isinstance(value, DownloadTimeout):
+            return value
+        return cls(connect=None, sock_read=None, total=value)
+
+
+DEFAULT_DOWNLOAD_TIMEOUT: Final[DownloadTimeout] = DownloadTimeout()
+# What a `stream_content` override with the 3.x `timeout: int` signature gets without a total
+LEGACY_DOWNLOAD_TIMEOUT: Final[int] = 30
+
+
+@functools.cache
+def _takes_download_timeout(cls: type[BaseSession]) -> bool:
+    """
+    Whether ``cls.stream_content`` accepts a :class:`DownloadTimeout`.
+
+    It does when its ``timeout`` default is one, as in the built-in sessions. An override with
+    the 3.x signature (``timeout: int = 30``) gets an int instead, with a warning once per class.
+    """
+    options: dict[str, Any] = {}
+    if sys.version_info >= (3, 14):
+        from annotationlib import Format
+
+        # Only the default is read: an unresolvable annotation must not raise
+        options["annotation_format"] = Format.FORWARDREF
+    parameter = inspect.signature(cls.stream_content, **options).parameters.get("timeout")
+    if parameter is None:
+        # A forwarding override (`*args, **kwargs`) passes the value on unchanged
+        return True
+    if isinstance(parameter.default, DownloadTimeout):
+        return True
+    # ponytail: plain DeprecationWarning until the I-12 AiogramDeprecationWarning class lands
+    warnings.warn(
+        f"{cls.__module__}.{cls.__qualname__}.stream_content() takes the 3.x int timeout: it "
+        f"gets the total timeout, or {LEGACY_DOWNLOAD_TIMEOUT}, instead of per-phase timeouts. "
+        "Declare `timeout: DownloadTimeout | float = DEFAULT_DOWNLOAD_TIMEOUT` "
+        "(aiogram.client.session.base) to receive a DownloadTimeout.",
+        DeprecationWarning,
+        stacklevel=3,
+    )
+    return False
 
 
 class BaseSession(abc.ABC):
@@ -176,14 +241,43 @@ class BaseSession(abc.ABC):
         self,
         url: str,
         headers: dict[str, Any] | None = None,
-        timeout: int = 30,
+        timeout: DownloadTimeout | float = DEFAULT_DOWNLOAD_TIMEOUT,
         chunk_size: int = 65536,
         raise_for_status: bool = True,
     ) -> AsyncGenerator[bytes, None]:  # pragma: no cover
         """
         Stream reader
+
+        :param timeout: per-phase timeouts; a plain number is a total timeout
+            (:meth:`DownloadTimeout.of`)
         """
         yield b""
+
+    def _download_stream(
+        self,
+        url: str,
+        headers: dict[str, Any] | None = None,
+        timeout: DownloadTimeout | float = DEFAULT_DOWNLOAD_TIMEOUT,
+        chunk_size: int = 65536,
+        raise_for_status: bool = True,
+    ) -> AsyncGenerator[bytes, None]:
+        """
+        Call :meth:`stream_content` with the timeout in the form the override accepts.
+
+        aiogram downloads go through here, so a custom session that still declares the 3.x
+        ``timeout: int`` keeps working (see :func:`_takes_download_timeout`).
+        """
+        timeout = DownloadTimeout.of(timeout)
+        legacy: DownloadTimeout | float = timeout
+        if not _takes_download_timeout(type(self)):
+            legacy = LEGACY_DOWNLOAD_TIMEOUT if timeout.total is None else timeout.total
+        return self.stream_content(
+            url=url,
+            headers=headers,
+            timeout=legacy,
+            chunk_size=chunk_size,
+            raise_for_status=raise_for_status,
+        )
 
     def prepare_value(
         self,

@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import asyncio
-from collections.abc import AsyncGenerator
+from collections.abc import AsyncGenerator, AsyncIterable
 from pathlib import Path
 from typing import IO
 
@@ -34,7 +34,7 @@ async def iter_file(path: str | Path, chunk_size: int) -> AsyncGenerator[bytes, 
         await asyncio.shield(asyncio.to_thread(f.close))
 
 
-async def write_stream(path: str | Path, stream: AsyncGenerator[bytes, None]) -> None:
+async def write_stream(path: str | Path, stream: AsyncIterable[bytes]) -> None:
     f = await _open(path, "wb")
     try:
         async for chunk in stream:
