@@ -284,7 +284,7 @@ Verification method and results: [_VERIFICATION.md](_VERIFICATION.md).
 | [I-02](I-distribution/I-02-tier1-wheel-matrix-release.md) | Tier-1 wheel matrix and release workflow | `todo` | no | L | C-02, C-18, I-01, I-05 |
 | [I-03](I-distribution/I-03-free-threaded-wheels-ci.md) | Free-threaded wheels and CI | `todo` | no | M | I-02 |
 | [I-04](I-distribution/I-04-installed-wheel-typing-stubtest.md) | Installed-wheel typing check and stubtest | `todo` | yes | M | B-10, C-14, C-27, I-01 |
-| [I-05](I-distribution/I-05-pr-ci-structure-caching-coverage.md) | PR CI structure, caching and coverage | `todo` | no | M | B-01 |
+| [I-05](I-distribution/I-05-pr-ci-structure-caching-coverage.md) | PR CI structure, caching and coverage | `done` | no | M | B-01 |
 | [I-06](I-distribution/I-06-largest-codegen-unit-guard.md) | Largest-codegen-unit guard (B25) | `todo` | yes | S | C-18, C-20, I-05 |
 | [I-07](I-distribution/I-07-dependencies-extras-restructure.md) | Dependencies and extras restructure | `todo` | partly: the pydantic removal step needs F-11 / C-13, which follow D14 | M | C-13, D-04, F-07, F-11, I-05 |
 | [I-08](I-distribution/I-08-contributor-workflow.md) | Contributor workflow for `dev-4.x` | `todo` | no | S | C-23, I-01, I-05 |
