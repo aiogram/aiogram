@@ -99,6 +99,9 @@ Suite strategy (4.0, D88):
   `__context__` / `.original`, which hold the raw aiohttp error by design.
 - `aresponses` intercepts every host, `127.0.0.1` included: a test that needs a real unreachable hop (a redirect to
   a closed port) uses `aiohttp.test_utils.TestServer` without the `aresponses` fixture.
+- `aiogram.test` deep-copies worlds, including their FSM storage (`tests/test_testing/test_world.py`). A
+  `threading.Lock` cannot be copied, so a storage or isolation class that holds one needs `__getstate__` /
+  `__setstate__` (the copy gets its own lock) and a `__copy__` that shares it (`MemoryStorage`, F-01).
 
 `MockedSession` builds the JSON wire envelope and runs it through `BaseSession.check_response`, so unit tests keep
 exercising the real error mapping (`TelegramBadRequest`, `TelegramRetryAfter`, ...). Its only model-layer dependency is
