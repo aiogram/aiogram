@@ -1,5 +1,25 @@
 name: Tests
 
+# Structure (dev-4.x, plan I-05):
+#   plan          -> the leg matrix (PR set or full set) and whether the Rust inputs changed
+#   build-wheels  -> one release wheel per leg, cached on the hash of the Rust inputs: a
+#                    Python-only PR restores every wheel and compiles nothing
+#   lint, tests, lowest-deps -> install only `aiogram._core` from that wheel into the checkout
+#                    (scripts/ci_use_wheel.py), so the Python sources are always the PR's own
+#   rust, butcher, build -> only when the Rust or packaging inputs changed (and on push)
+#   packaging     -> a fresh release wheel and the sdist against tests/test_packaging, then the
+#                    sdist installed offline; same condition as rust / butcher
+#
+# Legs. PR: Linux 3.11 / 3.14 / 3.14t (+ Redis, Mongo), macOS arm64 3.14, Windows x64 3.14.
+# Push to dev-4.x and workflow_dispatch: 3.11-3.15, 3.14t, 3.15t on all three OSes (08 §5,
+# no PyPy: PD-35). A `schedule` trigger would never fire here: GitHub runs schedules from the
+# default branch (dev-3.x) only.
+#
+# Slots for later jobs. A job that needs the extension takes `needs: [plan, build-wheels]`, the
+# `matrix` output and the `wheel-<os>-<python>` artifact; a Rust-only job takes
+# `if: needs.plan.outputs.rust == 'true'`. C-23 adds `butcher-check` beside `butcher`; I-06
+# the largest-unit guard; A-05 / B-02 a `bench` job with `continue-on-error: true` (never required).
+
 on:
   push:
     branches:
@@ -21,6 +41,10 @@ concurrency:
 env:
   # the environment is synced explicitly in each job; do not let `uv run` re-sync it
   UV_NO_SYNC: "1"
+  # incremental builds and debuginfo only cost cache space in CI (v4/research/13 B12)
+  CARGO_INCREMENTAL: "0"
+  CARGO_PROFILE_DEV_DEBUG: "0"
+  CARGO_TERM_COLOR: always
 
 defaults:
   run:
@@ -28,8 +52,125 @@ defaults:
     shell: bash
 
 jobs:
+  plan:
+    name: Plan
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      matrix: ${{ steps.plan.outputs.matrix }}
+      rust: ${{ steps.plan.outputs.rust }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+          # a PR checks out its merge commit; with its first parent (the base tip) `git diff HEAD^1`
+          # is exactly the PR's change
+          fetch-depth: 2
+
+      - name: Choose the legs and the Rust jobs
+        id: plan
+        env:
+          EVENT: ${{ github.event_name }}
+        run: |
+          python3 - <<'EOF'
+          import json, os, re, subprocess
+
+          # the Rust inputs, plus what the `rust`, `butcher`, `build` and `packaging` jobs run from
+          # (benchmarks/corpus/: the decode tests read it from disk)
+          RUST = re.compile(
+              r"^(crates/|xtask/|butcher/|benchmarks/corpus/|tests/test_packaging/|\.cargo/|Cargo\.(toml|lock)$|rust-toolchain\.toml$"
+              r"|clippy\.toml$|rustfmt\.toml$|pyproject\.toml$|Makefile$|\.github/workflows/tests\.yml$)"
+          )
+          if os.environ["EVENT"] == "pull_request":
+              diff = subprocess.run(
+                  ["git", "diff", "--name-only", "HEAD^1", "HEAD"],
+                  check=True, capture_output=True, text=True,
+              ).stdout.split()
+              rust = any(RUST.match(path) for path in diff)
+              legs = [("ubuntu-latest", v) for v in ("3.11", "3.14", "3.14t")]
+              legs += [("macos-latest", "3.14"), ("windows-latest", "3.14")]
+          else:
+              rust = True
+              versions = ("3.11", "3.12", "3.13", "3.14", "3.15", "3.14t", "3.15t")
+              legs = [(o, v) for o in ("ubuntu-latest", "macos-latest", "windows-latest") for v in versions]
+          matrix = [{"os": o, "python": v} for o, v in legs]
+          with open(os.environ["GITHUB_OUTPUT"], "a") as out:
+              out.write(f"matrix={json.dumps(matrix)}\nrust={str(rust).lower()}\n")
+          print(f"rust={rust}", *matrix, sep="\n")
+          EOF
+
+  build-wheels:
+    name: Wheel (${{ matrix.python }}, ${{ matrix.os }})
+    needs: plan
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        include: ${{ fromJSON(needs.plan.outputs.matrix) }}
+    env:
+      PYO3_ENVIRONMENT_SIGNATURE: ${{ matrix.os }}-${{ matrix.python }}
+      PYTHON: ${{ matrix.python }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: Restore the cached wheel
+        id: cache
+        uses: actions/cache@v6.1.0
+        with:
+          path: dist
+          # everything that goes into the extension; crates/butcher and xtask never enter the wheel
+          # (the same set as [tool.uv] cache-keys). pyproject.toml carries [tool.maturin].
+          key: wheel-${{ env.PYO3_ENVIRONMENT_SIGNATURE }}-${{ hashFiles('Cargo.toml', 'Cargo.lock', 'rust-toolchain.toml', '.cargo/config.toml', 'pyproject.toml', 'crates/aiogram-core/**') }}
+
+      - uses: astral-sh/setup-uv@v10.3.3
+        with:
+          python-version: ${{ matrix.python }}
+
+      - name: Install the Rust toolchain
+        if: steps.cache.outputs.cache-hit != 'true'
+        # no arguments: installs the channel and components pinned in rust-toolchain.toml
+        run: rustup toolchain install
+
+      - uses: Swatinem/rust-cache@v2.9.3
+        if: steps.cache.outputs.cache-hit != 'true'
+        with:
+          # PYO3_* in the key: a cache built against another interpreter replays a stale
+          # libpython path (v4/research/13 B12)
+          env-vars: "CARGO CC CFLAGS CXX CMAKE RUST PYO3"
+
+      - name: Build the wheel
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: |
+          # setup-uv only selects the version; `uv python find` never downloads one
+          uv python install "$PYTHON"
+          uvx --from 'maturin>=1.14,<2' maturin build --release --locked \
+            --interpreter "$(uv python find "$PYTHON")" --out dist
+
+      - name: Import smoke of the installed wheel
+        # the other jobs only copy the extension out of the wheel: this checks the wheel itself
+        run: |
+          venv="${RUNNER_TEMP}/smoke"
+          uv venv --clear --python "$PYTHON" "$venv"
+          bin="$venv/bin"
+          [[ "$RUNNER_OS" == "Windows" ]] && bin="$venv/Scripts"
+          # the venv directory, not $bin/python: uv wants the .exe spelled out on Windows
+          uv pip install --python "$venv" dist/*.whl
+          # -P keeps the checkout's own aiogram/ off sys.path, so this imports what was just installed
+          "$bin/python" -P -c "import aiogram._core as core; from aiogram._core.conv import Kind; print(core.build_info(), Kind.int_())"
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: wheel-${{ matrix.os }}-${{ matrix.python }}
+          path: dist/*.whl
+          if-no-files-found: error
+          retention-days: 7
+
   lint:
     name: Lint
+    needs: build-wheels
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -44,32 +185,35 @@ jobs:
 
       - name: Install project
         # `dev` is a default group (ruff, mypy, pre-commit); `test` is not needed for lint;
-        # `docs` is heavy and covered by the Docs job
-        run: uv sync --locked --all-extras --no-extra docs
+        # `docs` is heavy and covered by the Docs job; the extension comes from the wheel below
+        run: uv sync --locked --all-extras --no-extra docs --no-install-project
+
+      - uses: actions/download-artifact@v8
+        with:
+          name: wheel-ubuntu-latest-3.11
+          path: ${{ runner.temp }}/wheel
+
+      - name: Install the extension
+        run: uv run python scripts/ci_use_wheel.py "$RUNNER_TEMP/wheel"
 
       - name: Lint
+        # the Rust half of `make lint` (lint-rust) runs in the Rust job
         env:
           RUFF_OUTPUT_FORMAT: github   # inline annotations; the Makefile stays terminal-friendly
           SKIP: ruff-check,ruff-format # pre-commit's ruff hooks duplicate the ruff steps of make lint
-        run: make lint
+        run: make lint-python
 
   tests:
-    name: Tests
+    name: Tests (${{ matrix.python }}, ${{ matrix.os }})
+    needs: [plan, build-wheels]
     runs-on: ${{ matrix.os }}
     timeout-minutes: 15
     strategy:
       fail-fast: false
       matrix:
-        os:
-          - ubuntu-latest
-          - macos-latest
-          - windows-latest
-        python-version:
-          - "3.11"
-          - "3.12"
-          - "3.13"
-          - "3.14"
-          - "3.15"
+        include: ${{ fromJSON(needs.plan.outputs.matrix) }}
+    env:
+      FREE_THREADED: ${{ endsWith(matrix.python, 't') }}
     steps:
       - uses: actions/checkout@v7
         with:
@@ -79,7 +223,7 @@ jobs:
 
       - uses: astral-sh/setup-uv@v10.3.3
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: ${{ matrix.python }}
 
       # Redis and MongoDB only on Linux: the servers are black boxes behind a socket,
       # the OS-specific code under test is aiogram itself, which macOS / Windows still run.
@@ -118,12 +262,27 @@ jobs:
 
       - name: Install project
         # no `dev` group: linting lives in its own job, and `packaging` (tests/deprecated.py)
-        # comes in transitively via pytest; `docs` is heavy and covered by the Docs job
-        run: uv sync --locked --all-extras --no-extra docs --no-group dev --group test
+        # comes in transitively via pytest; `docs` is heavy and covered by the Docs job;
+        # the extension comes from the wheel below
+        run: uv sync --locked --all-extras --no-extra docs --no-group dev --group test --no-install-project
+
+      - uses: actions/download-artifact@v8
+        with:
+          name: wheel-${{ matrix.os }}-${{ matrix.python }}
+          path: ${{ runner.temp }}/wheel
+
+      - name: Install the extension
+        run: uv run python scripts/ci_use_wheel.py "$RUNNER_TEMP/wheel"
 
       - name: Run tests
         id: tests
+        # free-threaded: PYTHON_GIL=0 keeps the GIL off while 3.x dependencies without
+        # free-threading support (hiredis) load; tests/conftest.py fails the session if the GIL
+        # is on after `import aiogram._core`, and test_build.py checks it without PYTHON_GIL
         run: |
+          if [[ "$FREE_THREADED" == "true" ]]; then
+            export PYTHON_GIL=0
+          fi
           flags=(--cov=aiogram --cov-report=xml)
           if [[ "$RUNNER_OS" == "Linux" ]]; then
             flags+=(--redis redis://localhost:6379/0 --mongo mongodb://localhost:27017)
@@ -132,7 +291,7 @@ jobs:
 
       - name: Upload coverage
         # upload when pytest actually ran, even if it failed: coverage.xml is still written and
-        # codecov.yaml waits for all 15 uploads before commenting. A leg whose setup failed
+        # codecov.yaml waits for the PR's uploads before commenting. A leg whose setup failed
         # never reached pytest, has no report, and must not add a second error.
         if: ${{ !cancelled() && steps.tests.outcome != 'skipped' }}
         uses: codecov/codecov-action@v7
@@ -140,7 +299,7 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: coverage.xml
           flags: unittests
-          name: py-${{ matrix.python-version }}-${{ matrix.os }}
+          name: py-${{ matrix.python }}-${{ matrix.os }}
           fail_ci_if_error: true
 
   lowest-deps:
@@ -149,6 +308,7 @@ jobs:
     # Resolves direct deps to their minimum (transitive stay newest).
     # Linux + oldest Python only: old releases lack new CPython wheels.
     # Runs mypy too: the pydantic floor comes from mypy, not runtime.
+    needs: build-wheels
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -192,7 +352,15 @@ jobs:
       - name: Install project with the lowest direct dependencies
         # Not `--locked`: it forbids the re-resolution needed.
         # uv.lock is rewritten in this throwaway checkout only.
-        run: uv sync --resolution lowest-direct --all-extras --no-extra docs --group dev --group test
+        run: uv sync --resolution lowest-direct --all-extras --no-extra docs --group dev --group test --no-install-project
+
+      - uses: actions/download-artifact@v8
+        with:
+          name: wheel-ubuntu-latest-3.11
+          path: ${{ runner.temp }}/wheel
+
+      - name: Install the extension
+        run: uv run --no-sync python scripts/ci_use_wheel.py "$RUNNER_TEMP/wheel"
 
       - name: Type-check
         # mypy only: ruff at its floor reports unrelated style noise.
@@ -205,8 +373,11 @@ jobs:
 
   build:
     name: Build package
+    # the sdist and its metadata on every PR; sdist -> wheel compiles the extension, so the wheel
+    # and the smoke test only when the Rust or packaging inputs changed
+    needs: plan
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v7
         with:
@@ -216,8 +387,12 @@ jobs:
         with:
           python-version: "3.14"
 
-      - name: Build sdist and wheel
-        run: uv build
+      - name: Build sdist
+        run: uv build --sdist
+
+      - name: Build wheel from the sdist
+        if: needs.plan.outputs.rust == 'true'
+        run: uv build --wheel dist/*.tar.gz
 
       - name: Check metadata
         # pinned: an unpinned linter on the release path can block a release on an upstream
@@ -225,6 +400,7 @@ jobs:
         run: uvx --from 'twine==7.0.0' twine check --strict dist/*
 
       - name: Smoke-test wheel and sdist
+        if: needs.plan.outputs.rust == 'true'
         run: |
           # a venv inside the checkout would be swept into the next sdist (hatchling packs it,
           # and its absolute symlinks break the build), so build it under the runner temp dir
@@ -251,8 +427,9 @@ jobs:
           python-version: "3.12"
 
       - name: Install project with docs extras
-        # mirrors .readthedocs.yml: docs + the extras autodoc needs to import
-        run: uv sync --locked --extra docs --extra redis --extra mongo --no-group dev
+        # mirrors .readthedocs.yml: docs + the extras autodoc needs to import. Not the project:
+        # installing it compiles the extension, which nothing on the docs import path loads
+        run: uv sync --locked --extra docs --extra redis --extra mongo --no-group dev --no-install-project
 
       - name: Build HTML
         # TODO: add -W once the existing Sphinx warnings are fixed (#1909)
@@ -260,6 +437,182 @@ jobs:
         # the CI check does not need it (Read the Docs keeps it). The extension list is derived
         # from conf.py so it cannot drift.
         working-directory: docs
+        env:
+          PYTHONPATH: ${{ github.workspace }}
         run: |
           extensions="$(uv run python -c 'import conf; print(",".join(e for e in conf.extensions if e != "sphinx.ext.viewcode"))')"
           uv run make html SPHINXOPTS="-q -j auto -D extensions=${extensions}"
+
+  packaging:
+    name: Packaging (${{ matrix.os }})
+    # a fresh wheel, not the build-wheels one: that is cached on the Rust inputs only, so its
+    # Python files can be stale, and tests/test_packaging compares them with the checkout. Then the
+    # sdist installed with no network: pip without an index, cargo offline from a vendored registry
+    needs: plan
+    if: needs.plan.outputs.rust == 'true'
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-latest
+          - macos-latest
+    env:
+      PYO3_ENVIRONMENT_SIGNATURE: ${{ matrix.os }}-3.14
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - uses: astral-sh/setup-uv@v10.3.3
+        with:
+          python-version: "3.14"
+
+      - name: Install the Rust toolchain
+        run: rustup toolchain install
+
+      - uses: Swatinem/rust-cache@v2.9.3
+        with:
+          env-vars: "CARGO CC CFLAGS CXX CMAKE RUST PYO3"
+
+      - name: Install dependencies
+        run: uv sync --locked --all-extras --no-extra docs --no-group dev --group test --no-install-project
+
+      - name: Build the wheel and the sdist
+        # the checkout imports the extension from the same wheel (tests/conftest.py imports aiogram)
+        run: |
+          uvx --from 'maturin>=1.14,<2' maturin build --release --locked -i .venv/bin/python -o dist
+          uv run python scripts/ci_use_wheel.py dist
+          uvx --from 'maturin>=1.14,<2' maturin sdist -o dist
+
+      - name: Check the wheel and the sdist
+        env:
+          AIOGRAM_DIST_DIR: dist
+        run: uv run pytest tests/test_packaging
+
+      - name: Install the sdist offline
+        run: |
+          work="${RUNNER_TEMP}/offline"
+          mkdir -p "$work/src" "$work/cargo-home"
+          tar -xzf dist/*.tar.gz -C "$work/src"
+          src=("$work"/src/aiogram-*)
+          # online preparation: the crates of the sdist's own Cargo.lock, and the Python wheels.
+          # No --locked: the lock still lists the dev crates maturin drops from the sdist's
+          # workspace, and cargo prunes them (pinned versions stay)
+          cargo vendor --manifest-path "${src[0]}/Cargo.toml" "$work/vendor" > "$work/cargo-home/config.toml"
+          uv export --locked --no-dev --no-emit-project --no-hashes -o "$work/requirements.txt"
+          uv venv --seed "$work/venv"
+          "$work/venv/bin/pip" download -q -d "$work/wheelhouse" -r "$work/requirements.txt" 'maturin>=1.14,<2'
+          # the build runs outside the checkout, so rust-toolchain.toml would not apply there
+          toolchain="$(rustup show active-toolchain | cut -d' ' -f1)"
+          # an empty CARGO_HOME holding only the vendored source replacement
+          CARGO_HOME="$work/cargo-home" CARGO_NET_OFFLINE=true RUSTUP_TOOLCHAIN="$toolchain" \
+            "$work/venv/bin/pip" install --no-index --find-links "$work/wheelhouse" dist/*.tar.gz
+          cd "$RUNNER_TEMP"
+          "$work/venv/bin/python" -P -c "import aiogram, aiogram._core as core; assert core.__version__ == aiogram.__version__; print(aiogram.__version__, core.build_info())"
+
+  rust:
+    name: Rust (fmt, clippy, test, coverage)
+    needs: plan
+    if: needs.plan.outputs.rust == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      PYO3_ENVIRONMENT_SIGNATURE: ubuntu-3.13
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+          # full history + tags: tests/test_migration_registry.py checks registry ids against the last release tag
+          fetch-depth: 0
+
+      - uses: astral-sh/setup-uv@v10.3.3
+        with:
+          python-version: "3.13"
+
+      - name: Install the Rust toolchain
+        # llvm-tools: cargo-llvm-cov only, so it stays out of rust-toolchain.toml
+        run: |
+          rustup toolchain install
+          rustup component add llvm-tools
+
+      - uses: taiki-e/install-action@v2.90.8
+        with:
+          tool: cargo-llvm-cov
+
+      - uses: Swatinem/rust-cache@v2.9.3
+        with:
+          env-vars: "CARGO CC CFLAGS CXX CMAKE RUST PYO3"
+
+      - name: Point pyo3 at the uv interpreter
+        # `cargo test` links libpython; the test binary finds it through LD_LIBRARY_PATH
+        run: |
+          uv python install 3.13
+          python="$(uv python find 3.13)"
+          echo "PYO3_PYTHON=${python}" >> "$GITHUB_ENV"
+          echo "LD_LIBRARY_PATH=$("$python" -c 'import sysconfig; print(sysconfig.get_config_var("LIBDIR"))')" >> "$GITHUB_ENV"
+
+      - name: Install dependencies
+        # the project itself is built (instrumented) by maturin below
+        run: uv sync --locked --all-extras --no-extra docs --no-group dev --group test --no-install-project
+
+      - name: cargo fmt, cargo clippy
+        # the Rust half of `make lint`; restriction lints are denied in Cargo.toml [workspace.lints]
+        run: make lint-rust
+
+      - name: cargo test and pytest under coverage
+        # one instrumented build: `cargo test` and the Python suite run against it (08 §5);
+        # Python coverage comes from the Tests legs
+        run: |
+          # shellcheck source=/dev/null
+          source <(cargo llvm-cov show-env --sh)
+          cargo llvm-cov clean --workspace
+          cargo test --locked --workspace
+          uvx --from 'maturin>=1.14,<2' maturin develop --uv --locked
+          uv run pytest
+          # generated code is executed but kept out of the figure (R26): crates/*/src/generated/ (C-18)
+          ignore='/src/generated/'
+          cargo llvm-cov report --lcov --output-path rust.lcov --ignore-filename-regex "$ignore"
+          cargo llvm-cov report --summary-only --ignore-filename-regex "$ignore"
+
+      - name: Upload Rust coverage
+        uses: codecov/codecov-action@v7
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: rust.lcov
+          flags: rust
+          name: rust
+          fail_ci_if_error: true
+
+  butcher:
+    name: Butcher (${{ matrix.os }})
+    # crates/butcher and xtask are pure Rust (no pyo3, no libpython); fmt and clippy run in the `rust` job
+    needs: plan
+    if: needs.plan.outputs.rust == 'true'
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-latest
+          - macos-latest
+          - windows-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: Install the Rust toolchain
+        run: rustup toolchain install
+
+      - uses: Swatinem/rust-cache@v2.9.3
+        with:
+          env-vars: "CARGO CC CFLAGS CXX CMAKE RUST"
+
+      - name: cargo test
+        run: cargo test --locked -p butcher -p xtask
+
+      - name: cargo xtask butcher --help
+        run: cargo xtask butcher --help

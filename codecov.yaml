@@ -6,6 +6,17 @@ coverage:
   precision: 2
   round: down
   range: "70...100"
+  status:
+    project:
+      python:
+        flags:
+          - unittests
+        target: 100%
+      # generated code (crates/*/src/generated/) is left out of the Rust report itself (tests.yml)
+      rust:
+        flags:
+          - rust
+        target: auto
 
 parsers:
   gcov:
@@ -21,4 +32,15 @@ comment:
   require_changes: no
   branches:
     - dev-3.x
-  after_n_builds: 15
+  # the Python legs of a PR (tests.yml, plan job); the Rust upload is a separate flag
+  after_n_builds: 5
+
+flags:
+  unittests:
+    paths:
+      - aiogram/
+  rust:
+    paths:
+      - crates/
+    # Python-only PRs skip the Rust job: keep the base commit's Rust figure
+    carryforward: true
