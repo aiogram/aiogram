@@ -113,6 +113,34 @@ class TestCopyStorage:
         await other.set_state(make_key(), None)
         assert await storage.get_state(make_key()) == "state"
 
+    async def test_shallow_copy_shares_the_lock(self):
+        storage = MemoryStorage()
+        other = copy.copy(storage)
+        assert other.storage is storage.storage
+        assert other._lock is storage._lock
+
+
+class TestNoUserCodeUnderLock:
+    async def test_set_data_stores_a_plain_dict(self):
+        class LoudDict(dict):
+            def copy(self):
+                raise AssertionError("user code")
+
+        storage = MemoryStorage()
+        key = make_key()
+        await storage.set_data(key, LoudDict(foo="bar"))
+        assert type(storage.storage[key].data) is dict
+        assert await storage.update_data(key, {"baz": 1}) == {"foo": "bar", "baz": 1}
+
+    async def test_update_data_does_not_mutate_the_stored_dict(self):
+        storage = MemoryStorage()
+        key = make_key()
+        data = {"a": 1}
+        storage.storage[key] = MemoryStorageRecord(data=data)
+        await storage.update_data(key, {"b": 2})
+        assert data == {"a": 1}
+        assert storage.storage[key].data == {"a": 1, "b": 2}
+
 
 class TestStorageKey:
     def test_slots(self):

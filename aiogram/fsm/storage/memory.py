@@ -49,8 +49,14 @@ class MemoryStorage(BaseStorage):
         # ponytail: one global lock (PD-21); shard it if contention is ever measured
         self._lock = Lock()
 
+    def __copy__(self) -> "MemoryStorage":
+        # a shallow copy shares the records, so it must share the lock that guards them too
+        clone = object.__new__(type(self))
+        clone.__dict__.update(self.__dict__)
+        return clone
+
     def __getstate__(self) -> dict[str, Any]:
-        # copy.deepcopy() and pickle: a lock can't be copied, the copy gets its own
+        # copy.deepcopy() and pickle copy the records, so the copy gets a lock of its own
         state = self.__dict__.copy()
         del state["_lock"]
         return state
@@ -85,7 +91,7 @@ class MemoryStorage(BaseStorage):
         if not isinstance(data, dict):
             msg = f"Data must be a dict or dict-like object, got {type(data).__name__}"
             raise DataNotDictLikeError(msg)
-        data = data.copy()
+        data = dict(data)  # a plain dict: no user override runs under the lock later
         with self._lock:
             record = self.storage.get(key) or MemoryStorageRecord()
             record.data = data
@@ -109,9 +115,9 @@ class MemoryStorage(BaseStorage):
             data = dict(data)
         with self._lock:
             record = self.storage.get(key) or MemoryStorageRecord()
-            record.data.update(data)
+            record.data = merged = {**record.data, **data}  # a new dict, as the 3.x get+set did
             self._put(key, record)
-            return record.data.copy()
+            return merged.copy()
 
     @overload
     async def get_value(self, storage_key: StorageKey, dict_key: str) -> Any | None: ...
