@@ -295,6 +295,7 @@ from .session.aiohttp import AiohttpSession
 from .session.base import DEFAULT_DOWNLOAD_TIMEOUT, BaseSession, DownloadTimeout
 
 T = TypeVar("T")
+_BinaryIOT = TypeVar("_BinaryIOT", bound=BinaryIO)
 
 
 logger = logging.getLogger(__name__)
@@ -327,8 +328,13 @@ class DownloadStream(AsyncIterator[bytes]):
         if self._stream is None:
             if self._open is None:
                 raise StopAsyncIteration
-            open_stream, self._open = self._open, None
-            self._stream = await open_stream()
+            # `_open` stays set until the open succeeds, so a failed or cancelled open can be retried
+            stream = await self._open()
+            if self._open is None:
+                # closed while opening: never read from it
+                await stream.aclose()
+                raise StopAsyncIteration
+            self._open, self._stream = None, stream
         return await self._stream.__anext__()
 
     async def aclose(self) -> None:
@@ -590,7 +596,17 @@ class Bot:
     async def download_file(
         self,
         file_path: str | pathlib.Path,
-        destination: BinaryIO | None = None,
+        destination: _BinaryIOT,
+        timeout: DownloadTimeout | float = ...,
+        chunk_size: int = ...,
+        seek: bool = ...,
+    ) -> _BinaryIOT: ...
+
+    @overload
+    async def download_file(
+        self,
+        file_path: str | pathlib.Path,
+        destination: None = None,
         timeout: DownloadTimeout | float = ...,
         chunk_size: int = ...,
         seek: bool = ...,
@@ -636,7 +652,17 @@ class Bot:
     async def download(
         self,
         file: str | Downloadable,
-        destination: BinaryIO | None = None,
+        destination: _BinaryIOT,
+        timeout: DownloadTimeout | float = ...,
+        chunk_size: int = ...,
+        seek: bool = ...,
+    ) -> _BinaryIOT: ...
+
+    @overload
+    async def download(
+        self,
+        file: str | Downloadable,
+        destination: None = None,
         timeout: DownloadTimeout | float = ...,
         chunk_size: int = ...,
         seek: bool = ...,

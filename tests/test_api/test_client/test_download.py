@@ -178,8 +178,48 @@ class TestStream:
         stream = DownloadStream(fail)
         with pytest.raises(ZeroDivisionError):
             await anext(stream)
+        await stream.aclose()
         with pytest.raises(StopAsyncIteration):
             await anext(stream)
+
+    async def test_retry_after_open_failure(self):
+        calls = 0
+
+        async def chunks() -> AsyncGenerator[bytes, None]:
+            yield b"ok"
+
+        async def flaky() -> AsyncGenerator[bytes, None]:
+            nonlocal calls
+            calls += 1
+            if calls == 1:
+                raise ZeroDivisionError
+            return chunks()
+
+        stream = DownloadStream(flaky)
+        with pytest.raises(ZeroDivisionError):
+            await anext(stream)
+        assert [chunk async for chunk in stream] == [b"ok"]
+
+    async def test_close_during_open(self):
+        opened = asyncio.Event()
+        release = asyncio.Event()
+
+        async def chunks() -> AsyncGenerator[bytes, None]:
+            yield b"late"  # pragma: no cover
+
+        async def slow() -> AsyncGenerator[bytes, None]:
+            opened.set()
+            await release.wait()
+            return chunks()
+
+        stream = DownloadStream(slow)
+        task = asyncio.create_task(anext(stream))
+        await opened.wait()
+        await stream.aclose()
+        release.set()
+        with pytest.raises(StopAsyncIteration):
+            await task
+        assert [chunk async for chunk in stream] == []
 
     def test_wrong_file(self):
         with pytest.raises(TypeError):
@@ -275,6 +315,15 @@ class TestLegacySession:
             warnings.simplefilter("error")
             await Bot(FAKE_TOKEN, session=NewSession()).download_file(FILE_PATH, timeout=3)
         assert received == [DownloadTimeout(connect=None, sock_read=None, total=3)]
+
+    def test_forwarding_wrapper_is_not_legacy(self):
+        class Wrapper(AiohttpSession):
+            def stream_content(self, *args: Any, **kwargs: Any):  # pragma: no cover
+                return super().stream_content(*args, **kwargs)
+
+        with warnings.catch_warnings():
+            warnings.simplefilter("error")
+            assert _takes_download_timeout(Wrapper)
 
     @pytest.mark.skipif(sys.version_info < (3, 14), reason="lazy annotations")
     def test_unresolvable_annotation(self):

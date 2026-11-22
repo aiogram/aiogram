@@ -10,7 +10,8 @@ from aiogram.client.session.base import DownloadTimeout
 async def check(bot: Bot) -> None:
     assert_type(await bot.download("id", "x.bin"), None)
     assert_type(await bot.download("id", Path("x.bin")), None)
-    assert_type(await bot.download("id", io.BytesIO()), BinaryIO)
+    assert_type(await bot.download("id", io.BytesIO()), io.BytesIO)
+    assert_type(await bot.download_file("path", io.BytesIO()), io.BytesIO)
     assert_type(await bot.download("id"), BinaryIO)
     assert_type(await bot.download_file("path", "x.bin", timeout=5), None)
     assert_type(await bot.download_file("path", timeout=DownloadTimeout(total=5)), BinaryIO)

@@ -92,7 +92,10 @@ def _takes_download_timeout(cls: type[BaseSession]) -> bool:
         # Only the default is read: an unresolvable annotation must not raise
         options["annotation_format"] = Format.FORWARDREF
     parameter = inspect.signature(cls.stream_content, **options).parameters.get("timeout")
-    if parameter is not None and isinstance(parameter.default, DownloadTimeout):
+    if parameter is None:
+        # A forwarding override (`*args, **kwargs`) passes the value on unchanged
+        return True
+    if isinstance(parameter.default, DownloadTimeout):
         return True
     # ponytail: plain DeprecationWarning until the I-12 AiogramDeprecationWarning class lands
     warnings.warn(

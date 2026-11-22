@@ -56,7 +56,7 @@ In the first case, the function will return your object:
 .. code-block::
 
     my_object = MyBinaryIO()
-    result = await bot.download_file(file_path, my_object)
+    result: MyBinaryIO = await bot.download_file(file_path, my_object)
     # print(result is my_object)  # True
 
 If you leave the default value, an :obj:`io.BytesIO` object will be created and returned.
@@ -66,7 +66,8 @@ If you leave the default value, an :obj:`io.BytesIO` object will be created and 
     result = await bot.download_file(file_path)
 
 Type checkers see the difference: with a path destination the return type is :code:`None`,
-with a binary I/O object or the default it is :obj:`typing.BinaryIO`.
+with a binary I/O object it is the type of that object, and with the default it is
+:obj:`typing.BinaryIO`.
 
 
 Download file in short way
