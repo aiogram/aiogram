@@ -210,7 +210,7 @@ impl<'a> Resolver<'a> {
                 let mut require = Vec::new();
                 for (i, g) in s.require.iter().enumerate() {
                     let at = format!("{name}.require[{i}].path");
-                    if let Some(path) = self.guard(&at, t, &g.path, &guarded) {
+                    if let Some((path, _)) = self.guard(&at, t, &g.path, &guarded) {
                         guarded.push(path.clone());
                         require.push(Guard {
                             path,
@@ -221,7 +221,16 @@ impl<'a> Resolver<'a> {
                 let mut forbid = Vec::new();
                 for (i, g) in s.forbid.iter().enumerate() {
                     let at = format!("{name}.forbid[{i}].path");
-                    if let Some(path) = self.guard(&at, t, &g.path, &guarded) {
+                    let Some((path, val)) = self.guard(&at, t, &g.path, &guarded) else {
+                        continue;
+                    };
+                    if !val.nullable {
+                        let message = format!(
+                            "column 1: `{}` is never None here, so this guard always raises",
+                            g.path
+                        );
+                        self.fail(&at, message);
+                    } else {
                         forbid.push(Guard {
                             path,
                             message: g.message.clone(),
@@ -229,7 +238,11 @@ impl<'a> Resolver<'a> {
                     }
                 }
                 for (i, p) in s.ignore.iter().enumerate() {
-                    self.param(&format!("{name}.ignore[{i}]"), method, p);
+                    let at = format!("{name}.ignore[{i}]");
+                    if self.param(&at, method, p).is_some_and(|x| x.required.value) {
+                        let message = format!("`{p}` of `{m}` is required and cannot be ignored");
+                        self.fail(&at, message);
+                    }
                 }
                 let mut fill = BTreeMap::new();
                 for (p, f) in &s.fill {
@@ -268,7 +281,7 @@ impl<'a> Resolver<'a> {
         root: &str,
         text: &str,
         guarded: &[Vec<Step>],
-    ) -> Option<Vec<Step>> {
+    ) -> Option<(Vec<Step>, Val)> {
         let segments = match parse_path(text) {
             Ok(s) => s,
             Err(e) => {
@@ -282,7 +295,6 @@ impl<'a> Resolver<'a> {
             return None;
         }
         self.path(at, root, &segments, guarded)
-            .map(|(steps, _)| steps)
     }
 
     fn syntax(&mut self, at: &str, e: &Syntax) {
@@ -299,8 +311,10 @@ impl<'a> Resolver<'a> {
         fill: &Fill,
         guarded: &[Vec<Step>],
     ) -> Option<Filled> {
-        let param = self.param(at, method, name)?;
+        // the value is resolved even for an unknown param, so one run reports every error
+        let param = self.param(at, method, name);
         let (filled, val) = self.fill(at, root, fill, guarded)?;
+        let param = param?;
         let at = if fill.when.is_some() {
             format!("{at}.expr")
         } else {
@@ -431,6 +445,20 @@ impl<'a> Resolver<'a> {
                 self.fail(at, message);
                 return None;
             };
+            let unknown: Vec<String> = members
+                .iter()
+                .filter_map(|m| m.err())
+                .map(|m| format!("`{m}`"))
+                .collect();
+            if !unknown.is_empty() {
+                let message = format!(
+                    "column {column}: `{owner}` has members that are not types in the IR: {}",
+                    unknown.join(", ")
+                );
+                self.fail(at, message);
+                return None;
+            }
+            let members: Vec<&Type> = members.into_iter().flatten().collect();
             let found: Vec<Option<&Field>> = members
                 .iter()
                 .map(|t| t.fields.iter().find(|f| self.py(t, f) == seg.name))
@@ -477,6 +505,17 @@ impl<'a> Resolver<'a> {
                 self.fail(at, message);
                 return None;
             }
+            if present.iter().any(|f| f.name != first.name) {
+                let wire: Vec<String> = present.iter().map(|f| format!("`{}`", f.name)).collect();
+                let message = format!(
+                    "column {column}: `{}` is a different wire field on the members of `{owner}` ({}): \
+                     one step reads one field",
+                    seg.name,
+                    wire.join(", ")
+                );
+                self.fail(at, message);
+                return None;
+            }
             let optional = present.len() < members.len() || !present.iter().all(|f| is_required(f));
             steps.push(Step {
                 field: first.name.clone(),
@@ -490,21 +529,22 @@ impl<'a> Resolver<'a> {
         Some((steps, Val { ty, nullable }))
     }
 
-    /// The object types a value of `ty` can be: one type, or the members of a union.
-    fn members(&self, ty: &TypeRef) -> Option<(&'a str, Vec<&'a Type>)> {
+    /// The object types a value of `ty` can be: one type, or the members of a union (`Err` for a member name that
+    /// is not a type).
+    fn members(&self, ty: &TypeRef) -> Option<(&'a str, Vec<Result<&'a Type, &'a str>>)> {
         let ir = self.ir;
         let TypeRef::Ref(name) = ty else {
             return None;
         };
         if let Some(t) = ir.types.iter().find(|t| t.name == *name) {
-            return Some((&t.name, vec![t]));
+            return Some((&t.name, vec![Ok(t)]));
         }
         let union = ir.unions.iter().find(|u| u.name == *name)?;
         let members = union
             .members
             .value
             .iter()
-            .filter_map(|m| ir.types.iter().find(|t| t.name == *m))
+            .map(|m| ir.types.iter().find(|t| t.name == *m).ok_or(m.as_str()))
             .collect();
         Some((&union.name, members))
     }

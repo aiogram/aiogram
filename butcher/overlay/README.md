@@ -94,7 +94,8 @@ direct_messages_topic_id = "self.direct_messages_topic?.topic_id"
 reply_parameters = "self.as_reply_parameters()"
 ```
 
-*Fill-DSL* (`crates/butcher/src/dsl.rs`), for shortcut fills and guards and for `events.toml`:
+*Fill-DSL* (`crates/butcher/src/dsl.rs`), resolved for shortcut fills and guards and for `events.toml` (the
+`content.toml` `copy.fill` text is not resolved yet; C-20 owns `send_copy`):
 ```text
 expr  := path | "self." ident "()" | "None"
 when  := path                        (truthiness; false omits the param)
@@ -107,7 +108,9 @@ path  := "self." ident (("." | "?.") ident)*
 - A step after an optional field needs `?.` or an earlier `require` guard on that exact path.
 - The value must be assignable to the param: integer widths mix, `True` fits `Boolean`, a member fits its union.
   A value that may be `None` (optional, `?.`, a `when`, `None`) cannot fill a required param.
-- `self.<helper>()` is a hand-written zero-argument helper declared for the type (`*_ext.pyi`).
+- `self.<helper>()` is a hand-written zero-argument helper declared for the type (`*_ext.pyi`); it never returns
+  `None`.
+- A `forbid` path must be able to be `None`, and an ignored param must be optional.
 - A failed guard raises `ShortcutUnavailableError(AiogramError, ValueError)` with its message, raised explicitly so
   `python -O` keeps it (C-20).
 

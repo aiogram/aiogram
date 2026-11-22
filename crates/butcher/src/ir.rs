@@ -344,7 +344,7 @@ pub struct Filled {
 pub enum FillValue {
     /// Read from the object, starting at `self`.
     Path(Vec<Step>),
-    /// `self.<name>()`, a hand-written zero-argument helper (`*_ext.rs`).
+    /// `self.<name>()`, a hand-written zero-argument helper: implemented in `*_ext.rs`, declared in `*_ext.pyi`.
     Helper(String),
     None,
 }

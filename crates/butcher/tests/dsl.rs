@@ -694,3 +694,96 @@ fn a_step_into_a_type_missing_from_the_ir_is_rejected() {
     let expected = format!("`self.chat.{name}` is `ChatType`, which has no fields");
     assert!(errors[0].to_string().ends_with(&expected), "{}", errors[0]);
 }
+
+#[test]
+fn a_required_param_cannot_be_ignored_and_a_forbid_must_be_able_to_pass() {
+    let text = "[x]\nmethod = \"deleteMessage\"\nignore = [\"message_id\"]\n\
+                require = [{ path = \"self.business_connection_id\", message = \"m\" }]\n\
+                forbid = [{ path = \"self.chat\", message = \"m\" }, { path = \"self.business_connection_id\", message = \"m\" }]\n";
+    let errors = errors("ignore-forbid", &[("shortcuts/Message.toml", text)]);
+    let errors: Vec<(String, String)> = errors.into_iter().map(|(_, a, m)| (a, m)).collect();
+    assert_eq!(
+        errors,
+        [
+            pair(
+                "x.forbid[0].path",
+                "column 1: `self.chat` is never None here, so this guard always raises"
+            ),
+            pair(
+                "x.forbid[1].path",
+                "column 1: `self.business_connection_id` is never None here, so this guard always raises"
+            ),
+            pair(
+                "x.ignore[0]",
+                "`message_id` of `deleteMessage` is required and cannot be ignored"
+            ),
+        ]
+    );
+}
+
+#[test]
+fn an_unknown_param_still_reports_the_errors_of_its_value() {
+    let text = "[x]\nmethod = \"sendMessage\"\n[x.fill]\nchat_idd = \"self.chta.id\"\n";
+    let errors = errors("both-errors", &[("shortcuts/Message.toml", text)]);
+    assert_eq!(errors.len(), 2, "{errors:?}");
+    assert!(errors[0].2.starts_with("`chat_idd` is not a param"));
+    assert!(
+        errors[1]
+            .2
+            .starts_with("column 6: `Message` has no field `chta`")
+    );
+}
+
+fn union_ir(edit: impl FnOnce(&mut Ir)) -> Vec<String> {
+    let mut ir = ir();
+    edit(&mut ir);
+    let dir = Path::new(env!("CARGO_TARGET_TMPDIR")).join("dsl/union-shape");
+    let _ = std::fs::remove_dir_all(&dir);
+    std::fs::create_dir_all(&dir).unwrap();
+    std::fs::write(
+        dir.join("events.toml"),
+        "[callback_query]\nthread_id = \"self.message?.date\"\n",
+    )
+    .unwrap();
+    let overlay = Overlay::load(&dir).unwrap();
+    match dsl::apply(&mut ir, &overlay, &helpers()) {
+        Ok(()) => vec![],
+        Err(errors) => errors.iter().map(ToString::to_string).collect(),
+    }
+}
+
+#[test]
+fn a_union_member_missing_from_the_ir_is_an_error() {
+    let errors = union_ir(|ir| {
+        ir.unions[0].members.value.push("Nope".to_owned());
+    });
+    assert!(
+        errors[0].ends_with(
+            "column 15: `MaybeInaccessibleMessage` has members that are not types in the IR: `Nope`"
+        ),
+        "{errors:?}"
+    );
+}
+
+#[test]
+fn a_union_step_must_read_one_wire_field() {
+    // `names.toml` maps `ident` to `message_id` on one member and to `date` on the other
+    let mut ir = ir();
+    let dir = Path::new(env!("CARGO_TARGET_TMPDIR")).join("dsl/union-wire");
+    let _ = std::fs::remove_dir_all(&dir);
+    std::fs::create_dir_all(&dir).unwrap();
+    std::fs::write(
+        dir.join("events.toml"),
+        "[callback_query]\nthread_id = \"self.message?.ident\"\n",
+    )
+    .unwrap();
+    let names =
+        "[types.Message]\nmessage_id = \"ident\"\n[types.InaccessibleMessage]\ndate = \"ident\"\n";
+    std::fs::write(dir.join("names.toml"), names).unwrap();
+    let overlay = Overlay::load(&dir).unwrap();
+    let errors = dsl::apply(&mut ir, &overlay, &helpers()).unwrap_err();
+    assert!(errors[0].to_string().ends_with(
+        "column 15: `ident` is a different wire field on the members of `MaybeInaccessibleMessage` \
+         (`message_id`, `date`): one step reads one field"
+    ), "{}", errors[0]);
+}
