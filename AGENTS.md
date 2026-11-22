@@ -55,6 +55,8 @@ make lint-workflows
 ```
 
 Without a GitHub token zizmor runs in offline mode and skips its online audits (known-vulnerable-actions and friends), which CI does run. To reproduce CI exactly, prefix `make lint-workflows` with `GH_TOKEN=$(gh auth token)`.
+actionlint runs shellcheck on `run:` scripts only when `shellcheck` is on `PATH` (CI runners have it) and
+skips it silently otherwise: install it (`brew install shellcheck`) or a SC#### error shows up only in CI.
 
 To run a test file on another interpreter of the CI matrix (3.11–3.15, 3.14t) without touching `.venv`:
 
@@ -192,6 +194,10 @@ These patterns repeatedly appeared in maintainer feedback and should be treated 
   PR. A new input of the extension goes into that cache key and into `[tool.uv] cache-keys` together; a new
   Rust-side path into the `RUST` pattern of the `plan` job. PRs run a reduced leg set, push to `dev-4.x` the full
   matrix; a `schedule` trigger does not fire on `dev-4.x` (not the default branch).
+- Rust coverage locally: `source <(cargo llvm-cov show-env --sh)`, `cargo test --workspace`, `make dev`, `uv run
+  pytest`, `cargo llvm-cov report` (what the CI Rust job runs). The instrumentation goes through a rustc wrapper
+  that cargo's fingerprint does not see, so a later plain `make dev` keeps the instrumented build (it writes
+  `default_*.profraw` files): `cargo clean -p aiogram-core -p butcher -p xtask` afterwards.
 - `clippy.toml`'s `allow-*-in-tests` covers `#[test]` functions and `#[cfg(test)]` modules only. Helpers in an
   integration test crate (`crates/*/tests/*.rs`) need `#![allow(clippy::unwrap_used)]` at the top of the file.
 - The version lives in `aiogram/__meta__.py` and is copied, static, into `pyproject.toml` and

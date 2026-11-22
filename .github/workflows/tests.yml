@@ -477,6 +477,7 @@ jobs:
         # one instrumented build: `cargo test` and the Python suite run against it (08 §5);
         # Python coverage comes from the Tests legs
         run: |
+          # shellcheck source=/dev/null
           source <(cargo llvm-cov show-env --sh)
           cargo llvm-cov clean --workspace
           cargo test --locked --workspace
