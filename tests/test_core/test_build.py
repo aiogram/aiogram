@@ -88,7 +88,9 @@ def test_bump_version_forms(version: str, cargo: str, status: str):
     assert bump_version.development_status(version) == f"Development Status :: {status}"
 
 
-@pytest.mark.parametrize("version", ["4.0.0.dev1", "4.0.0.post1", "4.0.0+local", "4.0.0-alpha1"])
+@pytest.mark.parametrize(
+    "version", ["4.0.0.dev1", "4.0.0.post1", "4.0.0+local", "4.0.0-alpha1", "1!4.0.0"]
+)
 def test_bump_version_rejects(version: str):
     with pytest.raises(ValueError, match="use X.Y.Z"):
         bump_version.parse(version)
@@ -142,3 +144,11 @@ def test_submodule_imports_in_fresh_process(name: str):
         f"assert all(getattr(m, n).__module__ == {module!r} for n in {names!r}); "
         f"assert not {FREE_THREADED} or not sys._is_gil_enabled()"
     )
+
+
+def test_bump_from_pre_release_needs_explicit_version(tmp_path, monkeypatch: pytest.MonkeyPatch):
+    meta = tmp_path / "__meta__.py"
+    meta.write_text('__version__ = "4.0.0rc1"\n')
+    monkeypatch.setattr(bump_version, "META", meta)
+    with pytest.raises(ValueError, match="is a pre-release"):
+        bump_version.bump_version("patch")

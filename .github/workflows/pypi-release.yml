@@ -39,8 +39,11 @@ jobs:
 
       - name: Install the Rust toolchain
         # maturin compiles aiogram._core for the wheel, and again when the smoke step installs the
-        # sdist; no arguments: the channel pinned in rust-toolchain.toml
-        run: rustup toolchain install
+        # sdist; no arguments: the channel pinned in rust-toolchain.toml. Both builds run from an
+        # unpacked sdist, which has no rust-toolchain.toml, so the pin is exported for them.
+        run: |
+          rustup toolchain install
+          echo "RUSTUP_TOOLCHAIN=$(rustup show active-toolchain | cut -d' ' -f1)" >> "$GITHUB_ENV"
 
       - name: Build sdist and wheel
         run: uv build

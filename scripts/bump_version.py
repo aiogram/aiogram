@@ -29,7 +29,13 @@ STATUS = {"a": "3 - Alpha", "b": "4 - Beta", "rc": "4 - Beta", None: "5 - Produc
 
 def parse(version: str) -> Version:
     parsed = Version(version)
-    if str(parsed) != version or parsed.dev is not None or parsed.post is not None or parsed.local:
+    if (
+        str(parsed) != version
+        or parsed.epoch
+        or parsed.dev is not None
+        or parsed.post is not None
+        or parsed.local
+    ):
         raise ValueError(f"{version!r}: use X.Y.Z, X.Y.ZaN, X.Y.ZbN or X.Y.ZrcN")
     return parsed
 
@@ -67,8 +73,12 @@ def bump_version(part: str) -> str:
     match = META_VERSION.search(META.read_text())
     if not match:
         raise ValueError(f"Could not find version in {META}")
-    major, minor, patch = parse(match.group(1)).release
+    current = parse(match.group(1))
+    major, minor, patch = current.release
 
+    if current.pre is not None and not part.startswith("to:"):
+        # 4.0.0rc1 + patch would skip 4.0.0 itself
+        raise ValueError(f"{current} is a pre-release: name the next version with to:X.Y.Z")
     if part == "major":
         new_version = f"{major + 1}.0.0"
     elif part == "minor":

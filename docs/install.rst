@@ -12,8 +12,8 @@ From PyPI
 No wheel for your platform
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-aiogram contains a compiled core (``aiogram._core``), so PyPI ships a wheel per Python version
-and platform. Wheels are built for CPython 3.11–3.15 and free-threaded 3.14t / 3.15t on Linux
+aiogram 4 contains a compiled core (``aiogram._core``), so a wheel fits one Python version and
+platform. The 4.0 release wheels target CPython 3.11–3.15 and free-threaded 3.14t / 3.15t on Linux
 (manylinux and musllinux, x86_64 and aarch64), macOS (x86_64 and arm64) and Windows x64.
 PyPy is not supported.
 
