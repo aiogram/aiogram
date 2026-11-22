@@ -188,7 +188,7 @@ Verification method and results: [_VERIFICATION.md](_VERIFICATION.md).
 | [D-03](D-client/D-03-token-safe-network-errors.md) | Token-safe network errors (`from None`, `.original`, redacted URLs) | `done` | no | S | A-01, A-11 |
 | [D-04](D-client/D-04-drop-aiofiles-input-file-replayable.md) | Drop `aiofiles`; add `InputFile.replayable` | `done` | no | S | A-01, A-11 |
 | [D-05](D-client/D-05-download-lifecycle.md) | Download lifecycle: per-phase timeouts, `bot.stream()`, typed overloads | `done` | no | M | D-03, D-04 |
-| [D-06](D-client/D-06-request-middleware-manager.md) | Request middleware manager: prebuilt chain, `before=`/`after=` anchors, per-call request context | `todo` | no | S | A-01, H-01 |
+| [D-06](D-client/D-06-request-middleware-manager.md) | Request middleware manager: prebuilt chain, `before=`/`after=` anchors, per-call request context | `done` | no | S | A-01, H-01 |
 | [D-07](D-client/D-07-rust-encoder-json.md) | Rust encoder: JSON request body, `Default` resolution, value rules | `todo` | yes | L | B-01, B-09, B-13, C-20, C-21, D-01 |
 | [D-08](D-client/D-08-rust-encoder-multipart.md) | Rust encoder: multipart bodies and file extraction | `todo` | yes | M | B-01, B-09, B-13, C-20, D-04, D-07 |
 | [D-09](D-client/D-09-response-decoder.md) | Response decoder: `Response[T]` without pydantic, `getUpdates` per-update isolation | `todo` | yes | L | B-01, B-09, B-13, B-14, C-18, C-19, C-20, D-02 |

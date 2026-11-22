@@ -311,11 +311,11 @@ class TestBaseSession:
             mocked_close.assert_awaited_once()
 
     def test_add_middleware(self):
-        async def my_middleware(bot, method, make_request):
-            return await make_request(bot, method)
+        async def my_middleware(ctx):
+            return await ctx.next()
 
         session = CustomSession()
-        assert not session.middleware._middlewares
+        assert not session.middleware
 
         session.middleware(my_middleware)
         assert my_middleware in session.middleware
@@ -326,14 +326,14 @@ class TestBaseSession:
         flag_after = False
 
         @bot.session.middleware
-        async def my_middleware(make_request, b, method):
+        async def my_middleware(ctx):
             nonlocal flag_before, flag_after
             flag_before = True
             try:
-                assert isinstance(b, Bot)
-                assert isinstance(method, TelegramMethod)
+                assert isinstance(ctx.bot, Bot)
+                assert isinstance(ctx.method, TelegramMethod)
 
-                return await make_request(b, method)
+                return await ctx.next()
             finally:
                 flag_after = True
 
