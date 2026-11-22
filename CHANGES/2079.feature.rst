@@ -1,0 +1,4 @@
+:class:`~aiogram.fsm.storage.memory.MemoryStorage` is thread-safe: one lock guards every read and write,
+and :code:`update_data` merges in one step, so concurrent merges from several threads no longer lose keys.
+Reads no longer create records, so contexts that never get a state or data take no memory, and a record
+whose state is :code:`None` and whose data is empty is removed.
