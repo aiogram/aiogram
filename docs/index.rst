@@ -25,5 +25,6 @@ Contents
     api/index
     dispatcher/index
     utils/index
+    cli
     changelog
     contributing

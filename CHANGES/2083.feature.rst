@@ -1,0 +1,6 @@
+Added the built-in ``aiogram`` command line: ``aiogram`` and ``python -m aiogram`` run the same CLI,
+built on ``argparse`` with no extra dependencies. ``aiogram info`` (and ``aiogram info --json``) prints the
+aiogram, Rust core and Python versions, the free-threading and GIL state, the wheel tag and the installed optional
+packages, ready to paste into a bug report. Packages can add commands through the ``aiogram.cli`` entry-point
+group; a broken plugin is reported and the other commands keep working. ``aiogram migrate check|fix`` is
+reserved for the 4.0 migration tool.

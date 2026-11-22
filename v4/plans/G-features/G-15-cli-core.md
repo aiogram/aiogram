@@ -2,7 +2,7 @@
 
 | Field | Value |
 |---|---|
-| Status | `todo` |
+| Status | `done` |
 | Story | G — User-facing additions |
 | Target branch | `dev-4.x` |
 | Depends on | [B-01](../B-spike/B-01-crate-maturin-skeleton.md) |

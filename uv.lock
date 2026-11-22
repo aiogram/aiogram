@@ -42,9 +42,6 @@ dependencies = [
 ]
 
 [package.optional-dependencies]
-cli = [
-    { name = "aiogram-cli" },
-]
 docs = [
     { name = "furo" },
     { name = "markdown-include" },
@@ -106,7 +103,6 @@ test = [
 [package.metadata]
 requires-dist = [
     { name = "aiodns", marker = "extra == 'fast'", specifier = ">=4.0.0" },
-    { name = "aiogram-cli", marker = "extra == 'cli'", specifier = ">=1.1.0,<2.0.0" },
     { name = "aiohttp", specifier = ">=3.9.0,<3.15" },
     { name = "aiohttp-socks", marker = "extra == 'proxy'", specifier = ">=0.10.1,<1.12.0" },
     { name = "babel", marker = "extra == 'i18n'", specifier = ">=2.13.0,<3" },
@@ -133,7 +129,7 @@ requires-dist = [
     { name = "uvloop", marker = "(python_full_version >= '3.13' and sys_platform == 'darwin' and extra == 'fast') or (python_full_version >= '3.13' and sys_platform == 'linux' and extra == 'fast')", specifier = ">=0.21.0" },
     { name = "uvloop", marker = "(python_full_version < '3.13' and sys_platform == 'darwin' and extra == 'fast') or (python_full_version < '3.13' and sys_platform == 'linux' and extra == 'fast')", specifier = ">=0.17.0" },
 ]
-provides-extras = ["fast", "redis", "mongo", "proxy", "i18n", "cli", "signature", "test", "docs"]
+provides-extras = ["fast", "redis", "mongo", "proxy", "i18n", "signature", "test", "docs"]
 
 [package.metadata.requires-dev]
 dev = [
@@ -154,22 +150,6 @@ test = [
     { name = "pytest-mock", specifier = "==3.15.1" },
     { name = "pytest-mypy", specifier = "==1.0.1" },
     { name = "pytz", specifier = ">=2026,<2027" },
-]
-
-[[package]]
-name = "aiogram-cli"
-version = "1.1.0"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "aiogram" },
-    { name = "click" },
-    { name = "click-plugins" },
-    { name = "colorama" },
-    { name = "watchfiles" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/c4/ac/718fd49a582bfe2af85469ddf064692286410f39c68525b30a21c51f5920/aiogram_cli-1.1.0.tar.gz", hash = "sha256:52e54adccc4defecbb0cd653b800241063f5f80a6291ebdea90ae02a3b93d498", size = 9743, upload-time = "2024-05-31T23:07:01.899Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/a3/38/fd2ef47bbb45380ac4b94bf1f5c5ef25351010003173bbc50d2c1480183f/aiogram_cli-1.1.0-py3-none-any.whl", hash = "sha256:41c960ff5fe0cf9dd0ebf37ab49494880b7f322c9ef8086077247a6964725f8e", size = 11889, upload-time = "2024-05-31T23:07:00.881Z" },
 ]
 
 [[package]]
@@ -756,18 +736,6 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/b9/2e/0090cbf739cee7d23781ad4b89a9894a41538e4fcf4c31dcdd705b78eb8b/click-8.1.8.tar.gz", hash = "sha256:ed53c9d8990d83c2a27deae68e4ee337473f6330c040a31d4225c9574d16096a", size = 226593, upload-time = "2024-12-21T18:38:44.339Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/7e/d4/7ebdbd03970677812aac39c869717059dbb71a4cfc033ca6e5221787892c/click-8.1.8-py3-none-any.whl", hash = "sha256:63c132bbbed01578a06712a2d1f497bb62d9c1c0d329b7903a866228027263b2", size = 98188, upload-time = "2024-12-21T18:38:41.666Z" },
-]
-
-[[package]]
-name = "click-plugins"
-version = "1.1.1.2"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "click" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/c3/a4/34847b59150da33690a36da3681d6bbc2ec14ee9a846bc30a6746e5984e4/click_plugins-1.1.1.2.tar.gz", hash = "sha256:d7af3984a99d243c131aa1a828331e7630f4a88a9741fd05c927b204bcf92261", size = 8343, upload-time = "2025-06-25T00:47:37.555Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/3d/9a/2abecb28ae875e39c8cad711eb1186d8d14eab564705325e77e4e6ab9ae5/click_plugins-1.1.1.2-py2.py3-none-any.whl", hash = "sha256:008d65743833ffc1f5417bf0e78e8d2c23aab04d9745ba817bd3e71b0feb6aa6", size = 11051, upload-time = "2025-06-25T00:47:36.731Z" },
 ]
 
 [[package]]

@@ -26,7 +26,7 @@ surface in the repo, and the one where hand-edits silently rot.
 
 ## butcher is not installed in this checkout
 
-`rtk proxy uv run --extra cli butcher --help` → `Failed to spawn: butcher`. It is a
+`rtk proxy uv run butcher --help` → `Failed to spawn: butcher`. It is a
 maintainer-only tool. Consequence: you usually cannot regenerate. When a fix
 needs a config change, edit the `.butcher` file **and** mirror the exact same
 change into the rendered `.py`/`.rst`, and state in the PR body that regeneration
@@ -35,7 +35,7 @@ was not run locally. Never leave config and output disagreeing.
 Regeneration flow when it *is* available:
 
 ```bash
-rtk proxy uv run --extra cli butcher parse && rtk proxy uv run --extra cli butcher refresh && rtk proxy uv run --extra cli butcher apply all
+rtk proxy uv run butcher parse && rtk proxy uv run butcher refresh && rtk proxy uv run butcher apply all
 rtk proxy make bump                 # rewrites .apiversion, __meta__.py, README.rst, docs/index.rst
 ```
 

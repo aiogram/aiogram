@@ -24,7 +24,7 @@ rtk proxy make update-api args=patch        # butcher parse → refresh → appl
 ```
 
 `butcher` is a maintainer-only tool and is **not installed in this checkout**
-(`rtk proxy uv run --extra cli butcher --help` → `Failed to spawn: butcher`). If it is missing,
+(`rtk proxy uv run butcher --help` → `Failed to spawn: butcher`). If it is missing,
 the branch was probably produced elsewhere — start from step 2 against the existing
 diff. Do not attempt to hand-generate a whole API version.
 
