@@ -974,7 +974,7 @@ generated = false
 warn_3x = { site = "none", target = "", since = "" }
 
 [[entry]]
-id = "AG4055"
+id = "AG4057"
 kind = "removal-4.0"
 title = "the aiogram[cli] extra and the aiogram-cli package are replaced by the built-in aiogram command"
 decisions = ["D68", "D75", "R30"]
@@ -984,7 +984,7 @@ replacement = "install plain aiogram and uninstall aiogram-cli; the aiogram comm
 detection = "manual"
 confidence = "high"
 codemod = "none"
-suppress = "aiogram: ignore[AG4055]"
+suppress = "aiogram: ignore[AG4057]"
 gate = false
 generated = false
 warn_3x = { site = "none", target = "", since = "" }
