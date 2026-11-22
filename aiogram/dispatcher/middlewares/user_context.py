@@ -14,10 +14,6 @@ from aiogram.types import (
 
 EVENT_CONTEXT_KEY = "event_context"
 
-EVENT_FROM_USER_KEY = "event_from_user"
-EVENT_CHAT_KEY = "event_chat"
-EVENT_THREAD_ID_KEY = "event_thread_id"
-
 
 @dataclass(frozen=True)
 class EventContext:
@@ -47,16 +43,7 @@ class UserContextMiddleware(BaseMiddleware):
         if not isinstance(event, Update):
             msg = "UserContextMiddleware got an unexpected event type!"
             raise RuntimeError(msg)
-        event_context = data[EVENT_CONTEXT_KEY] = self.resolve_event_context(event=event)
-
-        # Backward compatibility
-        if event_context.user is not None:
-            data[EVENT_FROM_USER_KEY] = event_context.user
-        if event_context.chat is not None:
-            data[EVENT_CHAT_KEY] = event_context.chat
-        if event_context.thread_id is not None:
-            data[EVENT_THREAD_ID_KEY] = event_context.thread_id
-
+        data[EVENT_CONTEXT_KEY] = self.resolve_event_context(event=event)
         return await handler(event, data)
 
     @classmethod
@@ -207,7 +194,7 @@ class UserContextMiddleware(BaseMiddleware):
         if event.stopped_message_generation:
             stopped = event.stopped_message_generation
             # sendMessageDraft targets a private chat, so chat.id is the user id.
-            # Derive the user from the chat to expose event_from_user/state
+            # Derive the user from the chat to expose event_context.user/state
             # to handlers, like every other private-chat branch does.
             return EventContext(
                 chat=stopped.chat,

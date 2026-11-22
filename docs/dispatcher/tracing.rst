@@ -90,8 +90,7 @@ Key                       Meaning
 :code:`method`            Bot API method name (:code:`API_CALL` spans)
 :code:`phase`             Sub-phase of a span, e.g. :code:`decode` on :code:`UPDATE`
 :code:`isolation_wait_ms` Time spent waiting for the isolation lock (:code:`UPDATE`)
-:code:`result`            :code:`unhandled`, :code:`rejected`, :code:`skip` or the
-                          result's type name
+:code:`result`            :code:`unhandled`, :code:`skip` or the result's type name
 :code:`exception`         The exception object raised by the stage
 ========================= ===========================================================
 

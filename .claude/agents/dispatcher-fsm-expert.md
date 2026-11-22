@@ -17,8 +17,8 @@ but FSM state is unavailable (#1743), handler registration order, `enter` handle
 not receiving data. Regression tests for each live in `tests/test_issues/`.
 
 **Event context resolution** — `dispatcher/middlewares/user_context.py::resolve_event_context`
-must have a branch per update type. Missing branch ⇒ `event_from_user` / `event_chat`
-silently absent instead of raising. Past misses: business-account callback queries,
+must have a branch per update type. Missing branch ⇒ `event_context.user` / `event_context.chat`
+silently `None` instead of raising. Past misses: business-account callback queries,
 `poll_answer` `voter_chat`.
 
 **Dependency injection** — `dispatcher/event/handler.py` filters kwargs by handler

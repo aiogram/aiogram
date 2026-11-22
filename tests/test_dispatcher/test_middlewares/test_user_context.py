@@ -53,9 +53,7 @@ class TestUserContextMiddleware:
         assert event_context.chat is chat
         assert event_context.user is user
         assert event_context.thread_id == thread_id
-        assert data["event_chat"] is chat
-        assert data["event_from_user"] is user
-        assert data["event_thread_id"] == thread_id
+        assert data.keys() == {"event_context"}
 
     @pytest.mark.parametrize(
         "source, expected_user",
@@ -120,7 +118,6 @@ class TestUserContextMiddleware:
             username="testuser",
         )
         assert event_context.user_id == 42
-        assert data["event_from_user"] == event_context.user
 
     async def test_stopped_message_generation_resolves_user_without_chat_names(self):
         middleware = UserContextMiddleware()
@@ -133,7 +130,7 @@ class TestUserContextMiddleware:
         data = {}
         await middleware(next_handler, update, data)
 
-        assert data["event_from_user"] == User(id=42, is_bot=False, first_name="")
+        assert data["event_context"].user == User(id=42, is_bot=False, first_name="")
 
     @pytest.mark.parametrize("chat", [Chat(id=42, type="private"), None])
     async def test_widget_query(self, chat: Chat | None):

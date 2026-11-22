@@ -80,13 +80,13 @@ under `start_polling`.
 
 #### Scenario: Selective arguments
 
-- **GIVEN** the context contains `bot`, `state`, `event_from_user` and more
+- **GIVEN** the context contains `bot`, `state`, `event_context` and more
 - **WHEN** a handler is declared as `async def h(message: Message, state: FSMContext)`
 - **THEN** it is called with only those arguments
 
 #### Scenario: Workflow data
 
-- **WHEN** `Dispatcher(..., my_dep=obj)` is constructed or `dp["my_dep"] = obj` is set
+- **WHEN** `Dispatcher(..., my_dep=obj)` is constructed or `dp.workflow_data["my_dep"] = obj` is set
 - **THEN** `my_dep` is available to every handler and middleware
 
 #### Scenario: Filter results in context
@@ -185,15 +185,3 @@ and SHALL receive the dispatcher workflow data.
 
 - **WHEN** the dispatcher stops
 - **THEN** every `shutdown` callback is awaited, and bot sessions are closed when `close_bot_session` is enabled
-
-### Requirement: Class-based handlers
-
-The framework SHALL provide base classes (`BaseHandler` and per-event subclasses
-such as `MessageHandler`, `CallbackQueryHandler`, `ErrorHandler`) whose instances
-expose the event and contextual data as attributes.
-
-#### Scenario: Class handler execution
-
-- **GIVEN** a subclass of `MessageHandler` implementing `handle()`
-- **WHEN** it is registered on an observer and an event matches
-- **THEN** an instance is created per event, `self.event` holds the message, and `handle()` is awaited

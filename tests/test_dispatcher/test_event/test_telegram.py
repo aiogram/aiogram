@@ -9,7 +9,6 @@ from aiogram.dispatcher.event.bases import UNHANDLED, SkipHandler
 from aiogram.dispatcher.event.handler import HandlerObject
 from aiogram.dispatcher.event.telegram import TelegramEventObserver
 from aiogram.dispatcher.router import Router
-from aiogram.exceptions import UnsupportedKeywordArgument
 from aiogram.filters import Filter
 from aiogram.types import Chat, Message, User
 
@@ -85,7 +84,7 @@ class TestTelegramEventObserver:
 
     def test_keyword_filters_is_not_supported(self):
         router = Router()
-        with pytest.raises(UnsupportedKeywordArgument):
+        with pytest.raises(TypeError, match=r"Please remove the \{'commands'\} arguments"):
             router.message.register(lambda e: True, commands=["test"])
 
     def test_register_decorator(self):

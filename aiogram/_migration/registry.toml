@@ -989,6 +989,24 @@ gate = false
 generated = false
 warn_3x = { site = "none", target = "", since = "" }
 
+# Documented in MiddlewareData but never set by any middleware, so no runtime warning can see it.
+[[entry]]
+id = "AG4056"
+kind = "removal-4.0"
+title = "event_business_connection_id is removed from MiddlewareData"
+decisions = ["D12"]
+area = "middlewares"
+change = "removed"
+replacement = "event_context.business_connection_id"
+detection = "definite"
+confidence = "high"
+codemod = "none"
+suppress = "aiogram: ignore[AG4056]"
+gate = false
+breaking_change = 11
+generated = false
+warn_3x = { site = "none", target = "", since = "" }
+
 [[entry]]
 id = "AG4057"
 kind = "removal-4.0"

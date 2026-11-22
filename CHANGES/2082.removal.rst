@@ -1,0 +1,11 @@
+Removed the legacy dispatcher and filter API:
+class-based handlers (the :code:`aiogram.handlers` package with :code:`BaseHandler` and its per-event subclasses; write an :code:`async def` handler instead),
+:code:`CancelHandler` (use :code:`SkipHandler`),
+the :code:`REJECTED` sentinel,
+:code:`UnsupportedKeywordArgument` (registering a handler with unknown keyword arguments now raises a plain :code:`TypeError`),
+the :code:`Recommendation` warning for :code:`from magic_filter import F` (:code:`from aiogram import F` keeps :code:`.as_()`),
+the :code:`BaseFilter` alias (use :class:`~aiogram.filters.base.Filter`),
+and :code:`dp["key"] = value` / :code:`del dp["key"]` (pass data to :code:`Dispatcher(**kwargs)` or :code:`dp.workflow_data` before start; :code:`dp["key"]` reads stay).
+Handlers and middlewares no longer receive :code:`event_from_user`, :code:`event_chat` and :code:`event_thread_id`:
+read :code:`event_context.user`, :code:`event_context.chat` and :code:`event_context.thread_id` instead.
+The never-set :code:`event_business_connection_id` key is gone from :class:`~aiogram.dispatcher.middlewares.data.MiddlewareData`; use :code:`event_context.business_connection_id`.

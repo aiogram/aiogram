@@ -3,6 +3,7 @@ from typing import Any
 import pytest
 
 from aiogram import Dispatcher
+from aiogram.dispatcher.middlewares.user_context import EventContext
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.storage.base import StorageKey
 from aiogram.fsm.storage.memory import MemoryStorage
@@ -185,7 +186,11 @@ class TestSimpleI18nMiddleware:
         result = await middleware(
             next_call,
             Update(update_id=42),
-            {"event_from_user": User(id=42, is_bot=False, language_code="uk", first_name="Test")},
+            {
+                "event_context": EventContext(
+                    user=User(id=42, is_bot=False, language_code="uk", first_name="Test")
+                )
+            },
         )
 
         assert result == "ТЕСТ"
@@ -194,21 +199,21 @@ class TestSimpleI18nMiddleware:
             get_i18n()
 
     @pytest.mark.parametrize(
-        "event_from_user,result",
+        "user,result",
         [
             [None, "test"],
             [User(id=42, is_bot=False, language_code="uk", first_name="Test"), "тест"],
             [User(id=42, is_bot=False, language_code="it", first_name="Test"), "test"],
         ],
     )
-    async def test_middleware(self, i18n: I18n, event_from_user, result):
+    async def test_middleware(self, i18n: I18n, user, result):
         middleware = SimpleI18nMiddleware(i18n=i18n)
-        result = await middleware(
+        text = await middleware(
             next_call,
             Update(update_id=42),
-            {"event_from_user": event_from_user},
+            {"event_context": EventContext(user=user)},
         )
-        assert result == result
+        assert text == result
 
     async def test_setup(self, i18n: I18n):
         dp = Dispatcher()
@@ -235,11 +240,13 @@ class TestSimpleI18nMiddleware:
         locale = await middleware.get_locale(
             None,
             {
-                "event_from_user": User(
-                    id=42,
-                    is_bot=False,
-                    first_name="Test",
-                    language_code="unknown",
+                "event_context": EventContext(
+                    user=User(
+                        id=42,
+                        is_bot=False,
+                        first_name="Test",
+                        language_code="unknown",
+                    )
                 )
             },
         )
@@ -289,11 +296,13 @@ class TestSimpleI18nMiddleware:
         locale = await middleware.get_locale(
             None,
             {
-                "event_from_user": User(
-                    id=42,
-                    is_bot=False,
-                    first_name="Test",
-                    language_code=language_code,
+                "event_context": EventContext(
+                    user=User(
+                        id=42,
+                        is_bot=False,
+                        first_name="Test",
+                        language_code=language_code,
+                    )
                 )
             },
         )
@@ -328,11 +337,13 @@ class TestSimpleI18nMiddleware:
             next_call,
             Update(update_id=42),
             {
-                "event_from_user": User(
-                    id=42,
-                    is_bot=False,
-                    first_name="Test",
-                    language_code=language_code,
+                "event_context": EventContext(
+                    user=User(
+                        id=42,
+                        is_bot=False,
+                        first_name="Test",
+                        language_code=language_code,
+                    )
                 )
             },
         )
@@ -346,8 +357,8 @@ class TestConstI18nMiddleware:
             next_call,
             Update(update_id=42),
             {
-                "event_from_user": User(
-                    id=42, is_bot=False, language_code="it", first_name="Test"
+                "event_context": EventContext(
+                    user=User(id=42, is_bot=False, language_code="it", first_name="Test")
                 ),
             },
         )
@@ -360,7 +371,9 @@ class TestFSMI18nMiddleware:
         storage = MemoryStorage()
         state = FSMContext(storage=storage, key=StorageKey(user_id=42, chat_id=42, bot_id=bot.id))
         data = {
-            "event_from_user": User(id=42, is_bot=False, language_code="it", first_name="Test"),
+            "event_context": EventContext(
+                user=User(id=42, is_bot=False, language_code="it", first_name="Test")
+            ),
             "state": state,
         }
         result = await middleware(next_call, Update(update_id=42), data)
@@ -375,7 +388,9 @@ class TestFSMI18nMiddleware:
     async def test_without_state(self, i18n: I18n, bot: MockedBot):
         middleware = FSMI18nMiddleware(i18n=i18n)
         data = {
-            "event_from_user": User(id=42, is_bot=False, language_code="it", first_name="Test"),
+            "event_context": EventContext(
+                user=User(id=42, is_bot=False, language_code="it", first_name="Test")
+            ),
         }
         result = await middleware(next_call, Update(update_id=42), data)
         assert i18n.current_locale == "en"

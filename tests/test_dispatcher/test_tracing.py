@@ -5,7 +5,7 @@ from typing import Any
 import pytest
 
 from aiogram.dispatcher import CallbackTracer, SpanKind
-from aiogram.dispatcher.event.bases import REJECTED, UNHANDLED, SkipHandler
+from aiogram.dispatcher.event.bases import UNHANDLED, SkipHandler
 from aiogram.dispatcher.tracing import enter_spans, exit_spans
 
 
@@ -154,7 +154,7 @@ def test_reraising_exit_keeps_traceback() -> None:
 
 @pytest.mark.parametrize(
     ("result", "expected"),
-    [(UNHANDLED, "unhandled"), (REJECTED, "rejected"), (None, "NoneType"), (42, "int")],
+    [(UNHANDLED, "unhandled"), (None, "NoneType"), (42, "int")],
 )
 def test_result_names(result: Any, expected: str) -> None:
     tracer = RecordingTracer("0", [], None)

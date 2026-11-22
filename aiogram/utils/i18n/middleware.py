@@ -17,8 +17,9 @@ from aiogram import BaseMiddleware, Router
 if TYPE_CHECKING:
     from collections.abc import Awaitable, Callable
 
+    from aiogram.dispatcher.middlewares.user_context import EventContext
     from aiogram.fsm.context import FSMContext
-    from aiogram.types import TelegramObject, User
+    from aiogram.types import TelegramObject
     from aiogram.utils.i18n.core import I18n
 
 
@@ -126,11 +127,12 @@ class SimpleI18nMiddleware(I18nMiddleware):
             )
             raise RuntimeError(msg)
 
-        event_from_user: User | None = data.get("event_from_user")
-        if event_from_user is None or event_from_user.language_code is None:
+        event_context: EventContext | None = data.get("event_context")
+        user = event_context.user if event_context is not None else None
+        if user is None or user.language_code is None:
             return self.i18n.default_locale
         try:
-            locale = Locale.parse(event_from_user.language_code, sep="-")
+            locale = Locale.parse(user.language_code, sep="-")
         except UnknownLocaleError:
             return self.i18n.default_locale
 

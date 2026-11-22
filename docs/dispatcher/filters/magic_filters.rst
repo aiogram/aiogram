@@ -22,6 +22,12 @@ The **magic_filter** package implements class shortly named :class:`magic_filter
 
     Note that *aiogram* has an small extension over magic-filter and if you want to use this extension you should import magic from *aiogram* instead of *magic_filter* package
 
+.. note::
+
+    Import :code:`F` from :code:`aiogram`: :code:`from aiogram import F`.
+    A filter built with :code:`from magic_filter import F` still works, but it has no :code:`.as_()`,
+    and since 4.0 aiogram no longer warns about it (the :code:`Recommendation` warning is removed).
+
 The :class:`MagicFilter` object is callable, supports :ref:`some actions <magic-filter-possible-actions>`
 and memorize the attributes chain and the action which should be checked on demand.
 
