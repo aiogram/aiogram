@@ -110,3 +110,55 @@ the move covers request records only.
 
 The 3.x loggers :code:`aiogram.client.bot` and :code:`aiogram.utils.chat_action` are gone: their records
 are on :code:`aiogram.client` (migration id :code:`AG4054`).
+
+
+Token redaction
+===============
+
+The bot token is part of every Bot API URL (:code:`/bot<token>/getMe`).
+Every framework logger masks anything shaped like a bot token as :code:`<bot id>:***`
+(:code:`123456:AA...` becomes :code:`123456:***`), so the bot id stays readable. This is on by default.
+
+The filter, :class:`aiogram.loggers.TokenRedactingFilter`, scans:
+
+- the formatted message, arguments included (a :class:`yarl.URL` or an exception as an argument);
+- the exception traceback, chained causes included, and :code:`stack_info`;
+- string attributes added with :code:`extra=`, and the string values of a :code:`dict` passed that way,
+  so a JSON formatter emits them masked.
+
+A record without a token is left as it was, so error trackers that group records by message template
+keep grouping them. On a match, the message is replaced by its formatted, masked text.
+
+The filter covers the records of :code:`aiogram.*` loggers only. Records of the root logger and of other
+libraries (an :code:`aiohttp` access log, for example) reach your handlers unmasked. Attach the same filter
+to a handler to cover everything that handler writes:
+
+.. code-block:: python
+
+    import logging
+
+    from aiogram.loggers import TokenRedactingFilter
+
+    handler = logging.StreamHandler()
+    handler.addFilter(TokenRedactingFilter())
+    logging.basicConfig(level=logging.INFO, handlers=[handler])
+
+Any text shaped like a token is masked, including your own content that only looks like one
+(digits, a colon, then 30 or more letters, digits, :code:`_` or :code:`-`).
+
+To turn redaction off, for every framework logger and every :class:`~aiogram.loggers.TokenRedactingFilter`
+at once, and back on:
+
+.. code-block:: python
+
+    from aiogram import loggers
+
+    loggers.redact_tokens(False)
+    loggers.redact_tokens(True)
+
+Error trackers that capture local variables of a stack frame are not covered.
+
+.. autoclass:: aiogram.loggers.TokenRedactingFilter
+    :members: filter
+
+.. autofunction:: aiogram.loggers.redact_tokens

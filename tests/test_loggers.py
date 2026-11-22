@@ -101,7 +101,7 @@ class TestFactory:
         logger.addFilter(stale)
         logger.addFilter(user)
         loggers.get_logger("aiogram.client.test_reimport")
-        assert logger.filters == [loggers._CONTEXT_FILTER, user]
+        assert logger.filters == [loggers._CONTEXT_FILTER, loggers._REDACTING_FILTER, user]
 
     @pytest.mark.parametrize("name", ["aiogram", "aiogramx.foo", "foo.aiogram.bar", ""])
     def test_get_logger_rejects_foreign_names(self, name: str):

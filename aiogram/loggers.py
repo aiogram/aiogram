@@ -9,14 +9,23 @@ Inside :meth:`Dispatcher.feed_update <aiogram.dispatcher.dispatcher.Dispatcher.f
 framework record gets six attributes (``None`` when unknown, so format strings never raise):
 ``aiogram_bot_id``, ``aiogram_update_id``, ``aiogram_update_type``, ``aiogram_router``,
 ``aiogram_handler``, ``aiogram_phase``. :func:`context_filter` attaches them to any other record.
+
+Every framework logger also carries a :class:`TokenRedactingFilter`, which masks bot tokens as
+``<bot id>:***``. It is on by default; :func:`redact_tokens` turns it off and on.
 """
 
 from __future__ import annotations
 
+import contextlib
 import logging
+import re
+import traceback
+import warnings
 from contextvars import ContextVar
+from typing import Any
 
 __all__ = (
+    "TokenRedactingFilter",
     "client",
     "context_filter",
     "dispatcher",
@@ -26,6 +35,7 @@ __all__ = (
     "i18n",
     "middlewares",
     "polling",
+    "redact_tokens",
     "runner",
     "scene",
     "webhook",
@@ -93,6 +103,112 @@ def context_filter() -> logging.Filter:
     return _ContextFilter()
 
 
+# A bot token: the numeric bot id, ``:``, the secret; masked as ``<bot id>:***``. No leading
+# ``\b``: in a URL the id follows ``bot`` (``/bot123456:...``) with no word boundary between.
+_TOKEN_PATTERN = re.compile(r"(\d{5,}):[A-Za-z0-9_-]{30,}")
+_enabled = True
+_warned = False
+# Attributes every record has; anything else came from ``extra=`` or a formatter (``message``)
+_RECORD_ATTRS = frozenset(logging.LogRecord("", 0, "", 0, "", (), None).__dict__)
+
+
+def _redact(text: str) -> str | None:
+    """Return ``text`` with every token masked, or ``None`` when it holds no token."""
+    redacted, count = _TOKEN_PATTERN.subn(r"\1:***", text)
+    return redacted if count else None
+
+
+def redact_tokens(enabled: bool) -> None:
+    """
+    Turn token redaction on or off for every :class:`TokenRedactingFilter` at once.
+
+    Redaction is on by default.
+
+    :param enabled: :code:`False` lets records through unchanged
+    """
+    global _enabled  # noqa: PLW0603
+    _enabled = enabled
+
+
+class TokenRedactingFilter(logging.Filter):
+    """
+    Mask bot tokens (``123456:AA...`` becomes ``123456:***``) in a log record.
+
+    It scans the formatted message, the exception and stack text, and string attributes added
+    with ``extra=`` (one level of ``dict`` values included). A record without a token is left
+    untouched. The filter never drops a record and never raises.
+
+    Framework loggers carry it already; attach it to a handler to cover other records::
+
+        handler.addFilter(aiogram.loggers.TokenRedactingFilter())
+    """
+
+    def filter(self, record: logging.LogRecord) -> bool:
+        if _enabled:
+            try:
+                _redact_record(record)
+            except Exception as e:  # noqa: BLE001
+                _warn_once(e)
+        return True
+
+
+def _redact_record(record: logging.LogRecord) -> None:
+    try:
+        message = record.getMessage()
+    except Exception:  # noqa: BLE001
+        pass  # a malformed record: the handler reports it through handleError
+    else:
+        if (redacted := _redact(message)) is not None:
+            record.msg, record.args = redacted, ()
+    exc_text = record.exc_text
+    if not exc_text and record.exc_info and record.exc_info[1] is not None:
+        exc_text = "".join(traceback.format_exception(*record.exc_info)).rstrip("\n")
+    # Written only on a match, so a formatter's own formatException keeps ordinary records
+    if exc_text and (redacted := _redact(exc_text)) is not None:
+        record.exc_text = redacted
+    if record.stack_info and (redacted := _redact(record.stack_info)) is not None:
+        record.stack_info = redacted
+    attrs = record.__dict__
+    for key in attrs.keys() - _RECORD_ATTRS:  # a set difference, so the writes below are safe
+        value = attrs[key]
+        if isinstance(value, str):
+            if (redacted := _redact(value)) is not None:
+                attrs[key] = redacted
+        elif isinstance(value, dict) and (copy := _redact_dict(value)) is not None:
+            attrs[key] = copy
+
+
+def _redact_dict(value: dict[Any, Any]) -> dict[Any, Any] | None:
+    """Return a copy of ``value`` with its string values masked, or ``None`` when none matched."""
+    copy: dict[Any, Any] | None = None
+    for key, item in value.items():
+        if isinstance(item, str) and (redacted := _redact(item)) is not None:
+            if copy is None:
+                copy = dict(value)  # never mutate the caller's dict
+            copy[key] = redacted
+    return copy
+
+
+def _warn_once(error: Exception) -> None:
+    global _warned  # noqa: PLW0603
+    if _warned:
+        return
+    _warned = True
+    # ``-W error`` makes the warning raise; filter() still must not. Not reported through
+    # logging: that would run this filter again.
+    with contextlib.suppress(Exception):
+        warnings.warn(
+            f"aiogram token redaction failed, record passed unchanged: {error!r}",
+            RuntimeWarning,
+            stacklevel=2,
+        )
+
+
+_REDACTING_FILTER = TokenRedactingFilter()
+_REDACTING_FILTER.aiogram_framework_filter = True  # type: ignore[attr-defined]
+_FRAMEWORK_FILTERS = (_CONTEXT_FILTER, _REDACTING_FILTER)
+
+
 def get_logger(name: str) -> logging.Logger:
     """
     Return the framework logger ``name`` with the framework record filters installed.
@@ -104,9 +220,11 @@ def get_logger(name: str) -> logging.Logger:
         raise ValueError(msg)
     logger = logging.getLogger(name)
     for stale in [f for f in logger.filters if getattr(f, "aiogram_framework_filter", False)]:
-        if stale is not _CONTEXT_FILTER:
+        if stale not in _FRAMEWORK_FILTERS:
             logger.removeFilter(stale)
-    logger.addFilter(_CONTEXT_FILTER)  # no-op when already installed
+    # Context first, so the redaction scans the context attributes too; no-op when installed
+    for framework_filter in _FRAMEWORK_FILTERS:
+        logger.addFilter(framework_filter)
     return logger
 
 
