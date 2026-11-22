@@ -1,5 +1,0 @@
-annotations:
-  needs_inline_query_location:
-    required: false
-  has_topic_sidebar:
-    required: false

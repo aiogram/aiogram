@@ -407,8 +407,7 @@ class Bot:
 
         Built from the cached :meth:`me`: the main username first, then
         :code:`active_usernames` of getMe, without duplicates (compared ignoring case).
-        A Bot API server that does not return :code:`active_usernames` (older than 10.5)
-        gives just the main username. Like :meth:`me`, the list is fetched once per
+        Without :code:`active_usernames` it gives just the main username. Like :meth:`me`, the list is fetched once per
         :class:`Bot` instance and not refreshed: restart to pick up username changes.
 
         :return: usernames, the main one first
