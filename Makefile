@@ -112,10 +112,12 @@ test-coverage-view:
 # Benchmarks
 # =================================================================================================
 
-# extra flags go through args, e.g. `make bench args="--out benchmarks/results/local.json"`
+# a release build of the native extension, then every case; extra flags go through args,
+# e.g. `make bench args="--out benchmarks/results/local.json"`
 .PHONY: bench
 bench:
-	uv run python -m benchmarks run --cases all $(args)
+	uvx --from 'maturin>=1.14,<2' maturin develop --uv --release
+	uv run --no-sync python -m benchmarks run --cases all $(args)
 
 # =================================================================================================
 # Docs
@@ -143,14 +145,10 @@ $(locale_targets): docs-serve-%:
 # Project
 # =================================================================================================
 
-# the native extension (crates/aiogram-core): `dev` is a fast debug build, `bench` the release one
+# the native extension (crates/aiogram-core): `dev` is a fast debug build (`bench` builds the release one)
 .PHONY: dev
 dev:
 	uvx --from 'maturin>=1.14,<2' maturin develop --uv
-
-.PHONY: bench
-bench:
-	uvx --from 'maturin>=1.14,<2' maturin develop --uv --release
 
 .PHONY: build
 build: clean

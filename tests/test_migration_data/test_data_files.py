@@ -32,6 +32,14 @@ inventory_script = _script("butcher_removal_inventory")
 signatures_script = _script("butcher_signatures_3x")
 INVENTORY = json.loads((DATA / "removal_inventory_3x.json").read_text(encoding="utf-8"))
 SIGNATURES = json.loads((DATA / "signatures_3x.json").read_text(encoding="utf-8"))
+# The files describe the 3.x surface and are generated on dev-3.x only; this checkout may add
+# methods 3.x lacks. Each one is listed here, so a new one is a decision, not a silent gap.
+NOT_IN_3X = {"Bot.stream"}  # D-05
+
+
+def build_3x_signatures(build=signatures_script.build) -> dict:
+    built = build()
+    return {**built, "methods": {k: v for k, v in built["methods"].items() if k not in NOT_IN_3X}}
 
 
 def crosscheck(records: list[dict], entries: list[dict]) -> list[str]:
@@ -84,7 +92,7 @@ def test_signatures_methods_and_shortcuts():
 def test_signatures_cover_everything():
     methods = SIGNATURES["methods"]
     for name, _ in inspect.getmembers(Bot, inspect.isfunction):
-        assert name.startswith("_") or f"Bot.{name}" in methods
+        assert name.startswith("_") or f"Bot.{name}" in methods or f"Bot.{name}" in NOT_IN_3X
     for cls in signatures_script._subclasses(TelegramMethod):
         assert cls.__name__ in methods
     for path in (ROOT / ".butcher" / "types").glob("*/aliases.yml"):
@@ -101,7 +109,8 @@ def test_collection_fields_and_observers():
 
 def test_files_are_up_to_date_and_plain_json():
     assert inventory_script.build() == INVENTORY["records"]
-    assert signatures_script.build() == SIGNATURES
+    assert build_3x_signatures() == SIGNATURES
+    assert NOT_IN_3X <= signatures_script.build()["methods"].keys()  # a stale entry fails here
     for name in ("removal_inventory_3x.json", "signatures_3x.json"):
         text = (DATA / name).read_text(encoding="utf-8")
         assert text == json.dumps(json.loads(text), indent=2, ensure_ascii=False) + "\n"
@@ -114,6 +123,8 @@ def test_scripts_main(tmp_path, monkeypatch):
     ):
         out = tmp_path / "x" / name
         monkeypatch.setattr(sys, "argv", ["script", "--out", str(out)])
+        if module is signatures_script:
+            monkeypatch.setattr(module, "build", build_3x_signatures)
         module.main()
         assert out.read_text(encoding="utf-8") == (DATA / name).read_text(encoding="utf-8")
 

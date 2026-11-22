@@ -63,6 +63,17 @@ def records(traces: dict[str, runner.Trace]) -> dict[str, Record]:
     return {f"{r['case']}/{r['probe']}": r for r in traces["clean"][1]}
 
 
+def require_d12_injection(records: dict[str, Record]) -> None:
+    """Skip a check that needs a 3.x record with the D12 keys.
+
+    The side runs in-process against this checkout, and on dev-4.x E-01 has already removed the
+    ``event_from_user`` / ``event_chat`` / ``event_thread_id`` injection (D12).
+    """
+    kwargs = records["routing.middleware.outer.no-match.polling.fsm-off.first/kwargs"]
+    if not any(key in e["data"] for e in kwargs["value"] for key in runner.D12_KEYS):
+        pytest.skip("this checkout does not inject the D12 keys; the check needs a 3.x record")
+
+
 def cases(topology_id: str, topology: dict[str, Any]) -> list[tuple[str, list[dict[str, Any]]]]:
     """(case, events) per feed, fsm variant and batch, as the side names them."""
     out = []
@@ -90,6 +101,8 @@ class TestSide:
 
     @pytest.mark.parametrize("topology_id", sorted(TOPOLOGIES))
     def test_every_event_is_traced_and_lands_on_expect(self, records, topology_id):
+        if topology_id == "routing.kwargs.event-from-user":
+            require_d12_injection(records)
         topology = TOPOLOGIES[topology_id]
         for case, batch in cases(topology_id, topology):
             for probe in ("trace", "kwargs", "threads", "result"):
@@ -235,6 +248,7 @@ class TestComparators:
             assert judge(left, right) is None, key
 
     def test_d12_keys_still_injected(self, records):
+        require_d12_injection(records)
         left = records[f"{NO_MATCH}/kwargs"]
         assert "right still injects" in judge(left, left)
 
@@ -369,6 +383,7 @@ class TestComparators:
         assert judge(left, right) is None
 
     def test_d12_handler_asking_for_event_from_user(self, records):
+        require_d12_injection(records)
         case = "routing.kwargs.event-from-user.polling.fsm-off.first"
         kwargs, result = records[f"{case}/kwargs"], records[f"{case}/result"]
         assert judge(kwargs, without(kwargs, lambda e: e["kind"] == "handler")) is None  # DI error

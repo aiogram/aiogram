@@ -204,6 +204,9 @@ These patterns repeatedly appeared in maintainer feedback and should be treated 
   that holds everywhere (D12, D34, D111) is applied inside every comparator of the kind, not by a second entry.
 - A concurrent routing case (`group`) must not depend on thread timing: a sync filter hops to `asyncio.to_thread`,
   so use `command` (async) filters there.
+- A dev-4.x tree still reports a 3.x `__version__`, so both sides get the `aiogram3` adapter and the
+  `when = "aiogram4"` entries stay inert. The routing kind therefore does not run on PRs into dev-4.x (E-01 already
+  removed the D12 keys), and `tests/test_differential_routing.py` skips the checks that need a 3.x record there.
 
 ## 4.0 planning tree (`v4/`)
 
@@ -220,8 +223,8 @@ These patterns repeatedly appeared in maintainer feedback and should be treated 
 - The build backend is maturin: `crates/aiogram-core` builds `aiogram._core`, so `uv sync` needs `rustup`
   (`rust-toolchain.toml` pins the toolchain). `uv run` rebuilds it (release profile) when a `*.rs` or `Cargo.toml`
   under `crates/aiogram-core`, the workspace `Cargo.toml`, `Cargo.lock` or `.cargo/config.toml` changes; `make dev`
-  installs a fast debug build, `make bench` a release one. Nothing on the 3.x import path loads `_core`
-  (`tests/test_core/test_build.py` checks it).
+  installs a fast debug build, `make bench` a release one (then runs the benchmark cases). Nothing on the 3.x
+  import path loads `_core` (`tests/test_core/test_build.py` checks it).
 - Rust checks: `cargo fmt --all --check`, `cargo clippy --workspace --all-targets -- -D warnings` (`unwrap`,
   `expect`, `panic!`, `todo!`, `unimplemented!` are denied), `cargo test --workspace`. `make lint` runs fmt and
   clippy too (`lint-rust`; CI runs `lint-python` in Lint and `lint-rust` in Rust).

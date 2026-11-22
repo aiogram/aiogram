@@ -120,6 +120,10 @@ jobs:
 
   routing:
     name: routing (3.x release vs tree, plus poison)
+    # A dev-4.x tree still reports a 3.x version, so it gets the aiogram3 adapter and the
+    # 4.x-only approved differences stay inert; E-01 already removed the D12 keys there.
+    # Until a sides/aiogram4 adapter exists, routing runs on dev-3.x PRs and on demand only.
+    if: github.event_name != 'pull_request' || github.base_ref == 'dev-3.x'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
