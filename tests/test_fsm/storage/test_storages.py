@@ -166,3 +166,15 @@ def test_unchanged_repr():
 def test_record_is_keyword_only():
     with pytest.raises(TypeError):
         StorageRecord("state", {})  # type: ignore[misc]
+
+
+async def test_fallback_record_data_is_a_copy(storage_key: StorageKey):
+    class AliasingStorage(MinimalStorage):
+        async def get_data(self, key: StorageKey) -> dict:
+            return self.datas.setdefault(key, {})  # the internal dict itself
+
+    storage = AliasingStorage()
+    await storage.set_data(storage_key, {"foo": "bar"})
+    (record,) = await storage.get_records(storage_key)
+    record.data["foo"] = "changed"
+    assert storage.datas[storage_key] == {"foo": "bar"}

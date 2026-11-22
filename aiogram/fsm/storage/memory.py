@@ -34,7 +34,7 @@ class MemoryStorage(BaseStorage):
     It is thread-safe at the map level: one :class:`threading.Lock` guards every read and
     write of :attr:`storage`, and :meth:`update_data`, :meth:`get_records` and
     :meth:`apply_writes` each run in a single critical section. :meth:`apply_writes` checks
-    every write before it applies any, so a write with invalid data raises with nothing applied.
+    the data of every write before it applies any, so invalid data raises with nothing applied.
     Reads never create records, and a record whose state is :code:`None` and whose data is
     empty is removed.
 

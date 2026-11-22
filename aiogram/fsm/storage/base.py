@@ -155,8 +155,9 @@ class BaseStorage(ABC):
 
     No storage promises atomicity across keys or across the state and data parts of one
     key, including :meth:`get_records` and :meth:`apply_writes`: updates of one FSM key
-    are serialised by event isolation. :meth:`update_data` is atomic in the built-in
-    storages; the fallback here is not. An atomic merge still does not make an
+    are serialised by event isolation. :meth:`update_data` merges atomically in the
+    memory and Mongo storages; the fallback here, which :code:`RedisStorage` uses, is
+    not, and relies on isolation too. An atomic merge still does not make an
     application read-modify-write atomic: two callers can both read :code:`n=0` and
     both write :code:`n=1`.
     """
@@ -255,7 +256,10 @@ class BaseStorage(ABC):
         :return: one record per key, in the order of the keys
         """
         return [
-            StorageRecord(state=await self.get_state(key=key), data=await self.get_data(key=key))
+            StorageRecord(
+                state=await self.get_state(key=key),
+                data=dict(await self.get_data(key=key)),  # the caller owns its copy
+            )
             for key in keys
         ]
 
