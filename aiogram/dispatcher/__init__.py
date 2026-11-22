@@ -6,4 +6,3 @@ __all__ = (
     "Span",
     "SpanKind",
 )
-# I-05 probe: a Python-only change (reverted)
