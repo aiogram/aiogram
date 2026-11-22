@@ -156,6 +156,10 @@ These patterns repeatedly appeared in maintainer feedback and should be treated 
   in `benchmarks/README.md`. Cases are keyed by corpus ids and reach aiogram only through
   `benchmarks/adapters/aiogram3.py`. `compare` caches exported trees and venvs per sha in the gitignored `.benchmarks/`
   (delete it to rebuild), and `make bench` runs every case (about 10 minutes).
+- The bench builds every `routing/*.toml` topology, and its adapter knows only `command`, `text_eq` and `pass`. A
+  topology using any other kind (all the A-10 oracle scenarios) carries `bench = false`;
+  `tests/test_differential_routing.py` enforces both sides. The PR CI does not run the bench, so a missed key only
+  shows in the weekly Benchmarks run.
 
 ## Differential harness (`differential/`)
 
@@ -168,6 +172,12 @@ These patterns repeatedly appeared in maintainer feedback and should be treated 
   with their `None`s): after a Bot API bump the tree has fields the release lacks, and the weekly run fails until the
   next release. Record `exclude_unset` / `exclude_none` dumps, or strip the nulls. A new corpus input of kind `update`
   needs an access list in `differential/manifests/model.access.toml` (`tests/test_differential_model.py`).
+- A comparator decides on what the left side (the 3.x reference) records in `meta`, never on "what the right side
+  did". The routing side puts its reference facts there (surviving candidates, raise paths, same-case
+  registrations), and that is how its comparators stay narrow. A record matches one manifest entry, so a difference
+  that holds everywhere (D12, D34, D111) is applied inside every comparator of the kind, not by a second entry.
+- A concurrent routing case (`group`) must not depend on thread timing: a sync filter hops to `asyncio.to_thread`,
+  so use `command` (async) filters there.
 
 ## 4.0 planning tree (`v4/`)
 

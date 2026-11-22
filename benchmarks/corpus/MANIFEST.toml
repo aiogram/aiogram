@@ -362,3 +362,195 @@ kind = "case"
 uses = ["update.realistic"]
 provenance = { source = "hand", date = "2026-11-21", aiogram = "3.33.0", bot_api = "10.4", author = "JRoot Junior" }
 notes = "GC on: decode and drop update.realistic for --duration; throughput per interval and RSS drift (R04, A-05)."
+
+[[input]]
+id = "routing.errors.filter"
+kind = "routing"
+path = "routing/routing.errors.filter.toml"
+sha256 = "92a7365214262635a7715a9c18b9b83fc310f463f5772ff603b160465cdf62a6"
+provenance = { source = "hand", date = "2026-11-21", aiogram = "3.33.0", bot_api = "10.4", author = "JRoot Junior" }
+notes = "D48 error bubbling (A-10)."
+
+[[input]]
+id = "routing.errors.handler"
+kind = "routing"
+path = "routing/routing.errors.handler.toml"
+sha256 = "74be11b75f8152833a60b23020b4cdbfc2614fb8989fa47b5b2e89379cc268b2"
+provenance = { source = "hand", date = "2026-11-21", aiogram = "3.33.0", bot_api = "10.4", author = "JRoot Junior" }
+notes = "D48 error bubbling (A-10)."
+
+[[input]]
+id = "routing.errors.middleware"
+kind = "routing"
+path = "routing/routing.errors.middleware.toml"
+sha256 = "4197d6c52d4e6191eba5cae5b3a0f2a22e36247da2d68604354bfdfa41659e2f"
+provenance = { source = "hand", date = "2026-11-21", aiogram = "3.33.0", bot_api = "10.4", author = "JRoot Junior" }
+notes = "D48 error bubbling (A-10)."
+
+[[input]]
+id = "routing.filters.sync.work"
+kind = "routing"
+path = "routing/routing.filters.sync.work.toml"
+sha256 = "d1e0e207e774d6f74c723fc2b74fb5028fa11013cb4219cb2366b774c4d5fdb1"
+provenance = { source = "hand", date = "2026-11-21", aiogram = "3.33.0", bot_api = "10.4", author = "JRoot Junior" }
+notes = "D34 sync filters (A-10)."
+
+[[input]]
+id = "routing.flags"
+kind = "routing"
+path = "routing/routing.flags.toml"
+sha256 = "6c89130293a0df145b45fd6409b1b6d78af2d340bbe99c7bffd793ce2c0e9c7f"
+provenance = { source = "hand", date = "2026-11-21", aiogram = "3.33.0", bot_api = "10.4", author = "JRoot Junior" }
+notes = "D57 / D58 flags (A-10)."
+
+[[input]]
+id = "routing.isolation.same-key"
+kind = "routing"
+path = "routing/routing.isolation.same-key.toml"
+sha256 = "a3ba895aef632580aa2d10b0d1013bd52e4d6b9969d2f8d755a64b1e2561ace7"
+provenance = { source = "hand", date = "2026-11-21", aiogram = "3.33.0", bot_api = "10.4", author = "JRoot Junior" }
+notes = "D28 / D110 event isolation (A-10)."
+
+[[input]]
+id = "routing.kwargs.event-from-user"
+kind = "routing"
+path = "routing/routing.kwargs.event-from-user.toml"
+sha256 = "00db1076d545ecb081600b643722d2e814418a76a116a7178365385f8b8a26b1"
+provenance = { source = "hand", date = "2026-11-21", aiogram = "3.33.0", bot_api = "10.4", author = "JRoot Junior" }
+notes = "D12 event_from_user (A-10)."
+
+[[input]]
+id = "routing.middleware.outer.call-twice"
+kind = "routing"
+path = "routing/routing.middleware.outer.call-twice.toml"
+sha256 = "13534cf696bb449aca5aa45a86db3b4f056829400d7d19aba3e9977673e4aa28"
+provenance = { source = "hand", date = "2026-11-21", aiogram = "3.33.0", bot_api = "10.4", author = "JRoot Junior" }
+notes = "D111 / PD-19 outer-middleware cases (A-10)."
+
+[[input]]
+id = "routing.middleware.outer.no-match"
+kind = "routing"
+path = "routing/routing.middleware.outer.no-match.toml"
+sha256 = "32fc64d6cd14e1fa28c6837bdff44a68ab63ef01792e796d7d06a890c01ec3b0"
+provenance = { source = "hand", date = "2026-11-21", aiogram = "3.33.0", bot_api = "10.4", author = "JRoot Junior" }
+notes = "D111 / PD-19 outer-middleware cases (A-10)."
+
+[[input]]
+id = "routing.middleware.outer.no-observer-handlers"
+kind = "routing"
+path = "routing/routing.middleware.outer.no-observer-handlers.toml"
+sha256 = "39150a531f69361e41d078bebaa19249fdaae8998f68daaf8842af7fc0fc338e"
+provenance = { source = "hand", date = "2026-11-21", aiogram = "3.33.0", bot_api = "10.4", author = "JRoot Junior" }
+notes = "D111 / PD-19 outer-middleware cases (A-10)."
+
+[[input]]
+id = "routing.middleware.outer.replace-router"
+kind = "routing"
+path = "routing/routing.middleware.outer.replace-router.toml"
+sha256 = "e89112a79410686f2d1ca0afa59f9e168bbb701ab9dd58c3fc4ac8c054674742"
+provenance = { source = "hand", date = "2026-11-21", aiogram = "3.33.0", bot_api = "10.4", author = "JRoot Junior" }
+notes = "D111 / PD-19 outer-middleware cases (A-10)."
+
+[[input]]
+id = "routing.middleware.outer.short-circuit"
+kind = "routing"
+path = "routing/routing.middleware.outer.short-circuit.toml"
+sha256 = "b3001aacc458c7e1697b8cc3baaf74c0590ddd7505f9a0db9ebab8b6ebb7a89f"
+provenance = { source = "hand", date = "2026-11-21", aiogram = "3.33.0", bot_api = "10.4", author = "JRoot Junior" }
+notes = "D111 / PD-19 outer-middleware cases (A-10)."
+
+[[input]]
+id = "routing.middleware.update.replace"
+kind = "routing"
+path = "routing/routing.middleware.update.replace.toml"
+sha256 = "5ad79cea505b4661e716825962a38d66667af983ddaf5b6fe541d7246b979252"
+provenance = { source = "hand", date = "2026-11-21", aiogram = "3.33.0", bot_api = "10.4", author = "JRoot Junior" }
+notes = "D111 / PD-19 outer-middleware cases (A-10)."
+
+[[input]]
+id = "routing.r09.failed-filter-data"
+kind = "routing"
+path = "routing/routing.r09.failed-filter-data.toml"
+sha256 = "ca7d8493e18ce1f82ec826ab24c2f9694b8e033e571546f7989817cf33cb7e94"
+provenance = { source = "hand", date = "2026-11-21", aiogram = "3.33.0", bot_api = "10.4", author = "JRoot Junior" }
+notes = "Codex review §11 R09 probes and R09 acceptance cases (A-10)."
+
+[[input]]
+id = "routing.r09.filter-raises"
+kind = "routing"
+path = "routing/routing.r09.filter-raises.toml"
+sha256 = "2c6bbc5e4b3da0257c0f3ebdeed8bfc7686563d78b3d70730692093c7e8294e7"
+provenance = { source = "hand", date = "2026-11-21", aiogram = "3.33.0", bot_api = "10.4", author = "JRoot Junior" }
+notes = "Codex review §11 R09 probes and R09 acceptance cases (A-10)."
+
+[[input]]
+id = "routing.r09.inner-write-then-skip"
+kind = "routing"
+path = "routing/routing.r09.inner-write-then-skip.toml"
+sha256 = "9d3450cc0422d114b7686c68f188498e4c2f647cdeb2de8103990ac22ecb2183"
+provenance = { source = "hand", date = "2026-11-21", aiogram = "3.33.0", bot_api = "10.4", author = "JRoot Junior" }
+notes = "Codex review §11 R09 probes and R09 acceptance cases (A-10)."
+
+[[input]]
+id = "routing.r09.scopes"
+kind = "routing"
+path = "routing/routing.r09.scopes.toml"
+sha256 = "3742eee4449a4b44dcd1f74210a5d78830546bb6648635976cba31d72e6b059f"
+provenance = { source = "hand", date = "2026-11-21", aiogram = "3.33.0", bot_api = "10.4", author = "JRoot Junior" }
+notes = "Codex review §11 R09 probes and R09 acceptance cases (A-10)."
+
+[[input]]
+id = "routing.r09.skip-after-filters"
+kind = "routing"
+path = "routing/routing.r09.skip-after-filters.toml"
+sha256 = "27d515df657cbcddb3083ab62c57d88eeaf6404b7a3fd9bd91637f165ae31cfb"
+provenance = { source = "hand", date = "2026-11-21", aiogram = "3.33.0", bot_api = "10.4", author = "JRoot Junior" }
+notes = "Codex review §11 R09 probes and R09 acceptance cases (A-10)."
+
+[[input]]
+id = "routing.rejector.command"
+kind = "routing"
+path = "routing/routing.rejector.command.toml"
+sha256 = "45f2e02a5819ec971be54bbffd4bcc79b3c686b1d8410cdd75b2cbf11eab8021"
+provenance = { source = "hand", date = "2026-11-21", aiogram = "3.33.0", bot_api = "10.4", author = "JRoot Junior" }
+notes = "README breaking change 13 (A-10)."
+
+[[input]]
+id = "routing.rejector.magic-eq"
+kind = "routing"
+path = "routing/routing.rejector.magic-eq.toml"
+sha256 = "c13eeb781e75c7a08e900bd378f45c9d33e999d16ebae249a685db5baad609b7"
+provenance = { source = "hand", date = "2026-11-21", aiogram = "3.33.0", bot_api = "10.4", author = "JRoot Junior" }
+notes = "README breaking change 13 (A-10)."
+
+[[input]]
+id = "routing.scenes"
+kind = "routing"
+path = "routing/routing.scenes.toml"
+sha256 = "63b1671b298f04d00532707932d047bc106e7a1fc789d1e3ea028980ff116daf"
+provenance = { source = "hand", date = "2026-11-21", aiogram = "3.33.0", bot_api = "10.4", author = "JRoot Junior" }
+notes = "D33 scenes (A-10)."
+
+[[input]]
+id = "routing.snapshot.include-router"
+kind = "routing"
+path = "routing/routing.snapshot.include-router.toml"
+sha256 = "60ba89f67f35afbff00d484909083a6fb4ba27c40fca29d6d233fb46f7744180"
+provenance = { source = "hand", date = "2026-11-21", aiogram = "3.33.0", bot_api = "10.4", author = "JRoot Junior" }
+notes = "D114 late registration (A-10)."
+
+[[input]]
+id = "routing.snapshot.register-middleware"
+kind = "routing"
+path = "routing/routing.snapshot.register-middleware.toml"
+sha256 = "0f1e9fbafbbda1202ec9e71ba9f2b34c9b1e454ae2f11404d153d1145dc72bf0"
+provenance = { source = "hand", date = "2026-11-21", aiogram = "3.33.0", bot_api = "10.4", author = "JRoot Junior" }
+notes = "D114 late registration (A-10)."
+
+[[input]]
+id = "routing.webhook.reply"
+kind = "routing"
+path = "routing/routing.webhook.reply.toml"
+sha256 = "3528a4a44beb7ae7931c393b31be0d2f81de5c44a82fa060741438616b1c7fe1"
+provenance = { source = "hand", date = "2026-11-21", aiogram = "3.33.0", bot_api = "10.4", author = "JRoot Junior" }
+notes = "Polling vs webhook feed (A-10)."

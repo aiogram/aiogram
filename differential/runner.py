@@ -89,17 +89,216 @@ def _stub(name: str, owner: str) -> None:
 
 # Seeded approved differences (manifests/*.toml). Each owning plan replaces its stub with the real
 # narrow assertion and refines the entry's ``match``.
-for _name, _owner in (
-    ("collections_are_tuples", "B plans"),
-    ("outer_middleware_skipped_without_handler", "A-10 / E plans"),
-    ("compiled_rejector_skips_handler", "A-10 / E plans"),
-    ("errors_bubble_to_raising_router", "A-10 / E plans"),
-    ("sync_filters_inline", "A-10 / E plans"),
-    ("event_isolation_default", "A-10 / E plans"),
-    ("routing_snapshot_per_runner", "A-10 / E plans"),
-    ("event_context_only_kwargs", "A-10 / E plans"),
-):
+for _name, _owner in (("collections_are_tuples", "B plans"),):
     _stub(_name, _owner)
+
+
+# Routing (A-10). The records are those of ``sides/aiogram3/routing.py``: ``trace``, ``kwargs`` and
+# ``threads`` hold one entry per component call ({component, kind, router, path, update, ...});
+# ``result`` one outcome per update. The left side is the 3.x reference: its ``meta`` says which
+# candidates survive the compiled filters, what each error's raising path was and which updates a
+# late component handled, and the comparators decide on that, never on the right side's meta.
+# One record matches one manifest entry, so every routing comparator first applies the 4.0
+# differences that hold everywhere: D12 on ``kwargs``, D34 on ``threads``, and the D111 / PD-19
+# and breaking-change-13 skips on ``trace`` / ``kwargs`` / ``threads``.
+
+D12_KEYS = ("event_from_user", "event_chat", "event_thread_id")
+
+
+def _entries(record: Record) -> list[dict[str, Any]] | None:
+    value = record.get("value")
+    if record.get("ok") is not True or record.get("probe") not in {"trace", "kwargs", "threads"}:
+        return None
+    if not isinstance(value, list):
+        msg = f"{record.get('probe')} value is not a list"
+        raise Mismatch(msg)
+    return value
+
+
+def _outcomes(record: Record) -> list[Any] | None:
+    value = record.get("value")
+    if record.get("ok") is not True or record.get("probe") != "result":
+        return None
+    return value if isinstance(value, list) else None
+
+
+def _with(record: Record, value: list[Any]) -> Record:
+    return {**record, "value": value}
+
+
+def _skip_group(left: Record) -> Callable[[dict[str, Any]], str | None]:
+    """The 4.0 group an entry may be skipped with (``None``: it must run).
+
+    D111 / PD-19: a router's outer chain, and so everything under it, is entered iff a candidate
+    in its subtree survives the compiled rejectors; ``dp.update`` middlewares always run.
+    Breaking change 13: the user filters of a candidate a compiled filter rejects do not run.
+    """
+    candidates = left.get("meta", {}).get("candidates", [])
+    surviving = {(c["update"], r) for c in candidates if not c["rejected"] for r in c["path"]}
+    rejected = {(c["update"], c["handler"]) for c in candidates if c["rejected"]}
+
+    def group(entry: dict[str, Any]) -> str | None:
+        update = entry["update"]
+        if entry["kind"] != "error" and entry.get("observer") != "update":
+            for router in entry["path"]:  # the outermost skipped router takes it
+                if (update, router) not in surviving:
+                    return f"D111/{update}/{router}"
+        if entry["kind"] == "filter" and (update, entry.get("owner")) in rejected:
+            return f"BC13/{update}/{entry['owner']}"
+        return None
+
+    return group
+
+
+def _global_4x(left: Record, right: Record) -> tuple[Record, Record]:
+    """D12 on ``kwargs``, D34 on ``threads``, then the D111 / BC13 skips; other probes unchanged.
+
+    A skip group is all or nothing: if right has any entry of a group, left keeps the group
+    whole, so a partial skip still mismatches.
+    """
+    if (entries := _entries(left)) is None:
+        return left, right
+    right_entries = _entries(right) or []
+    if left["probe"] == "kwargs":
+        for entry in right_entries:
+            if found := [key for key in D12_KEYS if key in entry.get("data", {})]:
+                msg = f"right still injects {found} at {entry.get('component')}"
+                raise Mismatch(msg)
+        entries = [
+            {**e, "data": {k: v for k, v in e["data"].items() if k not in D12_KEYS}}
+            for e in entries
+        ]
+    elif left["probe"] == "threads":
+        entries = [{**e, "on_loop": True} if e["kind"] == "filter" else e for e in entries]
+    group = _skip_group(left)
+    kept = {group(entry) for entry in right_entries if "path" in entry} - {None}
+    entries = [e for e in entries if group(e) is None or group(e) in kept]
+    return _with(left, entries), right
+
+
+def _ran(entries: list[dict[str, Any]], kind: str = "handler") -> list[dict[str, Any]]:
+    return [entry for entry in entries if entry["kind"] == kind]
+
+
+@comparator("sync_filters_inline")
+def sync_filters_inline(left: Record, right: Record) -> tuple[Record, Record]:
+    """D34: sync filters run on the loop (``threads``); sync handlers stay in a thread."""
+    return _global_4x(left, right)
+
+
+@comparator("outer_middleware_skipped_without_handler")
+def outer_middleware_skipped_without_handler(left: Record, right: Record) -> tuple[Record, Record]:
+    """D111 / PD-19: right may skip a router none of whose candidates survives the compiled
+    rejectors (its outer middlewares and everything under them)."""
+    return _global_4x(left, right)
+
+
+@comparator("compiled_rejector_skips_handler")
+def compiled_rejector_skips_handler(left: Record, right: Record) -> tuple[Record, Record]:
+    """Breaking change 13: right may skip the user filters of a candidate a compiled filter
+    (``Command``, ``F.x == lit``) rejects."""
+    return _global_4x(left, right)
+
+
+@comparator("errors_bubble_to_raising_router")
+def errors_bubble_to_raising_router(left: Record, right: Record) -> tuple[Record, Record]:
+    """D48: the ``errors`` handlers called are those on the raising router's path, innermost
+    first, up to the first that handles it; if none does, the original exception escapes."""
+    if (outcomes := _outcomes(left)) is not None:
+        expected = list(outcomes)
+        for error in left.get("meta", {}).get("errors", []):
+            expected[error["update"]] = _bubbled(error)
+        return _with(left, expected), right
+    left, right = _global_4x(left, right)
+    entries = _entries(left)
+    if entries is None or not (errors := _ran(entries, "error")):
+        return left, right
+    meta = {error["update"]: error for error in left.get("meta", {}).get("errors", [])}
+    expected = []
+    for update in sorted({entry["update"] for entry in errors}):
+        if update not in meta:
+            msg = f"left has errors handlers for update {update} but nothing raised"
+            raise Mismatch(msg)
+        called = {h["component"] for h in _bubbled_handlers(meta[update])}
+        expected += [e for e in errors if e["update"] == update and e["component"] in called]
+    expected.sort(key=lambda e: _depth_order(e, meta))
+    first = entries.index(errors[0])
+    rest = [e for e in entries if e["kind"] != "error"]
+    return _with(left, [*rest[:first], *expected, *rest[first:]]), right
+
+
+def _bubbled_handlers(error: dict[str, Any]) -> list[dict[str, Any]]:
+    """The handlers D48 calls: by router from the raiser up, until one does not decline."""
+    called = []
+    for router in reversed(error["raise_path"]):
+        for handler in (h for h in error["handlers"] if h["router"] == router):
+            called.append(handler)
+            if handler["result"] != "UNHANDLED":
+                return called
+    return called
+
+
+def _bubbled(error: dict[str, Any]) -> dict[str, Any]:
+    called = _bubbled_handlers(error)
+    if called and called[-1]["result"] != "UNHANDLED":
+        return {"returned": called[-1]["result"]}
+    return {"raised": error["exception"]}
+
+
+def _depth_order(entry: dict[str, Any], meta: dict[int, dict[str, Any]]) -> tuple[int, int]:
+    path = meta[entry["update"]]["raise_path"]
+    depth = path.index(entry["router"]) if entry["router"] in path else -1
+    return entry["update"], -depth
+
+
+@comparator("event_isolation_default")
+def event_isolation_default(left: Record, right: Record) -> tuple[Record, Record]:
+    """D28 / D110: updates of one key are serialised: right is left stably sorted by update."""
+    left, right = _global_4x(left, right)
+    if (entries := _entries(left)) is None:
+        return left, right
+    return _with(left, sorted(entries, key=lambda entry: entry["update"])), right
+
+
+@comparator("routing_snapshot_per_runner")
+def routing_snapshot_per_runner(left: Record, right: Record) -> tuple[Record, Record]:
+    """D114: a component registered while handling applies from the next update. Right lacks
+    the components registered in the same case (``late``), and an update only such a
+    component handled is ``UNHANDLED``; later cases are equal."""
+    if (outcomes := _outcomes(left)) is not None:
+        late = left.get("meta", {}).get("late_handled", [])
+        expected = [
+            {"returned": "UNHANDLED"} if index < len(late) and late[index] else outcome
+            for index, outcome in enumerate(outcomes)
+        ]
+        return _with(left, expected), right
+    left, right = _global_4x(left, right)
+    if (entries := _entries(left)) is None:
+        return left, right
+    return _with(left, [e for e in entries if "late" not in e]), right
+
+
+@comparator("event_context_only_kwargs")
+def event_context_only_kwargs(left: Record, right: Record) -> tuple[Record, Record]:
+    """D12: no ``event_from_user`` / ``event_chat`` / ``event_thread_id`` in the data. A handler
+    asking for one by signature may fail with a DI error or run without it (E-21 narrows this)."""
+    if _outcomes(left) is not None:
+        rights = right.get("value")
+        if (
+            left.get("meta", {}).get("d12_params")
+            and isinstance(rights, list)
+            and all(isinstance(r, dict) and "raised" in r for r in rights)
+        ):
+            return _with(left, rights), right
+        return left, right
+    left, right = _global_4x(left, right)
+    entries, right_entries = _entries(left), _entries(right)
+    if entries is None or right_entries is None:
+        return left, right
+    # only a handler that asks for a D12 key by signature may be missing (a DI error)
+    asked = set(left.get("meta", {}).get("d12_params", []))
+    missing = asked - {e["component"] for e in _ran(right_entries)}
+    return _with(left, [e for e in entries if e["component"] not in missing]), right
 
 
 # Model kind (A-08): records of sides/aiogram3/model.py, entries in manifests/model.toml.

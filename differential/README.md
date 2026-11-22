@@ -17,7 +17,8 @@ uv run python -m differential run --kind model --left pypi:aiogram==3.32.0 --rig
 ```
 
 - `--kind`: `smoke | model | request | routing`. Each kind's probe is `sides/aiogram3/<kind>.py`:
-  `smoke` (A-07), `request` (A-09, see *Request kind*); A-08 (model) and A-10 (routing) add theirs.
+  `smoke` (A-07), `request` (A-09, see *Request kind*), `model` (A-08, see *Model kind*) and `routing`
+  (A-10, see *Routing probes*).
 - A side is `pypi:<requirement>`, `git:<ref>` or `path:<dir>`.
 - `--manifest` defaults to `differential/manifests/<kind>.toml`; `--corpus` to `benchmarks/corpus`.
 
@@ -171,3 +172,45 @@ a harness error. Unlike the 4.0 entries, the one 3.x-vs-3.x entry (`deep-nesting
 insertion order. `dump_json.default` records the dump without its null fields, plus a `nulls` flag
 for whether it had any, so a field the tree has and the release lacks does not differ. The
 constructor `dump.python` uses `exclude_none` for the same reason.
+
+## Routing probes (A-10)
+
+`sides/aiogram3/routing.py` builds every `routing` topology of the corpus (schema in
+`benchmarks/corpus/README.md`) into a `Dispatcher` and feeds its events through `feed_update`, or
+`feed_webhook_update` for the `webhook` feed variant. The bot has a session that refuses every
+request, so nothing reaches the network.
+
+- **Instrumented components.** User filters, middlewares, handlers, `errors` handlers and scene
+  actions record each call into a per-feed list. That list is a `ContextVar`, so
+  `asyncio.to_thread` carries it into the worker thread. `command`, `text_eq` and `magic_*` are
+  registered unwrapped, so the framework runs its own code for them. They are not recorded; their
+  effect shows in what runs next.
+- **Cases.** A case is `<topology id>.<feed>.fsm-<on|off>.<event>`, or `.<group>` for events fed
+  concurrently. Each case has these probes:
+  - `trace`: the ordered calls, `{component, kind, router, path, update, result}`. A filter's entry
+    also has `owner` (its handler). A component added while handling has `late` (the registration
+    id), and the call that added it has `registers`.
+  - `kwargs`: the same calls, each with the data it saw and its event. JSON values are kept as they
+    are, routers and handlers are recorded by name, and any other object by its type name.
+  - `threads`: `on_loop` per filter and handler call. These are the thread fields; 3x-03 and D34
+    approve differences in this probe only.
+  - `result`: per update, `{returned: ...}` or `{raised: {type, message}}` for an exception that
+    escapes the feed.
+
+  Each topology and variant also has a `used_update_types` probe. Timings go to `meta` and are
+  never compared.
+- **Poison** swaps the first two handlers of every observer that has two or more.
+- **Reference meta.** Every record of a case also carries, in `meta`, what the 3.x reference knows
+  and the 4.0 differences decide on:
+  - `candidates`: per update, each handler for the event type, and whether one of its compiled
+    filters (`command`, `text_eq`, `magic_*`) is false on the original event.
+  - `errors`: per raising update, the raising path, the exception and the `errors` handlers' results.
+  - `late_handled`: whether a component registered in this case handled the update.
+
+  A component registered in an earlier case loses its `late` mark.
+- **Comparators.** They read the left side's `meta` only. One record matches one manifest entry, so
+  every routing comparator also applies the 4.0 differences that hold everywhere:
+  - D12 on `kwargs`: no `event_from_user` / `event_chat` / `event_thread_id`.
+  - D34 on `threads`: sync filters on the loop.
+  - The D111 / PD-19 and breaking change 13 skips: a router none of whose candidates survives, or
+    the user filters of a rejected candidate. Each is skipped whole or not at all.

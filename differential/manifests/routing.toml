@@ -1,15 +1,20 @@
 # Routing kind (A-10). Schema: differential/README.md. First matching entry wins (keep case-specific
 # entries above probe wildcards); unmatched cases are invariant.
-# Seeded 4.0 approved differences (README breaking changes): `when = "aiogram4"` keeps them inert in 3.x-vs-3.x
-# runs, and each `assert` is a stub comparator that never approves until its owning plan refines the entry.
+# Cases are `<topology id>.<feed>.fsm-<on|off>.<event or group>` (benchmarks/corpus/routing/); probes are
+# `trace`, `kwargs`, `threads`, `result` and, per topology, `used_update_types`.
+# The 4.0 approved differences (README breaking changes) carry `when = "aiogram4"`, which keeps them inert in
+# 3.x-vs-3.x runs. A record matches one entry only, so every routing comparator also applies the differences
+# that hold everywhere (D12 on `kwargs`, D34 on `threads`, the D111 / PD-19 and breaking change 13 skips on
+# `trace` / `kwargs` / `threads`); the last three entries cover the cases no specific entry matches. The
+# comparators decide on the left side's `meta` (the 3.x reference), never on the right side's.
 
 [[case]]
-match = "routing.*/kwargs"
+match = "routing.kwargs.event-from-user.*"
 class = "approved"
 decision = "D12"
 assert = "event_context_only_kwargs"
 when = "aiogram4"
-note = "event_from_user / event_chat / event_thread_id no longer injected, only event_context (breaking change 11)"
+note = "a handler asking for event_from_user by signature: a DI error or no value; E-21 narrows it (breaking change 11)"
 
 [[case]]
 match = "routing.middleware.outer.*"
@@ -17,7 +22,7 @@ class = "approved"
 decision = "D111"
 assert = "outer_middleware_skipped_without_handler"
 when = "aiogram4"
-note = "outer middlewares of routers with no matching handler are skipped (breaking change 24)"
+note = "outer middlewares of routers with no matching handler are skipped (PD-19, breaking change 24); replace-router: routing on the original event is E-02's open decision"
 
 [[case]]
 match = "routing.rejector.*"
@@ -36,14 +41,6 @@ when = "aiogram4"
 note = "errors bubble to the raising router, then parents; siblings no longer catch (breaking change 17)"
 
 [[case]]
-match = "routing.filters.sync.*"
-class = "approved"
-decision = "D34"
-assert = "sync_filters_inline"
-when = "aiogram4"
-note = "sync filters run inline by default (breaking change 16)"
-
-[[case]]
 match = "routing.isolation.*"
 class = "approved"
 decision = "D28"
@@ -57,4 +54,28 @@ class = "approved"
 decision = "D114"
 assert = "routing_snapshot_per_runner"
 when = "aiogram4"
-note = "per-Runner immutable routing snapshot (breaking change 4)"
+note = "per-Runner immutable routing snapshot; feed_update without a Runner picks a change up on the next update (breaking change 4)"
+
+[[case]]
+match = "routing.*/trace"
+class = "approved"
+decision = "D111"
+assert = "outer_middleware_skipped_without_handler"
+when = "aiogram4"
+note = "the D111 / PD-19 and breaking change 13 skips in every topology (e.g. the bench topologies' unhandled events)"
+
+[[case]]
+match = "routing.*/threads"
+class = "approved"
+decision = "D34"
+assert = "sync_filters_inline"
+when = "aiogram4"
+note = "sync filters run inline by default (breaking change 16)"
+
+[[case]]
+match = "routing.*/kwargs"
+class = "approved"
+decision = "D12"
+assert = "event_context_only_kwargs"
+when = "aiogram4"
+note = "event_from_user / event_chat / event_thread_id no longer injected, only event_context (breaking change 11)"
