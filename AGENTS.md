@@ -41,6 +41,9 @@ Prefer Serena's symbol tools over `Read`/`Grep` for source code exploration. Onl
 
 Code style/lint in this repository is enforced via Ruff (`ruff check` + `ruff format`).
 
+Run `ruff check --fix` only on the files you touched: on `tests` or `aiogram` it also rewrites unrelated
+files (it did to `tests/test_api/test_client/test_session/test_aiohttp_session.py`); check `git status` after it.
+
 Quick loop (recommended for most PR iterations). `make lint` runs ruff, both mypy passes and the pre-commit hooks exactly as CI does. The pre-commit hooks include fixers (`trailing-whitespace`, `end-of-file-fixer`, `ruff-format`), so `make lint` may modify files in the working tree; review `git diff` afterwards. `pre-commit run --all-files` only sees files git tracks: `git add` new files before `make lint`, or the hooks (`check-json`, `check-toml`, ruff) skip them.
 
 ```bash
@@ -118,6 +121,7 @@ uv run --extra cli butcher apply all
   separate [aiogram/butcher](https://github.com/aiogram/butcher) repo. Install it into its own
   environment and run it from this repository root (`python -m butcher.shell.main apply all`).
   A fix that needs new generator behaviour lands in butcher first, then in `.butcher` config here.
+  The build commands are in `.claude/skills/bot-api-bump/SKILL.md`, step 1.
 - butcher formats with black, the repository with ruff, so raw `apply all` output differs from the
   committed files. Run `ruff check --fix aiogram/types aiogram/methods` (import order) and
   `ruff format aiogram` afterwards; on a clean tree that sequence yields an empty `git diff`, which
