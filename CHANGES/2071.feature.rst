@@ -1,0 +1,11 @@
+Added :meth:`Bot.stream() <aiogram.client.bot.Bot.stream>`: :code:`async for chunk in bot.stream(file)` downloads
+a file by :code:`file_id` or :code:`Downloadable` chunk by chunk. The stream is also an async context manager and
+releases the connection on every path (end of file, :code:`break` with :code:`async with` or :code:`aclose()`,
+errors, cancellation).
+Downloads take per-phase timeouts, :class:`~aiogram.client.session.base.DownloadTimeout`
+(:code:`connect`, :code:`sock_read` idle time, optional :code:`total`), in :code:`timeout=` of
+:meth:`Bot.download() <aiogram.client.bot.Bot.download>`, :meth:`Bot.download_file() <aiogram.client.bot.Bot.download_file>`,
+:meth:`Bot.stream() <aiogram.client.bot.Bot.stream>` and :code:`BaseSession.stream_content()`.
+:meth:`Bot.download() <aiogram.client.bot.Bot.download>` and :meth:`Bot.download_file() <aiogram.client.bot.Bot.download_file>`
+are typed with overloads: a path destination returns :code:`None`, a binary I/O object or the default returns
+:class:`typing.BinaryIO`.

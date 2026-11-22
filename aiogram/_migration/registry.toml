@@ -923,3 +923,19 @@ suppress = "aiogram: ignore[AG4051]"
 gate = false
 generated = false
 warn_3x = { site = "none", target = "", since = "" }
+
+[[entry]]
+id = "AG4052"
+kind = "removal-4.0"
+title = "the default download timeout is per phase (connect 30 s, 60 s between reads), with no 30 s total cap"
+decisions = ["D46"]
+area = "client"
+change = "behaviour"
+replacement = "timeout=DownloadTimeout(total=...) or a number (a total timeout in seconds) on Bot.download(), Bot.download_file() and Bot.stream() to keep a total cap; a custom session's stream_content() declares timeout: DownloadTimeout | float = DEFAULT_DOWNLOAD_TIMEOUT to receive per-phase timeouts"
+detection = "manual"
+confidence = "low"
+codemod = "none"
+suppress = "aiogram: ignore[AG4052]"
+gate = false
+generated = false
+warn_3x = { site = "none", target = "", since = "" }
