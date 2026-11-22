@@ -32,7 +32,7 @@ dependencies = [
 
 [[package]]
 name = "aiogram-core"
-version = "3.33.0"
+version = "3.34.0"
 dependencies = [
  "jiter",
  "pyo3",
