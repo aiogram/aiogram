@@ -2,10 +2,9 @@ import argparse
 import io
 import json
 import os
-import runpy
 import subprocess
 import sys
-import sysconfig
+import tomllib
 import types
 from importlib import metadata
 from pathlib import Path
@@ -13,7 +12,6 @@ from pathlib import Path
 import pytest
 
 import aiogram
-from aiogram import cli
 from aiogram.cli import CliError, _info, _migrate, _output, _plugins, _token, main
 from aiogram.cli._spec import add_token_arguments, build_parser
 from tests.token_safety import FAKE_TOKEN
@@ -39,30 +37,29 @@ def run_python(*args: str) -> subprocess.CompletedProcess[str]:
 
 
 class TestEntryPoints:
+    def test_console_script_is_declared(self):
+        with (ROOT.parent / "pyproject.toml").open("rb") as f:
+            scripts = tomllib.load(f)["project"]["scripts"]
+        assert scripts == {"aiogram": "aiogram.cli:main"}
+
     def test_module_and_script_print_the_same_help(self):
-        script = Path(sysconfig.get_path("scripts")) / (
-            "aiogram.exe" if os.name == "nt" else "aiogram"
-        )
-        assert script.exists(), "the `aiogram` console script is not installed: run `uv sync`"
+        # CI tests the checkout without installing the project (no console script), so the
+        # script side runs `main` the way the generated wrapper does: argv[0] is its path
         by_module = run_python("-m", "aiogram", "--help")
-        by_script = subprocess.run(
-            [str(script), "--help"], capture_output=True, text=True, check=False
+        by_script = run_python(
+            "-c",
+            "import sys; sys.argv[0] = '/venv/bin/aiogram'; "
+            "from aiogram.cli import main; sys.exit(main())",
+            "--help",
         )
         assert by_module.returncode == by_script.returncode == 0
         assert by_module.stdout == by_script.stdout
         assert by_module.stdout.startswith("usage: aiogram ")
 
-    def test_main_module_in_process(
-        self, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
-    ):
-        monkeypatch.setattr(sys, "argv", ["aiogram"])
-        with pytest.raises(SystemExit) as exc:
-            runpy.run_module("aiogram", run_name="__main__", alter_sys=True)
-        assert exc.value.code == 2  # no command given
-        assert "required: <command>" in capsys.readouterr().err
-
-    def test_main_module_import_does_nothing(self):
-        runpy.run_module("aiogram", run_name="aiogram.__main__")
+    def test_main_module_without_command(self):
+        result = run_python("-m", "aiogram")
+        assert result.returncode == 2
+        assert "required: <command>" in result.stderr
 
     def test_import_aiogram_does_not_load_the_cli(self):
         result = run_python(

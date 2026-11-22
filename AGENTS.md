@@ -284,7 +284,9 @@ These patterns repeatedly appeared in maintainer feedback and should be treated 
   parser under `python -I` with no `aiogram` module loaded.
 - `import aiogram` already loads `argparse` (`unittest.mock.sentinel` in `aiogram/dispatcher/event/bases.py`), so an
   import-cost test checks for `aiogram.cli` modules, not `argparse`.
-- The console script is installed by `uv sync`: after changing `[project.scripts]`, re-sync before running the tests.
+- CI tests the checkout with `--no-install-project`: no `aiogram` console script and no `aiogram` dist-info. Tests
+  check the `[project.scripts]` declaration and run `main` as the wrapper does, never the installed script;
+  `runpy` on `aiogram.__main__` fails under pytest's import hook there, so use a `python -m aiogram` subprocess.
 
 ## Async generators and file IO
 
