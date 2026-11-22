@@ -1,0 +1,5 @@
+:code:`MemoryStorage.storage` is a plain :class:`dict` (AG4052): :code:`storage.storage[key]` raises
+:class:`KeyError` for a key that has no record instead of creating one; use :code:`storage.storage.get(key)`
+or assign a :class:`~aiogram.fsm.storage.memory.MemoryStorageRecord`. Direct access to it bypasses the
+storage lock. :class:`~aiogram.fsm.storage.base.StorageKey` has :code:`__slots__`, so it takes no
+attributes beyond its fields.

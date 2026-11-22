@@ -7,6 +7,11 @@ use jiter::{JiterError, JiterErrorType};
 use pyo3::PyErr;
 use pyo3::exceptions::PyValueError;
 
+use super::seen::Seen;
+
+/// Decoded objects nested deeper than this are an error ([`ErrorKind::Depth`], 13 B7).
+pub(crate) const MAX_DEPTH: u16 = 128;
+
 /// One step of a JSON path.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub(crate) enum Seg {
@@ -25,6 +30,10 @@ pub(crate) enum ErrorKind {
     Missing,
     /// The input is past the 4 GiB that [`Raw`](super::Raw) offsets address
     TooLarge,
+    /// More than [`MAX_DEPTH`] decoded objects nested
+    Depth,
+    /// Strict mode: an `Unknown…` would have been built
+    Strict(Box<Seen>),
 }
 
 /// A decode failure. Boxed, so `Result<T, DecodeError>` stays one word wider than `T`.
@@ -77,8 +86,21 @@ impl DecodeError {
         self
     }
 
+    /// Moves the offset by `by` bytes (an error of a `getUpdates` element, which counts from
+    /// the element, reported against the body).
+    pub(crate) fn shifted(mut self, by: u32) -> Self {
+        self.0.offset = self.0.offset.saturating_add(by);
+        self
+    }
+
     pub(crate) fn kind(&self) -> &ErrorKind {
         &self.0.kind
+    }
+
+    /// A depth or strict-mode error: no union absorbs it and no later duplicate key overwrites
+    /// it (D107 covers schema mismatches, not the resource guard or the caller's policy).
+    pub(crate) fn is_fatal(&self) -> bool {
+        matches!(self.0.kind, ErrorKind::Depth | ErrorKind::Strict(_))
     }
 
     pub(crate) fn offset(&self) -> u32 {
@@ -118,6 +140,12 @@ impl fmt::Display for DecodeError {
             ErrorKind::Range(ty) => write!(f, "integer out of range for {ty}")?,
             ErrorKind::Missing => f.write_str("missing required field")?,
             ErrorKind::TooLarge => f.write_str("input larger than 4 GiB")?,
+            ErrorKind::Depth => write!(f, "nesting deeper than {MAX_DEPTH} objects")?,
+            ErrorKind::Strict(seen) => write!(
+                f,
+                "{} of {}: {:?} (strict mode)",
+                seen.site, seen.entity, seen.value
+            )?,
         }
         write!(f, " at byte {}", self.0.offset)
     }

@@ -36,8 +36,12 @@ install: clean
 # Code quality
 # =================================================================================================
 
+# CI runs the two halves in separate jobs: lint-python in Lint, lint-rust in Rust (tests.yml)
 .PHONY: lint
-lint:
+lint: lint-python lint-rust
+
+.PHONY: lint-python
+lint-python:
 	uv run ruff format --check --diff $(package_dir) $(tests_dir) $(scripts_dir) $(examples_dir) $(benchmarks_dir)
 	uv run ruff check --show-fixes --preview $(package_dir) $(examples_dir) $(benchmarks_dir)
 	uv run mypy --native-parser --num-workers 8 $(package_dir)
@@ -45,7 +49,15 @@ lint:
 	# unreachable on Linux; this second pass type-checks it.
 	uv run mypy --native-parser --num-workers 8 --platform win32 $(package_dir)
 	$(MAKE) stubtest
+	$(MAKE) typing
 	uv run pre-commit run --all-files --show-diff-on-failure
+
+# the restriction lints (unwrap_used, expect_used, panic, todo, unimplemented) are denied in
+# Cargo.toml [workspace.lints.clippy]; clippy.toml allows them in tests only
+.PHONY: lint-rust
+lint-rust:
+	cargo fmt --all --check
+	cargo clippy --locked --workspace --all-targets -- -D warnings
 
 # aiogram/_core/*.pyi is hand-written (PD-36, as pydantic-core does); stubtest checks it against
 # the built extension. It walks the stub package, so it checks the root and every native
