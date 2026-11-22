@@ -1,0 +1,25 @@
+# Router outer middleware calls its continuation twice: filters and the handler run twice.
+schema = 1
+bench = false  # an oracle scenario (A-10), not a bench topology
+
+[variants]
+fsm = ["on", "off"]
+
+[[router]]
+name = "dp"
+
+[[router]]
+name = "r1"
+parent = "dp"
+outer_middlewares = [{ id = "r1.m0", event = "message", kind = "call_twice" }]
+inner_middlewares = [{ id = "r1.m1", event = "message", kind = "pass" }]
+
+[[router.handler]]
+id = "h1"
+event = "message"
+filters = [{ id = "h1.f0", kind = "async", result = true }]
+
+[[event]]
+name = "first"
+update = "update.text.small"
+expect = "h1"

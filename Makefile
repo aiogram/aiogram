@@ -5,7 +5,8 @@ tests_dir := tests
 scripts_dir := scripts
 examples_dir := examples
 benchmarks_dir := benchmarks
-code_dir := $(package_dir) $(tests_dir) $(scripts_dir) $(examples_dir) $(benchmarks_dir)
+differential_dir := differential
+code_dir := $(package_dir) $(tests_dir) $(scripts_dir) $(examples_dir) $(benchmarks_dir) $(differential_dir)
 reports_dir := reports
 
 redis_connection := redis://localhost:6379
@@ -42,12 +43,14 @@ lint: lint-python lint-rust
 
 .PHONY: lint-python
 lint-python:
-	uv run ruff format --check --diff $(package_dir) $(tests_dir) $(scripts_dir) $(examples_dir) $(benchmarks_dir)
-	uv run ruff check --show-fixes --preview $(package_dir) $(examples_dir) $(benchmarks_dir)
+	uv run ruff format --check --diff $(package_dir) $(tests_dir) $(scripts_dir) $(examples_dir) $(benchmarks_dir) $(differential_dir)
+	uv run ruff check --show-fixes --preview $(package_dir) $(examples_dir) $(benchmarks_dir) $(differential_dir)
 	uv run mypy --native-parser --num-workers 8 $(package_dir)
 	# aiogram/types/custom.py has a `sys.platform == "win32"` branch that mypy prunes as
 	# unreachable on Linux; this second pass type-checks it.
 	uv run mypy --native-parser --num-workers 8 --platform win32 $(package_dir)
+	# side scripts share names across adapters (sides/aiogram3/smoke.py, sides/aiogram4/smoke.py)
+	uv run mypy --native-parser --explicit-package-bases $(differential_dir)
 	$(MAKE) stubtest
 	$(MAKE) typing
 	uv run pre-commit run --all-files --show-diff-on-failure
@@ -104,6 +107,15 @@ test-coverage: test-run-services
 test-coverage-view:
 	uv run coverage html -d $(reports_dir)/coverage
 	uv run python -c "import webbrowser; webbrowser.open('file://$(shell pwd)/reports/coverage/index.html')"
+
+# =================================================================================================
+# Benchmarks
+# =================================================================================================
+
+# extra flags go through args, e.g. `make bench args="--out benchmarks/results/local.json"`
+.PHONY: bench
+bench:
+	uv run python -m benchmarks run --cases all $(args)
 
 # =================================================================================================
 # Docs

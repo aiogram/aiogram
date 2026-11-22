@@ -36,6 +36,7 @@ Available types
     bot_command_scope_chat_member
     bot_command_scope_default
     bot_description
+    bot_full_info
     bot_name
     bot_short_description
     bot_subscription_updated

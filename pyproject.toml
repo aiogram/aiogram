@@ -60,6 +60,7 @@ exclude = [
     { path = ".oss-scanner/**/*", format = "sdist" },
     { path = "benchmarks/**/*", format = "sdist" },
     { path = "design/**/*", format = "sdist" },
+    { path = "differential/**/*", format = "sdist" },
     { path = "openspec/**/*", format = "sdist" },
     { path = "orca.yaml", format = "sdist" },
     { path = "v4/**/*", format = "sdist" },
