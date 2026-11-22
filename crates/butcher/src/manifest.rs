@@ -56,28 +56,14 @@ pub enum FetchStatus {
     Unreachable,
 }
 
-impl Manifest {
-    pub fn load(path: &Path) -> Result<Manifest, Error> {
-        let text = crate::read(path)?;
-        let de = toml::Deserializer::parse(&text).map_err(|e| Error::Parse {
-            path: path.to_owned(),
-            at: ".".to_owned(),
-            message: e.to_string(),
-        })?;
-        let manifest: Manifest =
-            serde_path_to_error::deserialize(de).map_err(|e| crate::parse_error(path, e))?;
-        manifest.check().map_err(|e| crate::invalid(path, e))?;
-        Ok(manifest)
-    }
-
+impl Sources {
     /// Invariants serde cannot express, as `(key path, message)`.
-    fn check(&self) -> Result<(), (String, String)> {
-        let s = &self.sources;
+    pub(crate) fn check(&self) -> Result<(), (String, String)> {
         let records = [
-            ("html", Some(&s.html)),
-            ("preview", s.preview.as_ref()),
-            ("openapi", s.openapi.as_ref()),
-            ("errors", s.errors.as_ref()),
+            ("html", Some(&self.html)),
+            ("preview", self.preview.as_ref()),
+            ("openapi", self.openapi.as_ref()),
+            ("errors", self.errors.as_ref()),
         ];
         for (name, record) in records {
             let Some(record) = record else { continue };
@@ -101,6 +87,26 @@ impl Manifest {
             }
         }
         Ok(())
+    }
+}
+
+impl Manifest {
+    pub fn load(path: &Path) -> Result<Manifest, Error> {
+        let text = crate::read(path)?;
+        let de = toml::Deserializer::parse(&text).map_err(|e| Error::Parse {
+            path: path.to_owned(),
+            at: ".".to_owned(),
+            message: e.to_string(),
+        })?;
+        let manifest: Manifest =
+            serde_path_to_error::deserialize(de).map_err(|e| crate::parse_error(path, e))?;
+        manifest.check().map_err(|e| crate::invalid(path, e))?;
+        Ok(manifest)
+    }
+
+    /// Invariants serde cannot express, as `(key path, message)`.
+    fn check(&self) -> Result<(), (String, String)> {
+        self.sources.check()
     }
 
     pub fn write(&self, path: &Path) -> Result<(), Error> {
