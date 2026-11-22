@@ -14,7 +14,7 @@ import pytest
 
 import aiogram
 from aiogram import cli
-from aiogram.cli import CliError, _info, _output, _plugins, _token, main
+from aiogram.cli import CliError, _info, _migrate, _output, _plugins, _token, main
 from aiogram.cli._spec import add_token_arguments, build_parser
 from tests.token_safety import FAKE_TOKEN
 
@@ -182,6 +182,38 @@ class TestPlugins:
             in capsys.readouterr().err
         )
 
+    def test_partial_register_is_rolled_back(self, plugins, capsys: pytest.CaptureFixture[str]):
+        def register(subparsers):
+            subparsers.add_parser("half", aliases=["h"], help="broken half")
+            raise RuntimeError("boom")
+
+        plugins.append(fake_entry_point("bad", register))
+        plugins.append(fake_entry_point("good", command("half", lambda a: 7)))
+        assert main(["half"]) == 7
+        assert main(["h"]) == 2
+        assert main(["--help"]) == 0
+        out = capsys.readouterr().out
+        assert "broken half" not in out
+        assert "half command" in out
+
+    def test_system_exit_in_plugin(self, plugins, capsys: pytest.CaptureFixture[str]):
+        def register(subparsers):
+            raise SystemExit("missing config")
+
+        plugins.append(fake_entry_point("bad", register))
+        assert main(["info", "--json"]) == 0
+        assert "failed to load: SystemExit: missing config" in capsys.readouterr().err
+
+    def test_plugin_warning_is_redacted(self, plugins, capsys: pytest.CaptureFixture[str]):
+        def register(subparsers):
+            raise RuntimeError(f"bad token {FAKE_TOKEN}")
+
+        plugins.append(fake_entry_point("bad", register))
+        assert main(["info", "--json"]) == 0
+        err = capsys.readouterr().err
+        assert FAKE_TOKEN.partition(":")[2] not in err
+        assert "123456:***" in err
+
     def test_builtin_wins(self, plugins, capsys: pytest.CaptureFixture[str]):
         plugins.append(fake_entry_point("info", command("info", lambda a: 9), dist="evil"))
         assert main(["info", "--json"]) == 0
@@ -245,7 +277,7 @@ class TestErrors:
     def test_token_is_redacted(
         self, plugins, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
     ):
-        monkeypatch.setattr(_token, "_secrets", set())
+        monkeypatch.setattr(_output, "_secrets", set())
         monkeypatch.setenv("BOT_TOKEN", FAKE_TOKEN)
 
         def register(subparsers):
@@ -264,10 +296,27 @@ class TestErrors:
         assert f"/bot{FAKE_TOKEN.partition(':')[0]}:***/getMe" in err
 
 
+class TestUsageErrorRedaction:
+    @pytest.mark.parametrize(
+        "argv",
+        [
+            ["info", "--token", FAKE_TOKEN],
+            ["info", f"--token={FAKE_TOKEN}"],
+            [FAKE_TOKEN],
+        ],
+    )
+    def test_token_in_usage_error(self, argv: list[str], capsys: pytest.CaptureFixture[str]):
+        assert main(argv) == 2
+        err = capsys.readouterr().err
+        assert "error:" in err
+        assert FAKE_TOKEN.partition(":")[2] not in err
+        assert "123456:***" in err
+
+
 class TestToken:
     @pytest.fixture(autouse=True)
     def clean(self, monkeypatch: pytest.MonkeyPatch):
-        monkeypatch.setattr(_token, "_secrets", set())
+        monkeypatch.setattr(_output, "_secrets", set())
         monkeypatch.delenv("BOT_TOKEN", raising=False)
 
     def parse(self, *argv: str) -> argparse.Namespace:
@@ -288,6 +337,13 @@ class TestToken:
     def test_missing_file(self, tmp_path: Path):
         with pytest.raises(CliError, match="cannot read --token-file") as exc:
             _token.resolve_token(self.parse("--token-file", str(tmp_path / "nope")))
+        assert exc.value.exit_code == 2
+
+    def test_undecodable_file(self, tmp_path: Path):
+        path = tmp_path / "token"
+        path.write_bytes(b"\xff\xfe")
+        with pytest.raises(CliError, match="cannot read --token-file") as exc:
+            _token.resolve_token(self.parse("--token-file", str(path)))
         assert exc.value.exit_code == 2
 
     def test_flag_warns(self, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]):
@@ -312,7 +368,7 @@ class TestToken:
     def test_redact_without_colon(self, monkeypatch: pytest.MonkeyPatch):
         monkeypatch.setenv("BOT_TOKEN", "opaque")
         _token.resolve_token(self.parse())
-        assert _token.redact("x opaque y") == "x *** y"
+        assert _output.redact("x opaque y") == "x *** y"
 
 
 class TTY(io.StringIO):
@@ -436,7 +492,7 @@ class TestMigrate:
             raise ModuleNotFoundError("No module named 'libcst'", name="libcst")
 
         monkeypatch.setattr(
-            cli._migrate, "importlib", types.SimpleNamespace(import_module=import_module)
+            _migrate, "importlib", types.SimpleNamespace(import_module=import_module)
         )
         assert main(["migrate", "fix", "src"]) == 2
         assert "pip install 'aiogram[migrate]'" in capsys.readouterr().err
@@ -446,7 +502,7 @@ class TestMigrate:
             raise ModuleNotFoundError("No module named 'other'", name="other")
 
         monkeypatch.setattr(
-            cli._migrate, "importlib", types.SimpleNamespace(import_module=import_module)
+            _migrate, "importlib", types.SimpleNamespace(import_module=import_module)
         )
         assert main(["migrate", "fix", "src"]) == 1
 

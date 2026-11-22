@@ -1,12 +1,27 @@
 from __future__ import annotations
 
 import os
+import re
 import sys
 from typing import TextIO
 
 from aiogram.cli._spec import PROG
 
 _STYLES = {"bold": "1", "red": "31", "yellow": "33"}
+
+# Tokens resolved by ``_token.resolve_token``, masked in every warning and error (D66)
+_secrets: set[str] = set()
+# Anything shaped like a bot token, for text holding a token the CLI never resolved
+# (an argparse diagnostic quoting a misplaced --token value, a plugin's exception)
+_TOKEN_SHAPE = re.compile(r"\b(\d{5,}):[A-Za-z0-9_-]{30,}")
+
+
+def redact(text: str) -> str:
+    """Replace every resolved or token-shaped string in ``text`` with ``<bot id>:***``."""
+    for token in _secrets:
+        bot_id, colon, _ = token.partition(":")
+        text = text.replace(token, f"{bot_id}:***" if colon else "***")
+    return _TOKEN_SHAPE.sub(r"\1:***", text)
 
 
 class CliError(Exception):
@@ -25,8 +40,8 @@ def paint(text: str, style: str, stream: TextIO) -> str:
 
 
 def warn(message: str) -> None:
-    print(f"{PROG}: {paint('warning', 'yellow', sys.stderr)}: {message}", file=sys.stderr)
+    print(f"{PROG}: {paint('warning', 'yellow', sys.stderr)}: {redact(message)}", file=sys.stderr)
 
 
 def error(message: str) -> None:
-    print(f"{PROG}: {paint('error', 'red', sys.stderr)}: {message}", file=sys.stderr)
+    print(f"{PROG}: {paint('error', 'red', sys.stderr)}: {redact(message)}", file=sys.stderr)

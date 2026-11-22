@@ -47,7 +47,7 @@ def register_info(subparsers: Subparsers) -> None:
 def register_migrate(subparsers: Subparsers) -> None:
     parser = subparsers.add_parser(
         "migrate",
-        help="check or rewrite code for aiogram 4.0 (needs aiogram[migrate])",
+        help="check or rewrite code for aiogram 4.0",
         description="Report (check) or rewrite (fix) aiogram 3.x code that 4.0 changes.",
     )
     commands = parser.add_subparsers(

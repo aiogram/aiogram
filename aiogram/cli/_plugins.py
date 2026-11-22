@@ -26,6 +26,7 @@ class _Guard:
         self._action = action
         self._owners = owners
         self._owner = owner
+        self.added: list[str] = []
 
     def add_parser(self, name: str, **kwargs: Any) -> argparse.ArgumentParser:
         if name in self._owners:
@@ -40,7 +41,18 @@ class _Guard:
         parser: argparse.ArgumentParser = self._action.add_parser(name, aliases=aliases, **kwargs)
         for taken in (name, *aliases):
             self._owners[taken] = self._owner
+            self.added.append(taken)
         return parser
+
+    def rollback(self) -> None:
+        """Drop the commands this plugin added before it failed."""
+        for name in self.added:
+            del self._action.choices[name]
+            del self._owners[name]
+        # the --help entries; argparse has no public API to remove a subparser
+        self._action._choices_actions[:] = [
+            action for action in self._action._choices_actions if action.dest not in self.added
+        ]
 
     def _shadowed(self, name: str) -> None:
         warn(f"command '{name}' of {self._owner} is ignored: {self._owners[name]} provides it")
@@ -59,7 +71,10 @@ def load_plugins(subparsers: Subparsers) -> None:
     owners = dict.fromkeys(subparsers.choices, BUILTIN)
     for entry_point in sorted(entry_points(group=GROUP), key=lambda ep: ep.name):
         owner = _describe(entry_point)
+        guard = _Guard(subparsers, owners, owner)
         try:
-            entry_point.load()(_Guard(subparsers, owners, owner))
-        except Exception as exc:  # noqa: BLE001 - a broken plugin must not break other commands
+            entry_point.load()(guard)
+        # a broken plugin must not break other commands, even one calling sys.exit()
+        except (Exception, SystemExit) as exc:  # noqa: BLE001
+            guard.rollback()
             warn(f"{owner} failed to load: {type(exc).__name__}: {exc}")
