@@ -1,5 +1,4 @@
 import asyncio
-import logging
 import time
 from asyncio import Event, Lock
 from collections.abc import Awaitable, Callable
@@ -7,11 +6,11 @@ from contextlib import suppress
 from types import TracebackType
 from typing import Any
 
-from aiogram import BaseMiddleware, Bot
+from aiogram import BaseMiddleware, Bot, loggers
 from aiogram.dispatcher.flags import get_flag
 from aiogram.types import Message, TelegramObject
 
-logger = logging.getLogger(__name__)
+logger = loggers.client
 DEFAULT_INTERVAL = 5.0
 DEFAULT_INITIAL_SLEEP = 0.0
 

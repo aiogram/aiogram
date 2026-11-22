@@ -2,7 +2,7 @@
 
 | Field | Value |
 |---|---|
-| Status | `todo` |
+| Status | `done` |
 | Story | B — Model spike |
 | Target branch | `dev-4.x` |
 | Depends on | [B-03](B-03-decode-runtime.md) |

@@ -1,4 +1,3 @@
-import logging
 from typing import TYPE_CHECKING, Any
 
 from aiogram import loggers
@@ -9,8 +8,6 @@ from .base import BaseRequestMiddleware, NextRequestMiddlewareType
 
 if TYPE_CHECKING:
     from aiogram.client.bot import Bot
-
-logger = logging.getLogger(__name__)
 
 
 class RequestLogging(BaseRequestMiddleware):

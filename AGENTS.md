@@ -55,6 +55,8 @@ make lint-workflows
 ```
 
 Without a GitHub token zizmor runs in offline mode and skips its online audits (known-vulnerable-actions and friends), which CI does run. To reproduce CI exactly, prefix `make lint-workflows` with `GH_TOKEN=$(gh auth token)`.
+actionlint runs shellcheck on `run:` scripts only when `shellcheck` is on `PATH` (CI runners have it) and
+skips it silently otherwise: install it (`brew install shellcheck`) or a SC#### error shows up only in CI.
 
 To run a test file on another interpreter of the CI matrix (3.11–3.15, 3.14t) without touching `.venv`:
 
@@ -99,6 +101,9 @@ Suite strategy (4.0, D88):
   `__context__` / `.original`, which hold the raw aiohttp error by design.
 - `aresponses` intercepts every host, `127.0.0.1` included: a test that needs a real unreachable hop (a redirect to
   a closed port) uses `aiohttp.test_utils.TestServer` without the `aresponses` fixture.
+- `aiogram.test` deep-copies worlds, including their FSM storage (`tests/test_testing/test_world.py`). A
+  `threading.Lock` cannot be copied, so a storage or isolation class that holds one needs `__getstate__` /
+  `__setstate__` (the copy gets its own lock) and a `__copy__` that shares it (`MemoryStorage`, F-01).
 
 `MockedSession` builds the JSON wire envelope and runs it through `BaseSession.check_response`, so unit tests keep
 exercising the real error mapping (`TelegramBadRequest`, `TelegramRetryAfter`, ...). Its only model-layer dependency is
@@ -184,12 +189,33 @@ These patterns repeatedly appeared in maintainer feedback and should be treated 
   installs a fast debug build, `make bench` a release one. Nothing on the 3.x import path loads `_core`
   (`tests/test_core/test_build.py` checks it).
 - Rust checks: `cargo fmt --all --check`, `cargo clippy --workspace --all-targets -- -D warnings` (`unwrap`,
-  `expect`, `panic!`, `todo!`, `unimplemented!` are denied), `cargo test --workspace`. CI: `.github/workflows/core.yml`.
+  `expect`, `panic!`, `todo!`, `unimplemented!` are denied), `cargo test --workspace`. `make lint` runs fmt and
+  clippy too (`lint-rust`; CI runs `lint-python` in Lint and `lint-rust` in Rust).
+- CI (`.github/workflows/tests.yml`, structure in its header): `build-wheels` builds one release wheel per leg, cached
+  on the hash of the extension's inputs, and the other jobs copy only `aiogram/_core.*` out of it into the checkout
+  (`scripts/ci_use_wheel.py`), never `pip install` it: the cached wheel's Python files are stale on a Python-only
+  PR. A new input of the extension goes into that cache key and into `[tool.uv] cache-keys` together; a new
+  Rust-side path into the `RUST` pattern of the `plan` job. PRs run a reduced leg set, push to `dev-4.x` the full
+  matrix; a `schedule` trigger does not fire on `dev-4.x` (not the default branch).
+- Rust coverage locally: `source <(cargo llvm-cov show-env --sh)`, `cargo test --workspace`, `make dev`, `uv run
+  pytest`, `cargo llvm-cov report` (what the CI Rust job runs). The instrumentation goes through a rustc wrapper
+  that cargo's fingerprint does not see, so a later plain `make dev` keeps the instrumented build (it writes
+  `default_*.profraw` files): `cargo clean -p aiogram-core -p butcher -p xtask` afterwards.
 - `clippy.toml`'s `allow-*-in-tests` covers `#[test]` functions and `#[cfg(test)]` modules only. Helpers in an
   integration test crate (`crates/*/tests/*.rs`) need `#![allow(clippy::unwrap_used)]` at the top of the file.
 - The version lives in `aiogram/__meta__.py` and is copied, static, into `pyproject.toml` and
   `crates/aiogram-core/Cargo.toml`. Only change it with `make bump`: it writes both copies and refreshes
   `Cargo.lock` and `uv.lock` (`uv sync --locked` fails otherwise). `test_build.py` asserts they match.
+  Pre-releases are `X.Y.ZaN` / `bN` / `rcN`: the crate gets the semver form (`4.0.0-alpha.1`, which `build.rs`
+  turns back for `_core.__version__`) and pyproject the matching `Development Status` classifier.
+- `import aiogram` first runs `aiogram/_native.py`: a `find_spec` lookup (no load) that raises an `ImportError`
+  naming the interpreter tag when no `_core` extension fits. A stub-only `aiogram/_core/` resolves as a
+  namespace package, so without a built `.so` (`make dev`) nothing imports.
+- `tests/test_packaging/` checks built artifacts and is skipped unless `AIOGRAM_DIST_DIR` points at a directory
+  with one wheel and one sdist (`maturin build --release -o <dir>`, `maturin sdist -o <dir>`); CI: `packaging`
+  in `tests.yml`. The sdist's top-level set is exact: a new top-level file maturin packs fails it. The sdist
+  ships no `rust-toolchain.toml` (rustup would force that toolchain on every source build); its `Cargo.lock`
+  still lists the dev crates, so cargo commands on an unpacked sdist cannot use `--locked`.
 - `tests/typing/` holds mypy-only `assert_type` files, never collected by pytest; run them with `make typing`.
 - The stubs are hand-written (PD-36): `aiogram/_core/__init__.pyi` for the root (`__version__`, `build_info`) and
   one `aiogram/_core/<name>.pyi` per native submodule. The directory holds stubs only (no `.py`); the `.so` beside
@@ -220,6 +246,15 @@ These patterns repeatedly appeared in maintainer feedback and should be treated 
   `decode/tests/types.rs` holds hand-written types in the shape B-04 writes and C-18 emits. The corpus tests read
   `benchmarks/corpus/wire/<id>.json` from disk. jiter checks `\u` escapes even in skipped values (`known_skip`), so a
   lone surrogate anywhere in the input is a decode error, not only in decoded strings.
+- B-14 on top of it:
+  - unions (`decode/union.rs`), the depth guard in `Decode::decode` (128 objects, stacker re-entry), the
+    `Unknown…` hook (`Cursor::report`, `decode/seen.rs`) and the envelope / `getUpdates` entry points
+    (`decode/envelope.rs`);
+  - jiter's `known_skip` also stops at 200 nested levels relative to where it starts. A failure path that must find
+    a value's end after jiter failed (a batch element, an absorbed union member) uses `decode/scan.rs`, which checks
+    only strings and bracket balance;
+  - a `\uXXXX` escape typed into an agent's tool call can arrive decoded in the written file: build such test
+    input at runtime (`format!("{}u0075", '\\')`) and grep the file afterwards.
 - The A-02 link-check script (in `v4/plans/A-contracts/A-02-apply-resolutions.md`, *Validation*) reports 9 known
   broken links in files no plan may edit: `v4/research/codex-review.md` (`../../../aiogram/...`) and
   `v4/plans/_TEMPLATE.md` (paths relative to a story folder). Any other hit is yours.
@@ -242,8 +277,24 @@ These patterns repeatedly appeared in maintainer feedback and should be treated 
   entity messages), so a lookup is the exact message first, then the matching template with the longest literal
   (`literal_len`). The live check is `BUTCHER_LIVE=1 cargo test -p butcher errors_counts -- --ignored`; it pins the
   message and template counts of the current file, so a routine Telegram addition fails it until the numbers are updated.
+- `overlay/` (C-06): `Overlay::load` enforces the schema (`deny_unknown_fields`, no stray files), `Overlay::check` the
+  references into the IR. Completeness rules (every method has `idempotent`, ...) are `butcher check`'s (C-23), not the
+  loader's. Avoid `#[serde(untagged)]` in schemas loaded through `serde_path_to_error`: it replaces the inner
+  "unknown field" error with "did not match any variant" (the fill value has a hand-written `Deserialize` instead).
+- `cargo test -p butcher <name>` filters by test name, not by file: `cargo test -p butcher overlay` skips most of
+  `tests/overlay.rs`. Run a test file with `--test <file>`.
 - A new workspace crate stays out of the sdist and the wheel: maturin rewrites the sdist's `members` to
   `crates/aiogram-core` and its path dependencies. Check with `uv build` (sdist, then a wheel built from it).
+
+## Logging (`dev-4.x`)
+
+- Framework loggers come only from `aiogram/loggers.py` (`loggers.<name>` or `loggers.get_logger("aiogram.x")`); the
+  factory installs the record filters on each logger, because Python never runs an ancestor logger's filters for a
+  child's records. `tests/test_loggers.py` fails on any `getLogger(` call elsewhere in `aiogram/`.
+- `pytest --cov=aiogram.loggers` (a dotted single module) imports that module more than once; the factory replaces
+  marked stale filters (`aiogram_framework_filter`), so a new framework filter needs the same marker.
+- A test `logging.Handler` subclass must not set `self.lock`: `Handler.handle()` holds it around `emit()`, and a
+  plain `threading.Lock` there deadlocks the test.
 
 ## Async generators and file IO
 

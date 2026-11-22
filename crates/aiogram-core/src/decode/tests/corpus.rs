@@ -5,7 +5,7 @@ use jiter::Jiter;
 use super::types::{Message, MessageCold, Update, m};
 use crate::decode::{ColdField, Decode, Meta, Raw, Table};
 
-fn corpus(id: &str) -> Vec<u8> {
+pub(crate) fn corpus(id: &str) -> Vec<u8> {
     let path = format!(
         "{}/../../benchmarks/corpus/wire/{id}.json",
         env!("CARGO_MANIFEST_DIR")

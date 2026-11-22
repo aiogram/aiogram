@@ -1,4 +1,5 @@
 [toolchain]
 # latest stable - 2 minors (v4/research/08 §3); bump together with `rust-version` in Cargo.toml
+# and the Rust version in docs/install.rst (the sdist MSRV)
 channel = "1.98.0"
 components = ["rustfmt", "clippy"]

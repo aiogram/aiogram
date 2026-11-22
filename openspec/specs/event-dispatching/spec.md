@@ -86,7 +86,7 @@ under `start_polling`.
 
 #### Scenario: Workflow data
 
-- **WHEN** `Dispatcher(..., my_dep=obj)` is constructed or `dp["my_dep"] = obj` is set
+- **WHEN** `Dispatcher(..., my_dep=obj)` is constructed or `dp.workflow_data["my_dep"] = obj` is set
 - **THEN** `my_dep` is available to every handler and middleware
 
 #### Scenario: Filter results in context
