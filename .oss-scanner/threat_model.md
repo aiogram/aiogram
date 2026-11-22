@@ -98,7 +98,7 @@ user controls. A report without a runnable reproducer is capped at Medium.
 
 ## Anything to leave alone
 
-- Vulnerabilities in dependencies themselves (aiohttp, pydantic, magic-filter, aiofiles, redis-py, motor/pymongo,
+- Vulnerabilities in dependencies themselves (aiohttp, pydantic, magic-filter, redis-py, motor/pymongo,
   aiohttp-socks, Babel, cryptography), unless aiogram uses them in an unsafe way.
 - Developer misuse: trusting `initDataUnsafe` or `parse_webapp_init_data()` output without checking it,
   handlers without the filters they need, sending user text with a `parse_mode` without the escaping helpers,

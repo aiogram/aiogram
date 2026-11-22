@@ -14,8 +14,7 @@ from typing import (
     cast,
 )
 
-import aiofiles
-
+from aiogram.utils._fileio import iter_file, write_stream
 from aiogram.utils.token import extract_bot_id, validate_token
 
 from ..exceptions import TelegramAPIError
@@ -468,17 +467,7 @@ class Bot:
     async def __download_file(
         cls, destination: str | pathlib.Path, stream: AsyncGenerator[bytes, None]
     ) -> None:
-        async with aiofiles.open(destination, "wb") as f:
-            async for chunk in stream:
-                await f.write(chunk)
-
-    @classmethod
-    async def __aiofiles_reader(
-        cls, file: str | pathlib.Path, chunk_size: int = 65536
-    ) -> AsyncGenerator[bytes, None]:
-        async with aiofiles.open(file, "rb") as f:
-            while chunk := await f.read(chunk_size):
-                yield chunk
+        await write_stream(destination, stream)
 
     async def download_file(
         self,
@@ -505,9 +494,7 @@ class Bot:
 
         close_stream = False
         if self.session.api.is_local:
-            stream = self.__aiofiles_reader(
-                self.session.api.wrap_local_file.to_local(file_path), chunk_size=chunk_size
-            )
+            stream = iter_file(self.session.api.wrap_local_file.to_local(file_path), chunk_size)
             close_stream = True
         else:
             url = self.session.api.file_url(self.__token, file_path)

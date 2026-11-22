@@ -245,6 +245,16 @@ These patterns repeatedly appeared in maintainer feedback and should be treated 
 - A new workspace crate stays out of the sdist and the wheel: maturin rewrites the sdist's `members` to
   `crates/aiogram-core` and its path dependencies. Check with `uv build` (sdist, then a wheel built from it).
 
+## Async generators and file IO
+
+- File IO goes through `aiogram/utils/_fileio.py` (`iter_file`, `write_stream`): `asyncio.to_thread` with the open and
+  the close shielded, so a cancellation never leaks a descriptor. Tests count open handles by wrapping `builtins.open`
+  (`tests/test_utils/test_fileio.py`).
+- A method that only forwards another async generator returns it (`def read(...)`) instead of re-yielding it:
+  `shutdown_asyncgens()` finalizes a wrapper and the inner generator concurrently and raises
+  `aclose(): asynchronous generator is already running`.
+- `ruff check --fix` / `ruff format` over all of `tests/` rewrites unrelated files on this branch: pass the paths you touched.
+
 ## Developer design notes (`design/`)
 
 - `design/testing-toolkit/` holds the architecture, invariants and decision log of `aiogram.test`. Read it before

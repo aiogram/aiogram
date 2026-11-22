@@ -5,9 +5,9 @@ import os
 from abc import ABC, abstractmethod
 from collections.abc import AsyncGenerator
 from pathlib import Path
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, ClassVar
 
-import aiofiles
+from aiogram.utils._fileio import iter_file
 
 if TYPE_CHECKING:
     from aiogram.client.bot import Bot
@@ -20,6 +20,13 @@ class InputFile(ABC):
     This object represents the contents of a file to be uploaded. Must be posted using multipart/form-data in the usual way that files are uploaded via the browser.
 
     Source: https://core.telegram.org/bots/api#inputfile
+    """
+
+    replayable: ClassVar[bool] = False
+    """
+    :code:`True` if calling :meth:`read` again yields the same content, so an upload can be
+    retried. Defaults to :code:`False`: a custom stream may be consumed by the first attempt,
+    subclasses opt in with :code:`replayable = True`.
     """
 
     def __init__(self, filename: str | None = None, chunk_size: int = DEFAULT_CHUNK_SIZE):
@@ -39,6 +46,8 @@ class InputFile(ABC):
 
 
 class BufferedInputFile(InputFile):
+    replayable = True
+
     def __init__(self, file: bytes, filename: str, chunk_size: int = DEFAULT_CHUNK_SIZE):
         """
         Represents object for uploading files from filesystem
@@ -80,6 +89,8 @@ class BufferedInputFile(InputFile):
 
 
 class FSInputFile(InputFile):
+    replayable = True
+
     def __init__(
         self,
         path: str | Path,
@@ -100,13 +111,14 @@ class FSInputFile(InputFile):
 
         self.path = path
 
-    async def read(self, bot: Bot) -> AsyncGenerator[bytes, None]:
-        async with aiofiles.open(self.path, "rb") as f:
-            while chunk := await f.read(self.chunk_size):
-                yield chunk
+    def read(self, bot: Bot) -> AsyncGenerator[bytes, None]:
+        # returned as is: a wrapping generator would be finalized concurrently with the inner one
+        return iter_file(self.path, self.chunk_size)
 
 
 class URLInputFile(InputFile):
+    replayable = True
+
     def __init__(
         self,
         url: str,

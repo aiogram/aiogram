@@ -1,3 +1,5 @@
+import asyncio
+
 from aresponses import ResponsesMockServer
 
 from aiogram import Bot
@@ -81,3 +83,32 @@ class TestInputFile:
                 assert chunk_size == 1
                 size += chunk_size
             assert size == 10
+
+
+class TestReplayable:
+    def test_builtins_are_replayable(self):
+        assert BufferedInputFile(b"", "f").replayable is True
+        assert FSInputFile(__file__).replayable is True
+        assert URLInputFile("https://example.com/f").replayable is True
+
+    def test_custom_subclass_defaults_to_not_replayable(self):
+        class Custom(InputFile):
+            async def read(self, bot):
+                yield b""
+
+        assert Custom().replayable is False
+
+
+def test_fs_read_partially_consumed_at_loop_shutdown(recwarn):
+    # a half-read generator is finalized by `shutdown_asyncgens`; no nested generator may race with it
+    errors = []
+    leftover = []
+
+    async def main():
+        asyncio.get_running_loop().set_exception_handler(lambda loop, ctx: errors.append(ctx))
+        gen = FSInputFile(__file__, chunk_size=1).read(bot=None)
+        await anext(gen)
+        leftover.append(gen)
+
+    asyncio.run(main())
+    assert not errors
