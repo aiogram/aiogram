@@ -38,7 +38,7 @@ the generated observer in `router.py` can never fire:
 | File | What to add | Symptom if missed |
 |---|---|---|
 | `aiogram/types/update.py` → `event_type` | `if self.<field>: return "<field>"` before the `raise` | `UpdateTypeLookupError`, "Detected unknown update type" |
-| `aiogram/dispatcher/middlewares/user_context.py` → `resolve_event_context` | an `EventContext(...)` branch before the final `return EventContext()` | `event_from_user` / `event_chat` silently absent in handlers |
+| `aiogram/dispatcher/middlewares/user_context.py` → `resolve_event_context` | an `EventContext(...)` branch before the final `return EventContext()` | `event_context.user` / `event_context.chat` silently `None` in handlers |
 | `aiogram/dispatcher/router.py` | *generated* — verify only | — |
 
 Mirror the nearest existing branch (e.g. `managed_bot` for a user-only update).

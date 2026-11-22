@@ -3,7 +3,7 @@ from __future__ import annotations
 from collections.abc import Generator
 from typing import TYPE_CHECKING, Any, Final
 
-from .event.bases import REJECTED, UNHANDLED
+from .event.bases import UNHANDLED
 from .event.event import EventObserver
 from .event.telegram import TelegramEventObserver
 
@@ -197,9 +197,6 @@ class Router:
             kwargs.update(data)
 
             response = await observer.trigger(event, **kwargs)
-            if response is REJECTED:  # pragma: no cover
-                # Possible only if some handler returns REJECTED
-                return UNHANDLED
             if response is not UNHANDLED:
                 return response
 

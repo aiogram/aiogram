@@ -37,7 +37,7 @@ from contextlib import AbstractContextManager
 from enum import StrEnum
 from typing import Any, Protocol
 
-from aiogram.dispatcher.event.bases import REJECTED, UNHANDLED, SkipHandler
+from aiogram.dispatcher.event.bases import UNHANDLED, SkipHandler
 from aiogram.loggers import dispatcher as logger
 
 __all__ = (
@@ -70,8 +70,6 @@ class DispatchTracer(Protocol):
 def _result_name(result: Any) -> str:
     if result is UNHANDLED:
         return "unhandled"
-    if result is REJECTED:
-        return "rejected"
     return type(result).__name__
 
 

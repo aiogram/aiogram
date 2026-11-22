@@ -233,8 +233,8 @@ class TestTriggers:
 
     async def test_business_message(self, business_env, dp, actor, connection):
         @dp.business_message()
-        async def handler(message, event_from_user):
-            return message.business_connection_id, event_from_user.id
+        async def handler(message, event_context):
+            return message.business_connection_id, event_context.user.id
 
         result = await actor.send("hello")
 

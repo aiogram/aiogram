@@ -15,7 +15,7 @@ class Filter(ABC):  # noqa: B024
 
     if TYPE_CHECKING:
         # This checking type-hint is needed because mypy checks validity of overrides and raises:
-        # error: Signature of "__call__" incompatible with supertype "BaseFilter"  [override]
+        # error: Signature of "__call__" incompatible with supertype "Filter"  [override]
         # https://mypy.readthedocs.io/en/latest/error_code_list.html#check-validity-of-overrides-override
         __call__: Callable[..., Awaitable[bool | dict[str, Any]]]
     else:  # pragma: no cover

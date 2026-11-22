@@ -151,7 +151,7 @@ In v2 both |Bot| and |Dispatcher| could be used as dictionaries to store arbitra
 runtime data (:code:`bot["db"] = ...`, documented as a feature). In v3:
 
 - |Dispatcher| still supports this via
-  :code:`dispatcher.workflow_data` (:code:`dp["key"] = value` still works),
+  :code:`dispatcher.workflow_data` (:code:`dp["key"] = value` works in 3.x; 4.0 removes it),
   and all values stored there are automatically injected into handlers,
   filters, and middlewares as keyword arguments by name.
 - |Bot| is no longer a data storage of any kind.
@@ -163,8 +163,7 @@ runtime data (:code:`bot["db"] = ...`, documented as a feature). In v3:
     dp["config"] = config
 
     # Version 3.x
-    dp["db"] = db          # or Dispatcher(db=db, config=config)
-    dp["config"] = config
+    dp = Dispatcher(db=db, config=config)  # or dp.workflow_data["db"] = db
 
     @router.message(Command("info"))
     async def handler(message: Message, db: Database, config: Config) -> None:

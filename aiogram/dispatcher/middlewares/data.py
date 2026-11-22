@@ -8,7 +8,7 @@ if TYPE_CHECKING:
     from aiogram.dispatcher.middlewares.user_context import EventContext
     from aiogram.fsm.context import FSMContext
     from aiogram.fsm.storage.base import BaseStorage
-    from aiogram.types import Chat, Update, User
+    from aiogram.types import Update
     from aiogram.utils.i18n import I18n, I18nMiddleware
 
 
@@ -39,20 +39,6 @@ class UserContextData(TypedDict, total=False):
 
     event_context: EventContext
     """Event context object that contains user and chat data."""
-    event_from_user: NotRequired[User]
-    """User object that triggered the handler."""
-    event_chat: NotRequired[Chat]
-    """Chat object that triggered the handler.
-    .. deprecated:: 3.5.0
-        Use :attr:`event_context.chat` instead."""
-    event_thread_id: NotRequired[int]
-    """Thread ID of the chat that triggered the handler.
-    .. deprecated:: 3.5.0
-        Use :attr:`event_context.chat` instead."""
-    event_business_connection_id: NotRequired[str]
-    """Business connection ID of the chat that triggered the handler.
-    .. deprecated:: 3.5.0
-        Use :attr:`event_context.business_connection_id` instead."""
 
 
 class FSMData(TypedDict, total=False):

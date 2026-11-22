@@ -27,8 +27,7 @@ async def on_startup(bot: Bot, base_url: str) -> None:
 
 def main() -> None:
     bot = Bot(token=TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
-    dispatcher = Dispatcher()
-    dispatcher["base_url"] = APP_BASE_URL
+    dispatcher = Dispatcher(base_url=APP_BASE_URL)
     dispatcher.startup.register(on_startup)
 
     dispatcher.include_router(my_router)

@@ -448,8 +448,8 @@ class TestRemainingUpdateKinds:
     async def test_stopped_message_generation(self, env, alice):
         seen = []
 
-        async def handler(event, event_from_user, state):
-            seen.append((event.draft_id, event.chat.id, event_from_user.id))
+        async def handler(event, event_context, state):
+            seen.append((event.draft_id, event.chat.id, event_context.user.id))
             await state.set_state("stopped")
 
         env.dispatcher.stopped_message_generation.register(handler)
@@ -463,11 +463,11 @@ class TestRemainingUpdateKinds:
         with pytest.raises(WorldLookupError, match="own private chat"):
             await alice.in_(team).stop_message_generation()
 
-    async def test_event_from_user_resolves_on_the_new_triggers(self, env, alice):
+    async def test_event_context_user_resolves_on_the_new_triggers(self, env, alice):
         seen = []
 
-        async def handler(event, event_from_user):
-            seen.append(event_from_user.id)
+        async def handler(event, event_context):
+            seen.append(event_context.user.id)
 
         env.dispatcher.chosen_inline_result.register(handler)
         await alice.chosen_inline_result("result-1")

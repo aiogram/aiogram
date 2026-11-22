@@ -53,12 +53,13 @@ Analogy for webhook:
         ... # starting webhook
 
 :class:`aiogram.dispatcher.dispatcher.Dispatcher`'s workflow data also can be supplemented
-by setting values as in a dictionary:
+through :code:`workflow_data` before start (:code:`dp["eggs"]` reads it back;
+item assignment :code:`dp["eggs"] = ...` is removed in 4.0):
 
 .. code-block:: python
 
     dp = Dispatcher(...)
-    dp["eggs"] = Spam()
+    dp.workflow_data["eggs"] = Spam()
 
 The middlewares updates the context quite often.
 You can read more about them on this page:

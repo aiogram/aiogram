@@ -3,7 +3,7 @@ from __future__ import annotations
 from collections.abc import Awaitable, Callable
 from typing import TYPE_CHECKING, Any, cast
 
-from aiogram.dispatcher.event.bases import UNHANDLED, CancelHandler, SkipHandler
+from aiogram.dispatcher.event.bases import UNHANDLED, SkipHandler
 from aiogram.types import TelegramObject, Update
 from aiogram.types.error_event import ErrorEvent
 
@@ -25,7 +25,7 @@ class ErrorsMiddleware(BaseMiddleware):
     ) -> Any:
         try:
             return await handler(event, data)
-        except (SkipHandler, CancelHandler):  # pragma: no cover
+        except SkipHandler:  # pragma: no cover
             raise
         except Exception as e:
             response = await self.router.propagate_event(
