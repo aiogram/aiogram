@@ -2,6 +2,7 @@ import json
 import logging
 import subprocess
 import sys
+import time
 import traceback
 import warnings
 
@@ -146,11 +147,50 @@ class TestRedaction:
         assert record.args is args
 
     def test_unformattable_record_passes(self):
-        record = logging.LogRecord("x", 20, "f", 1, "%s %s", (1,), None)
+        record = logging.LogRecord("x", 20, "f", 1, "%s %s", (1, FAKE_TOKEN, "x"), None)
         record.leak = FAKE_TOKEN
         assert loggers.TokenRedactingFilter().filter(record) is True
-        assert record.args == (1,)
+        # handleError prints the arguments of a record it cannot format
+        assert record.args == (1, MASKED, "x")
         assert record.leak == MASKED
+
+    def test_unformattable_record_without_token_keeps_args(self):
+        args = (1,)
+        record = logging.LogRecord("x", 20, "f", 1, "%s %s", args, None)
+        loggers.TokenRedactingFilter().filter(record)
+        assert record.args is args
+
+    def test_exc_info_dropped_on_match(self):
+        """Formatters that build the traceback from exc_info (JSON loggers) see no token."""
+        try:
+            raise_chained()
+        except RuntimeError:
+            record = logging.LogRecord("x", 40, "f", 1, "m", (), sys.exc_info())
+        loggers.TokenRedactingFilter().filter(record)
+        assert record.exc_info is None
+        assert "OSError" in logging.Formatter().format(record)
+
+    def test_exc_info_kept_without_token(self):
+        try:
+            raise ValueError("plain")
+        except ValueError:
+            exc_info = sys.exc_info()
+        record = logging.LogRecord("x", 40, "f", 1, "m", (), exc_info)
+        loggers.TokenRedactingFilter().filter(record)
+        assert record.exc_info is exc_info
+        assert record.exc_text is None
+
+    def test_long_digit_run_is_linear(self):
+        # Without a guard the pattern restarts at every digit: quadratic, seconds for this size
+        record = logging.LogRecord("x", 20, "f", 1, "1" * 30_000, (), None)
+        started = time.perf_counter()
+        loggers.TokenRedactingFilter().filter(record)
+        assert time.perf_counter() - started < 0.2
+
+    def test_token_after_digits_keeps_full_id(self):
+        record = logging.LogRecord("x", 20, "f", 1, f"/bot{FAKE_TOKEN}/", (), None)
+        loggers.TokenRedactingFilter().filter(record)
+        assert record.msg == f"/bot{MASKED}/"
 
     def test_exc_info_without_exception(self):
         record = logging.LogRecord("x", 40, "f", 1, "m", (), (None, None, None))

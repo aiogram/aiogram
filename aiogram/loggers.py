@@ -105,7 +105,9 @@ def context_filter() -> logging.Filter:
 
 # A bot token: the numeric bot id, ``:``, the secret; masked as ``<bot id>:***``. No leading
 # ``\b``: in a URL the id follows ``bot`` (``/bot123456:...``) with no word boundary between.
-_TOKEN_PATTERN = re.compile(r"(\d{5,}):[A-Za-z0-9_-]{30,}")
+# ``(?<!\d)`` starts a match only at the first digit of a run, which keeps a long digit run
+# without a colon linear (an unanchored ``\d{5,}`` retries at every digit: quadratic).
+_TOKEN_PATTERN = re.compile(r"(?<!\d)(\d{5,}):[A-Za-z0-9_-]{30,}")
 _enabled = True
 _warned = False
 # Attributes every record has; anything else came from ``extra=`` or a formatter (``message``)
@@ -156,16 +158,24 @@ def _redact_record(record: logging.LogRecord) -> None:
     try:
         message = record.getMessage()
     except Exception:  # noqa: BLE001
-        pass  # a malformed record: the handler reports it through handleError
+        # A malformed record: the handler reports it through handleError, which prints the args
+        if isinstance(record.args, tuple):
+            masked = tuple(
+                (_redact(arg) or arg) if isinstance(arg, str) else arg for arg in record.args
+            )
+            if masked != record.args:
+                record.args = masked
     else:
         if (redacted := _redact(message)) is not None:
             record.msg, record.args = redacted, ()
     exc_text = record.exc_text
     if not exc_text and record.exc_info and record.exc_info[1] is not None:
         exc_text = "".join(traceback.format_exception(*record.exc_info)).rstrip("\n")
-    # Written only on a match, so a formatter's own formatException keeps ordinary records
+    # Written only on a match, so a formatter's own formatException keeps ordinary records.
+    # On a match exc_info goes too: JSON formatters build their text from it, not exc_text.
     if exc_text and (redacted := _redact(exc_text)) is not None:
         record.exc_text = redacted
+        record.exc_info = None
     if record.stack_info and (redacted := _redact(record.stack_info)) is not None:
         record.stack_info = redacted
     attrs = record.__dict__
@@ -200,7 +210,7 @@ def _warn_once(error: Exception) -> None:
         warnings.warn(
             f"aiogram token redaction failed, record passed unchanged: {error!r}",
             RuntimeWarning,
-            stacklevel=2,
+            stacklevel=1,
         )
 
 

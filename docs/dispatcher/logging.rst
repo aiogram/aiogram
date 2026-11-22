@@ -124,7 +124,12 @@ The filter, :class:`aiogram.loggers.TokenRedactingFilter`, scans:
 - the formatted message, arguments included (a :class:`yarl.URL` or an exception as an argument);
 - the exception traceback, chained causes included, and :code:`stack_info`;
 - string attributes added with :code:`extra=`, and the string values of a :code:`dict` passed that way,
-  so a JSON formatter emits them masked.
+  so a JSON formatter emits them masked. Other values (a :class:`yarl.URL`, a list, a deeper
+  :code:`dict`) are not scanned: pass them as strings.
+
+When the traceback holds a token, the record keeps the masked text in :code:`exc_text` and drops
+:code:`exc_info`. Standard formatters print the masked traceback. A handler that reads the exception
+object itself (an error tracker's logging integration) gets the record without it.
 
 A record without a token is left as it was, so error trackers that group records by message template
 keep grouping them. On a match, the message is replaced by its formatted, masked text.
