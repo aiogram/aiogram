@@ -154,7 +154,8 @@ jobs:
           uv venv --clear --python "$PYTHON" "$venv"
           bin="$venv/bin"
           [[ "$RUNNER_OS" == "Windows" ]] && bin="$venv/Scripts"
-          uv pip install --python "$bin/python" dist/*.whl
+          # the venv directory, not $bin/python: uv wants the .exe spelled out on Windows
+          uv pip install --python "$venv" dist/*.whl
           # -P keeps the checkout's own aiogram/ off sys.path, so this imports what was just installed
           "$bin/python" -P -c "import aiogram._core as core; from aiogram._core.conv import Kind; print(core.build_info(), Kind.int_())"
 
