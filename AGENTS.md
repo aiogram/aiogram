@@ -205,7 +205,7 @@ These patterns repeatedly appeared in maintainer feedback and should be treated 
 - A concurrent routing case (`group`) must not depend on thread timing: a sync filter hops to `asyncio.to_thread`,
   so use `command` (async) filters there.
 - A dev-4.x tree still reports a 3.x `__version__`, so both sides get the `aiogram3` adapter and the
-  `when = "aiogram4"` entries stay inert. The routing kind therefore does not run on PRs into dev-4.x (E-01 already
+  `when = "aiogram4"` entries stay inert. The routing kind therefore runs only for dev-3.x (E-01 already
   removed the D12 keys), and `tests/test_differential_routing.py` skips the checks that need a 3.x record there.
 
 ## 4.0 planning tree (`v4/`)
