@@ -267,6 +267,12 @@ These patterns repeatedly appeared in maintainer feedback and should be treated 
   entity messages), so a lookup is the exact message first, then the matching template with the longest literal
   (`literal_len`). The live check is `BUTCHER_LIVE=1 cargo test -p butcher errors_counts -- --ignored`; it pins the
   message and template counts of the current file, so a routine Telegram addition fails it until the numbers are updated.
+- `overlay/` (C-06): `Overlay::load` enforces the schema (`deny_unknown_fields`, no stray files), `Overlay::check` the
+  references into the IR. Completeness rules (every method has `idempotent`, ...) are `butcher check`'s (C-23), not the
+  loader's. Avoid `#[serde(untagged)]` in schemas loaded through `serde_path_to_error`: it replaces the inner
+  "unknown field" error with "did not match any variant" (the fill value has a hand-written `Deserialize` instead).
+- `cargo test -p butcher <name>` filters by test name, not by file: `cargo test -p butcher overlay` skips most of
+  `tests/overlay.rs`. Run a test file with `--test <file>`.
 - A new workspace crate stays out of the sdist and the wheel: maturin rewrites the sdist's `members` to
   `crates/aiogram-core` and its path dependencies. Check with `uv build` (sdist, then a wheel built from it).
 
