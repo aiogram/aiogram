@@ -1,0 +1,11 @@
+# Sticker: every 3.x shortcut of .butcher/types/Sticker/aliases.yml, in the fill-DSL
+
+[set_position_in_set]
+method = "setStickerPositionInSet"
+[set_position_in_set.fill]
+sticker = "self.file_id"
+
+[delete_from_set]
+method = "deleteStickerFromSet"
+[delete_from_set.fill]
+sticker = "self.file_id"

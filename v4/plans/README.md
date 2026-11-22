@@ -162,7 +162,7 @@ Verification method and results: [_VERIFICATION.md](_VERIFICATION.md).
 | [C-04](C-butcher/C-04-openapi-adapter.md) | OpenAPI 3.2 adapter | `todo` | no | L | C-01 |
 | [C-05](C-butcher/C-05-errors-json-adapter.md) | `errors.json` adapter | `done` | no | S | C-01 |
 | [C-06](C-butcher/C-06-overlay-schema-loader.md) | Overlay schema and loader | `done` | no | M | C-01 |
-| [C-07](C-butcher/C-07-fill-dsl.md) | Fill-DSL for shortcuts | `todo` | no | M | C-06 |
+| [C-07](C-butcher/C-07-fill-dsl.md) | Fill-DSL for shortcuts | `done` | no | M | C-06 |
 | [C-08](C-butcher/C-08-merge-cross-check.md) | Merge and cross-check | `todo` | no | L | C-03, C-04, C-05, C-06 |
 | [C-09](C-butcher/C-09-resolution-passes.md) | Resolution passes: D18 twins, D109 names, union classification | `todo` | no | M | C-08 |
 | [C-10](C-butcher/C-10-ledger-diff.md) | Compat ledger and `butcher diff` | `todo` | no | M | A-11, C-01, C-08 |

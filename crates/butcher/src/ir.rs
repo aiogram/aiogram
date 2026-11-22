@@ -35,6 +35,12 @@ pub struct Ir {
     pub unions: Vec<Union>,
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub errors: Vec<ErrorEntry>,
+    /// Generated shortcuts, resolved from `overlay/shortcuts/*.toml` by [`crate::dsl::apply`] (C-07).
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub shortcuts: Vec<Shortcut>,
+    /// Event-context paths per update type, resolved from `overlay/events.toml` (C-07).
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub events: Vec<EventContext>,
 }
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
@@ -289,6 +295,85 @@ pub struct Template {
 pub enum Placeholder {
     S,
     D,
+}
+
+/// One generated method on `ty` that builds `method` with some params filled from the object (D11).
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct Shortcut {
+    /// Wire type name, `"Message"`.
+    #[serde(rename = "type")]
+    pub ty: String,
+    /// Python method name, `"answer"`.
+    pub name: String,
+    /// Wire method name, `"sendMessage"`.
+    pub method: String,
+    /// Raise when the path is `None`; checked in order, before `forbid`.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub require: Vec<Guard>,
+    /// Raise when the path is not `None`.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub forbid: Vec<Guard>,
+    /// Params of `method` left out of the signature and never sent.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub ignore: Vec<String>,
+    /// param -> value; filled params are left out of the signature.
+    #[serde(default, skip_serializing_if = "BTreeMap::is_empty")]
+    pub fill: BTreeMap<String, Filled>,
+}
+
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct Guard {
+    pub path: Vec<Step>,
+    pub message: String,
+}
+
+/// A resolved fill expression. `None` (the value, or a false `when`) means the param is omitted.
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct Filled {
+    pub value: FillValue,
+    /// Truthiness of this path decides whether the value is used.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub when: Option<Vec<Step>>,
+}
+
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case", deny_unknown_fields)]
+pub enum FillValue {
+    /// Read from the object, starting at `self`.
+    Path(Vec<Step>),
+    /// `self.<name>()`, a hand-written zero-argument helper (`*_ext.rs`).
+    Helper(String),
+    None,
+}
+
+/// One field access of a path.
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct Step {
+    /// Wire field name, `"from"` for `self.from_user`.
+    pub field: String,
+    /// Written `?.`: a `None` before it (or a union member without the field) gives `None`.
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+    pub chain: bool,
+}
+
+/// Where the dispatcher finds the user, chat, thread and business connection of one update type.
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct EventContext {
+    /// `Update` field name, `"message"`.
+    pub update: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub user: Option<Filled>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub chat: Option<Filled>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub thread_id: Option<Filled>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub business_connection_id: Option<Filled>,
 }
 
 impl Ir {

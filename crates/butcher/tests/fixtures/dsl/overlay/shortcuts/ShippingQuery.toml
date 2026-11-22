@@ -1,0 +1,6 @@
+# ShippingQuery: every 3.x shortcut of .butcher/types/ShippingQuery/aliases.yml, in the fill-DSL
+
+[answer]
+method = "answerShippingQuery"
+[answer.fill]
+shipping_query_id = "self.id"

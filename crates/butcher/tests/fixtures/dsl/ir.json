@@ -1,0 +1,4525 @@
+{
+  "header": {
+    "api_version": "10.4",
+    "sources": [
+      "html"
+    ],
+    "html_only": true
+  },
+  "types": [
+    {
+      "name": "CallbackQuery",
+      "direction": {
+        "value": "both"
+      },
+      "fields": [
+        {
+          "name": "id",
+          "type": {
+            "value": {
+              "prim": "string"
+            }
+          },
+          "response": {
+            "required": {
+              "value": true
+            }
+          }
+        },
+        {
+          "name": "from",
+          "type": {
+            "value": {
+              "ref": "User"
+            }
+          },
+          "response": {
+            "required": {
+              "value": true
+            }
+          }
+        },
+        {
+          "name": "message",
+          "type": {
+            "value": {
+              "ref": "MaybeInaccessibleMessage"
+            }
+          },
+          "response": {
+            "required": {
+              "value": false
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Chat",
+      "direction": {
+        "value": "both"
+      },
+      "fields": [
+        {
+          "name": "id",
+          "type": {
+            "value": {
+              "prim": "int"
+            }
+          },
+          "response": {
+            "required": {
+              "value": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "ChatJoinRequest",
+      "direction": {
+        "value": "both"
+      },
+      "fields": [
+        {
+          "name": "chat",
+          "type": {
+            "value": {
+              "ref": "Chat"
+            }
+          },
+          "response": {
+            "required": {
+              "value": true
+            }
+          }
+        },
+        {
+          "name": "from",
+          "type": {
+            "value": {
+              "ref": "User"
+            }
+          },
+          "response": {
+            "required": {
+              "value": true
+            }
+          }
+        },
+        {
+          "name": "user_chat_id",
+          "type": {
+            "value": {
+              "prim": "int"
+            }
+          },
+          "response": {
+            "required": {
+              "value": true
+            }
+          }
+        },
+        {
+          "name": "date",
+          "type": {
+            "value": {
+              "prim": "int"
+            }
+          },
+          "response": {
+            "required": {
+              "value": true
+            }
+          }
+        },
+        {
+          "name": "query_id",
+          "type": {
+            "value": {
+              "prim": "string"
+            }
+          },
+          "response": {
+            "required": {
+              "value": false
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "ChatMemberUpdated",
+      "direction": {
+        "value": "both"
+      },
+      "fields": [
+        {
+          "name": "chat",
+          "type": {
+            "value": {
+              "ref": "Chat"
+            }
+          },
+          "response": {
+            "required": {
+              "value": true
+            }
+          }
+        },
+        {
+          "name": "from",
+          "type": {
+            "value": {
+              "ref": "User"
+            }
+          },
+          "response": {
+            "required": {
+              "value": true
+            }
+          }
+        },
+        {
+          "name": "date",
+          "type": {
+            "value": {
+              "prim": "int"
+            }
+          },
+          "response": {
+            "required": {
+              "value": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "DirectMessagesTopic",
+      "direction": {
+        "value": "both"
+      },
+      "fields": [
+        {
+          "name": "topic_id",
+          "type": {
+            "value": {
+              "prim": "int"
+            }
+          },
+          "response": {
+            "required": {
+              "value": true
+            }
+          }
+        },
+        {
+          "name": "user",
+          "type": {
+            "value": {
+              "ref": "User"
+            }
+          },
+          "response": {
+            "required": {
+              "value": false
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "EphemeralMessageParameters",
+      "direction": {
+        "value": "both"
+      },
+      "fields": []
+    },
+    {
+      "name": "InaccessibleMessage",
+      "direction": {
+        "value": "both"
+      },
+      "fields": [
+        {
+          "name": "chat",
+          "type": {
+            "value": {
+              "ref": "Chat"
+            }
+          },
+          "response": {
+            "required": {
+              "value": true
+            }
+          }
+        },
+        {
+          "name": "message_id",
+          "type": {
+            "value": {
+              "prim": "int"
+            }
+          },
+          "response": {
+            "required": {
+              "value": true
+            }
+          }
+        },
+        {
+          "name": "date",
+          "type": {
+            "value": {
+              "prim": "int"
+            }
+          },
+          "response": {
+            "required": {
+              "value": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "InlineQuery",
+      "direction": {
+        "value": "both"
+      },
+      "fields": [
+        {
+          "name": "id",
+          "type": {
+            "value": {
+              "prim": "string"
+            }
+          },
+          "response": {
+            "required": {
+              "value": true
+            }
+          }
+        },
+        {
+          "name": "from",
+          "type": {
+            "value": {
+              "ref": "User"
+            }
+          },
+          "response": {
+            "required": {
+              "value": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Message",
+      "direction": {
+        "value": "both"
+      },
+      "fields": [
+        {
+          "name": "message_id",
+          "type": {
+            "value": {
+              "prim": "int"
+            }
+          },
+          "response": {
+            "required": {
+              "value": true
+            }
+          }
+        },
+        {
+          "name": "date",
+          "type": {
+            "value": {
+              "prim": "int"
+            }
+          },
+          "response": {
+            "required": {
+              "value": true
+            }
+          }
+        },
+        {
+          "name": "chat",
+          "type": {
+            "value": {
+              "ref": "Chat"
+            }
+          },
+          "response": {
+            "required": {
+              "value": true
+            }
+          }
+        },
+        {
+          "name": "message_thread_id",
+          "type": {
+            "value": {
+              "prim": "int"
+            }
+          },
+          "response": {
+            "required": {
+              "value": false
+            }
+          }
+        },
+        {
+          "name": "direct_messages_topic",
+          "type": {
+            "value": {
+              "ref": "DirectMessagesTopic"
+            }
+          },
+          "response": {
+            "required": {
+              "value": false
+            }
+          }
+        },
+        {
+          "name": "from",
+          "type": {
+            "value": {
+              "ref": "User"
+            }
+          },
+          "response": {
+            "required": {
+              "value": false
+            }
+          }
+        },
+        {
+          "name": "guest_query_id",
+          "type": {
+            "value": {
+              "prim": "string"
+            }
+          },
+          "response": {
+            "required": {
+              "value": false
+            }
+          }
+        },
+        {
+          "name": "business_connection_id",
+          "type": {
+            "value": {
+              "prim": "string"
+            }
+          },
+          "response": {
+            "required": {
+              "value": false
+            }
+          }
+        },
+        {
+          "name": "is_topic_message",
+          "type": {
+            "value": {
+              "prim": "true"
+            }
+          },
+          "response": {
+            "required": {
+              "value": false
+            }
+          }
+        },
+        {
+          "name": "receiver_user",
+          "type": {
+            "value": {
+              "ref": "User"
+            }
+          },
+          "response": {
+            "required": {
+              "value": false
+            }
+          }
+        },
+        {
+          "name": "ephemeral_message_id",
+          "type": {
+            "value": {
+              "prim": "int"
+            }
+          },
+          "response": {
+            "required": {
+              "value": false
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "PollAnswer",
+      "direction": {
+        "value": "both"
+      },
+      "fields": [
+        {
+          "name": "voter_chat",
+          "type": {
+            "value": {
+              "ref": "Chat"
+            }
+          },
+          "response": {
+            "required": {
+              "value": false
+            }
+          }
+        },
+        {
+          "name": "user",
+          "type": {
+            "value": {
+              "ref": "User"
+            }
+          },
+          "response": {
+            "required": {
+              "value": false
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "PreCheckoutQuery",
+      "direction": {
+        "value": "both"
+      },
+      "fields": [
+        {
+          "name": "id",
+          "type": {
+            "value": {
+              "prim": "string"
+            }
+          },
+          "response": {
+            "required": {
+              "value": true
+            }
+          }
+        },
+        {
+          "name": "from",
+          "type": {
+            "value": {
+              "ref": "User"
+            }
+          },
+          "response": {
+            "required": {
+              "value": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "ReplyParameters",
+      "direction": {
+        "value": "both"
+      },
+      "fields": [
+        {
+          "name": "message_id",
+          "type": {
+            "value": {
+              "prim": "int"
+            }
+          },
+          "request": {
+            "required": {
+              "value": false
+            }
+          }
+        },
+        {
+          "name": "ephemeral_message_id",
+          "type": {
+            "value": {
+              "prim": "int"
+            }
+          },
+          "request": {
+            "required": {
+              "value": false
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "SharedWidgetQuery",
+      "direction": {
+        "value": "both"
+      },
+      "fields": [
+        {
+          "name": "id",
+          "type": {
+            "value": {
+              "prim": "string"
+            }
+          },
+          "response": {
+            "required": {
+              "value": true
+            }
+          }
+        },
+        {
+          "name": "from",
+          "type": {
+            "value": {
+              "ref": "User"
+            }
+          },
+          "response": {
+            "required": {
+              "value": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "ShippingQuery",
+      "direction": {
+        "value": "both"
+      },
+      "fields": [
+        {
+          "name": "id",
+          "type": {
+            "value": {
+              "prim": "string"
+            }
+          },
+          "response": {
+            "required": {
+              "value": true
+            }
+          }
+        },
+        {
+          "name": "from",
+          "type": {
+            "value": {
+              "ref": "User"
+            }
+          },
+          "response": {
+            "required": {
+              "value": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Sticker",
+      "direction": {
+        "value": "both"
+      },
+      "fields": [
+        {
+          "name": "file_id",
+          "type": {
+            "value": {
+              "prim": "string"
+            }
+          },
+          "response": {
+            "required": {
+              "value": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Update",
+      "direction": {
+        "value": "both"
+      },
+      "fields": [
+        {
+          "name": "message",
+          "type": {
+            "value": {
+              "ref": "Message"
+            }
+          },
+          "response": {
+            "required": {
+              "value": false
+            }
+          }
+        },
+        {
+          "name": "inline_query",
+          "type": {
+            "value": {
+              "ref": "InlineQuery"
+            }
+          },
+          "response": {
+            "required": {
+              "value": false
+            }
+          }
+        },
+        {
+          "name": "callback_query",
+          "type": {
+            "value": {
+              "ref": "CallbackQuery"
+            }
+          },
+          "response": {
+            "required": {
+              "value": false
+            }
+          }
+        },
+        {
+          "name": "poll_answer",
+          "type": {
+            "value": {
+              "ref": "PollAnswer"
+            }
+          },
+          "response": {
+            "required": {
+              "value": false
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "User",
+      "direction": {
+        "value": "both"
+      },
+      "fields": [
+        {
+          "name": "id",
+          "type": {
+            "value": {
+              "prim": "int"
+            }
+          },
+          "response": {
+            "required": {
+              "value": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "WidgetQuery",
+      "direction": {
+        "value": "both"
+      },
+      "fields": [
+        {
+          "name": "id",
+          "type": {
+            "value": {
+              "prim": "string"
+            }
+          },
+          "response": {
+            "required": {
+              "value": true
+            }
+          }
+        },
+        {
+          "name": "from",
+          "type": {
+            "value": {
+              "ref": "User"
+            }
+          },
+          "response": {
+            "required": {
+              "value": true
+            }
+          }
+        },
+        {
+          "name": "chat",
+          "type": {
+            "value": {
+              "ref": "Chat"
+            }
+          },
+          "response": {
+            "required": {
+              "value": false
+            }
+          }
+        },
+        {
+          "name": "message_id",
+          "type": {
+            "value": {
+              "prim": "int"
+            }
+          },
+          "response": {
+            "required": {
+              "value": false
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "methods": [
+    {
+      "name": "answerCallbackQuery",
+      "params": [
+        {
+          "name": "callback_query_id",
+          "type": {
+            "value": {
+              "prim": "string"
+            }
+          },
+          "required": {
+            "value": true
+          }
+        }
+      ],
+      "returns": {
+        "value": {
+          "prim": "true"
+        }
+      }
+    },
+    {
+      "name": "answerChatJoinRequestQuery",
+      "params": [
+        {
+          "name": "chat_join_request_query_id",
+          "type": {
+            "value": {
+              "prim": "string"
+            }
+          },
+          "required": {
+            "value": true
+          }
+        }
+      ],
+      "returns": {
+        "value": {
+          "prim": "true"
+        }
+      }
+    },
+    {
+      "name": "answerGuestQuery",
+      "params": [
+        {
+          "name": "guest_query_id",
+          "type": {
+            "value": {
+              "prim": "string"
+            }
+          },
+          "required": {
+            "value": true
+          }
+        }
+      ],
+      "returns": {
+        "value": {
+          "prim": "true"
+        }
+      }
+    },
+    {
+      "name": "answerInlineQuery",
+      "params": [
+        {
+          "name": "inline_query_id",
+          "type": {
+            "value": {
+              "prim": "string"
+            }
+          },
+          "required": {
+            "value": true
+          }
+        }
+      ],
+      "returns": {
+        "value": {
+          "prim": "true"
+        }
+      }
+    },
+    {
+      "name": "answerPreCheckoutQuery",
+      "params": [
+        {
+          "name": "pre_checkout_query_id",
+          "type": {
+            "value": {
+              "prim": "string"
+            }
+          },
+          "required": {
+            "value": true
+          }
+        }
+      ],
+      "returns": {
+        "value": {
+          "prim": "true"
+        }
+      }
+    },
+    {
+      "name": "answerShippingQuery",
+      "params": [
+        {
+          "name": "shipping_query_id",
+          "type": {
+            "value": {
+              "prim": "string"
+            }
+          },
+          "required": {
+            "value": true
+          }
+        }
+      ],
+      "returns": {
+        "value": {
+          "prim": "true"
+        }
+      }
+    },
+    {
+      "name": "answerWidgetQuery",
+      "params": [
+        {
+          "name": "widget_query_id",
+          "type": {
+            "value": {
+              "prim": "string"
+            }
+          },
+          "required": {
+            "value": true
+          }
+        }
+      ],
+      "returns": {
+        "value": {
+          "prim": "true"
+        }
+      }
+    },
+    {
+      "name": "approveChatJoinRequest",
+      "params": [
+        {
+          "name": "chat_id",
+          "type": {
+            "value": {
+              "union": [
+                {
+                  "prim": "int"
+                },
+                {
+                  "prim": "string"
+                }
+              ]
+            }
+          },
+          "required": {
+            "value": true
+          }
+        },
+        {
+          "name": "user_id",
+          "type": {
+            "value": {
+              "prim": "int"
+            }
+          },
+          "required": {
+            "value": true
+          }
+        }
+      ],
+      "returns": {
+        "value": {
+          "prim": "true"
+        }
+      }
+    },
+    {
+      "name": "banChatMember",
+      "params": [
+        {
+          "name": "chat_id",
+          "type": {
+            "value": {
+              "union": [
+                {
+                  "prim": "int"
+                },
+                {
+                  "prim": "string"
+                }
+              ]
+            }
+          },
+          "required": {
+            "value": true
+          }
+        }
+      ],
+      "returns": {
+        "value": {
+          "prim": "true"
+        }
+      }
+    },
+    {
+      "name": "banChatSenderChat",
+      "params": [
+        {
+          "name": "chat_id",
+          "type": {
+            "value": {
+              "union": [
+                {
+                  "prim": "int"
+                },
+                {
+                  "prim": "string"
+                }
+              ]
+            }
+          },
+          "required": {
+            "value": true
+          }
+        }
+      ],
+      "returns": {
+        "value": {
+          "prim": "true"
+        }
+      }
+    },
+    {
+      "name": "copyMessage",
+      "params": [
+        {
+          "name": "chat_id",
+          "type": {
+            "value": {
+              "union": [
+                {
+                  "prim": "int"
+                },
+                {
+                  "prim": "string"
+                }
+              ]
+            }
+          },
+          "required": {
+            "value": true
+          }
+        },
+        {
+          "name": "from_chat_id",
+          "type": {
+            "value": {
+              "union": [
+                {
+                  "prim": "int"
+                },
+                {
+                  "prim": "string"
+                }
+              ]
+            }
+          },
+          "required": {
+            "value": true
+          }
+        },
+        {
+          "name": "message_id",
+          "type": {
+            "value": {
+              "prim": "int"
+            }
+          },
+          "required": {
+            "value": true
+          }
+        }
+      ],
+      "returns": {
+        "value": {
+          "prim": "true"
+        }
+      }
+    },
+    {
+      "name": "createChatInviteLink",
+      "params": [
+        {
+          "name": "chat_id",
+          "type": {
+            "value": {
+              "union": [
+                {
+                  "prim": "int"
+                },
+                {
+                  "prim": "string"
+                }
+              ]
+            }
+          },
+          "required": {
+            "value": true
+          }
+        }
+      ],
+      "returns": {
+        "value": {
+          "prim": "true"
+        }
+      }
+    },
+    {
+      "name": "declineChatJoinRequest",
+      "params": [
+        {
+          "name": "chat_id",
+          "type": {
+            "value": {
+              "union": [
+                {
+                  "prim": "int"
+                },
+                {
+                  "prim": "string"
+                }
+              ]
+            }
+          },
+          "required": {
+            "value": true
+          }
+        },
+        {
+          "name": "user_id",
+          "type": {
+            "value": {
+              "prim": "int"
+            }
+          },
+          "required": {
+            "value": true
+          }
+        }
+      ],
+      "returns": {
+        "value": {
+          "prim": "true"
+        }
+      }
+    },
+    {
+      "name": "deleteChatPhoto",
+      "params": [
+        {
+          "name": "chat_id",
+          "type": {
+            "value": {
+              "union": [
+                {
+                  "prim": "int"
+                },
+                {
+                  "prim": "string"
+                }
+              ]
+            }
+          },
+          "required": {
+            "value": true
+          }
+        }
+      ],
+      "returns": {
+        "value": {
+          "prim": "true"
+        }
+      }
+    },
+    {
+      "name": "deleteChatStickerSet",
+      "params": [
+        {
+          "name": "chat_id",
+          "type": {
+            "value": {
+              "union": [
+                {
+                  "prim": "int"
+                },
+                {
+                  "prim": "string"
+                }
+              ]
+            }
+          },
+          "required": {
+            "value": true
+          }
+        }
+      ],
+      "returns": {
+        "value": {
+          "prim": "true"
+        }
+      }
+    },
+    {
+      "name": "deleteEphemeralMessage",
+      "params": [
+        {
+          "name": "chat_id",
+          "type": {
+            "value": {
+              "union": [
+                {
+                  "prim": "int"
+                },
+                {
+                  "prim": "string"
+                }
+              ]
+            }
+          },
+          "required": {
+            "value": true
+          }
+        },
+        {
+          "name": "receiver_user_id",
+          "type": {
+            "value": {
+              "prim": "int"
+            }
+          },
+          "required": {
+            "value": true
+          }
+        },
+        {
+          "name": "ephemeral_message_id",
+          "type": {
+            "value": {
+              "prim": "int"
+            }
+          },
+          "required": {
+            "value": true
+          }
+        }
+      ],
+      "returns": {
+        "value": {
+          "prim": "true"
+        }
+      }
+    },
+    {
+      "name": "deleteMessage",
+      "params": [
+        {
+          "name": "chat_id",
+          "type": {
+            "value": {
+              "union": [
+                {
+                  "prim": "int"
+                },
+                {
+                  "prim": "string"
+                }
+              ]
+            }
+          },
+          "required": {
+            "value": true
+          }
+        },
+        {
+          "name": "message_id",
+          "type": {
+            "value": {
+              "prim": "int"
+            }
+          },
+          "required": {
+            "value": true
+          }
+        }
+      ],
+      "returns": {
+        "value": {
+          "prim": "true"
+        }
+      }
+    },
+    {
+      "name": "deleteStickerFromSet",
+      "params": [
+        {
+          "name": "sticker",
+          "type": {
+            "value": {
+              "prim": "string"
+            }
+          },
+          "required": {
+            "value": true
+          }
+        }
+      ],
+      "returns": {
+        "value": {
+          "prim": "true"
+        }
+      }
+    },
+    {
+      "name": "editChatInviteLink",
+      "params": [
+        {
+          "name": "chat_id",
+          "type": {
+            "value": {
+              "union": [
+                {
+                  "prim": "int"
+                },
+                {
+                  "prim": "string"
+                }
+              ]
+            }
+          },
+          "required": {
+            "value": true
+          }
+        }
+      ],
+      "returns": {
+        "value": {
+          "prim": "true"
+        }
+      }
+    },
+    {
+      "name": "editEphemeralMessageCaption",
+      "params": [
+        {
+          "name": "chat_id",
+          "type": {
+            "value": {
+              "union": [
+                {
+                  "prim": "int"
+                },
+                {
+                  "prim": "string"
+                }
+              ]
+            }
+          },
+          "required": {
+            "value": true
+          }
+        },
+        {
+          "name": "receiver_user_id",
+          "type": {
+            "value": {
+              "prim": "int"
+            }
+          },
+          "required": {
+            "value": true
+          }
+        },
+        {
+          "name": "ephemeral_message_id",
+          "type": {
+            "value": {
+              "prim": "int"
+            }
+          },
+          "required": {
+            "value": true
+          }
+        }
+      ],
+      "returns": {
+        "value": {
+          "prim": "true"
+        }
+      }
+    },
+    {
+      "name": "editEphemeralMessageMedia",
+      "params": [
+        {
+          "name": "chat_id",
+          "type": {
+            "value": {
+              "union": [
+                {
+                  "prim": "int"
+                },
+                {
+                  "prim": "string"
+                }
+              ]
+            }
+          },
+          "required": {
+            "value": true
+          }
+        },
+        {
+          "name": "receiver_user_id",
+          "type": {
+            "value": {
+              "prim": "int"
+            }
+          },
+          "required": {
+            "value": true
+          }
+        },
+        {
+          "name": "ephemeral_message_id",
+          "type": {
+            "value": {
+              "prim": "int"
+            }
+          },
+          "required": {
+            "value": true
+          }
+        }
+      ],
+      "returns": {
+        "value": {
+          "prim": "true"
+        }
+      }
+    },
+    {
+      "name": "editEphemeralMessageReplyMarkup",
+      "params": [
+        {
+          "name": "chat_id",
+          "type": {
+            "value": {
+              "union": [
+                {
+                  "prim": "int"
+                },
+                {
+                  "prim": "string"
+                }
+              ]
+            }
+          },
+          "required": {
+            "value": true
+          }
+        },
+        {
+          "name": "receiver_user_id",
+          "type": {
+            "value": {
+              "prim": "int"
+            }
+          },
+          "required": {
+            "value": true
+          }
+        },
+        {
+          "name": "ephemeral_message_id",
+          "type": {
+            "value": {
+              "prim": "int"
+            }
+          },
+          "required": {
+            "value": true
+          }
+        }
+      ],
+      "returns": {
+        "value": {
+          "prim": "true"
+        }
+      }
+    },
+    {
+      "name": "editEphemeralMessageText",
+      "params": [
+        {
+          "name": "chat_id",
+          "type": {
+            "value": {
+              "union": [
+                {
+                  "prim": "int"
+                },
+                {
+                  "prim": "string"
+                }
+              ]
+            }
+          },
+          "required": {
+            "value": true
+          }
+        },
+        {
+          "name": "receiver_user_id",
+          "type": {
+            "value": {
+              "prim": "int"
+            }
+          },
+          "required": {
+            "value": true
+          }
+        },
+        {
+          "name": "ephemeral_message_id",
+          "type": {
+            "value": {
+              "prim": "int"
+            }
+          },
+          "required": {
+            "value": true
+          }
+        }
+      ],
+      "returns": {
+        "value": {
+          "prim": "true"
+        }
+      }
+    },
+    {
+      "name": "editMessageCaption",
+      "params": [
+        {
+          "name": "business_connection_id",
+          "type": {
+            "value": {
+              "prim": "string"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "name": "chat_id",
+          "type": {
+            "value": {
+              "union": [
+                {
+                  "prim": "int"
+                },
+                {
+                  "prim": "string"
+                }
+              ]
+            }
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "name": "message_id",
+          "type": {
+            "value": {
+              "prim": "int"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        }
+      ],
+      "returns": {
+        "value": {
+          "prim": "true"
+        }
+      }
+    },
+    {
+      "name": "editMessageLiveLocation",
+      "params": [
+        {
+          "name": "business_connection_id",
+          "type": {
+            "value": {
+              "prim": "string"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "name": "chat_id",
+          "type": {
+            "value": {
+              "union": [
+                {
+                  "prim": "int"
+                },
+                {
+                  "prim": "string"
+                }
+              ]
+            }
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "name": "message_id",
+          "type": {
+            "value": {
+              "prim": "int"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        }
+      ],
+      "returns": {
+        "value": {
+          "prim": "true"
+        }
+      }
+    },
+    {
+      "name": "editMessageMedia",
+      "params": [
+        {
+          "name": "business_connection_id",
+          "type": {
+            "value": {
+              "prim": "string"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "name": "chat_id",
+          "type": {
+            "value": {
+              "union": [
+                {
+                  "prim": "int"
+                },
+                {
+                  "prim": "string"
+                }
+              ]
+            }
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "name": "message_id",
+          "type": {
+            "value": {
+              "prim": "int"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        }
+      ],
+      "returns": {
+        "value": {
+          "prim": "true"
+        }
+      }
+    },
+    {
+      "name": "editMessageReplyMarkup",
+      "params": [
+        {
+          "name": "business_connection_id",
+          "type": {
+            "value": {
+              "prim": "string"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "name": "chat_id",
+          "type": {
+            "value": {
+              "union": [
+                {
+                  "prim": "int"
+                },
+                {
+                  "prim": "string"
+                }
+              ]
+            }
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "name": "message_id",
+          "type": {
+            "value": {
+              "prim": "int"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "name": "reply_markup",
+          "type": {
+            "value": {
+              "ref": "InlineKeyboardMarkup"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        }
+      ],
+      "returns": {
+        "value": {
+          "prim": "true"
+        }
+      }
+    },
+    {
+      "name": "editMessageText",
+      "params": [
+        {
+          "name": "business_connection_id",
+          "type": {
+            "value": {
+              "prim": "string"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "name": "chat_id",
+          "type": {
+            "value": {
+              "union": [
+                {
+                  "prim": "int"
+                },
+                {
+                  "prim": "string"
+                }
+              ]
+            }
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "name": "message_id",
+          "type": {
+            "value": {
+              "prim": "int"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        }
+      ],
+      "returns": {
+        "value": {
+          "prim": "true"
+        }
+      }
+    },
+    {
+      "name": "exportChatInviteLink",
+      "params": [
+        {
+          "name": "chat_id",
+          "type": {
+            "value": {
+              "union": [
+                {
+                  "prim": "int"
+                },
+                {
+                  "prim": "string"
+                }
+              ]
+            }
+          },
+          "required": {
+            "value": true
+          }
+        }
+      ],
+      "returns": {
+        "value": {
+          "prim": "true"
+        }
+      }
+    },
+    {
+      "name": "forwardMessage",
+      "params": [
+        {
+          "name": "chat_id",
+          "type": {
+            "value": {
+              "union": [
+                {
+                  "prim": "int"
+                },
+                {
+                  "prim": "string"
+                }
+              ]
+            }
+          },
+          "required": {
+            "value": true
+          }
+        },
+        {
+          "name": "from_chat_id",
+          "type": {
+            "value": {
+              "union": [
+                {
+                  "prim": "int"
+                },
+                {
+                  "prim": "string"
+                }
+              ]
+            }
+          },
+          "required": {
+            "value": true
+          }
+        },
+        {
+          "name": "message_id",
+          "type": {
+            "value": {
+              "prim": "int"
+            }
+          },
+          "required": {
+            "value": true
+          }
+        }
+      ],
+      "returns": {
+        "value": {
+          "prim": "true"
+        }
+      }
+    },
+    {
+      "name": "getChatAdministrators",
+      "params": [
+        {
+          "name": "chat_id",
+          "type": {
+            "value": {
+              "union": [
+                {
+                  "prim": "int"
+                },
+                {
+                  "prim": "string"
+                }
+              ]
+            }
+          },
+          "required": {
+            "value": true
+          }
+        }
+      ],
+      "returns": {
+        "value": {
+          "prim": "true"
+        }
+      }
+    },
+    {
+      "name": "getChatMember",
+      "params": [
+        {
+          "name": "chat_id",
+          "type": {
+            "value": {
+              "union": [
+                {
+                  "prim": "int"
+                },
+                {
+                  "prim": "string"
+                }
+              ]
+            }
+          },
+          "required": {
+            "value": true
+          }
+        }
+      ],
+      "returns": {
+        "value": {
+          "prim": "true"
+        }
+      }
+    },
+    {
+      "name": "getChatMemberCount",
+      "params": [
+        {
+          "name": "chat_id",
+          "type": {
+            "value": {
+              "union": [
+                {
+                  "prim": "int"
+                },
+                {
+                  "prim": "string"
+                }
+              ]
+            }
+          },
+          "required": {
+            "value": true
+          }
+        }
+      ],
+      "returns": {
+        "value": {
+          "prim": "true"
+        }
+      }
+    },
+    {
+      "name": "getUserProfileAudios",
+      "params": [
+        {
+          "name": "user_id",
+          "type": {
+            "value": {
+              "prim": "int"
+            }
+          },
+          "required": {
+            "value": true
+          }
+        }
+      ],
+      "returns": {
+        "value": {
+          "prim": "true"
+        }
+      }
+    },
+    {
+      "name": "getUserProfilePhotos",
+      "params": [
+        {
+          "name": "user_id",
+          "type": {
+            "value": {
+              "prim": "int"
+            }
+          },
+          "required": {
+            "value": true
+          }
+        }
+      ],
+      "returns": {
+        "value": {
+          "prim": "true"
+        }
+      }
+    },
+    {
+      "name": "leaveChat",
+      "params": [
+        {
+          "name": "chat_id",
+          "type": {
+            "value": {
+              "union": [
+                {
+                  "prim": "int"
+                },
+                {
+                  "prim": "string"
+                }
+              ]
+            }
+          },
+          "required": {
+            "value": true
+          }
+        }
+      ],
+      "returns": {
+        "value": {
+          "prim": "true"
+        }
+      }
+    },
+    {
+      "name": "pinChatMessage",
+      "params": [
+        {
+          "name": "chat_id",
+          "type": {
+            "value": {
+              "union": [
+                {
+                  "prim": "int"
+                },
+                {
+                  "prim": "string"
+                }
+              ]
+            }
+          },
+          "required": {
+            "value": true
+          }
+        },
+        {
+          "name": "message_id",
+          "type": {
+            "value": {
+              "prim": "int"
+            }
+          },
+          "required": {
+            "value": true
+          }
+        },
+        {
+          "name": "business_connection_id",
+          "type": {
+            "value": {
+              "prim": "string"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        }
+      ],
+      "returns": {
+        "value": {
+          "prim": "true"
+        }
+      }
+    },
+    {
+      "name": "promoteChatMember",
+      "params": [
+        {
+          "name": "chat_id",
+          "type": {
+            "value": {
+              "union": [
+                {
+                  "prim": "int"
+                },
+                {
+                  "prim": "string"
+                }
+              ]
+            }
+          },
+          "required": {
+            "value": true
+          }
+        }
+      ],
+      "returns": {
+        "value": {
+          "prim": "true"
+        }
+      }
+    },
+    {
+      "name": "restrictChatMember",
+      "params": [
+        {
+          "name": "chat_id",
+          "type": {
+            "value": {
+              "union": [
+                {
+                  "prim": "int"
+                },
+                {
+                  "prim": "string"
+                }
+              ]
+            }
+          },
+          "required": {
+            "value": true
+          }
+        }
+      ],
+      "returns": {
+        "value": {
+          "prim": "true"
+        }
+      }
+    },
+    {
+      "name": "revokeChatInviteLink",
+      "params": [
+        {
+          "name": "chat_id",
+          "type": {
+            "value": {
+              "union": [
+                {
+                  "prim": "int"
+                },
+                {
+                  "prim": "string"
+                }
+              ]
+            }
+          },
+          "required": {
+            "value": true
+          }
+        }
+      ],
+      "returns": {
+        "value": {
+          "prim": "true"
+        }
+      }
+    },
+    {
+      "name": "sendAnimation",
+      "params": [
+        {
+          "name": "chat_id",
+          "type": {
+            "value": {
+              "union": [
+                {
+                  "prim": "int"
+                },
+                {
+                  "prim": "string"
+                }
+              ]
+            }
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "name": "business_connection_id",
+          "type": {
+            "value": {
+              "prim": "string"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "name": "message_thread_id",
+          "type": {
+            "value": {
+              "prim": "int"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "name": "direct_messages_topic_id",
+          "type": {
+            "value": {
+              "prim": "int"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "name": "reply_parameters",
+          "type": {
+            "value": {
+              "ref": "ReplyParameters"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "name": "ephemeral_message_parameters",
+          "type": {
+            "value": {
+              "ref": "EphemeralMessageParameters"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "name": "receiver_user_id",
+          "type": {
+            "value": {
+              "prim": "int"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "name": "reply_to_message_id",
+          "type": {
+            "value": {
+              "prim": "int"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        }
+      ],
+      "returns": {
+        "value": {
+          "prim": "true"
+        }
+      }
+    },
+    {
+      "name": "sendAudio",
+      "params": [
+        {
+          "name": "chat_id",
+          "type": {
+            "value": {
+              "union": [
+                {
+                  "prim": "int"
+                },
+                {
+                  "prim": "string"
+                }
+              ]
+            }
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "name": "business_connection_id",
+          "type": {
+            "value": {
+              "prim": "string"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "name": "message_thread_id",
+          "type": {
+            "value": {
+              "prim": "int"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "name": "direct_messages_topic_id",
+          "type": {
+            "value": {
+              "prim": "int"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "name": "reply_parameters",
+          "type": {
+            "value": {
+              "ref": "ReplyParameters"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "name": "ephemeral_message_parameters",
+          "type": {
+            "value": {
+              "ref": "EphemeralMessageParameters"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "name": "receiver_user_id",
+          "type": {
+            "value": {
+              "prim": "int"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "name": "reply_to_message_id",
+          "type": {
+            "value": {
+              "prim": "int"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        }
+      ],
+      "returns": {
+        "value": {
+          "prim": "true"
+        }
+      }
+    },
+    {
+      "name": "sendChatAction",
+      "params": [
+        {
+          "name": "chat_id",
+          "type": {
+            "value": {
+              "union": [
+                {
+                  "prim": "int"
+                },
+                {
+                  "prim": "string"
+                }
+              ]
+            }
+          },
+          "required": {
+            "value": true
+          }
+        }
+      ],
+      "returns": {
+        "value": {
+          "prim": "true"
+        }
+      }
+    },
+    {
+      "name": "sendChatJoinRequestWebApp",
+      "params": [
+        {
+          "name": "chat_join_request_query_id",
+          "type": {
+            "value": {
+              "prim": "string"
+            }
+          },
+          "required": {
+            "value": true
+          }
+        }
+      ],
+      "returns": {
+        "value": {
+          "prim": "true"
+        }
+      }
+    },
+    {
+      "name": "sendContact",
+      "params": [
+        {
+          "name": "chat_id",
+          "type": {
+            "value": {
+              "union": [
+                {
+                  "prim": "int"
+                },
+                {
+                  "prim": "string"
+                }
+              ]
+            }
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "name": "business_connection_id",
+          "type": {
+            "value": {
+              "prim": "string"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "name": "message_thread_id",
+          "type": {
+            "value": {
+              "prim": "int"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "name": "direct_messages_topic_id",
+          "type": {
+            "value": {
+              "prim": "int"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "name": "reply_parameters",
+          "type": {
+            "value": {
+              "ref": "ReplyParameters"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "name": "ephemeral_message_parameters",
+          "type": {
+            "value": {
+              "ref": "EphemeralMessageParameters"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "name": "receiver_user_id",
+          "type": {
+            "value": {
+              "prim": "int"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "name": "reply_to_message_id",
+          "type": {
+            "value": {
+              "prim": "int"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        }
+      ],
+      "returns": {
+        "value": {
+          "prim": "true"
+        }
+      }
+    },
+    {
+      "name": "sendDice",
+      "params": [
+        {
+          "name": "chat_id",
+          "type": {
+            "value": {
+              "union": [
+                {
+                  "prim": "int"
+                },
+                {
+                  "prim": "string"
+                }
+              ]
+            }
+          },
+          "required": {
+            "value": true
+          }
+        },
+        {
+          "name": "business_connection_id",
+          "type": {
+            "value": {
+              "prim": "string"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "name": "message_thread_id",
+          "type": {
+            "value": {
+              "prim": "int"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "name": "direct_messages_topic_id",
+          "type": {
+            "value": {
+              "prim": "int"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "name": "reply_parameters",
+          "type": {
+            "value": {
+              "ref": "ReplyParameters"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "name": "reply_to_message_id",
+          "type": {
+            "value": {
+              "prim": "int"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        }
+      ],
+      "returns": {
+        "value": {
+          "prim": "true"
+        }
+      }
+    },
+    {
+      "name": "sendDocument",
+      "params": [
+        {
+          "name": "chat_id",
+          "type": {
+            "value": {
+              "union": [
+                {
+                  "prim": "int"
+                },
+                {
+                  "prim": "string"
+                }
+              ]
+            }
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "name": "business_connection_id",
+          "type": {
+            "value": {
+              "prim": "string"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "name": "message_thread_id",
+          "type": {
+            "value": {
+              "prim": "int"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "name": "direct_messages_topic_id",
+          "type": {
+            "value": {
+              "prim": "int"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "name": "reply_parameters",
+          "type": {
+            "value": {
+              "ref": "ReplyParameters"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "name": "ephemeral_message_parameters",
+          "type": {
+            "value": {
+              "ref": "EphemeralMessageParameters"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "name": "receiver_user_id",
+          "type": {
+            "value": {
+              "prim": "int"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "name": "reply_to_message_id",
+          "type": {
+            "value": {
+              "prim": "int"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        }
+      ],
+      "returns": {
+        "value": {
+          "prim": "true"
+        }
+      }
+    },
+    {
+      "name": "sendGame",
+      "params": [
+        {
+          "name": "chat_id",
+          "type": {
+            "value": {
+              "union": [
+                {
+                  "prim": "int"
+                },
+                {
+                  "prim": "string"
+                }
+              ]
+            }
+          },
+          "required": {
+            "value": true
+          }
+        },
+        {
+          "name": "business_connection_id",
+          "type": {
+            "value": {
+              "prim": "string"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "name": "message_thread_id",
+          "type": {
+            "value": {
+              "prim": "int"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "name": "reply_parameters",
+          "type": {
+            "value": {
+              "ref": "ReplyParameters"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "name": "reply_to_message_id",
+          "type": {
+            "value": {
+              "prim": "int"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        }
+      ],
+      "returns": {
+        "value": {
+          "prim": "true"
+        }
+      }
+    },
+    {
+      "name": "sendInvoice",
+      "params": [
+        {
+          "name": "chat_id",
+          "type": {
+            "value": {
+              "union": [
+                {
+                  "prim": "int"
+                },
+                {
+                  "prim": "string"
+                }
+              ]
+            }
+          },
+          "required": {
+            "value": true
+          }
+        },
+        {
+          "name": "message_thread_id",
+          "type": {
+            "value": {
+              "prim": "int"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "name": "direct_messages_topic_id",
+          "type": {
+            "value": {
+              "prim": "int"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "name": "reply_parameters",
+          "type": {
+            "value": {
+              "ref": "ReplyParameters"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "name": "reply_to_message_id",
+          "type": {
+            "value": {
+              "prim": "int"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        }
+      ],
+      "returns": {
+        "value": {
+          "prim": "true"
+        }
+      }
+    },
+    {
+      "name": "sendLocation",
+      "params": [
+        {
+          "name": "chat_id",
+          "type": {
+            "value": {
+              "union": [
+                {
+                  "prim": "int"
+                },
+                {
+                  "prim": "string"
+                }
+              ]
+            }
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "name": "business_connection_id",
+          "type": {
+            "value": {
+              "prim": "string"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "name": "message_thread_id",
+          "type": {
+            "value": {
+              "prim": "int"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "name": "direct_messages_topic_id",
+          "type": {
+            "value": {
+              "prim": "int"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "name": "reply_parameters",
+          "type": {
+            "value": {
+              "ref": "ReplyParameters"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "name": "ephemeral_message_parameters",
+          "type": {
+            "value": {
+              "ref": "EphemeralMessageParameters"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "name": "receiver_user_id",
+          "type": {
+            "value": {
+              "prim": "int"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "name": "reply_to_message_id",
+          "type": {
+            "value": {
+              "prim": "int"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        }
+      ],
+      "returns": {
+        "value": {
+          "prim": "true"
+        }
+      }
+    },
+    {
+      "name": "sendMediaGroup",
+      "params": [
+        {
+          "name": "chat_id",
+          "type": {
+            "value": {
+              "union": [
+                {
+                  "prim": "int"
+                },
+                {
+                  "prim": "string"
+                }
+              ]
+            }
+          },
+          "required": {
+            "value": true
+          }
+        },
+        {
+          "name": "business_connection_id",
+          "type": {
+            "value": {
+              "prim": "string"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "name": "message_thread_id",
+          "type": {
+            "value": {
+              "prim": "int"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "name": "direct_messages_topic_id",
+          "type": {
+            "value": {
+              "prim": "int"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "name": "reply_parameters",
+          "type": {
+            "value": {
+              "ref": "ReplyParameters"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "name": "reply_to_message_id",
+          "type": {
+            "value": {
+              "prim": "int"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        }
+      ],
+      "returns": {
+        "value": {
+          "prim": "true"
+        }
+      }
+    },
+    {
+      "name": "sendMessage",
+      "params": [
+        {
+          "name": "chat_id",
+          "type": {
+            "value": {
+              "union": [
+                {
+                  "prim": "int"
+                },
+                {
+                  "prim": "string"
+                }
+              ]
+            }
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "name": "business_connection_id",
+          "type": {
+            "value": {
+              "prim": "string"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "name": "message_thread_id",
+          "type": {
+            "value": {
+              "prim": "int"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "name": "direct_messages_topic_id",
+          "type": {
+            "value": {
+              "prim": "int"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "name": "reply_parameters",
+          "type": {
+            "value": {
+              "ref": "ReplyParameters"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "name": "ephemeral_message_parameters",
+          "type": {
+            "value": {
+              "ref": "EphemeralMessageParameters"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "name": "receiver_user_id",
+          "type": {
+            "value": {
+              "prim": "int"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "name": "reply_to_message_id",
+          "type": {
+            "value": {
+              "prim": "int"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        }
+      ],
+      "returns": {
+        "value": {
+          "prim": "true"
+        }
+      }
+    },
+    {
+      "name": "sendPaidMedia",
+      "params": [
+        {
+          "name": "chat_id",
+          "type": {
+            "value": {
+              "union": [
+                {
+                  "prim": "int"
+                },
+                {
+                  "prim": "string"
+                }
+              ]
+            }
+          },
+          "required": {
+            "value": true
+          }
+        },
+        {
+          "name": "business_connection_id",
+          "type": {
+            "value": {
+              "prim": "string"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "name": "message_thread_id",
+          "type": {
+            "value": {
+              "prim": "int"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "name": "direct_messages_topic_id",
+          "type": {
+            "value": {
+              "prim": "int"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "name": "reply_parameters",
+          "type": {
+            "value": {
+              "ref": "ReplyParameters"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        }
+      ],
+      "returns": {
+        "value": {
+          "prim": "true"
+        }
+      }
+    },
+    {
+      "name": "sendPhoto",
+      "params": [
+        {
+          "name": "chat_id",
+          "type": {
+            "value": {
+              "union": [
+                {
+                  "prim": "int"
+                },
+                {
+                  "prim": "string"
+                }
+              ]
+            }
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "name": "business_connection_id",
+          "type": {
+            "value": {
+              "prim": "string"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "name": "message_thread_id",
+          "type": {
+            "value": {
+              "prim": "int"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "name": "direct_messages_topic_id",
+          "type": {
+            "value": {
+              "prim": "int"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "name": "reply_parameters",
+          "type": {
+            "value": {
+              "ref": "ReplyParameters"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "name": "ephemeral_message_parameters",
+          "type": {
+            "value": {
+              "ref": "EphemeralMessageParameters"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "name": "receiver_user_id",
+          "type": {
+            "value": {
+              "prim": "int"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "name": "reply_to_message_id",
+          "type": {
+            "value": {
+              "prim": "int"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        }
+      ],
+      "returns": {
+        "value": {
+          "prim": "true"
+        }
+      }
+    },
+    {
+      "name": "sendPoll",
+      "params": [
+        {
+          "name": "chat_id",
+          "type": {
+            "value": {
+              "union": [
+                {
+                  "prim": "int"
+                },
+                {
+                  "prim": "string"
+                }
+              ]
+            }
+          },
+          "required": {
+            "value": true
+          }
+        },
+        {
+          "name": "business_connection_id",
+          "type": {
+            "value": {
+              "prim": "string"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "name": "message_thread_id",
+          "type": {
+            "value": {
+              "prim": "int"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "name": "reply_parameters",
+          "type": {
+            "value": {
+              "ref": "ReplyParameters"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "name": "reply_to_message_id",
+          "type": {
+            "value": {
+              "prim": "int"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        }
+      ],
+      "returns": {
+        "value": {
+          "prim": "true"
+        }
+      }
+    },
+    {
+      "name": "sendRichMessage",
+      "params": [
+        {
+          "name": "chat_id",
+          "type": {
+            "value": {
+              "union": [
+                {
+                  "prim": "int"
+                },
+                {
+                  "prim": "string"
+                }
+              ]
+            }
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "name": "business_connection_id",
+          "type": {
+            "value": {
+              "prim": "string"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "name": "message_thread_id",
+          "type": {
+            "value": {
+              "prim": "int"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "name": "direct_messages_topic_id",
+          "type": {
+            "value": {
+              "prim": "int"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "name": "reply_parameters",
+          "type": {
+            "value": {
+              "ref": "ReplyParameters"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "name": "ephemeral_message_parameters",
+          "type": {
+            "value": {
+              "ref": "EphemeralMessageParameters"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        }
+      ],
+      "returns": {
+        "value": {
+          "prim": "true"
+        }
+      }
+    },
+    {
+      "name": "sendSticker",
+      "params": [
+        {
+          "name": "chat_id",
+          "type": {
+            "value": {
+              "union": [
+                {
+                  "prim": "int"
+                },
+                {
+                  "prim": "string"
+                }
+              ]
+            }
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "name": "business_connection_id",
+          "type": {
+            "value": {
+              "prim": "string"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "name": "message_thread_id",
+          "type": {
+            "value": {
+              "prim": "int"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "name": "direct_messages_topic_id",
+          "type": {
+            "value": {
+              "prim": "int"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "name": "reply_parameters",
+          "type": {
+            "value": {
+              "ref": "ReplyParameters"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "name": "ephemeral_message_parameters",
+          "type": {
+            "value": {
+              "ref": "EphemeralMessageParameters"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "name": "receiver_user_id",
+          "type": {
+            "value": {
+              "prim": "int"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "name": "reply_to_message_id",
+          "type": {
+            "value": {
+              "prim": "int"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        }
+      ],
+      "returns": {
+        "value": {
+          "prim": "true"
+        }
+      }
+    },
+    {
+      "name": "sendVenue",
+      "params": [
+        {
+          "name": "chat_id",
+          "type": {
+            "value": {
+              "union": [
+                {
+                  "prim": "int"
+                },
+                {
+                  "prim": "string"
+                }
+              ]
+            }
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "name": "business_connection_id",
+          "type": {
+            "value": {
+              "prim": "string"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "name": "message_thread_id",
+          "type": {
+            "value": {
+              "prim": "int"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "name": "direct_messages_topic_id",
+          "type": {
+            "value": {
+              "prim": "int"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "name": "reply_parameters",
+          "type": {
+            "value": {
+              "ref": "ReplyParameters"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "name": "ephemeral_message_parameters",
+          "type": {
+            "value": {
+              "ref": "EphemeralMessageParameters"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "name": "receiver_user_id",
+          "type": {
+            "value": {
+              "prim": "int"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "name": "reply_to_message_id",
+          "type": {
+            "value": {
+              "prim": "int"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        }
+      ],
+      "returns": {
+        "value": {
+          "prim": "true"
+        }
+      }
+    },
+    {
+      "name": "sendVideo",
+      "params": [
+        {
+          "name": "chat_id",
+          "type": {
+            "value": {
+              "union": [
+                {
+                  "prim": "int"
+                },
+                {
+                  "prim": "string"
+                }
+              ]
+            }
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "name": "business_connection_id",
+          "type": {
+            "value": {
+              "prim": "string"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "name": "message_thread_id",
+          "type": {
+            "value": {
+              "prim": "int"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "name": "direct_messages_topic_id",
+          "type": {
+            "value": {
+              "prim": "int"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "name": "reply_parameters",
+          "type": {
+            "value": {
+              "ref": "ReplyParameters"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "name": "ephemeral_message_parameters",
+          "type": {
+            "value": {
+              "ref": "EphemeralMessageParameters"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "name": "receiver_user_id",
+          "type": {
+            "value": {
+              "prim": "int"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "name": "reply_to_message_id",
+          "type": {
+            "value": {
+              "prim": "int"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        }
+      ],
+      "returns": {
+        "value": {
+          "prim": "true"
+        }
+      }
+    },
+    {
+      "name": "sendVideoNote",
+      "params": [
+        {
+          "name": "chat_id",
+          "type": {
+            "value": {
+              "union": [
+                {
+                  "prim": "int"
+                },
+                {
+                  "prim": "string"
+                }
+              ]
+            }
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "name": "business_connection_id",
+          "type": {
+            "value": {
+              "prim": "string"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "name": "message_thread_id",
+          "type": {
+            "value": {
+              "prim": "int"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "name": "direct_messages_topic_id",
+          "type": {
+            "value": {
+              "prim": "int"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "name": "reply_parameters",
+          "type": {
+            "value": {
+              "ref": "ReplyParameters"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "name": "ephemeral_message_parameters",
+          "type": {
+            "value": {
+              "ref": "EphemeralMessageParameters"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "name": "receiver_user_id",
+          "type": {
+            "value": {
+              "prim": "int"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "name": "reply_to_message_id",
+          "type": {
+            "value": {
+              "prim": "int"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        }
+      ],
+      "returns": {
+        "value": {
+          "prim": "true"
+        }
+      }
+    },
+    {
+      "name": "sendVoice",
+      "params": [
+        {
+          "name": "chat_id",
+          "type": {
+            "value": {
+              "union": [
+                {
+                  "prim": "int"
+                },
+                {
+                  "prim": "string"
+                }
+              ]
+            }
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "name": "business_connection_id",
+          "type": {
+            "value": {
+              "prim": "string"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "name": "message_thread_id",
+          "type": {
+            "value": {
+              "prim": "int"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "name": "direct_messages_topic_id",
+          "type": {
+            "value": {
+              "prim": "int"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "name": "reply_parameters",
+          "type": {
+            "value": {
+              "ref": "ReplyParameters"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "name": "ephemeral_message_parameters",
+          "type": {
+            "value": {
+              "ref": "EphemeralMessageParameters"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "name": "receiver_user_id",
+          "type": {
+            "value": {
+              "prim": "int"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "name": "reply_to_message_id",
+          "type": {
+            "value": {
+              "prim": "int"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        }
+      ],
+      "returns": {
+        "value": {
+          "prim": "true"
+        }
+      }
+    },
+    {
+      "name": "setChatAdministratorCustomTitle",
+      "params": [
+        {
+          "name": "chat_id",
+          "type": {
+            "value": {
+              "union": [
+                {
+                  "prim": "int"
+                },
+                {
+                  "prim": "string"
+                }
+              ]
+            }
+          },
+          "required": {
+            "value": true
+          }
+        }
+      ],
+      "returns": {
+        "value": {
+          "prim": "true"
+        }
+      }
+    },
+    {
+      "name": "setChatDescription",
+      "params": [
+        {
+          "name": "chat_id",
+          "type": {
+            "value": {
+              "union": [
+                {
+                  "prim": "int"
+                },
+                {
+                  "prim": "string"
+                }
+              ]
+            }
+          },
+          "required": {
+            "value": true
+          }
+        }
+      ],
+      "returns": {
+        "value": {
+          "prim": "true"
+        }
+      }
+    },
+    {
+      "name": "setChatMemberTag",
+      "params": [
+        {
+          "name": "chat_id",
+          "type": {
+            "value": {
+              "union": [
+                {
+                  "prim": "int"
+                },
+                {
+                  "prim": "string"
+                }
+              ]
+            }
+          },
+          "required": {
+            "value": true
+          }
+        }
+      ],
+      "returns": {
+        "value": {
+          "prim": "true"
+        }
+      }
+    },
+    {
+      "name": "setChatPermissions",
+      "params": [
+        {
+          "name": "chat_id",
+          "type": {
+            "value": {
+              "union": [
+                {
+                  "prim": "int"
+                },
+                {
+                  "prim": "string"
+                }
+              ]
+            }
+          },
+          "required": {
+            "value": true
+          }
+        }
+      ],
+      "returns": {
+        "value": {
+          "prim": "true"
+        }
+      }
+    },
+    {
+      "name": "setChatPhoto",
+      "params": [
+        {
+          "name": "chat_id",
+          "type": {
+            "value": {
+              "union": [
+                {
+                  "prim": "int"
+                },
+                {
+                  "prim": "string"
+                }
+              ]
+            }
+          },
+          "required": {
+            "value": true
+          }
+        }
+      ],
+      "returns": {
+        "value": {
+          "prim": "true"
+        }
+      }
+    },
+    {
+      "name": "setChatStickerSet",
+      "params": [
+        {
+          "name": "chat_id",
+          "type": {
+            "value": {
+              "union": [
+                {
+                  "prim": "int"
+                },
+                {
+                  "prim": "string"
+                }
+              ]
+            }
+          },
+          "required": {
+            "value": true
+          }
+        }
+      ],
+      "returns": {
+        "value": {
+          "prim": "true"
+        }
+      }
+    },
+    {
+      "name": "setChatTitle",
+      "params": [
+        {
+          "name": "chat_id",
+          "type": {
+            "value": {
+              "union": [
+                {
+                  "prim": "int"
+                },
+                {
+                  "prim": "string"
+                }
+              ]
+            }
+          },
+          "required": {
+            "value": true
+          }
+        }
+      ],
+      "returns": {
+        "value": {
+          "prim": "true"
+        }
+      }
+    },
+    {
+      "name": "setMessageReaction",
+      "params": [
+        {
+          "name": "chat_id",
+          "type": {
+            "value": {
+              "union": [
+                {
+                  "prim": "int"
+                },
+                {
+                  "prim": "string"
+                }
+              ]
+            }
+          },
+          "required": {
+            "value": true
+          }
+        },
+        {
+          "name": "message_id",
+          "type": {
+            "value": {
+              "prim": "int"
+            }
+          },
+          "required": {
+            "value": true
+          }
+        }
+      ],
+      "returns": {
+        "value": {
+          "prim": "true"
+        }
+      }
+    },
+    {
+      "name": "setStickerPositionInSet",
+      "params": [
+        {
+          "name": "sticker",
+          "type": {
+            "value": {
+              "prim": "string"
+            }
+          },
+          "required": {
+            "value": true
+          }
+        }
+      ],
+      "returns": {
+        "value": {
+          "prim": "true"
+        }
+      }
+    },
+    {
+      "name": "stopMessageLiveLocation",
+      "params": [
+        {
+          "name": "business_connection_id",
+          "type": {
+            "value": {
+              "prim": "string"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "name": "chat_id",
+          "type": {
+            "value": {
+              "union": [
+                {
+                  "prim": "int"
+                },
+                {
+                  "prim": "string"
+                }
+              ]
+            }
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "name": "message_id",
+          "type": {
+            "value": {
+              "prim": "int"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        }
+      ],
+      "returns": {
+        "value": {
+          "prim": "true"
+        }
+      }
+    },
+    {
+      "name": "unbanChatMember",
+      "params": [
+        {
+          "name": "chat_id",
+          "type": {
+            "value": {
+              "union": [
+                {
+                  "prim": "int"
+                },
+                {
+                  "prim": "string"
+                }
+              ]
+            }
+          },
+          "required": {
+            "value": true
+          }
+        }
+      ],
+      "returns": {
+        "value": {
+          "prim": "true"
+        }
+      }
+    },
+    {
+      "name": "unbanChatSenderChat",
+      "params": [
+        {
+          "name": "chat_id",
+          "type": {
+            "value": {
+              "union": [
+                {
+                  "prim": "int"
+                },
+                {
+                  "prim": "string"
+                }
+              ]
+            }
+          },
+          "required": {
+            "value": true
+          }
+        }
+      ],
+      "returns": {
+        "value": {
+          "prim": "true"
+        }
+      }
+    },
+    {
+      "name": "unpinAllChatMessages",
+      "params": [
+        {
+          "name": "chat_id",
+          "type": {
+            "value": {
+              "union": [
+                {
+                  "prim": "int"
+                },
+                {
+                  "prim": "string"
+                }
+              ]
+            }
+          },
+          "required": {
+            "value": true
+          }
+        }
+      ],
+      "returns": {
+        "value": {
+          "prim": "true"
+        }
+      }
+    },
+    {
+      "name": "unpinAllGeneralForumTopicMessages",
+      "params": [
+        {
+          "name": "chat_id",
+          "type": {
+            "value": {
+              "union": [
+                {
+                  "prim": "int"
+                },
+                {
+                  "prim": "string"
+                }
+              ]
+            }
+          },
+          "required": {
+            "value": true
+          }
+        }
+      ],
+      "returns": {
+        "value": {
+          "prim": "true"
+        }
+      }
+    },
+    {
+      "name": "unpinChatMessage",
+      "params": [
+        {
+          "name": "chat_id",
+          "type": {
+            "value": {
+              "union": [
+                {
+                  "prim": "int"
+                },
+                {
+                  "prim": "string"
+                }
+              ]
+            }
+          },
+          "required": {
+            "value": true
+          }
+        },
+        {
+          "name": "business_connection_id",
+          "type": {
+            "value": {
+              "prim": "string"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "name": "message_id",
+          "type": {
+            "value": {
+              "prim": "int"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        }
+      ],
+      "returns": {
+        "value": {
+          "prim": "true"
+        }
+      }
+    }
+  ],
+  "unions": [
+    {
+      "name": "MaybeInaccessibleMessage",
+      "members": {
+        "value": [
+          "Message",
+          "InaccessibleMessage"
+        ]
+      }
+    }
+  ]
+}

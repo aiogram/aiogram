@@ -1,0 +1,19 @@
+# keyword-safe Python names, as 3.x
+[types.CallbackQuery]
+from = "from_user"
+[types.ChatJoinRequest]
+from = "from_user"
+[types.ChatMemberUpdated]
+from = "from_user"
+[types.InlineQuery]
+from = "from_user"
+[types.Message]
+from = "from_user"
+[types.PreCheckoutQuery]
+from = "from_user"
+[types.SharedWidgetQuery]
+from = "from_user"
+[types.ShippingQuery]
+from = "from_user"
+[types.WidgetQuery]
+from = "from_user"

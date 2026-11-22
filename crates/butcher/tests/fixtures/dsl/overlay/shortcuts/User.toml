@@ -1,0 +1,11 @@
+# User: every 3.x shortcut of .butcher/types/User/aliases.yml, in the fill-DSL
+
+[get_profile_photos]
+method = "getUserProfilePhotos"
+[get_profile_photos.fill]
+user_id = "self.id"
+
+[get_profile_audios]
+method = "getUserProfileAudios"
+[get_profile_audios.fill]
+user_id = "self.id"
