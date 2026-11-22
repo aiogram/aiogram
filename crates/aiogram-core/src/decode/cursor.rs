@@ -4,7 +4,8 @@
 
 use jiter::{Jiter, NumberInt, Peek};
 
-use super::error::{DecodeError, DecodeResult, ErrorKind, Seg};
+use super::error::{DecodeError, DecodeResult, ErrorKind, MAX_DEPTH, Seg};
+use super::seen::{self, Seen, Site};
 use super::table::Table;
 use super::value::{IStr, Meta, Raw, UnixTime, Unknown, set_bit};
 
@@ -19,6 +20,18 @@ pub(crate) struct Cursor<'j> {
     data: &'j [u8],
     jiter: Jiter<'j>,
     base: u32,
+    /// decoded objects open around the next value
+    depth: u16,
+    /// an `Unknown…` is an error ([`report`](Self::report))
+    strict: bool,
+    /// first occurrences counted by this decode, for the caller to log after the Rust phase
+    seen: Vec<Seen>,
+}
+
+/// What [`Cursor::probe`] found in an object: where it starts and the raw value of one key.
+pub(crate) struct Probe {
+    pub(crate) start: u32,
+    pub(crate) value: Option<Raw>,
 }
 
 /// An object being decoded: built by [`Cursor::begin`], fed by [`Cursor::field`].
@@ -74,16 +87,167 @@ impl<'j> Cursor<'j> {
                 base.saturating_add(at),
             ));
         }
-        Ok(Self {
+        Ok(Self::trusted(data, base))
+    }
+
+    /// A cursor over `data` that the caller has already checked as [`new`](Self::new) does.
+    pub(crate) fn trusted(data: &'j [u8], base: u32) -> Self {
+        Self {
             origin: data,
             origin_base: base,
             data,
             jiter: Jiter::new(data),
             base,
-        })
+            depth: 0,
+            strict: false,
+            seen: Vec::new(),
+        }
     }
 
-    /// Where the next value starts, for [`recover`](Self::recover).
+    /// Turns every `Unknown…` into a [`ErrorKind::Strict`] error (`DecodePolicy` "strict").
+    pub(crate) fn strict(mut self, strict: bool) -> Self {
+        self.strict = strict;
+        self
+    }
+
+    /// A cursor for the value at `at` with its own buffer: offsets restart at 0 there (one
+    /// `getUpdates` element, copied out afterwards, R04). Same policy, no open objects.
+    pub(crate) fn element(&self, at: u32) -> Self {
+        let local = at.saturating_sub(self.origin_base) as usize;
+        Self::trusted(self.origin.get(local..).unwrap_or_default(), 0).strict(self.strict)
+    }
+
+    /// The first occurrences this decode counted, oldest first.
+    pub(crate) fn take_seen(&mut self) -> Vec<Seen> {
+        std::mem::take(&mut self.seen)
+    }
+
+    /// Adds first occurrences counted by an [`element`](Self::element) cursor.
+    pub(crate) fn extend_seen(&mut self, seen: Vec<Seen>) {
+        self.seen.extend(seen);
+    }
+
+    /// The bytes of `raw`, which must lie in this cursor's input.
+    pub(crate) fn bytes(&self, raw: Raw) -> Option<&'j [u8]> {
+        let start = raw.start.checked_sub(self.origin_base)? as usize;
+        let end = raw.end.checked_sub(self.origin_base)? as usize;
+        self.origin.get(start..end)
+    }
+
+    /// The input from `at` on.
+    pub(crate) fn rest(&self, at: u32) -> &'j [u8] {
+        let local = at.saturating_sub(self.origin_base) as usize;
+        self.origin.get(local..).unwrap_or_default()
+    }
+
+    /// Goes on reading at `at`, an offset in the update's buffer within this cursor's input.
+    pub(crate) fn seek(&mut self, at: u32) {
+        self.data = self.rest(at);
+        self.base = at.max(self.origin_base);
+        self.jiter = Jiter::new(self.data);
+    }
+
+    /// Opens one decoded object: past [`MAX_DEPTH`] it is an error, raised before anything is read.
+    pub(crate) fn enter(&mut self) -> DecodeResult<()> {
+        if self.depth >= MAX_DEPTH {
+            return Err(DecodeError::new(ErrorKind::Depth, self.here()));
+        }
+        self.depth = self.depth.saturating_add(1);
+        Ok(())
+    }
+
+    pub(crate) fn leave(&mut self) {
+        self.depth = self.depth.saturating_sub(1);
+    }
+
+    /// The `Unknown…` decode hook: counts `(entity, site, value)` process-wide, keeps the first
+    /// occurrence for the caller and, in strict mode, fails.
+    #[cold]
+    pub(crate) fn report(
+        &mut self,
+        entity: &'static str,
+        site: Site,
+        value: &str,
+    ) -> DecodeResult<()> {
+        let seen = Seen::new(entity, site, value);
+        if seen::record(&seen) {
+            self.seen.push(seen.clone());
+        }
+        if self.strict {
+            return Err(DecodeError::new(
+                ErrorKind::Strict(Box::new(seen)),
+                self.here(),
+            ));
+        }
+        Ok(())
+    }
+
+    /// Reports every unknown key of `object` as `site` of `entity` (`Update`: unknown update types).
+    #[cold]
+    pub(crate) fn report_keys(
+        &mut self,
+        object: &Object,
+        entity: &'static str,
+        site: Site,
+    ) -> DecodeResult<()> {
+        for unknown in &object.unknown {
+            // the input is UTF-8 (`new`); a key with escapes is reported as sent
+            let key = self
+                .bytes(unknown.key)
+                .and_then(|key| std::str::from_utf8(key).ok())
+                .unwrap_or_default();
+            self.report(entity, site, key)?;
+        }
+        Ok(())
+    }
+
+    /// Scans the object at the cursor for `key` on a separate jiter, skipping values, and stops
+    /// there (B23); the cursor does not move. A union decodes its member from `start` after this.
+    /// Input that does not scan as an object is no value: the member's decode reports the error.
+    pub(crate) fn probe(&mut self, key: &str) -> DecodeResult<Probe> {
+        self.peek()?;
+        let start = self.here();
+        let mut jiter = Jiter::new(self.rest(start));
+        let at = |index: usize| start.saturating_add(u32::try_from(index).unwrap_or(u32::MAX));
+        let mut step = jiter.next_object_bytes();
+        while let Ok(Some(name)) = step {
+            let found = name == key.as_bytes();
+            let Ok(peek) = jiter.peek() else { break };
+            let value_start = at(jiter.current_index());
+            if jiter.known_skip(peek).is_err() {
+                break;
+            }
+            if found {
+                return Ok(Probe {
+                    start,
+                    value: Some(Raw {
+                        start: value_start,
+                        end: at(jiter.current_index()),
+                    }),
+                });
+            }
+            step = jiter.next_key_bytes();
+        }
+        Ok(Probe { start, value: None })
+    }
+
+    /// Steps into a JSON array: `true` if it has a first item.
+    pub(crate) fn array(&mut self) -> DecodeResult<bool> {
+        self.jiter
+            .next_array()
+            .map(|next| next.is_some())
+            .map_err(|e| self.fail(e))
+    }
+
+    /// After an item: `true` if another one follows, `false` at `]`.
+    pub(crate) fn array_next(&mut self) -> DecodeResult<bool> {
+        self.jiter
+            .array_step()
+            .map(|next| next.is_some())
+            .map_err(|e| self.fail(e))
+    }
+
+    /// Where the next value starts (after a value: where it ended).
     pub(crate) fn mark(&self) -> u32 {
         self.here()
     }
@@ -101,8 +265,10 @@ impl<'j> Cursor<'j> {
         error: DecodeError,
     ) -> DecodeResult<()> {
         let at = Seg::Key(table.wire(id));
-        let local = mark.saturating_sub(self.origin_base) as usize;
-        let mut jiter = Jiter::new(self.origin.get(local..).unwrap_or_default());
+        if error.is_fatal() {
+            return Err(error.at(at));
+        }
+        let mut jiter = Jiter::new(self.rest(mark));
         if let Err(skip) = jiter.next_skip() {
             // invalid JSON wins; a nested level already reported it with the finer path
             return Err(if matches!(error.kind(), ErrorKind::Json(_)) {
@@ -111,12 +277,8 @@ impl<'j> Cursor<'j> {
                 DecodeError::jiter(skip, mark).at(at)
             });
         }
-        let end = local.saturating_add(jiter.current_index());
-        self.data = self.origin.get(end..).unwrap_or_default();
-        self.base = self
-            .origin_base
-            .saturating_add(u32::try_from(end).unwrap_or(u32::MAX));
-        self.jiter = Jiter::new(self.data);
+        let end = u32::try_from(jiter.current_index()).unwrap_or(u32::MAX);
+        self.seek(mark.saturating_add(end));
         object.failed.push((id, error.at(at)));
         Ok(())
     }

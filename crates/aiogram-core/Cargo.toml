@@ -14,6 +14,7 @@ crate-type = ["cdylib"]
 [dependencies]
 pyo3.workspace = true
 jiter.workspace = true
+stacker.workspace = true
 
 [lints]
 workspace = true
