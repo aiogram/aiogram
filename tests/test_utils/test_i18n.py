@@ -208,12 +208,12 @@ class TestSimpleI18nMiddleware:
     )
     async def test_middleware(self, i18n: I18n, user, result):
         middleware = SimpleI18nMiddleware(i18n=i18n)
-        result = await middleware(
+        text = await middleware(
             next_call,
             Update(update_id=42),
             {"event_context": EventContext(user=user)},
         )
-        assert result == result
+        assert text == result
 
     async def test_setup(self, i18n: I18n):
         dp = Dispatcher()
