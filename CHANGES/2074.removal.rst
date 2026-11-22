@@ -1,0 +1,3 @@
+Removed the ``aiogram[cli]`` extra: the ``aiogram`` command is now part of aiogram itself, so the separate
+``aiogram-cli`` package is no longer needed. Uninstall it (``pip uninstall aiogram-cli``); if the
+``aiogram`` command is missing afterwards, run ``pip install --force-reinstall aiogram``.

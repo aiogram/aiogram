@@ -923,3 +923,19 @@ suppress = "aiogram: ignore[AG4051]"
 gate = false
 generated = false
 warn_3x = { site = "none", target = "", since = "" }
+
+[[entry]]
+id = "AG4052"
+kind = "removal-4.0"
+title = "the aiogram[cli] extra and the aiogram-cli package are replaced by the built-in aiogram command"
+decisions = ["D68", "D75", "R30"]
+area = "packaging"
+change = "removed"
+replacement = "install plain aiogram and uninstall aiogram-cli; the aiogram command and python -m aiogram are built in, and plugins move to the aiogram.cli entry-point group"
+detection = "manual"
+confidence = "high"
+codemod = "none"
+suppress = "aiogram: ignore[AG4052]"
+gate = false
+generated = false
+warn_3x = { site = "none", target = "", since = "" }

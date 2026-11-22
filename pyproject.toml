@@ -95,9 +95,6 @@ proxy = [
 i18n = [
     "Babel>=2.13.0,<3",
 ]
-cli = [
-    "aiogram-cli>=1.1.0,<2.0.0",
-]
 signature = [
     "cryptography>=46.0.0",
 ]
@@ -138,6 +135,9 @@ test = [
     "pytz>=2026,<2027",
     "pycryptodomex==3.23.0",
 ]
+
+[project.scripts]
+aiogram = "aiogram.cli:main"
 
 [project.entry-points.pytest11]
 aiogram = "aiogram.test._autoload"
@@ -218,6 +218,8 @@ known-first-party = [
 "aiogram/types/*" = ["E501"]
 "aiogram/methods/*" = ["E501"]
 "aiogram/enums/*" = ["E501"]
+# the CLI writes its output with print
+"aiogram/cli/*" = ["T201"]
 "tests/**" = [
     "PLR0124",
     "PLR2004",

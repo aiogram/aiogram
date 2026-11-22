@@ -254,7 +254,7 @@ Verification method and results: [_VERIFICATION.md](_VERIFICATION.md).
 | [G-12](G-features/G-12-commands-from-handlers.md) | Bot commands from handlers (D60) | `todo` | no | M | E-04, E-09, G-03 |
 | [G-13](G-features/G-13-retry-middleware.md) | Opt-in `RetryMiddleware` | `todo` | no | M | C-06, C-20, D-02, D-03, D-04, D-06, D-10, D-11, D-13, E-12 |
 | [G-14](G-features/G-14-rate-limit-middleware.md) | Opt-in `RateLimitMiddleware` | `todo` | no | M | D-06, D-11, G-13 |
-| [G-15](G-features/G-15-cli-core.md) | Built-in CLI core (`aiogram`, `python -m aiogram`, plugins, `info`) | `todo` | no | M | B-01 |
+| [G-15](G-features/G-15-cli-core.md) | Built-in CLI core (`aiogram`, `python -m aiogram`, plugins, `info`) | `done` | no | M | B-01 |
 | [G-16](G-features/G-16-cli-run.md) | `aiogram run polling` / `aiogram run webhook` | `todo` | no | L | E-13, E-15, E-16, E-18, E-23, G-15, H-04 |
 | [G-17](G-features/G-17-cli-reload.md) | `--reload` via watchfiles | `todo` | no | S | G-15, G-16 |
 | [G-18](G-features/G-18-cli-bot-commands.md) | `aiogram bot` commands (me, webhook, commands sync) | `todo` | no | M | G-12, G-15 |

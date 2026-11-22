@@ -48,7 +48,7 @@ overrides annotations, `subtypes.yml` / `unions.yml` wire union membership.
    existing entry; do not invent a new shape. Never touch `entity.json`.
 2. Regenerate if you can:
    ```bash
-   rtk proxy uv run --extra cli butcher apply all
+   rtk proxy uv run butcher apply all
    ```
    **`butcher` is not installed in this checkout** (`Failed to spawn: butcher`) — it is
    maintainer-only. When it is unavailable, hand-write the identical output into

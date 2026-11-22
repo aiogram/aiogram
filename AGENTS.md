@@ -122,12 +122,12 @@ test (`tests/test_mocked_bot.py`) greps the source.
 - Regeneration flow:
 
 ```bash
-uv run --extra cli butcher parse
-uv run --extra cli butcher refresh
-uv run --extra cli butcher apply all
+uv run butcher parse
+uv run butcher refresh
+uv run butcher apply all
 ```
 
-- `butcher` is not shipped by the `cli` extra (`aiogram-cli` has no `butcher` script): it is the
+- `butcher` is not a dependency of this project (`uv run butcher` only works once it is installed): it is the
   separate [aiogram/butcher](https://github.com/aiogram/butcher) repo. Install it into its own
   environment and run it from this repository root (`python -m butcher.shell.main apply all`).
   A fix that needs new generator behaviour lands in butcher first, then in `.butcher` config here.
@@ -244,6 +244,16 @@ These patterns repeatedly appeared in maintainer feedback and should be treated 
   message and template counts of the current file, so a routine Telegram addition fails it until the numbers are updated.
 - A new workspace crate stays out of the sdist and the wheel: maturin rewrites the sdist's `members` to
   `crates/aiogram-core` and its path dependencies. Check with `uv build` (sdist, then a wheel built from it).
+
+## CLI (`aiogram/cli/`, `dev-4.x`)
+
+- `aiogram/cli/_spec.py` imports only the stdlib: the docs build loads it by path. A new built-in command goes
+  there as a `register_<name>(subparsers)` in `BUILTINS`, with `set_defaults(func="module:attr")` (the handler module
+  is imported only when the command runs) and `add_token_arguments` for a token. `tests/test_cli` builds the
+  parser under `python -I` with no `aiogram` module loaded.
+- `import aiogram` already loads `argparse` (`unittest.mock.sentinel` in `aiogram/dispatcher/event/bases.py`), so an
+  import-cost test checks for `aiogram.cli` modules, not `argparse`.
+- The console script is installed by `uv sync`: after changing `[project.scripts]`, re-sync before running the tests.
 
 ## Async generators and file IO
 

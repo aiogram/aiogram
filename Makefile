@@ -140,9 +140,9 @@ bump:
 	uv lock
 
 update-api:
-	uv run --extra cli butcher parse
-	uv run --extra cli butcher refresh
-	uv run --extra cli butcher apply all
+	uv run butcher parse
+	uv run butcher refresh
+	uv run butcher apply all
 	@$(MAKE) bump
 
 .PHONY: towncrier-build
