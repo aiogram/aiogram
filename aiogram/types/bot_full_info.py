@@ -26,7 +26,7 @@ class BotFullInfo(TelegramObject):
     """:code:`True`, if the bot supports guest queries from chats it is not a member of"""
     supports_inline_queries: bool
     """:code:`True`, if the bot supports inline queries"""
-    needs_inline_query_location: bool
+    needs_inline_query_location: bool | None = None
     """:code:`True`, if the bot requests the location of the user with every inline query"""
     can_connect_to_business: bool
     """:code:`True`, if the bot can be connected to a user account to manage it"""
@@ -36,7 +36,7 @@ class BotFullInfo(TelegramObject):
     """:code:`True`, if the bot has forum topic mode enabled in private chats"""
     allows_users_to_create_topics: bool
     """:code:`True`, if the bot allows users to create and delete topics in private chats"""
-    has_topic_sidebar: bool
+    has_topic_sidebar: bool | None = None
     """:code:`True`, if topics in private chats with the bot are shown in a sidebar"""
     can_manage_bots: bool
     """:code:`True`, if other bots can be created to be controlled by the bot"""
@@ -63,12 +63,12 @@ class BotFullInfo(TelegramObject):
             can_read_all_group_messages: bool,
             supports_guest_queries: bool,
             supports_inline_queries: bool,
-            needs_inline_query_location: bool,
+            needs_inline_query_location: bool | None = None,
             can_connect_to_business: bool,
             has_main_web_app: bool,
             has_topics_enabled: bool,
             allows_users_to_create_topics: bool,
-            has_topic_sidebar: bool,
+            has_topic_sidebar: bool | None = None,
             can_manage_bots: bool,
             supports_join_request_queries: bool,
             username: str | None = None,

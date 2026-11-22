@@ -36,22 +36,6 @@
         "required": true
       },
       {
-        "type": "String",
-        "description": "Bot's username",
-        "html_description": "<td><em>Optional</em>. Bot's username</td>",
-        "rst_description": "*Optional*. Bot's username\n",
-        "name": "username",
-        "required": false
-      },
-      {
-        "type": "Array of String",
-        "description": "If non-empty, the list of all active usernames of the bot",
-        "html_description": "<td><em>Optional</em>. If non-empty, the list of all <a href=\"https://telegram.org/blog/topics-in-groups-collectible-usernames#collectible-usernames\">active usernames</a> of the bot</td>",
-        "rst_description": "*Optional*. If non-empty, the list of all `active usernames <https://telegram.org/blog/topics-in-groups-collectible-usernames#collectible-usernames>`_ of the bot\n",
-        "name": "active_usernames",
-        "required": false
-      },
-      {
         "type": "Boolean",
         "description": "True, if the bot can be added to groups",
         "html_description": "<td><em>True</em>, if the bot can be added to groups</td>",
@@ -82,14 +66,6 @@
         "rst_description": ":code:`True`, if the bot supports inline queries\n",
         "name": "supports_inline_queries",
         "required": true
-      },
-      {
-        "type": "String",
-        "description": "Placeholder for inline queries, which is shown in the input field after the bot's username; omitted if the default placeholder is used",
-        "html_description": "<td><em>Optional</em>. Placeholder for inline queries, which is shown in the input field after the bot's username; omitted if the default placeholder is used</td>",
-        "rst_description": "*Optional*. Placeholder for inline queries, which is shown in the input field after the bot's username; omitted if the default placeholder is used\n",
-        "name": "inline_query_placeholder",
-        "required": false
       },
       {
         "type": "Boolean",
@@ -154,6 +130,30 @@
         "rst_description": ":code:`True`, if the bot supports join request queries and can be assigned to process them\n",
         "name": "supports_join_request_queries",
         "required": true
+      },
+      {
+        "type": "String",
+        "description": "Bot's username",
+        "html_description": "<td><em>Optional</em>. Bot's username</td>",
+        "rst_description": "*Optional*. Bot's username\n",
+        "name": "username",
+        "required": false
+      },
+      {
+        "type": "Array of String",
+        "description": "If non-empty, the list of all active usernames of the bot",
+        "html_description": "<td><em>Optional</em>. If non-empty, the list of all <a href=\"https://telegram.org/blog/topics-in-groups-collectible-usernames#collectible-usernames\">active usernames</a> of the bot</td>",
+        "rst_description": "*Optional*. If non-empty, the list of all `active usernames <https://telegram.org/blog/topics-in-groups-collectible-usernames#collectible-usernames>`_ of the bot\n",
+        "name": "active_usernames",
+        "required": false
+      },
+      {
+        "type": "String",
+        "description": "Placeholder for inline queries, which is shown in the input field after the bot's username; omitted if the default placeholder is used",
+        "html_description": "<td><em>Optional</em>. Placeholder for inline queries, which is shown in the input field after the bot's username; omitted if the default placeholder is used</td>",
+        "rst_description": "*Optional*. Placeholder for inline queries, which is shown in the input field after the bot's username; omitted if the default placeholder is used\n",
+        "name": "inline_query_placeholder",
+        "required": false
       }
     ],
     "category": "types"

@@ -2,6 +2,7 @@ import pytest
 
 from aiogram.methods import GetMe
 from aiogram.types import (
+    BotFullInfo,
     InputRichBlockExpandableBlockQuotation,
     RichBlockExpandableBlockQuotation,
     RichBlockParagraph,
@@ -76,3 +77,32 @@ def test_bot_full_info_user_like_helpers():
     assert info.mention_html("x") == '<a href="tg://user?id=42">x</a>'
     assert info.mention_markdown() == "[Bot](tg://user?id=42)"
     assert info.mention_markdown("x") == "[x](tg://user?id=42)"
+
+
+def test_bot_full_info_decodes_pre_10_5_get_me():
+    # A getMe result of a Bot API server older than 10.5 has neither of these fields.
+    info = BotFullInfo.model_validate(
+        {
+            **dict.fromkeys(
+                (
+                    "can_join_groups",
+                    "can_read_all_group_messages",
+                    "supports_guest_queries",
+                    "supports_inline_queries",
+                    "can_connect_to_business",
+                    "has_main_web_app",
+                    "has_topics_enabled",
+                    "allows_users_to_create_topics",
+                    "can_manage_bots",
+                    "supports_join_request_queries",
+                ),
+                False,
+            ),
+            "id": 1,
+            "is_bot": True,
+            "first_name": "Old",
+            "username": "old_bot",
+        }
+    )
+    assert info.needs_inline_query_location is None
+    assert info.has_topic_sidebar is None

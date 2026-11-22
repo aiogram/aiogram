@@ -57,6 +57,10 @@ rtk git status --short -- aiogram/          # new files = new types/methods/enum
 - **A method whose return type changed** (`getMe` → `BotFullInfo` in 10.5) breaks the tests that stub it
   with the old type (`tests/mocked_bot.py::bot_full_info`), the test toolkit's handler in
   `aiogram/test/modeling.py`, and `Bot.me()`, which keeps returning `User`.
+- **Older Bot API servers.** A required field that a self-hosted server older than the bump
+  doesn't return makes `get_me()` (and so `bot.me()` and polling) fail to decode. Relax it in
+  `.butcher/types/<Type>/replace.yml` (`annotations: <field>: required: false`), never in the
+  generated file.
 - **Enums scraped by regexp** from a doc sentence can silently contain another enum's
   members. Eyeball every new `aiogram/enums/*.py` against its source docstring.
 - **`Default()` sentinels.** New `parse_mode`/`*_parse_mode` fields and the shortcuts
