@@ -10,10 +10,13 @@ from typing import Any, overload
 from aiogram.exceptions import DataNotDictLikeError
 from aiogram.fsm.state import State
 from aiogram.fsm.storage.base import (
+    UNCHANGED,
     BaseEventIsolation,
     BaseStorage,
     StateType,
     StorageKey,
+    StorageRecord,
+    StorageWrite,
 )
 
 
@@ -29,7 +32,9 @@ class MemoryStorage(BaseStorage):
     does not persist it across restarts.
 
     It is thread-safe at the map level: one :class:`threading.Lock` guards every read and
-    write of :attr:`storage`, and :meth:`update_data` merges in a single critical section.
+    write of :attr:`storage`, and :meth:`update_data`, :meth:`get_records` and
+    :meth:`apply_writes` each run in a single critical section. :meth:`apply_writes` checks
+    every write before it applies any, so a write with invalid data raises with nothing applied.
     Reads never create records, and a record whose state is :code:`None` and whose data is
     empty is removed.
 
@@ -87,11 +92,15 @@ class MemoryStorage(BaseStorage):
             record = self.storage.get(key)
             return None if record is None else record.state
 
-    async def set_data(self, key: StorageKey, data: Mapping[str, Any]) -> None:
+    @staticmethod
+    def _plain_data(data: Mapping[str, Any]) -> dict[str, Any]:
         if not isinstance(data, dict):
             msg = f"Data must be a dict or dict-like object, got {type(data).__name__}"
             raise DataNotDictLikeError(msg)
-        data = dict(data)  # a plain dict: no user override runs under the lock later
+        return dict(data)  # a plain dict: no user override runs under the lock later
+
+    async def set_data(self, key: StorageKey, data: Mapping[str, Any]) -> None:
+        data = self._plain_data(data)
         with self._lock:
             record = self.storage.get(key) or MemoryStorageRecord()
             record.data = data
@@ -118,6 +127,37 @@ class MemoryStorage(BaseStorage):
             record.data = merged = {**record.data, **data}  # a new dict, as the 3.x get+set did
             self._put(key, record)
             return merged.copy()
+
+    async def get_records(self, *keys: StorageKey) -> list[StorageRecord]:
+        with self._lock:
+            records = [self.storage.get(key) for key in keys]
+            return [
+                StorageRecord()
+                if record is None
+                else StorageRecord(state=record.state, data=record.data.copy())
+                for record in records
+            ]
+
+    async def apply_writes(self, *writes: StorageWrite) -> None:
+        # check and normalise every write before the lock: a bad one raises with nothing applied
+        prepared = [
+            (
+                write.key,
+                write.state.state if isinstance(write.state, State) else write.state,
+                write.data if write.data is UNCHANGED else self._plain_data(write.data),
+            )
+            for write in writes
+        ]
+        if not prepared:
+            return
+        with self._lock:
+            for key, state, data in prepared:
+                record = self.storage.get(key) or MemoryStorageRecord()
+                if state is not UNCHANGED:
+                    record.state = state
+                if data is not UNCHANGED:
+                    record.data = data
+                self._put(key, record)
 
     @overload
     async def get_value(self, storage_key: StorageKey, dict_key: str) -> Any | None: ...

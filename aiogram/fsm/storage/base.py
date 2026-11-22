@@ -1,8 +1,9 @@
 from abc import ABC, abstractmethod
 from collections.abc import AsyncGenerator, Mapping
 from contextlib import asynccontextmanager
-from dataclasses import dataclass
-from typing import Any, Literal, overload
+from dataclasses import dataclass, field
+from enum import Enum
+from typing import Any, Final, Literal, overload
 
 from aiogram.fsm.state import State
 
@@ -20,6 +21,45 @@ class StorageKey:
     business_connection_id: str | None = None
     destiny: str = DEFAULT_DESTINY
     is_guest: bool = False
+
+
+class _Unchanged(Enum):
+    UNCHANGED = "UNCHANGED"
+
+    def __repr__(self) -> str:
+        return "UNCHANGED"
+
+
+UNCHANGED: Final = _Unchanged.UNCHANGED
+"""Marks a part of a :class:`StorageWrite` that the write leaves as it is."""
+
+
+@dataclass(frozen=True, slots=True, kw_only=True)
+class StorageRecord:
+    """
+    State and data of one storage key, as returned by :meth:`BaseStorage.get_records`.
+
+    The record is frozen, but :attr:`data` is a plain :class:`dict` owned by the caller:
+    changing it does not change the storage.
+    """
+
+    state: str | None = None
+    data: dict[str, Any] = field(default_factory=dict)
+
+
+@dataclass(frozen=True, slots=True)
+class StorageWrite:
+    """
+    One write for :meth:`BaseStorage.apply_writes`.
+
+    A part left as :data:`UNCHANGED` is not touched. :code:`state=None` clears the state
+    and :code:`data={}` clears the data, as :meth:`BaseStorage.set_state` and
+    :meth:`BaseStorage.set_data` do.
+    """
+
+    key: StorageKey
+    state: StateType | Literal[_Unchanged.UNCHANGED] = UNCHANGED
+    data: Mapping[str, Any] | Literal[_Unchanged.UNCHANGED] = UNCHANGED
 
 
 class KeyBuilder(ABC):
@@ -112,6 +152,13 @@ class DefaultKeyBuilder(KeyBuilder):
 class BaseStorage(ABC):
     """
     Base class for all FSM storages
+
+    No storage promises atomicity across keys or across the state and data parts of one
+    key, including :meth:`get_records` and :meth:`apply_writes`: updates of one FSM key
+    are serialised by event isolation. :meth:`update_data` is atomic in the built-in
+    storages; the fallback here is not. An atomic merge still does not make an
+    application read-modify-write atomic: two callers can both read :code:`n=0` and
+    both write :code:`n=1`.
     """
 
     @abstractmethod
@@ -195,6 +242,39 @@ class BaseStorage(ABC):
         current_data.update(data)
         await self.set_data(key=key, data=current_data)
         return current_data.copy()
+
+    async def get_records(self, *keys: StorageKey) -> list[StorageRecord]:
+        """
+        Read state and data of several keys.
+
+        Storages that can read them in one round trip override this; the fallback calls
+        :meth:`get_state` and :meth:`get_data` for each key in order. The read is not a
+        snapshot: no atomicity across keys or parts is promised.
+
+        :param keys: storage keys, duplicates allowed
+        :return: one record per key, in the order of the keys
+        """
+        return [
+            StorageRecord(state=await self.get_state(key=key), data=await self.get_data(key=key))
+            for key in keys
+        ]
+
+    async def apply_writes(self, *writes: StorageWrite) -> None:
+        """
+        Apply several writes in order; a later write to the same part of a key wins.
+
+        Storages that can write in one round trip override this; the fallback calls
+        :meth:`set_state` and then :meth:`set_data` for each write, skipping
+        :data:`UNCHANGED` parts. No atomicity across keys or parts is promised: when a
+        write fails, the writes before it stay applied.
+
+        :param writes: writes to apply
+        """
+        for write in writes:
+            if write.state is not UNCHANGED:
+                await self.set_state(key=write.key, state=write.state)
+            if write.data is not UNCHANGED:
+                await self.set_data(key=write.key, data=write.data)
 
     @abstractmethod
     async def close(self) -> None:  # pragma: no cover
