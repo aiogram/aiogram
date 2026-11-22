@@ -2,7 +2,7 @@
 
 | Field | Value |
 |---|---|
-| Status | `todo` |
+| Status | `done` |
 | Story | D — Client & wire |
 | Target branch | `dev-4.x` |
 | Depends on | [D-03](D-03-token-safe-network-errors.md), [D-04](D-04-drop-aiofiles-input-file-replayable.md) |

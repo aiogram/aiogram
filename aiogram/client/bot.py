@@ -2,15 +2,17 @@ from __future__ import annotations
 
 import io
 import pathlib
-from collections.abc import AsyncGenerator, AsyncIterator
-from contextlib import asynccontextmanager
+from collections.abc import AsyncGenerator, AsyncIterator, Awaitable, Callable
+from contextlib import aclosing, asynccontextmanager
 from time import monotonic
 from types import TracebackType
 from typing import (
     Any,
     BinaryIO,
+    Self,
     TypeVar,
     cast,
+    overload,
 )
 
 from aiogram import loggers
@@ -290,15 +292,66 @@ from ..types import (
 )
 from .default import Default, DefaultBotProperties
 from .session.aiohttp import AiohttpSession
-from .session.base import BaseSession
+from .session.base import DEFAULT_DOWNLOAD_TIMEOUT, BaseSession, DownloadTimeout
 
 T = TypeVar("T")
+_BinaryIOT = TypeVar("_BinaryIOT", bound=BinaryIO)
 
 
 logger = loggers.client
 
 # How long a failed getChat for the bot's usernames is not retried, in seconds.
 USERNAMES_RETRY_AFTER = 60.0
+
+
+class DownloadStream(AsyncIterator[bytes]):
+    """
+    The chunks of a download, returned by :meth:`Bot.stream`.
+
+    Nothing is requested before the first chunk is read. The connection is released when the
+    file ends or reading it fails; ``async with`` (or :meth:`aclose`) also releases it when the
+    loop stops early, instead of waiting for the garbage collector.
+    """
+
+    __slots__ = ("_open", "_stream")
+
+    def __init__(self, open_stream: Callable[[], Awaitable[AsyncGenerator[bytes, None]]]) -> None:
+        self._open: Callable[[], Awaitable[AsyncGenerator[bytes, None]]] | None = open_stream
+        # The session's generator itself, not a wrapper around it: two nested generators are
+        # finalized concurrently by `shutdown_asyncgens()`, which fails
+        self._stream: AsyncGenerator[bytes, None] | None = None
+
+    def __aiter__(self) -> Self:
+        return self
+
+    async def __anext__(self) -> bytes:
+        if self._stream is None:
+            if self._open is None:
+                raise StopAsyncIteration
+            # `_open` stays set until the open succeeds, so a failed or cancelled open can be retried
+            stream = await self._open()
+            if self._open is None:
+                # closed while opening: never read from it
+                await stream.aclose()
+                raise StopAsyncIteration
+            self._open, self._stream = None, stream
+        return await self._stream.__anext__()
+
+    async def aclose(self) -> None:
+        self._open = None
+        if self._stream is not None:
+            await self._stream.aclose()
+
+    async def __aenter__(self) -> Self:
+        return self
+
+    async def __aexit__(
+        self,
+        exc_type: type[BaseException] | None,
+        exc_value: BaseException | None,
+        traceback: TracebackType | None,
+    ) -> None:
+        await self.aclose()
 
 
 class Bot:
@@ -452,10 +505,76 @@ class Bot:
         self._usernames_retry_at = None
         return self._usernames
 
-    @classmethod
-    async def __download_file_binary_io(
-        cls, destination: BinaryIO, seek: bool, stream: AsyncGenerator[bytes, None]
-    ) -> BinaryIO:
+    @staticmethod
+    def __file_id(file: str | Downloadable) -> str:
+        if isinstance(file, str):
+            return file
+        file_id: str | None = getattr(file, "file_id", None)
+        if file_id is None:
+            raise TypeError("file can only be of the string or Downloadable type")
+        return file_id
+
+    async def __file_path(self, file: str | Downloadable) -> str:
+        file_ = await self.get_file(self.__file_id(file))
+        # `file_path` can be None for large files but this files can't be downloaded
+        # So we need to do type-cast
+        # https://github.com/aiogram/aiogram/pull/282/files#r394110017
+        return cast(str, file_.file_path)
+
+    def __open_file(
+        self,
+        file_path: str | pathlib.Path,
+        chunk_size: int,
+        timeout: DownloadTimeout | float,
+    ) -> AsyncGenerator[bytes, None]:
+        if self.session.api.is_local:
+            return iter_file(self.session.api.wrap_local_file.to_local(file_path), chunk_size)
+        return self.session._download_stream(
+            url=self.session.api.file_url(self.__token, file_path),
+            timeout=timeout,
+            chunk_size=chunk_size,
+            raise_for_status=True,
+        )
+
+    def stream(
+        self,
+        file: str | Downloadable,
+        *,
+        chunk_size: int = 65536,
+        timeout: DownloadTimeout | float = DEFAULT_DOWNLOAD_TIMEOUT,
+    ) -> DownloadStream:
+        """
+        Stream a file by file_id or Downloadable object, chunk by chunk.
+
+        .. code-block:: python
+
+            async with bot.stream(message.document) as stream:
+                async for chunk in stream:
+                    ...
+
+        :param file: file_id or Downloadable object
+        :param chunk_size: File chunks size, defaults to 64 kb
+        :param timeout: Per-phase timeouts (:class:`aiogram.client.session.base.DownloadTimeout`);
+            a number is a total timeout in seconds
+        """
+        file_id = self.__file_id(file)
+
+        async def open_stream() -> AsyncGenerator[bytes, None]:
+            return self.__open_file(await self.__file_path(file_id), chunk_size, timeout)
+
+        return DownloadStream(open_stream)
+
+    @staticmethod
+    async def __write(
+        stream: AsyncIterator[bytes],
+        destination: BinaryIO | pathlib.Path | str | None,
+        seek: bool,
+    ) -> BinaryIO | None:
+        if isinstance(destination, (str, pathlib.Path)):
+            await write_stream(destination, stream)
+            return None
+        if destination is None:
+            destination = io.BytesIO()
         async for chunk in stream:
             destination.write(chunk)
             destination.flush()
@@ -463,17 +582,41 @@ class Bot:
             destination.seek(0)
         return destination
 
-    @classmethod
-    async def __download_file(
-        cls, destination: str | pathlib.Path, stream: AsyncGenerator[bytes, None]
-    ) -> None:
-        await write_stream(destination, stream)
+    @overload
+    async def download_file(
+        self,
+        file_path: str | pathlib.Path,
+        destination: pathlib.Path | str,
+        timeout: DownloadTimeout | float = ...,
+        chunk_size: int = ...,
+        seek: bool = ...,
+    ) -> None: ...
+
+    @overload
+    async def download_file(
+        self,
+        file_path: str | pathlib.Path,
+        destination: _BinaryIOT,
+        timeout: DownloadTimeout | float = ...,
+        chunk_size: int = ...,
+        seek: bool = ...,
+    ) -> _BinaryIOT: ...
+
+    @overload
+    async def download_file(
+        self,
+        file_path: str | pathlib.Path,
+        destination: None = None,
+        timeout: DownloadTimeout | float = ...,
+        chunk_size: int = ...,
+        seek: bool = ...,
+    ) -> BinaryIO: ...
 
     async def download_file(
         self,
         file_path: str | pathlib.Path,
         destination: BinaryIO | pathlib.Path | str | None = None,
-        timeout: int = 30,
+        timeout: DownloadTimeout | float = DEFAULT_DOWNLOAD_TIMEOUT,
         chunk_size: int = 65536,
         seek: bool = True,
     ) -> BinaryIO | None:
@@ -485,42 +628,51 @@ class Bot:
 
         :param file_path: File path on Telegram server (You can get it from :obj:`aiogram.types.File`)
         :param destination: Filename, file path or instance of :class:`io.IOBase`. For e.g. :class:`io.BytesIO`, defaults to None
-        :param timeout: Total timeout in seconds, defaults to 30
+        :param timeout: Per-phase timeouts (:class:`aiogram.client.session.base.DownloadTimeout`);
+            a number is a total timeout in seconds
         :param chunk_size: File chunks size, defaults to 64 kb
         :param seek: Go to start of file when downloading is finished. Used only for destination with :class:`typing.BinaryIO` type, defaults to True
+        :return: :code:`None` for a path destination, otherwise the binary I/O object
         """
-        if destination is None:
-            destination = io.BytesIO()
+        stream = self.__open_file(file_path, chunk_size, timeout)
+        async with aclosing(stream):
+            return await self.__write(stream, destination, seek)
 
-        close_stream = False
-        if self.session.api.is_local:
-            stream = iter_file(self.session.api.wrap_local_file.to_local(file_path), chunk_size)
-            close_stream = True
-        else:
-            url = self.session.api.file_url(self.__token, file_path)
-            stream = self.session.stream_content(
-                url=url,
-                timeout=timeout,
-                chunk_size=chunk_size,
-                raise_for_status=True,
-            )
+    @overload
+    async def download(
+        self,
+        file: str | Downloadable,
+        destination: pathlib.Path | str,
+        timeout: DownloadTimeout | float = ...,
+        chunk_size: int = ...,
+        seek: bool = ...,
+    ) -> None: ...
 
-        try:
-            if isinstance(destination, (str, pathlib.Path)):
-                await self.__download_file(destination=destination, stream=stream)
-                return None
-            return await self.__download_file_binary_io(
-                destination=destination, seek=seek, stream=stream
-            )
-        finally:
-            if close_stream:
-                await stream.aclose()
+    @overload
+    async def download(
+        self,
+        file: str | Downloadable,
+        destination: _BinaryIOT,
+        timeout: DownloadTimeout | float = ...,
+        chunk_size: int = ...,
+        seek: bool = ...,
+    ) -> _BinaryIOT: ...
+
+    @overload
+    async def download(
+        self,
+        file: str | Downloadable,
+        destination: None = None,
+        timeout: DownloadTimeout | float = ...,
+        chunk_size: int = ...,
+        seek: bool = ...,
+    ) -> BinaryIO: ...
 
     async def download(
         self,
         file: str | Downloadable,
         destination: BinaryIO | pathlib.Path | str | None = None,
-        timeout: int = 30,
+        timeout: DownloadTimeout | float = DEFAULT_DOWNLOAD_TIMEOUT,
         chunk_size: int = 65536,
         seek: bool = True,
     ) -> BinaryIO | None:
@@ -532,26 +684,14 @@ class Bot:
 
         :param file: file_id or Downloadable object
         :param destination: Filename, file path or instance of :class:`io.IOBase`. For e.g. :class:`io.BytesIO`, defaults to None
-        :param timeout: Total timeout in seconds, defaults to 30
+        :param timeout: Per-phase timeouts (:class:`aiogram.client.session.base.DownloadTimeout`);
+            a number is a total timeout in seconds
         :param chunk_size: File chunks size, defaults to 64 kb
         :param seek: Go to start of file when downloading is finished. Used only for destination with :class:`typing.BinaryIO` type, defaults to True
+        :return: :code:`None` for a path destination, otherwise the binary I/O object
         """
-        if isinstance(file, str):
-            file_id = file
-        else:
-            # type is ignored in due to:
-            # Incompatible types in assignment (expression has type "Any | None", variable has type "str")
-            file_id = getattr(file, "file_id", None)  # type: ignore
-            if file_id is None:
-                raise TypeError("file can only be of the string or Downloadable type")
-
-        file_ = await self.get_file(file_id)
-
-        # `file_path` can be None for large files but this files can't be downloaded
-        # So we need to do type-cast
-        # https://github.com/aiogram/aiogram/pull/282/files#r394110017
-        file_path = cast(str, file_.file_path)
-
+        # The file is resolved first, so a failing getFile never creates the destination file
+        file_path = await self.__file_path(file)
         return await self.download_file(
             file_path, destination=destination, timeout=timeout, chunk_size=chunk_size, seek=seek
         )

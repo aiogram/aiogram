@@ -135,7 +135,7 @@ class URLInputFile(InputFile):
         :param headers: HTTP Headers
         :param filename: Filename to be propagated to telegram.
         :param chunk_size: Uploading chunk size
-        :param timeout: Timeout for downloading
+        :param timeout: Total timeout for downloading, in seconds
         :param bot: Bot instance to use HTTP session from.
                     If not specified, will be used current bot
         """
@@ -148,15 +148,12 @@ class URLInputFile(InputFile):
         self.timeout = timeout
         self.bot = bot
 
-    async def read(self, bot: Bot) -> AsyncGenerator[bytes, None]:
-        bot = self.bot or bot
-        stream = bot.session.stream_content(
+    def read(self, bot: Bot) -> AsyncGenerator[bytes, None]:
+        # The session's generator itself, not a re-yielding wrapper (see `FSInputFile.read`)
+        return (self.bot or bot).session._download_stream(
             url=self.url,
             headers=self.headers,
             timeout=self.timeout,
             chunk_size=self.chunk_size,
             raise_for_status=True,
         )
-
-        async for chunk in stream:
-            yield chunk

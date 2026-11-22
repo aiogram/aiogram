@@ -3,7 +3,7 @@ from __future__ import annotations
 from collections.abc import AsyncGenerator
 from typing import TYPE_CHECKING, Any
 
-from aiogram.client.session.base import BaseSession
+from aiogram.client.session.base import DEFAULT_DOWNLOAD_TIMEOUT, BaseSession, DownloadTimeout
 from aiogram.methods import TelegramMethod
 from aiogram.methods.base import TelegramType
 
@@ -51,7 +51,7 @@ class FakeTelegramSession(BaseSession):
         self,
         url: str,
         headers: dict[str, Any] | None = None,
-        timeout: int = 30,
+        timeout: DownloadTimeout | float = DEFAULT_DOWNLOAD_TIMEOUT,
         chunk_size: int = 65536,
         raise_for_status: bool = True,
     ) -> AsyncGenerator[bytes, None]:

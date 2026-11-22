@@ -1,0 +1,7 @@
+The default download timeout is now per phase, :code:`DownloadTimeout(connect=30, sock_read=60, total=None)`,
+instead of 30 seconds for the whole download: a large file on a slow link finishes, and a transfer that sends nothing
+for 60 seconds fails. A number passed as :code:`timeout=` keeps its old meaning, a total timeout in seconds.
+A custom session whose :code:`stream_content()` still declares :code:`timeout: int = 30` keeps working: it receives
+the total timeout, or 30 when there is none, with one :code:`DeprecationWarning` per class. Declare
+:code:`timeout: DownloadTimeout | float = DEFAULT_DOWNLOAD_TIMEOUT` to receive a
+:class:`~aiogram.client.session.base.DownloadTimeout`.

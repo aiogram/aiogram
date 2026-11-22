@@ -317,6 +317,11 @@ These patterns repeatedly appeared in maintainer feedback and should be treated 
   `shutdown_asyncgens()` finalizes a wrapper and the inner generator concurrently and raises
   `aclose(): asynchronous generator is already running`.
 - `ruff check --fix` / `ruff format` over all of `tests/` rewrites unrelated files on this branch: pass the paths you touched.
+- Downloads go through `BaseSession._download_stream()`, never `stream_content()` directly: it hands a
+  `DownloadTimeout` only to overrides whose `timeout` default is one (or that forward `**kwargs`), and gives a 3.x
+  `timeout: int` override the total plus one warning per class. A session in this repo or a test that overrides
+  `stream_content` declares `timeout: DownloadTimeout | float = DEFAULT_DOWNLOAD_TIMEOUT`, or the warning fails the
+  suite under `filterwarnings = error`.
 
 ## Developer design notes (`design/`)
 

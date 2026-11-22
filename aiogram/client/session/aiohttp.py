@@ -27,7 +27,7 @@ from aiogram.__meta__ import __version__
 from aiogram.exceptions import TelegramNetworkError
 from aiogram.methods.base import TelegramType
 
-from .base import BaseSession
+from .base import DEFAULT_DOWNLOAD_TIMEOUT, BaseSession, DownloadTimeout
 
 if TYPE_CHECKING:
     from aiogram.client.bot import Bot
@@ -287,12 +287,13 @@ class AiohttpSession(BaseSession):
         self,
         url: str,
         headers: dict[str, Any] | None = None,
-        timeout: int = 30,
+        timeout: DownloadTimeout | float = DEFAULT_DOWNLOAD_TIMEOUT,
         chunk_size: int = 65536,
         raise_for_status: bool = True,
     ) -> AsyncGenerator[bytes, None]:
         if headers is None:
             headers = {}
+        timeout = DownloadTimeout.of(timeout)
 
         session = await self.create_session()
         attempt = _Attempt()
@@ -300,7 +301,9 @@ class AiohttpSession(BaseSession):
         try:
             async with session.get(
                 url,
-                timeout=ClientTimeout(total=timeout),
+                timeout=ClientTimeout(
+                    total=timeout.total, connect=timeout.connect, sock_read=timeout.sock_read
+                ),
                 headers=headers,
                 raise_for_status=raise_for_status,
                 trace_request_ctx=attempt,

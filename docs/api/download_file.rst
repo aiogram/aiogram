@@ -63,7 +63,11 @@ If you leave the default value, an :obj:`io.BytesIO` object will be created and 
 
 .. code-block::
 
-    result: io.BytesIO = await bot.download_file(file_path)
+    result = await bot.download_file(file_path)
+
+Type checkers see the difference: with a path destination the return type is :code:`None`,
+with a binary I/O object it is the type of that object, and with the default it is
+:obj:`typing.BinaryIO`.
 
 
 Download file in short way
@@ -92,3 +96,58 @@ Example:
 
     document = message.document
     await bot.download(document)
+
+
+Stream a file
+=============
+
+To process a file chunk by chunk without keeping it whole, use the `stream <#stream>`__ method.
+It accepts a `file_id` or a `Downloadable` object, like `download <#download>`__.
+
+stream(...)
+-----------
+
+.. automethod:: aiogram.client.bot.Bot.stream
+
+.. code-block::
+
+    async with bot.stream(message.document, chunk_size=65536) as stream:
+        async for chunk in stream:
+            hasher.update(chunk)
+
+Nothing is requested before the first chunk is read. The connection is released when the file
+ends or reading fails; :code:`async with` (or :code:`await stream.aclose()`) also releases it at
+once when the loop stops early with :code:`break` or an exception.
+
+.. autoclass:: aiogram.client.bot.DownloadStream
+    :members: aclose
+
+
+Timeouts
+========
+
+Downloads have per-phase timeouts instead of one total timeout: a large file on a slow link
+finishes, and a transfer that stops sending data fails.
+
+.. autoclass:: aiogram.client.session.base.DownloadTimeout
+    :members: of
+
+By default (:code:`DownloadTimeout()`) getting a connection may take 30 seconds and the server may
+stay silent for 60 seconds between two reads; the whole download has no limit. Pass your own value
+to :code:`download`, :code:`download_file` or :code:`stream`:
+
+.. code-block::
+
+    from aiogram.client.session.base import DownloadTimeout
+
+    await bot.download(document, "file.bin", timeout=DownloadTimeout(sock_read=120, total=3600))
+
+A plain number keeps the old meaning, a total timeout in seconds: :code:`timeout=5` is
+:code:`DownloadTimeout(connect=None, sock_read=None, total=5)`. A failed or timed-out download
+raises :class:`~aiogram.exceptions.TelegramNetworkError`.
+
+A custom session whose :code:`stream_content` still declares :code:`timeout: int = 30` keeps
+working: it receives the total timeout, or 30 seconds when there is none, and aiogram emits one
+:obj:`DeprecationWarning` per session class. To receive a :class:`DownloadTimeout`, declare
+:code:`timeout: DownloadTimeout | float = DEFAULT_DOWNLOAD_TIMEOUT`
+(both from :code:`aiogram.client.session.base`).
