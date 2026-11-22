@@ -7,5 +7,5 @@ Framework loggers now form one hierarchy under :code:`aiogram` (:code:`aiogram.d
 are :code:`None` until the dispatch executor fills them).
 :func:`aiogram.loggers.context_filter` attaches the same attributes to your own records.
 The :code:`aiogram.client.bot` and :code:`aiogram.utils.chat_action` loggers are replaced by
-:code:`aiogram.client` (AG4053); request records move from :code:`aiogram.middlewares` to
-:code:`aiogram.client` after a deprecation window (AG4052).
+:code:`aiogram.client` (AG4054); request records move from :code:`aiogram.middlewares` to
+:code:`aiogram.client` after a deprecation window (AG4053).

@@ -104,9 +104,9 @@ The :code:`aiogram.middlewares` logger
 
 Records of :class:`~aiogram.client.session.middlewares.request_logging.RequestLogging` stay on
 :code:`aiogram.middlewares` for one deprecation window, then move to :code:`aiogram.client`
-(migration id :code:`AG4052`). Configure the :code:`aiogram` parent logger to keep receiving them either way.
+(migration id :code:`AG4053`). Configure the :code:`aiogram` parent logger to keep receiving them either way.
 :class:`~aiogram.utils.callback_answer.CallbackAnswerMiddleware` keeps logging to :code:`aiogram.middlewares`;
 the move covers request records only.
 
 The 3.x loggers :code:`aiogram.client.bot` and :code:`aiogram.utils.chat_action` are gone: their records
-are on :code:`aiogram.client` (migration id :code:`AG4053`).
+are on :code:`aiogram.client` (migration id :code:`AG4054`).
