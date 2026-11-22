@@ -1,0 +1,5 @@
+Reworked the middleware data :code:`TypedDict`\ s: the 3.x :code:`FSMData` is renamed :class:`~aiogram.dispatcher.middlewares.data.FSMKeysData`,
+and :code:`DispatcherData`, :code:`UserContextData` and :code:`I18nData` are removed (use the new
+:class:`~aiogram.dispatcher.middlewares.data.OuterData`, :class:`~aiogram.dispatcher.middlewares.data.RouterOuterData` and :class:`~aiogram.dispatcher.middlewares.data.AiogramData`).
+:code:`MiddlewareData` is a deprecated alias of :class:`~aiogram.dispatcher.middlewares.data.AiogramData` and emits a :code:`DeprecationWarning`.
+The required keys are no longer optional (no :code:`total=False`), and :code:`bots` is typed :code:`tuple[Bot, ...]`, matching what polling passes.
