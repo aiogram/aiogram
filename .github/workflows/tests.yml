@@ -74,8 +74,9 @@ jobs:
           import json, os, re, subprocess
 
           # the Rust inputs, plus what the `rust`, `butcher` and `build` jobs run from
+          # (benchmarks/corpus/: the decode tests read it from disk)
           RUST = re.compile(
-              r"^(crates/|xtask/|butcher/|\.cargo/|Cargo\.(toml|lock)$|rust-toolchain\.toml$"
+              r"^(crates/|xtask/|butcher/|benchmarks/corpus/|\.cargo/|Cargo\.(toml|lock)$|rust-toolchain\.toml$"
               r"|clippy\.toml$|rustfmt\.toml$|pyproject\.toml$|Makefile$|\.github/workflows/tests\.yml$)"
           )
           if os.environ["EVENT"] == "pull_request":
@@ -123,7 +124,6 @@ jobs:
           key: wheel-${{ env.PYO3_ENVIRONMENT_SIGNATURE }}-${{ hashFiles('Cargo.toml', 'Cargo.lock', 'rust-toolchain.toml', '.cargo/config.toml', 'pyproject.toml', 'crates/aiogram-core/**') }}
 
       - uses: astral-sh/setup-uv@v10.3.3
-        if: steps.cache.outputs.cache-hit != 'true'
         with:
           python-version: ${{ matrix.python }}
 
@@ -146,6 +146,17 @@ jobs:
           uv python install "$PYTHON"
           uvx --from 'maturin>=1.14,<2' maturin build --release --locked \
             --interpreter "$(uv python find "$PYTHON")" --out dist
+
+      - name: Import smoke of the installed wheel
+        # the other jobs only copy the extension out of the wheel: this checks the wheel itself
+        run: |
+          venv="${RUNNER_TEMP}/smoke"
+          uv venv --clear --python "$PYTHON" "$venv"
+          bin="$venv/bin"
+          [[ "$RUNNER_OS" == "Windows" ]] && bin="$venv/Scripts"
+          uv pip install --python "$bin/python" dist/*.whl
+          # -P keeps the checkout's own aiogram/ off sys.path, so this imports what was just installed
+          "$bin/python" -P -c "import aiogram._core as core; from aiogram._core.conv import Kind; print(core.build_info(), Kind.int_())"
 
       - uses: actions/upload-artifact@v7
         with:
@@ -359,9 +370,9 @@ jobs:
 
   build:
     name: Build package
-    # sdist -> wheel compiles the extension: only when the Rust or packaging inputs changed
+    # the sdist and its metadata on every PR; sdist -> wheel compiles the extension, so the wheel
+    # and the smoke test only when the Rust or packaging inputs changed
     needs: plan
-    if: needs.plan.outputs.rust == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -373,8 +384,12 @@ jobs:
         with:
           python-version: "3.14"
 
-      - name: Build sdist and wheel
-        run: uv build
+      - name: Build sdist
+        run: uv build --sdist
+
+      - name: Build wheel from the sdist
+        if: needs.plan.outputs.rust == 'true'
+        run: uv build --wheel dist/*.tar.gz
 
       - name: Check metadata
         # pinned: an unpinned linter on the release path can block a release on an upstream
@@ -382,6 +397,7 @@ jobs:
         run: uvx --from 'twine==7.0.0' twine check --strict dist/*
 
       - name: Smoke-test wheel and sdist
+        if: needs.plan.outputs.rust == 'true'
         run: |
           # a venv inside the checkout would be swept into the next sdist (hatchling packs it,
           # and its absolute symlinks break the build), so build it under the runner temp dir
