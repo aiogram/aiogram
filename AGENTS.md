@@ -184,7 +184,14 @@ These patterns repeatedly appeared in maintainer feedback and should be treated 
   installs a fast debug build, `make bench` a release one. Nothing on the 3.x import path loads `_core`
   (`tests/test_core/test_build.py` checks it).
 - Rust checks: `cargo fmt --all --check`, `cargo clippy --workspace --all-targets -- -D warnings` (`unwrap`,
-  `expect`, `panic!`, `todo!`, `unimplemented!` are denied), `cargo test --workspace`. CI: `.github/workflows/core.yml`.
+  `expect`, `panic!`, `todo!`, `unimplemented!` are denied), `cargo test --workspace`. `make lint` runs fmt and
+  clippy too (`lint-rust`; CI runs `lint-python` in Lint and `lint-rust` in Rust).
+- CI (`.github/workflows/tests.yml`, structure in its header): `build-wheels` builds one release wheel per leg, cached
+  on the hash of the extension's inputs, and the other jobs copy only `aiogram/_core.*` out of it into the checkout
+  (`scripts/ci_use_wheel.py`), never `pip install` it: the cached wheel's Python files are stale on a Python-only
+  PR. A new input of the extension goes into that cache key and into `[tool.uv] cache-keys` together; a new
+  Rust-side path into the `RUST` pattern of the `plan` job. PRs run a reduced leg set, push to `dev-4.x` the full
+  matrix; a `schedule` trigger does not fire on `dev-4.x` (not the default branch).
 - `clippy.toml`'s `allow-*-in-tests` covers `#[test]` functions and `#[cfg(test)]` modules only. Helpers in an
   integration test crate (`crates/*/tests/*.rs`) need `#![allow(clippy::unwrap_used)]` at the top of the file.
 - The version lives in `aiogram/__meta__.py` and is copied, static, into `pyproject.toml` and
