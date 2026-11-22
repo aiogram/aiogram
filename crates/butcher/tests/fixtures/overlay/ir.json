@@ -1,0 +1,538 @@
+{
+  "header": {
+    "api_version": "10.4",
+    "sources": [
+      "html",
+      "errors"
+    ],
+    "html_only": true
+  },
+  "types": [
+    {
+      "name": "Message",
+      "direction": {
+        "value": "response"
+      },
+      "fields": [
+        {
+          "name": "message_id",
+          "type": {
+            "value": {
+              "prim": "int64"
+            }
+          }
+        },
+        {
+          "name": "from",
+          "type": {
+            "value": {
+              "ref": "User"
+            }
+          }
+        },
+        {
+          "name": "chat",
+          "type": {
+            "value": {
+              "ref": "Chat"
+            }
+          }
+        },
+        {
+          "name": "date",
+          "type": {
+            "value": {
+              "prim": "int"
+            }
+          }
+        },
+        {
+          "name": "edit_date",
+          "type": {
+            "value": {
+              "prim": "int"
+            }
+          }
+        },
+        {
+          "name": "message_thread_id",
+          "type": {
+            "value": {
+              "prim": "int"
+            }
+          }
+        },
+        {
+          "name": "is_topic_message",
+          "type": {
+            "value": {
+              "prim": "true"
+            }
+          }
+        },
+        {
+          "name": "business_connection_id",
+          "type": {
+            "value": {
+              "prim": "string"
+            }
+          }
+        },
+        {
+          "name": "text",
+          "type": {
+            "value": {
+              "prim": "string"
+            }
+          }
+        },
+        {
+          "name": "caption",
+          "type": {
+            "value": {
+              "prim": "string"
+            }
+          }
+        },
+        {
+          "name": "photo",
+          "type": {
+            "value": {
+              "array": {
+                "ref": "PhotoSize"
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "InaccessibleMessage",
+      "direction": {
+        "value": "response"
+      },
+      "fields": [
+        {
+          "name": "chat",
+          "type": {
+            "value": {
+              "ref": "Chat"
+            }
+          }
+        },
+        {
+          "name": "message_id",
+          "type": {
+            "value": {
+              "prim": "int64"
+            }
+          }
+        },
+        {
+          "name": "date",
+          "type": {
+            "value": {
+              "prim": "int"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Chat",
+      "direction": {
+        "value": "response"
+      },
+      "fields": [
+        {
+          "name": "id",
+          "type": {
+            "value": {
+              "prim": "int64"
+            }
+          }
+        },
+        {
+          "name": "type",
+          "type": {
+            "value": {
+              "prim": "string"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "ChatFullInfo",
+      "direction": {
+        "value": "response"
+      },
+      "fields": [
+        {
+          "name": "id",
+          "type": {
+            "value": {
+              "prim": "int64"
+            }
+          }
+        },
+        {
+          "name": "type",
+          "type": {
+            "value": {
+              "prim": "string"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "User",
+      "direction": {
+        "value": "response"
+      },
+      "fields": [
+        {
+          "name": "id",
+          "type": {
+            "value": {
+              "prim": "int64"
+            }
+          }
+        },
+        {
+          "name": "first_name",
+          "type": {
+            "value": {
+              "prim": "string"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "PhotoSize",
+      "direction": {
+        "value": "response"
+      },
+      "fields": [
+        {
+          "name": "file_id",
+          "type": {
+            "value": {
+              "prim": "string"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "ChatPermissions",
+      "direction": {
+        "value": "response"
+      },
+      "fields": [
+        {
+          "name": "can_send_messages",
+          "type": {
+            "value": {
+              "prim": "bool"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "InputChatPermissions",
+      "direction": {
+        "value": "response"
+      },
+      "fields": [
+        {
+          "name": "can_send_messages",
+          "type": {
+            "value": {
+              "prim": "bool"
+            }
+          }
+        },
+        {
+          "name": "can_send_media_messages",
+          "type": {
+            "value": {
+              "prim": "bool"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "ManagedBotCreated",
+      "direction": {
+        "value": "response"
+      },
+      "fields": [
+        {
+          "name": "bot",
+          "type": {
+            "value": {
+              "ref": "User"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Update",
+      "direction": {
+        "value": "response"
+      },
+      "fields": [
+        {
+          "name": "update_id",
+          "type": {
+            "value": {
+              "prim": "int"
+            }
+          }
+        },
+        {
+          "name": "message",
+          "type": {
+            "value": {
+              "ref": "Message"
+            }
+          }
+        },
+        {
+          "name": "edited_message",
+          "type": {
+            "value": {
+              "ref": "Message"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "methods": [
+    {
+      "name": "sendMessage",
+      "params": [
+        {
+          "name": "chat_id",
+          "type": {
+            "value": {
+              "union": [
+                {
+                  "prim": "int64"
+                },
+                {
+                  "prim": "string"
+                }
+              ]
+            }
+          },
+          "required": {
+            "value": true
+          }
+        },
+        {
+          "name": "message_thread_id",
+          "type": {
+            "value": {
+              "prim": "int"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "name": "text",
+          "type": {
+            "value": {
+              "prim": "string"
+            }
+          },
+          "required": {
+            "value": true
+          }
+        },
+        {
+          "name": "parse_mode",
+          "type": {
+            "value": {
+              "prim": "string"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        },
+        {
+          "name": "reply_to_message_id",
+          "type": {
+            "value": {
+              "prim": "int"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        }
+      ],
+      "returns": {
+        "value": {
+          "ref": "Message"
+        }
+      }
+    },
+    {
+      "name": "sendPhoto",
+      "params": [
+        {
+          "name": "chat_id",
+          "type": {
+            "value": {
+              "prim": "int64"
+            }
+          },
+          "required": {
+            "value": true
+          }
+        },
+        {
+          "name": "photo",
+          "type": {
+            "value": {
+              "prim": "string"
+            }
+          },
+          "required": {
+            "value": true
+          }
+        },
+        {
+          "name": "caption",
+          "type": {
+            "value": {
+              "prim": "string"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        }
+      ],
+      "returns": {
+        "value": {
+          "ref": "Message"
+        }
+      }
+    },
+    {
+      "name": "getUpdates",
+      "params": [
+        {
+          "name": "offset",
+          "type": {
+            "value": {
+              "prim": "int"
+            }
+          },
+          "required": {
+            "value": false
+          }
+        }
+      ],
+      "returns": {
+        "value": {
+          "array": {
+            "ref": "Update"
+          }
+        }
+      }
+    },
+    {
+      "name": "getMe",
+      "params": [],
+      "returns": {
+        "value": {
+          "ref": "User"
+        }
+      }
+    },
+    {
+      "name": "getChatMember",
+      "params": [
+        {
+          "name": "chat_id",
+          "type": {
+            "value": {
+              "prim": "int64"
+            }
+          },
+          "required": {
+            "value": true
+          }
+        },
+        {
+          "name": "user_id",
+          "type": {
+            "value": {
+              "prim": "int64"
+            }
+          },
+          "required": {
+            "value": true
+          }
+        }
+      ],
+      "returns": {
+        "value": {
+          "ref": "ChatMember"
+        }
+      }
+    }
+  ],
+  "enums": [
+    {
+      "name": "ChatAction",
+      "values": {
+        "value": [
+          "typing"
+        ]
+      }
+    }
+  ],
+  "unions": [
+    {
+      "name": "MaybeInaccessibleMessage",
+      "members": {
+        "value": [
+          "Message",
+          "InaccessibleMessage"
+        ]
+      }
+    },
+    {
+      "name": "ChatMember",
+      "members": {
+        "value": [
+          "User"
+        ]
+      }
+    }
+  ],
+  "errors": [
+    {
+      "code": 400,
+      "message": "Bad Request: message is not modified"
+    },
+    {
+      "code": 403,
+      "message": "Forbidden: bot was blocked by the user"
+    }
+  ]
+}

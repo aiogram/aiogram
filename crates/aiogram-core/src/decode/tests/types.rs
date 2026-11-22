@@ -5,8 +5,8 @@
 #![allow(dead_code)]
 
 use crate::decode::{
-    ColdField, Cursor, Decode, DecodeResult, Field, IStr, Kind, Meta, Raw, Table, UnixTime,
-    WireEnum, cold_finish, cold_get, cold_set, required,
+    ColdField, Cursor, Decode, DecodeResult, Field, IStr, Kind, Meta, Raw, Site, Table, Union,
+    UnixTime, UnknownMember, WireEnum, cold_finish, cold_get, cold_set, required,
 };
 
 const fn f(wire: &'static str, kind: Kind, required: bool, cold: bool) -> Field {
@@ -30,6 +30,7 @@ pub(crate) enum ChatType {
 }
 
 impl WireEnum for ChatType {
+    const NAME: &'static str = "ChatType";
     const NAMES: &'static [&'static str] = &["channel", "group", "private", "supergroup"];
     const KNOWN: &'static [Self] = &[Self::Channel, Self::Group, Self::Private, Self::Supergroup];
 
@@ -50,6 +51,7 @@ pub(crate) enum EntityType {
 }
 
 impl WireEnum for EntityType {
+    const NAME: &'static str = "MessageEntityType";
     const NAMES: &'static [&'static str] =
         &["bold", "code", "italic", "mention", "text_link", "url"];
     const KNOWN: &'static [Self] = &[
@@ -630,6 +632,8 @@ pub(crate) mod m {
     pub(crate) const SHOW_CAPTION_ABOVE_MEDIA: u16 = 49;
     pub(crate) const HAS_MEDIA_SPOILER: u16 = 50;
     pub(crate) const LOCATION: u16 = 57;
+    pub(crate) const FORWARD_ORIGIN: u16 = 12;
+    pub(crate) const PINNED_MESSAGE: u16 = 71;
     // opaque fields the tests use
     pub(crate) const ANIMATION: u16 = 36;
     pub(crate) const STICKER: u16 = 42;
@@ -679,6 +683,8 @@ pub(crate) enum MessageCold {
     ShowCaptionAboveMedia(bool),
     HasMediaSpoiler(bool),
     Location(Location),
+    ForwardOrigin(MessageOrigin),
+    PinnedMessage(MaybeInaccessibleMessage),
     /// a field outside the decoded set, by id
     Opaque(u16, Raw),
 }
@@ -706,6 +712,8 @@ impl ColdField for MessageCold {
             Self::ShowCaptionAboveMedia(_) => m::SHOW_CAPTION_ABOVE_MEDIA,
             Self::HasMediaSpoiler(_) => m::HAS_MEDIA_SPOILER,
             Self::Location(_) => m::LOCATION,
+            Self::ForwardOrigin(_) => m::FORWARD_ORIGIN,
+            Self::PinnedMessage(_) => m::PINNED_MESSAGE,
             Self::Opaque(id, _) => *id,
         }
     }
@@ -726,6 +734,20 @@ impl Message {
     pub(crate) fn via_bot(&self) -> Option<&User> {
         match self.cold(m::VIA_BOT)? {
             MessageCold::ViaBot(value) => Some(value),
+            _ => None,
+        }
+    }
+
+    pub(crate) fn forward_origin(&self) -> Option<&MessageOrigin> {
+        match self.cold(m::FORWARD_ORIGIN)? {
+            MessageCold::ForwardOrigin(value) => Some(value),
+            _ => None,
+        }
+    }
+
+    pub(crate) fn pinned_message(&self) -> Option<&MaybeInaccessibleMessage> {
+        match self.cold(m::PINNED_MESSAGE)? {
+            MessageCold::PinnedMessage(value) => Some(value),
             _ => None,
         }
     }
@@ -770,7 +792,7 @@ pub(crate) static MESSAGE: Table = Table {
         f("sender_tag", Kind::Str, false, true),
         f("guest_query_id", Kind::Opaque, false, true),
         f("business_connection_id", Kind::Str, false, true),
-        f("forward_origin", Kind::Opaque, false, true),
+        f("forward_origin", Kind::Object, false, true),
         f("is_topic_message", Kind::Bool, false, true),
         f("is_automatic_forward", Kind::Bool, false, true),
         f("reply_to_message", Kind::Object, false, false),
@@ -834,7 +856,7 @@ pub(crate) static MESSAGE: Table = Table {
         ),
         f("migrate_to_chat_id", Kind::Opaque, false, true),
         f("migrate_from_chat_id", Kind::Opaque, false, true),
-        f("pinned_message", Kind::Opaque, false, true),
+        f("pinned_message", Kind::Object, false, true),
         f("invoice", Kind::Opaque, false, true),
         f("successful_payment", Kind::Opaque, false, true),
         f("refunded_payment", Kind::Opaque, false, true),
@@ -1088,6 +1110,17 @@ impl Decode for Message {
                 cold_set(cold, id, c.opt(Cursor::bool)?.map(C::HasMediaSpoiler))
             }
             m::LOCATION => cold_set(cold, id, c.opt(Location::decode)?.map(C::Location)),
+            m::FORWARD_ORIGIN => cold_set(
+                cold,
+                id,
+                c.opt(MessageOrigin::decode)?.map(C::ForwardOrigin),
+            ),
+            m::PINNED_MESSAGE => cold_set(
+                cold,
+                id,
+                c.opt(MaybeInaccessibleMessage::decode)?
+                    .map(C::PinnedMessage),
+            ),
             _ => cold_set(
                 cold,
                 id,
@@ -1120,7 +1153,8 @@ impl Decode for Message {
     }
 }
 
-// ---- Update: the four message fields; every other update type is an unknown key here ----
+// ---- Update: the four message fields and chat_member; every other update type is an unknown
+// key here, reported to the hook as an unknown update type ----
 
 #[derive(Debug)]
 pub(crate) struct Update {
@@ -1130,6 +1164,7 @@ pub(crate) struct Update {
     pub(crate) edited_message: Option<Box<Message>>,
     pub(crate) channel_post: Option<Box<Message>>,
     pub(crate) edited_channel_post: Option<Box<Message>>,
+    pub(crate) chat_member: Option<Box<ChatMemberUpdated>>,
 }
 
 #[derive(Default)]
@@ -1139,6 +1174,7 @@ pub(crate) struct UpdatePartial {
     edited_message: Option<Box<Message>>,
     channel_post: Option<Box<Message>>,
     edited_channel_post: Option<Box<Message>>,
+    chat_member: Option<Box<ChatMemberUpdated>>,
 }
 
 pub(crate) static UPDATE: Table = Table {
@@ -1148,9 +1184,11 @@ pub(crate) static UPDATE: Table = Table {
         f("edited_message", Kind::Object, false, false),
         f("channel_post", Kind::Object, false, false),
         f("edited_channel_post", Kind::Object, false, false),
+        f("chat_member", Kind::Object, false, false),
     ],
     keys: &[
         ("channel_post", 3),
+        ("chat_member", 5),
         ("edited_channel_post", 4),
         ("edited_message", 2),
         ("message", 1),
@@ -1166,6 +1204,7 @@ impl Decode for Update {
     const TABLE: &'static Table = &UPDATE;
     type Partial = UpdatePartial;
     type Bits = [u64; 1];
+    const UNKNOWN_KEYS: Option<(&'static str, Site)> = Some(("Update", Site::UpdateType));
 
     fn set(p: &mut UpdatePartial, id: u16, c: &mut Cursor<'_>) -> DecodeResult<()> {
         match id {
@@ -1173,7 +1212,8 @@ impl Decode for Update {
             1 => p.message = c.opt(boxed_message)?,
             2 => p.edited_message = c.opt(boxed_message)?,
             3 => p.channel_post = c.opt(boxed_message)?,
-            _ => p.edited_channel_post = c.opt(boxed_message)?,
+            4 => p.edited_channel_post = c.opt(boxed_message)?,
+            _ => p.chat_member = c.opt(|c| ChatMemberUpdated::decode(c).map(Box::new))?,
         }
         Ok(())
     }
@@ -1187,6 +1227,495 @@ impl Decode for Update {
             edited_message: p.edited_message,
             channel_post: p.channel_post,
             edited_channel_post: p.edited_channel_post,
+            chat_member: p.chat_member,
+        })
+    }
+}
+
+// ---- MessageOrigin: tagged by `type` (two variants here); common field `date` ----
+
+#[derive(Debug)]
+pub(crate) enum MessageOrigin {
+    User(MessageOriginUser),
+    HiddenUser(MessageOriginHiddenUser),
+    Unknown(Box<UnknownMember<MessageOriginCommon>>),
+}
+
+impl Union for MessageOrigin {
+    const ENTITY: &'static str = "MessageOrigin";
+    const KEY: &'static str = "type";
+    type Common = MessageOriginCommon;
+
+    fn variant(value: Option<&[u8]>, c: &mut Cursor<'_>) -> Option<DecodeResult<Self>> {
+        Some(match value? {
+            br#""user""# => MessageOriginUser::decode(c).map(Self::User),
+            br#""hidden_user""# => MessageOriginHiddenUser::decode(c).map(Self::HiddenUser),
+            _ => return None,
+        })
+    }
+
+    fn unknown(member: UnknownMember<MessageOriginCommon>) -> Self {
+        Self::Unknown(Box::new(member))
+    }
+}
+
+#[derive(Debug)]
+pub(crate) struct MessageOriginCommon {
+    pub(crate) meta: Meta<[u64; 1]>,
+    pub(crate) date: UnixTime,
+}
+
+#[derive(Default)]
+pub(crate) struct MessageOriginCommonPartial {
+    date: Option<UnixTime>,
+}
+
+pub(crate) static MESSAGE_ORIGIN_COMMON: Table = Table {
+    fields: &[
+        f("type", Kind::Str, true, false),
+        f("date", Kind::UnixTime, true, false),
+    ],
+    keys: &[("date", 1), ("type", 0)],
+};
+
+impl Decode for MessageOriginCommon {
+    const TABLE: &'static Table = &MESSAGE_ORIGIN_COMMON;
+    type Partial = MessageOriginCommonPartial;
+    type Bits = [u64; 1];
+
+    fn set(p: &mut MessageOriginCommonPartial, id: u16, c: &mut Cursor<'_>) -> DecodeResult<()> {
+        match id {
+            // the tag: a constant of the variant
+            0 => drop(c.opaque()?),
+            _ => p.date = c.opt(Cursor::time)?,
+        }
+        Ok(())
+    }
+
+    fn finish(p: MessageOriginCommonPartial, meta: Meta<[u64; 1]>) -> DecodeResult<Self> {
+        let date = required(p.date, "date", meta.span)?;
+        Ok(Self { meta, date })
+    }
+}
+
+#[derive(Debug)]
+pub(crate) struct MessageOriginUser {
+    pub(crate) meta: Meta<[u64; 1]>,
+    pub(crate) date: UnixTime,
+    pub(crate) sender_user: User,
+}
+
+#[derive(Default)]
+pub(crate) struct MessageOriginUserPartial {
+    date: Option<UnixTime>,
+    sender_user: Option<User>,
+}
+
+pub(crate) static MESSAGE_ORIGIN_USER: Table = Table {
+    fields: &[
+        f("type", Kind::Str, true, false),
+        f("date", Kind::UnixTime, true, false),
+        f("sender_user", Kind::Object, true, false),
+    ],
+    keys: &[("date", 1), ("sender_user", 2), ("type", 0)],
+};
+
+impl Decode for MessageOriginUser {
+    const TABLE: &'static Table = &MESSAGE_ORIGIN_USER;
+    type Partial = MessageOriginUserPartial;
+    type Bits = [u64; 1];
+
+    fn set(p: &mut MessageOriginUserPartial, id: u16, c: &mut Cursor<'_>) -> DecodeResult<()> {
+        match id {
+            0 => drop(c.opaque()?),
+            1 => p.date = c.opt(Cursor::time)?,
+            _ => p.sender_user = c.opt(User::decode)?,
+        }
+        Ok(())
+    }
+
+    fn finish(p: MessageOriginUserPartial, meta: Meta<[u64; 1]>) -> DecodeResult<Self> {
+        let date = required(p.date, "date", meta.span)?;
+        let sender_user = required(p.sender_user, "sender_user", meta.span)?;
+        Ok(Self {
+            meta,
+            date,
+            sender_user,
+        })
+    }
+}
+
+#[derive(Debug)]
+pub(crate) struct MessageOriginHiddenUser {
+    pub(crate) meta: Meta<[u64; 1]>,
+    pub(crate) date: UnixTime,
+    pub(crate) sender_user_name: Box<str>,
+}
+
+#[derive(Default)]
+pub(crate) struct MessageOriginHiddenUserPartial {
+    date: Option<UnixTime>,
+    sender_user_name: Option<Box<str>>,
+}
+
+pub(crate) static MESSAGE_ORIGIN_HIDDEN_USER: Table = Table {
+    fields: &[
+        f("type", Kind::Str, true, false),
+        f("date", Kind::UnixTime, true, false),
+        f("sender_user_name", Kind::Str, true, false),
+    ],
+    keys: &[("date", 1), ("sender_user_name", 2), ("type", 0)],
+};
+
+impl Decode for MessageOriginHiddenUser {
+    const TABLE: &'static Table = &MESSAGE_ORIGIN_HIDDEN_USER;
+    type Partial = MessageOriginHiddenUserPartial;
+    type Bits = [u64; 1];
+
+    fn set(
+        p: &mut MessageOriginHiddenUserPartial,
+        id: u16,
+        c: &mut Cursor<'_>,
+    ) -> DecodeResult<()> {
+        match id {
+            0 => drop(c.opaque()?),
+            1 => p.date = c.opt(Cursor::time)?,
+            _ => p.sender_user_name = c.opt(Cursor::str)?,
+        }
+        Ok(())
+    }
+
+    fn finish(p: MessageOriginHiddenUserPartial, meta: Meta<[u64; 1]>) -> DecodeResult<Self> {
+        let date = required(p.date, "date", meta.span)?;
+        let sender_user_name = required(p.sender_user_name, "sender_user_name", meta.span)?;
+        Ok(Self {
+            meta,
+            date,
+            sender_user_name,
+        })
+    }
+}
+
+// ---- MaybeInaccessibleMessage: undiscriminated, predicate `date == 0` ----
+
+#[derive(Debug)]
+pub(crate) enum MaybeInaccessibleMessage {
+    Message(Box<Message>),
+    Inaccessible(InaccessibleMessage),
+    Unknown(Box<UnknownMember<InaccessibleMessage>>),
+}
+
+impl Union for MaybeInaccessibleMessage {
+    const ENTITY: &'static str = "MaybeInaccessibleMessage";
+    const KEY: &'static str = "date";
+    // the shared fields are exactly InaccessibleMessage's
+    type Common = InaccessibleMessage;
+
+    fn variant(value: Option<&[u8]>, c: &mut Cursor<'_>) -> Option<DecodeResult<Self>> {
+        Some(if value == Some(b"0") {
+            InaccessibleMessage::decode(c).map(Self::Inaccessible)
+        } else {
+            Message::decode(c).map(|message| Self::Message(Box::new(message)))
+        })
+    }
+
+    fn unknown(member: UnknownMember<InaccessibleMessage>) -> Self {
+        Self::Unknown(Box::new(member))
+    }
+}
+
+#[derive(Debug)]
+pub(crate) struct InaccessibleMessage {
+    pub(crate) meta: Meta<[u64; 1]>,
+    pub(crate) chat: Chat,
+    pub(crate) message_id: i64,
+    pub(crate) date: UnixTime,
+}
+
+#[derive(Default)]
+pub(crate) struct InaccessibleMessagePartial {
+    chat: Option<Chat>,
+    message_id: Option<i64>,
+    date: Option<UnixTime>,
+}
+
+pub(crate) static INACCESSIBLE_MESSAGE: Table = Table {
+    fields: &[
+        f("chat", Kind::Object, true, false),
+        f("message_id", Kind::I64, true, false),
+        f("date", Kind::UnixTime, true, false),
+    ],
+    keys: &[("chat", 0), ("date", 2), ("message_id", 1)],
+};
+
+impl Decode for InaccessibleMessage {
+    const TABLE: &'static Table = &INACCESSIBLE_MESSAGE;
+    type Partial = InaccessibleMessagePartial;
+    type Bits = [u64; 1];
+
+    fn set(p: &mut InaccessibleMessagePartial, id: u16, c: &mut Cursor<'_>) -> DecodeResult<()> {
+        match id {
+            0 => p.chat = c.opt(Chat::decode)?,
+            1 => p.message_id = c.opt(Cursor::i64)?,
+            _ => p.date = c.opt(Cursor::time)?,
+        }
+        Ok(())
+    }
+
+    fn finish(p: InaccessibleMessagePartial, meta: Meta<[u64; 1]>) -> DecodeResult<Self> {
+        let chat = required(p.chat, "chat", meta.span)?;
+        let message_id = required(p.message_id, "message_id", meta.span)?;
+        let date = required(p.date, "date", meta.span)?;
+        Ok(Self {
+            meta,
+            chat,
+            message_id,
+            date,
+        })
+    }
+}
+
+// ---- ChatMember: tagged by `status` (two variants here); common field `user` ----
+
+#[derive(Debug)]
+pub(crate) enum ChatMember {
+    Member(ChatMemberMember),
+    Administrator(Box<ChatMemberAdministrator>),
+    Unknown(Box<UnknownMember<ChatMemberCommon>>),
+}
+
+impl Union for ChatMember {
+    const ENTITY: &'static str = "ChatMember";
+    const KEY: &'static str = "status";
+    type Common = ChatMemberCommon;
+
+    fn variant(value: Option<&[u8]>, c: &mut Cursor<'_>) -> Option<DecodeResult<Self>> {
+        Some(match value? {
+            br#""member""# => ChatMemberMember::decode(c).map(Self::Member),
+            br#""administrator""# => ChatMemberAdministrator::decode(c)
+                .map(|member| Self::Administrator(Box::new(member))),
+            _ => return None,
+        })
+    }
+
+    fn unknown(member: UnknownMember<ChatMemberCommon>) -> Self {
+        Self::Unknown(Box::new(member))
+    }
+}
+
+#[derive(Debug)]
+pub(crate) struct ChatMemberCommon {
+    pub(crate) meta: Meta<[u64; 1]>,
+    pub(crate) user: User,
+}
+
+#[derive(Default)]
+pub(crate) struct ChatMemberCommonPartial {
+    user: Option<User>,
+}
+
+pub(crate) static CHAT_MEMBER_COMMON: Table = Table {
+    fields: &[
+        f("status", Kind::Str, true, false),
+        f("user", Kind::Object, true, false),
+    ],
+    keys: &[("status", 0), ("user", 1)],
+};
+
+impl Decode for ChatMemberCommon {
+    const TABLE: &'static Table = &CHAT_MEMBER_COMMON;
+    type Partial = ChatMemberCommonPartial;
+    type Bits = [u64; 1];
+
+    fn set(p: &mut ChatMemberCommonPartial, id: u16, c: &mut Cursor<'_>) -> DecodeResult<()> {
+        match id {
+            0 => drop(c.opaque()?),
+            _ => p.user = c.opt(User::decode)?,
+        }
+        Ok(())
+    }
+
+    fn finish(p: ChatMemberCommonPartial, meta: Meta<[u64; 1]>) -> DecodeResult<Self> {
+        let user = required(p.user, "user", meta.span)?;
+        Ok(Self { meta, user })
+    }
+}
+
+#[derive(Debug)]
+pub(crate) struct ChatMemberMember {
+    pub(crate) meta: Meta<[u64; 1]>,
+    pub(crate) user: User,
+    pub(crate) until_date: Option<UnixTime>,
+}
+
+#[derive(Default)]
+pub(crate) struct ChatMemberMemberPartial {
+    user: Option<User>,
+    until_date: Option<UnixTime>,
+}
+
+pub(crate) static CHAT_MEMBER_MEMBER: Table = Table {
+    fields: &[
+        f("status", Kind::Str, true, false),
+        f("user", Kind::Object, true, false),
+        f("until_date", Kind::UnixTime, false, false),
+    ],
+    keys: &[("status", 0), ("until_date", 2), ("user", 1)],
+};
+
+impl Decode for ChatMemberMember {
+    const TABLE: &'static Table = &CHAT_MEMBER_MEMBER;
+    type Partial = ChatMemberMemberPartial;
+    type Bits = [u64; 1];
+
+    fn set(p: &mut ChatMemberMemberPartial, id: u16, c: &mut Cursor<'_>) -> DecodeResult<()> {
+        match id {
+            0 => drop(c.opaque()?),
+            1 => p.user = c.opt(User::decode)?,
+            _ => p.until_date = c.opt(Cursor::time)?,
+        }
+        Ok(())
+    }
+
+    fn finish(p: ChatMemberMemberPartial, meta: Meta<[u64; 1]>) -> DecodeResult<Self> {
+        let user = required(p.user, "user", meta.span)?;
+        Ok(Self {
+            meta,
+            user,
+            until_date: p.until_date,
+        })
+    }
+}
+
+#[derive(Debug)]
+pub(crate) struct ChatMemberAdministrator {
+    pub(crate) meta: Meta<[u64; 1]>,
+    pub(crate) user: User,
+    pub(crate) can_be_edited: bool,
+    pub(crate) custom_title: Option<Box<str>>,
+}
+
+#[derive(Default)]
+pub(crate) struct ChatMemberAdministratorPartial {
+    user: Option<User>,
+    can_be_edited: Option<bool>,
+    custom_title: Option<Box<str>>,
+}
+
+pub(crate) static CHAT_MEMBER_ADMINISTRATOR: Table = Table {
+    fields: &[
+        f("status", Kind::Str, true, false),
+        f("user", Kind::Object, true, false),
+        f("can_be_edited", Kind::Bool, true, false),
+        f("custom_title", Kind::Str, false, false),
+    ],
+    keys: &[
+        ("can_be_edited", 2),
+        ("custom_title", 3),
+        ("status", 0),
+        ("user", 1),
+    ],
+};
+
+impl Decode for ChatMemberAdministrator {
+    const TABLE: &'static Table = &CHAT_MEMBER_ADMINISTRATOR;
+    type Partial = ChatMemberAdministratorPartial;
+    type Bits = [u64; 1];
+
+    fn set(
+        p: &mut ChatMemberAdministratorPartial,
+        id: u16,
+        c: &mut Cursor<'_>,
+    ) -> DecodeResult<()> {
+        match id {
+            0 => drop(c.opaque()?),
+            1 => p.user = c.opt(User::decode)?,
+            2 => p.can_be_edited = c.opt(Cursor::bool)?,
+            _ => p.custom_title = c.opt(Cursor::str)?,
+        }
+        Ok(())
+    }
+
+    fn finish(p: ChatMemberAdministratorPartial, meta: Meta<[u64; 1]>) -> DecodeResult<Self> {
+        let user = required(p.user, "user", meta.span)?;
+        let can_be_edited = required(p.can_be_edited, "can_be_edited", meta.span)?;
+        Ok(Self {
+            meta,
+            user,
+            can_be_edited,
+            custom_title: p.custom_title,
+        })
+    }
+}
+
+// ---- ChatMemberUpdated: two ChatMember unions ----
+
+#[derive(Debug)]
+pub(crate) struct ChatMemberUpdated {
+    pub(crate) meta: Meta<[u64; 1]>,
+    pub(crate) chat: Chat,
+    pub(crate) from_user: User,
+    pub(crate) date: UnixTime,
+    pub(crate) old_chat_member: ChatMember,
+    pub(crate) new_chat_member: ChatMember,
+}
+
+#[derive(Default)]
+pub(crate) struct ChatMemberUpdatedPartial {
+    chat: Option<Chat>,
+    from_user: Option<User>,
+    date: Option<UnixTime>,
+    old_chat_member: Option<ChatMember>,
+    new_chat_member: Option<ChatMember>,
+}
+
+pub(crate) static CHAT_MEMBER_UPDATED: Table = Table {
+    fields: &[
+        f("chat", Kind::Object, true, false),
+        f("from", Kind::Object, true, false),
+        f("date", Kind::UnixTime, true, false),
+        f("old_chat_member", Kind::Object, true, false),
+        f("new_chat_member", Kind::Object, true, false),
+    ],
+    keys: &[
+        ("chat", 0),
+        ("date", 2),
+        ("from", 1),
+        ("from_user", 1),
+        ("new_chat_member", 4),
+        ("old_chat_member", 3),
+    ],
+};
+
+impl Decode for ChatMemberUpdated {
+    const TABLE: &'static Table = &CHAT_MEMBER_UPDATED;
+    type Partial = ChatMemberUpdatedPartial;
+    type Bits = [u64; 1];
+
+    fn set(p: &mut ChatMemberUpdatedPartial, id: u16, c: &mut Cursor<'_>) -> DecodeResult<()> {
+        match id {
+            0 => p.chat = c.opt(Chat::decode)?,
+            1 => p.from_user = c.opt(User::decode)?,
+            2 => p.date = c.opt(Cursor::time)?,
+            3 => p.old_chat_member = c.opt(ChatMember::decode)?,
+            _ => p.new_chat_member = c.opt(ChatMember::decode)?,
+        }
+        Ok(())
+    }
+
+    fn finish(p: ChatMemberUpdatedPartial, meta: Meta<[u64; 1]>) -> DecodeResult<Self> {
+        let chat = required(p.chat, "chat", meta.span)?;
+        let from_user = required(p.from_user, "from", meta.span)?;
+        let date = required(p.date, "date", meta.span)?;
+        let old_chat_member = required(p.old_chat_member, "old_chat_member", meta.span)?;
+        let new_chat_member = required(p.new_chat_member, "new_chat_member", meta.span)?;
+        Ok(Self {
+            meta,
+            chat,
+            from_user,
+            date,
+            old_chat_member,
+            new_chat_member,
         })
     }
 }

@@ -2,7 +2,7 @@
 
 | Field | Value |
 |---|---|
-| Status | `todo` |
+| Status | `done` |
 | Story | C — Reproducible butcher |
 | Target branch | `dev-4.x` |
 | Depends on | [C-01](C-01-crate-xtask-ir-snapshot.md) |

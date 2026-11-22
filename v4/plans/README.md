@@ -155,13 +155,13 @@ Verification method and results: [_VERIFICATION.md](_VERIFICATION.md).
 | [B-11](B-spike/B-11-cache-gc-teardown-ft-tests.md) | Cache / GC / teardown / free-threading tests | `todo` | no | M | B-01, B-05, B-06, B-07, B-08, B-09 |
 | [B-12](B-spike/B-12-dispatch-harness.md) | End-to-end dispatch harness | `todo` | no | M | A-06, A-10, B-00, B-02, B-05, B-07, B-09 |
 | [B-13](B-spike/B-13-gate-run-and-decision.md) | Gate run + go/no-go decision record | `todo` | no | M | A-06, A-08, B-00, B-01, B-02, B-03, B-04, B-05, B-06, B-07, B-08, B-09, B-10, B-11, B-12, B-14 |
-| [B-14](B-spike/B-14-unions-envelope-batch-decode.md) | Decode runtime: unions, depth guard, response envelope, `getUpdates` batch | `todo` | no | M | B-03 |
+| [B-14](B-spike/B-14-unions-envelope-batch-decode.md) | Decode runtime: unions, depth guard, response envelope, `getUpdates` batch | `done` | no | M | B-03 |
 | [C-01](C-butcher/C-01-crate-xtask-ir-snapshot.md) | butcher crate, xtask entry point, IR model, snapshot format | `done` | no | M | A-01, B-01 |
 | [C-02](C-butcher/C-02-fetch-provenance.md) | `fetch`, source cache and manifest provenance | `done` | no | S | C-01 |
 | [C-03](C-butcher/C-03-html-adapter.md) | HTML adapter | `todo` | no | L | C-01 |
 | [C-04](C-butcher/C-04-openapi-adapter.md) | OpenAPI 3.2 adapter | `todo` | no | L | C-01 |
 | [C-05](C-butcher/C-05-errors-json-adapter.md) | `errors.json` adapter | `done` | no | S | C-01 |
-| [C-06](C-butcher/C-06-overlay-schema-loader.md) | Overlay schema and loader | `todo` | no | M | C-01 |
+| [C-06](C-butcher/C-06-overlay-schema-loader.md) | Overlay schema and loader | `done` | no | M | C-01 |
 | [C-07](C-butcher/C-07-fill-dsl.md) | Fill-DSL for shortcuts | `todo` | no | M | C-06 |
 | [C-08](C-butcher/C-08-merge-cross-check.md) | Merge and cross-check | `todo` | no | L | C-03, C-04, C-05, C-06 |
 | [C-09](C-butcher/C-09-resolution-passes.md) | Resolution passes: D18 twins, D109 names, union classification | `todo` | no | M | C-08 |
@@ -223,7 +223,7 @@ Verification method and results: [_VERIFICATION.md](_VERIFICATION.md).
 | [E-21](E-runtime/E-21-e-exit-gate.md) | Milestone E exit gate: routing differential, benchmarks, lifecycle and multi-Runner matrices | `todo` | partial | M | A-05, A-06, A-07, A-10, E-01, E-02, E-03, E-04, E-05, E-06, E-07, E-08, E-09, E-10, E-11, E-12, E-13, E-14, E-15, E-16, E-17, E-18, E-19, E-20, E-22, E-23 |
 | [E-22](E-runtime/E-22-single-bot-sharding.md) | Single-bot thread sharding (ingress Poller, per-worker queues) | `todo` | no | M | E-15, E-19, F-02, F-04 |
 | [E-23](E-runtime/E-23-bot-registry.md) | Runner bot registry: `add_bot` / `remove_bot`, `bot_added` / `bot_removed`, shared-FSM ownership | `todo` | no | M | E-12, E-13 |
-| [F-01](F-fsm/F-01-thread-safe-memory-storage.md) | Thread-safe `MemoryStorage` (one dict + one lock) | `todo` | no | M | A-01, A-05, A-11 |
+| [F-01](F-fsm/F-01-thread-safe-memory-storage.md) | Thread-safe `MemoryStorage` (one dict + one lock) | `done` | no | M | A-01, A-05, A-11 |
 | [F-02](F-fsm/F-02-isolation-lock-table-default-on.md) | Cross-thread, cross-loop isolation lock table, on by default (D28) | `todo` | no | L | A-01, A-05, A-06, A-11, H-01 |
 | [F-03](F-fsm/F-03-release-isolation-warn-after.md) | `state.release_isolation()`, `isolation_warn_after`, release hooks, re-entrancy error | `todo` | no | M | A-11, F-02, H-01 |
 | [F-04](F-fsm/F-04-fsm-hot-paths-statefilter.md) | FSM hot paths, StateFilter introspection, public isolation-key function | `done` | no | S | A-01, A-05 |
@@ -284,7 +284,7 @@ Verification method and results: [_VERIFICATION.md](_VERIFICATION.md).
 | [I-02](I-distribution/I-02-tier1-wheel-matrix-release.md) | Tier-1 wheel matrix and release workflow | `todo` | no | L | C-02, C-18, I-01, I-05 |
 | [I-03](I-distribution/I-03-free-threaded-wheels-ci.md) | Free-threaded wheels and CI | `todo` | no | M | I-02 |
 | [I-04](I-distribution/I-04-installed-wheel-typing-stubtest.md) | Installed-wheel typing check and stubtest | `todo` | yes | M | B-10, C-14, C-27, I-01 |
-| [I-05](I-distribution/I-05-pr-ci-structure-caching-coverage.md) | PR CI structure, caching and coverage | `todo` | no | M | B-01 |
+| [I-05](I-distribution/I-05-pr-ci-structure-caching-coverage.md) | PR CI structure, caching and coverage | `done` | no | M | B-01 |
 | [I-06](I-distribution/I-06-largest-codegen-unit-guard.md) | Largest-codegen-unit guard (B25) | `todo` | yes | S | C-18, C-20, I-05 |
 | [I-07](I-distribution/I-07-dependencies-extras-restructure.md) | Dependencies and extras restructure | `todo` | partly: the pydantic removal step needs F-11 / C-13, which follow D14 | M | C-13, D-04, F-07, F-11, I-05 |
 | [I-08](I-distribution/I-08-contributor-workflow.md) | Contributor workflow for `dev-4.x` | `todo` | no | S | C-23, I-01, I-05 |

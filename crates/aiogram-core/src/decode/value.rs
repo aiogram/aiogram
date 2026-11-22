@@ -2,6 +2,7 @@
 
 use super::cursor::Cursor;
 use super::error::{DecodeError, DecodeResult};
+use super::seen::Site;
 
 /// A byte range into the owning update's buffer (the view holds that `Arc<[u8]>`, B-05).
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
@@ -112,6 +113,8 @@ pub(crate) static INTERNED: &[&str] = &[
 
 /// A wire enum: known values are variants, anything else is `Unknown(Box<str>)` (10 Layer 1).
 pub(crate) trait WireEnum: Sized + Clone + 'static {
+    /// the enum's name, for the `Unknown…` hook
+    const NAME: &'static str;
     /// wire values, sorted
     const NAMES: &'static [&'static str];
     /// the variant of each of `NAMES`, same order
@@ -119,7 +122,7 @@ pub(crate) trait WireEnum: Sized + Clone + 'static {
 
     fn unknown(value: Box<str>) -> Self;
 
-    /// Reads a value: a known variant, or `Unknown` with the string.
+    /// Reads a value: a known variant, or `Unknown` with the string (reported to the hook).
     fn read(c: &mut Cursor<'_>) -> DecodeResult<Self> {
         Ok(match c.choice(Self::NAMES)? {
             Ok(index) => match Self::KNOWN.get(index) {
@@ -127,7 +130,10 @@ pub(crate) trait WireEnum: Sized + Clone + 'static {
                 // `NAMES` and `KNOWN` out of step: a table bug, kept decodable
                 None => Self::unknown(Self::NAMES.get(index).copied().unwrap_or_default().into()),
             },
-            Err(value) => Self::unknown(value),
+            Err(value) => {
+                c.report(Self::NAME, Site::Enum, &value)?;
+                Self::unknown(value)
+            }
         })
     }
 }
