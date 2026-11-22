@@ -206,6 +206,16 @@ These patterns repeatedly appeared in maintainer feedback and should be treated 
 - The version lives in `aiogram/__meta__.py` and is copied, static, into `pyproject.toml` and
   `crates/aiogram-core/Cargo.toml`. Only change it with `make bump`: it writes both copies and refreshes
   `Cargo.lock` and `uv.lock` (`uv sync --locked` fails otherwise). `test_build.py` asserts they match.
+  Pre-releases are `X.Y.ZaN` / `bN` / `rcN`: the crate gets the semver form (`4.0.0-alpha.1`, which `build.rs`
+  turns back for `_core.__version__`) and pyproject the matching `Development Status` classifier.
+- `import aiogram` first runs `aiogram/_native.py`: a `find_spec` lookup (no load) that raises an `ImportError`
+  naming the interpreter tag when no `_core` extension fits. A stub-only `aiogram/_core/` resolves as a
+  namespace package, so without a built `.so` (`make dev`) nothing imports.
+- `tests/test_packaging/` checks built artifacts and is skipped unless `AIOGRAM_DIST_DIR` points at a directory
+  with one wheel and one sdist (`maturin build --release -o <dir>`, `maturin sdist -o <dir>`); CI: `packaging`
+  in `tests.yml`. The sdist's top-level set is exact: a new top-level file maturin packs fails it. The sdist
+  ships no `rust-toolchain.toml` (rustup would force that toolchain on every source build); its `Cargo.lock`
+  still lists the dev crates, so cargo commands on an unpacked sdist cannot use `--locked`.
 - `tests/typing/` holds mypy-only `assert_type` files, never collected by pytest; run them with `make typing`.
 - The stubs are hand-written (PD-36): `aiogram/_core/__init__.pyi` for the root (`__version__`, `build_info`) and
   one `aiogram/_core/<name>.pyi` per native submodule. The directory holds stubs only (no `.py`); the `.so` beside
@@ -275,6 +285,16 @@ These patterns repeatedly appeared in maintainer feedback and should be treated 
   `tests/overlay.rs`. Run a test file with `--test <file>`.
 - A new workspace crate stays out of the sdist and the wheel: maturin rewrites the sdist's `members` to
   `crates/aiogram-core` and its path dependencies. Check with `uv build` (sdist, then a wheel built from it).
+
+## Logging (`dev-4.x`)
+
+- Framework loggers come only from `aiogram/loggers.py` (`loggers.<name>` or `loggers.get_logger("aiogram.x")`); the
+  factory installs the record filters on each logger, because Python never runs an ancestor logger's filters for a
+  child's records. `tests/test_loggers.py` fails on any `getLogger(` call elsewhere in `aiogram/`.
+- `pytest --cov=aiogram.loggers` (a dotted single module) imports that module more than once; the factory replaces
+  marked stale filters (`aiogram_framework_filter`), so a new framework filter needs the same marker.
+- A test `logging.Handler` subclass must not set `self.lock`: `Handler.handle()` holds it around `emit()`, and a
+  plain `threading.Lock` there deadlocks the test.
 
 ## Async generators and file IO
 

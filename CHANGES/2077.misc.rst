@@ -1,0 +1,2 @@
+aiogram is now built with maturin and contains a compiled core (``aiogram._core``): a wheel fits one Python version and platform, and installing from the source distribution needs Rust 1.98 or newer.
+When no compiled core matches the interpreter, ``import aiogram`` raises an ``ImportError`` that names the interpreter tag and links the installation docs.

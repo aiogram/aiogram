@@ -239,7 +239,7 @@ class TestCommandMention:
         command = Command("test")
         bot.add_result_for(GetChat, ok=False, error_code=400, description="Bad Request")
 
-        with caplog.at_level(logging.WARNING, logger="aiogram.client.bot"):
+        with caplog.at_level(logging.WARNING, logger="aiogram.client"):
             assert not await command(command_message("/test@tbot_ai"), bot)
             assert isinstance(bot.get_request(), GetChat)
 

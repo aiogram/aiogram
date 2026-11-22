@@ -261,7 +261,7 @@ Verification method and results: [_VERIFICATION.md](_VERIFICATION.md).
 | [G-19](G-features/G-19-cli-legacy-plugins.md) | Legacy `aiogram_cli.plugins` loading and click adapter | `todo` | no | S | A-11, G-15, I-12 |
 | [G-20](G-features/G-20-aiogram-i18n-final-release.md) | `aiogram_i18n` → core mapping, and the final `aiogram_i18n` release | `todo` | no | S | G-03, G-04, G-05, G-06, G-07, G-09 |
 | [G-21](G-features/G-21-aiogram-cli-final-release.md) | Final `aiogram-cli` release | `todo` | no | S | G-15, G-19 |
-| [H-01](H-testing-observability/H-01-logger-hierarchy.md) | Logger hierarchy + structured log context | `todo` | no | M | A-01, A-11 |
+| [H-01](H-testing-observability/H-01-logger-hierarchy.md) | Logger hierarchy + structured log context | `done` | no | M | A-01, A-11 |
 | [H-02](H-testing-observability/H-02-token-redaction-filter.md) | Token redaction filter | `todo` | no | M | D-03, H-01 |
 | [H-04](H-testing-observability/H-04-access-log-redaction.md) | Access-log redaction wiring | `todo` | no | S | E-16, E-17, H-02 |
 | [H-05](H-testing-observability/H-05-trace-hook-core.md) | Trace hook core (protocol, calling rules, adapter) | `done` | no | M | A-01 |
@@ -280,7 +280,7 @@ Verification method and results: [_VERIFICATION.md](_VERIFICATION.md).
 | [H-18](H-testing-observability/H-18-toolkit-docs.md) | Toolkit and observability docs (4.0 structure) | `todo` | no | M | H-14, H-15, H-17, I-10 |
 | [H-19](H-testing-observability/H-19-mockedbot-port.md) | Port `MockedBot` / `MockedSession` and the suite strategy | `done` | no | M | A-01 |
 | [H-20](H-testing-observability/H-20-integration-layer-exit-gate.md) | Integration test layer, examples smoke harness, H exit gate | `todo` | yes | M | E-21, F-16, H-02, H-05, H-13, H-14, H-15, H-16, H-17, H-18, H-19 |
-| [I-01](I-distribution/I-01-packaging-hardening.md) | Packaging hardening of the single `aiogram` distribution | `todo` | no | M | B-01 |
+| [I-01](I-distribution/I-01-packaging-hardening.md) | Packaging hardening of the single `aiogram` distribution | `done` | no | M | B-01 |
 | [I-02](I-distribution/I-02-tier1-wheel-matrix-release.md) | Tier-1 wheel matrix and release workflow | `todo` | no | L | C-02, C-18, I-01, I-05 |
 | [I-03](I-distribution/I-03-free-threaded-wheels-ci.md) | Free-threaded wheels and CI | `todo` | no | M | I-02 |
 | [I-04](I-distribution/I-04-installed-wheel-typing-stubtest.md) | Installed-wheel typing check and stubtest | `todo` | yes | M | B-10, C-14, C-27, I-01 |
