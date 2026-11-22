@@ -37,6 +37,11 @@ jobs:
           REF_NAME: ${{ github.ref_name }}
         run: echo "value=${REF_NAME#v}" >> "$GITHUB_OUTPUT"
 
+      - name: Install the Rust toolchain
+        # maturin compiles aiogram._core for the wheel, and again when the smoke step installs the
+        # sdist; no arguments: the channel pinned in rust-toolchain.toml
+        run: rustup toolchain install
+
       - name: Build sdist and wheel
         run: uv build
 
@@ -50,15 +55,15 @@ jobs:
           VERSION: ${{ steps.package-version.outputs.value }}
         run: |
           for dist in dist/*.whl dist/*.tar.gz; do
-            # a venv inside the checkout would be swept into the next sdist (hatchling packs
-            # it and its absolute symlinks break the build), so it lives under RUNNER_TEMP instead
+            # outside the checkout: a venv inside it could be swept into a build
             venv="${RUNNER_TEMP}/smoke"
             uv venv --clear "$venv"
             uv pip install --python "$venv/bin/python" "$dist"
-            # -P keeps the checkout's own aiogram/ off sys.path, so this imports what was just installed
-            installed="$("$venv/bin/python" -P -c "import aiogram; print(aiogram.__version__)")"
+            # -P keeps the checkout's own aiogram/ off sys.path, so this imports what was just
+            # installed; the compiled core must carry the same version
+            installed="$("$venv/bin/python" -P -c "import aiogram, aiogram._core as core; print(aiogram.__version__, core.__version__)")"
             echo "${dist}: installed aiogram ${installed}"
-            [[ "${installed}" == "${VERSION}" ]]
+            [[ "${installed}" == "${VERSION} ${VERSION}" ]]
           done
 
       - uses: actions/upload-artifact@v7

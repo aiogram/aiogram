@@ -1,4 +1,6 @@
 import ast
+import importlib.metadata
+import importlib.util
 import os
 import subprocess
 import sys
@@ -42,11 +44,54 @@ def test_build_info():
         assert info["lto"] == "thin"
 
 
+def load_bump_version() -> types.ModuleType:
+    spec = importlib.util.spec_from_file_location("bump_version", ROOT / "scripts/bump_version.py")
+    assert spec is not None
+    assert spec.loader is not None
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+bump_version = load_bump_version()
+
+
 def test_versions_match():
     pyproject = tomllib.loads((ROOT / "pyproject.toml").read_text(encoding="utf-8"))
+    cargo = tomllib.loads((ROOT / "crates/aiogram-core/Cargo.toml").read_text(encoding="utf-8"))
     assert pyproject["project"]["version"] == aiogram.__version__
+    assert cargo["package"]["version"] == bump_version.cargo_version(aiogram.__version__)
+    assert importlib.metadata.version("aiogram") == aiogram.__version__
     assert _core.__version__ == aiogram.__version__
     assert _core.build_info()["version"] == aiogram.__version__
+
+
+def test_development_status_matches_version():
+    pyproject = tomllib.loads((ROOT / "pyproject.toml").read_text(encoding="utf-8"))
+    statuses = [
+        c for c in pyproject["project"]["classifiers"] if c.startswith("Development Status")
+    ]
+    assert statuses == [bump_version.development_status(aiogram.__version__)]
+
+
+@pytest.mark.parametrize(
+    ("version", "cargo", "status"),
+    [
+        ("4.0.0", "4.0.0", "5 - Production/Stable"),
+        ("4.0.0a1", "4.0.0-alpha.1", "3 - Alpha"),
+        ("4.0.0b2", "4.0.0-beta.2", "4 - Beta"),
+        ("4.0.0rc1", "4.0.0-rc.1", "4 - Beta"),
+    ],
+)
+def test_bump_version_forms(version: str, cargo: str, status: str):
+    assert bump_version.cargo_version(version) == cargo
+    assert bump_version.development_status(version) == f"Development Status :: {status}"
+
+
+@pytest.mark.parametrize("version", ["4.0.0.dev1", "4.0.0.post1", "4.0.0+local", "4.0.0-alpha1"])
+def test_bump_version_rejects(version: str):
+    with pytest.raises(ValueError, match="use X.Y.Z"):
+        bump_version.parse(version)
 
 
 def test_import_aiogram_does_not_load_core():

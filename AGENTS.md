@@ -190,6 +190,16 @@ These patterns repeatedly appeared in maintainer feedback and should be treated 
 - The version lives in `aiogram/__meta__.py` and is copied, static, into `pyproject.toml` and
   `crates/aiogram-core/Cargo.toml`. Only change it with `make bump`: it writes both copies and refreshes
   `Cargo.lock` and `uv.lock` (`uv sync --locked` fails otherwise). `test_build.py` asserts they match.
+  Pre-releases are `X.Y.ZaN` / `bN` / `rcN`: the crate gets the semver form (`4.0.0-alpha.1`, which `build.rs`
+  turns back for `_core.__version__`) and pyproject the matching `Development Status` classifier.
+- `import aiogram` first runs `aiogram/_native.py`: a `find_spec` lookup (no load) that raises an `ImportError`
+  naming the interpreter tag when no `_core` extension fits. A stub-only `aiogram/_core/` resolves as a
+  namespace package, so without a built `.so` (`make dev`) nothing imports.
+- `tests/test_packaging/` checks built artifacts and is skipped unless `AIOGRAM_DIST_DIR` points at a directory
+  with one wheel and one sdist (`maturin build --release -o <dir>`, `maturin sdist -o <dir>`); CI: `Packaging`
+  in `core.yml`. The sdist's top-level set is exact: a new top-level file maturin packs fails it. The sdist
+  ships no `rust-toolchain.toml` (rustup would force that toolchain on every source build); its `Cargo.lock`
+  still lists the dev crates, so cargo commands on an unpacked sdist cannot use `--locked`.
 - `tests/typing/` holds mypy-only `assert_type` files, never collected by pytest; run them with `make typing`.
 - The stubs are hand-written (PD-36): `aiogram/_core/__init__.pyi` for the root (`__version__`, `build_info`) and
   one `aiogram/_core/<name>.pyi` per native submodule. The directory holds stubs only (no `.py`); the `.so` beside

@@ -6,8 +6,9 @@ mod decode;
 use pyo3::prelude::*;
 use pyo3::types::PyDict;
 
-/// Version of the crate; the release bump keeps it equal to `aiogram.__version__`.
-const VERSION: &str = env!("CARGO_PKG_VERSION");
+/// Version of the crate in PEP 440 form (`build.rs`); `make bump` keeps it equal to
+/// `aiogram.__version__`.
+const VERSION: &str = env!("AIOGRAM_CORE_VERSION");
 /// Version of the pyo3 crate this module was built with, taken from `Cargo.lock` by `build.rs`.
 const PYO3_VERSION: &str = env!("AIOGRAM_CORE_PYO3_VERSION");
 /// Cargo profile (`debug` or `release`), set by `build.rs`.
