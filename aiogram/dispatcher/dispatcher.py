@@ -36,6 +36,14 @@ if TYPE_CHECKING:
 DEFAULT_BACKOFF_CONFIG = BackoffConfig(min_delay=1.0, max_delay=5.0, factor=1.3, jitter=0.1)
 
 
+def _set_log_context(bot_id: int, update: Update) -> contextvars.Token[loggers.LogContext | None]:
+    try:
+        update_type: str | None = update.event_type
+    except UpdateTypeLookupError:
+        update_type = None
+    return loggers._current.set(loggers.LogContext(bot_id, update.update_id, update_type))
+
+
 class Dispatcher(Router):
     """
     Root router
@@ -152,43 +160,50 @@ class Dispatcher(Router):
         :param bot:
         :param update:
         """
-        loop = asyncio.get_running_loop()
-        handled = False
-        start_time = loop.time()
-
-        if update.bot != bot:
-            # Re-mounting update to the current bot instance for making possible to
-            # use it in shortcuts.
-            # Here is update is re-created because we need to propagate context to
-            # all nested objects and attributes of the Update, but it
-            # is impossible without roundtrip to JSON :(
-            # The preferred way is that pass already mounted Bot instance to this update
-            # before call feed_update method
-            update = Update.model_validate(update.model_dump(), context={"bot": bot})
-
+        bot_id = bot.id
+        # The log context covers the whole call, the final "handled" record included;
+        # a nested feed_update restores the outer context on reset.
+        log_token = _set_log_context(bot_id, update)
         try:
-            response = await self.update.wrap_outer_middleware(
-                self._trigger_update,
-                update,
-                {
-                    "dispatcher": self,
-                    **self.workflow_data,
-                    **kwargs,
-                    "bot": bot,
-                },
-            )
-            handled = response is not UNHANDLED
-            return response
+            loop = asyncio.get_running_loop()
+            handled = False
+            start_time = loop.time()
+
+            if update.bot != bot:
+                # Re-mounting update to the current bot instance for making possible to
+                # use it in shortcuts.
+                # Here is update is re-created because we need to propagate context to
+                # all nested objects and attributes of the Update, but it
+                # is impossible without roundtrip to JSON :(
+                # The preferred way is that pass already mounted Bot instance to this update
+                # before call feed_update method
+                update = Update.model_validate(update.model_dump(), context={"bot": bot})
+
+            try:
+                response = await self.update.wrap_outer_middleware(
+                    self._trigger_update,
+                    update,
+                    {
+                        "dispatcher": self,
+                        **self.workflow_data,
+                        **kwargs,
+                        "bot": bot,
+                    },
+                )
+                handled = response is not UNHANDLED
+                return response
+            finally:
+                finish_time = loop.time()
+                duration = (finish_time - start_time) * 1000
+                loggers.event.info(
+                    "Update id=%s is %s. Duration %d ms by bot id=%d",
+                    update.update_id,
+                    "handled" if handled else "not handled",
+                    duration,
+                    bot_id,
+                )
         finally:
-            finish_time = loop.time()
-            duration = (finish_time - start_time) * 1000
-            loggers.event.info(
-                "Update id=%s is %s. Duration %d ms by bot id=%d",
-                update.update_id,
-                "handled" if handled else "not handled",
-                duration,
-                bot.id,
-            )
+            loggers._current.reset(log_token)
 
     async def _trigger_update(self, update: Update, **kwargs: Any) -> Any:
         # `dp.update` is not reached through `_propagate_event`,
@@ -230,35 +245,40 @@ class Dispatcher(Router):
         update_id = update.get("update_id") if isinstance(update, dict) else None
         if type(update_id) is not int:
             update_id = None
-        first = error.errors(include_url=False, include_context=False, include_input=False)[0]
-        loggers.webhook.error(
-            "Update id=%s is skipped because it can't be validated by bot id=%d: "
-            "%d validation errors, first: %s at %s",
-            update_id,
-            bot.id,
-            error.error_count(),
-            first["type"],
-            first["loc"],
-        )
-        loggers.webhook.debug("Skipped update: %r", update)
-        if update_id is None:
-            return None
-
+        # The skip records belong to this update, which never reaches feed_update
+        log_token = loggers._current.set(loggers.LogContext(bot.id, update_id, None))
         try:
-            await self.propagate_event(
-                update_type="error",
-                event=ErrorEvent(update=Update(update_id=update_id), exception=error),
-                **{"dispatcher": self, **self.workflow_data, **kwargs, "bot": bot},
-            )
-        except Exception:  # noqa: BLE001
-            # The update is skipped anyway: a failing error handler must not turn it into
-            # a non-2xx answer that makes Telegram redeliver it
-            loggers.event.exception(
-                "Error handler failed for skipped update id=%d by bot id=%d",
+            first = error.errors(include_url=False, include_context=False, include_input=False)[0]
+            loggers.webhook.error(
+                "Update id=%s is skipped because it can't be validated by bot id=%d: "
+                "%d validation errors, first: %s at %s",
                 update_id,
                 bot.id,
+                error.error_count(),
+                first["type"],
+                first["loc"],
             )
-        return None
+            loggers.webhook.debug("Skipped update: %r", update)
+            if update_id is None:
+                return None
+
+            try:
+                await self.propagate_event(
+                    update_type="error",
+                    event=ErrorEvent(update=Update(update_id=update_id), exception=error),
+                    **{"dispatcher": self, **self.workflow_data, **kwargs, "bot": bot},
+                )
+            except Exception:  # noqa: BLE001
+                # The update is skipped anyway: a failing error handler must not turn it into
+                # a non-2xx answer that makes Telegram redeliver it
+                loggers.event.exception(
+                    "Error handler failed for skipped update id=%d by bot id=%d",
+                    update_id,
+                    bot.id,
+                )
+            return None
+        finally:
+            loggers._current.reset(log_token)
 
     @classmethod
     async def _listen_updates(
@@ -383,6 +403,8 @@ class Dispatcher(Router):
         :param kwargs: contextual data for middlewares, filters and handlers
         :return: status
         """
+        # The error and answer records are logged after feed_update has reset its context
+        log_token = _set_log_context(bot.id, update)
         try:
             response = await self.feed_update(bot, update, **kwargs)
             if call_answer and isinstance(response, TelegramMethod):
@@ -400,6 +422,8 @@ class Dispatcher(Router):
 
         else:
             return response is not UNHANDLED
+        finally:
+            loggers._current.reset(log_token)
 
     async def _process_with_semaphore(
         self,
@@ -517,6 +541,7 @@ class Dispatcher(Router):
         """
         The same with `Dispatcher.process_update()` but returns real response instead of bool
         """
+        log_token = _set_log_context(bot.id, update)  # the error record follows feed_update
         try:
             return await self.feed_update(bot, update, **kwargs)
         except Exception as e:
@@ -528,6 +553,8 @@ class Dispatcher(Router):
                 e,
             )
             raise
+        finally:
+            loggers._current.reset(log_token)
 
     async def feed_webhook_update(
         self,

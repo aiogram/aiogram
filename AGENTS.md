@@ -298,6 +298,16 @@ These patterns repeatedly appeared in maintainer feedback and should be treated 
   check the `[project.scripts]` declaration and run `main` as the wrapper does, never the installed script;
   `runpy` on `aiogram.__main__` fails under pytest's import hook there, so use a `python -m aiogram` subprocess.
 
+## Logging (`dev-4.x`)
+
+- Framework loggers come only from `aiogram/loggers.py` (`loggers.<name>` or `loggers.get_logger("aiogram.x")`); the
+  factory installs the record filters on each logger, because Python never runs an ancestor logger's filters for a
+  child's records. `tests/test_loggers.py` fails on any `getLogger(` call elsewhere in `aiogram/`.
+- `pytest --cov=aiogram.loggers` (a dotted single module) imports that module more than once; the factory replaces
+  marked stale filters (`aiogram_framework_filter`), so a new framework filter needs the same marker.
+- A test `logging.Handler` subclass must not set `self.lock`: `Handler.handle()` holds it around `emit()`, and a
+  plain `threading.Lock` there deadlocks the test.
+
 ## Async generators and file IO
 
 - File IO goes through `aiogram/utils/_fileio.py` (`iter_file`, `write_stream`): `asyncio.to_thread` with the open and

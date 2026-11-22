@@ -33,6 +33,7 @@ So, you can use both of them with *aiogram*.
     finite_state_machine/index
     middlewares
     tracing
+    logging
     errors
     flags
     webhook
