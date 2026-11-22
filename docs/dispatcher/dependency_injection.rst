@@ -81,51 +81,83 @@ Using type hints
     Type-hinting middleware data is optional and is not required for the correct operation of the dispatcher.
     However, it is recommended to use it to improve the readability of the code.
 
-You can use type hints to specify the type of the context data in the middlewares, filters and handlers.
+Keys become available at different points of an update's path, so
+:mod:`aiogram.dispatcher.middlewares.data` has one :class:`~typing.TypedDict` per point:
 
-The default middleware data typed dict can be found in :class:`aiogram.dispatcher.middlewares.data.MiddlewareData`.
+.. list-table::
+    :header-rows: 1
 
-In case when you have extended the context data, you can use the :class:`aiogram.dispatcher.middlewares.data.MiddlewareData` as a base class and specify the type hints for the new fields.
+    * - Type
+      - Use it in
+      - Adds
+    * - :class:`~aiogram.dispatcher.middlewares.data.OuterData`
+      - :code:`dp.update` outer middlewares
+      - :code:`dispatcher`, :code:`bot`, :code:`event_context`; :code:`bots` (polling only) and
+        :code:`fsm_storage` (unless :code:`disable_fsm=True`) are optional
+    * - :class:`~aiogram.dispatcher.middlewares.data.RouterOuterData`
+      - router-level outer middlewares (:code:`router.message.outer_middleware`)
+      - :code:`event_update`, :code:`event_router`; :code:`state` and :code:`raw_state` are optional
+    * - :class:`~aiogram.dispatcher.middlewares.data.AiogramData`
+      - inner middlewares, filters and handlers
+      - :code:`handler`; :code:`i18n` and :code:`i18n_middleware` are optional (set by the i18n middleware)
 
-.. warning::
+Required keys are always there, so :code:`data["bot"]` type-checks without narrowing; optional keys are read
+with :code:`data.get(...)`. A key the type doesn't have is a type error, e.g. :code:`data["handler"]` in an
+outer middleware.
 
-    If you using type checking tools like mypy, you can experience warnings about that this type hint against Liskov substitution principle in due stricter type is not a subclass of :code:`dict[str, Any]`.
-    This is a known issue and it is not a bug. You can ignore this warning or use :code:`# type: ignore` comment.
+The built-in FSM middleware is itself a :code:`dp.update` outer middleware, so outer middlewares registered
+after it can see :code:`state` and :code:`raw_state` at runtime; :class:`~aiogram.dispatcher.middlewares.data.OuterData` leaves them out because
+that depends on registration order. Read them with :code:`data.get("state")` there.
 
-Example of using type hints:
+Extend the type with the keys your own middlewares add and use it through :pep:`692` in a handler:
 
 .. code-block:: python
 
-    from aiogram.dispatcher.middlewares.data import MiddlewareData
+    from typing import Unpack
+
+    from aiogram.dispatcher.middlewares.data import AiogramData
 
 
-    class MyMiddlewareData(MiddlewareData, total=False):
-        my_custom_value: int
+    class AppData(AiogramData):  # inner data: handlers, filters, inner middlewares
+        db: Database             # set by your outer middleware
 
 
-    class MyMessageMiddleware(BaseMiddleware):
-        async def __call__(
-            self,
-            handler: Callable[[Message, MyMiddlewareData], Awaitable[Any]],
-            event: Message,
-            data: MyMiddlewareData,
-        ) -> Any:
-            bot = data["bot"]  # <-- IDE will show you that data has `bot` key and its type is `Bot`
+    @router.message(Command("start"))
+    async def start(message: Message, **kw: Unpack[AppData]) -> None:
+        await kw["db"].touch(message.from_user.id)  # kw["bot"] is a Bot, kw["db"] a Database
 
-            data["my_custom_value"] = bot.id * 42  # <-- IDE will show you that you can set `my_custom_value` key with int value and warn you if you try to set it with other type
-            return await handler(event, data)
+.. warning::
+
+    :class:`~aiogram.dispatcher.middlewares.base.BaseMiddleware` still declares :code:`data: dict[str, Any]`, so
+    annotating :code:`data` with one of these types in a :code:`__call__` override is reported by mypy as a
+    Liskov substitution violation. You can ignore it with a :code:`# type: ignore[override]` comment.
+
+.. note::
+
+    :code:`MiddlewareData` is a deprecated alias of :class:`~aiogram.dispatcher.middlewares.data.AiogramData` (AG4060). The 3.x :code:`FSMData`
+    TypedDict is renamed :class:`~aiogram.dispatcher.middlewares.data.FSMKeysData`; :code:`DispatcherData`, :code:`UserContextData` and
+    :code:`I18nData` are removed (AG4059).
 
 
-Available context data type helpers
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Available context data types
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. autoclass:: aiogram.dispatcher.middlewares.data.MiddlewareData
+.. autoclass:: aiogram.dispatcher.middlewares.data.OuterData
     :members:
     :undoc-members:
     :member-order: bysource
 
+.. autoclass:: aiogram.dispatcher.middlewares.data.RouterOuterData
+    :members:
+    :undoc-members:
+    :member-order: bysource
 
-.. autoclass:: aiogram.dispatcher.middlewares.data.I18nData
+.. autoclass:: aiogram.dispatcher.middlewares.data.AiogramData
+    :members:
+    :undoc-members:
+    :member-order: bysource
+
+.. autoclass:: aiogram.dispatcher.middlewares.data.FSMKeysData
     :members:
     :undoc-members:
     :member-order: bysource

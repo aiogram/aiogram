@@ -1022,3 +1022,36 @@ suppress = "aiogram: ignore[AG4057]"
 gate = false
 generated = false
 warn_3x = { site = "none", target = "", since = "" }
+
+[[entry]]
+id = "AG4059"
+kind = "removal-4.0"
+title = "the middleware data TypedDicts are replaced: FSMData is renamed FSMKeysData, DispatcherData, UserContextData and I18nData are removed"
+decisions = ["D31", "D30", "PD-13"]
+area = "middlewares"
+change = "renamed"
+replacement = "FSMKeysData, or OuterData / RouterOuterData / AiogramData from aiogram.dispatcher.middlewares.data"
+detection = "definite"
+confidence = "high"
+codemod = "partial"
+suppress = "aiogram: ignore[AG4059]"
+gate = false
+generated = false
+warn_3x = { site = "none", target = "", since = "" }
+
+[[entry]]
+id = "AG4060"
+kind = "deprecation-4.x"
+title = "MiddlewareData is a deprecated alias of AiogramData"
+decisions = ["D31", "D71"]
+area = "middlewares"
+change = "renamed"
+replacement = "aiogram.dispatcher.middlewares.data.AiogramData"
+detection = "definite"
+confidence = "high"
+codemod = "full"
+suppress = "aiogram: ignore[AG4060]"
+gate = false
+generated = false
+warn_3x = { site = "none", target = "", since = "" }
+removal = { deprecated_in = "4.0", earliest_removal = "4.2" }

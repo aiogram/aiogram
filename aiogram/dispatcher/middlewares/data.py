@@ -1,6 +1,20 @@
-from __future__ import annotations
+"""
+Typed views of the data that middlewares, filters and handlers receive (D31).
 
-from typing import TYPE_CHECKING, NotRequired, TypedDict
+Keys become available at different points of an update's path, so there is one type per point:
+
+- :class:`OuterData`: ``dp.update`` outer middlewares;
+- :class:`RouterOuterData`: router-level outer middlewares (``router.message.outer_middleware``);
+- :class:`AiogramData`: inner middlewares, filters and handlers.
+
+Extend the one you need with your own keys, e.g. ``class AppData(AiogramData): db: Database``,
+and use it as ``**kw: Unpack[AppData]`` in a handler. This module is typing only: nothing here
+changes what is injected.
+"""
+
+# No `from __future__ import annotations`: it hides NotRequired from __required_keys__ at runtime
+import warnings
+from typing import TYPE_CHECKING, Any, NotRequired, TypedDict
 
 if TYPE_CHECKING:
     from aiogram import Bot, Dispatcher, Router
@@ -11,71 +25,80 @@ if TYPE_CHECKING:
     from aiogram.types import Update
     from aiogram.utils.i18n import I18n, I18nMiddleware
 
+__all__ = ("AiogramData", "FSMKeysData", "OuterData", "RouterOuterData")
 
-class DispatcherData(TypedDict, total=False):
+
+class OuterData(TypedDict):
     """
-    Dispatcher and bot related data.
+    Data available to ``dp.update`` outer middlewares.
     """
 
-    dispatcher: Dispatcher
-    """Instance of the Dispatcher from which the handler was called."""
-    bot: Bot
+    dispatcher: "Dispatcher"
+    """Dispatcher that is handling the update."""
+    bot: "Bot"
     """Bot that received the update."""
-    bots: NotRequired[list[Bot]]
-    """List of all bots in the Dispatcher. Used only in polling mode."""
-    event_update: Update
-    """Update object that triggered the handler."""
-    event_router: Router
-    """Router that was used to find the handler."""
-    handler: NotRequired[HandlerObject]
-    """Handler object that was called.
-    Available only in the handler itself and inner middlewares."""
+    event_context: "EventContext"
+    """User, chat and thread of the update, set by the built-in user context middleware."""
+    bots: NotRequired["tuple[Bot, ...]"]
+    """All bots of the polling loop. Set only in polling mode."""
+    fsm_storage: NotRequired["BaseStorage"]
+    """FSM storage. Absent when the dispatcher was created with ``disable_fsm=True``."""
 
 
-class UserContextData(TypedDict, total=False):
+class FSMKeysData(TypedDict):
     """
-    Event context related data about user and chat.
-    """
+    Keys set by the built-in FSM middleware.
 
-    event_context: EventContext
-    """Event context object that contains user and chat data."""
-
-
-class FSMData(TypedDict, total=False):
-    """
-    FSM related data.
+    ``state`` and ``raw_state`` are absent when FSM is disabled or the update has no chat or user
+    to key it on.
     """
 
-    fsm_storage: BaseStorage
-    """Storage used for FSM."""
-    state: NotRequired[FSMContext]
-    """Current state of the FSM."""
-    raw_state: NotRequired[str | None]
-    """Raw state of the FSM."""
+    fsm_storage: NotRequired["BaseStorage"]
+    """FSM storage. Absent when the dispatcher was created with ``disable_fsm=True``."""
+    state: NotRequired["FSMContext"]
+    """FSM context of the current user and chat."""
+    raw_state: NotRequired["str | None"]
+    """Current state name as stored."""
 
 
-class I18nData(TypedDict, total=False):
+class RouterOuterData(OuterData, FSMKeysData):
     """
-    I18n related data.
-
-    Is not included by default, you need to add it to your own Data class if you need it.
+    Data available to router-level outer middlewares (``router.message.outer_middleware``).
     """
 
-    i18n: I18n
-    """I18n object."""
-    i18n_middleware: I18nMiddleware
-    """I18n middleware."""
+    event_update: "Update"
+    """Update that contains the current event."""
+    event_router: "Router"
+    """Router that is propagating the event."""
 
 
-class MiddlewareData(
-    DispatcherData,
-    UserContextData,
-    FSMData,
-    # I18nData, # Disabled by default, add it if you need it to your own Data class.
-    total=False,
-):
+class AiogramData(RouterOuterData):
     """
-    Data passed to the handler by the middlewares.
-
-    You can add your own data by extending this class.
+    Data available to inner middlewares, filters and handlers.
     """
+
+    handler: "HandlerObject"
+    """Handler that is being checked or called."""
+    i18n: NotRequired["I18n"]
+    """I18n object. Set only when the i18n middleware is installed."""
+    i18n_middleware: NotRequired["I18nMiddleware"]
+    """The i18n middleware. Set only when it is installed."""
+
+
+if TYPE_CHECKING:
+    MiddlewareData = AiogramData
+    """Deprecated alias of :class:`AiogramData` (AG4060)."""
+
+
+def __getattr__(name: str) -> Any:
+    if name == "MiddlewareData":
+        # ponytail: plain DeprecationWarning until the I-12 AiogramDeprecationWarning class lands
+        warnings.warn(
+            "AG4060: MiddlewareData is a deprecated alias of AiogramData; "
+            "use aiogram.dispatcher.middlewares.data.AiogramData.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return AiogramData
+    msg = f"module {__name__!r} has no attribute {name!r}"
+    raise AttributeError(msg)

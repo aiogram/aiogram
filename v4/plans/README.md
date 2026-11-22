@@ -219,7 +219,7 @@ Verification method and results: [_VERIFICATION.md](_VERIFICATION.md).
 | [E-17](E-runtime/E-17-asgi-app.md) | ASGI webhook app | `todo` | no | S | D-14, E-14, E-16 |
 | [E-18](E-runtime/E-18-compat-wrappers.md) | 3.x entry points as Runner wrappers | `todo` | no | S | E-15, E-16 |
 | [E-19](E-runtime/E-19-multi-runner-free-threading-sharding.md) | Multi-Runner over one Dispatcher and free-threading | `todo` | no | M | E-03, E-13, E-15, E-23, F-02 |
-| [E-20](E-runtime/E-20-typed-di-typeddicts.md) | Typed DI: base `TypedDict`s for handler and middleware data | `todo` | no | S | E-01 |
+| [E-20](E-runtime/E-20-typed-di-typeddicts.md) | Typed DI: base `TypedDict`s for handler and middleware data | `done` | no | S | E-01 |
 | [E-21](E-runtime/E-21-e-exit-gate.md) | Milestone E exit gate: routing differential, benchmarks, lifecycle and multi-Runner matrices | `todo` | partial | M | A-05, A-06, A-07, A-10, E-01, E-02, E-03, E-04, E-05, E-06, E-07, E-08, E-09, E-10, E-11, E-12, E-13, E-14, E-15, E-16, E-17, E-18, E-19, E-20, E-22, E-23 |
 | [E-22](E-runtime/E-22-single-bot-sharding.md) | Single-bot thread sharding (ingress Poller, per-worker queues) | `todo` | no | M | E-15, E-19, F-02, F-04 |
 | [E-23](E-runtime/E-23-bot-registry.md) | Runner bot registry: `add_bot` / `remove_bot`, `bot_added` / `bot_removed`, shared-FSM ownership | `todo` | no | M | E-12, E-13 |
