@@ -277,7 +277,7 @@ class TestErrors:
     def test_token_is_redacted(
         self, plugins, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
     ):
-        monkeypatch.setattr(_output, "_secrets", set())
+        monkeypatch.setattr(_output, "_hidden", set())
         monkeypatch.setenv("BOT_TOKEN", FAKE_TOKEN)
 
         def register(subparsers):
@@ -316,7 +316,7 @@ class TestUsageErrorRedaction:
 class TestToken:
     @pytest.fixture(autouse=True)
     def clean(self, monkeypatch: pytest.MonkeyPatch):
-        monkeypatch.setattr(_output, "_secrets", set())
+        monkeypatch.setattr(_output, "_hidden", set())
         monkeypatch.delenv("BOT_TOKEN", raising=False)
 
     def parse(self, *argv: str) -> argparse.Namespace:

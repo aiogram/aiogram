@@ -9,8 +9,10 @@ from aiogram.cli._spec import PROG
 
 _STYLES = {"bold": "1", "red": "31", "yellow": "33"}
 
-# Tokens resolved by ``_token.resolve_token``, masked in every warning and error (D66)
-_secrets: set[str] = set()
+# Secret parts of the tokens ``_token.resolve_token`` returned (the text after ``<bot id>:``),
+# masked in every warning and error (D66). The mask is a constant, so no printed text is
+# derived from a token.
+_hidden: set[str] = set()
 # Anything shaped like a bot token, for text holding a token the CLI never resolved
 # (an argparse diagnostic quoting a misplaced --token value, a plugin's exception)
 _TOKEN_SHAPE = re.compile(r"\b(\d{5,}):[A-Za-z0-9_-]{30,}")
@@ -18,9 +20,8 @@ _TOKEN_SHAPE = re.compile(r"\b(\d{5,}):[A-Za-z0-9_-]{30,}")
 
 def redact(text: str) -> str:
     """Replace every resolved or token-shaped string in ``text`` with ``<bot id>:***``."""
-    for token in _secrets:
-        bot_id, colon, _ = token.partition(":")
-        text = text.replace(token, f"{bot_id}:***" if colon else "***")
+    for value in _hidden:
+        text = text.replace(value, "***")
     return _TOKEN_SHAPE.sub(r"\1:***", text)
 
 

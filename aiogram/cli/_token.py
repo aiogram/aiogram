@@ -27,5 +27,5 @@ def resolve_token(args: argparse.Namespace) -> str:
         token = os.environ.get(TOKEN_ENV, "").strip()
     if not token:
         raise CliError(f"no bot token: set ${TOKEN_ENV} or pass --token-file PATH", exit_code=2)
-    _output._secrets.add(token)
+    _output._hidden.add(token.partition(":")[2] or token)
     return token
