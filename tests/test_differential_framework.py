@@ -512,6 +512,18 @@ class TestCliExitCodes:
         assert self.run("--poison", "right") == runner.EXIT_HARNESS_ERROR
         assert "harness error" in capsys.readouterr().err
 
+    def test_right_adapter_goes_to_the_right_side_only(self, monkeypatch, tmp_path):
+        monkeypatch.setattr(runner, "STATE", tmp_path)
+        seen: list[str | None] = []
+
+        def fake_run_side(*args: Any, adapter: str | None = None, **kwargs: Any) -> runner.Trace:
+            seen.append(adapter)
+            return as_trace(fake_side())
+
+        monkeypatch.setattr(runner, "run_side", fake_run_side)
+        assert self.run("--right-adapter", "aiogram4") == runner.EXIT_OK
+        assert seen == [None, "aiogram4"]
+
     def test_usage_error_is_a_harness_error(self, capsys):
         with pytest.raises(SystemExit) as exc:
             runner.main(["run", "--kind", "nope", "--left", "git:HEAD", "--right", "path:."])
@@ -537,3 +549,31 @@ def test_path_side_always_rebuilds(monkeypatch, tmp_path):
     installs = [cmd for cmd in commands if "install" in cmd]
     assert len(installs) == 2
     assert all("--reinstall-package" in cmd for cmd in installs)
+
+
+@pytest.mark.parametrize(("override", "adapter"), [(None, "aiogram3"), ("aiogram4", "aiogram4")])
+def test_run_side_adapter_override(monkeypatch, tmp_path, override, adapter):
+    """The override changes the header adapter (manifest ``when``), not the probe script."""
+    scripts: list[str] = []
+
+    def fake_run(cmd: list[str], **kwargs: Any) -> bytes:
+        if cmd[2] == "-c":
+            return b"3.33.0\n"
+        scripts.append(cmd[2])
+        header = json.loads(cmd[cmd.index("--header") + 1])
+        trace.write(cmd[cmd.index("--out") + 1], header, [])
+        return b""
+
+    monkeypatch.setattr(runner, "prepare", lambda side: (Path("python"), "abc"))
+    monkeypatch.setattr(runner, "_run", fake_run)
+    header, records = runner.run_side(
+        runner.parse_side("path:."),
+        "smoke",
+        tmp_path,
+        tmp_path / "t.jsonl",
+        poison=False,
+        adapter=override,
+    )
+    assert (header["adapter"], header["probe"]) == (adapter, "aiogram3")
+    assert records == []
+    assert scripts == [str(ROOT / "differential" / "sides" / "aiogram3" / "smoke.py")]

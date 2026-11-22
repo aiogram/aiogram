@@ -805,21 +805,30 @@ def adapter_for(version: str) -> str:
     return adapter
 
 
-def run_side(side: Side, kind: str, corpus: Path, out: Path, *, poison: bool) -> Trace:
+def run_side(
+    side: Side, kind: str, corpus: Path, out: Path, *, poison: bool, adapter: str | None = None
+) -> Trace:
+    """Run one side's probe and read its trace.
+
+    ``adapter`` overrides the adapter the header records (what manifest ``when`` entries match);
+    the probe script still follows the side's version. A 4.x branch still versioned 3.x runs the
+    ``aiogram3`` probe and is compared against the ``when = "aiogram4"`` entries.
+    """
     python, commit = prepare(side)
     version = (
         _run([str(python), "-I", "-c", "import aiogram; print(aiogram.__version__)"])
         .decode()
         .strip()
     )
-    adapter = adapter_for(version)
-    script = PACKAGE / "sides" / adapter / f"{kind}.py"
+    probe = adapter_for(version)
+    script = PACKAGE / "sides" / probe / f"{kind}.py"
     if not script.exists():
-        msg = f"no {kind!r} probe for {adapter} ({script.relative_to(REPO)} does not exist)"
+        msg = f"no {kind!r} probe for {probe} ({script.relative_to(REPO)} does not exist)"
         raise HarnessError(msg)
     header = {
         "side": side.spec,
-        "adapter": adapter,
+        "adapter": adapter or probe,
+        "probe": probe,
         "commit": commit,
         "kind": kind,
         "poison": poison,
@@ -871,6 +880,11 @@ def build_parser() -> argparse.ArgumentParser:
     run.add_argument("--corpus", type=Path, default=REPO / "benchmarks" / "corpus")
     run.add_argument("--manifest", type=Path, help="default: differential/manifests/<kind>.toml")
     run.add_argument("--max-diffs", type=int, default=20)
+    run.add_argument(
+        "--right-adapter",
+        choices=ADAPTERS,
+        help="adapter the manifest sees for the right side (default: from its version)",
+    )
     return parser
 
 
@@ -883,7 +897,12 @@ def main(argv: list[str] | None = None) -> int:
         out_dir = Path(tempfile.mkdtemp(prefix=f"{args.kind}-", dir=STATE / "traces"))
         traces = [
             run_side(
-                side, args.kind, args.corpus, out_dir / f"{name}.jsonl", poison=args.poison == name
+                side,
+                args.kind,
+                args.corpus,
+                out_dir / f"{name}.jsonl",
+                poison=args.poison == name,
+                adapter=args.right_adapter if name == "right" else None,
             )
             for name, side in (("left", left), ("right", right))
         ]

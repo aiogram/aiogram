@@ -21,6 +21,10 @@ uv run python -m differential run --kind model --left pypi:aiogram==3.32.0 --rig
   (A-10, see *Routing probes*).
 - A side is `pypi:<requirement>`, `git:<ref>` or `path:<dir>`.
 - `--manifest` defaults to `differential/manifests/<kind>.toml`; `--corpus` to `benchmarks/corpus`.
+- `--right-adapter aiogram3|aiogram4` sets the adapter the manifest sees for the right side (its
+  `when` entries) and the trace header records; the probe script still follows the side's version.
+  `dev-4.x` is versioned 3.x until its first 4.0 pre-release, so it runs the `aiogram3` probe with
+  `--right-adapter aiogram4` to be compared against the approved 4.0 differences.
 
 | Exit | Meaning |
 |---|---|
@@ -51,8 +55,8 @@ Probes go through the public entry points (`Update.model_validate_json`, `bot(me
 `feed_update`, ...), not internals.
 
 **Trace** (`trace.py`). JSONL, written with `trace.dumps`: sorted keys and no whitespace.
-- Line 1 is `{"__header__": {side, adapter, aiogram, commit, python, implementation, platform, kind,
-  poison}}`. It is printed in the report and never compared.
+- Line 1 is `{"__header__": {side, adapter, probe, aiogram, commit, python, implementation, platform,
+  kind, poison}}` (`probe`: the adapter whose script ran). It is printed in the report and never compared.
 - Every other line is one record:
   `{case, probe, ok, value | error: {type, attrs}, meta}`. A failing probe is recorded, not raised.
   `attrs` must be stable across dependency versions (the two venvs resolve independently): for a
