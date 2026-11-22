@@ -223,7 +223,7 @@ Verification method and results: [_VERIFICATION.md](_VERIFICATION.md).
 | [E-21](E-runtime/E-21-e-exit-gate.md) | Milestone E exit gate: routing differential, benchmarks, lifecycle and multi-Runner matrices | `todo` | partial | M | A-05, A-06, A-07, A-10, E-01, E-02, E-03, E-04, E-05, E-06, E-07, E-08, E-09, E-10, E-11, E-12, E-13, E-14, E-15, E-16, E-17, E-18, E-19, E-20, E-22, E-23 |
 | [E-22](E-runtime/E-22-single-bot-sharding.md) | Single-bot thread sharding (ingress Poller, per-worker queues) | `todo` | no | M | E-15, E-19, F-02, F-04 |
 | [E-23](E-runtime/E-23-bot-registry.md) | Runner bot registry: `add_bot` / `remove_bot`, `bot_added` / `bot_removed`, shared-FSM ownership | `todo` | no | M | E-12, E-13 |
-| [F-01](F-fsm/F-01-thread-safe-memory-storage.md) | Thread-safe `MemoryStorage` (one dict + one lock) | `todo` | no | M | A-01, A-05, A-11 |
+| [F-01](F-fsm/F-01-thread-safe-memory-storage.md) | Thread-safe `MemoryStorage` (one dict + one lock) | `done` | no | M | A-01, A-05, A-11 |
 | [F-02](F-fsm/F-02-isolation-lock-table-default-on.md) | Cross-thread, cross-loop isolation lock table, on by default (D28) | `todo` | no | L | A-01, A-05, A-06, A-11, H-01 |
 | [F-03](F-fsm/F-03-release-isolation-warn-after.md) | `state.release_isolation()`, `isolation_warn_after`, release hooks, re-entrancy error | `todo` | no | M | A-11, F-02, H-01 |
 | [F-04](F-fsm/F-04-fsm-hot-paths-statefilter.md) | FSM hot paths, StateFilter introspection, public isolation-key function | `done` | no | S | A-01, A-05 |

@@ -923,3 +923,19 @@ suppress = "aiogram: ignore[AG4051]"
 gate = false
 generated = false
 warn_3x = { site = "none", target = "", since = "" }
+
+[[entry]]
+id = "AG4052"
+kind = "removal-4.0"
+title = "MemoryStorage.storage is a plain dict and StorageKey has __slots__"
+decisions = ["PD-21", "D30", "R14"]
+area = "fsm"
+change = "behaviour"
+replacement = "storage.storage.get(key) or storage.storage[key] = MemoryStorageRecord(...) instead of relying on storage.storage[key] creating a record (it raises KeyError for an unknown key); no attributes beyond the fields on StorageKey"
+detection = "manual"
+confidence = "low"
+codemod = "none"
+suppress = "aiogram: ignore[AG4052]"
+gate = false
+generated = false
+warn_3x = { site = "none", target = "", since = "" }
