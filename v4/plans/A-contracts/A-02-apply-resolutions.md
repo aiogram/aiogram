@@ -2,7 +2,7 @@
 
 | Field | Value |
 |---|---|
-| Status | `todo` |
+| Status | `done` |
 | Story | A — Contracts & baselines |
 | Target branch | `dev-3.x` (where `v4/` is tracked, A-01; merged forward) |
 | Depends on | [A-01](A-01-bootstrap-dev-4x.md) |
@@ -42,7 +42,7 @@ After this plan, each page states its current contract directly, and 19 plus the
 
 ## Checklist
 
-- [ ] **README.md:**
+- [x] **README.md:**
   - milestone A wording: "behaviour oracle = external pinned 3.x venv; corpus/bench/oracles authored on `dev-3.x`,
     merged forward" (PD-12);
   - architecture box `entities: … render & parse` → `render` (PD-15);
@@ -57,31 +57,31 @@ After this plan, each page states its current contract directly, and 19 plus the
   - fix the broken `rust/README.md` and `rust/19-review-resolutions.md` links (lines 4–5, 66, 104) to `README.md` /
     `19-review-resolutions.md`;
   - "Deferred out of 4.0": remove thread sharding (PD-06).
-- [ ] **01-models.md:**
+- [x] **01-models.md:**
   - §5 title "Spike plan (phase 1)" → "Spike plan (milestone B)";
   - §5.1 "prototype butcher" → hand-written in emitted shape (PD-30);
   - spike not wired into `aiogram.types` (PD-03);
   - §3.1 `timedelta` = absolute `now + delta` (PD-11);
   - §3.3 / §3.4 keyword-only stubs without `**extra` (PD-23).
-- [ ] **02-butcher.md:**
+- [x] **02-butcher.md:**
   - §3 `import-legacy` is a throwaway Python script behind the xtask shim (PD-10);
   - ErrorReason names pinned in the overlay (PD-24);
   - `idempotent` default and the check (PD-25);
   - remaining helpers port (PD-16);
   - §4 `keep_position` count is 14, not 15, and the `StoryAreaPosition` example is corrected (it is a removed entity
     in the 4.0 ledger reset, 11 §1).
-- [ ] **03-routing.md:**
+- [x] **03-routing.md:**
   - §5 Dependencies: teardown inside the isolation scope (PD-04);
   - §5 Dependencies "Additive (4.x; can ship in 4.0 if ready)" → ships in 4.0 and blocks GA (PD-01);
   - D48 warning (PD-05);
   - epoch-bumping containers (PD-18);
   - D111 "matched candidate" definition (PD-19).
-- [ ] **04-fsm.md:**
+- [x] **04-fsm.md:**
   - §3 one dict + one `threading.Lock`, no shards (PD-21);
   - stdlib `json` default codec (PD-22);
   - Redis/Mongo single-loop (PD-09);
   - re-entrant acquisition raises (PD-26).
-- [ ] **05-network.md:**
+- [x] **05-network.md:**
   - §2.1 timedelta (PD-11; same fix as 13 B17 and 01 §3.1);
   - D46 citation: 13 §3 B9, not 13 §4;
   - §2.3 session `json_*` don't affect the wire and are deprecated (PD-08);
@@ -89,20 +89,20 @@ After this plan, each page states its current contract directly, and 19 plus the
   - `DefaultBotProperties` frozen (PD-20);
   - `ClientDecodeError` + `.raw` (PD-29);
   - token-safe errors (PD-14).
-- [ ] **06-utils.md:**
+- [x] **06-utils.md:**
   - §1 entity kernel owned by D-17, Python formatting API by G-08 (PD-15);
   - §3 i18n capture points (PD-07).
-- [ ] **07-free-threading.md:**
+- [x] **07-free-threading.md:**
   - line 18 "Design detail to be done in phase 4" → "milestone E (E-19)";
   - single-bot sharding ships in 4.0 (PD-06);
   - Redis/Mongo single-loop (PD-09);
   - Tier-1 meaning (PD-27).
-- [ ] **08-build-release.md:**
+- [x] **08-build-release.md:**
   - §4 Tier 1 = our wheels + our suite (PD-27);
   - §5 differential harnesses run against an external pinned 3.x venv (PD-12);
   - §5 "Python fallback encoder" contradicts D1 (mandatory core, no pure-Python fallback): remove it;
   - benchmarks: name the A-05 harness and drop "pytest-codspeed or asv" if A-05 chose otherwise.
-- [ ] **09-3x-quick-wins.md:**
+- [x] **09-3x-quick-wins.md:**
   - #18 dropped (PD-28);
   - #8 measure-or-drop (PD-28);
   - #21 uses the per-update-on-failure shape (PD-28);
@@ -110,22 +110,22 @@ After this plan, each page states its current contract directly, and 19 plus the
   - add the R27 notes that D120 didn't carry: #4 (pruning must count holders and waiters), #12 (a bare lock bypasses
     bookkeeping; folded into 3x-06), #5 (first-use concurrency), #14 (defaults, session ownership, use across loops);
   - link each row to its 3x plan.
-- [ ] **10-forward-compatibility.md:**
+- [x] **10-forward-compatibility.md:**
   - Layer 2: `TelegramDecodeError` → `ClientDecodeError` with `.raw` (PD-29);
   - §5: link 3x-01 / 3x-02 / A-03 and the "emit to errors" decision A-03 recorded.
-- [ ] **11-removals.md:** §4 `force_reply` on `as_markup` is **stale**. Bot API 10.4 added `force_reply` to
+- [x] **11-removals.md:** §4 `force_reply` on `as_markup` is **stale**. Bot API 10.4 added `force_reply` to
       `InlineKeyboardMarkup` and `ReplyKeyboardMarkup` (aiogram 3.32, #1954), so it is a real field, not a leak, and
       4.0 keeps it (G-10 / I-16 don't remove it). Remove the row and the matching test note in §7, or reword it per
       the owner. Flag the change to the owner.
-- [ ] **13-aiogram-rust-review.md:**
+- [x] **13-aiogram-rust-review.md:**
   - B8 "README roadmap phase 2/4", B9 "phase 3", B24 "README phase 1" → milestone letters (B, D, E);
   - B17 timedelta (PD-11).
-- [ ] **14-testing.md:** §3 "port during roadmap phase 4" → "milestone H".
-- [ ] **15-observability.md:**
+- [x] **14-testing.md:** §3 "port during roadmap phase 4" → "milestone H".
+- [x] **15-observability.md:**
   - §5: the 3.x fix shape is PD-14 (same type, redacted, `from None`, original on `.original`);
   - H owns only the log filters; D-03 owns the 4.x wrapping;
   - `API_CALL` spans per attempt (PD-17).
-- [ ] **16-support-policy.md:**
+- [x] **16-support-policy.md:**
   - §2 baseline list: add D96 `TelegramMethod` subclasses, `UnsupportedKeywordArgument`, `Recommendation`, the 122
     API-ledger fields and 3 entities, and `create_channel_bot_link(parameter=)`;
   - state that D100 positional calls get **no runtime warning** (checker only);
@@ -133,20 +133,20 @@ After this plan, each page states its current contract directly, and 19 plus the
   - §1 "the registry fails CI once an entry's removal version is reached" → the D71 / R28 rule (due after 12 months
     **and** 2 minors, then an explicit `removal_decision` is required; I-12);
   - §2: remove `force_reply` from the removal list per the 11 item (real Bot API 10.4 field, #1954).
-- [ ] **18-docs-migration.md:** §2 `aiogram/_migration/registry.py` → `registry.toml`, read by path, ids `AG4xxx`
+- [x] **18-docs-migration.md:** §2 `aiogram/_migration/registry.py` → `registry.toml`, read by path, ids `AG4xxx`
       append-only, three kinds (PD-13).
-- [ ] **12-runtime.md:** §6 webhook prerequisites: name the 3.x webhook background-task drain fix. Drop any "missing
+- [x] **12-runtime.md:** §6 webhook prerequisites: name the 3.x webhook background-task drain fix. Drop any "missing
       `dispatcher`/`bots` webhook kwargs" prerequisite: the `dispatcher` kwarg is already fixed by #1856 and `bots` is
       polling-only by design.
-- [ ] **PD-32..PD-34:** PD-32 into 11 §4 / 16 §2 (the `force_reply` items above); PD-33 (registry authority and id
+- [x] **PD-32..PD-34:** PD-32 into 11 §4 / 16 §2 (the `force_reply` items above); PD-33 (registry authority and id
       blocks) into 18 §2 and 16 §1 next to PD-12 / PD-13; PD-34 (embargo) has no research target — note it in the
       README roadmap's milestone A wording only.
-- [ ] **19-review-resolutions.md:** add "revised by PD-xx" pointers at D112 (PD-04), D117 (PD-07) and R22 (PD-14).
+- [x] **19-review-resolutions.md:** add "revised by PD-xx" pointers at D112 (PD-04), D117 (PD-07) and R22 (PD-14).
       Don't rewrite the resolutions.
-- [ ] Sweep: `grep -rniE "phase [0-9]|roadmap phase|registry\.py|TelegramDecodeError|timedelta as seconds|last 3\.x
+- [x] Sweep: `grep -rniE "phase [0-9]|roadmap phase|registry\.py|TelegramDecodeError|timedelta as seconds|last 3\.x
       minor" v4/research --exclude=codex-review.md` returns only intended hits.
-- [ ] Link check: every relative Markdown link in `v4/research` and `v4/plans` resolves (script below).
-- [ ] Changelog: none (internal docs). Use the `skip news` label.
+- [x] Link check: every relative Markdown link in `v4/research` and `v4/plans` resolves (script below).
+- [x] Changelog: none (internal docs). Use the `skip news` label.
 
 ## Acceptance criteria
 
@@ -188,3 +188,31 @@ EOF
 - If a PD has no clear target page, record it in Notes and don't invent one.
 
 ## Notes
+
+Done 2026-11-18.
+
+- **Decide defaults:** the plan has no `Decide` items. A-05 (benchmark tool) is still `todo`, so 08 §5 names the
+  A-05 harness (`python -m benchmarks`) and keeps `pytest-codspeed` / `asv` only as the candidates A-05 decides
+  between.
+- **`4.x-plan-for-core-devs.md`:** closed circulation (PD-34), not in this repository; not edited here. Its link fixes
+  and the PD-06 "Deferred out of 4.0" change are left to the private copy.
+- **15 §5:** applied the PD-14 4.x wording, the D-03 / H ownership split and PD-17. The checklist's 3.x sub-item is
+  left to the owner.
+- **11 §4 / 16 §2 `force_reply` (PD-32):** the 11 §4 row and its §7 test note are removed, and the item is listed
+  under 11 §8 "Considered and kept". 16 §2 never listed it, so it gets an explicit "not on the list" line instead.
+  Flagged to the owner.
+- **02 §4:** both ledger examples are shape-only now, because every 3.x deprecation (`disable_web_page_preview`,
+  `StoryAreaPosition`, …) is dropped by the 4.0 reset and never enters the 4.x ledger.
+- **19:** "revised by PD-xx" pointers at D112, D117 and R22; the "normative" sentence now says the resolutions are
+  folded into the pages and 19 is history and index. No resolution text changed.
+- **README:** besides the checklist, the D19 and D83–D87 rows are rewritten in place (D114, D107, D108), and
+  breaking change 15 names the PD-26 re-entrancy error. D29/D113 rows unchanged. 08 §3 drops `arc-swap` (it served
+  only the shared bot `Ctx` that D103 removed).
+- **Sweep:** the remaining hits are intended: `TelegramDecodeError` in 05 §2.2 and 10 Layer 2 (stating PD-29),
+  "aiogram_rust Phase 31" in 08 §7 (their phase), "Last 3.x minor" in 19 R28 (quoting what it replaced).
+- **Link check:** 9 broken links, all pre-existing and in files this plan doesn't edit: 6 in `codex-review.md`
+  (`../../../aiogram/...`, one level too deep) and 3 in `_TEMPLATE.md` (paths relative to a story folder). None in
+  the pages A-02 edits.
+- **PD loop:** every PD-01..PD-34 appears in the page(s) its "Revises" column names; PDs without a target appear on
+  at least one research page. The "Revises" column needed no correction.
+- `A-contracts/README.md` still says "PD-01..PD-31" in the A-02 row; plan files are out of scope here.

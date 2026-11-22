@@ -68,8 +68,8 @@ per-Runner routing snapshots (D114). Routing through a `WorldSource` gives tests
   - [ ] a dependency override set after a first feed takes effect (PD-18);
   - [ ] mutating a running dispatcher plus `runner.refresh()` takes effect.
 - [ ] Port affected `tests/test_testing/**` scenarios.
-- [ ] Changelog fragment if `detach_router` was ever released (see the H-10 decision); otherwise none. Migration-
-      registry entry (PD-13) only if #1887 shipped in 3.x.
+- [ ] `removal` changelog fragment: `detach_router` shipped in 3.33.0. No migration-registry entry (PD-13): it is
+      outside the toolkit's declared stable surface (the provisional-API warning in `docs/dispatcher/testing.rst`).
 
 ## Acceptance criteria
 

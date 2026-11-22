@@ -2,7 +2,7 @@
 getMe
 #####
 
-Returns: :obj:`User`
+Returns: :obj:`BotFullInfo`
 
 .. automodule:: aiogram.methods.get_me
     :members:
@@ -19,7 +19,7 @@ As bot method
 
 .. code-block::
 
-    result: User = await bot.get_me(...)
+    result: BotFullInfo = await bot.get_me(...)
 
 
 Method as object
@@ -35,4 +35,4 @@ With specific bot
 
 .. code-block:: python
 
-    result: User = await bot(GetMe(...))
+    result: BotFullInfo = await bot(GetMe(...))

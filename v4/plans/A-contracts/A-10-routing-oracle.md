@@ -2,11 +2,11 @@
 
 | Field | Value |
 |---|---|
-| Status | `todo` |
+| Status | `done` |
 | Story | A — Contracts & baselines |
 | Target branch | `dev-3.x` (merged forward to `dev-4.x`, PD-12) |
 | Depends on | [A-04](A-04-pinned-corpus.md), [A-07](A-07-differential-framework.md) |
-| Blocks | [3x-03](../3x-quick-wins/3x-03-magicfilter-inline.md), [3x-11](../3x-quick-wins/3x-11-prebuilt-middleware-chains.md), 3x-15 (held back), [E-02](../E-runtime/E-02-dispatch-table-executor.md), [E-21](../E-runtime/E-21-e-exit-gate.md), [B-12](../B-spike/B-12-dispatch-harness.md) |
+| Blocks | [3x-03](../3x-quick-wins/3x-03-magicfilter-inline.md), [3x-11](../3x-quick-wins/3x-11-prebuilt-middleware-chains.md), [3x-15](../3x-quick-wins/3x-15-dp-update-root-filters.md), [E-02](../E-runtime/E-02-dispatch-table-executor.md), [E-21](../E-runtime/E-21-e-exit-gate.md), [B-12](../B-spike/B-12-dispatch-harness.md) |
 | Gate-conditional | no |
 | Decisions | D114, R09, R10, R26, D111, PD-19, D48, D34, D28/D110, D12, breaking change 13 |
 | Sources | [03 §1, §3, §5](../../research/03-routing.md), [19 R09, D111, D114](../../research/19-review-resolutions.md), [codex-review R09, R10, §11](../../research/codex-review.md), [README breaking changes 4, 13, 15–17, 24](../../research/README.md) |
@@ -71,7 +71,8 @@ it saw**.
       (ContextVar).
 - [ ] Topology TOML → builder, covering every component kind above.
 - [ ] Add the scenarios to A-04 (`routing/*.toml`, with manifest hashes).
-- [ ] Run `pypi:aiogram==3.32.0` vs `path:.`: 0 mismatches. Run `--poison right`: detected.
+- [ ] Run `pypi:aiogram<4` (the latest 3.x release; the trace header records the version) vs `path:.`: 0
+      mismatches. Run `--poison right`: detected.
 - [ ] Reproduce the codex §11 R09 probes using the **real** `Router.message` observer. Codex discarded one probe for
       using a standalone observer.
 - [ ] Manifest entries above.
@@ -79,7 +80,9 @@ it saw**.
 
 ## Acceptance criteria
 
-- Every scenario in the table produces a trace. 3.32.0 vs HEAD: 0 unapproved mismatches. Poison is detected.
+- Every scenario in the table produces a trace. The latest 3.x release vs HEAD: 0 unapproved mismatches, except
+  changes not released yet, which are listed rather than approved. Poison is detected. The oracle follows the
+  supported 3.x line; a plan that needs a reproducible comparison (E-21, the B gates) pins a version itself.
 - The R09 probes reproduce the recorded codex §11 observations.
 - Against 3x-03's branch: no mismatch except the timing / thread fields, which are tagged.
 
@@ -93,8 +96,8 @@ it saw**.
 ## Validation
 
 ```bash
-uv run python -m differential run --kind routing --left pypi:aiogram==3.32.0 --right path:.
-uv run python -m differential run --kind routing --left pypi:aiogram==3.32.0 --right path:. --poison right; test $? -ne 0
+uv run python -m differential run --kind routing --left 'pypi:aiogram<4' --right path:.
+uv run python -m differential run --kind routing --left 'pypi:aiogram<4' --right path:. --poison right; test $? -ne 0
 uv run pytest tests --cov=aiogram --cov-report=term-missing
 make lint
 ```

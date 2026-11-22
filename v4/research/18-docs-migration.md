@@ -41,9 +41,15 @@ Other choices:
   client & session, utils & formatting, i18n, packaging & Python support.
 - **Each item**: what changed · why · before/after code · codemod coverage · **checker id** (e.g. `AG4012`, as printed
   by `aiogram migrate check`) · finding class (**definite / heuristic / manual checklist**, R28) · the decision it comes from.
-- **Single source**: a registry in code (`aiogram/_migration/registry.py`) holds the entries. The 3.x deprecation
-  warnings (D74), the checker rules and the guide's item headers are all generated from it, so the three never
-  disagree.
+- **Single source** (PD-13): one data file, `aiogram/_migration/registry.toml`, holds the entries. It is read **by
+  path**, with no `_core` import, so the docs build and `uvx aiogram[migrate]` stay import-free. Ids are `AG4xxx` and
+  append-only; there are three kinds: `removal-4.0`, `deprecation-4.x` and `api-ledger` (generated). The 3.x
+  deprecation warnings (D74), the checker rules and the guide's item headers all come from it, so the three never
+  disagree. Schema and seed: A-11; 3.x warnings: 3x-20; 4.x machinery, CI and the Deprecations page: I-12. Every
+  plan with a user-visible break adds its entry.
+- **Authority** (PD-33): `dev-4.x` owns `registry.toml` after the fork. Id blocks: AG4001–4699 (added on `dev-4.x`),
+  AG4700–4799 (first added on `dev-3.x`), AG4800–4999 (`api-ledger`). 3x-24 copies the file back to `dev-3.x` before
+  each baseline release (A-11).
 - **Scope**: the README "Breaking changes" list plus 11-removals. Behaviour changes are flagged separately, because
   they can't be found statically (manual-checklist items): isolation on by default (D28, D110), sync filters inline (D34), late registration applying only on refresh (D114), skip semantics (B13),
   skipped outer middlewares (D111), error bubbling (D48).

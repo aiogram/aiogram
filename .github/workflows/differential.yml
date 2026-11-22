@@ -1,0 +1,149 @@
+name: Differential
+
+# The differential harness (differential/README.md): the latest 3.x release against this tree,
+# then the same with the right side poisoned, which must be caught.
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - dev-3.x
+      - dev-4.x
+    # the harness, its inputs and this file; not aiogram/**, where intended fixes would
+    # differ from the release
+    paths:
+      - "differential/**"
+      - "benchmarks/corpus/**"
+      - ".github/workflows/differential.yml"
+  schedule:
+    - cron: "0 4 * * 1"  # Mondays 04:00 UTC
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  smoke:
+    name: smoke (3.x release vs tree, plus poison)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - uses: astral-sh/setup-uv@v10.3.3
+        with:
+          python-version: "3.11"
+
+      - name: Install project
+        run: uv sync --locked
+
+      - name: Smoke, expect 0 mismatches
+        run: uv run python -m differential run --kind smoke --left 'pypi:aiogram<4' --right path:.
+
+      - name: Smoke with the right side poisoned, expect exit 1
+        # exit 1 = mismatches found; 2 = poison not detected, 3 = harness error: both fail here
+        run: |
+          set +e
+          uv run python -m differential run --kind smoke --left 'pypi:aiogram<4' --right path:. --poison right
+          code=$?
+          if [ "$code" -ne 1 ]; then
+            echo "::error::poisoned run exited $code, expected 1"
+            exit 1
+          fi
+
+  request:
+    name: request (3.x release vs tree, plus poison)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - uses: astral-sh/setup-uv@v10.3.3
+        with:
+          python-version: "3.11"
+
+      - name: Install project
+        run: uv sync --locked
+
+      - name: Request, expect 0 mismatches
+        run: uv run python -m differential run --kind request --left 'pypi:aiogram<4' --right path:.
+
+      - name: Request with the right side poisoned, expect exit 1
+        # exit 1 = mismatches found; 2 = poison not detected, 3 = harness error: both fail here
+        run: |
+          set +e
+          uv run python -m differential run --kind request --left 'pypi:aiogram<4' --right path:. --poison right
+          code=$?
+          if [ "$code" -ne 1 ]; then
+            echo "::error::poisoned run exited $code, expected 1"
+            exit 1
+          fi
+
+  model:
+    name: model (3.x release vs tree, plus poison)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - uses: astral-sh/setup-uv@v10.3.3
+        with:
+          python-version: "3.11"
+
+      - name: Install project
+        run: uv sync --locked
+
+      - name: Model, expect 0 mismatches
+        run: uv run python -m differential run --kind model --left 'pypi:aiogram<4' --right path:.
+
+      - name: Model with the right side poisoned, expect exit 1
+        run: |
+          set +e
+          uv run python -m differential run --kind model --left 'pypi:aiogram<4' --right path:. --poison right --max-diffs 3
+          code=$?
+          if [ "$code" -ne 1 ]; then
+            echo "::error::poisoned run exited $code, expected 1"
+            exit 1
+          fi
+
+  routing:
+    name: routing (3.x release vs tree, plus poison)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - uses: astral-sh/setup-uv@v10.3.3
+        with:
+          python-version: "3.11"
+
+      - name: Install project
+        run: uv sync --locked
+
+      - name: Routing, expect 0 mismatches
+        run: uv run python -m differential run --kind routing --left 'pypi:aiogram<4' --right path:.
+
+      - name: Routing with the right side poisoned, expect exit 1
+        # exit 1 = mismatches found; 2 = poison not detected, 3 = harness error: both fail here
+        run: |
+          set +e
+          uv run python -m differential run --kind routing --left 'pypi:aiogram<4' --right path:. --poison right
+          code=$?
+          if [ "$code" -ne 1 ]; then
+            echo "::error::poisoned run exited $code, expected 1"
+            exit 1
+          fi

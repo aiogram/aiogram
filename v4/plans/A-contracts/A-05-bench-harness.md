@@ -2,7 +2,7 @@
 
 | Field | Value |
 |---|---|
-| Status | `todo` |
+| Status | `done` |
 | Story | A — Contracts & baselines |
 | Target branch | `dev-3.x` (merged forward to `dev-4.x`, PD-12) |
 | Depends on | [A-04](A-04-pinned-corpus.md) |
@@ -71,21 +71,21 @@ uv run python -m benchmarks report  <a.json> <b.json>
 
 ## Checklist
 
-- [ ] Decide the tool. Proposed default: a **stdlib harness** (as above). pytest-codspeed counts instructions and
+- [x] Decide the tool. Proposed default: a **stdlib harness** (as above). pytest-codspeed counts instructions and
       can't express the memory gate; asv adds a framework for what ~300 lines do. Codspeed may be added later for PR
       regression only. Record the choice in Notes and flag it to the owner (08 §5 left it open).
-- [ ] Add a case function for every A-04 input id that plans cite (see the 3x plans' Validation sections), with
+- [x] Add a case function for every A-04 input id that plans cite (see the 3x plans' Validation sections), with
       ids exactly as in A-04.
-- [ ] Implement `run` / `compare` / `report` and the JSON schema (versioned, `schema = 1`).
-- [ ] Add a self-test (`tests/test_benchmarks_harness.py`) using a tiny fake case:
+- [x] Implement `run` / `compare` / `report` and the JSON schema (versioned, `schema = 1`).
+- [x] Add a self-test (`tests/test_benchmarks_harness.py`) using a tiny fake case:
   - repeats = 7;
   - environment fields present;
   - `compare` detects a deliberately slowed head (an injected `time.sleep` in a fake case);
   - JSON round-trips.
-- [ ] Add `make bench` and the CI job; run `make lint-workflows`.
-- [ ] Write a "Benchmarks" section in `benchmarks/README.md`: method, CLI, how to read `compare`, and "don't
+- [x] Add `make bench` and the CI job; run `make lint-workflows`.
+- [x] Write a "Benchmarks" section in `benchmarks/README.md`: method, CLI, how to read `compare`, and "don't
       compare with README best-of-N numbers".
-- [ ] Changelog: none (dev tooling). Use the `skip news` label.
+- [x] Changelog: none (dev tooling). Use the `skip news` label.
 
 ## Acceptance criteria
 
@@ -119,3 +119,41 @@ make lint-workflows
 - Lands before any measured 3x plan merges. Those plans can be developed in parallel and measured once A-05 is in.
 
 ## Notes
+
+- Tool: a stdlib harness, the proposed default (owner, 2026-11-21, plan approval). No new dependency. pytest-codspeed
+  can still be added later for PR-regression only.
+- `compare` exports each ref with `git archive` into `.benchmarks/trees/<sha>` and installs it with
+  `uv sync --locked --no-dev --all-extras` into `.benchmarks/venvs/<sha>`, both cached by sha. It does not use
+  `git worktree add` (owner, 2026-11-21). Both sides run the invoking checkout's harness and corpus from a temporary
+  copy under `python -I`, so a base older than A-05 can still be measured.
+- The memory cases got three appended corpus ids (owner, 2026-11-21): `memory.update.retained-100k`,
+  `memory.response.retained-child` and `memory.update.sustained-gc`. RSS comes from a fresh subprocess, with an
+  empty-process baseline subtracted (B-02:45). Current RSS is read from `/proc/self/statm` where there is one; elsewhere
+  peak RSS from `ru_maxrss`, normalised to bytes. On macOS `memory.response.retained-child` (N = 1000) is noisy, because
+  the peak is dominated by the batch decode. Its tracemalloc figure is the precise one.
+- Layout as proposed, plus these modules:
+  - `harness.py` (registry, timing, statistics, environment, schema);
+  - `worker.py` (the measuring side);
+  - `runner.py` (run / compare / report);
+  - `memory.py`;
+  - `adapters/{__init__,aiogram3}.py`.
+
+  B-02 adds `adapters/aiogram4.py`.
+- CLI additions that no plan needs to cite:
+  - `compare --out`;
+  - `--interval` for the sustained mode (default 1 s; `--duration` defaults to 30 s, so B-02 can pass 5m/10s);
+  - `--loop auto|asyncio|uvloop` (auto = uvloop when importable);
+  - `report` also takes a single file.
+- Results include p5/p95 and the id + sha256 of every fixture a case read (B-02:74, B-02:88). Variants are labelled
+  `routing.52-handlers[fsm=on]`. Inputs that 3.x rejects (`on_3x` other than `ok`) have no case and report `missing`.
+- Request cases make a real round-trip through `AiohttpSession` to a local aiohttp server in the worker's loop. The
+  server answers with the pinned `response.sendMessage` envelope. The figure is client + server.
+- Noise calibration on macOS (M2 Pro, CPython 3.15.2, uvloop, load average about 5), from
+  `compare --base HEAD --head HEAD`:
+  - `update.realistic`: +0.4%, 95% CI [-1.1%, +1.2%];
+  - `routing.52-handlers[fsm=on]`: -1.3%, CI [-9.1%, +5.0%];
+  - `routing.52-handlers[fsm=off]`: -1.7%, CI [-14.5%, +7.6%].
+
+  The routing CIs are wide because 3.x resolves `F.text` filters in the thread pool (3x-03).
+- Linux noise calibration is pending for A-06. A `workflow_dispatch` run needs the workflow on the default branch, so
+  the Linux numbers come from the first run after merge.

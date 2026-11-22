@@ -1,0 +1,161 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "botfullinfo",
+    "name": "BotFullInfo",
+    "description": "This object contains full information about the bot itself.",
+    "html_description": "<p>This object contains full information about the bot itself.</p>",
+    "rst_description": "This object contains full information about the bot itself.",
+    "annotations": [
+      {
+        "type": "Integer",
+        "description": "Unique identifier for this bot. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a 64-bit integer or double-precision float type are safe for storing this identifier.",
+        "html_description": "<td>Unique identifier for this bot. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a 64-bit integer or double-precision float type are safe for storing this identifier.</td>",
+        "rst_description": "Unique identifier for this bot. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a 64-bit integer or double-precision float type are safe for storing this identifier.\n",
+        "name": "id",
+        "required": true
+      },
+      {
+        "type": "True",
+        "description": "Always True",
+        "html_description": "<td>Always <em>True</em></td>",
+        "rst_description": "Always :code:`True`\n",
+        "name": "is_bot",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "Bot's first name",
+        "html_description": "<td>Bot's first name</td>",
+        "rst_description": "Bot's first name\n",
+        "name": "first_name",
+        "required": true
+      },
+      {
+        "type": "Boolean",
+        "description": "True, if the bot can be added to groups",
+        "html_description": "<td><em>True</em>, if the bot can be added to groups</td>",
+        "rst_description": ":code:`True`, if the bot can be added to groups\n",
+        "name": "can_join_groups",
+        "required": true
+      },
+      {
+        "type": "Boolean",
+        "description": "True, if privacy mode is disabled for the bot",
+        "html_description": "<td><em>True</em>, if <a href=\"/bots/features#privacy-mode\">privacy mode</a> is disabled for the bot</td>",
+        "rst_description": ":code:`True`, if `privacy mode <https://core.telegram.org/bots/features#privacy-mode>`_ is disabled for the bot\n",
+        "name": "can_read_all_group_messages",
+        "required": true
+      },
+      {
+        "type": "Boolean",
+        "description": "True, if the bot supports guest queries from chats it is not a member of",
+        "html_description": "<td><em>True</em>, if the bot supports guest queries from chats it is not a member of</td>",
+        "rst_description": ":code:`True`, if the bot supports guest queries from chats it is not a member of\n",
+        "name": "supports_guest_queries",
+        "required": true
+      },
+      {
+        "type": "Boolean",
+        "description": "True, if the bot supports inline queries",
+        "html_description": "<td><em>True</em>, if the bot supports inline queries</td>",
+        "rst_description": ":code:`True`, if the bot supports inline queries\n",
+        "name": "supports_inline_queries",
+        "required": true
+      },
+      {
+        "type": "Boolean",
+        "description": "True, if the bot requests the location of the user with every inline query",
+        "html_description": "<td><em>True</em>, if the bot requests the location of the user with every inline query</td>",
+        "rst_description": ":code:`True`, if the bot requests the location of the user with every inline query\n",
+        "name": "needs_inline_query_location",
+        "required": true
+      },
+      {
+        "type": "Boolean",
+        "description": "True, if the bot can be connected to a user account to manage it",
+        "html_description": "<td><em>True</em>, if the bot can be connected to a user account to manage it</td>",
+        "rst_description": ":code:`True`, if the bot can be connected to a user account to manage it\n",
+        "name": "can_connect_to_business",
+        "required": true
+      },
+      {
+        "type": "Boolean",
+        "description": "True, if the bot has a main Web App",
+        "html_description": "<td><em>True</em>, if the bot has a main Web App</td>",
+        "rst_description": ":code:`True`, if the bot has a main Web App\n",
+        "name": "has_main_web_app",
+        "required": true
+      },
+      {
+        "type": "Boolean",
+        "description": "True, if the bot has forum topic mode enabled in private chats",
+        "html_description": "<td><em>True</em>, if the bot has forum topic mode enabled in private chats</td>",
+        "rst_description": ":code:`True`, if the bot has forum topic mode enabled in private chats\n",
+        "name": "has_topics_enabled",
+        "required": true
+      },
+      {
+        "type": "Boolean",
+        "description": "True, if the bot allows users to create and delete topics in private chats",
+        "html_description": "<td><em>True</em>, if the bot allows users to create and delete topics in private chats</td>",
+        "rst_description": ":code:`True`, if the bot allows users to create and delete topics in private chats\n",
+        "name": "allows_users_to_create_topics",
+        "required": true
+      },
+      {
+        "type": "Boolean",
+        "description": "True, if topics in private chats with the bot are shown in a sidebar",
+        "html_description": "<td><em>True</em>, if topics in private chats with the bot are shown in a sidebar</td>",
+        "rst_description": ":code:`True`, if topics in private chats with the bot are shown in a sidebar\n",
+        "name": "has_topic_sidebar",
+        "required": true
+      },
+      {
+        "type": "Boolean",
+        "description": "True, if other bots can be created to be controlled by the bot",
+        "html_description": "<td><em>True</em>, if other bots can be created to be controlled by the bot</td>",
+        "rst_description": ":code:`True`, if other bots can be created to be controlled by the bot\n",
+        "name": "can_manage_bots",
+        "required": true
+      },
+      {
+        "type": "Boolean",
+        "description": "True, if the bot supports join request queries and can be assigned to process them",
+        "html_description": "<td><em>True</em>, if the bot supports join request queries and can be assigned to process them</td>",
+        "rst_description": ":code:`True`, if the bot supports join request queries and can be assigned to process them\n",
+        "name": "supports_join_request_queries",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "Bot's username",
+        "html_description": "<td><em>Optional</em>. Bot's username</td>",
+        "rst_description": "*Optional*. Bot's username\n",
+        "name": "username",
+        "required": false
+      },
+      {
+        "type": "Array of String",
+        "description": "If non-empty, the list of all active usernames of the bot",
+        "html_description": "<td><em>Optional</em>. If non-empty, the list of all <a href=\"https://telegram.org/blog/topics-in-groups-collectible-usernames#collectible-usernames\">active usernames</a> of the bot</td>",
+        "rst_description": "*Optional*. If non-empty, the list of all `active usernames <https://telegram.org/blog/topics-in-groups-collectible-usernames#collectible-usernames>`_ of the bot\n",
+        "name": "active_usernames",
+        "required": false
+      },
+      {
+        "type": "String",
+        "description": "Placeholder for inline queries, which is shown in the input field after the bot's username; omitted if the default placeholder is used",
+        "html_description": "<td><em>Optional</em>. Placeholder for inline queries, which is shown in the input field after the bot's username; omitted if the default placeholder is used</td>",
+        "rst_description": "*Optional*. Placeholder for inline queries, which is shown in the input field after the bot's username; omitted if the default placeholder is used\n",
+        "name": "inline_query_placeholder",
+        "required": false
+      }
+    ],
+    "category": "types"
+  }
+}

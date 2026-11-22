@@ -65,7 +65,7 @@ class Update(TelegramObject):
     inline_query: InlineQuery | None = None
     """*Optional*. New incoming `inline <https://core.telegram.org/bots/api#inline-mode>`_ query"""
     chosen_inline_result: ChosenInlineResult | None = None
-    """*Optional*. The result of an `inline <https://core.telegram.org/bots/api#inline-mode>`_ query that was chosen by a user and sent to their chat partner. Please see our documentation on the `feedback collecting <https://core.telegram.org/bots/inline#collecting-feedback>`_ for details on how to enable these updates for your bot"""
+    """*Optional*. The result of an `inline <https://core.telegram.org/bots/api#inline-mode>`_ query that was chosen by a user and sent to their chat partner. Please see our documentation on the `feedback collecting <https://core.telegram.org/bots/inline#collecting-feedback>`_ for details on how to enable these updates for your bot. The updates can also be enabled using the parameter *inline_feedback_share_denominator* of the method :class:`aiogram.methods.set_my_settings.SetMySettings`"""
     callback_query: CallbackQuery | None = None
     """*Optional*. New incoming callback query"""
     shipping_query: ShippingQuery | None = None

@@ -1,0 +1,88 @@
+# 21 CallbackData classes (prefix + fields); `data` matches only the last one.
+schema = 1
+separator = ":"
+data = "p20:42:approve"
+
+[[classes]]
+prefix = "p0"
+fields = [{ name = "id", type = "int" }, { name = "action", type = "str" }]
+
+[[classes]]
+prefix = "p1"
+fields = [{ name = "id", type = "int" }, { name = "action", type = "str" }]
+
+[[classes]]
+prefix = "p2"
+fields = [{ name = "id", type = "int" }, { name = "action", type = "str" }]
+
+[[classes]]
+prefix = "p3"
+fields = [{ name = "id", type = "int" }, { name = "action", type = "str" }]
+
+[[classes]]
+prefix = "p4"
+fields = [{ name = "id", type = "int" }, { name = "action", type = "str" }]
+
+[[classes]]
+prefix = "p5"
+fields = [{ name = "id", type = "int" }, { name = "action", type = "str" }]
+
+[[classes]]
+prefix = "p6"
+fields = [{ name = "id", type = "int" }, { name = "action", type = "str" }]
+
+[[classes]]
+prefix = "p7"
+fields = [{ name = "id", type = "int" }, { name = "action", type = "str" }]
+
+[[classes]]
+prefix = "p8"
+fields = [{ name = "id", type = "int" }, { name = "action", type = "str" }]
+
+[[classes]]
+prefix = "p9"
+fields = [{ name = "id", type = "int" }, { name = "action", type = "str" }]
+
+[[classes]]
+prefix = "p10"
+fields = [{ name = "id", type = "int" }, { name = "action", type = "str" }]
+
+[[classes]]
+prefix = "p11"
+fields = [{ name = "id", type = "int" }, { name = "action", type = "str" }]
+
+[[classes]]
+prefix = "p12"
+fields = [{ name = "id", type = "int" }, { name = "action", type = "str" }]
+
+[[classes]]
+prefix = "p13"
+fields = [{ name = "id", type = "int" }, { name = "action", type = "str" }]
+
+[[classes]]
+prefix = "p14"
+fields = [{ name = "id", type = "int" }, { name = "action", type = "str" }]
+
+[[classes]]
+prefix = "p15"
+fields = [{ name = "id", type = "int" }, { name = "action", type = "str" }]
+
+[[classes]]
+prefix = "p16"
+fields = [{ name = "id", type = "int" }, { name = "action", type = "str" }]
+
+[[classes]]
+prefix = "p17"
+fields = [{ name = "id", type = "int" }, { name = "action", type = "str" }]
+
+[[classes]]
+prefix = "p18"
+fields = [{ name = "id", type = "int" }, { name = "action", type = "str" }]
+
+[[classes]]
+prefix = "p19"
+fields = [{ name = "id", type = "int" }, { name = "action", type = "str" }]
+
+[[classes]]
+prefix = "p20"
+fields = [{ name = "id", type = "int" }, { name = "action", type = "str" }]

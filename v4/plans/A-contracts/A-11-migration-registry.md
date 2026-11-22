@@ -2,7 +2,7 @@
 
 | Field | Value |
 |---|---|
-| Status | `todo` |
+| Status | `done` |
 | Story | A — Contracts & baselines |
 | Target branch | `dev-3.x` (merged forward; see the authority rule below) |
 | Depends on | [A-01](A-01-bootstrap-dev-4x.md) (for the `dev-4.x` authority rule) |
@@ -96,14 +96,14 @@ That way they can't disagree (18 §2). Ids are `AG4xxx`, append-only. Kinds: `re
 
 ## Checklist
 
-- [ ] Write `aiogram/_migration/registry.toml` with the schema header comment, and `aiogram/_migration/__init__.py`
+- [x] Write `aiogram/_migration/registry.toml` with the schema header comment, and `aiogram/_migration/__init__.py`
       as an empty package. The reader is 3x-20.
-- [ ] Implement the PD-33 id blocks and authority rule above (owner-decided; no longer a Decide item).
-- [ ] Seed every entry listed above. Cross-check the README breaking changes 1–24 and the 11 rows one by one, and list
+- [x] Implement the PD-33 id blocks and authority rule above (owner-decided; no longer a Decide item).
+- [x] Seed every entry listed above. Cross-check the README breaking changes 1–24 and the 11 rows one by one, and list
       in Notes any item intentionally without an entry, with the reason.
-- [ ] Add the validation test.
-- [ ] Packaging: the file ships in the wheel (`uv build`, list the contents).
-- [ ] Changelog: none yet, because nothing user-visible happens until 3x-20. Use the `skip news` label.
+- [x] Add the validation test.
+- [x] Packaging: the file ships in the wheel (`uv build`, list the contents).
+- [x] Changelog: none yet, because nothing user-visible happens until 3x-20. Use the `skip news` label.
 
 ## Acceptance criteria
 
@@ -137,3 +137,51 @@ uv build && unzip -l dist/aiogram-*.whl | grep registry.toml
 - Every 4.0 plan with a user-visible break adds or adjusts its entry on `dev-4.x` (PD-13).
 
 ## Notes
+
+- **2026-11-18, implementation (A-11 PR).** 49 seed entries, AG4001–AG4049; AG47xx and AG48xx are empty.
+- **No open Decide items.** PD-33 was owner-decided; nothing else needed a default.
+- **Seeded after the fork.** `dev-4.x` already existed when this landed on `dev-3.x`. The seed is the one-time
+  pre-population that merges forward. After that, `dev-4.x` allocates from AG4050, and `dev-3.x` only appends in
+  AG47xx / AG48xx (rule 2).
+- **Rules the test adds beyond the plan text.** Entries are sorted by id, so each block is one contiguous region
+  and the two branches append in different places. Every key is required except `breaking_change`. `fields` is
+  allowed only on `api-ledger`, `removal` only on `deprecation-4.x`. `generated` is true exactly for `api-ledger`.
+  `suppress` must equal `aiogram: ignore[<id>]`. `warn_3x.target` is empty exactly when `site = "none"`; several
+  names in one entry are comma-separated. The append-only check against the previous release tag skips until a
+  tag contains the file; synthetic cases cover its logic.
+- **Message template:** a top-level `message` key. The docs anchor is `id.lower()`, and 3x-20 appends the
+  "See <url>#<anchor>" link, because the guide URL doesn't exist yet. `removal.earliest_removal` is a version
+  floor; I-12 adds the 12-month part.
+- **API-ledger placeholder.** It is AG4013, an umbrella `removal-4.0` entry for breaking change 8, not an
+  `api-ledger` entry in AG48xx. Ids are append-only, so a placeholder could never be deleted once 3x-23 generates
+  the real AG48xx entries. AG4013 also covers `Message.send_copy`'s legacy reply parameters and
+  `disable_web_page_preview` on the `answer` / `reply` shortcuts.
+- **One site per entry.** D42 has two entries: AG4027 (`aiogram.handlers` import, 3x-21 row 2) and AG4028
+  (`BaseHandler` class creation, 3x-22 row 2). D12 has two: AG4018 (handler/filter parameters, registration) and
+  AG4019 (middleware `data[...]` reads, heuristic, no warning).
+- **Decision ids.** 11 rows with no decision id of their own cite D2 (substantial documented migration), plus D74
+  where the 3.x baseline warns.
+- **README breaking changes → ids:** 1 → 4001–4003 · 2 → 4004 · 3 → 4005–4008 · 4 → 4009 · 5 → 4010 · 6 → 4011 ·
+  7 → 4012 · 8 → 4013 · 9 → 4014 · 10 → 4015 · 11 → 4016–4030 · 12 → 4031–4032 · 13 → 4033 · 14 → 4034 ·
+  15 → 4035 · 16 → 4036 · 17 → 4037 · 18 → 4038 · 19 → 4039 · 20 → 4040 · 21 → 4041 · 22 → 4042 · 23 → 4043 ·
+  24 → 4044. 11 rows outside the README list: `Bot(**kwargs)` → 4045, WebApp dataclasses → 4046,
+  `UnsupportedKeywordArgument` → 4047, `Recommendation` → 4048, `create_channel_bot_link(parameter=)` → 4049.
+  Manual-checklist items: D28/D110 → 4035, D34 → 4036, D114 → 4009, breaking change 13 → 4033, D111 → 4044,
+  D48 → 4037, D103 → 4042, D106 → 4043, D12 → 4019.
+- **Items with no entry, on purpose:**
+  - `force_reply` on `as_markup` (11 §4): Bot API 10.4 (#1954) made it a real field on both markups, so 11 §4 is
+    stale (PD-32). **For A-02:** correct 11 §4 and 16 §2.
+  - 11 §1, `DateTime` `PlainSerializer`, the `TYPE_CHECKING` stubs / `model_rebuild` loop, and the `lru_cache` on
+    `Update.event_type` (`utils/mypy_hacks.py`): internal implementation. Fields stay `datetime`, and the public
+    API doesn't change.
+  - 11 §1, `BotContextController` and re-mounting via `model_dump` / `model_validate`: internal. Their visible
+    effect is AG4042 (D103). `bot_user` stays (D109).
+  - 11 §4 `ChatMemberAdapter`: C-19 decides keep-or-remove and registers it (G-10 Out).
+  - 11 §4 `serialization.py`: the implementation changes, the API is kept.
+  - 11 §6 webhook: no legacy item. 11 §7: docs and tests only, not user API.
+  - The SkipHandler data-reliance example in 16 §2: D38 keeps the 3.x semantics, so nothing breaks.
+  - 4.0-only additions that start a 4.x deprecation (e.g. D105 unknown-field attributes, PD-08 session JSON
+    hooks): their own plans add the entries on `dev-4.x` (PD-13).
+- **CI history (Codex review).** The `tests` and `lowest-deps` jobs now check out with `fetch-depth: 0`, so the
+  append-only check can see the previous release tag. Under `CI`, the test fails instead of skipping when no tag
+  is reachable. It still skips outside a git checkout (an unpacked sdist), and when the tag predates the file.

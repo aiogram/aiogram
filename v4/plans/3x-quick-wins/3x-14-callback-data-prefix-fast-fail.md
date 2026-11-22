@@ -41,7 +41,7 @@ that on every callback for every non-matching filter.
 - [ ] Tests:
   - parametrised equivalence against `unpack` over prefixes, separators, field counts and empty data;
   - the matching path is unchanged.
-- [ ] Coordinate with 3x-15 (held back): its `CallbackData` change touches `pack()`, not the filter, so there is
+- [ ] Coordinate with [3x-15](3x-15-dp-update-root-filters.md): its `CallbackData` change touches `pack()`, not the filter, so there is
       no conflict; confirm it.
 - [ ] 100% coverage.
 - [ ] Changelog fragment `CHANGES/<pr>.misc.rst`.

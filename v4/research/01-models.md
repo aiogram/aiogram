@@ -100,7 +100,8 @@ Update view (pyclass, frozen) ── Arc<UpdateData> + raw: Arc<[u8]> (this upda
   See [10](10-forward-compatibility.md).
 - Integers: `int64` per schema `format` (217 fields) → `i64`; `int32` → `i32`; `double` → `f64`.
 - Dates: Unix-time fields (overlay list, §02) are stored as `i64` and returned as `datetime` (UTC) on
-  access — same public type as today. On input (B17): naive datetimes are local time, `timedelta` is seconds,
+  access — same public type as today. On input (B17): naive datetimes are local time, a `timedelta` encodes as the
+  absolute unix time `now + delta`, as 3.x does (PD-11; "seconds" would turn a temporary ban into a permanent one),
   fractional values round half-even; `from` / `from_user` and `bot` / `bot_user` are both accepted on every input path.
 - Enum-valued fields return `str` (today's `use_enum_values` contract). Rust enums carry an
   `Unknown(Box<str>)` variant so new API values never break parsing. Python `aiogram.enums.*` stay `StrEnum`.
@@ -128,7 +129,7 @@ Update view (pyclass, frozen) ── Arc<UpdateData> + raw: Arc<[u8]> (this upda
   | **D96** | **Raw call only**: `await bot.call("sendGift2", {"chat_id": 1, "photo": FSInputFile("a.jpg")}, returns=Message, request_timeout=None)`. User subclasses of `TelegramMethod` are **no longer supported**: generated method classes aren't subclassable, and `TelegramMethod` remains for typing and `isinstance`. Inside, the call builds an internal `RawMethod(name, params, returns)`, so request middlewares (Retry, RateLimit, logging, OTel; D43/D44/D64) and the testing toolkit (`env.on("sendGift2")`) see it like any method. README breaking change 20 |
   | **D97** | **Params** may contain `InputFile` anywhere, nested included. They are extracted into multipart attachments (`attach://…`) by the same Rust writer. Values may be aiogram types, builtins, plain dicts in wire shape, or any object with `to_dict()` |
   | **D98** | **`returns` is optional.** Omitted, it returns the decoded JSON as builtins (`aiogram.Raw`). Otherwise it is an aiogram type (Rust decoder), a builtin or container (`bool`, `int`, `str`, `list[T]`, `dict`), a class with `from_dict(data, *, bot=None)`, or any callable `(raw) -> T` |
-  | **D99** | **Unknown parameters on generated methods are allowed** (`SendMessage(..., new_param=1)`), must be JSON-shaped (D87), and are forwarded as-is. A one-time `AiogramUnknownParameterWarning` per (method, name) catches typos and can be silenced by category |
+  | **D99** | **Unknown parameters on generated methods are allowed** (`SendMessage(..., new_param=1)`), must be JSON-shaped (D87), and are forwarded as-is. A one-time `AiogramUnknownParameterWarning` per (method, name) catches typos and can be silenced by category. This is **runtime-only**: the keyword-only stubs have no `**extra` (PD-23), so a type checker reports an unknown kwarg; the docs say so |
 
 ### 3.4 Shortcuts (`Message.answer`, `CallbackQuery.answer`, …)
 
@@ -142,11 +143,14 @@ generated from a content-type mapping. Anything the DSL can't express is hand-wr
 There is no Python facade: one class per type, and the decoder instantiates it directly ([02](02-butcher.md) §5.1).
 
 
-**Keyword-only (D100).** Every generated signature takes keyword arguments only: type and method constructors
+**Keyword-only (D100, kept as decided, PD-02).** Every generated signature takes keyword arguments only: type and method constructors
 (`#[new]` with `(*, …)`), `Bot` methods (`async def send_message(self, *, chat_id, text, …)`) and all shortcuts
 (`message.answer(*, text, …)`). When Telegram makes a parameter optional or adds one, parameter order never matters,
 so no signature has to be reordered and the `keep_position` ledger hack goes away. Hand-written APIs that aren't
-generated from the Bot API (e.g. `bot.call(name, params)`, D96) keep their own stable signatures. README breaking change 21.
+generated from the Bot API (e.g. `bot.call(name, params)`, D96) keep their own stable signatures. The stubs list the
+keyword-only parameters and have **no `**extra`** (PD-23); D99 unknown kwargs work at runtime only. README breaking
+change 21.
+
 ### 3.5 Python extensibility kept
 
 | Need | v4 mechanism |
@@ -159,7 +163,7 @@ generated from the Bot API (e.g. `bot.call(name, params)`, D96) keep their own s
 | `F` / magic-filter attribute access, `isinstance` filters | normal attribute access and classes, so unaffected |
 | Unreleased API methods / params | `bot.call(name, params, returns=)` and extra kwargs on generated methods (§3.3, D96–D99) |
 | Dump / load / copy / introspection | **native API (D91–D94, §3.7)**: `to_json` / `to_dict` / `from_json` / `from_dict` / `replace`, in Rust **once on the base class** through a per-type vtable (13 B3), dump keys interned (B2), both `from`/`from_user` accepted on input. `model_*` stay as deprecated Python aliases |
-| Lazy text (`L.key()`, `LazyProxy`) in `text`/`caption`/button `text`… | display-text fields also accept a lazy-text object and keep it as is (frozen-safe). The encoder renders it with the i18n context captured when the method was created or returned (D25, D117, 06 §3) |
+| Lazy text (`L.key()`, `LazyProxy`) in `text`/`caption`/button `text`… | display-text fields also accept a lazy-text object and keep it as is (frozen-safe). The encoder renders it with the i18n context captured when a handler returns the method or when `bot(method)` is called; method constructors stay i18n-free (D25, D117 as narrowed by PD-07, 06 §3) |
 
 Not kept: pydantic validators on aiogram types, the pydantic `model_*` kwargs beyond the alias subset (§3.7),
 mutation of frozen types.
@@ -193,7 +197,7 @@ Telegram's wire JSON, so dumping and loading are defined in terms of it.
 | dump to builtins | `obj.to_dict() -> dict` (wire shape) | `model_dump(...)` (Python names unless `by_alias`) |
 | load | `Type.from_json(data, *, bot=None)`, `Type.from_dict(d, *, bot=None)`; accept `from` and `from_user` | `model_validate(_json)(…, context={"bot": bot})` |
 | copy with changes | `obj.replace(**changes)` and `copy.replace(obj, **changes)` (`__replace__`, 3.13+); validates, drops the original bytes (D108) | `model_copy(update=…)` (→ `replace`, now validating) |
-| introspection | **none** (D95): stubs, docs and `inspect.signature(Type)` (generated `text_signature`) cover it; the testing toolkit uses tables generated from the IR | `model_fields` **removed** (`AttributeError` with a hint) |
+| introspection | **none** (D95): stubs, docs and `inspect.signature(Type)` (generated `text_signature`, with `...` for nonliteral defaults because `inspect` rejects `Default(...)` there; the stubs carry the real defaults, 19 §8) cover it; the testing toolkit uses tables generated from the IR | `model_fields` **removed** (`AttributeError` with a hint) |
 | unknown data | `obj.raw` (a fresh `dict` on every access) / `obj.raw_json` (exact received bytes for wire objects, canonical `to_json()` bytes for constructed or replaced ones) (D10, D108) | `model_extra` (unknown fields only) |
 | unchanged | pickle (`__reduce__`, never stale after `replace`), `__get_pydantic_core_schema__`, `repr`; `==` / `hash` per D108; `as_(bot)` returns a new view (D103) | |
 
@@ -213,9 +217,12 @@ What this changes elsewhere:
 - Python `list`/`dict` values handed out (keyboard rows, `to_dict()` results) are fresh copies or tuples, so no
   shared mutable state crosses the boundary.
 
-## 5. Spike plan (phase 1)
+## 5. Spike plan (milestone B)
 
-1. Generate the 12 spike types + `SendMessage` with the prototype butcher (§02).
+1. Write the ~12 spike types + `SendMessage` **by hand in the emitted shape** (PD-30); there is no prototype butcher.
+   C-18 (the Rust type emitter) must later reproduce them as a golden diff. The spike lands on `dev-4.x` and is
+   **not wired** into `aiogram.types`: the 3.x pydantic package stays untouched beside it, and a no-go reverts the
+   spike directories (PD-03).
 2. Benchmarks, all against the **optimised-pydantic** baseline from 09:
    - decode: realistic update, plain text update, `getUpdates`×100 **through the response path** (envelope + batch,
      not only direct `from_json`) and a `sendMessage` response (13 B24: aiogram_rust's direct-parse 7.3× was 4.0× on the

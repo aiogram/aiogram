@@ -4,3 +4,7 @@
 
 # These files are auto-generated and should be collapsed in PRs
 # .butcher/ linguist-generated=true
+
+# Pinned corpus: checked out byte-for-byte on every platform (no CRLF conversion),
+# because MANIFEST.toml pins each file's sha256.
+benchmarks/corpus/** -text

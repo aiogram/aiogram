@@ -2,7 +2,7 @@
 
 | Field | Value |
 |---|---|
-| Status | `todo` |
+| Status | `done` |
 | Story | A — Contracts & baselines |
 | Target branch | `dev-3.x` (merged forward to `dev-4.x`, PD-12) |
 | Depends on | [A-04](A-04-pinned-corpus.md), [A-07](A-07-differential-framework.md) |
@@ -67,7 +67,8 @@ forward-compat kinds), the probes are:
 
 - [ ] Implement the probes. Use a bot built with a fake token, so no network is needed. Make the access-path list
       data-driven: a `[access]` table per input in the manifest or a sidecar file.
-- [ ] Run `differential run --kind model --left pypi:aiogram==3.32.0 --right path:.` on the current `dev-3.x`:
+- [ ] Run `differential run --kind model --left 'pypi:aiogram<4' --right path:.` on the current `dev-3.x`. The left
+      side is the latest supported 3.x release, and the trace header records the resolved version:
       0 mismatches.
 - [ ] Run with `--poison right`: mismatches detected.
 - [ ] Encode the codex §11 probes as named cases. Each must reproduce the recorded observation; if one doesn't, write
@@ -78,7 +79,7 @@ forward-compat kinds), the probes are:
 ## Acceptance criteria
 
 - The oracle covers every A-04 decode and forward-compat input with every probe that applies.
-- 3.32.0 vs `dev-3.x` HEAD: 0 unapproved mismatches.
+- The latest 3.x release (`pypi:aiogram<4`) vs `dev-3.x` HEAD: 0 unapproved mismatches.
 - Poison detected.
 - The codex §11 model probes (equality across bots false, `model_extra` only unknown, `model_dump_json` is `str`,
   nested null survives `exclude_none`, pickling a bound object fails) are reproduced as recorded cases.
@@ -93,8 +94,8 @@ forward-compat kinds), the probes are:
 ## Validation
 
 ```bash
-uv run python -m differential run --kind model --left pypi:aiogram==3.32.0 --right path:.
-uv run python -m differential run --kind model --left pypi:aiogram==3.32.0 --right path:. --poison right; test $? -ne 0
+uv run python -m differential run --kind model --left 'pypi:aiogram<4' --right path:.
+uv run python -m differential run --kind model --left 'pypi:aiogram<4' --right path:. --poison right; test $? -ne 0
 uv run pytest tests --cov=aiogram --cov-report=term-missing
 make lint
 ```
