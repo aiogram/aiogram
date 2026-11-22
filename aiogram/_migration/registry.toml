@@ -939,3 +939,36 @@ suppress = "aiogram: ignore[AG4052]"
 gate = false
 generated = false
 warn_3x = { site = "none", target = "", since = "" }
+
+[[entry]]
+id = "AG4053"
+kind = "deprecation-4.x"
+title = "request log records on the aiogram.middlewares logger move to aiogram.client"
+decisions = ["D65", "R23", "D71"]
+area = "middlewares"
+change = "renamed"
+replacement = "configure the aiogram.client logger (or the aiogram parent logger) for RequestLogging records"
+detection = "heuristic"
+confidence = "medium"
+codemod = "none"
+suppress = "aiogram: ignore[AG4053]"
+gate = false
+generated = false
+warn_3x = { site = "none", target = "", since = "" }
+removal = { deprecated_in = "4.0", earliest_removal = "4.2" }
+
+[[entry]]
+id = "AG4054"
+kind = "removal-4.0"
+title = "the aiogram.client.bot and aiogram.utils.chat_action loggers are gone, their records are on aiogram.client"
+decisions = ["D65"]
+area = "client"
+change = "renamed"
+replacement = "configure the aiogram.client logger (or the aiogram parent logger)"
+detection = "heuristic"
+confidence = "medium"
+codemod = "none"
+suppress = "aiogram: ignore[AG4054]"
+gate = false
+generated = false
+warn_3x = { site = "none", target = "", since = "" }

@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import io
-import logging
 import pathlib
 from collections.abc import AsyncGenerator, AsyncIterator
 from contextlib import asynccontextmanager
@@ -14,6 +13,7 @@ from typing import (
     cast,
 )
 
+from aiogram import loggers
 from aiogram.utils._fileio import iter_file, write_stream
 from aiogram.utils.token import extract_bot_id, validate_token
 
@@ -295,7 +295,7 @@ from .session.base import BaseSession
 T = TypeVar("T")
 
 
-logger = logging.getLogger(__name__)
+logger = loggers.client
 
 # How long a failed getChat for the bot's usernames is not retried, in seconds.
 USERNAMES_RETRY_AFTER = 60.0
