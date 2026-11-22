@@ -1,0 +1,8 @@
+Added :meth:`BaseStorage.get_records() <aiogram.fsm.storage.base.BaseStorage.get_records>` and
+:meth:`BaseStorage.apply_writes() <aiogram.fsm.storage.base.BaseStorage.apply_writes>` to read and write the
+state and data of several FSM keys in one call, with :class:`~aiogram.fsm.storage.base.StorageRecord`,
+:class:`~aiogram.fsm.storage.base.StorageWrite` and the :data:`~aiogram.fsm.storage.base.UNCHANGED` sentinel,
+plus :meth:`FSMContext.get_record() <aiogram.fsm.context.FSMContext.get_record>`.
+Custom storages get working fallbacks built on their existing methods; :class:`~aiogram.fsm.storage.memory.MemoryStorage`
+runs each call in one critical section and applies no write of a batch that contains invalid data.
+No storage promises atomicity across keys.
