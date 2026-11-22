@@ -152,43 +152,54 @@ class Dispatcher(Router):
         :param bot:
         :param update:
         """
-        loop = asyncio.get_running_loop()
-        handled = False
-        start_time = loop.time()
-
-        if update.bot != bot:
-            # Re-mounting update to the current bot instance for making possible to
-            # use it in shortcuts.
-            # Here is update is re-created because we need to propagate context to
-            # all nested objects and attributes of the Update, but it
-            # is impossible without roundtrip to JSON :(
-            # The preferred way is that pass already mounted Bot instance to this update
-            # before call feed_update method
-            update = Update.model_validate(update.model_dump(), context={"bot": bot})
-
+        bot_id = bot.id
         try:
-            response = await self.update.wrap_outer_middleware(
-                self._trigger_update,
-                update,
-                {
-                    "dispatcher": self,
-                    **self.workflow_data,
-                    **kwargs,
-                    "bot": bot,
-                },
-            )
-            handled = response is not UNHANDLED
-            return response
+            update_type: str | None = update.event_type
+        except UpdateTypeLookupError:
+            update_type = None
+        # The log context covers the whole call, the final "handled" record included;
+        # a nested feed_update restores the outer context on reset.
+        log_token = loggers._current.set(loggers.LogContext(bot_id, update.update_id, update_type))
+        try:
+            loop = asyncio.get_running_loop()
+            handled = False
+            start_time = loop.time()
+
+            if update.bot != bot:
+                # Re-mounting update to the current bot instance for making possible to
+                # use it in shortcuts.
+                # Here is update is re-created because we need to propagate context to
+                # all nested objects and attributes of the Update, but it
+                # is impossible without roundtrip to JSON :(
+                # The preferred way is that pass already mounted Bot instance to this update
+                # before call feed_update method
+                update = Update.model_validate(update.model_dump(), context={"bot": bot})
+
+            try:
+                response = await self.update.wrap_outer_middleware(
+                    self._trigger_update,
+                    update,
+                    {
+                        "dispatcher": self,
+                        **self.workflow_data,
+                        **kwargs,
+                        "bot": bot,
+                    },
+                )
+                handled = response is not UNHANDLED
+                return response
+            finally:
+                finish_time = loop.time()
+                duration = (finish_time - start_time) * 1000
+                loggers.event.info(
+                    "Update id=%s is %s. Duration %d ms by bot id=%d",
+                    update.update_id,
+                    "handled" if handled else "not handled",
+                    duration,
+                    bot_id,
+                )
         finally:
-            finish_time = loop.time()
-            duration = (finish_time - start_time) * 1000
-            loggers.event.info(
-                "Update id=%s is %s. Duration %d ms by bot id=%d",
-                update.update_id,
-                "handled" if handled else "not handled",
-                duration,
-                bot.id,
-            )
+            loggers._current.reset(log_token)
 
     async def _trigger_update(self, update: Update, **kwargs: Any) -> Any:
         # `dp.update` is not reached through `_propagate_event`,

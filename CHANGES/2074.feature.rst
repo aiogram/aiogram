@@ -1,0 +1,10 @@
+Framework loggers now form one hierarchy under :code:`aiogram` (:code:`aiogram.dispatcher`,
+:code:`aiogram.runner`, :code:`aiogram.polling`, :code:`aiogram.webhook`, :code:`aiogram.client`,
+:code:`aiogram.fsm`, :code:`aiogram.scene`, :code:`aiogram.i18n`, :code:`aiogram.event`,
+:code:`aiogram.middlewares`), and every framework record carries the update context as
+:code:`aiogram_bot_id`, :code:`aiogram_update_id`, :code:`aiogram_update_type`, :code:`aiogram_router`,
+:code:`aiogram_handler` and :code:`aiogram_phase` (:code:`None` outside an update).
+:func:`aiogram.loggers.context_filter` attaches the same attributes to your own records.
+The :code:`aiogram.client.bot` and :code:`aiogram.utils.chat_action` loggers are replaced by
+:code:`aiogram.client` (AG4053); request records move from :code:`aiogram.middlewares` to
+:code:`aiogram.client` after a deprecation window (AG4052).
