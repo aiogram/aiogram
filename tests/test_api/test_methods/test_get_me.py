@@ -1,5 +1,5 @@
 from aiogram.methods import GetMe
-from aiogram.types import User
+from aiogram.types import BotFullInfo
 from tests.mocked_bot import MockedBot, bot_full_info
 
 
@@ -13,6 +13,6 @@ class TestGetMe:
         assert response == prepare_result.result
 
     async def test_me_property(self, bot: MockedBot):
-        response: User = await bot.me()
-        assert isinstance(response, User)
+        response = await bot.me()
+        assert isinstance(response, BotFullInfo)
         assert response == bot._me

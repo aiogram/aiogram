@@ -469,7 +469,7 @@ class Dispatcher(Router):
         :param kwargs:
         :return:
         """
-        user: User = await bot.me()
+        user = await bot.me()
         loggers.dispatcher.info(
             "Run polling for bot @%s id=%d - %r",
             user.username,

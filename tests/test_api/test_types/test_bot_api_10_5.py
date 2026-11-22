@@ -1,3 +1,5 @@
+import pytest
+
 from aiogram.methods import GetMe
 from aiogram.types import (
     InputRichBlockExpandableBlockQuotation,
@@ -42,9 +44,35 @@ def test_expandable_block_quotation_blocks():
 
 
 class TestBotMe:
-    async def test_me_is_user_built_from_get_me(self, bot: MockedBot):
+    async def test_me_is_what_get_me_returned(self, bot: MockedBot):
         bot._me = None
-        bot.add_result_for(GetMe, ok=True, result=bot_full_info(username="tbot", id=7))
-        me = await bot.me()
-        assert isinstance(me, User)
-        assert (me.id, me.username, me.is_bot) == (7, "tbot", True)
+        info = bot_full_info(username="tbot", id=7)
+        bot.add_result_for(GetMe, ok=True, result=info)
+        assert await bot.me() == info
+        assert await bot.me() is await bot.me()
+        assert len(bot.session.requests) == 1
+
+    @pytest.mark.parametrize(
+        "username,active,expected",
+        [
+            ("tbot", ["tbot_AI", "tbot"], ("tbot", "tbot_AI")),
+            ("tbot", ["TBot", "tbot_ai", "TBOT_AI"], ("tbot", "tbot_ai")),
+            ("tbot", None, ("tbot",)),
+            (None, ["tbot_ai"], ("tbot_ai",)),
+            (None, None, ()),
+        ],
+    )
+    async def test_usernames(self, bot: MockedBot, username, active, expected):
+        bot._me = bot_full_info(username=username, active_usernames=active)
+        assert await bot.usernames() == expected
+        assert not bot.session.requests
+
+
+def test_bot_full_info_user_like_helpers():
+    info = bot_full_info(id=42, first_name="Bot")
+    assert info.full_name == "Bot"
+    assert info.url == "tg://user?id=42"
+    assert info.mention_html() == '<a href="tg://user?id=42">Bot</a>'
+    assert info.mention_html("x") == '<a href="tg://user?id=42">x</a>'
+    assert info.mention_markdown() == "[Bot](tg://user?id=42)"
+    assert info.mention_markdown("x") == "[x](tg://user?id=42)"

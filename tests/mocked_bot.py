@@ -60,14 +60,7 @@ class MockedBot(Bot):
 
     def __init__(self, **kwargs):
         super().__init__(kwargs.pop("token", "42:TEST"), session=MockedSession(), **kwargs)
-        self._me = User(
-            id=self.id,
-            is_bot=True,
-            first_name="FirstName",
-            last_name="LastName",
-            username="tbot",
-            language_code="uk-UA",
-        )
+        self._me = bot_full_info(id=self.id, first_name="FirstName", username="tbot")
 
     def add_result_for(
         self,

@@ -1,11 +1,9 @@
 from __future__ import annotations
 
 import io
-import logging
 import pathlib
 from collections.abc import AsyncGenerator, AsyncIterator
 from contextlib import asynccontextmanager
-from time import monotonic
 from types import TracebackType
 from typing import (
     Any,
@@ -18,7 +16,6 @@ import aiofiles
 
 from aiogram.utils.token import extract_bot_id, validate_token
 
-from ..exceptions import TelegramAPIError
 from ..methods import (
     AddStickerToSet,
     AnswerCallbackQuery,
@@ -298,12 +295,6 @@ from .session.base import BaseSession
 T = TypeVar("T")
 
 
-logger = logging.getLogger(__name__)
-
-# How long a failed getChat for the bot's usernames is not retried, in seconds.
-USERNAMES_RETRY_AFTER = 60.0
-
-
 class Bot:
     def __init__(
         self,
@@ -360,9 +351,7 @@ class Bot:
         self.default = default
 
         self.__token = token
-        self._me: User | None = None
-        self._usernames: tuple[str, ...] | None = None
-        self._usernames_retry_at: float | None = None
+        self._me: BotFullInfo | None = None
 
     async def __aenter__(self) -> Bot:
         return self
@@ -402,68 +391,34 @@ class Bot:
             if auto_close:
                 await self.session.close()
 
-    async def me(self) -> User:
+    async def me(self) -> BotFullInfo:
         """
         Cached alias for getMe method
 
-        getMe returns :class:`aiogram.types.bot_full_info.BotFullInfo` since Bot API 10.5;
-        the cached value stays a :class:`aiogram.types.user.User` with the identity fields,
-        call :meth:`get_me` for the full settings.
-
-        :return:
+        :return: the :class:`aiogram.types.bot_full_info.BotFullInfo` that getMe returned
         """
-        if self._me is None:  # pragma: no cover
-            info = await self.get_me()
-            self._me = User(
-                id=info.id,
-                is_bot=info.is_bot,
-                first_name=info.first_name,
-                username=info.username,
-            )
+        if self._me is None:
+            self._me = await self.get_me()
         return self._me
 
     async def usernames(self) -> tuple[str, ...]:
         """
-        Cached usernames of the bot, secondary ones included
+        Usernames of the bot, secondary ones included
 
-        getMe returns only one username, so the rest are taken from
-        :code:`active_usernames` of getChat on the bot itself. This relies on
-        :code:`getChat(bot.id)` returning :code:`active_usernames`, which is observed
-        behaviour, not documented by the Bot API.
+        Built from the cached :meth:`me`: the main username first, then
+        :code:`active_usernames` of getMe, without duplicates (compared ignoring case).
+        A Bot API server that does not return :code:`active_usernames` (older than 10.5)
+        gives just the main username. Like :meth:`me`, the list is fetched once per
+        :class:`Bot` instance and not refreshed: restart to pick up username changes.
 
-        Like :meth:`me`, the list is fetched once per :class:`Bot` instance and not
-        refreshed: restart to pick up username changes.
-
-        If getChat fails, only the getMe username is returned and nothing is cached.
-        A warning is logged once until getChat succeeds again, and it is retried
-        no sooner than :code:`USERNAMES_RETRY_AFTER` seconds later.
-
-        :return: usernames without duplicates (compared ignoring case),
-            the getMe one first
+        :return: usernames, the main one first
         """
-        if self._usernames is not None:
-            return self._usernames
         me = await self.me()
-        primary = (me.username,) if me.username else ()
-        if self._usernames_retry_at is not None and monotonic() < self._usernames_retry_at:
-            return primary
-        try:
-            chat = await self.get_chat(chat_id=me.id)
-        except TelegramAPIError as e:
-            if self._usernames_retry_at is None:
-                logger.warning(
-                    "Failed to get the bot's secondary usernames with getChat; commands "
-                    "addressed to them are rejected until it succeeds: %s",
-                    e,
-                )
-            self._usernames_retry_at = monotonic() + USERNAMES_RETRY_AFTER
-            return primary
         unique: dict[str, str] = {}
-        for username in (*primary, *(chat.active_usernames or ())):
-            unique.setdefault(username.lower(), username)
-        self._usernames = tuple(unique.values())
-        self._usernames_retry_at = None
-        return self._usernames
+        for username in (me.username, *(me.active_usernames or ())):
+            if username:
+                unique.setdefault(username.lower(), username)
+        return tuple(unique.values())
 
     @classmethod
     async def __download_file_binary_io(

@@ -1,5 +1,7 @@
 from typing import TYPE_CHECKING, Any
 
+from ..utils import markdown
+from ..utils.link import create_tg_link
 from .base import TelegramObject
 
 
@@ -99,3 +101,17 @@ class BotFullInfo(TelegramObject):
                 inline_query_placeholder=inline_query_placeholder,
                 **__pydantic_kwargs,
             )
+
+    @property
+    def full_name(self) -> str:
+        return self.first_name
+
+    @property
+    def url(self) -> str:
+        return create_tg_link("user", id=self.id)
+
+    def mention_markdown(self, name: str | None = None) -> str:
+        return markdown.link(self.full_name if name is None else name, self.url)
+
+    def mention_html(self, name: str | None = None) -> str:
+        return markdown.hlink(self.full_name if name is None else name, self.url)
