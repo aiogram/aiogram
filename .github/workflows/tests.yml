@@ -414,6 +414,9 @@ jobs:
 
   docs:
     name: Docs
+    # `import aiogram` needs the extension present (aiogram/_native.py), so autodoc takes it from
+    # the Linux 3.11 wheel like the other jobs instead of compiling the project
+    needs: build-wheels
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -423,13 +426,20 @@ jobs:
 
       - uses: astral-sh/setup-uv@v10.3.3
         with:
-          # Sphinx 8.0.x predates Python 3.13 / 3.14; 3.12 is the newest it was released against
-          python-version: "3.12"
+          # Sphinx 8.0.x predates Python 3.13 / 3.14; 3.11 matches a wheel of the PR legs
+          python-version: "3.11"
 
       - name: Install project with docs extras
-        # mirrors .readthedocs.yml: docs + the extras autodoc needs to import. Not the project:
-        # installing it compiles the extension, which nothing on the docs import path loads
+        # mirrors .readthedocs.yml: docs + the extras autodoc needs to import
         run: uv sync --locked --extra docs --extra redis --extra mongo --no-group dev --no-install-project
+
+      - uses: actions/download-artifact@v8
+        with:
+          name: wheel-ubuntu-latest-3.11
+          path: ${{ runner.temp }}/wheel
+
+      - name: Install the extension
+        run: uv run python scripts/ci_use_wheel.py "$RUNNER_TEMP/wheel"
 
       - name: Build HTML
         # TODO: add -W once the existing Sphinx warnings are fixed (#1909)
