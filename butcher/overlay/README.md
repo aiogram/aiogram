@@ -3,7 +3,7 @@
 Hand-written facts on top of the IR (v4/research/02 §3), loaded by `crates/butcher/src/overlay/` (plan C-06).
 
 - **Strict.** An unknown key fails with `<file>: <key.path>: unknown field ...`. A file outside the layout below is
-  an error too.
+  an error too. Dot-files (`.DS_Store`, editor swap files) are ignored.
 - **Checked against the IR.** Every type, field, method, param, union, enum, update type and `errors.json` message an
   entry names must exist. The error names the file, the key path and the closest IR name.
 - **Absence is not an error here.** A missing file is an empty kind. Rules like "every method has an `idempotent`
@@ -26,7 +26,8 @@ enums/<Name>.toml  shortcuts/<Type>.toml
 ## Kinds
 
 **1. `names.toml`: Python names.** Python names for fields and params: aliases, keyword-safe names, and renames for
-collisions with reserved names (D109). It also holds the Python alias of an inline union param.
+collisions with reserved names (D109). After the renames, no two fields of a type (params of a method) may share a
+Python name. It also holds the Python alias of an inline union param.
 
 ```toml
 [types.Message]
@@ -55,6 +56,7 @@ SENDER = "sender"
 ```
 
 **3. `datetime.toml`: datetime fields.** Unix-time fields and params, returned as `datetime`; an explicit list.
+Each entry must be an integer field or param.
 
 ```toml
 [types]
@@ -72,12 +74,13 @@ parse_mode = "parse_mode"
 parse_mode = "parse_mode"
 ```
 
-**5. `shortcuts/<Type>.toml`: shortcuts.** One table per shortcut on the type:
+**5. `shortcuts/<Type>.toml`: shortcuts.** One table per shortcut on the type; the table name is the Python method
+name:
 - `method`: the target method;
 - `fill`: param → fill text, where every key is a param of `method`;
 - `require` / `forbid`: guards, meaning `<path> is not None` / `<path> is None`, each with a message;
-- `ignore`: params that are never forwarded;
-- `handwritten = true`: the shortcut lives in `<type>_ext.rs` (D11) and takes no `method` or `fill`.
+- `ignore`: params that are never forwarded (never also in `fill`);
+- `handwritten = true`: the shortcut lives in `<type>_ext.rs` (D11) and takes no other key.
 
 ```toml
 [answer]

@@ -25,7 +25,11 @@ pub(super) fn check(overlay: &Overlay, ir: &Ir) -> Vec<Error> {
     };
     c.names();
     c.enums();
-    c.refs("datetime.toml", &overlay.datetime, false);
+    c.refs(
+        "datetime.toml",
+        &overlay.datetime,
+        ("an integer", holds_integer),
+    );
     c.defaults();
     c.shortcuts();
     c.unions();
@@ -34,13 +38,14 @@ pub(super) fn check(overlay: &Overlay, ir: &Ir) -> Vec<Error> {
     c.heuristics();
     c.docs();
     c.methods();
-    c.refs("display.toml", &overlay.display, true);
+    c.refs("display.toml", &overlay.display, ("a string", holds_string));
     c.content();
     c.events();
     c.bases();
     c.errors();
     let mut errors = c.errors;
-    errors.sort();
+    // stable: within a file, errors keep the order of its keys (`kind[2]` before `kind[10]`)
+    errors.sort_by(|a, b| a.0.cmp(&b.0));
     errors
         .into_iter()
         .map(|(path, at, message)| crate::invalid(&path, (at, message)))
@@ -195,6 +200,19 @@ impl<'a> Checker<'a> {
         self.at("names.toml");
         let names = &self.overlay.names;
         self.member_maps(&names.types, &names.methods);
+        let ir = self.ir;
+        for (t, renames) in &names.types {
+            if let Some(ty) = ir.types.iter().find(|x| &x.name == t) {
+                let wire = ty.fields.iter().map(|f| f.name.as_str());
+                self.unique_names(&format!("types.{t}"), wire, renames);
+            }
+        }
+        for (m, renames) in &names.methods {
+            if let Some(method) = ir.methods.iter().find(|x| &x.name == m) {
+                let wire = method.params.iter().map(|p| p.name.as_str());
+                self.unique_names(&format!("methods.{m}"), wire, renames);
+            }
+        }
         for (m, params) in &names.union_aliases {
             let at = format!("union_aliases.{m}");
             let Some(method) = self.method(&at, m) else {
@@ -208,13 +226,38 @@ impl<'a> Checker<'a> {
         }
     }
 
+    /// After the renames, no two fields (params) share a Python name.
+    fn unique_names<'w>(
+        &mut self,
+        at: &str,
+        wire: impl Iterator<Item = &'w str>,
+        renames: &Map<String>,
+    ) {
+        let mut taken: Map<&str> = Map::new();
+        for w in wire {
+            let py = renames.get(w).map_or(w, String::as_str);
+            if let Some(other) = taken.insert(py.to_owned(), w) {
+                // report it at the renamed key, the one the overlay author controls
+                let (key, with) = if renames.contains_key(w) {
+                    (w, other)
+                } else {
+                    (other, w)
+                };
+                self.fail(
+                    format!("{at}.{key}"),
+                    format!("Python name `{py}` is also the name of `{with}`"),
+                );
+            }
+        }
+    }
+
     fn enums(&mut self) {
         for (name, def) in &self.overlay.enums {
             self.at(&format!("enums/{name}.toml"));
             self.identifier(".", name);
             if def.parse.is_none()
                 && def.multi_parse.is_none()
-                && def.static_members.is_none()
+                && def.static_members.as_ref().is_none_or(Map::is_empty)
                 && def.extract.is_none()
             {
                 self.fail(
@@ -260,8 +303,8 @@ impl<'a> Checker<'a> {
         }
     }
 
-    /// `datetime.toml` / `display.toml`; `strings`: each field / param must be able to hold a string.
-    fn refs(&mut self, file: &str, refs: &Refs, strings: bool) {
+    /// `datetime.toml` / `display.toml`: each field / param exists and its type passes `holds`.
+    fn refs(&mut self, file: &str, refs: &Refs, (kind, holds): (&str, fn(&TypeRef) -> bool)) {
         self.at(file);
         for (t, fields) in &refs.types {
             let at = format!("types.{t}");
@@ -269,10 +312,9 @@ impl<'a> Checker<'a> {
             for (i, f) in fields.iter().enumerate() {
                 let at = format!("{at}[{i}]");
                 if let Some(field) = self.field(&at, ty, f)
-                    && strings
-                    && !holds_string(&field.ty.value)
+                    && !holds(&field.ty.value)
                 {
-                    self.fail(at, format!("`{t}.{f}` is not a string field"));
+                    self.fail(at, format!("`{t}.{f}` is not {kind} field"));
                 }
             }
         }
@@ -284,10 +326,9 @@ impl<'a> Checker<'a> {
             for (i, p) in params.iter().enumerate() {
                 let at = format!("{at}[{i}]");
                 if let Some(param) = self.param(&at, method, p)
-                    && strings
-                    && !holds_string(&param.ty.value)
+                    && !holds(&param.ty.value)
                 {
-                    self.fail(at, format!("`{m}.{p}` is not a string param"));
+                    self.fail(at, format!("`{m}.{p}` is not {kind} param"));
                 }
             }
         }
@@ -310,12 +351,17 @@ impl<'a> Checker<'a> {
             self.at(&format!("shortcuts/{t}.toml"));
             self.ty(".", t);
             for (name, s) in shortcuts {
+                // the table key becomes a method name on the generated type
+                self.identifier(name, name);
                 if s.handwritten {
-                    if s.method.is_some() || !s.fill.is_empty() {
-                        self.fail(
-                            name.as_str(),
-                            "`handwritten = true` takes no `method` or `fill`",
-                        );
+                    let configured = s.method.is_some()
+                        || !s.fill.is_empty()
+                        || !s.ignore.is_empty()
+                        || !s.require.is_empty()
+                        || !s.forbid.is_empty();
+                    if configured {
+                        let message = "`handwritten = true` takes no `method`, `fill`, `ignore`, `require` or `forbid`";
+                        self.fail(name.as_str(), message);
                     }
                     continue;
                 }
@@ -328,7 +374,11 @@ impl<'a> Checker<'a> {
                 };
                 self.fill_keys(&format!("{name}.fill"), method, &s.fill);
                 for (i, p) in s.ignore.iter().enumerate() {
-                    self.param(&format!("{name}.ignore[{i}]"), method, p);
+                    let at = format!("{name}.ignore[{i}]");
+                    self.param(&at, method, p);
+                    if s.fill.contains_key(p) {
+                        self.fail(at, format!("`{p}` is both filled and ignored"));
+                    }
                 }
             }
         }
@@ -356,6 +406,9 @@ impl<'a> Checker<'a> {
                 if !union.members.value.contains(&r.member) {
                     let members = union.members.value.iter().map(String::as_str);
                     self.missing(format!("{at}.member"), "member", &r.member, members);
+                } else if r.absent {
+                    // a member is often picked by the absence of a field only another member has
+                    self.member_field(&format!("{at}.field"), union, &r.field);
                 } else if let Some(ty) = self.ty(&at, &r.member) {
                     self.field(&format!("{at}.field"), ty, &r.field);
                 }
@@ -367,6 +420,21 @@ impl<'a> Checker<'a> {
                     );
                 }
             }
+        }
+    }
+
+    /// `name` is a field of at least one member type of `union`.
+    fn member_field(&mut self, at: &str, union: &'a crate::ir::Union, name: &str) {
+        let ir = self.ir;
+        let fields: Vec<&str> = ir
+            .types
+            .iter()
+            .filter(|t| union.members.value.contains(&t.name))
+            .flat_map(|t| t.fields.iter().map(|f| f.name.as_str()))
+            .collect();
+        if !fields.contains(&name) {
+            let what = format!("field on any member of `{}`:", union.name);
+            self.missing(at, &what, name, fields.into_iter());
         }
     }
 
@@ -542,7 +610,7 @@ impl<'a> Checker<'a> {
         let checked = ir.header.sources.contains(&Source::Errors);
         let mut seen: Map<&str> = Map::new();
         for (message, name) in &self.overlay.errors.names {
-            let at = format!("names.{}", key(message));
+            let at = format!("names.{message}");
             if checked && !ir.errors.iter().any(|e| &e.message == message) {
                 let messages = ir.errors.iter().map(|e| e.message.as_str());
                 self.missing(at.as_str(), "errors.json message", message, messages);
@@ -555,20 +623,20 @@ impl<'a> Checker<'a> {
     }
 }
 
-/// A TOML key as `serde_path_to_error` would print it: quoted when it is not a bare key.
-fn key(k: &str) -> String {
-    let bare = !k.is_empty()
-        && k.chars()
-            .all(|c| c.is_ascii_alphanumeric() || c == '_' || c == '-');
-    if bare { k.to_owned() } else { format!("{k:?}") }
-}
-
 fn is_identifier(name: &str) -> bool {
     let mut chars = name.chars();
     chars
         .next()
         .is_some_and(|c| c.is_ascii_alphabetic() || c == '_')
         && chars.all(|c| c.is_ascii_alphanumeric() || c == '_')
+}
+
+fn holds_integer(r: &TypeRef) -> bool {
+    match r {
+        TypeRef::Prim(p) => matches!(p, Prim::Int | Prim::Int32 | Prim::Int64),
+        TypeRef::Union(items) => items.iter().any(holds_integer),
+        TypeRef::Ref(_) | TypeRef::Array(_) => false,
+    }
 }
 
 fn holds_string(r: &TypeRef) -> bool {
@@ -621,11 +689,5 @@ mod tests {
         let names = ["date", "edit_date", "chat"];
         assert_eq!(closest("edit_dat", names.into_iter()), Some("edit_date"));
         assert_eq!(closest("zzzzzzzz", names.into_iter()), None);
-    }
-
-    #[test]
-    fn keys_are_quoted_like_toml_paths() {
-        assert_eq!(key("abc_d-1"), "abc_d-1");
-        assert_eq!(key("Bad Request: x"), "\"Bad Request: x\"");
     }
 }

@@ -131,7 +131,7 @@ fn collect(dir: &Path, prefix: &str, out: &mut Vec<(String, PathBuf)>) -> Result
     Ok(())
 }
 
-/// Directory entries, sorted so errors and load order do not depend on the file system.
+/// Directory entries except dot-files, sorted so errors and load order do not depend on the file system.
 fn list(dir: &Path) -> Result<Vec<PathBuf>, Error> {
     let io = |source| Error::Io {
         path: dir.to_owned(),
@@ -139,7 +139,11 @@ fn list(dir: &Path) -> Result<Vec<PathBuf>, Error> {
     };
     let mut entries = Vec::new();
     for entry in std::fs::read_dir(dir).map_err(io)? {
-        entries.push(entry.map_err(io)?.path());
+        let path = entry.map_err(io)?.path();
+        // `.DS_Store`, `.gitkeep`, editor swap files: never overlay data
+        if !file_name(&path).starts_with('.') {
+            entries.push(path);
+        }
     }
     entries.sort();
     Ok(entries)

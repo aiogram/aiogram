@@ -68,6 +68,9 @@ exclude = ["update_id"]
         r#"
 [types]
 Message = ["date", "edit_date"]
+[methods]
+# not a real datetime: `Integer or String` covers the union branch of the integer check
+sendMessage = ["chat_id"]
 "#,
     ),
     (
@@ -98,6 +101,8 @@ handwritten = true
         r#"
 [MaybeInaccessibleMessage]
 rules = [
+  # `text` exists on `Message` only: an absence rule may name another member's field
+  { member = "InaccessibleMessage", field = "text", absent = true },
   { member = "InaccessibleMessage", field = "date", eq = 0 },
   { member = "Message", field = "date", ne = 0 },
 ]
@@ -277,7 +282,7 @@ fn every_kind_loads_and_checks_clean() {
     let thread = &answer.fill["message_thread_id"];
     assert_eq!(thread.when.as_deref(), Some("self.is_topic_message"));
     assert!(overlay.shortcuts["Message"]["get_url"].handwritten);
-    assert_eq!(overlay.unions["MaybeInaccessibleMessage"].rules.len(), 2);
+    assert_eq!(overlay.unions["MaybeInaccessibleMessage"].rules.len(), 3);
     assert!(overlay.twins["ChatPermissions"].merge);
     assert!(overlay.layout["User"].freelist);
     assert_eq!(overlay.methods.excluded, ["getUpdates"]);
@@ -626,7 +631,7 @@ const DANGLING: &[(&str, &str, &str, &str)] = &[
         "shortcuts/Message.toml",
         "[answer]\nhandwritten = true\nmethod = \"sendMessage\"\n",
         "answer",
-        "takes no `method` or `fill`",
+        "takes no `method`, `fill`, `ignore`, `require` or `forbid`",
     ),
     (
         "unions.toml",
@@ -669,6 +674,96 @@ const DANGLING: &[(&str, &str, &str, &str)] = &[
         "[MaybeInaccessibleMessage]\nrules = [{ member = \"Message\", field = \"date\" }]\n",
         "MaybeInaccessibleMessage.rules[0]",
         "exactly one of `eq`, `ne`",
+    ),
+    (
+        "unions.toml",
+        "[MaybeInaccessibleMessage]\nrules = [{ member = \"Message\", field = \"txt\", absent = true }]\n",
+        "MaybeInaccessibleMessage.rules[0].field",
+        "no field on any member of `MaybeInaccessibleMessage`: `txt` (closest: `text`)",
+    ),
+    (
+        "names.toml",
+        "[types.Message]\nfrom = \"chat\"\n",
+        "types.Message.from",
+        "Python name `chat` is also the name of `chat`",
+    ),
+    (
+        "names.toml",
+        "[methods.sendMessage]\ntext = \"parse_mode\"\n",
+        "methods.sendMessage.text",
+        "Python name `parse_mode` is also the name of `parse_mode`",
+    ),
+    (
+        "names.toml",
+        "[types.Message]\ntext = \"body\"\ncaption = \"body\"\n",
+        "types.Message.caption",
+        "Python name `body` is also the name of `text`",
+    ),
+    (
+        "enums/ChatType.toml",
+        "[static]\n",
+        ".",
+        "needs at least one of",
+    ),
+    (
+        "datetime.toml",
+        "[types]\nMessage = [\"text\"]\n",
+        "types.Message[0]",
+        "`Message.text` is not an integer field",
+    ),
+    (
+        "datetime.toml",
+        "[methods]\nsendMessage = [\"parse_mode\"]\n",
+        "methods.sendMessage[0]",
+        "`sendMessage.parse_mode` is not an integer param",
+    ),
+    (
+        "shortcuts/Message.toml",
+        "[class]\nhandwritten = true\n",
+        "class",
+        "`class` is not a Python identifier",
+    ),
+    (
+        "shortcuts/Message.toml",
+        "[answer-photo]\nhandwritten = true\n",
+        "answer-photo",
+        "`answer-photo` is not a Python identifier",
+    ),
+    (
+        "shortcuts/Message.toml",
+        "[reply]\nhandwritten = true\nignore = [\"nonexistent\"]\n",
+        "reply",
+        "takes no `method`, `fill`, `ignore`, `require` or `forbid`",
+    ),
+    (
+        "shortcuts/Message.toml",
+        "[reply]\nhandwritten = true\nrequire = [{ path = \"self.chat\", message = \"x\" }]\n",
+        "reply",
+        "takes no `method`",
+    ),
+    (
+        "shortcuts/Message.toml",
+        "[answer]\nmethod = \"sendMessage\"\nignore = [\"chat_id\"]\n[answer.fill]\nchat_id = \"self.chat.id\"\n",
+        "answer.ignore[0]",
+        "`chat_id` is both filled and ignored",
+    ),
+    (
+        "names.toml",
+        "[methods.sendMesage]\ntext = \"body\"\n",
+        "methods.sendMesage",
+        "no method `sendMesage`",
+    ),
+    (
+        "datetime.toml",
+        "[types]\nMessage = [\"photo\"]\n",
+        "types.Message[0]",
+        "`Message.photo` is not an integer field",
+    ),
+    (
+        "datetime.toml",
+        "[types]\nMessage = [\"chat\"]\n",
+        "types.Message[0]",
+        "`Message.chat` is not an integer field",
     ),
     (
         "twins.toml",
@@ -847,19 +942,19 @@ const DANGLING: &[(&str, &str, &str, &str)] = &[
     (
         "errors.toml",
         "[names]\n\"Bad Request: message is not modifed\" = \"MESSAGE_NOT_MODIFIED\"\n",
-        "names.\"Bad Request: message is not modifed\"",
+        "names.Bad Request: message is not modifed",
         "(closest: `Bad Request: message is not modified`)",
     ),
     (
         "errors.toml",
         "[names]\n\"Bad Request: message is not modified\" = \"not_modified\"\n",
-        "names.\"Bad Request: message is not modified\"",
+        "names.Bad Request: message is not modified",
         "UPPER_SNAKE_CASE",
     ),
     (
         "errors.toml",
         "[names]\n\"Bad Request: message is not modified\" = \"SAME\"\n\"Forbidden: bot was blocked by the user\" = \"SAME\"\n",
-        "names.\"Forbidden: bot was blocked by the user\"",
+        "names.Forbidden: bot was blocked by the user",
         "`SAME` is also the name of `Bad Request: message is not modified`",
     ),
 ];
@@ -1019,4 +1114,40 @@ fn an_unreadable_kind_file_is_an_io_error() {
     let dir = scratch("unreadable", &[]);
     std::fs::create_dir_all(dir.join("names.toml")).unwrap();
     assert!(matches!(Overlay::load(&dir), Err(Error::Io { .. })));
+}
+
+#[test]
+fn dot_files_are_ignored() {
+    let mut files: Vec<(&str, &str)> = VALID.to_vec();
+    files.extend([
+        (".DS_Store", "\0"),
+        ("enums/.DS_Store", "\0"),
+        ("shortcuts/.Message.toml.swp", "\0"),
+        (".gitkeep", ""),
+    ]);
+    let dir = scratch("dot-files", &files);
+    assert_eq!(
+        Overlay::load(&dir).unwrap(),
+        Overlay {
+            root: dir.clone(),
+            ..Overlay::load(&scratch("dot-files-ref", VALID)).unwrap()
+        }
+    );
+    assert_eq!(
+        overlay::digest(&dir).unwrap(),
+        digest_of("dot-files-digest", VALID)
+    );
+}
+
+#[test]
+fn errors_keep_the_file_order_within_a_file() {
+    let names: Vec<String> = (0..12).map(|i| format!("\"nope{i}\"")).collect();
+    let files = with(
+        "methods.toml",
+        &format!("excluded = [{}]\n", names.join(", ")),
+    );
+    let errors = load("order", &files).unwrap().check(&ir());
+    let at: Vec<String> = errors.iter().map(parts).map(|(_, at, _)| at).collect();
+    let want: Vec<String> = (0..12).map(|i| format!("excluded[{i}]")).collect();
+    assert_eq!(at, want);
 }
