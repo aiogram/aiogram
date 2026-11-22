@@ -38,7 +38,8 @@ class LogContext:
 
     One object per update, set by ``Dispatcher.feed_update``. ``router``, ``handler`` and
     ``phase`` are plain attribute writes, so the executor updates them without a
-    ``ContextVar.set`` per stage.
+    ``ContextVar.set`` per stage. Tasks started during the update share the object, so their
+    records show the update's current stage.
     """
 
     __slots__ = ("bot_id", "handler", "phase", "router", "update_id", "update_type")

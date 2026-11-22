@@ -1,5 +1,4 @@
 import asyncio
-import logging
 import time
 from asyncio import Event, Lock
 from collections.abc import Awaitable, Callable

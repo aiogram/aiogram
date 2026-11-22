@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import io
-import logging
 import pathlib
 from collections.abc import AsyncGenerator, AsyncIterator
 from contextlib import asynccontextmanager

@@ -9,6 +9,7 @@ import pytest
 
 from aiogram import loggers
 from aiogram.dispatcher.dispatcher import Dispatcher
+from aiogram.methods import SendMessage
 from aiogram.types import Chat, Message, Update, User
 from tests.mocked_bot import MockedBot
 
@@ -283,3 +284,55 @@ def test_guard_no_get_logger_outside_loggers_module():
 )
 def test_guard_detects(source: str):
     assert _get_logger_calls(ast.parse(source)) == [2]
+
+
+class TestErrorRecordsContext:
+    """Records logged around feed_update by the polling and webhook entry points carry the context."""
+
+    @staticmethod
+    def failing(dispatcher: Dispatcher) -> None:
+        @dispatcher.message()
+        async def handler(message: Message):
+            raise RuntimeError("boom")
+
+    @staticmethod
+    def error_record(caplog) -> logging.LogRecord:
+        [record] = [r for r in caplog.records if r.getMessage().startswith("Cause exception")]
+        return record
+
+    async def test_process_update(self, dispatcher: Dispatcher, bot: MockedBot, caplog):
+        self.failing(dispatcher)
+        assert await dispatcher._process_update(bot, make_update(11)) is True
+        record = self.error_record(caplog)
+        assert (record.aiogram_bot_id, record.aiogram_update_id) == (bot.id, 11)
+        assert record.aiogram_update_type == "message"
+        assert loggers._log_context() is None
+
+    async def test_feed_webhook_update(self, dispatcher: Dispatcher, bot: MockedBot, caplog):
+        self.failing(dispatcher)
+        with pytest.raises(RuntimeError):
+            await dispatcher._feed_webhook_update(bot, make_update(12))
+        assert self.error_record(caplog).aiogram_update_id == 12
+        assert loggers._log_context() is None
+
+    async def test_silent_call_request(self, dispatcher: Dispatcher, bot: MockedBot, caplog):
+        @dispatcher.message()
+        async def handler(message: Message):
+            return SendMessage(chat_id=1, text="x")
+
+        bot.add_result_for(SendMessage, ok=False, error_code=400, description="Bad Request")
+        await dispatcher._process_update(bot, make_update(13))
+        [record] = [
+            r for r in caplog.records if r.getMessage().startswith("Failed to make answer")
+        ]
+        assert record.aiogram_update_id == 13
+
+    async def test_skipped_invalid_update(self, dispatcher: Dispatcher, bot: MockedBot, caplog):
+        caplog.set_level(logging.DEBUG, logger="aiogram.webhook")
+        await dispatcher.feed_raw_update(bot, {"update_id": 14, "message": {"bad": 1}})
+        records = [r for r in caplog.records if r.name == "aiogram.webhook"]
+        assert len(records) == 2
+        for record in records:
+            assert (record.aiogram_bot_id, record.aiogram_update_id) == (bot.id, 14)
+            assert record.aiogram_update_type is None
+        assert loggers._log_context() is None

@@ -22,19 +22,19 @@ Logger names and record context
     * - :code:`aiogram.event`
       - one record per processed update, unhandled update errors (:code:`exception` level)
     * - :code:`aiogram.runner`
-      - runner lifecycle, unhandled runtime errors
+      - reserved for the runner (no records yet)
     * - :code:`aiogram.polling`
-      - long polling
+      - reserved for the poller (no records yet; polling start and stop are on :code:`aiogram.dispatcher`)
     * - :code:`aiogram.webhook`
       - webhook requests
     * - :code:`aiogram.client`
       - the bot client: session, requests, retries, rate limits, chat actions
     * - :code:`aiogram.fsm`
-      - FSM storages and event isolation
+      - reserved for FSM storages and event isolation (no records yet)
     * - :code:`aiogram.scene`
       - scenes
     * - :code:`aiogram.i18n`
-      - translations
+      - reserved for translations (no records yet)
     * - :code:`aiogram.middlewares`
       - :class:`~aiogram.client.session.middlewares.request_logging.RequestLogging`
         and :class:`~aiogram.utils.callback_answer.CallbackAnswerMiddleware` (see below)
@@ -69,6 +69,8 @@ An attribute passed explicitly with :code:`extra=` is kept.
 
     :code:`aiogram_router`, :code:`aiogram_handler` and :code:`aiogram_phase` are :code:`None`
     for now: they are filled by the dispatch executor once it lands.
+    The context object is shared by tasks started during the update, so such a task's records
+    show the update's current router, handler and phase.
 
 
 Context on your own records
