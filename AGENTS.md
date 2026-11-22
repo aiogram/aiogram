@@ -236,6 +236,15 @@ These patterns repeatedly appeared in maintainer feedback and should be treated 
   `decode/tests/types.rs` holds hand-written types in the shape B-04 writes and C-18 emits. The corpus tests read
   `benchmarks/corpus/wire/<id>.json` from disk. jiter checks `\u` escapes even in skipped values (`known_skip`), so a
   lone surrogate anywhere in the input is a decode error, not only in decoded strings.
+- B-14 on top of it:
+  - unions (`decode/union.rs`), the depth guard in `Decode::decode` (128 objects, stacker re-entry), the
+    `Unknown…` hook (`Cursor::report`, `decode/seen.rs`) and the envelope / `getUpdates` entry points
+    (`decode/envelope.rs`);
+  - jiter's `known_skip` also stops at 200 nested levels relative to where it starts. A failure path that must find
+    a value's end after jiter failed (a batch element, an absorbed union member) uses `decode/scan.rs`, which checks
+    only strings and bracket balance;
+  - a `\uXXXX` escape typed into an agent's tool call can arrive decoded in the written file: build such test
+    input at runtime (`format!("{}u0075", '\\')`) and grep the file afterwards.
 - The A-02 link-check script (in `v4/plans/A-contracts/A-02-apply-resolutions.md`, *Validation*) reports 9 known
   broken links in files no plan may edit: `v4/research/codex-review.md` (`../../../aiogram/...`) and
   `v4/plans/_TEMPLATE.md` (paths relative to a story folder). Any other hit is yours.

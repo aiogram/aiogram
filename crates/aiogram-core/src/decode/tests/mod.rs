@@ -1,7 +1,12 @@
 //! `cargo test` of the decode core, no interpreter (except the one `PyErr` mapping test).
 
+mod alloc;
 mod corpus;
+mod depth;
+mod envelope;
+mod scan;
 mod types;
+mod union;
 
 use pyo3::prelude::*;
 
@@ -82,6 +87,14 @@ fn tables_are_consistent() {
     check_table::<types::InlineKeyboardMarkup>("InlineKeyboardMarkup");
     check_table::<Message>("Message");
     check_table::<Update>("Update");
+    check_table::<types::MessageOriginCommon>("MessageOriginCommon");
+    check_table::<types::MessageOriginUser>("MessageOriginUser");
+    check_table::<types::MessageOriginHiddenUser>("MessageOriginHiddenUser");
+    check_table::<types::InaccessibleMessage>("InaccessibleMessage");
+    check_table::<types::ChatMemberCommon>("ChatMemberCommon");
+    check_table::<types::ChatMemberMember>("ChatMemberMember");
+    check_table::<types::ChatMemberAdministrator>("ChatMemberAdministrator");
+    check_table::<types::ChatMemberUpdated>("ChatMemberUpdated");
     assert_eq!(MESSAGE.fields.len(), 130);
     assert!(INTERNED.windows(2).all(|w| w[0] < w[1]));
 }
