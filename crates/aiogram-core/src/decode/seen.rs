@@ -89,7 +89,9 @@ impl Counter {
 
 static COUNTER: LazyLock<Mutex<Counter>> = LazyLock::new(Mutex::default);
 
-/// Counts one occurrence in the process-wide counter; `true` the first time.
+/// Counts one occurrence in the process-wide counter; `true` the first time. A count is per
+/// decode attempt: a malformed union member is decoded twice (variant, then shared fields), so a
+/// value in its shared fields counts twice; "first" is unaffected.
 pub(crate) fn record(seen: &Seen) -> bool {
     COUNTER
         .lock()

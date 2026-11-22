@@ -277,3 +277,51 @@ fn counter_is_bounded() {
         63
     );
 }
+
+// ---- review fixes ----
+
+#[test]
+fn duplicate_selecting_key_last_wins() {
+    let msg = message(&wrap(
+        r#","forward_origin":{"type":"user","type":"hidden_user","date":1,"sender_user_name":"a"}"#,
+    ));
+    assert!(
+        matches!(msg.forward_origin(), Some(MessageOrigin::HiddenUser(_))),
+        "{:?}",
+        msg.forward_origin()
+    );
+    let msg = message(&wrap(
+        r#","pinned_message":{"chat":{"id":1,"type":"private"},"message_id":9,"date":0,"date":5}"#,
+    ));
+    let Some(MaybeInaccessibleMessage::Message(pinned)) = msg.pinned_message() else {
+        panic!("{:?}", msg.pinned_message())
+    };
+    assert_eq!(pinned.date.0, 5);
+}
+
+#[test]
+fn escaped_selecting_key_is_decoded() {
+    // `"type"`, built here: the escape is the point of the test
+    let key = format!("ty{}u0070e", '\\');
+    let msg = message(&wrap(&format!(
+        r#","forward_origin":{{"{key}":"hidden_user","date":1,"sender_user_name":"a"}}"#
+    )));
+    assert!(
+        matches!(msg.forward_origin(), Some(MessageOrigin::HiddenUser(_))),
+        "{:?}",
+        msg.forward_origin()
+    );
+}
+
+#[test]
+fn member_without_a_tag_is_malformed() {
+    for member in ["[1,2]", r#"{"date":1}"#] {
+        let json = wrap(&format!(r#","forward_origin":{member}"#));
+        let mut c = Cursor::new(json.as_bytes(), 0).unwrap().strict(true);
+        let error = Message::decode(&mut c).unwrap_err();
+        assert!(
+            matches!(error.kind(), ErrorKind::Strict(seen) if seen.site == Site::Malformed),
+            "{member}: {error}"
+        );
+    }
+}

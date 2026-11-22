@@ -235,12 +235,13 @@ fn body_errors() {
         (&ErrorKind::Missing, "result")
     );
     let missing = error(br#"{"result":1}"#);
-    assert_eq!(missing.error.path(), "result");
+    assert_eq!(missing.error.path(), "ok");
+    // the result's own error waits for `ok`, which is missing
     let missing = error(br#"{"ok":null,"result":true}"#);
-    assert_eq!(missing.error.path(), "result");
+    assert_eq!(missing.error.path(), "ok");
 
     let body = br#"{"ok":true,"result":{"message_id":"x","date":1},"z":1}"#;
-    let BodyError { error, result } = error(body);
+    let BodyError { error, result, .. } = error(body);
     assert_eq!(error.path(), "result.message_id");
     assert_eq!(
         text(body, result.unwrap()),
@@ -348,4 +349,67 @@ fn entry_points_are_send() {
     assert!(decoded.is_ok());
     let raw: Arc<[u8]> = body.into();
     let _: Decoded<Item<Update>> = detachable(move || decode_update::<Update>(raw, LENIENT));
+}
+
+// ---- review fixes ----
+
+#[test]
+fn first_seen_survives_a_body_error() {
+    let element = br#"{"update_id":1,"message":{"message_id":1,"date":1,"chat":{"id":1,"type":"seenerr-batch"}}}"#;
+    let body = batch(&[element, br#"{"update_id":2,"x":[1}"#]);
+    let error = decode_updates::<Update>(&body, LENIENT).unwrap_err();
+    assert_eq!(
+        error.first_seen,
+        [Seen::new("ChatType", Site::Enum, "seenerr-batch")]
+    );
+
+    let body = br#"{"ok":true,"result":{"message_id":1,"date":1,"chat":{"id":1,"type":"seenerr-result"},"text":5}}"#;
+    let error = decode_response(body, Message::decode, LENIENT).unwrap_err();
+    assert_eq!(
+        error.first_seen,
+        [Seen::new("ChatType", Site::Enum, "seenerr-result")]
+    );
+}
+
+#[test]
+fn body_error_offsets_index_the_body() {
+    let small = trimmed("update.text.small");
+    let body = batch(&[&small, br#"{"update_id":2,"x":[1}"#]);
+    let error = decode_updates::<Update>(&body, LENIENT).unwrap_err();
+    let start = u32::try_from(small.len()).unwrap();
+    assert!(error.error.offset() > start, "{}", error.error);
+}
+
+#[test]
+fn error_envelope_with_a_result() {
+    let body = br#"{"ok":false,"error_code":400,"description":"Bad","result":{}}"#;
+    let Response::Err(error) = decode_response(body, Message::decode, LENIENT)
+        .unwrap()
+        .value
+    else {
+        panic!()
+    };
+    assert_eq!(error.error_code, Some(400));
+    let body = br#"{"result":{},"ok":false,"error_code":400}"#;
+    assert!(matches!(
+        decode_response(body, Message::decode, LENIENT)
+            .unwrap()
+            .value,
+        Response::Err(_)
+    ));
+}
+
+#[test]
+fn invalid_utf8_in_one_element_is_isolated() {
+    let small = trimmed("update.text.small");
+    let bad = b"{\"update_id\":9,\"message\":{\"message_id\":1,\"date\":1,\"chat\":{\"id\":1,\"type\":\"private\"},\"text\":\"\xff\"}}";
+    let items = updates(&batch(&[&small, bad, &small]));
+    assert_eq!(items.len(), 3);
+    assert!(items[0].data.is_ok() && items[2].data.is_ok());
+    let error = items[1].data.as_ref().unwrap_err();
+    assert_eq!(error.update_id, Some(9));
+    assert!(matches!(error.error.kind(), ErrorKind::Json(_)));
+    assert_eq!(&*items[1].raw, &bad[..]);
+    // a plain method response stays all-or-nothing
+    assert!(decode_response(b"{\"ok\":true,\"result\":\"\xff\"}", |c| c.str(), LENIENT).is_err());
 }

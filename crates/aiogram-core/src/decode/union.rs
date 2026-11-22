@@ -103,7 +103,8 @@ fn unknown_member(
     let tag = value
         .filter(|raw| raw.first() == Some(&b'"'))
         .and_then(|raw| Jiter::new(raw).next_str().ok().map(Box::from));
-    let site = if error.is_some() {
+    // no selecting key at all (or no object) is a malformed member, not an unknown tag
+    let site = if error.is_some() || value.is_none() {
         Site::Malformed
     } else {
         Site::Tag

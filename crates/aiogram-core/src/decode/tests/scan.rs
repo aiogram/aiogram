@@ -55,3 +55,23 @@ fn update_id_is_read_by_a_shallow_scan() {
     assert_eq!(id(r#"{"a":1 "update_id":1}"#), None);
     assert_eq!(id(r#"{}"#), None);
 }
+
+// ---- review fixes ----
+
+#[test]
+fn mismatched_brackets_do_not_balance() {
+    assert_eq!(end(r#"{"a":[}"#), None);
+    assert_eq!(end(r#"[{"a":1]}"#), None);
+    assert_eq!(end(r#"{"x":[},{"update_id":2}]"#), None);
+}
+
+#[test]
+fn duplicate_update_id_last_wins() {
+    let id = |json: &str| update_id(json.as_bytes());
+    assert_eq!(
+        id(r#"{"update_id":100,"message":{},"update_id":2}"#),
+        Some(2)
+    );
+    assert_eq!(id(r#"{"update_id":"x","update_id":3}"#), Some(3));
+    assert_eq!(id(r#"{"update_id":3,"update_id":"x"}"#), None);
+}

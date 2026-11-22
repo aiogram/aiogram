@@ -6,8 +6,10 @@
 use std::sync::Arc;
 
 use super::Decode;
-use super::cursor::Cursor;
-use super::error::{DecodeError, DecodeResult, Seg};
+use jiter::Jiter;
+
+use super::cursor::{Cursor, element_utf8};
+use super::error::{DecodeError, DecodeResult, ErrorKind, Seg};
 use super::scan;
 use super::seen::Seen;
 use super::table::{Field, Kind, Table};
@@ -52,6 +54,9 @@ pub(crate) struct BodyError {
     /// the `result` range when the envelope read but `result` did not decode
     /// (`ClientDecodeError.raw`, PD-29)
     pub(crate) result: Option<Raw>,
+    /// first occurrences counted before the failure: the counter already has them, so the
+    /// caller logs them here or never
+    pub(crate) first_seen: Vec<Seen>,
 }
 
 impl From<DecodeError> for BodyError {
@@ -59,6 +64,7 @@ impl From<DecodeError> for BodyError {
         Self {
             error,
             result: None,
+            first_seen: Vec::new(),
         }
     }
 }
@@ -122,7 +128,32 @@ pub(crate) fn decode_response<T>(
     read: fn(&mut Cursor<'_>) -> DecodeResult<T>,
     options: Options,
 ) -> BodyResult<T> {
-    let mut c = Cursor::new(body, 0)?.strict(options.strict);
+    respond(Cursor::new(body, 0)?, body, read, options)
+}
+
+fn respond<T>(
+    c: Cursor<'_>,
+    body: &[u8],
+    read: fn(&mut Cursor<'_>) -> DecodeResult<T>,
+    options: Options,
+) -> BodyResult<T> {
+    let mut c = c.strict(options.strict);
+    let out = envelope(&mut c, body, read);
+    let first_seen = c.take_seen();
+    match out {
+        Ok(value) => Ok(Decoded { value, first_seen }),
+        Err(mut error) => {
+            error.first_seen = first_seen;
+            Err(error)
+        }
+    }
+}
+
+fn envelope<T>(
+    c: &mut Cursor<'_>,
+    body: &[u8],
+    read: fn(&mut Cursor<'_>) -> DecodeResult<T>,
+) -> Result<Response<T>, BodyError> {
     let mut ok = None;
     let mut result = None;
     let mut error_code = None;
@@ -135,20 +166,22 @@ pub(crate) fn decode_response<T>(
             OK => ok = c.opt(Cursor::bool)?,
             RESULT => {
                 let start = c.mark();
-                match read(&mut c) {
-                    Ok(value) => result = Some(value),
+                result = Some(match read(c) {
+                    Ok(value) => Ok(value),
                     Err(error) => {
-                        let local = start as usize;
-                        let result = scan::value_end(body, local).map(|end| Raw {
-                            start,
-                            end: u32::try_from(end).unwrap_or(u32::MAX),
-                        });
-                        return Err(BodyError {
-                            error: error.at(Seg::Key("result")),
-                            result,
-                        });
+                        let error = error.at(Seg::Key("result"));
+                        let Some(end) = scan::value_end(body, start as usize) else {
+                            return Err(error.into());
+                        };
+                        let end = u32::try_from(end).unwrap_or(u32::MAX);
+                        // go on after it: an `"ok":false` still makes this an `ApiError`
+                        c.seek(end);
+                        Err(BodyError {
+                            result: Some(Raw { start, end }),
+                            ..error.into()
+                        })
                     }
-                }
+                });
             }
             ERROR_CODE => error_code = c.opt(Cursor::i64)?,
             DESCRIPTION => description = c.opt(Cursor::str)?,
@@ -156,20 +189,16 @@ pub(crate) fn decode_response<T>(
         }
     }
     c.finish()?;
-    let value = match (ok, result) {
-        (Some(true), Some(result)) => Response::Ok(result),
-        (Some(true), None) => return Err(DecodeError::missing("result", 0).into()),
-        (Some(false), _) => Response::Err(ApiError {
+    match (ok, result) {
+        (Some(true), Some(result)) => result.map(Response::Ok),
+        (Some(true), None) => Err(DecodeError::missing("result", 0).into()),
+        (Some(false), _) => Ok(Response::Err(ApiError {
             error_code,
             description,
             parameters,
-        }),
-        (None, _) => return Err(DecodeError::missing("ok", 0).into()),
-    };
-    Ok(Decoded {
-        value,
-        first_seen: c.take_seen(),
-    })
+        })),
+        (None, _) => Err(DecodeError::missing("ok", 0).into()),
+    }
 }
 
 /// Decodes a `getUpdates` response element by element (10 Layer 2): each update gets its own
@@ -179,7 +208,12 @@ pub(crate) fn decode_updates<T: Decode>(
     body: &[u8],
     options: Options,
 ) -> BodyResult<Box<[Item<T>]>> {
-    decode_response(body, items::<T>, options)
+    // a body that is not UTF-8 is checked element by element: one bad byte fails one update
+    let c = match Cursor::new(body, 0) {
+        Ok(c) => c,
+        Err(_) => Cursor::unchecked(body, 0)?,
+    };
+    respond(c, body, items::<T>, options)
 }
 
 /// Decodes one update body (webhook, feed) with the same isolation as a `getUpdates` element.
@@ -209,9 +243,10 @@ fn items<T: Decode>(c: &mut Cursor<'_>) -> DecodeResult<Box<[Item<T>]>> {
     while more {
         let index = u32::try_from(out.len()).unwrap_or(u32::MAX);
         let start = c.mark();
-        let mut e = c.element(start);
-        let (item, len) = element::<T>(&mut e).map_err(|error| error.at(Seg::Index(index)))?;
+        let mut e = c.element(start, None);
+        let item = element::<T>(&mut e);
         c.extend_seen(e.take_seen());
+        let (item, len) = item.map_err(|error| error.shifted(start).at(Seg::Index(index)))?;
         out.push(item);
         c.seek(start.saturating_add(len));
         more = c
@@ -225,6 +260,44 @@ fn items<T: Decode>(c: &mut Cursor<'_>) -> DecodeResult<Box<[Item<T>]>> {
 /// (R04): `e` starts its offsets at the element, so every `Raw` indexes the copy. Returns the
 /// item and its length in the batch.
 fn element<T: Decode>(e: &mut Cursor<'_>) -> DecodeResult<(Item<T>, u32)> {
+    if e.is_utf8() {
+        return decode_element(e);
+    }
+    // the body failed the UTF-8 check: check this update alone, within its own bounds
+    let input = e.rest(0);
+    let Some(len) = scan::value_end(input, 0) else {
+        return Err(unbalanced(input));
+    };
+    let bytes = input.get(..len).unwrap_or_default();
+    if let Err(error) = element_utf8(bytes) {
+        let update_id = scan::update_id(bytes);
+        let data = Err(UpdateError { update_id, error });
+        let len = u32::try_from(len).unwrap_or(u32::MAX);
+        return Ok((
+            Item {
+                raw: Arc::from(bytes),
+                data,
+            },
+            len,
+        ));
+    }
+    let mut checked = e.element(0, Some(len)).assume_utf8();
+    let out = decode_element(&mut checked);
+    e.extend_seen(checked.take_seen());
+    out
+}
+
+/// The error for an element whose end cannot be found.
+#[cold]
+fn unbalanced(input: &[u8]) -> DecodeError {
+    match Jiter::new(input).next_skip() {
+        Err(error) => DecodeError::jiter(error, 0),
+        Ok(()) => DecodeError::new(ErrorKind::Json("unbalanced brackets".into()), 0),
+    }
+}
+
+/// [`element`] on a cursor whose input is UTF-8.
+fn decode_element<T: Decode>(e: &mut Cursor<'_>) -> DecodeResult<(Item<T>, u32)> {
     let input = e.rest(0);
     let (data, len) = match T::decode(e) {
         Ok(value) => (Ok(value), e.mark() as usize),

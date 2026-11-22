@@ -28,27 +28,32 @@ fn string_end(buf: &[u8], i: usize) -> Option<usize> {
 }
 
 /// The end (exclusive) of the value that starts at `start`, after any whitespace; `None` if the
-/// input ends first or the brackets do not balance.
+/// input ends first or the brackets do not balance (a `}` closing a `[` included, so a broken
+/// element never swallows the ones after it).
 pub(crate) fn value_end(buf: &[u8], start: usize) -> Option<usize> {
     let mut i = ws(buf, start);
-    let mut depth = 0usize;
+    // the closer each open bracket expects; memory grows with the nesting, the stack does not
+    let mut open: Vec<u8> = Vec::new();
     loop {
         match *buf.get(i)? {
             b'"' => {
                 i = string_end(buf, i)?;
-                if depth == 0 {
+                if open.is_empty() {
                     return Some(i);
                 }
                 continue;
             }
-            b'{' | b'[' => depth += 1,
-            b'}' | b']' => {
-                depth = depth.checked_sub(1)?;
-                if depth == 0 {
+            b'{' => open.push(b'}'),
+            b'[' => open.push(b']'),
+            close @ (b'}' | b']') => {
+                if open.pop()? != close {
+                    return None;
+                }
+                if open.is_empty() {
                     return i.checked_add(1);
                 }
             }
-            _ if depth == 0 => {
+            _ if open.is_empty() => {
                 // a scalar: up to the next delimiter
                 let len = buf
                     .get(i..)?
@@ -63,10 +68,18 @@ pub(crate) fn value_end(buf: &[u8], start: usize) -> Option<usize> {
     }
 }
 
-/// The integer at top-level key `update_id` of the object `buf` holds; `None` if it is absent,
-/// not an integer, or the object does not scan. The other values are only skipped, so an update
-/// that fails to decode still gives its id (10 Layer 2).
+/// The integer at top-level key `update_id` of the object `buf` holds; `None` if it is absent or
+/// not an integer. The last occurrence wins, as in decoding; a scan that breaks off keeps what it
+/// found so far. The other values are only skipped, so an update that fails to decode still gives
+/// its id (10 Layer 2).
 pub(crate) fn update_id(buf: &[u8]) -> Option<i64> {
+    let mut found = None;
+    scan_update_id(buf, &mut found);
+    found.flatten()
+}
+
+/// Sets `found` at each `update_id` key: `Some(None)` for a value that is not an integer.
+fn scan_update_id(buf: &[u8], found: &mut Option<Option<i64>>) -> Option<()> {
     let mut i = ws(buf, 0);
     if buf.get(i) != Some(&b'{') {
         return None;
@@ -85,10 +98,10 @@ pub(crate) fn update_id(buf: &[u8]) -> Option<i64> {
         let value = ws(buf, i + 1);
         let end = value_end(buf, value)?;
         if key == b"update_id" {
-            return match Jiter::new(buf.get(value..end)?).next_int() {
+            *found = Some(match Jiter::new(buf.get(value..end)?).next_int() {
                 Ok(NumberInt::Int(id)) => Some(id),
                 _ => None,
-            };
+            });
         }
         i = ws(buf, end);
         if buf.get(i) != Some(&b',') {

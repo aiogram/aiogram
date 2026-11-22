@@ -86,6 +86,13 @@ impl DecodeError {
         self
     }
 
+    /// Moves the offset by `by` bytes (an error of a `getUpdates` element, which counts from
+    /// the element, reported against the body).
+    pub(crate) fn shifted(mut self, by: u32) -> Self {
+        self.0.offset = self.0.offset.saturating_add(by);
+        self
+    }
+
     pub(crate) fn kind(&self) -> &ErrorKind {
         &self.0.kind
     }

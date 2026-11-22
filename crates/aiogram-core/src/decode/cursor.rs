@@ -26,6 +26,9 @@ pub(crate) struct Cursor<'j> {
     strict: bool,
     /// first occurrences counted by this decode, for the caller to log after the Rust phase
     seen: Vec<Seen>,
+    /// the whole input was checked as UTF-8; if not, each `getUpdates` element is checked on
+    /// its own ([`unchecked`](Self::unchecked))
+    utf8: bool,
 }
 
 /// What [`Cursor::probe`] found in an object: where it starts and the raw value of one key.
@@ -73,6 +76,16 @@ impl<'j> Cursor<'j> {
     /// A cursor over `data`, which starts at byte `base` of the update's buffer. The whole of
     /// `data` must be UTF-8: jiter does not check it in keys and skipped values.
     pub(crate) fn new(data: &'j [u8], base: u32) -> DecodeResult<Self> {
+        let c = Self::unchecked(data, base)?;
+        check_utf8(data, base)?;
+        Ok(Self { utf8: true, ..c })
+    }
+
+    /// A cursor over `data` whose UTF-8 is not checked: only for a `getUpdates` body that failed
+    /// the check, so that [`element`](Self::element) checks each update on its own and one bad
+    /// byte fails one update. Strings jiter decodes are still checked; keys and skipped values of
+    /// the envelope itself are not.
+    pub(crate) fn unchecked(data: &'j [u8], base: u32) -> DecodeResult<Self> {
         if u32::try_from(data.len())
             .ok()
             .and_then(|len| len.checked_add(base))
@@ -80,14 +93,21 @@ impl<'j> Cursor<'j> {
         {
             return Err(DecodeError::new(ErrorKind::TooLarge, base));
         }
-        if let Err(e) = std::str::from_utf8(data) {
-            let at = u32::try_from(e.valid_up_to()).unwrap_or(u32::MAX);
-            return Err(DecodeError::new(
-                ErrorKind::Json("invalid UTF-8".into()),
-                base.saturating_add(at),
-            ));
-        }
-        Ok(Self::trusted(data, base))
+        Ok(Self {
+            utf8: false,
+            ..Self::trusted(data, base)
+        })
+    }
+
+    /// Marks the input as checked UTF-8 (the caller checked it).
+    pub(crate) fn assume_utf8(mut self) -> Self {
+        self.utf8 = true;
+        self
+    }
+
+    /// Whether the input was checked as UTF-8 (see [`unchecked`](Self::unchecked)).
+    pub(crate) fn is_utf8(&self) -> bool {
+        self.utf8
     }
 
     /// A cursor over `data` that the caller has already checked as [`new`](Self::new) does.
@@ -101,6 +121,7 @@ impl<'j> Cursor<'j> {
             depth: 0,
             strict: false,
             seen: Vec::new(),
+            utf8: true,
         }
     }
 
@@ -110,11 +131,16 @@ impl<'j> Cursor<'j> {
         self
     }
 
-    /// A cursor for the value at `at` with its own buffer: offsets restart at 0 there (one
-    /// `getUpdates` element, copied out afterwards, R04). Same policy, no open objects.
-    pub(crate) fn element(&self, at: u32) -> Self {
-        let local = at.saturating_sub(self.origin_base) as usize;
-        Self::trusted(self.origin.get(local..).unwrap_or_default(), 0).strict(self.strict)
+    /// A cursor for `len` bytes at `at` (`None`: up to the end) with its own buffer: offsets
+    /// restart at 0 there (one `getUpdates` element, copied out afterwards, R04). Same policy,
+    /// no open objects.
+    pub(crate) fn element(&self, at: u32, len: Option<usize>) -> Self {
+        let rest = self.rest(at);
+        let data = len.and_then(|len| rest.get(..len)).unwrap_or(rest);
+        Self {
+            utf8: self.utf8,
+            ..Self::trusted(data, 0).strict(self.strict)
+        }
     }
 
     /// The first occurrences this decode counted, oldest first.
@@ -201,34 +227,37 @@ impl<'j> Cursor<'j> {
         Ok(())
     }
 
-    /// Scans the object at the cursor for `key` on a separate jiter, skipping values, and stops
-    /// there (B23); the cursor does not move. A union decodes its member from `start` after this.
-    /// Input that does not scan as an object is no value: the member's decode reports the error.
+    /// Scans the object at the cursor for `key` on a separate jiter, skipping values (B23, the
+    /// first of a union's two lexing passes); the cursor does not move. The last occurrence wins,
+    /// as in decoding; a scan that breaks off (invalid JSON) keeps what it found so far, and the
+    /// member's decode reports the error. A union decodes its member from `start` after this.
     pub(crate) fn probe(&mut self, key: &str) -> DecodeResult<Probe> {
         self.peek()?;
         let start = self.here();
         let mut jiter = Jiter::new(self.rest(start));
         let at = |index: usize| start.saturating_add(u32::try_from(index).unwrap_or(u32::MAX));
+        let mut value = None;
         let mut step = jiter.next_object_bytes();
         while let Ok(Some(name)) = step {
-            let found = name == key.as_bytes();
+            let found = if name.contains(&b'\\') {
+                escaped_eq(name, key)
+            } else {
+                name == key.as_bytes()
+            };
             let Ok(peek) = jiter.peek() else { break };
             let value_start = at(jiter.current_index());
             if jiter.known_skip(peek).is_err() {
                 break;
             }
             if found {
-                return Ok(Probe {
-                    start,
-                    value: Some(Raw {
-                        start: value_start,
-                        end: at(jiter.current_index()),
-                    }),
+                value = Some(Raw {
+                    start: value_start,
+                    end: at(jiter.current_index()),
                 });
             }
             step = jiter.next_key_bytes();
         }
-        Ok(Probe { start, value: None })
+        Ok(Probe { start, value })
     }
 
     /// Steps into a JSON array: `true` if it has a first item.
@@ -482,4 +511,30 @@ impl<'j> Cursor<'j> {
             Err(e) => Err(self.fail(e)),
         }
     }
+}
+
+fn check_utf8(data: &[u8], base: u32) -> DecodeResult<()> {
+    std::str::from_utf8(data).map(drop).map_err(|e| {
+        let at = u32::try_from(e.valid_up_to()).unwrap_or(u32::MAX);
+        DecodeError::new(
+            ErrorKind::Json("invalid UTF-8".into()),
+            base.saturating_add(at),
+        )
+    })
+}
+
+/// `data` as UTF-8, for a `getUpdates` element of an [`unchecked`](Cursor::unchecked) body.
+pub(crate) fn element_utf8(data: &[u8]) -> DecodeResult<()> {
+    check_utf8(data, 0)
+}
+
+/// A key with escapes (the bytes between its quotes) equals `key` once decoded. Telegram never
+/// sends one.
+#[cold]
+fn escaped_eq(name: &[u8], key: &str) -> bool {
+    let mut quoted = Vec::with_capacity(name.len().saturating_add(2));
+    quoted.push(b'"');
+    quoted.extend_from_slice(name);
+    quoted.push(b'"');
+    Jiter::new(&quoted).next_str().is_ok_and(|name| name == key)
 }
