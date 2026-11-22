@@ -157,10 +157,10 @@ Verification method and results: [_VERIFICATION.md](_VERIFICATION.md).
 | [B-13](B-spike/B-13-gate-run-and-decision.md) | Gate run + go/no-go decision record | `todo` | no | M | A-06, A-08, B-00, B-01, B-02, B-03, B-04, B-05, B-06, B-07, B-08, B-09, B-10, B-11, B-12, B-14 |
 | [B-14](B-spike/B-14-unions-envelope-batch-decode.md) | Decode runtime: unions, depth guard, response envelope, `getUpdates` batch | `todo` | no | M | B-03 |
 | [C-01](C-butcher/C-01-crate-xtask-ir-snapshot.md) | butcher crate, xtask entry point, IR model, snapshot format | `done` | no | M | A-01, B-01 |
-| [C-02](C-butcher/C-02-fetch-provenance.md) | `fetch`, source cache and manifest provenance | `todo` | no | S | C-01 |
+| [C-02](C-butcher/C-02-fetch-provenance.md) | `fetch`, source cache and manifest provenance | `done` | no | S | C-01 |
 | [C-03](C-butcher/C-03-html-adapter.md) | HTML adapter | `todo` | no | L | C-01 |
 | [C-04](C-butcher/C-04-openapi-adapter.md) | OpenAPI 3.2 adapter | `todo` | no | L | C-01 |
-| [C-05](C-butcher/C-05-errors-json-adapter.md) | `errors.json` adapter | `todo` | no | S | C-01 |
+| [C-05](C-butcher/C-05-errors-json-adapter.md) | `errors.json` adapter | `done` | no | S | C-01 |
 | [C-06](C-butcher/C-06-overlay-schema-loader.md) | Overlay schema and loader | `todo` | no | M | C-01 |
 | [C-07](C-butcher/C-07-fill-dsl.md) | Fill-DSL for shortcuts | `todo` | no | M | C-06 |
 | [C-08](C-butcher/C-08-merge-cross-check.md) | Merge and cross-check | `todo` | no | L | C-03, C-04, C-05, C-06 |
@@ -185,7 +185,7 @@ Verification method and results: [_VERIFICATION.md](_VERIFICATION.md).
 | [C-27](C-butcher/C-27-port-ext-helpers.md) | Port the remaining hand-written type helpers to `*_ext.rs` | `todo` | yes | M | B-10, B-13, C-18, D-17 |
 | [D-01](D-client/D-01-default-bot-properties-and-bot-cleanup.md) | Frozen `DefaultBotProperties`, `Bot` cleanup, `Bot.__repr__` | `todo` | no | S | A-01, A-11, C-15 |
 | [D-02](D-client/D-02-exceptions-error-reason-restarting-removal.md) | Exceptions: `ErrorReason` on `e.reason`, `RestartingTelegram` removal, `ClientDecodeError.raw` | `todo` | no | M | A-01, A-11, C-12 |
-| [D-03](D-client/D-03-token-safe-network-errors.md) | Token-safe network errors (`from None`, `.original`, redacted URLs) | `todo` | no | S | A-01, A-11 |
+| [D-03](D-client/D-03-token-safe-network-errors.md) | Token-safe network errors (`from None`, `.original`, redacted URLs) | `done` | no | S | A-01, A-11 |
 | [D-04](D-client/D-04-drop-aiofiles-input-file-replayable.md) | Drop `aiofiles`; add `InputFile.replayable` | `done` | no | S | A-01, A-11 |
 | [D-05](D-client/D-05-download-lifecycle.md) | Download lifecycle: per-phase timeouts, `bot.stream()`, typed overloads | `todo` | no | M | D-03, D-04 |
 | [D-06](D-client/D-06-request-middleware-manager.md) | Request middleware manager: prebuilt chain, `before=`/`after=` anchors, per-call request context | `todo` | no | S | A-01, H-01 |
@@ -226,7 +226,7 @@ Verification method and results: [_VERIFICATION.md](_VERIFICATION.md).
 | [F-01](F-fsm/F-01-thread-safe-memory-storage.md) | Thread-safe `MemoryStorage` (one dict + one lock) | `todo` | no | M | A-01, A-05, A-11 |
 | [F-02](F-fsm/F-02-isolation-lock-table-default-on.md) | Cross-thread, cross-loop isolation lock table, on by default (D28) | `todo` | no | L | A-01, A-05, A-06, A-11, H-01 |
 | [F-03](F-fsm/F-03-release-isolation-warn-after.md) | `state.release_isolation()`, `isolation_warn_after`, release hooks, re-entrancy error | `todo` | no | M | A-11, F-02, H-01 |
-| [F-04](F-fsm/F-04-fsm-hot-paths-statefilter.md) | FSM hot paths, StateFilter introspection, public isolation-key function | `todo` | no | S | A-01, A-05 |
+| [F-04](F-fsm/F-04-fsm-hot-paths-statefilter.md) | FSM hot paths, StateFilter introspection, public isolation-key function | `done` | no | S | A-01, A-05 |
 | [F-05](F-fsm/F-05-storage-record-batch-api.md) | Storage record and batch API (`get_records` / `apply_writes`) with fallbacks | `todo` | no | M | F-01 |
 | [F-06](F-fsm/F-06-redis-storage-legacy-layout.md) | `RedisStorage`: 3.x layout, pipelined reads/writes, single-loop detection | `todo` | no | M | A-11, F-05 |
 | [F-07](F-fsm/F-07-mongo-remove-motor-key-validation.md) | Mongo: remove motor `MongoStorage`; `PyMongoStorage` key validation, batching, single-loop | `todo` | no | M | A-11, F-05 |

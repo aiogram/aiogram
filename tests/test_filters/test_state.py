@@ -67,3 +67,93 @@ class TestStateFilter:
     def test_str(self):
         f = StateFilter("test")
         assert str(f) == "StateFilter('test')"
+
+    def test_states_is_read_only(self):
+        f = StateFilter("test")
+        assert f.states == ("test",)
+        with pytest.raises(AttributeError):
+            f.states = ("other",)
+
+
+class CustomState(State):
+    def __call__(self, event, raw_state=None):
+        return raw_state == "custom"
+
+
+class CustomGroup(StatesGroup):
+    state = State()
+
+    def __call__(self, event, raw_state=None):
+        return raw_state == "custom-group"
+
+
+class StarGroup(StatesGroup):
+    star = State("*")
+
+
+def legacy_check(states, raw_state):
+    """The 3.x StateFilter loop, kept as the parity oracle."""
+    for allowed_state in states:
+        if isinstance(allowed_state, str) or allowed_state is None:
+            if allowed_state in {"*", raw_state}:
+                return True
+        elif isinstance(allowed_state, (State, StatesGroup)):
+            if allowed_state(event=None, raw_state=raw_state):
+                return True
+        elif (
+            isclass(allowed_state)
+            and issubclass(allowed_state, StatesGroup)
+            and allowed_state()(event=None, raw_state=raw_state)
+        ):
+            return True
+    return False
+
+
+PARITY_STATES = [
+    [None],
+    ["state"],
+    ["*"],
+    [State("state")],
+    [State("*")],
+    [MyGroup],
+    [MyGroup()],
+    [MyGroup.state, "other"],
+    [CustomState("x")],
+    [CustomGroup],
+    [CustomGroup()],
+    [StarGroup],
+    [object()],
+    [State],
+    [CustomState("x"), MyGroup, None],
+]
+PARITY_RAW = [None, "state", "@:state", "MyGroup:state", "custom", "custom-group", "*", "x"]
+
+
+class TestStateFilterPrecomputed:
+    @pytest.mark.parametrize("states", PARITY_STATES)
+    @pytest.mark.parametrize("raw_state", PARITY_RAW)
+    async def test_parity(self, states, raw_state):
+        f = StateFilter(*states)
+        assert await f(obj=None, raw_state=raw_state) is legacy_check(states, raw_state)
+
+    @pytest.mark.parametrize(
+        "states,expected",
+        [
+            [[None], frozenset({None})],
+            [["a", None], frozenset({"a", None})],
+            [[State("a")], frozenset({"@:a"})],
+            [[MyGroup], frozenset({"MyGroup:state"})],
+            [[MyGroup()], frozenset({"MyGroup:state"})],
+            [[MyGroup.state, "b"], frozenset({"MyGroup:state", "b"})],
+            [[StarGroup], frozenset({"*"})],
+            [["*"], None],
+            [[State("*")], None],
+            [["a", "*"], None],
+            [[CustomState("x")], None],
+            [[CustomGroup], None],
+            [[CustomGroup()], None],
+            [[object()], None],
+        ],
+    )
+    def test_exact_states(self, states, expected):
+        assert StateFilter(*states).exact_states == expected

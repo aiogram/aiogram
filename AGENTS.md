@@ -94,6 +94,11 @@ Suite strategy (4.0, D88):
 - The `aiogram.test` toolkit for new end-to-end scenarios (dispatcher + FSM + scenes + filters + errors).
 - No mass rewrite of existing tests onto the toolkit.
 - The 100% coverage rule is unchanged.
+- Token safety: assert with `tests/token_safety.py` (`FAKE_TOKEN`, `assert_token_absent`). `raise ... from None`
+  inside `except` still sets `__context__` (only suppressed), so the helper walks the chain a traceback prints, not
+  `__context__` / `.original`, which hold the raw aiohttp error by design.
+- `aresponses` intercepts every host, `127.0.0.1` included: a test that needs a real unreachable hop (a redirect to
+  a closed port) uses `aiohttp.test_utils.TestServer` without the `aresponses` fixture.
 
 `MockedSession` builds the JSON wire envelope and runs it through `BaseSession.check_response`, so unit tests keep
 exercising the real error mapping (`TelegramBadRequest`, `TelegramRetryAfter`, ...). Its only model-layer dependency is
@@ -233,6 +238,10 @@ These patterns repeatedly appeared in maintainer feedback and should be treated 
 - The IR (`crates/butcher/src/ir.rs`) is the contract of every C plan. It only grows by optional fields (`Option` /
   `Vec`, omitted when empty), so older snapshots still load; a rename or removal regenerates the committed
   snapshots in the same PR. Files under `butcher/` are compared byte for byte (`.gitattributes` keeps them LF).
+- `sources/errors.rs` (C-05) turns `errors.json` into `ir.errors.json`. Its templates overlap (`entity %s` matches the longer
+  entity messages), so a lookup is the exact message first, then the matching template with the longest literal
+  (`literal_len`). The live check is `BUTCHER_LIVE=1 cargo test -p butcher errors_counts -- --ignored`; it pins the
+  message and template counts of the current file, so a routine Telegram addition fails it until the numbers are updated.
 - A new workspace crate stays out of the sdist and the wheel: maturin rewrites the sdist's `members` to
   `crates/aiogram-core` and its path dependencies. Check with `uv build` (sdist, then a wheel built from it).
 

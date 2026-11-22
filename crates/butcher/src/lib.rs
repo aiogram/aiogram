@@ -3,9 +3,12 @@
 use std::fmt;
 use std::path::{Path, PathBuf};
 
+pub mod bundle;
 pub mod cli;
+pub mod fetch;
 pub mod ir;
 pub mod manifest;
+pub mod sources;
 
 #[derive(Debug)]
 pub enum Error {
@@ -20,6 +23,8 @@ pub enum Error {
         message: String,
     },
     Encode(String),
+    /// A source that cannot be fetched, a bundle that does not verify.
+    Fetch(String),
 }
 
 impl fmt::Display for Error {
@@ -30,6 +35,7 @@ impl fmt::Display for Error {
                 write!(f, "{}: {at}: {message}", path.display())
             }
             Error::Encode(message) => write!(f, "encode: {message}"),
+            Error::Fetch(message) => write!(f, "fetch: {message}"),
         }
     }
 }

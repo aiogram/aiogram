@@ -22,6 +22,12 @@ serde_json = { version = "1.0.154", features = ["float_roundtrip"] }
 serde_path_to_error = "0.1.20"
 toml = "1.2.2"
 clap = { version = "4.6.9", features = ["derive"] }
+# butcher fetch: blocking HTTP (rustls), content hashes, release bundle (tar.gz)
+ureq = "3.5.2"
+sha2 = "0.11.1"
+tar = "0.4.46"
+flate2 = "1.1.11"
+regex = "1.12.2"
 
 [workspace.lints.clippy]
 # v4/research/13 B11: also enforced in generated code, `allow(clippy::all)` does not mask them

@@ -2,7 +2,7 @@
 
 | Field | Value |
 |---|---|
-| Status | `todo` |
+| Status | `done` |
 | Story | C — Reproducible butcher |
 | Target branch | `dev-4.x` |
 | Depends on | [C-01](C-01-crate-xtask-ir-snapshot.md) |
@@ -42,12 +42,12 @@ attached to releases. Ordinary CI must never depend on a live page.
 
 ## Checklist
 
-- [ ] HTTP client (a blocking `ureq` or `reqwest` with `blocking`, rustls), with timeouts and 3 retries; HTTP only inside `fetch`.
-- [ ] Content-type and first-byte sniffing, so HTML served at a JSON URL is reported as `unreachable`.
-- [ ] sha256 for every source; manifest written with stable field order.
-- [ ] `--bundle` / `--offline BUNDLE`: `build --offline` from a bundle reproduces the same manifest digests.
-- [ ] Unit tests with a local HTTP fixture server (no network in tests).
-- [ ] Tests (100% coverage of new code)
+- [x] HTTP client (a blocking `ureq` or `reqwest` with `blocking`, rustls), with timeouts and 3 retries; HTTP only inside `fetch`.
+- [x] Content-type and first-byte sniffing, so HTML served at a JSON URL is reported as `unreachable`.
+- [x] sha256 for every source; manifest written with stable field order.
+- [x] `--bundle` / `--offline BUNDLE`: `build --offline` from a bundle reproduces the same manifest digests.
+- [x] Unit tests with a local HTTP fixture server (no network in tests).
+- [x] Tests (100% coverage of new code)
 
 ## Acceptance criteria
 
@@ -76,3 +76,15 @@ cargo xtask butcher fetch --cache /tmp/bc && cargo xtask butcher fetch --bundle 
 - Runs in parallel with C-03..C-06. C-24 (scheduled job) and I-02 (release assets) consume `fetch --bundle`.
 
 ## Notes
+
+- **Cache layout:** `target/butcher-cache/<sha256>` holds a raw source; `fetch.toml` beside them records, per source,
+  the URL, status, fetch time and digest (the `sources` table of the snapshot manifest plus the tool version). A bundle
+  is a `tar.gz` of `manifest.toml` (the same content) and the digest-named files, with sorted entries and no mtime, so
+  the same cache packs to the same bytes.
+- **`fetch --bundle`** fetches, then packs; it does not pack without a fetch. Decision: one command, because a bundle
+  of an old cache would carry stale fetch times.
+- **`build`** resolves its sources from the cache or `--offline BUNDLE` (digests re-verified, no network), then stops at
+  the not-implemented stub until C-03..C-08 add parsing. The snapshot `manifest.toml` is assembled there from
+  `Fetched::sources`, together with the API version and the overlay and ledger digests.
+- **Default hosts:** the page from `core.telegram.org`, `api.json` and `errors.json` from `corefork.telegram.org`;
+  `--openapi` / `--errors` override them.

@@ -1,0 +1,3 @@
+Network error messages no longer include the reason phrase sent by the server, which is untrusted text,
+and show a URL that does not belong to the configured Bot API server as its origin only, since its path or
+query may carry other secrets.

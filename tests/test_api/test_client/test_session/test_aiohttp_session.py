@@ -1,24 +1,33 @@
 import asyncio
-import traceback
+import ssl
 from collections.abc import AsyncGenerator, AsyncIterable
 from typing import (
     Any,
     AsyncContextManager,
 )
-from unittest.mock import AsyncMock, patch
+from unittest.mock import AsyncMock, Mock, patch
 
 import aiohttp_socks
 import pytest
 from aiohttp import (
+    ClientConnectorCertificateError,
+    ClientConnectorError,
     ClientError,
+    ClientHttpProxyError,
     ClientOSError,
+    ClientProxyConnectionError,
     ClientResponseError,
     ConnectionTimeoutError,
     InvalidURL,
+    InvalidUrlRedirectClientError,
+    NonHttpUrlClientError,
     RequestInfo,
+    ServerDisconnectedError,
     SocketTimeoutError,
     TooManyRedirects,
+    web,
 )
+from aiohttp.test_utils import TestServer
 from aresponses import ResponsesMockServer
 from multidict import CIMultiDict, CIMultiDictProxy
 from yarl import URL
@@ -27,14 +36,15 @@ from aiogram import Bot
 from aiogram.client.default import Default
 from aiogram.client.session import aiohttp
 from aiogram.client.session.aiohttp import AiohttpSession
-from aiogram.exceptions import TelegramNetworkError
-from aiogram.methods import TelegramMethod
-from aiogram.types import InputFile
+from aiogram.client.telegram import TelegramAPIServer
+from aiogram.exceptions import TelegramEntityTooLarge, TelegramNetworkError
+from aiogram.methods import GetMe, TelegramMethod
+from aiogram.types import InputFile, URLInputFile
 from tests.mocked_bot import MockedBot
+from tests.token_safety import FAKE_TOKEN, assert_token_absent
 
 
-TOKEN = "123456:" + "A" * 35
-SECRET = TOKEN.partition(":")[2]
+TOKEN = FAKE_TOKEN
 
 
 def url_errors(url: str) -> list[ClientError]:
@@ -46,15 +56,17 @@ def url_errors(url: str) -> list[ClientError]:
         TooManyRedirects(info, ()),
         ConnectionTimeoutError(f"Connection timeout to host {url}"),
         InvalidURL(url, f"bad {TOKEN}"),
+        asyncio.TimeoutError(url),
     ]
 
 
-def assert_no_token(exc: BaseException) -> None:
+def assert_wrapped(exc: BaseException) -> None:
+    assert isinstance(exc, TelegramNetworkError)
     assert exc.__cause__ is None
     assert exc.__suppress_context__
-    for text in (str(exc), repr(exc), "".join(traceback.format_exception(exc))):
-        assert SECRET not in text
-    assert SECRET in repr(exc.original)
+    assert_token_absent(exc)
+    # The raw error is kept, not chained, for code that needs it
+    assert exc.original is exc.__context__
 
 
 class BareInputFile(InputFile):
@@ -272,98 +284,187 @@ class TestAiohttpSession:
                 raise_for_status=True,
             )
 
-            with pytest.raises(ClientError):
+            with pytest.raises(TelegramNetworkError) as exc_info:
                 async for _ in stream:
                     ...
 
+        error = exc_info.value
+        assert error.method is None
+        assert error.request_sent is True
+        assert isinstance(error.original, ClientResponseError)
+        assert str(error) == (
+            "HTTP Client says - ClientResponseError: GET https://www.python.org/... -> 404 Not Found"
+        )
+
+    @staticmethod
+    def raising(index: int) -> Any:
+        async def side_effect(method: str, url: str, *args: Any, **kwargs: Any):
+            raise url_errors(url)[index]
+
+        return patch(
+            "aiohttp.client.ClientSession._request",
+            new_callable=AsyncMock,
+            side_effect=side_effect,
+        )
+
     @pytest.mark.parametrize("index", range(len(url_errors(""))))
     async def test_make_request_network_error_hides_token(self, index: int):
-        async def side_effect(method: str, url: str, *args: Any, **kwargs: Any):
-            raise url_errors(url)[index]
-
         async with Bot(TOKEN).context() as bot:
-            with patch(
-                "aiohttp.client.ClientSession._request",
-                new_callable=AsyncMock,
-                side_effect=side_effect,
-            ):
-                with pytest.raises(TelegramNetworkError) as exc_info:
-                    await bot.get_me()
-
-        assert_no_token(exc_info.value)
-        assert isinstance(exc_info.value.original, ClientError)
-
-    @pytest.mark.parametrize("index", range(len(url_errors(""))))
-    async def test_stream_content_error_hides_token(self, index: int):
-        async def side_effect(method: str, url: str, *args: Any, **kwargs: Any):
-            raise url_errors(url)[index]
-
-        async with Bot(TOKEN).context() as bot:
-            with patch(
-                "aiohttp.client.ClientSession._request",
-                new_callable=AsyncMock,
-                side_effect=side_effect,
-            ):
-                with pytest.raises(ClientError) as exc_info:
-                    await bot.download_file("documents/file.pdf")
+            with self.raising(index), pytest.raises(TelegramNetworkError) as exc_info:
+                await bot.get_me()
 
         error = exc_info.value
-        assert_no_token(error)
-        assert type(error) is type(error.original)
-        assert str(error) == aiohttp._redact(str(error.original))
-        assert error.args != error.original.args
-        if isinstance(error, ClientResponseError):
-            assert error.status == error.original.status
-            assert str(error.request_info.real_url).endswith(
-                "/file/bot123456:***/documents/file.pdf"
-            )
-        if isinstance(error, OSError):
-            assert error.errno == error.original.errno
+        assert_wrapped(error)
+        assert isinstance(error.method, GetMe)
+        assert str(error).startswith(
+            f"HTTP Client says - {type(error.original).__name__}: "
+            "POST https://api.telegram.org/bot123456:***/getMe"
+        )
+
+    @pytest.mark.parametrize("index", range(len(url_errors(""))))
+    async def test_download_file_error_hides_token(self, index: int):
+        async with Bot(TOKEN).context() as bot:
+            with self.raising(index), pytest.raises(TelegramNetworkError) as exc_info:
+                await bot.download_file("documents/file.pdf")
+
+        error = exc_info.value
+        assert_wrapped(error)
+        assert error.method is None
+        assert str(error).startswith(
+            f"HTTP Client says - {type(error.original).__name__}: "
+            "GET https://api.telegram.org/file/bot123456:***/documents/file.pdf"
+        )
+
+    @pytest.mark.parametrize("index", range(len(url_errors(""))))
+    async def test_url_input_file_error_hides_token(self, index: int):
+        # Users build such URLs themselves to re-send a file by its download link
+        async with Bot(TOKEN).context() as bot:
+            file = URLInputFile(bot.session.api.file_url(TOKEN, "photos/1.jpg"), bot=bot)
+            with self.raising(index), pytest.raises(TelegramNetworkError) as exc_info:
+                async for _ in file.read(bot):
+                    ...
+
+        assert_wrapped(exc_info.value)
+        assert "/file/bot123456:***/photos/1.jpg" in str(exc_info.value)
 
     async def test_download_file_404_hides_token(self, aresponses: ResponsesMockServer):
         aresponses.add(
             aresponses.ANY,
             f"/file/bot{TOKEN}/documents/file.pdf",
             "get",
-            aresponses.Response(status=404),
+            aresponses.Response(status=404, reason=f"Not Found {TOKEN}"),
         )
 
         async with Bot(TOKEN).context() as bot:
-            with pytest.raises(ClientResponseError) as exc_info:
+            with pytest.raises(TelegramNetworkError) as exc_info:
                 await bot.download_file("documents/file.pdf")
 
-        assert exc_info.value.status == 404
-        assert_no_token(exc_info.value)
+        error = exc_info.value
+        assert_wrapped(error)
+        assert error.original.status == 404
+        # The server's reason phrase is not used, the standard one is
+        assert str(error).endswith("/file/bot123456:***/documents/file.pdf -> 404 Not Found")
 
-    async def test_make_request_timeout_hides_token(self):
-        async def side_effect(*args: Any, **kwargs: Any):
-            raise asyncio.TimeoutError(TOKEN)
+    async def test_make_request_real_connection_error(self):
+        session = AiohttpSession(api=TelegramAPIServer.from_base("http://127.0.0.1:1"))
+        async with Bot(TOKEN, session=session).context() as bot:
+            with pytest.raises(TelegramNetworkError) as exc_info:
+                await bot.get_me()
 
-        async with Bot(TOKEN).context() as bot:
-            with patch(
-                "aiohttp.client.ClientSession._request",
-                new_callable=AsyncMock,
-                side_effect=side_effect,
-            ):
+        assert_wrapped(exc_info.value)
+        assert isinstance(exc_info.value.original, ClientConnectorError)
+        assert exc_info.value.request_sent is False
+
+    async def test_make_request_invalid_url(self):
+        session = AiohttpSession(api=TelegramAPIServer.from_base("bad://api.example"))
+        async with Bot(TOKEN, session=session).context() as bot:
+            with pytest.raises(TelegramNetworkError) as exc_info:
+                await bot.get_me()
+
+        assert_wrapped(exc_info.value)
+        assert exc_info.value.request_sent is False
+        assert "bad://api.example/bot123456:***/getMe" in str(exc_info.value)
+
+    @pytest.mark.parametrize(
+        ("error", "sent"),
+        [
+            (ClientConnectorError(Mock(), OSError(111, "refused")), False),
+            (ClientProxyConnectionError(Mock(), OSError(111, "refused")), False),
+            (ConnectionTimeoutError("connect"), False),
+            (InvalidURL("x"), False),
+            (NonHttpUrlClientError("x"), False),
+            (ClientHttpProxyError(Mock(), (), status=407), False),
+            (ClientResponseError(Mock(), (), status=502), True),
+            (TooManyRedirects(Mock(), ()), True),
+            (InvalidUrlRedirectClientError("x"), True),
+            (asyncio.TimeoutError(), None),
+            (SocketTimeoutError("read"), None),
+            (ServerDisconnectedError(), None),
+            (ClientOSError(32, "Broken pipe"), None),
+        ],
+    )
+    def test_request_sent(self, error: BaseException, sent: bool | None):
+        attempt = aiohttp._Attempt()
+        assert aiohttp._network_error(error, None, "GET", "u", attempt).request_sent is sent
+        # After a redirect a response has already arrived, whatever fails next
+        attempt["redirected"] = True
+        assert aiohttp._network_error(error, None, "GET", "u", attempt).request_sent is True
+
+    async def test_request_sent_after_redirect(self):
+        async def redirect(request: web.Request) -> web.Response:
+            raise web.HTTPTemporaryRedirect("http://127.0.0.1:1/unreachable")
+
+        app = web.Application()
+        app.router.add_post("/{tail:.*}", redirect)
+        async with TestServer(app) as server:
+            session = AiohttpSession(api=TelegramAPIServer.from_base(str(server.make_url(""))))
+            async with Bot(TOKEN, session=session).context() as bot:
                 with pytest.raises(TelegramNetworkError) as exc_info:
                     await bot.get_me()
 
-        assert_no_token(exc_info.value)
+        assert_wrapped(exc_info.value)
+        assert isinstance(exc_info.value.original, ClientConnectorError)
+        assert exc_info.value.request_sent is True
+
+    async def test_on_request_redirect_ignores_foreign_context(self):
+        context = Mock(trace_request_ctx=None)
+        await aiohttp._on_request_redirect(Mock(), context, Mock())
+        assert context.trace_request_ctx is None
 
     @pytest.mark.parametrize(
-        "error",
+        ("error", "detail"),
         [
-            ClientOSError("connection lost"),
-            ConnectionTimeoutError("Connection timeout to host"),
-            SocketTimeoutError("Timeout on reading data from socket"),
+            (
+                ClientConnectorError(Mock(), OSError(111, "Connect call failed")),
+                " (Connect call failed)",
+            ),
+            (ClientConnectorError(Mock(), OSError("no errno")), ""),
+            (
+                ClientConnectorCertificateError(
+                    Mock(), ssl.SSLCertVerificationError(1, "certificate verify failed")
+                ),
+                " (certificate verify failed)",
+            ),
         ],
     )
-    def test_redact_error_keeps_message_only_os_error(self, error: ClientError):
-        assert str(aiohttp._redact_error(error)) == str(error)
+    def test_network_error_connection_detail(self, error: ClientConnectorError, detail: str):
+        message = aiohttp._network_error(error, None, "GET", "u", aiohttp._Attempt()).message
+        assert message == f"{type(error).__name__}: GET u{detail}"
 
-    def test_redact(self):
-        assert aiohttp._redact(f"https://x/bot42:TEST/getMe {TOKEN} 127.0.0.1:8080") == (
-            "https://x/bot42:***/getMe 123456:*** 127.0.0.1:8080"
+    async def test_entity_too_large_request_sent(self, bot: MockedBot):
+        with pytest.raises(TelegramEntityTooLarge) as exc_info:
+            bot.session.check_response(bot, GetMe(), 413, '{"ok": false, "description": "x"}')
+        assert exc_info.value.request_sent is True
+        assert exc_info.value.original is None
+
+    @pytest.mark.parametrize(
+        ("status", "suffix"),
+        [(404, " -> 404 Not Found"), (599, " -> 599"), (0, "")],
+    )
+    def test_network_error_status(self, status: int, suffix: str):
+        error = ClientResponseError(Mock(), (), status=status, message="echo")
+        assert aiohttp._network_error(error, None, "GET", "u", aiohttp._Attempt()).message == (
+            f"ClientResponseError: GET u{suffix}"
         )
 
     async def test_context_manager(self):
