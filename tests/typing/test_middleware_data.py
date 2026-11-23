@@ -5,7 +5,6 @@ from typing import Any, Unpack, assert_type
 from aiogram import Bot, Router
 from aiogram.dispatcher.event.handler import HandlerObject
 from aiogram.dispatcher.middlewares.data import (
-    AiogramData,
     MiddlewareData,
     OuterData,
     RouterOuterData,
@@ -15,7 +14,7 @@ from aiogram.types import Message, Update
 from aiogram.utils.i18n import I18n
 
 
-class AppData(AiogramData):
+class AppData(MiddlewareData):
     db: str
 
 
@@ -47,10 +46,6 @@ async def outer(
 def router_outer(data: RouterOuterData) -> None:
     assert_type(data["event_router"], Router)
     data["handler"]  # type: ignore[typeddict-item]
-
-
-def alias(data: MiddlewareData) -> AiogramData:
-    return data
 
 
 Router().message.register(handler)

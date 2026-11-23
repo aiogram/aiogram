@@ -7,17 +7,16 @@ Keys become available at different points of an update's path, so there is one t
   observer itself (its filters, inner middlewares and handlers) and ``errors`` handlers, which see
   some routing keys but not all of them (read those with ``.get``);
 - :class:`RouterOuterData`: router-level outer middlewares (``router.message.outer_middleware``);
-- :class:`AiogramData`: inner middlewares, filters and handlers of the event observers
+- :class:`MiddlewareData`: inner middlewares, filters and handlers of the event observers
   (``router.message``, ``router.callback_query``, ...).
 
-Extend the one you need with your own keys, e.g. ``class AppData(AiogramData): db: Database``,
+Extend the one you need with your own keys, e.g. ``class AppData(MiddlewareData): db: Database``,
 and use it as ``**kw: Unpack[AppData]`` in a handler. This module is typing only: nothing here
 changes what is injected.
 """
 
 # No `from __future__ import annotations`: it hides NotRequired from __required_keys__ at runtime
-import warnings
-from typing import TYPE_CHECKING, Any, NotRequired, TypedDict
+from typing import TYPE_CHECKING, NotRequired, TypedDict
 
 if TYPE_CHECKING:
     from aiogram import Bot, Dispatcher, Router
@@ -28,7 +27,7 @@ if TYPE_CHECKING:
     from aiogram.types import Update
     from aiogram.utils.i18n import I18n, I18nMiddleware
 
-__all__ = ("AiogramData", "FSMKeysData", "OuterData", "RouterOuterData")
+__all__ = ("FSMKeysData", "MiddlewareData", "OuterData", "RouterOuterData")
 
 
 class OuterData(TypedDict):
@@ -78,7 +77,7 @@ class RouterOuterData(OuterData, FSMKeysData):
     """Router that is propagating the event."""
 
 
-class AiogramData(RouterOuterData):
+class MiddlewareData(RouterOuterData):
     """
     Data available to inner middlewares, filters and handlers of the event observers
     (``router.message``, ``router.callback_query``, ...), not of ``dp.update``
@@ -92,22 +91,3 @@ class AiogramData(RouterOuterData):
     """I18n object. Set only by the i18n middleware with the default ``i18n_key``."""
     i18n_middleware: NotRequired["I18nMiddleware"]
     """The i18n middleware. Set only when it is installed with the default ``middleware_key``."""
-
-
-if TYPE_CHECKING:
-    MiddlewareData = AiogramData
-    """Deprecated alias of :class:`AiogramData` (AG4060)."""
-
-
-def __getattr__(name: str) -> Any:
-    if name == "MiddlewareData":
-        # ponytail: plain DeprecationWarning until the I-12 AiogramDeprecationWarning class lands
-        warnings.warn(
-            "AG4060: MiddlewareData is a deprecated alias of AiogramData; "
-            "use aiogram.dispatcher.middlewares.data.AiogramData.",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-        return AiogramData
-    msg = f"module {__name__!r} has no attribute {name!r}"
-    raise AttributeError(msg)

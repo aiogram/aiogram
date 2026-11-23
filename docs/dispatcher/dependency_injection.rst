@@ -98,7 +98,7 @@ Keys become available at different points of an update's path, so
     * - :class:`~aiogram.dispatcher.middlewares.data.RouterOuterData`
       - router-level outer middlewares (:code:`router.message.outer_middleware`)
       - :code:`event_update`, :code:`event_router`; :code:`state` and :code:`raw_state` are optional
-    * - :class:`~aiogram.dispatcher.middlewares.data.AiogramData`
+    * - :class:`~aiogram.dispatcher.middlewares.data.MiddlewareData`
       - inner middlewares, filters and handlers of the event observers (:code:`router.message`, ...)
       - :code:`handler`; :code:`i18n` and :code:`i18n_middleware` are optional (set by the i18n middleware with its default keys)
 
@@ -121,11 +121,11 @@ Extend the type with the keys your own middlewares add and use it through :pep:`
 
     from typing import Unpack
 
-    from aiogram.dispatcher.middlewares.data import AiogramData
+    from aiogram.dispatcher.middlewares.data import MiddlewareData
 
 
-    class AppData(AiogramData):  # inner data: handlers, filters, inner middlewares
-        db: Database             # set by your outer middleware
+    class AppData(MiddlewareData):  # inner data: handlers, filters, inner middlewares
+        db: Database                # set by your outer middleware
 
 
     @router.message(Command("start"))
@@ -140,9 +140,8 @@ Extend the type with the keys your own middlewares add and use it through :pep:`
 
 .. note::
 
-    :code:`MiddlewareData` is a deprecated alias of :class:`~aiogram.dispatcher.middlewares.data.AiogramData` (AG4060). The 3.x :code:`FSMData`
-    TypedDict is renamed :class:`~aiogram.dispatcher.middlewares.data.FSMKeysData`; :code:`DispatcherData`, :code:`UserContextData` and
-    :code:`I18nData` are removed (AG4059).
+    The 3.x :code:`FSMData` TypedDict is renamed :class:`~aiogram.dispatcher.middlewares.data.FSMKeysData`;
+    :code:`DispatcherData`, :code:`UserContextData` and :code:`I18nData` are removed (AG4059).
 
 
 Available context data types
@@ -158,7 +157,7 @@ Available context data types
     :undoc-members:
     :member-order: bysource
 
-.. autoclass:: aiogram.dispatcher.middlewares.data.AiogramData
+.. autoclass:: aiogram.dispatcher.middlewares.data.MiddlewareData
     :members:
     :undoc-members:
     :member-order: bysource

@@ -1,6 +1,6 @@
-Added typed views of the data that middlewares, filters and handlers receive, in :mod:`aiogram.dispatcher.middlewares.data`:
-:class:`~aiogram.dispatcher.middlewares.data.OuterData` for :code:`dp.update` outer middlewares,
-:class:`~aiogram.dispatcher.middlewares.data.RouterOuterData` for router-level outer middlewares and
-:class:`~aiogram.dispatcher.middlewares.data.AiogramData` for inner middlewares, filters and handlers.
+Added typed views of the data that outer middlewares receive, in :mod:`aiogram.dispatcher.middlewares.data`:
+:class:`~aiogram.dispatcher.middlewares.data.OuterData` for :code:`dp.update` outer middlewares and
+:class:`~aiogram.dispatcher.middlewares.data.RouterOuterData` for router-level outer middlewares, next to
+:class:`~aiogram.dispatcher.middlewares.data.MiddlewareData` for inner middlewares, filters and handlers.
 Keys that are always set are required (:code:`data["bot"]` type-checks without narrowing), keys that only some paths set are :code:`NotRequired`.
 Extend one with your own keys and use it as :code:`**kw: Unpack[AppData]` in a handler.

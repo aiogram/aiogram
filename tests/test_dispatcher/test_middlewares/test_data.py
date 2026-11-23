@@ -1,8 +1,6 @@
 import datetime
 from typing import Any
 
-import pytest
-
 from aiogram import Dispatcher
 from aiogram.dispatcher.middlewares import data
 from aiogram.types import Chat, Message, Update, User
@@ -10,7 +8,7 @@ from tests.mocked_bot import MockedBot
 
 
 def test_exports():
-    assert set(data.__all__) == {"AiogramData", "FSMKeysData", "OuterData", "RouterOuterData"}
+    assert set(data.__all__) == {"FSMKeysData", "MiddlewareData", "OuterData", "RouterOuterData"}
     assert not hasattr(data, "FSMData")
 
 
@@ -24,10 +22,10 @@ def test_required_keys():
         "event_update",
         "event_router",
     }
-    assert data.AiogramData.__required_keys__ == data.RouterOuterData.__required_keys__ | {
+    assert data.MiddlewareData.__required_keys__ == data.RouterOuterData.__required_keys__ | {
         "handler"
     }
-    assert data.AiogramData.__optional_keys__ == {
+    assert data.MiddlewareData.__optional_keys__ == {
         "bots",
         "fsm_storage",
         "state",
@@ -35,13 +33,6 @@ def test_required_keys():
         "i18n",
         "i18n_middleware",
     }
-
-
-def test_middleware_data_is_deprecated_alias():
-    with pytest.warns(DeprecationWarning, match="AG4060"):
-        from aiogram.dispatcher.middlewares.data import MiddlewareData  # noqa: PLC0415
-
-    assert MiddlewareData is data.AiogramData
 
 
 async def test_required_keys_match_dispatched_data(bot: MockedBot):
@@ -92,4 +83,4 @@ async def test_required_keys_match_dispatched_data(bot: MockedBot):
         assert data.OuterData.__required_keys__ <= seen[point], point
     assert data.RouterOuterData.__required_keys__ <= seen["message_outer"]
     for point in ("message_inner", "handler"):
-        assert data.AiogramData.__required_keys__ <= seen[point], point
+        assert data.MiddlewareData.__required_keys__ <= seen[point], point
