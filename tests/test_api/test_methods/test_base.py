@@ -2,8 +2,8 @@ import pytest
 
 from aiogram.client.default import Default
 from aiogram.methods import GetMe, SendMessage, TelegramMethod
-from aiogram.types import Chat, TelegramObject, User
-from tests.mocked_bot import MockedBot
+from aiogram.types import BotFullInfo, Chat, TelegramObject, User
+from tests.mocked_bot import MockedBot, bot_full_info
 
 
 class TestNoBeforeValidator:
@@ -39,6 +39,6 @@ class TestTelegramMethodCall:
             await GetMe()
 
     async def test_async_emit(self, bot: MockedBot):
-        bot.add_result_for(GetMe, ok=True, result=User(id=42, is_bot=True, first_name="Test"))
+        bot.add_result_for(GetMe, ok=True, result=bot_full_info())
         method = GetMe().as_(bot)
-        assert isinstance(await method, User)
+        assert isinstance(await method, BotFullInfo)

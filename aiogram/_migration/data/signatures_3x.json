@@ -1,0 +1,6201 @@
+{
+  "schema": 1,
+  "methods": {
+    "Bot.add_sticker_to_set": [
+      "user_id",
+      "name",
+      "sticker",
+      "request_timeout"
+    ],
+    "Bot.answer_callback_query": [
+      "callback_query_id",
+      "text",
+      "show_alert",
+      "url",
+      "cache_time",
+      "request_timeout"
+    ],
+    "Bot.answer_chat_join_request_query": [
+      "chat_join_request_query_id",
+      "result",
+      "request_timeout"
+    ],
+    "Bot.answer_guest_query": [
+      "guest_query_id",
+      "result",
+      "request_timeout"
+    ],
+    "Bot.answer_inline_query": [
+      "inline_query_id",
+      "results",
+      "cache_time",
+      "is_personal",
+      "next_offset",
+      "button",
+      "switch_pm_parameter",
+      "switch_pm_text",
+      "request_timeout"
+    ],
+    "Bot.answer_pre_checkout_query": [
+      "pre_checkout_query_id",
+      "ok",
+      "error_message",
+      "request_timeout"
+    ],
+    "Bot.answer_shipping_query": [
+      "shipping_query_id",
+      "ok",
+      "shipping_options",
+      "error_message",
+      "request_timeout"
+    ],
+    "Bot.answer_web_app_query": [
+      "web_app_query_id",
+      "result",
+      "request_timeout"
+    ],
+    "Bot.answer_widget_query": [
+      "widget_query_id",
+      "data",
+      "request_timeout"
+    ],
+    "Bot.approve_chat_join_request": [
+      "chat_id",
+      "user_id",
+      "request_timeout"
+    ],
+    "Bot.approve_suggested_post": [
+      "chat_id",
+      "message_id",
+      "send_date",
+      "request_timeout"
+    ],
+    "Bot.ban_chat_member": [
+      "chat_id",
+      "user_id",
+      "until_date",
+      "revoke_messages",
+      "request_timeout"
+    ],
+    "Bot.ban_chat_sender_chat": [
+      "chat_id",
+      "sender_chat_id",
+      "request_timeout"
+    ],
+    "Bot.close": [
+      "request_timeout"
+    ],
+    "Bot.close_forum_topic": [
+      "chat_id",
+      "message_thread_id",
+      "request_timeout"
+    ],
+    "Bot.close_general_forum_topic": [
+      "chat_id",
+      "request_timeout"
+    ],
+    "Bot.context": [
+      "auto_close"
+    ],
+    "Bot.convert_gift_to_stars": [
+      "business_connection_id",
+      "owned_gift_id",
+      "request_timeout"
+    ],
+    "Bot.copy_message": [
+      "chat_id",
+      "from_chat_id",
+      "message_id",
+      "message_thread_id",
+      "direct_messages_topic_id",
+      "video_start_timestamp",
+      "caption",
+      "parse_mode",
+      "caption_entities",
+      "show_caption_above_media",
+      "disable_notification",
+      "protect_content",
+      "allow_paid_broadcast",
+      "message_effect_id",
+      "suggested_post_parameters",
+      "reply_parameters",
+      "reply_markup",
+      "allow_sending_without_reply",
+      "reply_to_message_id",
+      "request_timeout"
+    ],
+    "Bot.copy_messages": [
+      "chat_id",
+      "from_chat_id",
+      "message_ids",
+      "message_thread_id",
+      "direct_messages_topic_id",
+      "disable_notification",
+      "protect_content",
+      "remove_caption",
+      "request_timeout"
+    ],
+    "Bot.create_chat_invite_link": [
+      "chat_id",
+      "name",
+      "expire_date",
+      "member_limit",
+      "creates_join_request",
+      "request_timeout"
+    ],
+    "Bot.create_chat_subscription_invite_link": [
+      "chat_id",
+      "subscription_period",
+      "subscription_price",
+      "name",
+      "request_timeout"
+    ],
+    "Bot.create_forum_topic": [
+      "chat_id",
+      "name",
+      "icon_color",
+      "icon_custom_emoji_id",
+      "request_timeout"
+    ],
+    "Bot.create_invoice_link": [
+      "title",
+      "description",
+      "payload",
+      "currency",
+      "prices",
+      "business_connection_id",
+      "provider_token",
+      "subscription_period",
+      "max_tip_amount",
+      "suggested_tip_amounts",
+      "provider_data",
+      "photo_url",
+      "photo_size",
+      "photo_width",
+      "photo_height",
+      "need_name",
+      "need_phone_number",
+      "need_email",
+      "need_shipping_address",
+      "send_phone_number_to_provider",
+      "send_email_to_provider",
+      "is_flexible",
+      "request_timeout"
+    ],
+    "Bot.create_new_sticker_set": [
+      "user_id",
+      "name",
+      "title",
+      "stickers",
+      "sticker_type",
+      "needs_repainting",
+      "sticker_format",
+      "request_timeout"
+    ],
+    "Bot.decline_chat_join_request": [
+      "chat_id",
+      "user_id",
+      "request_timeout"
+    ],
+    "Bot.decline_suggested_post": [
+      "chat_id",
+      "message_id",
+      "comment",
+      "request_timeout"
+    ],
+    "Bot.delete_all_message_reactions": [
+      "chat_id",
+      "user_id",
+      "actor_chat_id",
+      "request_timeout"
+    ],
+    "Bot.delete_business_account_gift": [
+      "business_connection_id",
+      "owned_gift_id",
+      "request_timeout"
+    ],
+    "Bot.delete_business_messages": [
+      "business_connection_id",
+      "message_ids",
+      "request_timeout"
+    ],
+    "Bot.delete_chat_photo": [
+      "chat_id",
+      "request_timeout"
+    ],
+    "Bot.delete_chat_sticker_set": [
+      "chat_id",
+      "request_timeout"
+    ],
+    "Bot.delete_ephemeral_message": [
+      "chat_id",
+      "receiver_user_id",
+      "ephemeral_message_id",
+      "request_timeout"
+    ],
+    "Bot.delete_forum_topic": [
+      "chat_id",
+      "message_thread_id",
+      "request_timeout"
+    ],
+    "Bot.delete_message": [
+      "chat_id",
+      "message_id",
+      "request_timeout"
+    ],
+    "Bot.delete_message_reaction": [
+      "chat_id",
+      "message_id",
+      "user_id",
+      "actor_chat_id",
+      "request_timeout"
+    ],
+    "Bot.delete_messages": [
+      "chat_id",
+      "message_ids",
+      "request_timeout"
+    ],
+    "Bot.delete_my_commands": [
+      "scope",
+      "language_code",
+      "request_timeout"
+    ],
+    "Bot.delete_sticker_from_set": [
+      "sticker",
+      "request_timeout"
+    ],
+    "Bot.delete_sticker_set": [
+      "name",
+      "request_timeout"
+    ],
+    "Bot.delete_story": [
+      "business_connection_id",
+      "story_id",
+      "request_timeout"
+    ],
+    "Bot.delete_webhook": [
+      "drop_pending_updates",
+      "request_timeout"
+    ],
+    "Bot.download": [
+      "file",
+      "destination",
+      "timeout",
+      "chunk_size",
+      "seek"
+    ],
+    "Bot.download_file": [
+      "file_path",
+      "destination",
+      "timeout",
+      "chunk_size",
+      "seek"
+    ],
+    "Bot.edit_chat_invite_link": [
+      "chat_id",
+      "invite_link",
+      "name",
+      "expire_date",
+      "member_limit",
+      "creates_join_request",
+      "request_timeout"
+    ],
+    "Bot.edit_chat_subscription_invite_link": [
+      "chat_id",
+      "invite_link",
+      "name",
+      "request_timeout"
+    ],
+    "Bot.edit_ephemeral_message_caption": [
+      "chat_id",
+      "receiver_user_id",
+      "ephemeral_message_id",
+      "caption",
+      "parse_mode",
+      "caption_entities",
+      "reply_markup",
+      "show_caption_above_media",
+      "request_timeout"
+    ],
+    "Bot.edit_ephemeral_message_media": [
+      "chat_id",
+      "receiver_user_id",
+      "ephemeral_message_id",
+      "media",
+      "reply_markup",
+      "request_timeout"
+    ],
+    "Bot.edit_ephemeral_message_reply_markup": [
+      "chat_id",
+      "receiver_user_id",
+      "ephemeral_message_id",
+      "reply_markup",
+      "request_timeout"
+    ],
+    "Bot.edit_ephemeral_message_text": [
+      "chat_id",
+      "receiver_user_id",
+      "ephemeral_message_id",
+      "text",
+      "parse_mode",
+      "entities",
+      "link_preview_options",
+      "reply_markup",
+      "rich_message",
+      "request_timeout"
+    ],
+    "Bot.edit_forum_topic": [
+      "chat_id",
+      "message_thread_id",
+      "name",
+      "icon_custom_emoji_id",
+      "request_timeout"
+    ],
+    "Bot.edit_general_forum_topic": [
+      "chat_id",
+      "name",
+      "request_timeout"
+    ],
+    "Bot.edit_message_caption": [
+      "business_connection_id",
+      "chat_id",
+      "message_id",
+      "inline_message_id",
+      "caption",
+      "parse_mode",
+      "caption_entities",
+      "show_caption_above_media",
+      "reply_markup",
+      "request_timeout"
+    ],
+    "Bot.edit_message_checklist": [
+      "business_connection_id",
+      "chat_id",
+      "message_id",
+      "checklist",
+      "reply_markup",
+      "request_timeout"
+    ],
+    "Bot.edit_message_live_location": [
+      "latitude",
+      "longitude",
+      "business_connection_id",
+      "chat_id",
+      "message_id",
+      "inline_message_id",
+      "live_period",
+      "horizontal_accuracy",
+      "heading",
+      "proximity_alert_radius",
+      "reply_markup",
+      "request_timeout"
+    ],
+    "Bot.edit_message_media": [
+      "media",
+      "business_connection_id",
+      "chat_id",
+      "message_id",
+      "inline_message_id",
+      "reply_markup",
+      "request_timeout"
+    ],
+    "Bot.edit_message_reply_markup": [
+      "business_connection_id",
+      "chat_id",
+      "message_id",
+      "inline_message_id",
+      "reply_markup",
+      "request_timeout"
+    ],
+    "Bot.edit_message_text": [
+      "text",
+      "business_connection_id",
+      "chat_id",
+      "message_id",
+      "inline_message_id",
+      "parse_mode",
+      "entities",
+      "link_preview_options",
+      "reply_markup",
+      "rich_message",
+      "disable_web_page_preview",
+      "request_timeout"
+    ],
+    "Bot.edit_message_widget_data": [
+      "chat_id",
+      "message_id",
+      "inline_message_id",
+      "public_data",
+      "chat_data",
+      "request_timeout"
+    ],
+    "Bot.edit_shared_widget_data": [
+      "widget_id",
+      "public_data",
+      "cache_time",
+      "request_timeout"
+    ],
+    "Bot.edit_story": [
+      "business_connection_id",
+      "story_id",
+      "content",
+      "caption",
+      "parse_mode",
+      "caption_entities",
+      "areas",
+      "request_timeout"
+    ],
+    "Bot.edit_user_star_subscription": [
+      "user_id",
+      "telegram_payment_charge_id",
+      "is_canceled",
+      "request_timeout"
+    ],
+    "Bot.export_chat_invite_link": [
+      "chat_id",
+      "request_timeout"
+    ],
+    "Bot.forward_message": [
+      "chat_id",
+      "from_chat_id",
+      "message_id",
+      "message_thread_id",
+      "direct_messages_topic_id",
+      "video_start_timestamp",
+      "disable_notification",
+      "protect_content",
+      "message_effect_id",
+      "suggested_post_parameters",
+      "request_timeout"
+    ],
+    "Bot.forward_messages": [
+      "chat_id",
+      "from_chat_id",
+      "message_ids",
+      "message_thread_id",
+      "direct_messages_topic_id",
+      "disable_notification",
+      "protect_content",
+      "request_timeout"
+    ],
+    "Bot.get_available_gifts": [
+      "request_timeout"
+    ],
+    "Bot.get_business_account_gifts": [
+      "business_connection_id",
+      "exclude_unsaved",
+      "exclude_saved",
+      "exclude_unlimited",
+      "exclude_limited_upgradable",
+      "exclude_limited_non_upgradable",
+      "exclude_unique",
+      "exclude_from_blockchain",
+      "sort_by_price",
+      "offset",
+      "limit",
+      "exclude_limited",
+      "request_timeout"
+    ],
+    "Bot.get_business_account_star_balance": [
+      "business_connection_id",
+      "request_timeout"
+    ],
+    "Bot.get_business_connection": [
+      "business_connection_id",
+      "request_timeout"
+    ],
+    "Bot.get_chat": [
+      "chat_id",
+      "request_timeout"
+    ],
+    "Bot.get_chat_administrators": [
+      "chat_id",
+      "return_bots",
+      "request_timeout"
+    ],
+    "Bot.get_chat_gifts": [
+      "chat_id",
+      "exclude_unsaved",
+      "exclude_saved",
+      "exclude_unlimited",
+      "exclude_limited_upgradable",
+      "exclude_limited_non_upgradable",
+      "exclude_from_blockchain",
+      "exclude_unique",
+      "sort_by_price",
+      "offset",
+      "limit",
+      "request_timeout"
+    ],
+    "Bot.get_chat_member": [
+      "chat_id",
+      "user_id",
+      "request_timeout"
+    ],
+    "Bot.get_chat_member_count": [
+      "chat_id",
+      "request_timeout"
+    ],
+    "Bot.get_chat_menu_button": [
+      "chat_id",
+      "request_timeout"
+    ],
+    "Bot.get_chat_share_theme_backdrops": [
+      "request_timeout"
+    ],
+    "Bot.get_custom_emoji_stickers": [
+      "custom_emoji_ids",
+      "request_timeout"
+    ],
+    "Bot.get_file": [
+      "file_id",
+      "request_timeout"
+    ],
+    "Bot.get_forum_topic_icon_stickers": [
+      "request_timeout"
+    ],
+    "Bot.get_game_high_scores": [
+      "user_id",
+      "chat_id",
+      "message_id",
+      "inline_message_id",
+      "request_timeout"
+    ],
+    "Bot.get_managed_bot_access_settings": [
+      "user_id",
+      "request_timeout"
+    ],
+    "Bot.get_managed_bot_token": [
+      "user_id",
+      "request_timeout"
+    ],
+    "Bot.get_me": [
+      "request_timeout"
+    ],
+    "Bot.get_my_commands": [
+      "scope",
+      "language_code",
+      "request_timeout"
+    ],
+    "Bot.get_my_default_administrator_rights": [
+      "for_channels",
+      "request_timeout"
+    ],
+    "Bot.get_my_description": [
+      "language_code",
+      "request_timeout"
+    ],
+    "Bot.get_my_name": [
+      "language_code",
+      "request_timeout"
+    ],
+    "Bot.get_my_short_description": [
+      "language_code",
+      "request_timeout"
+    ],
+    "Bot.get_my_star_balance": [
+      "request_timeout"
+    ],
+    "Bot.get_star_transactions": [
+      "offset",
+      "limit",
+      "request_timeout"
+    ],
+    "Bot.get_sticker_set": [
+      "name",
+      "request_timeout"
+    ],
+    "Bot.get_unique_gift": [
+      "name",
+      "request_timeout"
+    ],
+    "Bot.get_updates": [
+      "offset",
+      "limit",
+      "timeout",
+      "allowed_updates",
+      "request_timeout"
+    ],
+    "Bot.get_user_chat_boosts": [
+      "chat_id",
+      "user_id",
+      "request_timeout"
+    ],
+    "Bot.get_user_gifts": [
+      "user_id",
+      "exclude_unlimited",
+      "exclude_limited_upgradable",
+      "exclude_limited_non_upgradable",
+      "exclude_from_blockchain",
+      "exclude_unique",
+      "sort_by_price",
+      "offset",
+      "limit",
+      "request_timeout"
+    ],
+    "Bot.get_user_personal_chat_messages": [
+      "user_id",
+      "limit",
+      "request_timeout"
+    ],
+    "Bot.get_user_profile_audios": [
+      "user_id",
+      "offset",
+      "limit",
+      "request_timeout"
+    ],
+    "Bot.get_user_profile_photos": [
+      "user_id",
+      "offset",
+      "limit",
+      "request_timeout"
+    ],
+    "Bot.get_webhook_info": [
+      "request_timeout"
+    ],
+    "Bot.gift_premium_subscription": [
+      "user_id",
+      "month_count",
+      "star_count",
+      "text",
+      "text_parse_mode",
+      "text_entities",
+      "request_timeout"
+    ],
+    "Bot.hide_general_forum_topic": [
+      "chat_id",
+      "request_timeout"
+    ],
+    "Bot.leave_chat": [
+      "chat_id",
+      "request_timeout"
+    ],
+    "Bot.log_out": [
+      "request_timeout"
+    ],
+    "Bot.me": [],
+    "Bot.pin_chat_message": [
+      "chat_id",
+      "message_id",
+      "business_connection_id",
+      "disable_notification",
+      "request_timeout"
+    ],
+    "Bot.post_story": [
+      "business_connection_id",
+      "content",
+      "active_period",
+      "caption",
+      "parse_mode",
+      "caption_entities",
+      "areas",
+      "post_to_chat_page",
+      "protect_content",
+      "request_timeout"
+    ],
+    "Bot.promote_chat_member": [
+      "chat_id",
+      "user_id",
+      "is_anonymous",
+      "can_manage_chat",
+      "can_delete_messages",
+      "can_manage_video_chats",
+      "can_restrict_members",
+      "can_promote_members",
+      "can_change_info",
+      "can_invite_users",
+      "can_post_stories",
+      "can_edit_stories",
+      "can_delete_stories",
+      "can_post_messages",
+      "can_edit_messages",
+      "can_pin_messages",
+      "can_manage_topics",
+      "can_manage_direct_messages",
+      "can_manage_tags",
+      "can_send_welcome_messages",
+      "request_timeout"
+    ],
+    "Bot.read_business_message": [
+      "business_connection_id",
+      "chat_id",
+      "message_id",
+      "request_timeout"
+    ],
+    "Bot.refund_star_payment": [
+      "user_id",
+      "telegram_payment_charge_id",
+      "request_timeout"
+    ],
+    "Bot.remove_business_account_profile_photo": [
+      "business_connection_id",
+      "is_public",
+      "request_timeout"
+    ],
+    "Bot.remove_chat_verification": [
+      "chat_id",
+      "request_timeout"
+    ],
+    "Bot.remove_my_profile_photo": [
+      "request_timeout"
+    ],
+    "Bot.remove_user_verification": [
+      "user_id",
+      "request_timeout"
+    ],
+    "Bot.reopen_forum_topic": [
+      "chat_id",
+      "message_thread_id",
+      "request_timeout"
+    ],
+    "Bot.reopen_general_forum_topic": [
+      "chat_id",
+      "request_timeout"
+    ],
+    "Bot.replace_managed_bot_token": [
+      "user_id",
+      "request_timeout"
+    ],
+    "Bot.replace_sticker_in_set": [
+      "user_id",
+      "name",
+      "old_sticker",
+      "sticker",
+      "request_timeout"
+    ],
+    "Bot.repost_story": [
+      "business_connection_id",
+      "from_chat_id",
+      "from_story_id",
+      "active_period",
+      "post_to_chat_page",
+      "protect_content",
+      "request_timeout"
+    ],
+    "Bot.restrict_chat_member": [
+      "chat_id",
+      "user_id",
+      "permissions",
+      "use_independent_chat_permissions",
+      "until_date",
+      "request_timeout"
+    ],
+    "Bot.revoke_chat_invite_link": [
+      "chat_id",
+      "invite_link",
+      "request_timeout"
+    ],
+    "Bot.save_prepared_inline_message": [
+      "user_id",
+      "result",
+      "allow_user_chats",
+      "allow_bot_chats",
+      "allow_group_chats",
+      "allow_channel_chats",
+      "request_timeout"
+    ],
+    "Bot.save_prepared_keyboard_button": [
+      "user_id",
+      "button",
+      "request_timeout"
+    ],
+    "Bot.send_animation": [
+      "chat_id",
+      "animation",
+      "business_connection_id",
+      "message_thread_id",
+      "direct_messages_topic_id",
+      "duration",
+      "width",
+      "height",
+      "thumbnail",
+      "caption",
+      "parse_mode",
+      "caption_entities",
+      "show_caption_above_media",
+      "has_spoiler",
+      "disable_notification",
+      "protect_content",
+      "allow_paid_broadcast",
+      "message_effect_id",
+      "suggested_post_parameters",
+      "reply_parameters",
+      "reply_markup",
+      "ephemeral_message_parameters",
+      "receiver_user_id",
+      "callback_query_id",
+      "allow_sending_without_reply",
+      "reply_to_message_id",
+      "request_timeout"
+    ],
+    "Bot.send_audio": [
+      "chat_id",
+      "audio",
+      "business_connection_id",
+      "message_thread_id",
+      "direct_messages_topic_id",
+      "caption",
+      "parse_mode",
+      "caption_entities",
+      "duration",
+      "performer",
+      "title",
+      "thumbnail",
+      "disable_notification",
+      "protect_content",
+      "allow_paid_broadcast",
+      "message_effect_id",
+      "suggested_post_parameters",
+      "reply_parameters",
+      "reply_markup",
+      "ephemeral_message_parameters",
+      "receiver_user_id",
+      "callback_query_id",
+      "allow_sending_without_reply",
+      "reply_to_message_id",
+      "request_timeout"
+    ],
+    "Bot.send_chat_action": [
+      "chat_id",
+      "action",
+      "business_connection_id",
+      "message_thread_id",
+      "request_timeout"
+    ],
+    "Bot.send_chat_join_request_web_app": [
+      "chat_join_request_query_id",
+      "web_app_url",
+      "request_timeout"
+    ],
+    "Bot.send_checklist": [
+      "business_connection_id",
+      "chat_id",
+      "checklist",
+      "disable_notification",
+      "protect_content",
+      "message_effect_id",
+      "reply_parameters",
+      "reply_markup",
+      "request_timeout"
+    ],
+    "Bot.send_contact": [
+      "chat_id",
+      "phone_number",
+      "first_name",
+      "business_connection_id",
+      "message_thread_id",
+      "direct_messages_topic_id",
+      "last_name",
+      "vcard",
+      "disable_notification",
+      "protect_content",
+      "allow_paid_broadcast",
+      "message_effect_id",
+      "suggested_post_parameters",
+      "reply_parameters",
+      "reply_markup",
+      "ephemeral_message_parameters",
+      "receiver_user_id",
+      "callback_query_id",
+      "allow_sending_without_reply",
+      "reply_to_message_id",
+      "request_timeout"
+    ],
+    "Bot.send_dice": [
+      "chat_id",
+      "business_connection_id",
+      "message_thread_id",
+      "direct_messages_topic_id",
+      "emoji",
+      "disable_notification",
+      "protect_content",
+      "allow_paid_broadcast",
+      "message_effect_id",
+      "suggested_post_parameters",
+      "reply_parameters",
+      "reply_markup",
+      "allow_sending_without_reply",
+      "reply_to_message_id",
+      "request_timeout"
+    ],
+    "Bot.send_document": [
+      "chat_id",
+      "document",
+      "business_connection_id",
+      "message_thread_id",
+      "direct_messages_topic_id",
+      "thumbnail",
+      "caption",
+      "parse_mode",
+      "caption_entities",
+      "disable_content_type_detection",
+      "disable_notification",
+      "protect_content",
+      "allow_paid_broadcast",
+      "message_effect_id",
+      "suggested_post_parameters",
+      "reply_parameters",
+      "reply_markup",
+      "ephemeral_message_parameters",
+      "receiver_user_id",
+      "callback_query_id",
+      "allow_sending_without_reply",
+      "reply_to_message_id",
+      "request_timeout"
+    ],
+    "Bot.send_game": [
+      "chat_id",
+      "game_short_name",
+      "business_connection_id",
+      "message_thread_id",
+      "disable_notification",
+      "protect_content",
+      "allow_paid_broadcast",
+      "message_effect_id",
+      "reply_parameters",
+      "reply_markup",
+      "allow_sending_without_reply",
+      "reply_to_message_id",
+      "request_timeout"
+    ],
+    "Bot.send_gift": [
+      "gift_id",
+      "user_id",
+      "chat_id",
+      "pay_for_upgrade",
+      "text",
+      "text_parse_mode",
+      "text_entities",
+      "request_timeout"
+    ],
+    "Bot.send_invoice": [
+      "chat_id",
+      "title",
+      "description",
+      "payload",
+      "currency",
+      "prices",
+      "message_thread_id",
+      "direct_messages_topic_id",
+      "provider_token",
+      "max_tip_amount",
+      "suggested_tip_amounts",
+      "start_parameter",
+      "provider_data",
+      "photo_url",
+      "photo_size",
+      "photo_width",
+      "photo_height",
+      "need_name",
+      "need_phone_number",
+      "need_email",
+      "need_shipping_address",
+      "send_phone_number_to_provider",
+      "send_email_to_provider",
+      "is_flexible",
+      "disable_notification",
+      "protect_content",
+      "allow_paid_broadcast",
+      "message_effect_id",
+      "suggested_post_parameters",
+      "reply_parameters",
+      "reply_markup",
+      "allow_sending_without_reply",
+      "reply_to_message_id",
+      "request_timeout"
+    ],
+    "Bot.send_live_photo": [
+      "chat_id",
+      "live_photo",
+      "photo",
+      "business_connection_id",
+      "message_thread_id",
+      "direct_messages_topic_id",
+      "caption",
+      "parse_mode",
+      "caption_entities",
+      "show_caption_above_media",
+      "has_spoiler",
+      "disable_notification",
+      "protect_content",
+      "allow_paid_broadcast",
+      "message_effect_id",
+      "suggested_post_parameters",
+      "reply_parameters",
+      "reply_markup",
+      "ephemeral_message_parameters",
+      "receiver_user_id",
+      "callback_query_id",
+      "request_timeout"
+    ],
+    "Bot.send_location": [
+      "chat_id",
+      "latitude",
+      "longitude",
+      "business_connection_id",
+      "message_thread_id",
+      "direct_messages_topic_id",
+      "horizontal_accuracy",
+      "live_period",
+      "heading",
+      "proximity_alert_radius",
+      "disable_notification",
+      "protect_content",
+      "allow_paid_broadcast",
+      "message_effect_id",
+      "suggested_post_parameters",
+      "reply_parameters",
+      "reply_markup",
+      "ephemeral_message_parameters",
+      "receiver_user_id",
+      "callback_query_id",
+      "allow_sending_without_reply",
+      "reply_to_message_id",
+      "request_timeout"
+    ],
+    "Bot.send_media_group": [
+      "chat_id",
+      "media",
+      "business_connection_id",
+      "message_thread_id",
+      "direct_messages_topic_id",
+      "disable_notification",
+      "protect_content",
+      "allow_paid_broadcast",
+      "message_effect_id",
+      "reply_parameters",
+      "allow_sending_without_reply",
+      "reply_to_message_id",
+      "request_timeout"
+    ],
+    "Bot.send_message": [
+      "chat_id",
+      "text",
+      "business_connection_id",
+      "message_thread_id",
+      "direct_messages_topic_id",
+      "parse_mode",
+      "entities",
+      "link_preview_options",
+      "disable_notification",
+      "protect_content",
+      "allow_paid_broadcast",
+      "message_effect_id",
+      "suggested_post_parameters",
+      "reply_parameters",
+      "reply_markup",
+      "ephemeral_message_parameters",
+      "receiver_user_id",
+      "callback_query_id",
+      "allow_sending_without_reply",
+      "disable_web_page_preview",
+      "reply_to_message_id",
+      "request_timeout"
+    ],
+    "Bot.send_message_draft": [
+      "chat_id",
+      "draft_id",
+      "message_thread_id",
+      "text",
+      "parse_mode",
+      "entities",
+      "can_stop",
+      "keep_on_stop",
+      "request_timeout"
+    ],
+    "Bot.send_paid_media": [
+      "chat_id",
+      "star_count",
+      "media",
+      "business_connection_id",
+      "message_thread_id",
+      "direct_messages_topic_id",
+      "payload",
+      "caption",
+      "parse_mode",
+      "caption_entities",
+      "show_caption_above_media",
+      "disable_notification",
+      "protect_content",
+      "allow_paid_broadcast",
+      "suggested_post_parameters",
+      "reply_parameters",
+      "reply_markup",
+      "request_timeout"
+    ],
+    "Bot.send_photo": [
+      "chat_id",
+      "photo",
+      "business_connection_id",
+      "message_thread_id",
+      "direct_messages_topic_id",
+      "caption",
+      "parse_mode",
+      "caption_entities",
+      "show_caption_above_media",
+      "has_spoiler",
+      "disable_notification",
+      "protect_content",
+      "allow_paid_broadcast",
+      "message_effect_id",
+      "suggested_post_parameters",
+      "reply_parameters",
+      "reply_markup",
+      "ephemeral_message_parameters",
+      "receiver_user_id",
+      "callback_query_id",
+      "allow_sending_without_reply",
+      "reply_to_message_id",
+      "request_timeout"
+    ],
+    "Bot.send_poll": [
+      "chat_id",
+      "question",
+      "options",
+      "business_connection_id",
+      "message_thread_id",
+      "question_parse_mode",
+      "question_entities",
+      "is_anonymous",
+      "type",
+      "allows_multiple_answers",
+      "allows_revoting",
+      "shuffle_options",
+      "allow_adding_options",
+      "hide_results_until_closes",
+      "members_only",
+      "country_codes",
+      "correct_option_ids",
+      "explanation",
+      "explanation_parse_mode",
+      "explanation_entities",
+      "explanation_media",
+      "open_period",
+      "close_date",
+      "is_closed",
+      "description",
+      "description_parse_mode",
+      "description_entities",
+      "media",
+      "disable_notification",
+      "protect_content",
+      "allow_paid_broadcast",
+      "message_effect_id",
+      "reply_parameters",
+      "reply_markup",
+      "allow_sending_without_reply",
+      "correct_option_id",
+      "reply_to_message_id",
+      "request_timeout"
+    ],
+    "Bot.send_rich_message": [
+      "chat_id",
+      "rich_message",
+      "business_connection_id",
+      "message_thread_id",
+      "direct_messages_topic_id",
+      "disable_notification",
+      "protect_content",
+      "allow_paid_broadcast",
+      "message_effect_id",
+      "suggested_post_parameters",
+      "reply_parameters",
+      "reply_markup",
+      "ephemeral_message_parameters",
+      "request_timeout"
+    ],
+    "Bot.send_rich_message_draft": [
+      "chat_id",
+      "draft_id",
+      "rich_message",
+      "message_thread_id",
+      "can_stop",
+      "keep_on_stop",
+      "request_timeout"
+    ],
+    "Bot.send_shared_widget": [
+      "chat_id",
+      "widget_id",
+      "message_thread_id",
+      "chat_data",
+      "caption",
+      "parse_mode",
+      "caption_entities",
+      "show_caption_above_media",
+      "disable_notification",
+      "protect_content",
+      "allow_paid_broadcast",
+      "message_effect_id",
+      "reply_parameters",
+      "reply_markup",
+      "request_timeout"
+    ],
+    "Bot.send_sticker": [
+      "chat_id",
+      "sticker",
+      "business_connection_id",
+      "message_thread_id",
+      "direct_messages_topic_id",
+      "emoji",
+      "disable_notification",
+      "protect_content",
+      "allow_paid_broadcast",
+      "message_effect_id",
+      "suggested_post_parameters",
+      "reply_parameters",
+      "reply_markup",
+      "ephemeral_message_parameters",
+      "receiver_user_id",
+      "callback_query_id",
+      "allow_sending_without_reply",
+      "reply_to_message_id",
+      "request_timeout"
+    ],
+    "Bot.send_venue": [
+      "chat_id",
+      "latitude",
+      "longitude",
+      "title",
+      "address",
+      "business_connection_id",
+      "message_thread_id",
+      "direct_messages_topic_id",
+      "foursquare_id",
+      "foursquare_type",
+      "google_place_id",
+      "google_place_type",
+      "disable_notification",
+      "protect_content",
+      "allow_paid_broadcast",
+      "message_effect_id",
+      "suggested_post_parameters",
+      "reply_parameters",
+      "reply_markup",
+      "ephemeral_message_parameters",
+      "receiver_user_id",
+      "callback_query_id",
+      "allow_sending_without_reply",
+      "reply_to_message_id",
+      "request_timeout"
+    ],
+    "Bot.send_video": [
+      "chat_id",
+      "video",
+      "business_connection_id",
+      "message_thread_id",
+      "direct_messages_topic_id",
+      "duration",
+      "width",
+      "height",
+      "thumbnail",
+      "cover",
+      "start_timestamp",
+      "caption",
+      "parse_mode",
+      "caption_entities",
+      "show_caption_above_media",
+      "has_spoiler",
+      "supports_streaming",
+      "disable_notification",
+      "protect_content",
+      "allow_paid_broadcast",
+      "message_effect_id",
+      "suggested_post_parameters",
+      "reply_parameters",
+      "reply_markup",
+      "ephemeral_message_parameters",
+      "receiver_user_id",
+      "callback_query_id",
+      "allow_sending_without_reply",
+      "reply_to_message_id",
+      "request_timeout"
+    ],
+    "Bot.send_video_note": [
+      "chat_id",
+      "video_note",
+      "business_connection_id",
+      "message_thread_id",
+      "direct_messages_topic_id",
+      "duration",
+      "length",
+      "thumbnail",
+      "disable_notification",
+      "protect_content",
+      "allow_paid_broadcast",
+      "message_effect_id",
+      "suggested_post_parameters",
+      "reply_parameters",
+      "reply_markup",
+      "ephemeral_message_parameters",
+      "receiver_user_id",
+      "callback_query_id",
+      "allow_sending_without_reply",
+      "reply_to_message_id",
+      "request_timeout"
+    ],
+    "Bot.send_voice": [
+      "chat_id",
+      "voice",
+      "business_connection_id",
+      "message_thread_id",
+      "direct_messages_topic_id",
+      "caption",
+      "parse_mode",
+      "caption_entities",
+      "duration",
+      "disable_notification",
+      "protect_content",
+      "allow_paid_broadcast",
+      "message_effect_id",
+      "suggested_post_parameters",
+      "reply_parameters",
+      "reply_markup",
+      "ephemeral_message_parameters",
+      "receiver_user_id",
+      "callback_query_id",
+      "allow_sending_without_reply",
+      "reply_to_message_id",
+      "request_timeout"
+    ],
+    "Bot.send_widget": [
+      "chat_id",
+      "html",
+      "message_thread_id",
+      "width",
+      "height",
+      "public_data",
+      "chat_data",
+      "caption",
+      "parse_mode",
+      "caption_entities",
+      "show_caption_above_media",
+      "allow_queries",
+      "is_shared",
+      "disable_notification",
+      "protect_content",
+      "allow_paid_broadcast",
+      "message_effect_id",
+      "reply_parameters",
+      "reply_markup",
+      "request_timeout"
+    ],
+    "Bot.set_business_account_bio": [
+      "business_connection_id",
+      "bio",
+      "request_timeout"
+    ],
+    "Bot.set_business_account_gift_settings": [
+      "business_connection_id",
+      "show_gift_button",
+      "accepted_gift_types",
+      "request_timeout"
+    ],
+    "Bot.set_business_account_name": [
+      "business_connection_id",
+      "first_name",
+      "last_name",
+      "request_timeout"
+    ],
+    "Bot.set_business_account_profile_photo": [
+      "business_connection_id",
+      "photo",
+      "is_public",
+      "request_timeout"
+    ],
+    "Bot.set_business_account_username": [
+      "business_connection_id",
+      "username",
+      "request_timeout"
+    ],
+    "Bot.set_chat_administrator_custom_title": [
+      "chat_id",
+      "user_id",
+      "custom_title",
+      "request_timeout"
+    ],
+    "Bot.set_chat_description": [
+      "chat_id",
+      "description",
+      "request_timeout"
+    ],
+    "Bot.set_chat_member_tag": [
+      "chat_id",
+      "user_id",
+      "tag",
+      "request_timeout"
+    ],
+    "Bot.set_chat_menu_button": [
+      "chat_id",
+      "menu_button",
+      "request_timeout"
+    ],
+    "Bot.set_chat_permissions": [
+      "chat_id",
+      "permissions",
+      "use_independent_chat_permissions",
+      "request_timeout"
+    ],
+    "Bot.set_chat_photo": [
+      "chat_id",
+      "photo",
+      "request_timeout"
+    ],
+    "Bot.set_chat_sticker_set": [
+      "chat_id",
+      "sticker_set_name",
+      "request_timeout"
+    ],
+    "Bot.set_chat_title": [
+      "chat_id",
+      "title",
+      "request_timeout"
+    ],
+    "Bot.set_custom_emoji_sticker_set_thumbnail": [
+      "name",
+      "custom_emoji_id",
+      "request_timeout"
+    ],
+    "Bot.set_game_score": [
+      "user_id",
+      "score",
+      "force",
+      "disable_edit_message",
+      "chat_id",
+      "message_id",
+      "inline_message_id",
+      "request_timeout"
+    ],
+    "Bot.set_managed_bot_access_settings": [
+      "user_id",
+      "is_access_restricted",
+      "added_user_ids",
+      "request_timeout"
+    ],
+    "Bot.set_message_reaction": [
+      "chat_id",
+      "message_id",
+      "reaction",
+      "is_big",
+      "request_timeout"
+    ],
+    "Bot.set_my_commands": [
+      "commands",
+      "scope",
+      "language_code",
+      "request_timeout"
+    ],
+    "Bot.set_my_default_administrator_rights": [
+      "rights",
+      "for_channels",
+      "request_timeout"
+    ],
+    "Bot.set_my_description": [
+      "description",
+      "language_code",
+      "request_timeout"
+    ],
+    "Bot.set_my_name": [
+      "name",
+      "language_code",
+      "request_timeout"
+    ],
+    "Bot.set_my_profile_photo": [
+      "photo",
+      "request_timeout"
+    ],
+    "Bot.set_my_settings": [
+      "supports_inline_queries",
+      "inline_query_placeholder",
+      "needs_inline_query_location",
+      "inline_feedback_share_denominator",
+      "can_join_groups",
+      "can_read_all_group_messages",
+      "can_connect_to_business",
+      "can_manage_bots",
+      "supports_guest_queries",
+      "supports_join_request_queries",
+      "has_topics_enabled",
+      "allows_users_to_create_topics",
+      "has_topic_sidebar",
+      "can_communicate_with_bots",
+      "callback_query_mode",
+      "request_timeout"
+    ],
+    "Bot.set_my_short_description": [
+      "short_description",
+      "language_code",
+      "request_timeout"
+    ],
+    "Bot.set_passport_data_errors": [
+      "user_id",
+      "errors",
+      "request_timeout"
+    ],
+    "Bot.set_sticker_emoji_list": [
+      "sticker",
+      "emoji_list",
+      "request_timeout"
+    ],
+    "Bot.set_sticker_keywords": [
+      "sticker",
+      "keywords",
+      "request_timeout"
+    ],
+    "Bot.set_sticker_mask_position": [
+      "sticker",
+      "mask_position",
+      "request_timeout"
+    ],
+    "Bot.set_sticker_position_in_set": [
+      "sticker",
+      "position",
+      "request_timeout"
+    ],
+    "Bot.set_sticker_set_thumbnail": [
+      "name",
+      "user_id",
+      "format",
+      "thumbnail",
+      "request_timeout"
+    ],
+    "Bot.set_sticker_set_title": [
+      "name",
+      "title",
+      "request_timeout"
+    ],
+    "Bot.set_user_emoji_status": [
+      "user_id",
+      "emoji_status_custom_emoji_id",
+      "emoji_status_expiration_date",
+      "request_timeout"
+    ],
+    "Bot.set_webhook": [
+      "url",
+      "certificate",
+      "ip_address",
+      "max_connections",
+      "allowed_updates",
+      "drop_pending_updates",
+      "secret_token",
+      "request_timeout"
+    ],
+    "Bot.stop_message_live_location": [
+      "business_connection_id",
+      "chat_id",
+      "message_id",
+      "inline_message_id",
+      "reply_markup",
+      "request_timeout"
+    ],
+    "Bot.stop_poll": [
+      "chat_id",
+      "message_id",
+      "business_connection_id",
+      "reply_markup",
+      "request_timeout"
+    ],
+    "Bot.transfer_business_account_stars": [
+      "business_connection_id",
+      "star_count",
+      "request_timeout"
+    ],
+    "Bot.transfer_gift": [
+      "business_connection_id",
+      "owned_gift_id",
+      "new_owner_chat_id",
+      "star_count",
+      "request_timeout"
+    ],
+    "Bot.unban_chat_member": [
+      "chat_id",
+      "user_id",
+      "only_if_banned",
+      "request_timeout"
+    ],
+    "Bot.unban_chat_sender_chat": [
+      "chat_id",
+      "sender_chat_id",
+      "request_timeout"
+    ],
+    "Bot.unhide_general_forum_topic": [
+      "chat_id",
+      "request_timeout"
+    ],
+    "Bot.unpin_all_chat_messages": [
+      "chat_id",
+      "request_timeout"
+    ],
+    "Bot.unpin_all_forum_topic_messages": [
+      "chat_id",
+      "message_thread_id",
+      "request_timeout"
+    ],
+    "Bot.unpin_all_general_forum_topic_messages": [
+      "chat_id",
+      "request_timeout"
+    ],
+    "Bot.unpin_chat_message": [
+      "chat_id",
+      "business_connection_id",
+      "message_id",
+      "request_timeout"
+    ],
+    "Bot.upgrade_gift": [
+      "business_connection_id",
+      "owned_gift_id",
+      "keep_original_details",
+      "star_count",
+      "request_timeout"
+    ],
+    "Bot.upload_sticker_file": [
+      "user_id",
+      "sticker",
+      "sticker_format",
+      "request_timeout"
+    ],
+    "Bot.usernames": [],
+    "Bot.verify_chat": [
+      "chat_id",
+      "custom_description",
+      "custom_description_parse_mode",
+      "custom_description_entities",
+      "request_timeout"
+    ],
+    "Bot.verify_user": [
+      "user_id",
+      "custom_description",
+      "custom_description_parse_mode",
+      "custom_description_entities",
+      "request_timeout"
+    ],
+    "AcceptedGiftTypes": [],
+    "AddStickerToSet": [],
+    "AffiliateInfo": [],
+    "Animation": [],
+    "AnswerCallbackQuery": [],
+    "AnswerChatJoinRequestQuery": [],
+    "AnswerGuestQuery": [],
+    "AnswerInlineQuery": [],
+    "AnswerPreCheckoutQuery": [],
+    "AnswerShippingQuery": [],
+    "AnswerWebAppQuery": [],
+    "AnswerWidgetQuery": [],
+    "ApproveChatJoinRequest": [],
+    "ApproveSuggestedPost": [],
+    "AreaPosition": [],
+    "Audio": [],
+    "BackgroundFill": [],
+    "BackgroundFillFreeformGradient": [],
+    "BackgroundFillGradient": [],
+    "BackgroundFillSolid": [],
+    "BackgroundType": [],
+    "BackgroundTypeChatTheme": [],
+    "BackgroundTypeFill": [],
+    "BackgroundTypePattern": [],
+    "BackgroundTypeWallpaper": [],
+    "BanChatMember": [],
+    "BanChatSenderChat": [],
+    "Birthdate": [],
+    "BotAccessSettings": [],
+    "BotCommand": [],
+    "BotCommandScope": [],
+    "BotCommandScopeAllChatAdministrators": [],
+    "BotCommandScopeAllGroupChats": [],
+    "BotCommandScopeAllPrivateChats": [],
+    "BotCommandScopeChat": [],
+    "BotCommandScopeChatAdministrators": [],
+    "BotCommandScopeChatMember": [],
+    "BotCommandScopeDefault": [],
+    "BotDescription": [],
+    "BotFullInfo": [],
+    "BotName": [],
+    "BotShortDescription": [],
+    "BotSubscriptionUpdated": [],
+    "BusinessBotRights": [],
+    "BusinessConnection": [],
+    "BusinessIntro": [],
+    "BusinessLocation": [],
+    "BusinessMessagesDeleted": [],
+    "BusinessOpeningHours": [],
+    "BusinessOpeningHoursInterval": [],
+    "CallbackGame": [],
+    "CallbackQuery": [],
+    "Chat": [],
+    "ChatAdministratorRights": [],
+    "ChatBackground": [],
+    "ChatBoost": [],
+    "ChatBoostAdded": [],
+    "ChatBoostRemoved": [],
+    "ChatBoostSource": [],
+    "ChatBoostSourceGiftCode": [],
+    "ChatBoostSourceGiveaway": [],
+    "ChatBoostSourcePremium": [],
+    "ChatBoostUpdated": [],
+    "ChatFullInfo": [],
+    "ChatInviteLink": [],
+    "ChatJoinRequest": [],
+    "ChatLocation": [],
+    "ChatMember": [],
+    "ChatMemberAdministrator": [],
+    "ChatMemberBanned": [],
+    "ChatMemberLeft": [],
+    "ChatMemberMember": [],
+    "ChatMemberOwner": [],
+    "ChatMemberRestricted": [],
+    "ChatMemberUpdated": [],
+    "ChatOwnerChanged": [],
+    "ChatOwnerLeft": [],
+    "ChatPermissions": [],
+    "ChatPhoto": [],
+    "ChatShareTheme": [],
+    "ChatShareThemeBackdrop": [],
+    "ChatShareThemeBackdrops": [],
+    "ChatShareThemeEmoji": [],
+    "ChatShareThemeUniqueGift": [],
+    "ChatShared": [],
+    "Checklist": [],
+    "ChecklistTask": [],
+    "ChecklistTasksAdded": [],
+    "ChecklistTasksDone": [],
+    "ChosenInlineResult": [],
+    "Close": [],
+    "CloseForumTopic": [],
+    "CloseGeneralForumTopic": [],
+    "Community": [],
+    "CommunityChatAdded": [],
+    "CommunityChatJoined": [],
+    "CommunityChatRemoved": [],
+    "Contact": [],
+    "ConvertGiftToStars": [],
+    "CopyMessage": [],
+    "CopyMessages": [],
+    "CopyTextButton": [],
+    "CreateChatInviteLink": [],
+    "CreateChatSubscriptionInviteLink": [],
+    "CreateForumTopic": [],
+    "CreateInvoiceLink": [],
+    "CreateNewStickerSet": [],
+    "DeclineChatJoinRequest": [],
+    "DeclineSuggestedPost": [],
+    "DeleteAllMessageReactions": [],
+    "DeleteBusinessAccountGift": [],
+    "DeleteBusinessMessages": [],
+    "DeleteChatPhoto": [],
+    "DeleteChatStickerSet": [],
+    "DeleteEphemeralMessage": [],
+    "DeleteForumTopic": [],
+    "DeleteMessage": [],
+    "DeleteMessageReaction": [],
+    "DeleteMessages": [],
+    "DeleteMyCommands": [],
+    "DeleteStickerFromSet": [],
+    "DeleteStickerSet": [],
+    "DeleteStory": [],
+    "DeleteWebhook": [],
+    "Dice": [],
+    "DirectMessagePriceChanged": [],
+    "DirectMessagesTopic": [],
+    "DisabledButton": [],
+    "Document": [],
+    "EditChatInviteLink": [],
+    "EditChatSubscriptionInviteLink": [],
+    "EditEphemeralMessageCaption": [],
+    "EditEphemeralMessageMedia": [],
+    "EditEphemeralMessageReplyMarkup": [],
+    "EditEphemeralMessageText": [],
+    "EditForumTopic": [],
+    "EditGeneralForumTopic": [],
+    "EditMessageCaption": [],
+    "EditMessageChecklist": [],
+    "EditMessageLiveLocation": [],
+    "EditMessageMedia": [],
+    "EditMessageReplyMarkup": [],
+    "EditMessageText": [],
+    "EditMessageWidgetData": [],
+    "EditSharedWidgetData": [],
+    "EditStory": [],
+    "EditUserStarSubscription": [],
+    "EmojiType": [],
+    "EmojiTypeCustomEmoji": [],
+    "EmojiTypeEmoji": [],
+    "EncryptedCredentials": [],
+    "EncryptedPassportElement": [],
+    "EphemeralMessageParameters": [],
+    "ErrorEvent": [],
+    "ExportChatInviteLink": [],
+    "ExternalReplyInfo": [],
+    "File": [],
+    "ForceReply": [],
+    "ForumTopic": [],
+    "ForumTopicClosed": [],
+    "ForumTopicCreated": [],
+    "ForumTopicEdited": [],
+    "ForumTopicReopened": [],
+    "ForwardMessage": [],
+    "ForwardMessages": [],
+    "Game": [],
+    "GameHighScore": [],
+    "GeneralForumTopicHidden": [],
+    "GeneralForumTopicUnhidden": [],
+    "GetAvailableGifts": [],
+    "GetBusinessAccountGifts": [],
+    "GetBusinessAccountStarBalance": [],
+    "GetBusinessConnection": [],
+    "GetChat": [],
+    "GetChatAdministrators": [],
+    "GetChatGifts": [],
+    "GetChatMember": [],
+    "GetChatMemberCount": [],
+    "GetChatMenuButton": [],
+    "GetChatShareThemeBackdrops": [],
+    "GetCustomEmojiStickers": [],
+    "GetFile": [],
+    "GetForumTopicIconStickers": [],
+    "GetGameHighScores": [],
+    "GetManagedBotAccessSettings": [],
+    "GetManagedBotToken": [],
+    "GetMe": [],
+    "GetMyCommands": [],
+    "GetMyDefaultAdministratorRights": [],
+    "GetMyDescription": [],
+    "GetMyName": [],
+    "GetMyShortDescription": [],
+    "GetMyStarBalance": [],
+    "GetStarTransactions": [],
+    "GetStickerSet": [],
+    "GetUniqueGift": [],
+    "GetUpdates": [],
+    "GetUserChatBoosts": [],
+    "GetUserGifts": [],
+    "GetUserPersonalChatMessages": [],
+    "GetUserProfileAudios": [],
+    "GetUserProfilePhotos": [],
+    "GetWebhookInfo": [],
+    "Gift": [],
+    "GiftBackground": [],
+    "GiftInfo": [],
+    "GiftPremiumSubscription": [],
+    "Gifts": [],
+    "Giveaway": [],
+    "GiveawayCompleted": [],
+    "GiveawayCreated": [],
+    "GiveawayWinners": [],
+    "HideGeneralForumTopic": [],
+    "InaccessibleMessage": [],
+    "InlineKeyboardButton": [],
+    "InlineKeyboardMarkup": [],
+    "InlineQuery": [],
+    "InlineQueryResult": [],
+    "InlineQueryResultArticle": [],
+    "InlineQueryResultAudio": [],
+    "InlineQueryResultCachedAudio": [],
+    "InlineQueryResultCachedDocument": [],
+    "InlineQueryResultCachedGif": [],
+    "InlineQueryResultCachedMpeg4Gif": [],
+    "InlineQueryResultCachedPhoto": [],
+    "InlineQueryResultCachedSticker": [],
+    "InlineQueryResultCachedVideo": [],
+    "InlineQueryResultCachedVoice": [],
+    "InlineQueryResultContact": [],
+    "InlineQueryResultDocument": [],
+    "InlineQueryResultGame": [],
+    "InlineQueryResultGif": [],
+    "InlineQueryResultLocation": [],
+    "InlineQueryResultMpeg4Gif": [],
+    "InlineQueryResultPhoto": [],
+    "InlineQueryResultVenue": [],
+    "InlineQueryResultVideo": [],
+    "InlineQueryResultVoice": [],
+    "InlineQueryResultsButton": [],
+    "InputChecklist": [],
+    "InputChecklistTask": [],
+    "InputContactMessageContent": [],
+    "InputInvoiceMessageContent": [],
+    "InputLocationMessageContent": [],
+    "InputMedia": [],
+    "InputMediaAnimation": [],
+    "InputMediaAudio": [],
+    "InputMediaDocument": [],
+    "InputMediaLink": [],
+    "InputMediaLivePhoto": [],
+    "InputMediaLocation": [],
+    "InputMediaPhoto": [],
+    "InputMediaSticker": [],
+    "InputMediaVenue": [],
+    "InputMediaVideo": [],
+    "InputMediaVoiceNote": [],
+    "InputMessageContent": [],
+    "InputPaidMedia": [],
+    "InputPaidMediaLivePhoto": [],
+    "InputPaidMediaPhoto": [],
+    "InputPaidMediaVideo": [],
+    "InputPollMedia": [],
+    "InputPollOption": [],
+    "InputPollOptionMedia": [],
+    "InputProfilePhoto": [],
+    "InputProfilePhotoAnimated": [],
+    "InputProfilePhotoStatic": [],
+    "InputRichBlock": [],
+    "InputRichBlockAnchor": [],
+    "InputRichBlockAnimation": [],
+    "InputRichBlockAudio": [],
+    "InputRichBlockBlockQuotation": [],
+    "InputRichBlockButtons": [],
+    "InputRichBlockCollage": [],
+    "InputRichBlockDetails": [],
+    "InputRichBlockDivider": [],
+    "InputRichBlockDocument": [],
+    "InputRichBlockExpandableBlockQuotation": [],
+    "InputRichBlockFooter": [],
+    "InputRichBlockList": [],
+    "InputRichBlockListItem": [],
+    "InputRichBlockMap": [],
+    "InputRichBlockMathematicalExpression": [],
+    "InputRichBlockParagraph": [],
+    "InputRichBlockPhoto": [],
+    "InputRichBlockPreformatted": [],
+    "InputRichBlockPullQuotation": [],
+    "InputRichBlockSectionHeading": [],
+    "InputRichBlockSlideshow": [],
+    "InputRichBlockTable": [],
+    "InputRichBlockThinking": [],
+    "InputRichBlockVideo": [],
+    "InputRichBlockVoiceNote": [],
+    "InputRichMessage": [],
+    "InputRichMessageContent": [],
+    "InputRichMessageMedia": [],
+    "InputSharedWidgetMessageContent": [],
+    "InputSticker": [],
+    "InputStoryContent": [],
+    "InputStoryContentPhoto": [],
+    "InputStoryContentVideo": [],
+    "InputTextMessageContent": [],
+    "InputVenueMessageContent": [],
+    "InputWidgetMessageContent": [],
+    "Invoice": [],
+    "KeyboardButton": [],
+    "KeyboardButtonPollType": [],
+    "KeyboardButtonRequestChat": [],
+    "KeyboardButtonRequestManagedBot": [],
+    "KeyboardButtonRequestUser": [],
+    "KeyboardButtonRequestUsers": [],
+    "LabeledPrice": [],
+    "LeaveChat": [],
+    "Link": [],
+    "LinkPreviewOptions": [],
+    "LivePhoto": [],
+    "Location": [],
+    "LocationAddress": [],
+    "LogOut": [],
+    "LoginUrl": [],
+    "ManagedBotCreated": [],
+    "ManagedBotUpdated": [],
+    "MaskPosition": [],
+    "MaybeInaccessibleMessage": [],
+    "MenuButton": [],
+    "MenuButtonCommands": [],
+    "MenuButtonDefault": [],
+    "MenuButtonWebApp": [],
+    "Message": [],
+    "MessageAutoDeleteTimerChanged": [],
+    "MessageEntity": [],
+    "MessageGenerationStopped": [],
+    "MessageId": [],
+    "MessageOrigin": [],
+    "MessageOriginChannel": [],
+    "MessageOriginChat": [],
+    "MessageOriginHiddenUser": [],
+    "MessageOriginUser": [],
+    "MessageReactionCountUpdated": [],
+    "MessageReactionUpdated": [],
+    "MutableTelegramObject": [],
+    "OrderInfo": [],
+    "OwnedGift": [],
+    "OwnedGiftRegular": [],
+    "OwnedGiftUnique": [],
+    "OwnedGifts": [],
+    "PaidMedia": [],
+    "PaidMediaInfo": [],
+    "PaidMediaLivePhoto": [],
+    "PaidMediaPhoto": [],
+    "PaidMediaPreview": [],
+    "PaidMediaPurchased": [],
+    "PaidMediaVideo": [],
+    "PaidMessagePriceChanged": [],
+    "PaidMessagesWaived": [],
+    "PassportData": [],
+    "PassportElementError": [],
+    "PassportElementErrorDataField": [],
+    "PassportElementErrorFile": [],
+    "PassportElementErrorFiles": [],
+    "PassportElementErrorFrontSide": [],
+    "PassportElementErrorReverseSide": [],
+    "PassportElementErrorSelfie": [],
+    "PassportElementErrorTranslationFile": [],
+    "PassportElementErrorTranslationFiles": [],
+    "PassportElementErrorUnspecified": [],
+    "PassportFile": [],
+    "PhotoSize": [],
+    "PinChatMessage": [],
+    "Poll": [],
+    "PollAnswer": [],
+    "PollMedia": [],
+    "PollOption": [],
+    "PollOptionAdded": [],
+    "PollOptionDeleted": [],
+    "PostStory": [],
+    "PreCheckoutQuery": [],
+    "PreparedInlineMessage": [],
+    "PreparedKeyboardButton": [],
+    "PromoteChatMember": [],
+    "ProximityAlertTriggered": [],
+    "ReactionCount": [],
+    "ReactionType": [],
+    "ReactionTypeCustomEmoji": [],
+    "ReactionTypeEmoji": [],
+    "ReactionTypePaid": [],
+    "ReadBusinessMessage": [],
+    "RefundStarPayment": [],
+    "RefundedPayment": [],
+    "RemoveBusinessAccountProfilePhoto": [],
+    "RemoveChatVerification": [],
+    "RemoveMyProfilePhoto": [],
+    "RemoveUserVerification": [],
+    "ReopenForumTopic": [],
+    "ReopenGeneralForumTopic": [],
+    "ReplaceManagedBotToken": [],
+    "ReplaceStickerInSet": [],
+    "ReplyKeyboardMarkup": [],
+    "ReplyKeyboardRemove": [],
+    "ReplyParameters": [],
+    "RepostStory": [],
+    "ResponseParameters": [],
+    "RestrictChatMember": [],
+    "RevenueWithdrawalState": [],
+    "RevenueWithdrawalStateFailed": [],
+    "RevenueWithdrawalStatePending": [],
+    "RevenueWithdrawalStateSucceeded": [],
+    "RevokeChatInviteLink": [],
+    "RichBlock": [],
+    "RichBlockAnchor": [],
+    "RichBlockAnimation": [],
+    "RichBlockAudio": [],
+    "RichBlockBlockQuotation": [],
+    "RichBlockButtons": [],
+    "RichBlockCaption": [],
+    "RichBlockCollage": [],
+    "RichBlockDetails": [],
+    "RichBlockDivider": [],
+    "RichBlockDocument": [],
+    "RichBlockExpandableBlockQuotation": [],
+    "RichBlockFooter": [],
+    "RichBlockList": [],
+    "RichBlockListItem": [],
+    "RichBlockMap": [],
+    "RichBlockMathematicalExpression": [],
+    "RichBlockParagraph": [],
+    "RichBlockPhoto": [],
+    "RichBlockPreformatted": [],
+    "RichBlockPullQuotation": [],
+    "RichBlockSectionHeading": [],
+    "RichBlockSlideshow": [],
+    "RichBlockTable": [],
+    "RichBlockTableCell": [],
+    "RichBlockThinking": [],
+    "RichBlockVideo": [],
+    "RichBlockVoiceNote": [],
+    "RichMessage": [],
+    "RichMessageButton": [],
+    "RichText": [],
+    "RichTextAnchor": [],
+    "RichTextAnchorLink": [],
+    "RichTextBankCardNumber": [],
+    "RichTextBold": [],
+    "RichTextBotCommand": [],
+    "RichTextButton": [],
+    "RichTextCashtag": [],
+    "RichTextCode": [],
+    "RichTextCustomEmoji": [],
+    "RichTextDateTime": [],
+    "RichTextEmailAddress": [],
+    "RichTextHashtag": [],
+    "RichTextItalic": [],
+    "RichTextMarked": [],
+    "RichTextMathematicalExpression": [],
+    "RichTextMention": [],
+    "RichTextPhoneNumber": [],
+    "RichTextReference": [],
+    "RichTextReferenceLink": [],
+    "RichTextSpoiler": [],
+    "RichTextStrikethrough": [],
+    "RichTextSubscript": [],
+    "RichTextSuperscript": [],
+    "RichTextTextMention": [],
+    "RichTextTonAddress": [],
+    "RichTextUnderline": [],
+    "RichTextUrl": [],
+    "SavePreparedInlineMessage": [],
+    "SavePreparedKeyboardButton": [],
+    "SendAnimation": [],
+    "SendAudio": [],
+    "SendChatAction": [],
+    "SendChatJoinRequestWebApp": [],
+    "SendChecklist": [],
+    "SendContact": [],
+    "SendDice": [],
+    "SendDocument": [],
+    "SendGame": [],
+    "SendGift": [],
+    "SendInvoice": [],
+    "SendLivePhoto": [],
+    "SendLocation": [],
+    "SendMediaGroup": [],
+    "SendMessage": [],
+    "SendMessageDraft": [],
+    "SendPaidMedia": [],
+    "SendPhoto": [],
+    "SendPoll": [],
+    "SendRichMessage": [],
+    "SendRichMessageDraft": [],
+    "SendSharedWidget": [],
+    "SendSticker": [],
+    "SendVenue": [],
+    "SendVideo": [],
+    "SendVideoNote": [],
+    "SendVoice": [],
+    "SendWidget": [],
+    "SentGuestMessage": [],
+    "SentWebAppMessage": [],
+    "SetBusinessAccountBio": [],
+    "SetBusinessAccountGiftSettings": [],
+    "SetBusinessAccountName": [],
+    "SetBusinessAccountProfilePhoto": [],
+    "SetBusinessAccountUsername": [],
+    "SetChatAdministratorCustomTitle": [],
+    "SetChatDescription": [],
+    "SetChatMemberTag": [],
+    "SetChatMenuButton": [],
+    "SetChatPermissions": [],
+    "SetChatPhoto": [],
+    "SetChatStickerSet": [],
+    "SetChatTitle": [],
+    "SetCustomEmojiStickerSetThumbnail": [],
+    "SetGameScore": [],
+    "SetManagedBotAccessSettings": [],
+    "SetMessageReaction": [],
+    "SetMyCommands": [],
+    "SetMyDefaultAdministratorRights": [],
+    "SetMyDescription": [],
+    "SetMyName": [],
+    "SetMyProfilePhoto": [],
+    "SetMySettings": [],
+    "SetMyShortDescription": [],
+    "SetPassportDataErrors": [],
+    "SetStickerEmojiList": [],
+    "SetStickerKeywords": [],
+    "SetStickerMaskPosition": [],
+    "SetStickerPositionInSet": [],
+    "SetStickerSetThumbnail": [],
+    "SetStickerSetTitle": [],
+    "SetUserEmojiStatus": [],
+    "SetWebhook": [],
+    "SharedUser": [],
+    "SharedWidgetQuery": [],
+    "ShippingAddress": [],
+    "ShippingOption": [],
+    "ShippingQuery": [],
+    "StarAmount": [],
+    "StarTransaction": [],
+    "StarTransactions": [],
+    "Sticker": [],
+    "StickerSet": [],
+    "StopMessageLiveLocation": [],
+    "StopPoll": [],
+    "Story": [],
+    "StoryArea": [],
+    "StoryAreaPosition": [],
+    "StoryAreaType": [],
+    "StoryAreaTypeLink": [],
+    "StoryAreaTypeLocation": [],
+    "StoryAreaTypeSuggestedReaction": [],
+    "StoryAreaTypeUniqueGift": [],
+    "StoryAreaTypeWeather": [],
+    "SuccessfulPayment": [],
+    "SuggestedPostApprovalFailed": [],
+    "SuggestedPostApproved": [],
+    "SuggestedPostDeclined": [],
+    "SuggestedPostInfo": [],
+    "SuggestedPostPaid": [],
+    "SuggestedPostParameters": [],
+    "SuggestedPostPrice": [],
+    "SuggestedPostRefunded": [],
+    "SwitchInlineQueryChosenChat": [],
+    "TextQuote": [],
+    "TonNft": [],
+    "TonNftAttribute": [],
+    "TonWalletCard": [],
+    "TonWalletCardSticker": [],
+    "TonWalletTransfer": [],
+    "TransactionPartner": [],
+    "TransactionPartnerAffiliateProgram": [],
+    "TransactionPartnerChat": [],
+    "TransactionPartnerFragment": [],
+    "TransactionPartnerOther": [],
+    "TransactionPartnerTelegramAds": [],
+    "TransactionPartnerTelegramApi": [],
+    "TransactionPartnerUser": [],
+    "TransferBusinessAccountStars": [],
+    "TransferGift": [],
+    "UnbanChatMember": [],
+    "UnbanChatSenderChat": [],
+    "UnhideGeneralForumTopic": [],
+    "UniqueGift": [],
+    "UniqueGiftBackdrop": [],
+    "UniqueGiftBackdropColors": [],
+    "UniqueGiftColors": [],
+    "UniqueGiftInfo": [],
+    "UniqueGiftModel": [],
+    "UniqueGiftSymbol": [],
+    "UnpinAllChatMessages": [],
+    "UnpinAllForumTopicMessages": [],
+    "UnpinAllGeneralForumTopicMessages": [],
+    "UnpinChatMessage": [],
+    "Update": [],
+    "UpgradeGift": [],
+    "UploadStickerFile": [],
+    "User": [],
+    "UserChatBoosts": [],
+    "UserProfileAudios": [],
+    "UserProfilePhotos": [],
+    "UserRating": [],
+    "UserShared": [],
+    "UsersShared": [],
+    "Venue": [],
+    "VerifyChat": [],
+    "VerifyUser": [],
+    "Video": [],
+    "VideoChatEnded": [],
+    "VideoChatParticipantsInvited": [],
+    "VideoChatScheduled": [],
+    "VideoChatStarted": [],
+    "VideoNote": [],
+    "VideoQuality": [],
+    "Voice": [],
+    "WebAppData": [],
+    "WebAppInfo": [],
+    "WebhookInfo": [],
+    "Widget": [],
+    "WidgetQuery": [],
+    "WidgetQueryType": [],
+    "WidgetQueryTypeData": [],
+    "WidgetQueryTypeSentTransaction": [],
+    "WidgetQueryTypeSignData": [],
+    "WidgetQueryWallet": [],
+    "WriteAccessAllowed": []
+  },
+  "shortcuts": {
+    "CallbackQuery.answer": {
+      "receiver": "CallbackQuery",
+      "positional": [
+        "text",
+        "show_alert",
+        "url",
+        "cache_time"
+      ]
+    },
+    "Chat.ban": {
+      "receiver": "Chat",
+      "positional": [
+        "user_id",
+        "until_date",
+        "revoke_messages"
+      ]
+    },
+    "Chat.ban_sender_chat": {
+      "receiver": "Chat",
+      "positional": [
+        "sender_chat_id"
+      ]
+    },
+    "Chat.create_invite_link": {
+      "receiver": "Chat",
+      "positional": [
+        "name",
+        "expire_date",
+        "member_limit",
+        "creates_join_request"
+      ]
+    },
+    "Chat.delete_message": {
+      "receiver": "Chat",
+      "positional": [
+        "message_id"
+      ]
+    },
+    "Chat.delete_photo": {
+      "receiver": "Chat",
+      "positional": []
+    },
+    "Chat.delete_sticker_set": {
+      "receiver": "Chat",
+      "positional": []
+    },
+    "Chat.do": {
+      "receiver": "Chat",
+      "positional": [
+        "action",
+        "business_connection_id",
+        "message_thread_id"
+      ]
+    },
+    "Chat.edit_invite_link": {
+      "receiver": "Chat",
+      "positional": [
+        "invite_link",
+        "name",
+        "expire_date",
+        "member_limit",
+        "creates_join_request"
+      ]
+    },
+    "Chat.export_invite_link": {
+      "receiver": "Chat",
+      "positional": []
+    },
+    "Chat.get_administrators": {
+      "receiver": "Chat",
+      "positional": [
+        "return_bots"
+      ]
+    },
+    "Chat.get_member": {
+      "receiver": "Chat",
+      "positional": [
+        "user_id"
+      ]
+    },
+    "Chat.get_member_count": {
+      "receiver": "Chat",
+      "positional": []
+    },
+    "Chat.leave": {
+      "receiver": "Chat",
+      "positional": []
+    },
+    "Chat.pin_message": {
+      "receiver": "Chat",
+      "positional": [
+        "message_id",
+        "business_connection_id",
+        "disable_notification"
+      ]
+    },
+    "Chat.promote": {
+      "receiver": "Chat",
+      "positional": [
+        "user_id",
+        "is_anonymous",
+        "can_manage_chat",
+        "can_delete_messages",
+        "can_manage_video_chats",
+        "can_restrict_members",
+        "can_promote_members",
+        "can_change_info",
+        "can_invite_users",
+        "can_post_stories",
+        "can_edit_stories",
+        "can_delete_stories",
+        "can_post_messages",
+        "can_edit_messages",
+        "can_pin_messages",
+        "can_manage_topics",
+        "can_manage_direct_messages",
+        "can_manage_tags",
+        "can_send_welcome_messages"
+      ]
+    },
+    "Chat.restrict": {
+      "receiver": "Chat",
+      "positional": [
+        "user_id",
+        "permissions",
+        "use_independent_chat_permissions",
+        "until_date"
+      ]
+    },
+    "Chat.revoke_invite_link": {
+      "receiver": "Chat",
+      "positional": [
+        "invite_link"
+      ]
+    },
+    "Chat.set_administrator_custom_title": {
+      "receiver": "Chat",
+      "positional": [
+        "user_id",
+        "custom_title"
+      ]
+    },
+    "Chat.set_description": {
+      "receiver": "Chat",
+      "positional": [
+        "description"
+      ]
+    },
+    "Chat.set_member_tag": {
+      "receiver": "Chat",
+      "positional": [
+        "user_id",
+        "tag"
+      ]
+    },
+    "Chat.set_permissions": {
+      "receiver": "Chat",
+      "positional": [
+        "permissions",
+        "use_independent_chat_permissions"
+      ]
+    },
+    "Chat.set_photo": {
+      "receiver": "Chat",
+      "positional": [
+        "photo"
+      ]
+    },
+    "Chat.set_sticker_set": {
+      "receiver": "Chat",
+      "positional": [
+        "sticker_set_name"
+      ]
+    },
+    "Chat.set_title": {
+      "receiver": "Chat",
+      "positional": [
+        "title"
+      ]
+    },
+    "Chat.unban": {
+      "receiver": "Chat",
+      "positional": [
+        "user_id",
+        "only_if_banned"
+      ]
+    },
+    "Chat.unban_sender_chat": {
+      "receiver": "Chat",
+      "positional": [
+        "sender_chat_id"
+      ]
+    },
+    "Chat.unpin_all_general_forum_topic_messages": {
+      "receiver": "Chat",
+      "positional": []
+    },
+    "Chat.unpin_all_messages": {
+      "receiver": "Chat",
+      "positional": []
+    },
+    "Chat.unpin_message": {
+      "receiver": "Chat",
+      "positional": [
+        "business_connection_id",
+        "message_id"
+      ]
+    },
+    "ChatJoinRequest.answer": {
+      "receiver": "ChatJoinRequest",
+      "positional": [
+        "text",
+        "business_connection_id",
+        "message_thread_id",
+        "direct_messages_topic_id",
+        "parse_mode",
+        "entities",
+        "link_preview_options",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "message_effect_id",
+        "suggested_post_parameters",
+        "reply_parameters",
+        "reply_markup",
+        "ephemeral_message_parameters",
+        "receiver_user_id",
+        "callback_query_id",
+        "allow_sending_without_reply",
+        "disable_web_page_preview",
+        "reply_to_message_id"
+      ]
+    },
+    "ChatJoinRequest.answer_animation": {
+      "receiver": "ChatJoinRequest",
+      "positional": [
+        "animation",
+        "business_connection_id",
+        "message_thread_id",
+        "direct_messages_topic_id",
+        "duration",
+        "width",
+        "height",
+        "thumbnail",
+        "caption",
+        "parse_mode",
+        "caption_entities",
+        "show_caption_above_media",
+        "has_spoiler",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "message_effect_id",
+        "suggested_post_parameters",
+        "reply_parameters",
+        "reply_markup",
+        "ephemeral_message_parameters",
+        "receiver_user_id",
+        "callback_query_id",
+        "allow_sending_without_reply",
+        "reply_to_message_id"
+      ]
+    },
+    "ChatJoinRequest.answer_animation_pm": {
+      "receiver": "ChatJoinRequest",
+      "positional": [
+        "animation",
+        "business_connection_id",
+        "message_thread_id",
+        "direct_messages_topic_id",
+        "duration",
+        "width",
+        "height",
+        "thumbnail",
+        "caption",
+        "parse_mode",
+        "caption_entities",
+        "show_caption_above_media",
+        "has_spoiler",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "message_effect_id",
+        "suggested_post_parameters",
+        "reply_parameters",
+        "reply_markup",
+        "ephemeral_message_parameters",
+        "receiver_user_id",
+        "callback_query_id",
+        "allow_sending_without_reply",
+        "reply_to_message_id"
+      ]
+    },
+    "ChatJoinRequest.answer_audio": {
+      "receiver": "ChatJoinRequest",
+      "positional": [
+        "audio",
+        "business_connection_id",
+        "message_thread_id",
+        "direct_messages_topic_id",
+        "caption",
+        "parse_mode",
+        "caption_entities",
+        "duration",
+        "performer",
+        "title",
+        "thumbnail",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "message_effect_id",
+        "suggested_post_parameters",
+        "reply_parameters",
+        "reply_markup",
+        "ephemeral_message_parameters",
+        "receiver_user_id",
+        "callback_query_id",
+        "allow_sending_without_reply",
+        "reply_to_message_id"
+      ]
+    },
+    "ChatJoinRequest.answer_audio_pm": {
+      "receiver": "ChatJoinRequest",
+      "positional": [
+        "audio",
+        "business_connection_id",
+        "message_thread_id",
+        "direct_messages_topic_id",
+        "caption",
+        "parse_mode",
+        "caption_entities",
+        "duration",
+        "performer",
+        "title",
+        "thumbnail",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "message_effect_id",
+        "suggested_post_parameters",
+        "reply_parameters",
+        "reply_markup",
+        "ephemeral_message_parameters",
+        "receiver_user_id",
+        "callback_query_id",
+        "allow_sending_without_reply",
+        "reply_to_message_id"
+      ]
+    },
+    "ChatJoinRequest.answer_contact": {
+      "receiver": "ChatJoinRequest",
+      "positional": [
+        "phone_number",
+        "first_name",
+        "business_connection_id",
+        "message_thread_id",
+        "direct_messages_topic_id",
+        "last_name",
+        "vcard",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "message_effect_id",
+        "suggested_post_parameters",
+        "reply_parameters",
+        "reply_markup",
+        "ephemeral_message_parameters",
+        "receiver_user_id",
+        "callback_query_id",
+        "allow_sending_without_reply",
+        "reply_to_message_id"
+      ]
+    },
+    "ChatJoinRequest.answer_contact_pm": {
+      "receiver": "ChatJoinRequest",
+      "positional": [
+        "phone_number",
+        "first_name",
+        "business_connection_id",
+        "message_thread_id",
+        "direct_messages_topic_id",
+        "last_name",
+        "vcard",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "message_effect_id",
+        "suggested_post_parameters",
+        "reply_parameters",
+        "reply_markup",
+        "ephemeral_message_parameters",
+        "receiver_user_id",
+        "callback_query_id",
+        "allow_sending_without_reply",
+        "reply_to_message_id"
+      ]
+    },
+    "ChatJoinRequest.answer_dice": {
+      "receiver": "ChatJoinRequest",
+      "positional": [
+        "business_connection_id",
+        "message_thread_id",
+        "direct_messages_topic_id",
+        "emoji",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "message_effect_id",
+        "suggested_post_parameters",
+        "reply_parameters",
+        "reply_markup",
+        "allow_sending_without_reply",
+        "reply_to_message_id"
+      ]
+    },
+    "ChatJoinRequest.answer_dice_pm": {
+      "receiver": "ChatJoinRequest",
+      "positional": [
+        "business_connection_id",
+        "message_thread_id",
+        "direct_messages_topic_id",
+        "emoji",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "message_effect_id",
+        "suggested_post_parameters",
+        "reply_parameters",
+        "reply_markup",
+        "allow_sending_without_reply",
+        "reply_to_message_id"
+      ]
+    },
+    "ChatJoinRequest.answer_document": {
+      "receiver": "ChatJoinRequest",
+      "positional": [
+        "document",
+        "business_connection_id",
+        "message_thread_id",
+        "direct_messages_topic_id",
+        "thumbnail",
+        "caption",
+        "parse_mode",
+        "caption_entities",
+        "disable_content_type_detection",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "message_effect_id",
+        "suggested_post_parameters",
+        "reply_parameters",
+        "reply_markup",
+        "ephemeral_message_parameters",
+        "receiver_user_id",
+        "callback_query_id",
+        "allow_sending_without_reply",
+        "reply_to_message_id"
+      ]
+    },
+    "ChatJoinRequest.answer_document_pm": {
+      "receiver": "ChatJoinRequest",
+      "positional": [
+        "document",
+        "business_connection_id",
+        "message_thread_id",
+        "direct_messages_topic_id",
+        "thumbnail",
+        "caption",
+        "parse_mode",
+        "caption_entities",
+        "disable_content_type_detection",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "message_effect_id",
+        "suggested_post_parameters",
+        "reply_parameters",
+        "reply_markup",
+        "ephemeral_message_parameters",
+        "receiver_user_id",
+        "callback_query_id",
+        "allow_sending_without_reply",
+        "reply_to_message_id"
+      ]
+    },
+    "ChatJoinRequest.answer_game": {
+      "receiver": "ChatJoinRequest",
+      "positional": [
+        "game_short_name",
+        "business_connection_id",
+        "message_thread_id",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "message_effect_id",
+        "reply_parameters",
+        "reply_markup",
+        "allow_sending_without_reply",
+        "reply_to_message_id"
+      ]
+    },
+    "ChatJoinRequest.answer_game_pm": {
+      "receiver": "ChatJoinRequest",
+      "positional": [
+        "game_short_name",
+        "business_connection_id",
+        "message_thread_id",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "message_effect_id",
+        "reply_parameters",
+        "reply_markup",
+        "allow_sending_without_reply",
+        "reply_to_message_id"
+      ]
+    },
+    "ChatJoinRequest.answer_invoice": {
+      "receiver": "ChatJoinRequest",
+      "positional": [
+        "title",
+        "description",
+        "payload",
+        "currency",
+        "prices",
+        "message_thread_id",
+        "direct_messages_topic_id",
+        "provider_token",
+        "max_tip_amount",
+        "suggested_tip_amounts",
+        "start_parameter",
+        "provider_data",
+        "photo_url",
+        "photo_size",
+        "photo_width",
+        "photo_height",
+        "need_name",
+        "need_phone_number",
+        "need_email",
+        "need_shipping_address",
+        "send_phone_number_to_provider",
+        "send_email_to_provider",
+        "is_flexible",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "message_effect_id",
+        "suggested_post_parameters",
+        "reply_parameters",
+        "reply_markup",
+        "allow_sending_without_reply",
+        "reply_to_message_id"
+      ]
+    },
+    "ChatJoinRequest.answer_invoice_pm": {
+      "receiver": "ChatJoinRequest",
+      "positional": [
+        "title",
+        "description",
+        "payload",
+        "currency",
+        "prices",
+        "message_thread_id",
+        "direct_messages_topic_id",
+        "provider_token",
+        "max_tip_amount",
+        "suggested_tip_amounts",
+        "start_parameter",
+        "provider_data",
+        "photo_url",
+        "photo_size",
+        "photo_width",
+        "photo_height",
+        "need_name",
+        "need_phone_number",
+        "need_email",
+        "need_shipping_address",
+        "send_phone_number_to_provider",
+        "send_email_to_provider",
+        "is_flexible",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "message_effect_id",
+        "suggested_post_parameters",
+        "reply_parameters",
+        "reply_markup",
+        "allow_sending_without_reply",
+        "reply_to_message_id"
+      ]
+    },
+    "ChatJoinRequest.answer_location": {
+      "receiver": "ChatJoinRequest",
+      "positional": [
+        "latitude",
+        "longitude",
+        "business_connection_id",
+        "message_thread_id",
+        "direct_messages_topic_id",
+        "horizontal_accuracy",
+        "live_period",
+        "heading",
+        "proximity_alert_radius",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "message_effect_id",
+        "suggested_post_parameters",
+        "reply_parameters",
+        "reply_markup",
+        "ephemeral_message_parameters",
+        "receiver_user_id",
+        "callback_query_id",
+        "allow_sending_without_reply",
+        "reply_to_message_id"
+      ]
+    },
+    "ChatJoinRequest.answer_location_pm": {
+      "receiver": "ChatJoinRequest",
+      "positional": [
+        "latitude",
+        "longitude",
+        "business_connection_id",
+        "message_thread_id",
+        "direct_messages_topic_id",
+        "horizontal_accuracy",
+        "live_period",
+        "heading",
+        "proximity_alert_radius",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "message_effect_id",
+        "suggested_post_parameters",
+        "reply_parameters",
+        "reply_markup",
+        "ephemeral_message_parameters",
+        "receiver_user_id",
+        "callback_query_id",
+        "allow_sending_without_reply",
+        "reply_to_message_id"
+      ]
+    },
+    "ChatJoinRequest.answer_media_group": {
+      "receiver": "ChatJoinRequest",
+      "positional": [
+        "media",
+        "business_connection_id",
+        "message_thread_id",
+        "direct_messages_topic_id",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "message_effect_id",
+        "reply_parameters",
+        "allow_sending_without_reply",
+        "reply_to_message_id"
+      ]
+    },
+    "ChatJoinRequest.answer_media_group_pm": {
+      "receiver": "ChatJoinRequest",
+      "positional": [
+        "media",
+        "business_connection_id",
+        "message_thread_id",
+        "direct_messages_topic_id",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "message_effect_id",
+        "reply_parameters",
+        "allow_sending_without_reply",
+        "reply_to_message_id"
+      ]
+    },
+    "ChatJoinRequest.answer_photo": {
+      "receiver": "ChatJoinRequest",
+      "positional": [
+        "photo",
+        "business_connection_id",
+        "message_thread_id",
+        "direct_messages_topic_id",
+        "caption",
+        "parse_mode",
+        "caption_entities",
+        "show_caption_above_media",
+        "has_spoiler",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "message_effect_id",
+        "suggested_post_parameters",
+        "reply_parameters",
+        "reply_markup",
+        "ephemeral_message_parameters",
+        "receiver_user_id",
+        "callback_query_id",
+        "allow_sending_without_reply",
+        "reply_to_message_id"
+      ]
+    },
+    "ChatJoinRequest.answer_photo_pm": {
+      "receiver": "ChatJoinRequest",
+      "positional": [
+        "photo",
+        "business_connection_id",
+        "message_thread_id",
+        "direct_messages_topic_id",
+        "caption",
+        "parse_mode",
+        "caption_entities",
+        "show_caption_above_media",
+        "has_spoiler",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "message_effect_id",
+        "suggested_post_parameters",
+        "reply_parameters",
+        "reply_markup",
+        "ephemeral_message_parameters",
+        "receiver_user_id",
+        "callback_query_id",
+        "allow_sending_without_reply",
+        "reply_to_message_id"
+      ]
+    },
+    "ChatJoinRequest.answer_pm": {
+      "receiver": "ChatJoinRequest",
+      "positional": [
+        "text",
+        "business_connection_id",
+        "message_thread_id",
+        "direct_messages_topic_id",
+        "parse_mode",
+        "entities",
+        "link_preview_options",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "message_effect_id",
+        "suggested_post_parameters",
+        "reply_parameters",
+        "reply_markup",
+        "ephemeral_message_parameters",
+        "receiver_user_id",
+        "callback_query_id",
+        "allow_sending_without_reply",
+        "disable_web_page_preview",
+        "reply_to_message_id"
+      ]
+    },
+    "ChatJoinRequest.answer_poll": {
+      "receiver": "ChatJoinRequest",
+      "positional": [
+        "question",
+        "options",
+        "business_connection_id",
+        "message_thread_id",
+        "question_parse_mode",
+        "question_entities",
+        "is_anonymous",
+        "type",
+        "allows_multiple_answers",
+        "allows_revoting",
+        "shuffle_options",
+        "allow_adding_options",
+        "hide_results_until_closes",
+        "members_only",
+        "country_codes",
+        "correct_option_ids",
+        "explanation",
+        "explanation_parse_mode",
+        "explanation_entities",
+        "explanation_media",
+        "open_period",
+        "close_date",
+        "is_closed",
+        "description",
+        "description_parse_mode",
+        "description_entities",
+        "media",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "message_effect_id",
+        "reply_parameters",
+        "reply_markup",
+        "allow_sending_without_reply",
+        "correct_option_id",
+        "reply_to_message_id"
+      ]
+    },
+    "ChatJoinRequest.answer_poll_pm": {
+      "receiver": "ChatJoinRequest",
+      "positional": [
+        "question",
+        "options",
+        "business_connection_id",
+        "message_thread_id",
+        "question_parse_mode",
+        "question_entities",
+        "is_anonymous",
+        "type",
+        "allows_multiple_answers",
+        "allows_revoting",
+        "shuffle_options",
+        "allow_adding_options",
+        "hide_results_until_closes",
+        "members_only",
+        "country_codes",
+        "correct_option_ids",
+        "explanation",
+        "explanation_parse_mode",
+        "explanation_entities",
+        "explanation_media",
+        "open_period",
+        "close_date",
+        "is_closed",
+        "description",
+        "description_parse_mode",
+        "description_entities",
+        "media",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "message_effect_id",
+        "reply_parameters",
+        "reply_markup",
+        "allow_sending_without_reply",
+        "correct_option_id",
+        "reply_to_message_id"
+      ]
+    },
+    "ChatJoinRequest.answer_query": {
+      "receiver": "ChatJoinRequest",
+      "positional": [
+        "result"
+      ]
+    },
+    "ChatJoinRequest.answer_sticker": {
+      "receiver": "ChatJoinRequest",
+      "positional": [
+        "sticker",
+        "business_connection_id",
+        "message_thread_id",
+        "direct_messages_topic_id",
+        "emoji",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "message_effect_id",
+        "suggested_post_parameters",
+        "reply_parameters",
+        "reply_markup",
+        "ephemeral_message_parameters",
+        "receiver_user_id",
+        "callback_query_id",
+        "allow_sending_without_reply",
+        "reply_to_message_id"
+      ]
+    },
+    "ChatJoinRequest.answer_sticker_pm": {
+      "receiver": "ChatJoinRequest",
+      "positional": [
+        "sticker",
+        "business_connection_id",
+        "message_thread_id",
+        "direct_messages_topic_id",
+        "emoji",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "message_effect_id",
+        "suggested_post_parameters",
+        "reply_parameters",
+        "reply_markup",
+        "ephemeral_message_parameters",
+        "receiver_user_id",
+        "callback_query_id",
+        "allow_sending_without_reply",
+        "reply_to_message_id"
+      ]
+    },
+    "ChatJoinRequest.answer_venue": {
+      "receiver": "ChatJoinRequest",
+      "positional": [
+        "latitude",
+        "longitude",
+        "title",
+        "address",
+        "business_connection_id",
+        "message_thread_id",
+        "direct_messages_topic_id",
+        "foursquare_id",
+        "foursquare_type",
+        "google_place_id",
+        "google_place_type",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "message_effect_id",
+        "suggested_post_parameters",
+        "reply_parameters",
+        "reply_markup",
+        "ephemeral_message_parameters",
+        "receiver_user_id",
+        "callback_query_id",
+        "allow_sending_without_reply",
+        "reply_to_message_id"
+      ]
+    },
+    "ChatJoinRequest.answer_venue_pm": {
+      "receiver": "ChatJoinRequest",
+      "positional": [
+        "latitude",
+        "longitude",
+        "title",
+        "address",
+        "business_connection_id",
+        "message_thread_id",
+        "direct_messages_topic_id",
+        "foursquare_id",
+        "foursquare_type",
+        "google_place_id",
+        "google_place_type",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "message_effect_id",
+        "suggested_post_parameters",
+        "reply_parameters",
+        "reply_markup",
+        "ephemeral_message_parameters",
+        "receiver_user_id",
+        "callback_query_id",
+        "allow_sending_without_reply",
+        "reply_to_message_id"
+      ]
+    },
+    "ChatJoinRequest.answer_video": {
+      "receiver": "ChatJoinRequest",
+      "positional": [
+        "video",
+        "business_connection_id",
+        "message_thread_id",
+        "direct_messages_topic_id",
+        "duration",
+        "width",
+        "height",
+        "thumbnail",
+        "cover",
+        "start_timestamp",
+        "caption",
+        "parse_mode",
+        "caption_entities",
+        "show_caption_above_media",
+        "has_spoiler",
+        "supports_streaming",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "message_effect_id",
+        "suggested_post_parameters",
+        "reply_parameters",
+        "reply_markup",
+        "ephemeral_message_parameters",
+        "receiver_user_id",
+        "callback_query_id",
+        "allow_sending_without_reply",
+        "reply_to_message_id"
+      ]
+    },
+    "ChatJoinRequest.answer_video_note": {
+      "receiver": "ChatJoinRequest",
+      "positional": [
+        "video_note",
+        "business_connection_id",
+        "message_thread_id",
+        "direct_messages_topic_id",
+        "duration",
+        "length",
+        "thumbnail",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "message_effect_id",
+        "suggested_post_parameters",
+        "reply_parameters",
+        "reply_markup",
+        "ephemeral_message_parameters",
+        "receiver_user_id",
+        "callback_query_id",
+        "allow_sending_without_reply",
+        "reply_to_message_id"
+      ]
+    },
+    "ChatJoinRequest.answer_video_note_pm": {
+      "receiver": "ChatJoinRequest",
+      "positional": [
+        "video_note",
+        "business_connection_id",
+        "message_thread_id",
+        "direct_messages_topic_id",
+        "duration",
+        "length",
+        "thumbnail",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "message_effect_id",
+        "suggested_post_parameters",
+        "reply_parameters",
+        "reply_markup",
+        "ephemeral_message_parameters",
+        "receiver_user_id",
+        "callback_query_id",
+        "allow_sending_without_reply",
+        "reply_to_message_id"
+      ]
+    },
+    "ChatJoinRequest.answer_video_pm": {
+      "receiver": "ChatJoinRequest",
+      "positional": [
+        "video",
+        "business_connection_id",
+        "message_thread_id",
+        "direct_messages_topic_id",
+        "duration",
+        "width",
+        "height",
+        "thumbnail",
+        "cover",
+        "start_timestamp",
+        "caption",
+        "parse_mode",
+        "caption_entities",
+        "show_caption_above_media",
+        "has_spoiler",
+        "supports_streaming",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "message_effect_id",
+        "suggested_post_parameters",
+        "reply_parameters",
+        "reply_markup",
+        "ephemeral_message_parameters",
+        "receiver_user_id",
+        "callback_query_id",
+        "allow_sending_without_reply",
+        "reply_to_message_id"
+      ]
+    },
+    "ChatJoinRequest.answer_voice": {
+      "receiver": "ChatJoinRequest",
+      "positional": [
+        "voice",
+        "business_connection_id",
+        "message_thread_id",
+        "direct_messages_topic_id",
+        "caption",
+        "parse_mode",
+        "caption_entities",
+        "duration",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "message_effect_id",
+        "suggested_post_parameters",
+        "reply_parameters",
+        "reply_markup",
+        "ephemeral_message_parameters",
+        "receiver_user_id",
+        "callback_query_id",
+        "allow_sending_without_reply",
+        "reply_to_message_id"
+      ]
+    },
+    "ChatJoinRequest.answer_voice_pm": {
+      "receiver": "ChatJoinRequest",
+      "positional": [
+        "voice",
+        "business_connection_id",
+        "message_thread_id",
+        "direct_messages_topic_id",
+        "caption",
+        "parse_mode",
+        "caption_entities",
+        "duration",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "message_effect_id",
+        "suggested_post_parameters",
+        "reply_parameters",
+        "reply_markup",
+        "ephemeral_message_parameters",
+        "receiver_user_id",
+        "callback_query_id",
+        "allow_sending_without_reply",
+        "reply_to_message_id"
+      ]
+    },
+    "ChatJoinRequest.approve": {
+      "receiver": "ChatJoinRequest",
+      "positional": []
+    },
+    "ChatJoinRequest.decline": {
+      "receiver": "ChatJoinRequest",
+      "positional": []
+    },
+    "ChatJoinRequest.send_webapp": {
+      "receiver": "ChatJoinRequest",
+      "positional": [
+        "web_app_url"
+      ]
+    },
+    "ChatMemberUpdated.answer": {
+      "receiver": "ChatMemberUpdated",
+      "positional": [
+        "text",
+        "business_connection_id",
+        "message_thread_id",
+        "direct_messages_topic_id",
+        "parse_mode",
+        "entities",
+        "link_preview_options",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "message_effect_id",
+        "suggested_post_parameters",
+        "reply_parameters",
+        "reply_markup",
+        "ephemeral_message_parameters",
+        "receiver_user_id",
+        "callback_query_id",
+        "allow_sending_without_reply",
+        "disable_web_page_preview",
+        "reply_to_message_id"
+      ]
+    },
+    "ChatMemberUpdated.answer_animation": {
+      "receiver": "ChatMemberUpdated",
+      "positional": [
+        "animation",
+        "business_connection_id",
+        "message_thread_id",
+        "direct_messages_topic_id",
+        "duration",
+        "width",
+        "height",
+        "thumbnail",
+        "caption",
+        "parse_mode",
+        "caption_entities",
+        "show_caption_above_media",
+        "has_spoiler",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "message_effect_id",
+        "suggested_post_parameters",
+        "reply_parameters",
+        "reply_markup",
+        "ephemeral_message_parameters",
+        "receiver_user_id",
+        "callback_query_id",
+        "allow_sending_without_reply",
+        "reply_to_message_id"
+      ]
+    },
+    "ChatMemberUpdated.answer_audio": {
+      "receiver": "ChatMemberUpdated",
+      "positional": [
+        "audio",
+        "business_connection_id",
+        "message_thread_id",
+        "direct_messages_topic_id",
+        "caption",
+        "parse_mode",
+        "caption_entities",
+        "duration",
+        "performer",
+        "title",
+        "thumbnail",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "message_effect_id",
+        "suggested_post_parameters",
+        "reply_parameters",
+        "reply_markup",
+        "ephemeral_message_parameters",
+        "receiver_user_id",
+        "callback_query_id",
+        "allow_sending_without_reply",
+        "reply_to_message_id"
+      ]
+    },
+    "ChatMemberUpdated.answer_contact": {
+      "receiver": "ChatMemberUpdated",
+      "positional": [
+        "phone_number",
+        "first_name",
+        "business_connection_id",
+        "message_thread_id",
+        "direct_messages_topic_id",
+        "last_name",
+        "vcard",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "message_effect_id",
+        "suggested_post_parameters",
+        "reply_parameters",
+        "reply_markup",
+        "ephemeral_message_parameters",
+        "receiver_user_id",
+        "callback_query_id",
+        "allow_sending_without_reply",
+        "reply_to_message_id"
+      ]
+    },
+    "ChatMemberUpdated.answer_dice": {
+      "receiver": "ChatMemberUpdated",
+      "positional": [
+        "business_connection_id",
+        "message_thread_id",
+        "direct_messages_topic_id",
+        "emoji",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "message_effect_id",
+        "suggested_post_parameters",
+        "reply_parameters",
+        "reply_markup",
+        "allow_sending_without_reply",
+        "reply_to_message_id"
+      ]
+    },
+    "ChatMemberUpdated.answer_document": {
+      "receiver": "ChatMemberUpdated",
+      "positional": [
+        "document",
+        "business_connection_id",
+        "message_thread_id",
+        "direct_messages_topic_id",
+        "thumbnail",
+        "caption",
+        "parse_mode",
+        "caption_entities",
+        "disable_content_type_detection",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "message_effect_id",
+        "suggested_post_parameters",
+        "reply_parameters",
+        "reply_markup",
+        "ephemeral_message_parameters",
+        "receiver_user_id",
+        "callback_query_id",
+        "allow_sending_without_reply",
+        "reply_to_message_id"
+      ]
+    },
+    "ChatMemberUpdated.answer_game": {
+      "receiver": "ChatMemberUpdated",
+      "positional": [
+        "game_short_name",
+        "business_connection_id",
+        "message_thread_id",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "message_effect_id",
+        "reply_parameters",
+        "reply_markup",
+        "allow_sending_without_reply",
+        "reply_to_message_id"
+      ]
+    },
+    "ChatMemberUpdated.answer_invoice": {
+      "receiver": "ChatMemberUpdated",
+      "positional": [
+        "title",
+        "description",
+        "payload",
+        "currency",
+        "prices",
+        "message_thread_id",
+        "direct_messages_topic_id",
+        "provider_token",
+        "max_tip_amount",
+        "suggested_tip_amounts",
+        "start_parameter",
+        "provider_data",
+        "photo_url",
+        "photo_size",
+        "photo_width",
+        "photo_height",
+        "need_name",
+        "need_phone_number",
+        "need_email",
+        "need_shipping_address",
+        "send_phone_number_to_provider",
+        "send_email_to_provider",
+        "is_flexible",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "message_effect_id",
+        "suggested_post_parameters",
+        "reply_parameters",
+        "reply_markup",
+        "allow_sending_without_reply",
+        "reply_to_message_id"
+      ]
+    },
+    "ChatMemberUpdated.answer_location": {
+      "receiver": "ChatMemberUpdated",
+      "positional": [
+        "latitude",
+        "longitude",
+        "business_connection_id",
+        "message_thread_id",
+        "direct_messages_topic_id",
+        "horizontal_accuracy",
+        "live_period",
+        "heading",
+        "proximity_alert_radius",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "message_effect_id",
+        "suggested_post_parameters",
+        "reply_parameters",
+        "reply_markup",
+        "ephemeral_message_parameters",
+        "receiver_user_id",
+        "callback_query_id",
+        "allow_sending_without_reply",
+        "reply_to_message_id"
+      ]
+    },
+    "ChatMemberUpdated.answer_media_group": {
+      "receiver": "ChatMemberUpdated",
+      "positional": [
+        "media",
+        "business_connection_id",
+        "message_thread_id",
+        "direct_messages_topic_id",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "message_effect_id",
+        "reply_parameters",
+        "allow_sending_without_reply",
+        "reply_to_message_id"
+      ]
+    },
+    "ChatMemberUpdated.answer_photo": {
+      "receiver": "ChatMemberUpdated",
+      "positional": [
+        "photo",
+        "business_connection_id",
+        "message_thread_id",
+        "direct_messages_topic_id",
+        "caption",
+        "parse_mode",
+        "caption_entities",
+        "show_caption_above_media",
+        "has_spoiler",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "message_effect_id",
+        "suggested_post_parameters",
+        "reply_parameters",
+        "reply_markup",
+        "ephemeral_message_parameters",
+        "receiver_user_id",
+        "callback_query_id",
+        "allow_sending_without_reply",
+        "reply_to_message_id"
+      ]
+    },
+    "ChatMemberUpdated.answer_poll": {
+      "receiver": "ChatMemberUpdated",
+      "positional": [
+        "question",
+        "options",
+        "business_connection_id",
+        "message_thread_id",
+        "question_parse_mode",
+        "question_entities",
+        "is_anonymous",
+        "type",
+        "allows_multiple_answers",
+        "allows_revoting",
+        "shuffle_options",
+        "allow_adding_options",
+        "hide_results_until_closes",
+        "members_only",
+        "country_codes",
+        "correct_option_ids",
+        "explanation",
+        "explanation_parse_mode",
+        "explanation_entities",
+        "explanation_media",
+        "open_period",
+        "close_date",
+        "is_closed",
+        "description",
+        "description_parse_mode",
+        "description_entities",
+        "media",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "message_effect_id",
+        "reply_parameters",
+        "reply_markup",
+        "allow_sending_without_reply",
+        "correct_option_id",
+        "reply_to_message_id"
+      ]
+    },
+    "ChatMemberUpdated.answer_sticker": {
+      "receiver": "ChatMemberUpdated",
+      "positional": [
+        "sticker",
+        "business_connection_id",
+        "message_thread_id",
+        "direct_messages_topic_id",
+        "emoji",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "message_effect_id",
+        "suggested_post_parameters",
+        "reply_parameters",
+        "reply_markup",
+        "ephemeral_message_parameters",
+        "receiver_user_id",
+        "callback_query_id",
+        "allow_sending_without_reply",
+        "reply_to_message_id"
+      ]
+    },
+    "ChatMemberUpdated.answer_venue": {
+      "receiver": "ChatMemberUpdated",
+      "positional": [
+        "latitude",
+        "longitude",
+        "title",
+        "address",
+        "business_connection_id",
+        "message_thread_id",
+        "direct_messages_topic_id",
+        "foursquare_id",
+        "foursquare_type",
+        "google_place_id",
+        "google_place_type",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "message_effect_id",
+        "suggested_post_parameters",
+        "reply_parameters",
+        "reply_markup",
+        "ephemeral_message_parameters",
+        "receiver_user_id",
+        "callback_query_id",
+        "allow_sending_without_reply",
+        "reply_to_message_id"
+      ]
+    },
+    "ChatMemberUpdated.answer_video": {
+      "receiver": "ChatMemberUpdated",
+      "positional": [
+        "video",
+        "business_connection_id",
+        "message_thread_id",
+        "direct_messages_topic_id",
+        "duration",
+        "width",
+        "height",
+        "thumbnail",
+        "cover",
+        "start_timestamp",
+        "caption",
+        "parse_mode",
+        "caption_entities",
+        "show_caption_above_media",
+        "has_spoiler",
+        "supports_streaming",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "message_effect_id",
+        "suggested_post_parameters",
+        "reply_parameters",
+        "reply_markup",
+        "ephemeral_message_parameters",
+        "receiver_user_id",
+        "callback_query_id",
+        "allow_sending_without_reply",
+        "reply_to_message_id"
+      ]
+    },
+    "ChatMemberUpdated.answer_video_note": {
+      "receiver": "ChatMemberUpdated",
+      "positional": [
+        "video_note",
+        "business_connection_id",
+        "message_thread_id",
+        "direct_messages_topic_id",
+        "duration",
+        "length",
+        "thumbnail",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "message_effect_id",
+        "suggested_post_parameters",
+        "reply_parameters",
+        "reply_markup",
+        "ephemeral_message_parameters",
+        "receiver_user_id",
+        "callback_query_id",
+        "allow_sending_without_reply",
+        "reply_to_message_id"
+      ]
+    },
+    "ChatMemberUpdated.answer_voice": {
+      "receiver": "ChatMemberUpdated",
+      "positional": [
+        "voice",
+        "business_connection_id",
+        "message_thread_id",
+        "direct_messages_topic_id",
+        "caption",
+        "parse_mode",
+        "caption_entities",
+        "duration",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "message_effect_id",
+        "suggested_post_parameters",
+        "reply_parameters",
+        "reply_markup",
+        "ephemeral_message_parameters",
+        "receiver_user_id",
+        "callback_query_id",
+        "allow_sending_without_reply",
+        "reply_to_message_id"
+      ]
+    },
+    "InaccessibleMessage.answer": {
+      "receiver": "InaccessibleMessage",
+      "positional": [
+        "text",
+        "business_connection_id",
+        "message_thread_id",
+        "direct_messages_topic_id",
+        "parse_mode",
+        "entities",
+        "link_preview_options",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "message_effect_id",
+        "suggested_post_parameters",
+        "reply_parameters",
+        "reply_markup",
+        "ephemeral_message_parameters",
+        "receiver_user_id",
+        "callback_query_id",
+        "allow_sending_without_reply",
+        "disable_web_page_preview",
+        "reply_to_message_id"
+      ]
+    },
+    "InaccessibleMessage.answer_animation": {
+      "receiver": "InaccessibleMessage",
+      "positional": [
+        "animation",
+        "business_connection_id",
+        "message_thread_id",
+        "direct_messages_topic_id",
+        "duration",
+        "width",
+        "height",
+        "thumbnail",
+        "caption",
+        "parse_mode",
+        "caption_entities",
+        "show_caption_above_media",
+        "has_spoiler",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "message_effect_id",
+        "suggested_post_parameters",
+        "reply_parameters",
+        "reply_markup",
+        "ephemeral_message_parameters",
+        "receiver_user_id",
+        "callback_query_id",
+        "allow_sending_without_reply",
+        "reply_to_message_id"
+      ]
+    },
+    "InaccessibleMessage.answer_audio": {
+      "receiver": "InaccessibleMessage",
+      "positional": [
+        "audio",
+        "business_connection_id",
+        "message_thread_id",
+        "direct_messages_topic_id",
+        "caption",
+        "parse_mode",
+        "caption_entities",
+        "duration",
+        "performer",
+        "title",
+        "thumbnail",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "message_effect_id",
+        "suggested_post_parameters",
+        "reply_parameters",
+        "reply_markup",
+        "ephemeral_message_parameters",
+        "receiver_user_id",
+        "callback_query_id",
+        "allow_sending_without_reply",
+        "reply_to_message_id"
+      ]
+    },
+    "InaccessibleMessage.answer_contact": {
+      "receiver": "InaccessibleMessage",
+      "positional": [
+        "phone_number",
+        "first_name",
+        "business_connection_id",
+        "message_thread_id",
+        "direct_messages_topic_id",
+        "last_name",
+        "vcard",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "message_effect_id",
+        "suggested_post_parameters",
+        "reply_parameters",
+        "reply_markup",
+        "ephemeral_message_parameters",
+        "receiver_user_id",
+        "callback_query_id",
+        "allow_sending_without_reply",
+        "reply_to_message_id"
+      ]
+    },
+    "InaccessibleMessage.answer_dice": {
+      "receiver": "InaccessibleMessage",
+      "positional": [
+        "business_connection_id",
+        "message_thread_id",
+        "direct_messages_topic_id",
+        "emoji",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "message_effect_id",
+        "suggested_post_parameters",
+        "reply_parameters",
+        "reply_markup",
+        "allow_sending_without_reply",
+        "reply_to_message_id"
+      ]
+    },
+    "InaccessibleMessage.answer_document": {
+      "receiver": "InaccessibleMessage",
+      "positional": [
+        "document",
+        "business_connection_id",
+        "message_thread_id",
+        "direct_messages_topic_id",
+        "thumbnail",
+        "caption",
+        "parse_mode",
+        "caption_entities",
+        "disable_content_type_detection",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "message_effect_id",
+        "suggested_post_parameters",
+        "reply_parameters",
+        "reply_markup",
+        "ephemeral_message_parameters",
+        "receiver_user_id",
+        "callback_query_id",
+        "allow_sending_without_reply",
+        "reply_to_message_id"
+      ]
+    },
+    "InaccessibleMessage.answer_game": {
+      "receiver": "InaccessibleMessage",
+      "positional": [
+        "game_short_name",
+        "business_connection_id",
+        "message_thread_id",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "message_effect_id",
+        "reply_parameters",
+        "reply_markup",
+        "allow_sending_without_reply",
+        "reply_to_message_id"
+      ]
+    },
+    "InaccessibleMessage.answer_invoice": {
+      "receiver": "InaccessibleMessage",
+      "positional": [
+        "title",
+        "description",
+        "payload",
+        "currency",
+        "prices",
+        "message_thread_id",
+        "direct_messages_topic_id",
+        "provider_token",
+        "max_tip_amount",
+        "suggested_tip_amounts",
+        "start_parameter",
+        "provider_data",
+        "photo_url",
+        "photo_size",
+        "photo_width",
+        "photo_height",
+        "need_name",
+        "need_phone_number",
+        "need_email",
+        "need_shipping_address",
+        "send_phone_number_to_provider",
+        "send_email_to_provider",
+        "is_flexible",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "message_effect_id",
+        "suggested_post_parameters",
+        "reply_parameters",
+        "reply_markup",
+        "allow_sending_without_reply",
+        "reply_to_message_id"
+      ]
+    },
+    "InaccessibleMessage.answer_location": {
+      "receiver": "InaccessibleMessage",
+      "positional": [
+        "latitude",
+        "longitude",
+        "business_connection_id",
+        "message_thread_id",
+        "direct_messages_topic_id",
+        "horizontal_accuracy",
+        "live_period",
+        "heading",
+        "proximity_alert_radius",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "message_effect_id",
+        "suggested_post_parameters",
+        "reply_parameters",
+        "reply_markup",
+        "ephemeral_message_parameters",
+        "receiver_user_id",
+        "callback_query_id",
+        "allow_sending_without_reply",
+        "reply_to_message_id"
+      ]
+    },
+    "InaccessibleMessage.answer_media_group": {
+      "receiver": "InaccessibleMessage",
+      "positional": [
+        "media",
+        "business_connection_id",
+        "message_thread_id",
+        "direct_messages_topic_id",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "message_effect_id",
+        "reply_parameters",
+        "allow_sending_without_reply",
+        "reply_to_message_id"
+      ]
+    },
+    "InaccessibleMessage.answer_paid_media": {
+      "receiver": "InaccessibleMessage",
+      "positional": [
+        "star_count",
+        "media",
+        "business_connection_id",
+        "message_thread_id",
+        "direct_messages_topic_id",
+        "payload",
+        "caption",
+        "parse_mode",
+        "caption_entities",
+        "show_caption_above_media",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "suggested_post_parameters",
+        "reply_parameters",
+        "reply_markup"
+      ]
+    },
+    "InaccessibleMessage.answer_photo": {
+      "receiver": "InaccessibleMessage",
+      "positional": [
+        "photo",
+        "business_connection_id",
+        "message_thread_id",
+        "direct_messages_topic_id",
+        "caption",
+        "parse_mode",
+        "caption_entities",
+        "show_caption_above_media",
+        "has_spoiler",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "message_effect_id",
+        "suggested_post_parameters",
+        "reply_parameters",
+        "reply_markup",
+        "ephemeral_message_parameters",
+        "receiver_user_id",
+        "callback_query_id",
+        "allow_sending_without_reply",
+        "reply_to_message_id"
+      ]
+    },
+    "InaccessibleMessage.answer_poll": {
+      "receiver": "InaccessibleMessage",
+      "positional": [
+        "question",
+        "options",
+        "business_connection_id",
+        "message_thread_id",
+        "question_parse_mode",
+        "question_entities",
+        "is_anonymous",
+        "type",
+        "allows_multiple_answers",
+        "allows_revoting",
+        "shuffle_options",
+        "allow_adding_options",
+        "hide_results_until_closes",
+        "members_only",
+        "country_codes",
+        "correct_option_ids",
+        "explanation",
+        "explanation_parse_mode",
+        "explanation_entities",
+        "explanation_media",
+        "open_period",
+        "close_date",
+        "is_closed",
+        "description",
+        "description_parse_mode",
+        "description_entities",
+        "media",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "message_effect_id",
+        "reply_parameters",
+        "reply_markup",
+        "allow_sending_without_reply",
+        "correct_option_id",
+        "reply_to_message_id"
+      ]
+    },
+    "InaccessibleMessage.answer_rich": {
+      "receiver": "InaccessibleMessage",
+      "positional": [
+        "rich_message",
+        "business_connection_id",
+        "message_thread_id",
+        "direct_messages_topic_id",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "message_effect_id",
+        "suggested_post_parameters",
+        "reply_parameters",
+        "reply_markup",
+        "ephemeral_message_parameters"
+      ]
+    },
+    "InaccessibleMessage.answer_sticker": {
+      "receiver": "InaccessibleMessage",
+      "positional": [
+        "sticker",
+        "business_connection_id",
+        "message_thread_id",
+        "direct_messages_topic_id",
+        "emoji",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "message_effect_id",
+        "suggested_post_parameters",
+        "reply_parameters",
+        "reply_markup",
+        "ephemeral_message_parameters",
+        "receiver_user_id",
+        "callback_query_id",
+        "allow_sending_without_reply",
+        "reply_to_message_id"
+      ]
+    },
+    "InaccessibleMessage.answer_venue": {
+      "receiver": "InaccessibleMessage",
+      "positional": [
+        "latitude",
+        "longitude",
+        "title",
+        "address",
+        "business_connection_id",
+        "message_thread_id",
+        "direct_messages_topic_id",
+        "foursquare_id",
+        "foursquare_type",
+        "google_place_id",
+        "google_place_type",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "message_effect_id",
+        "suggested_post_parameters",
+        "reply_parameters",
+        "reply_markup",
+        "ephemeral_message_parameters",
+        "receiver_user_id",
+        "callback_query_id",
+        "allow_sending_without_reply",
+        "reply_to_message_id"
+      ]
+    },
+    "InaccessibleMessage.answer_video": {
+      "receiver": "InaccessibleMessage",
+      "positional": [
+        "video",
+        "business_connection_id",
+        "message_thread_id",
+        "direct_messages_topic_id",
+        "duration",
+        "width",
+        "height",
+        "thumbnail",
+        "cover",
+        "start_timestamp",
+        "caption",
+        "parse_mode",
+        "caption_entities",
+        "show_caption_above_media",
+        "has_spoiler",
+        "supports_streaming",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "message_effect_id",
+        "suggested_post_parameters",
+        "reply_parameters",
+        "reply_markup",
+        "ephemeral_message_parameters",
+        "receiver_user_id",
+        "callback_query_id",
+        "allow_sending_without_reply",
+        "reply_to_message_id"
+      ]
+    },
+    "InaccessibleMessage.answer_video_note": {
+      "receiver": "InaccessibleMessage",
+      "positional": [
+        "video_note",
+        "business_connection_id",
+        "message_thread_id",
+        "direct_messages_topic_id",
+        "duration",
+        "length",
+        "thumbnail",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "message_effect_id",
+        "suggested_post_parameters",
+        "reply_parameters",
+        "reply_markup",
+        "ephemeral_message_parameters",
+        "receiver_user_id",
+        "callback_query_id",
+        "allow_sending_without_reply",
+        "reply_to_message_id"
+      ]
+    },
+    "InaccessibleMessage.answer_voice": {
+      "receiver": "InaccessibleMessage",
+      "positional": [
+        "voice",
+        "business_connection_id",
+        "message_thread_id",
+        "direct_messages_topic_id",
+        "caption",
+        "parse_mode",
+        "caption_entities",
+        "duration",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "message_effect_id",
+        "suggested_post_parameters",
+        "reply_parameters",
+        "reply_markup",
+        "ephemeral_message_parameters",
+        "receiver_user_id",
+        "callback_query_id",
+        "allow_sending_without_reply",
+        "reply_to_message_id"
+      ]
+    },
+    "InaccessibleMessage.reply": {
+      "receiver": "InaccessibleMessage",
+      "positional": [
+        "text",
+        "business_connection_id",
+        "message_thread_id",
+        "direct_messages_topic_id",
+        "parse_mode",
+        "entities",
+        "link_preview_options",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "message_effect_id",
+        "suggested_post_parameters",
+        "reply_markup",
+        "ephemeral_message_parameters",
+        "receiver_user_id",
+        "callback_query_id",
+        "allow_sending_without_reply",
+        "disable_web_page_preview"
+      ]
+    },
+    "InaccessibleMessage.reply_animation": {
+      "receiver": "InaccessibleMessage",
+      "positional": [
+        "animation",
+        "business_connection_id",
+        "message_thread_id",
+        "direct_messages_topic_id",
+        "duration",
+        "width",
+        "height",
+        "thumbnail",
+        "caption",
+        "parse_mode",
+        "caption_entities",
+        "show_caption_above_media",
+        "has_spoiler",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "message_effect_id",
+        "suggested_post_parameters",
+        "reply_markup",
+        "ephemeral_message_parameters",
+        "receiver_user_id",
+        "callback_query_id",
+        "allow_sending_without_reply"
+      ]
+    },
+    "InaccessibleMessage.reply_audio": {
+      "receiver": "InaccessibleMessage",
+      "positional": [
+        "audio",
+        "business_connection_id",
+        "message_thread_id",
+        "direct_messages_topic_id",
+        "caption",
+        "parse_mode",
+        "caption_entities",
+        "duration",
+        "performer",
+        "title",
+        "thumbnail",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "message_effect_id",
+        "suggested_post_parameters",
+        "reply_markup",
+        "ephemeral_message_parameters",
+        "receiver_user_id",
+        "callback_query_id",
+        "allow_sending_without_reply"
+      ]
+    },
+    "InaccessibleMessage.reply_contact": {
+      "receiver": "InaccessibleMessage",
+      "positional": [
+        "phone_number",
+        "first_name",
+        "business_connection_id",
+        "message_thread_id",
+        "direct_messages_topic_id",
+        "last_name",
+        "vcard",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "message_effect_id",
+        "suggested_post_parameters",
+        "reply_markup",
+        "ephemeral_message_parameters",
+        "receiver_user_id",
+        "callback_query_id",
+        "allow_sending_without_reply"
+      ]
+    },
+    "InaccessibleMessage.reply_dice": {
+      "receiver": "InaccessibleMessage",
+      "positional": [
+        "business_connection_id",
+        "message_thread_id",
+        "direct_messages_topic_id",
+        "emoji",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "message_effect_id",
+        "suggested_post_parameters",
+        "reply_markup",
+        "allow_sending_without_reply"
+      ]
+    },
+    "InaccessibleMessage.reply_document": {
+      "receiver": "InaccessibleMessage",
+      "positional": [
+        "document",
+        "business_connection_id",
+        "message_thread_id",
+        "direct_messages_topic_id",
+        "thumbnail",
+        "caption",
+        "parse_mode",
+        "caption_entities",
+        "disable_content_type_detection",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "message_effect_id",
+        "suggested_post_parameters",
+        "reply_markup",
+        "ephemeral_message_parameters",
+        "receiver_user_id",
+        "callback_query_id",
+        "allow_sending_without_reply"
+      ]
+    },
+    "InaccessibleMessage.reply_game": {
+      "receiver": "InaccessibleMessage",
+      "positional": [
+        "game_short_name",
+        "business_connection_id",
+        "message_thread_id",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "message_effect_id",
+        "reply_markup",
+        "allow_sending_without_reply"
+      ]
+    },
+    "InaccessibleMessage.reply_invoice": {
+      "receiver": "InaccessibleMessage",
+      "positional": [
+        "title",
+        "description",
+        "payload",
+        "currency",
+        "prices",
+        "message_thread_id",
+        "direct_messages_topic_id",
+        "provider_token",
+        "max_tip_amount",
+        "suggested_tip_amounts",
+        "start_parameter",
+        "provider_data",
+        "photo_url",
+        "photo_size",
+        "photo_width",
+        "photo_height",
+        "need_name",
+        "need_phone_number",
+        "need_email",
+        "need_shipping_address",
+        "send_phone_number_to_provider",
+        "send_email_to_provider",
+        "is_flexible",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "message_effect_id",
+        "suggested_post_parameters",
+        "reply_markup",
+        "allow_sending_without_reply"
+      ]
+    },
+    "InaccessibleMessage.reply_location": {
+      "receiver": "InaccessibleMessage",
+      "positional": [
+        "latitude",
+        "longitude",
+        "business_connection_id",
+        "message_thread_id",
+        "direct_messages_topic_id",
+        "horizontal_accuracy",
+        "live_period",
+        "heading",
+        "proximity_alert_radius",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "message_effect_id",
+        "suggested_post_parameters",
+        "reply_markup",
+        "ephemeral_message_parameters",
+        "receiver_user_id",
+        "callback_query_id",
+        "allow_sending_without_reply"
+      ]
+    },
+    "InaccessibleMessage.reply_media_group": {
+      "receiver": "InaccessibleMessage",
+      "positional": [
+        "media",
+        "business_connection_id",
+        "message_thread_id",
+        "direct_messages_topic_id",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "message_effect_id",
+        "allow_sending_without_reply"
+      ]
+    },
+    "InaccessibleMessage.reply_paid_media": {
+      "receiver": "InaccessibleMessage",
+      "positional": [
+        "star_count",
+        "media",
+        "business_connection_id",
+        "message_thread_id",
+        "direct_messages_topic_id",
+        "payload",
+        "caption",
+        "parse_mode",
+        "caption_entities",
+        "show_caption_above_media",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "suggested_post_parameters",
+        "reply_markup"
+      ]
+    },
+    "InaccessibleMessage.reply_photo": {
+      "receiver": "InaccessibleMessage",
+      "positional": [
+        "photo",
+        "business_connection_id",
+        "message_thread_id",
+        "direct_messages_topic_id",
+        "caption",
+        "parse_mode",
+        "caption_entities",
+        "show_caption_above_media",
+        "has_spoiler",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "message_effect_id",
+        "suggested_post_parameters",
+        "reply_markup",
+        "ephemeral_message_parameters",
+        "receiver_user_id",
+        "callback_query_id",
+        "allow_sending_without_reply"
+      ]
+    },
+    "InaccessibleMessage.reply_poll": {
+      "receiver": "InaccessibleMessage",
+      "positional": [
+        "question",
+        "options",
+        "business_connection_id",
+        "message_thread_id",
+        "question_parse_mode",
+        "question_entities",
+        "is_anonymous",
+        "type",
+        "allows_multiple_answers",
+        "allows_revoting",
+        "shuffle_options",
+        "allow_adding_options",
+        "hide_results_until_closes",
+        "members_only",
+        "country_codes",
+        "correct_option_ids",
+        "explanation",
+        "explanation_parse_mode",
+        "explanation_entities",
+        "explanation_media",
+        "open_period",
+        "close_date",
+        "is_closed",
+        "description",
+        "description_parse_mode",
+        "description_entities",
+        "media",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "message_effect_id",
+        "reply_markup",
+        "allow_sending_without_reply",
+        "correct_option_id"
+      ]
+    },
+    "InaccessibleMessage.reply_rich": {
+      "receiver": "InaccessibleMessage",
+      "positional": [
+        "rich_message",
+        "business_connection_id",
+        "message_thread_id",
+        "direct_messages_topic_id",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "message_effect_id",
+        "suggested_post_parameters",
+        "reply_markup",
+        "ephemeral_message_parameters"
+      ]
+    },
+    "InaccessibleMessage.reply_sticker": {
+      "receiver": "InaccessibleMessage",
+      "positional": [
+        "sticker",
+        "business_connection_id",
+        "message_thread_id",
+        "direct_messages_topic_id",
+        "emoji",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "message_effect_id",
+        "suggested_post_parameters",
+        "reply_markup",
+        "ephemeral_message_parameters",
+        "receiver_user_id",
+        "callback_query_id",
+        "allow_sending_without_reply"
+      ]
+    },
+    "InaccessibleMessage.reply_venue": {
+      "receiver": "InaccessibleMessage",
+      "positional": [
+        "latitude",
+        "longitude",
+        "title",
+        "address",
+        "business_connection_id",
+        "message_thread_id",
+        "direct_messages_topic_id",
+        "foursquare_id",
+        "foursquare_type",
+        "google_place_id",
+        "google_place_type",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "message_effect_id",
+        "suggested_post_parameters",
+        "reply_markup",
+        "ephemeral_message_parameters",
+        "receiver_user_id",
+        "callback_query_id",
+        "allow_sending_without_reply"
+      ]
+    },
+    "InaccessibleMessage.reply_video": {
+      "receiver": "InaccessibleMessage",
+      "positional": [
+        "video",
+        "business_connection_id",
+        "message_thread_id",
+        "direct_messages_topic_id",
+        "duration",
+        "width",
+        "height",
+        "thumbnail",
+        "cover",
+        "start_timestamp",
+        "caption",
+        "parse_mode",
+        "caption_entities",
+        "show_caption_above_media",
+        "has_spoiler",
+        "supports_streaming",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "message_effect_id",
+        "suggested_post_parameters",
+        "reply_markup",
+        "ephemeral_message_parameters",
+        "receiver_user_id",
+        "callback_query_id",
+        "allow_sending_without_reply"
+      ]
+    },
+    "InaccessibleMessage.reply_video_note": {
+      "receiver": "InaccessibleMessage",
+      "positional": [
+        "video_note",
+        "business_connection_id",
+        "message_thread_id",
+        "direct_messages_topic_id",
+        "duration",
+        "length",
+        "thumbnail",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "message_effect_id",
+        "suggested_post_parameters",
+        "reply_markup",
+        "ephemeral_message_parameters",
+        "receiver_user_id",
+        "callback_query_id",
+        "allow_sending_without_reply"
+      ]
+    },
+    "InaccessibleMessage.reply_voice": {
+      "receiver": "InaccessibleMessage",
+      "positional": [
+        "voice",
+        "business_connection_id",
+        "message_thread_id",
+        "direct_messages_topic_id",
+        "caption",
+        "parse_mode",
+        "caption_entities",
+        "duration",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "message_effect_id",
+        "suggested_post_parameters",
+        "reply_markup",
+        "ephemeral_message_parameters",
+        "receiver_user_id",
+        "callback_query_id",
+        "allow_sending_without_reply"
+      ]
+    },
+    "InlineQuery.answer": {
+      "receiver": "InlineQuery",
+      "positional": [
+        "results",
+        "cache_time",
+        "is_personal",
+        "next_offset",
+        "button",
+        "switch_pm_parameter",
+        "switch_pm_text"
+      ]
+    },
+    "Message.answer": {
+      "receiver": "Message",
+      "positional": [
+        "text",
+        "parse_mode",
+        "entities",
+        "link_preview_options",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "message_effect_id",
+        "suggested_post_parameters",
+        "reply_parameters",
+        "reply_markup",
+        "ephemeral_message_parameters",
+        "receiver_user_id",
+        "callback_query_id",
+        "allow_sending_without_reply",
+        "disable_web_page_preview",
+        "reply_to_message_id"
+      ]
+    },
+    "Message.answer_animation": {
+      "receiver": "Message",
+      "positional": [
+        "animation",
+        "duration",
+        "width",
+        "height",
+        "thumbnail",
+        "caption",
+        "parse_mode",
+        "caption_entities",
+        "show_caption_above_media",
+        "has_spoiler",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "message_effect_id",
+        "suggested_post_parameters",
+        "reply_parameters",
+        "reply_markup",
+        "ephemeral_message_parameters",
+        "receiver_user_id",
+        "callback_query_id",
+        "allow_sending_without_reply",
+        "reply_to_message_id"
+      ]
+    },
+    "Message.answer_audio": {
+      "receiver": "Message",
+      "positional": [
+        "audio",
+        "caption",
+        "parse_mode",
+        "caption_entities",
+        "duration",
+        "performer",
+        "title",
+        "thumbnail",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "message_effect_id",
+        "suggested_post_parameters",
+        "reply_parameters",
+        "reply_markup",
+        "ephemeral_message_parameters",
+        "receiver_user_id",
+        "callback_query_id",
+        "allow_sending_without_reply",
+        "reply_to_message_id"
+      ]
+    },
+    "Message.answer_contact": {
+      "receiver": "Message",
+      "positional": [
+        "phone_number",
+        "first_name",
+        "last_name",
+        "vcard",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "message_effect_id",
+        "suggested_post_parameters",
+        "reply_parameters",
+        "reply_markup",
+        "ephemeral_message_parameters",
+        "receiver_user_id",
+        "callback_query_id",
+        "allow_sending_without_reply",
+        "reply_to_message_id"
+      ]
+    },
+    "Message.answer_dice": {
+      "receiver": "Message",
+      "positional": [
+        "emoji",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "message_effect_id",
+        "suggested_post_parameters",
+        "reply_parameters",
+        "reply_markup",
+        "allow_sending_without_reply",
+        "reply_to_message_id"
+      ]
+    },
+    "Message.answer_document": {
+      "receiver": "Message",
+      "positional": [
+        "document",
+        "thumbnail",
+        "caption",
+        "parse_mode",
+        "caption_entities",
+        "disable_content_type_detection",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "message_effect_id",
+        "suggested_post_parameters",
+        "reply_parameters",
+        "reply_markup",
+        "ephemeral_message_parameters",
+        "receiver_user_id",
+        "callback_query_id",
+        "allow_sending_without_reply",
+        "reply_to_message_id"
+      ]
+    },
+    "Message.answer_game": {
+      "receiver": "Message",
+      "positional": [
+        "game_short_name",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "message_effect_id",
+        "reply_parameters",
+        "reply_markup",
+        "allow_sending_without_reply",
+        "reply_to_message_id"
+      ]
+    },
+    "Message.answer_guest_query": {
+      "receiver": "Message",
+      "positional": [
+        "result"
+      ]
+    },
+    "Message.answer_invoice": {
+      "receiver": "Message",
+      "positional": [
+        "title",
+        "description",
+        "payload",
+        "currency",
+        "prices",
+        "provider_token",
+        "max_tip_amount",
+        "suggested_tip_amounts",
+        "start_parameter",
+        "provider_data",
+        "photo_url",
+        "photo_size",
+        "photo_width",
+        "photo_height",
+        "need_name",
+        "need_phone_number",
+        "need_email",
+        "need_shipping_address",
+        "send_phone_number_to_provider",
+        "send_email_to_provider",
+        "is_flexible",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "message_effect_id",
+        "suggested_post_parameters",
+        "reply_parameters",
+        "reply_markup",
+        "allow_sending_without_reply",
+        "reply_to_message_id"
+      ]
+    },
+    "Message.answer_location": {
+      "receiver": "Message",
+      "positional": [
+        "latitude",
+        "longitude",
+        "horizontal_accuracy",
+        "live_period",
+        "heading",
+        "proximity_alert_radius",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "message_effect_id",
+        "suggested_post_parameters",
+        "reply_parameters",
+        "reply_markup",
+        "ephemeral_message_parameters",
+        "receiver_user_id",
+        "callback_query_id",
+        "allow_sending_without_reply",
+        "reply_to_message_id"
+      ]
+    },
+    "Message.answer_media_group": {
+      "receiver": "Message",
+      "positional": [
+        "media",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "message_effect_id",
+        "reply_parameters",
+        "allow_sending_without_reply",
+        "reply_to_message_id"
+      ]
+    },
+    "Message.answer_paid_media": {
+      "receiver": "Message",
+      "positional": [
+        "star_count",
+        "media",
+        "payload",
+        "caption",
+        "parse_mode",
+        "caption_entities",
+        "show_caption_above_media",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "suggested_post_parameters",
+        "reply_parameters",
+        "reply_markup"
+      ]
+    },
+    "Message.answer_photo": {
+      "receiver": "Message",
+      "positional": [
+        "photo",
+        "caption",
+        "parse_mode",
+        "caption_entities",
+        "show_caption_above_media",
+        "has_spoiler",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "message_effect_id",
+        "suggested_post_parameters",
+        "reply_parameters",
+        "reply_markup",
+        "ephemeral_message_parameters",
+        "receiver_user_id",
+        "callback_query_id",
+        "allow_sending_without_reply",
+        "reply_to_message_id"
+      ]
+    },
+    "Message.answer_poll": {
+      "receiver": "Message",
+      "positional": [
+        "question",
+        "options",
+        "question_parse_mode",
+        "question_entities",
+        "is_anonymous",
+        "type",
+        "allows_multiple_answers",
+        "allows_revoting",
+        "shuffle_options",
+        "allow_adding_options",
+        "hide_results_until_closes",
+        "members_only",
+        "country_codes",
+        "correct_option_ids",
+        "explanation",
+        "explanation_parse_mode",
+        "explanation_entities",
+        "explanation_media",
+        "open_period",
+        "close_date",
+        "is_closed",
+        "description",
+        "description_parse_mode",
+        "description_entities",
+        "media",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "message_effect_id",
+        "reply_parameters",
+        "reply_markup",
+        "allow_sending_without_reply",
+        "correct_option_id",
+        "reply_to_message_id"
+      ]
+    },
+    "Message.answer_rich": {
+      "receiver": "Message",
+      "positional": [
+        "rich_message",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "message_effect_id",
+        "suggested_post_parameters",
+        "reply_parameters",
+        "reply_markup",
+        "ephemeral_message_parameters"
+      ]
+    },
+    "Message.answer_sticker": {
+      "receiver": "Message",
+      "positional": [
+        "sticker",
+        "emoji",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "message_effect_id",
+        "suggested_post_parameters",
+        "reply_parameters",
+        "reply_markup",
+        "ephemeral_message_parameters",
+        "receiver_user_id",
+        "callback_query_id",
+        "allow_sending_without_reply",
+        "reply_to_message_id"
+      ]
+    },
+    "Message.answer_venue": {
+      "receiver": "Message",
+      "positional": [
+        "latitude",
+        "longitude",
+        "title",
+        "address",
+        "foursquare_id",
+        "foursquare_type",
+        "google_place_id",
+        "google_place_type",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "message_effect_id",
+        "suggested_post_parameters",
+        "reply_parameters",
+        "reply_markup",
+        "ephemeral_message_parameters",
+        "receiver_user_id",
+        "callback_query_id",
+        "allow_sending_without_reply",
+        "reply_to_message_id"
+      ]
+    },
+    "Message.answer_video": {
+      "receiver": "Message",
+      "positional": [
+        "video",
+        "duration",
+        "width",
+        "height",
+        "thumbnail",
+        "cover",
+        "start_timestamp",
+        "caption",
+        "parse_mode",
+        "caption_entities",
+        "show_caption_above_media",
+        "has_spoiler",
+        "supports_streaming",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "message_effect_id",
+        "suggested_post_parameters",
+        "reply_parameters",
+        "reply_markup",
+        "ephemeral_message_parameters",
+        "receiver_user_id",
+        "callback_query_id",
+        "allow_sending_without_reply",
+        "reply_to_message_id"
+      ]
+    },
+    "Message.answer_video_note": {
+      "receiver": "Message",
+      "positional": [
+        "video_note",
+        "duration",
+        "length",
+        "thumbnail",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "message_effect_id",
+        "suggested_post_parameters",
+        "reply_parameters",
+        "reply_markup",
+        "ephemeral_message_parameters",
+        "receiver_user_id",
+        "callback_query_id",
+        "allow_sending_without_reply",
+        "reply_to_message_id"
+      ]
+    },
+    "Message.answer_voice": {
+      "receiver": "Message",
+      "positional": [
+        "voice",
+        "caption",
+        "parse_mode",
+        "caption_entities",
+        "duration",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "message_effect_id",
+        "suggested_post_parameters",
+        "reply_parameters",
+        "reply_markup",
+        "ephemeral_message_parameters",
+        "receiver_user_id",
+        "callback_query_id",
+        "allow_sending_without_reply",
+        "reply_to_message_id"
+      ]
+    },
+    "Message.copy_to": {
+      "receiver": "Message",
+      "positional": [
+        "chat_id",
+        "message_thread_id",
+        "direct_messages_topic_id",
+        "video_start_timestamp",
+        "caption",
+        "parse_mode",
+        "caption_entities",
+        "show_caption_above_media",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "message_effect_id",
+        "suggested_post_parameters",
+        "reply_parameters",
+        "reply_markup",
+        "allow_sending_without_reply",
+        "reply_to_message_id"
+      ]
+    },
+    "Message.delete": {
+      "receiver": "Message",
+      "positional": []
+    },
+    "Message.delete_ephemeral": {
+      "receiver": "Message",
+      "positional": []
+    },
+    "Message.delete_reply_markup": {
+      "receiver": "Message",
+      "positional": [
+        "inline_message_id"
+      ]
+    },
+    "Message.edit_caption": {
+      "receiver": "Message",
+      "positional": [
+        "inline_message_id",
+        "caption",
+        "parse_mode",
+        "caption_entities",
+        "show_caption_above_media",
+        "reply_markup"
+      ]
+    },
+    "Message.edit_ephemeral_caption": {
+      "receiver": "Message",
+      "positional": [
+        "caption",
+        "parse_mode",
+        "caption_entities",
+        "reply_markup",
+        "show_caption_above_media"
+      ]
+    },
+    "Message.edit_ephemeral_media": {
+      "receiver": "Message",
+      "positional": [
+        "media",
+        "reply_markup"
+      ]
+    },
+    "Message.edit_ephemeral_reply_markup": {
+      "receiver": "Message",
+      "positional": [
+        "reply_markup"
+      ]
+    },
+    "Message.edit_ephemeral_text": {
+      "receiver": "Message",
+      "positional": [
+        "text",
+        "parse_mode",
+        "entities",
+        "link_preview_options",
+        "reply_markup",
+        "rich_message"
+      ]
+    },
+    "Message.edit_live_location": {
+      "receiver": "Message",
+      "positional": [
+        "latitude",
+        "longitude",
+        "inline_message_id",
+        "live_period",
+        "horizontal_accuracy",
+        "heading",
+        "proximity_alert_radius",
+        "reply_markup"
+      ]
+    },
+    "Message.edit_media": {
+      "receiver": "Message",
+      "positional": [
+        "media",
+        "inline_message_id",
+        "reply_markup"
+      ]
+    },
+    "Message.edit_reply_markup": {
+      "receiver": "Message",
+      "positional": [
+        "inline_message_id",
+        "reply_markup"
+      ]
+    },
+    "Message.edit_text": {
+      "receiver": "Message",
+      "positional": [
+        "text",
+        "inline_message_id",
+        "parse_mode",
+        "entities",
+        "link_preview_options",
+        "reply_markup",
+        "rich_message",
+        "disable_web_page_preview"
+      ]
+    },
+    "Message.forward": {
+      "receiver": "Message",
+      "positional": [
+        "chat_id",
+        "message_thread_id",
+        "direct_messages_topic_id",
+        "video_start_timestamp",
+        "disable_notification",
+        "protect_content",
+        "message_effect_id",
+        "suggested_post_parameters"
+      ]
+    },
+    "Message.pin": {
+      "receiver": "Message",
+      "positional": [
+        "disable_notification"
+      ]
+    },
+    "Message.react": {
+      "receiver": "Message",
+      "positional": [
+        "reaction",
+        "is_big"
+      ]
+    },
+    "Message.reply": {
+      "receiver": "Message",
+      "positional": [
+        "text",
+        "parse_mode",
+        "entities",
+        "link_preview_options",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "message_effect_id",
+        "suggested_post_parameters",
+        "reply_markup",
+        "callback_query_id",
+        "allow_sending_without_reply",
+        "disable_web_page_preview"
+      ]
+    },
+    "Message.reply_animation": {
+      "receiver": "Message",
+      "positional": [
+        "animation",
+        "duration",
+        "width",
+        "height",
+        "thumbnail",
+        "caption",
+        "parse_mode",
+        "caption_entities",
+        "show_caption_above_media",
+        "has_spoiler",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "message_effect_id",
+        "suggested_post_parameters",
+        "reply_markup",
+        "callback_query_id",
+        "allow_sending_without_reply"
+      ]
+    },
+    "Message.reply_audio": {
+      "receiver": "Message",
+      "positional": [
+        "audio",
+        "caption",
+        "parse_mode",
+        "caption_entities",
+        "duration",
+        "performer",
+        "title",
+        "thumbnail",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "message_effect_id",
+        "suggested_post_parameters",
+        "reply_markup",
+        "callback_query_id",
+        "allow_sending_without_reply"
+      ]
+    },
+    "Message.reply_contact": {
+      "receiver": "Message",
+      "positional": [
+        "phone_number",
+        "first_name",
+        "last_name",
+        "vcard",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "message_effect_id",
+        "suggested_post_parameters",
+        "reply_markup",
+        "callback_query_id",
+        "allow_sending_without_reply"
+      ]
+    },
+    "Message.reply_dice": {
+      "receiver": "Message",
+      "positional": [
+        "emoji",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "message_effect_id",
+        "suggested_post_parameters",
+        "reply_markup",
+        "allow_sending_without_reply"
+      ]
+    },
+    "Message.reply_document": {
+      "receiver": "Message",
+      "positional": [
+        "document",
+        "thumbnail",
+        "caption",
+        "parse_mode",
+        "caption_entities",
+        "disable_content_type_detection",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "message_effect_id",
+        "suggested_post_parameters",
+        "reply_markup",
+        "callback_query_id",
+        "allow_sending_without_reply"
+      ]
+    },
+    "Message.reply_game": {
+      "receiver": "Message",
+      "positional": [
+        "game_short_name",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "message_effect_id",
+        "reply_markup",
+        "allow_sending_without_reply"
+      ]
+    },
+    "Message.reply_invoice": {
+      "receiver": "Message",
+      "positional": [
+        "title",
+        "description",
+        "payload",
+        "currency",
+        "prices",
+        "provider_token",
+        "max_tip_amount",
+        "suggested_tip_amounts",
+        "start_parameter",
+        "provider_data",
+        "photo_url",
+        "photo_size",
+        "photo_width",
+        "photo_height",
+        "need_name",
+        "need_phone_number",
+        "need_email",
+        "need_shipping_address",
+        "send_phone_number_to_provider",
+        "send_email_to_provider",
+        "is_flexible",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "message_effect_id",
+        "suggested_post_parameters",
+        "reply_markup",
+        "allow_sending_without_reply"
+      ]
+    },
+    "Message.reply_location": {
+      "receiver": "Message",
+      "positional": [
+        "latitude",
+        "longitude",
+        "horizontal_accuracy",
+        "live_period",
+        "heading",
+        "proximity_alert_radius",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "message_effect_id",
+        "suggested_post_parameters",
+        "reply_markup",
+        "callback_query_id",
+        "allow_sending_without_reply"
+      ]
+    },
+    "Message.reply_media_group": {
+      "receiver": "Message",
+      "positional": [
+        "media",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "message_effect_id",
+        "allow_sending_without_reply"
+      ]
+    },
+    "Message.reply_paid_media": {
+      "receiver": "Message",
+      "positional": [
+        "star_count",
+        "media",
+        "payload",
+        "caption",
+        "parse_mode",
+        "caption_entities",
+        "show_caption_above_media",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "suggested_post_parameters",
+        "reply_markup"
+      ]
+    },
+    "Message.reply_photo": {
+      "receiver": "Message",
+      "positional": [
+        "photo",
+        "caption",
+        "parse_mode",
+        "caption_entities",
+        "show_caption_above_media",
+        "has_spoiler",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "message_effect_id",
+        "suggested_post_parameters",
+        "reply_markup",
+        "callback_query_id",
+        "allow_sending_without_reply"
+      ]
+    },
+    "Message.reply_poll": {
+      "receiver": "Message",
+      "positional": [
+        "question",
+        "options",
+        "question_parse_mode",
+        "question_entities",
+        "is_anonymous",
+        "type",
+        "allows_multiple_answers",
+        "allows_revoting",
+        "shuffle_options",
+        "allow_adding_options",
+        "hide_results_until_closes",
+        "members_only",
+        "country_codes",
+        "correct_option_ids",
+        "explanation",
+        "explanation_parse_mode",
+        "explanation_entities",
+        "explanation_media",
+        "open_period",
+        "close_date",
+        "is_closed",
+        "description",
+        "description_parse_mode",
+        "description_entities",
+        "media",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "message_effect_id",
+        "reply_markup",
+        "allow_sending_without_reply",
+        "correct_option_id"
+      ]
+    },
+    "Message.reply_rich": {
+      "receiver": "Message",
+      "positional": [
+        "rich_message",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "message_effect_id",
+        "suggested_post_parameters",
+        "reply_markup"
+      ]
+    },
+    "Message.reply_sticker": {
+      "receiver": "Message",
+      "positional": [
+        "sticker",
+        "emoji",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "message_effect_id",
+        "suggested_post_parameters",
+        "reply_markup",
+        "callback_query_id",
+        "allow_sending_without_reply"
+      ]
+    },
+    "Message.reply_venue": {
+      "receiver": "Message",
+      "positional": [
+        "latitude",
+        "longitude",
+        "title",
+        "address",
+        "foursquare_id",
+        "foursquare_type",
+        "google_place_id",
+        "google_place_type",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "message_effect_id",
+        "suggested_post_parameters",
+        "reply_markup",
+        "callback_query_id",
+        "allow_sending_without_reply"
+      ]
+    },
+    "Message.reply_video": {
+      "receiver": "Message",
+      "positional": [
+        "video",
+        "duration",
+        "width",
+        "height",
+        "thumbnail",
+        "cover",
+        "start_timestamp",
+        "caption",
+        "parse_mode",
+        "caption_entities",
+        "show_caption_above_media",
+        "has_spoiler",
+        "supports_streaming",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "message_effect_id",
+        "suggested_post_parameters",
+        "reply_markup",
+        "callback_query_id",
+        "allow_sending_without_reply"
+      ]
+    },
+    "Message.reply_video_note": {
+      "receiver": "Message",
+      "positional": [
+        "video_note",
+        "duration",
+        "length",
+        "thumbnail",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "message_effect_id",
+        "suggested_post_parameters",
+        "reply_markup",
+        "callback_query_id",
+        "allow_sending_without_reply"
+      ]
+    },
+    "Message.reply_voice": {
+      "receiver": "Message",
+      "positional": [
+        "voice",
+        "caption",
+        "parse_mode",
+        "caption_entities",
+        "duration",
+        "disable_notification",
+        "protect_content",
+        "allow_paid_broadcast",
+        "message_effect_id",
+        "suggested_post_parameters",
+        "reply_markup",
+        "callback_query_id",
+        "allow_sending_without_reply"
+      ]
+    },
+    "Message.stop_live_location": {
+      "receiver": "Message",
+      "positional": [
+        "inline_message_id",
+        "reply_markup"
+      ]
+    },
+    "Message.unpin": {
+      "receiver": "Message",
+      "positional": []
+    },
+    "PreCheckoutQuery.answer": {
+      "receiver": "PreCheckoutQuery",
+      "positional": [
+        "ok",
+        "error_message"
+      ]
+    },
+    "SharedWidgetQuery.answer": {
+      "receiver": "SharedWidgetQuery",
+      "positional": [
+        "data"
+      ]
+    },
+    "ShippingQuery.answer": {
+      "receiver": "ShippingQuery",
+      "positional": [
+        "ok",
+        "shipping_options",
+        "error_message"
+      ]
+    },
+    "Sticker.delete_from_set": {
+      "receiver": "Sticker",
+      "positional": []
+    },
+    "Sticker.set_position_in_set": {
+      "receiver": "Sticker",
+      "positional": [
+        "position"
+      ]
+    },
+    "User.get_profile_audios": {
+      "receiver": "User",
+      "positional": [
+        "offset",
+        "limit"
+      ]
+    },
+    "User.get_profile_photos": {
+      "receiver": "User",
+      "positional": [
+        "offset",
+        "limit"
+      ]
+    },
+    "WidgetQuery.answer": {
+      "receiver": "WidgetQuery",
+      "positional": [
+        "data"
+      ]
+    }
+  },
+  "collection_fields": {
+    "BackgroundFillFreeformGradient": [
+      "colors"
+    ],
+    "BotAccessSettings": [
+      "added_users"
+    ],
+    "BotFullInfo": [
+      "active_usernames"
+    ],
+    "BusinessMessagesDeleted": [
+      "message_ids"
+    ],
+    "BusinessOpeningHours": [
+      "opening_hours"
+    ],
+    "Chat": [
+      "active_usernames",
+      "available_reactions"
+    ],
+    "ChatFullInfo": [
+      "active_usernames",
+      "available_reactions"
+    ],
+    "ChatShareThemeBackdrops": [
+      "backdrops"
+    ],
+    "ChatShareThemeEmoji": [
+      "emojis"
+    ],
+    "ChatShared": [
+      "photo"
+    ],
+    "Checklist": [
+      "tasks",
+      "title_entities"
+    ],
+    "ChecklistTask": [
+      "text_entities"
+    ],
+    "ChecklistTasksAdded": [
+      "tasks"
+    ],
+    "ChecklistTasksDone": [
+      "marked_as_done_task_ids",
+      "marked_as_not_done_task_ids"
+    ],
+    "EncryptedPassportElement": [
+      "files",
+      "translation"
+    ],
+    "ExternalReplyInfo": [
+      "photo"
+    ],
+    "Game": [
+      "photo",
+      "text_entities"
+    ],
+    "GiftInfo": [
+      "entities"
+    ],
+    "Gifts": [
+      "gifts"
+    ],
+    "Giveaway": [
+      "chats",
+      "country_codes"
+    ],
+    "GiveawayWinners": [
+      "winners"
+    ],
+    "InlineKeyboardMarkup": [
+      "inline_keyboard"
+    ],
+    "InlineQueryResultAudio": [
+      "caption_entities"
+    ],
+    "InlineQueryResultCachedAudio": [
+      "caption_entities"
+    ],
+    "InlineQueryResultCachedDocument": [
+      "caption_entities"
+    ],
+    "InlineQueryResultCachedGif": [
+      "caption_entities"
+    ],
+    "InlineQueryResultCachedMpeg4Gif": [
+      "caption_entities"
+    ],
+    "InlineQueryResultCachedPhoto": [
+      "caption_entities"
+    ],
+    "InlineQueryResultCachedVideo": [
+      "caption_entities"
+    ],
+    "InlineQueryResultCachedVoice": [
+      "caption_entities"
+    ],
+    "InlineQueryResultDocument": [
+      "caption_entities"
+    ],
+    "InlineQueryResultGif": [
+      "caption_entities"
+    ],
+    "InlineQueryResultMpeg4Gif": [
+      "caption_entities"
+    ],
+    "InlineQueryResultPhoto": [
+      "caption_entities"
+    ],
+    "InlineQueryResultVideo": [
+      "caption_entities"
+    ],
+    "InlineQueryResultVoice": [
+      "caption_entities"
+    ],
+    "InputChecklist": [
+      "tasks",
+      "title_entities"
+    ],
+    "InputChecklistTask": [
+      "text_entities"
+    ],
+    "InputInvoiceMessageContent": [
+      "prices",
+      "suggested_tip_amounts"
+    ],
+    "InputMediaAnimation": [
+      "caption_entities"
+    ],
+    "InputMediaAudio": [
+      "caption_entities"
+    ],
+    "InputMediaDocument": [
+      "caption_entities"
+    ],
+    "InputMediaLivePhoto": [
+      "caption_entities"
+    ],
+    "InputMediaPhoto": [
+      "caption_entities"
+    ],
+    "InputMediaVideo": [
+      "caption_entities"
+    ],
+    "InputMediaVoiceNote": [
+      "caption_entities"
+    ],
+    "InputPollOption": [
+      "text_entities"
+    ],
+    "InputRichBlockBlockQuotation": [
+      "blocks"
+    ],
+    "InputRichBlockButtons": [
+      "buttons"
+    ],
+    "InputRichBlockCollage": [
+      "blocks"
+    ],
+    "InputRichBlockDetails": [
+      "blocks"
+    ],
+    "InputRichBlockExpandableBlockQuotation": [
+      "blocks"
+    ],
+    "InputRichBlockList": [
+      "items"
+    ],
+    "InputRichBlockListItem": [
+      "blocks"
+    ],
+    "InputRichBlockSlideshow": [
+      "blocks"
+    ],
+    "InputRichBlockTable": [
+      "cells"
+    ],
+    "InputRichMessage": [
+      "blocks",
+      "media"
+    ],
+    "InputSharedWidgetMessageContent": [
+      "caption_entities"
+    ],
+    "InputSticker": [
+      "emoji_list",
+      "keywords"
+    ],
+    "InputTextMessageContent": [
+      "entities"
+    ],
+    "InputWidgetMessageContent": [
+      "caption_entities"
+    ],
+    "LivePhoto": [
+      "photo"
+    ],
+    "Message": [
+      "caption_entities",
+      "entities",
+      "new_chat_members",
+      "new_chat_photo",
+      "photo"
+    ],
+    "MessageReactionCountUpdated": [
+      "reactions"
+    ],
+    "MessageReactionUpdated": [
+      "new_reaction",
+      "old_reaction"
+    ],
+    "OwnedGiftRegular": [
+      "entities"
+    ],
+    "OwnedGifts": [
+      "gifts"
+    ],
+    "PaidMediaInfo": [
+      "paid_media"
+    ],
+    "PaidMediaPhoto": [
+      "photo"
+    ],
+    "PassportData": [
+      "data"
+    ],
+    "PassportElementErrorFiles": [
+      "file_hashes"
+    ],
+    "PassportElementErrorTranslationFiles": [
+      "file_hashes"
+    ],
+    "Poll": [
+      "correct_option_ids",
+      "country_codes",
+      "description_entities",
+      "explanation_entities",
+      "options",
+      "question_entities"
+    ],
+    "PollAnswer": [
+      "option_ids",
+      "option_persistent_ids"
+    ],
+    "PollMedia": [
+      "photo"
+    ],
+    "PollOption": [
+      "text_entities"
+    ],
+    "PollOptionAdded": [
+      "option_text_entities"
+    ],
+    "PollOptionDeleted": [
+      "option_text_entities"
+    ],
+    "ReplyKeyboardMarkup": [
+      "keyboard"
+    ],
+    "ReplyParameters": [
+      "quote_entities",
+      "quote_rich_texts"
+    ],
+    "RichBlockBlockQuotation": [
+      "blocks"
+    ],
+    "RichBlockButtons": [
+      "buttons"
+    ],
+    "RichBlockCollage": [
+      "blocks"
+    ],
+    "RichBlockDetails": [
+      "blocks"
+    ],
+    "RichBlockExpandableBlockQuotation": [
+      "blocks"
+    ],
+    "RichBlockList": [
+      "items"
+    ],
+    "RichBlockListItem": [
+      "blocks"
+    ],
+    "RichBlockPhoto": [
+      "photo"
+    ],
+    "RichBlockSlideshow": [
+      "blocks"
+    ],
+    "RichBlockTable": [
+      "cells"
+    ],
+    "RichMessage": [
+      "blocks"
+    ],
+    "SharedUser": [
+      "photo"
+    ],
+    "ShippingOption": [
+      "prices"
+    ],
+    "StarTransactions": [
+      "transactions"
+    ],
+    "StickerSet": [
+      "stickers"
+    ],
+    "TextQuote": [
+      "entities",
+      "rich_texts"
+    ],
+    "TonNft": [
+      "attributes"
+    ],
+    "TonWalletCard": [
+      "stickers"
+    ],
+    "TransactionPartnerUser": [
+      "paid_media"
+    ],
+    "UniqueGiftColors": [
+      "dark_theme_other_colors",
+      "light_theme_other_colors"
+    ],
+    "UniqueGiftInfo": [
+      "entities"
+    ],
+    "UserChatBoosts": [
+      "boosts"
+    ],
+    "UserProfileAudios": [
+      "audios"
+    ],
+    "UserProfilePhotos": [
+      "photos"
+    ],
+    "UsersShared": [
+      "user_ids",
+      "users"
+    ],
+    "Video": [
+      "cover",
+      "qualities"
+    ],
+    "VideoChatParticipantsInvited": [
+      "users"
+    ],
+    "WebhookInfo": [
+      "allowed_updates"
+    ]
+  },
+  "observers": {
+    "message": "Message",
+    "edited_message": "Message",
+    "channel_post": "Message",
+    "edited_channel_post": "Message",
+    "inline_query": "InlineQuery",
+    "chosen_inline_result": "ChosenInlineResult",
+    "callback_query": "CallbackQuery",
+    "shipping_query": "ShippingQuery",
+    "pre_checkout_query": "PreCheckoutQuery",
+    "poll": "Poll",
+    "poll_answer": "PollAnswer",
+    "my_chat_member": "ChatMemberUpdated",
+    "chat_member": "ChatMemberUpdated",
+    "chat_join_request": "ChatJoinRequest",
+    "message_reaction": "MessageReactionUpdated",
+    "message_reaction_count": "MessageReactionCountUpdated",
+    "chat_boost": "ChatBoostUpdated",
+    "removed_chat_boost": "ChatBoostRemoved",
+    "deleted_business_messages": "BusinessMessagesDeleted",
+    "business_connection": "BusinessConnection",
+    "edited_business_message": "Message",
+    "business_message": "Message",
+    "purchased_paid_media": "PaidMediaPurchased",
+    "managed_bot": "ManagedBotUpdated",
+    "guest_message": "Message",
+    "subscription": "BotSubscriptionUpdated",
+    "stopped_message_generation": "MessageGenerationStopped",
+    "widget_query": "WidgetQuery",
+    "shared_widget_query": "SharedWidgetQuery",
+    "error": "ErrorEvent"
+  }
+}

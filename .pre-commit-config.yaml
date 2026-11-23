@@ -17,6 +17,6 @@ repos:
     rev: 'v0.15.12'
     hooks:
       - id: ruff-check
-        files: &files '^(aiogram|tests|examples|benchmarks)'
+        files: &files '^(aiogram|tests|examples|benchmarks|differential)'
       - id: ruff-format
         files: *files
