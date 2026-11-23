@@ -2,7 +2,7 @@
 
 | Field | Value |
 |---|---|
-| Status | `todo` |
+| Status | `done` |
 | Story | C — Reproducible butcher |
 | Target branch | `dev-4.x` |
 | Depends on | [C-06](C-06-overlay-schema-loader.md) |

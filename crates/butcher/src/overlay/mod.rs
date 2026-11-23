@@ -12,7 +12,7 @@ use serde::de::DeserializeOwned;
 
 use crate::Error;
 
-mod check;
+pub(crate) mod check;
 pub mod schema;
 
 use schema::{

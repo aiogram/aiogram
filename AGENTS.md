@@ -321,6 +321,10 @@ These patterns repeatedly appeared in maintainer feedback and should be treated 
   references into the IR. Completeness rules (every method has `idempotent`, ...) are `butcher check`'s (C-23), not the
   loader's. Avoid `#[serde(untagged)]` in schemas loaded through `serde_path_to_error`: it replaces the inner
   "unknown field" error with "did not match any variant" (the fill value has a hand-written `Deserialize` instead).
+- Fill-DSL (C-07, `src/dsl.rs`): `dsl::apply` resolves shortcut fills, guards and `events.toml` into `Ir.shortcuts` /
+  `Ir.events`; grammar and rules in `butcher/overlay/README.md`. Paths use Python names (`names.toml`), steps store
+  wire names. `tests/fixtures/dsl/` is the 3.x corpus (all 189 `aliases.yml` shortcuts); 3.x shared `ignore` anchors
+  list params some target methods lack, which C-06's check rejects, so a translator drops them.
 - `cargo test -p butcher <name>` filters by test name, not by file: `cargo test -p butcher overlay` skips most of
   `tests/overlay.rs`. Run a test file with `--test <file>`.
 - A new workspace crate stays out of the sdist and the wheel: maturin rewrites the sdist's `members` to

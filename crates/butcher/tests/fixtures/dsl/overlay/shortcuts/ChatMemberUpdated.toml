@@ -1,0 +1,86 @@
+# ChatMemberUpdated: every 3.x shortcut of .butcher/types/ChatMemberUpdated/aliases.yml, in the fill-DSL
+
+[answer]
+method = "sendMessage"
+[answer.fill]
+chat_id = "self.chat.id"
+
+[answer_animation]
+method = "sendAnimation"
+[answer_animation.fill]
+chat_id = "self.chat.id"
+
+[answer_audio]
+method = "sendAudio"
+[answer_audio.fill]
+chat_id = "self.chat.id"
+
+[answer_contact]
+method = "sendContact"
+[answer_contact.fill]
+chat_id = "self.chat.id"
+
+[answer_document]
+method = "sendDocument"
+[answer_document.fill]
+chat_id = "self.chat.id"
+
+[answer_game]
+method = "sendGame"
+[answer_game.fill]
+chat_id = "self.chat.id"
+
+[answer_invoice]
+method = "sendInvoice"
+[answer_invoice.fill]
+chat_id = "self.chat.id"
+
+[answer_location]
+method = "sendLocation"
+[answer_location.fill]
+chat_id = "self.chat.id"
+
+[answer_media_group]
+method = "sendMediaGroup"
+[answer_media_group.fill]
+chat_id = "self.chat.id"
+
+[answer_photo]
+method = "sendPhoto"
+[answer_photo.fill]
+chat_id = "self.chat.id"
+
+[answer_poll]
+method = "sendPoll"
+[answer_poll.fill]
+chat_id = "self.chat.id"
+
+[answer_dice]
+method = "sendDice"
+[answer_dice.fill]
+chat_id = "self.chat.id"
+
+[answer_sticker]
+method = "sendSticker"
+[answer_sticker.fill]
+chat_id = "self.chat.id"
+
+[answer_venue]
+method = "sendVenue"
+[answer_venue.fill]
+chat_id = "self.chat.id"
+
+[answer_video]
+method = "sendVideo"
+[answer_video.fill]
+chat_id = "self.chat.id"
+
+[answer_video_note]
+method = "sendVideoNote"
+[answer_video_note.fill]
+chat_id = "self.chat.id"
+
+[answer_voice]
+method = "sendVoice"
+[answer_voice.fill]
+chat_id = "self.chat.id"
