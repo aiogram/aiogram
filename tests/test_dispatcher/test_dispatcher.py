@@ -56,7 +56,7 @@ from aiogram.types import (
     WidgetQueryTypeData,
 )
 from aiogram.types.error_event import ErrorEvent
-from tests.mocked_bot import MockedBot
+from tests.mocked_bot import MockedBot, bot_full_info
 
 
 async def simple_message_handler(message: Message):
@@ -1420,7 +1420,7 @@ class TestDispatcher:
             await dispatcher.start_polling(bot, bot=bot)
 
         bot.add_result_for(
-            GetMe, ok=True, result=User(id=42, is_bot=True, first_name="The bot", username="tbot")
+            GetMe, ok=True, result=bot_full_info(first_name="The bot", username="tbot")
         )
 
         async def _mock_updates(*_):
@@ -1485,7 +1485,7 @@ class TestDispatcher:
     async def test_stop_polling_by_method(self, bot: MockedBot):
         dispatcher = Dispatcher()
         bot.add_result_for(
-            GetMe, ok=True, result=User(id=42, is_bot=True, first_name="The bot", username="tbot")
+            GetMe, ok=True, result=bot_full_info(first_name="The bot", username="tbot")
         )
         running = Event()
 

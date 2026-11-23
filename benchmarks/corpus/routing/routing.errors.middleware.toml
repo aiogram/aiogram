@@ -1,0 +1,43 @@
+# D48: r11's outer middleware raises; errors handlers as in routing.errors.handler.
+schema = 1
+bench = false  # an oracle scenario (A-10), not a bench topology
+
+[variants]
+fsm = ["on", "off"]
+
+[[router]]
+name = "dp"
+
+[[router.error_handler]]
+id = "dp.e0"
+action = { kind = "unhandled" }
+
+[[router]]
+name = "r1"
+parent = "dp"
+
+[[router.error_handler]]
+id = "r1.e0"
+action = { kind = "unhandled" }
+
+[[router]]
+name = "r11"
+parent = "r1"
+outer_middlewares = [{ id = "r11.m0", event = "message", kind = "raise", error = "middleware failed" }]
+
+[[router.handler]]
+id = "h1"
+event = "message"
+filters = []
+
+[[router]]
+name = "r2"
+parent = "dp"
+
+[[router.error_handler]]
+id = "r2.e0"
+
+[[event]]
+name = "first"
+update = "update.text.small"
+expect = "r2.e0"

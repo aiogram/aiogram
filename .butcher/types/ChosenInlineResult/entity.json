@@ -7,9 +7,9 @@
   "object": {
     "anchor": "choseninlineresult",
     "name": "ChosenInlineResult",
-    "description": "Represents a result of an inline query that was chosen by the user and sent to their chat partner.\nNote: It is necessary to enable inline feedback via @BotFather in order to receive these objects in updates.",
-    "html_description": "<p>Represents a <a href=\"#inlinequeryresult\">result</a> of an inline query that was chosen by the user and sent to their chat partner.</p><p><strong>Note:</strong> It is necessary to enable <a href=\"/bots/inline#collecting-feedback\">inline feedback</a> via <a href=\"https://t.me/botfather\">@BotFather</a> in order to receive these objects in updates.</p>",
-    "rst_description": "Represents a `result <https://core.telegram.org/bots/api#inlinequeryresult>`_ of an inline query that was chosen by the user and sent to their chat partner.\n**Note:** It is necessary to enable `inline feedback <https://core.telegram.org/bots/inline#collecting-feedback>`_ via `@BotFather <https://t.me/botfather>`_ in order to receive these objects in updates.",
+    "description": "Represents a result of an inline query that was chosen by the user and sent to their chat partner.\nNote: It is necessary to enable inline feedback via @BotFather or using the parameter inline_feedback_share_denominator of the method setMySettings in order to receive these objects in updates.",
+    "html_description": "<p>Represents a <a href=\"#inlinequeryresult\">result</a> of an inline query that was chosen by the user and sent to their chat partner.</p><p><strong>Note:</strong> It is necessary to enable <a href=\"/bots/inline#collecting-feedback\">inline feedback</a> via <a href=\"https://t.me/botfather\">@BotFather</a> or using the parameter <em>inline_feedback_share_denominator</em> of the method <a href=\"#setmysettings\">setMySettings</a> in order to receive these objects in updates.</p>",
+    "rst_description": "Represents a `result <https://core.telegram.org/bots/api#inlinequeryresult>`_ of an inline query that was chosen by the user and sent to their chat partner.\n**Note:** It is necessary to enable `inline feedback <https://core.telegram.org/bots/inline#collecting-feedback>`_ via `@BotFather <https://t.me/botfather>`_ or using the parameter *inline_feedback_share_denominator* of the method :class:`aiogram.methods.set_my_settings.SetMySettings` in order to receive these objects in updates.",
     "annotations": [
       {
         "type": "String",
@@ -37,9 +37,9 @@
       },
       {
         "type": "Location",
-        "description": "Sender location, only for bots that require user location",
-        "html_description": "<td><em>Optional</em>. Sender location, only for bots that require user location</td>",
-        "rst_description": "*Optional*. Sender location, only for bots that require user location\n",
+        "description": "Sender location, only for bots that enabled user location requests via @BotFather or using the parameter needs_inline_query_location of the method setMySettings",
+        "html_description": "<td><em>Optional</em>. Sender location, only for bots that enabled user location requests via <a href=\"https://t.me/botfather\">@BotFather</a> or using the parameter <em>needs_inline_query_location</em> of the method <a href=\"#setmysettings\">setMySettings</a></td>",
+        "rst_description": "*Optional*. Sender location, only for bots that enabled user location requests via `@BotFather <https://t.me/botfather>`_ or using the parameter *needs_inline_query_location* of the method :class:`aiogram.methods.set_my_settings.SetMySettings`\n",
         "name": "location",
         "required": false
       },

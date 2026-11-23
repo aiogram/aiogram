@@ -157,6 +157,7 @@ Available methods
     set_my_description
     set_my_name
     set_my_profile_photo
+    set_my_settings
     set_my_short_description
     set_user_emoji_status
     transfer_business_account_stars

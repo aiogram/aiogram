@@ -1,16 +1,13 @@
 import datetime
-import logging
 import re
 
 import pytest
 
 from aiogram import F
-from aiogram.client import bot as bot_module
 from aiogram.filters import Command, CommandObject
 from aiogram.filters.command import CommandStart
-from aiogram.methods import GetChat
-from aiogram.types import AcceptedGiftTypes, BotCommand, Chat, ChatFullInfo, Message, User
-from tests.mocked_bot import MockedBot
+from aiogram.types import BotCommand, Chat, Message, User
+from tests.mocked_bot import MockedBot, bot_full_info
 
 
 def command_message(text: str) -> Message:
@@ -19,25 +16,8 @@ def command_message(text: str) -> Message:
     )
 
 
-def add_bot_chat(bot: MockedBot, active_usernames: list[str]) -> None:
-    bot.add_result_for(
-        GetChat,
-        ok=True,
-        result=ChatFullInfo(
-            id=bot.id,
-            type="private",
-            accent_color_id=0,
-            max_reaction_count=0,
-            accepted_gift_types=AcceptedGiftTypes(
-                unlimited_gifts=False,
-                limited_gifts=False,
-                unique_gifts=False,
-                premium_subscription=False,
-                gifts_from_channels=False,
-            ),
-            active_usernames=active_usernames,
-        ),
-    )
+def set_usernames(bot: MockedBot, active_usernames: list[str] | None) -> None:
+    bot._me = bot_full_info(username="tbot", active_usernames=active_usernames)
 
 
 class TestCommandFilter:
@@ -214,46 +194,30 @@ class TestCommandMention:
         assert await Command("test")(command_message(text), bot)
         assert not bot.session.requests
 
-    async def test_secondary_username_is_fetched_once(self, bot: MockedBot):
-        add_bot_chat(bot, ["tbot", "tbot_ai"])
+    @pytest.mark.parametrize("text", ["/test@tbot_ai", "/test@TBot_AI", "/test@tbot"])
+    async def test_secondary_username(self, bot: MockedBot, text: str):
+        set_usernames(bot, ["tbot", "tbot_ai"])
 
-        assert await Command("test")(command_message("/test@TBot_AI"), bot)
-        assert isinstance(bot.get_request(), GetChat)
-        assert not bot.session.requests
-
-        assert await Command("test")(command_message("/test@tbot_ai"), bot)
+        assert await Command("test")(command_message(text), bot)
         assert not bot.session.requests
 
     @pytest.mark.parametrize("text", ["/test@mention", "/test@other_bot"])
     async def test_foreign_username_is_rejected(self, bot: MockedBot, text: str):
-        add_bot_chat(bot, ["tbot", "tbot_ai"])
+        set_usernames(bot, ["tbot", "tbot_ai"])
 
         assert not await Command("test")(command_message(text), bot)
-        assert isinstance(bot.get_request(), GetChat)
+        assert not bot.session.requests
 
-    async def test_get_chat_failure_rejects_mention_and_retries_later(
-        self, bot: MockedBot, caplog: pytest.LogCaptureFixture, monkeypatch: pytest.MonkeyPatch
-    ):
-        now = 1000.0
-        monkeypatch.setattr(bot_module, "monotonic", lambda: now)
-        command = Command("test")
-        bot.add_result_for(GetChat, ok=False, error_code=400, description="Bad Request")
+    async def test_server_without_active_usernames(self, bot: MockedBot):
+        set_usernames(bot, None)
 
-        with caplog.at_level(logging.WARNING, logger="aiogram.client"):
-            assert not await command(command_message("/test@tbot_ai"), bot)
-            assert isinstance(bot.get_request(), GetChat)
+        assert await Command("test")(command_message("/test@tbot"), bot)
+        assert not await Command("test")(command_message("/test@tbot_ai"), bot)
 
-            # Within the retry window: no request and no second warning.
-            assert not await command(command_message("/test@tbot_ai"), bot)
-            assert not bot.session.requests
-            # The getMe username still works without getChat.
-            assert await command(command_message("/test@tbot"), bot)
-        assert len(caplog.records) == 1
+    async def test_bot_without_username_accepts_any_mention(self, bot: MockedBot):
+        bot._me = bot_full_info()
 
-        now += bot_module.USERNAMES_RETRY_AFTER
-        add_bot_chat(bot, ["tbot", "tbot_ai"])
-        assert await command(command_message("/test@tbot_ai"), bot)
-        assert isinstance(bot.get_request(), GetChat)
+        assert await Command("test")(command_message("/test@anything"), bot)
 
 
 class TestCommandStart:
