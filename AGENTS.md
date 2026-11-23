@@ -149,6 +149,11 @@ These patterns repeatedly appeared in maintainer feedback and should be treated 
 - Pytest runs with `filterwarnings = ["error", ...]`: a new `warnings.warn(...)` in library code (e.g. a
   `DeprecationWarning`) fails every existing test that reaches it. Find those tests first, then either stop
   them from triggering it or assert it with `pytest.warns`.
+- Types and methods build their pydantic schema on first use (`defer_build`), not at `import aiogram`. Until
+  then `Model.model_fields[...].annotation` can be a `ForwardRef`: code that reflects over annotations calls
+  `Model.model_rebuild()` first (`aiogram/test/_schemas.py` does it for the toolkit). A test that needs unbuilt
+  types runs in a fresh subprocess, since the test session imports `aiogram.test` (see
+  `tests/test_api/test_types/test_deferred_build.py`).
 
 ## Benchmark corpus (`benchmarks/corpus/`)
 

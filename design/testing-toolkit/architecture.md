@@ -58,6 +58,7 @@ declared, raises `WorldLookupError` instead. The bot cannot catch that by mistak
 | Module | Role |
 |---|---|
 | `__init__.py` | Public exports. Does not import pytest. |
+| `_schemas.py` | Imported first by `__init__.py`: builds every type and method schema, because the reflection below reads `model_fields[...].annotation`, which stays a forward reference until a type is first built. |
 | `plugin.py` | The pytest plugin: the `bot_*` fixtures, the `bot_env_*` knobs, the post-test `assert_updates_handled` hook, and `pytest_assertrepr_compare` for world and call objects. |
 | `environment.py` | `BotTestEnvironment`: owns the `World`, `Bot`, `Dispatcher`, `CallLog`, `OverrideRegistry` and clock. Holds `feed`/`adopt`, `handle_call`, the waits (`wait_for`, `wait_for_message_in`), background-task tracking and draining (the loop task factory), and routing diagnostics (`RouteRecord`, scopes, `last_route`/`routes`/`all_routes`/`assert_handled_by`). |
 | `blueprint.py` | `Blueprint` and the `*Spec` declarations. Immutable descriptions that every test materializes into a fresh `World`. `default_blueprint()` is one user in a private chat. |
