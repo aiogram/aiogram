@@ -72,6 +72,17 @@ class CallableObject:
             return await wrapped()
         return await asyncio.to_thread(wrapped)
 
+    async def call_event(self, event: Any, data: dict[str, Any]) -> Any:
+        """
+        ``call(event, **data)`` without copying ``data`` first (the dispatch executor's path).
+
+        The callback still gets its own keyword arguments, so it cannot change ``data``.
+        """
+        kwargs = self._prepare_kwargs(data)
+        if self.awaitable:
+            return await self.callback(event, **kwargs)
+        return await asyncio.to_thread(partial(self.callback, event, **kwargs))
+
 
 @dataclass
 class FilterObject(CallableObject):
@@ -90,7 +101,12 @@ class FilterObject(CallableObject):
             self.awaitable = True
 
     async def call(self, *args: Any, **kwargs: Any) -> Any:
-        result = await super().call(*args, **kwargs)
+        return self._checked(await super().call(*args, **kwargs))
+
+    async def call_event(self, event: Any, data: dict[str, Any]) -> Any:
+        return self._checked(await super().call_event(event, data))
+
+    def _checked(self, result: Any) -> Any:
         if inspect.isawaitable(result):
             # An awaitable is truthy: never let it pass as a match. Nothing is awaited or
             # cancelled; only a coroutine is closed, so it leaves no "never awaited" warning

@@ -290,3 +290,7 @@ class TestHandlerObject:
         # No Recommendation warning any more; filterwarnings=error fails on any warning
         magic = A.test.is_(True)
         assert FilterObject(callback=magic).magic is magic
+
+    async def test_check_without_filters(self):
+        handler = HandlerObject(simple_handler)
+        assert await handler.check(42, foo=True) == (True, {"foo": True})

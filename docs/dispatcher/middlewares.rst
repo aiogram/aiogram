@@ -36,6 +36,13 @@ Middleware instance can be applied for every type of Telegram Event (Update, Mes
 1. Outer scope - before processing filters (:code:`<router>.<event>.outer_middleware(...)`)
 2. Inner scope - after processing filters but before handler (:code:`<router>.<event>.middleware(...)`)
 
+.. note::
+
+    An outer middleware of a router runs only for event types that the router, or a router
+    included in it, has a handler for. A router without a :code:`message` handler anywhere in its
+    subtree does not call its :code:`message` outer middlewares, so they can neither prepare data
+    nor stop the update there. :code:`dispatcher.update` outer middlewares run for every update.
+
 .. image:: ../_static/basics_middleware.png
     :alt: Middleware basics
 

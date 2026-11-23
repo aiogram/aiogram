@@ -216,6 +216,13 @@ These patterns repeatedly appeared in maintainer feedback and should be treated 
 - A dev-4.x tree still reports a 3.x `__version__`, so both sides get the `aiogram3` adapter and the
   `when = "aiogram4"` entries stay inert. The routing kind therefore runs only for dev-3.x (E-01 already
   removed the D12 keys), and `tests/test_differential_routing.py` skips the checks that need a 3.x record there.
+  With the compiled dispatch table (E-02, `aiogram/dispatcher/table.py`) a router or handler registered while an
+  update runs applies from the next update (D114), so the late-registration checks there key on `COMPILED`, not on
+  `ON_4X`. Run the routing kind on dev-4.x by hand with `--adapter-right aiogram4` to activate the 4.0 entries;
+  the D48 / BC13 / D28 / D34 entries then mismatch until E-11 / E-09 / F-02 / E-07 land.
+- Dispatch on dev-4.x: `Dispatcher.feed_update` compiles a `DispatchTable` per call (E-03 caches it). A router's
+  outer middlewares for an event type run only if its subtree has a handler for that type (D111): a test that puts
+  an outer middleware on a router also registers a handler there.
 
 ## 4.0 planning tree (`v4/`)
 

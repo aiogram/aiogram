@@ -75,6 +75,18 @@ def require_3x_tree() -> None:
         pytest.skip("dev-4.x tree: no D12 injection (E-01); the check needs a 3.x record")
 
 
+# With the compiled dispatch table (E-02) a router or handler registered while an update runs is
+# picked up from the next update (D114), so a record of the late-registration topologies is not 3.x's.
+COMPILED = importlib.util.find_spec("aiogram.dispatcher.table") is not None
+
+
+def require_live_graph() -> None:
+    if COMPILED:
+        pytest.skip(
+            "compiled dispatch table (E-02): late registrations apply from the next update"
+        )
+
+
 def cases(topology_id: str, topology: dict[str, Any]) -> list[tuple[str, list[dict[str, Any]]]]:
     """(case, events) per feed, fsm variant and batch, as the side names them."""
     out = []
@@ -116,6 +128,9 @@ class TestSide:
             entries = records[f"{case}/trace"]["value"]
             for index, event in enumerate(batch):
                 outcome, expect = outcomes[index], event["expect"]
+                if COMPILED and topology_id == "routing.snapshot.include-router":
+                    # r3 is included while the first update runs: 4.0 routes to it from the next
+                    expect = "unhandled" if event["name"] == "first" else expect
                 if expect == "unhandled":
                     # feed_webhook_update answers None for anything but a Bot API method
                     unhandled = None if ".webhook.fsm-" in case else "UNHANDLED"
@@ -368,6 +383,7 @@ class TestComparators:
         assert judge(result, {**result, "value": [{"returned": "h1"}]}) is not None
 
     def test_d114_threads_drop_the_late_handler(self, records):
+        require_live_graph()
         left = records["routing.snapshot.include-router.polling.fsm-off.first/threads"]
         assert [e["component"] for e in left["value"]] == ["h1.f0", "h3"]
         assert judge(left, without(left, lambda e: e["component"] == "h3")) is None

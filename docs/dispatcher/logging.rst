@@ -68,7 +68,7 @@ An attribute passed explicitly with :code:`extra=` is kept.
 .. note::
 
     :code:`aiogram_router`, :code:`aiogram_handler` and :code:`aiogram_phase` are :code:`None`
-    for now: they are filled by the dispatch executor once it lands.
+    for now: they are filled at the dispatch stage boundaries by a later change.
     The context object is shared by tasks started during the update, so such a task's records
     show the update's current router, handler and phase.
 

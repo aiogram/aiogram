@@ -1,0 +1,10 @@
+Updates are now routed through a routing table compiled from the router tree, with the middleware chains built
+into the table instead of on every handler call; filters, middlewares, handlers, ``SkipHandler``, flags and the
+data passed to them behave as before. A router's outer middlewares for an event type now run only when that
+router, or a router included in it, has a handler for that type (the ``errors`` event included): a router without
+a ``message`` handler anywhere below it no longer calls its ``message`` outer middlewares, so they can neither
+prepare data nor stop the update there. Use ``dispatcher.update`` outer middlewares for code that must see every
+update. Changing the router graph while an update is being processed does not affect that update. The dispatcher
+no longer calls ``Router.propagate_event`` on included routers, nor ``TelegramEventObserver.trigger``,
+``check_root_filters`` or ``wrap_outer_middleware``, so a subclass that overrides them loses the override there
+(use middlewares or filters instead); the private ``Router._propagate_event`` is removed.

@@ -180,6 +180,11 @@ class TestCapturedExceptions:
 
         dp.message.outer_middleware(Boom())
 
+        # An outer middleware runs only for a router with a message handler (D111)
+        @dp.message()
+        async def on_message(message):
+            return "unreachable"
+
         with pytest.raises(ValueError, match="middleware exploded"):
             await alice.send("hi")
 

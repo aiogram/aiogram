@@ -28,6 +28,7 @@ from .event.telegram import TelegramEventObserver
 from .middlewares.error import ErrorsMiddleware
 from .middlewares.user_context import UserContextMiddleware
 from .router import Router
+from .table import DispatchTable, HandlerResultHook, compile_table, execute, route_update
 
 if TYPE_CHECKING:
     from aiogram.client.bot import Bot
@@ -115,6 +116,11 @@ class Dispatcher(Router):
         self._stop_signal: Event | None = None
         self._stopped_signal: Event | None = None
         self._handle_update_tasks: set[asyncio.Task[Any]] = set()
+        # Called with each handler's return value inside its middleware scope (see table.py)
+        self._on_handler_result: HandlerResultHook | None = None
+        # A precompiled table feed_update uses instead of compiling one per update (benchmarks);
+        # it freezes workflow_data too. The routing snapshot lifecycle replaces it with a cache
+        self._table: DispatchTable | None = None
 
     def __getitem__(self, item: str) -> Any:
         return self.workflow_data[item]
@@ -174,16 +180,10 @@ class Dispatcher(Router):
                 update = Update.model_validate(update.model_dump(), context={"bot": bot})
 
             try:
-                response = await self.update.wrap_outer_middleware(
-                    self._trigger_update,
-                    update,
-                    {
-                        "dispatcher": self,
-                        **self.workflow_data,
-                        **kwargs,
-                        "bot": bot,
-                    },
+                table = self._table or compile_table(
+                    self, on_handler_result=self._on_handler_result
                 )
+                response = await execute(table, bot, update, kwargs)
                 handled = response is not UNHANDLED
                 return response
             finally:
@@ -198,15 +198,6 @@ class Dispatcher(Router):
                 )
         finally:
             loggers._current.reset(log_token)
-
-    async def _trigger_update(self, update: Update, **kwargs: Any) -> Any:
-        # `dp.update` is not reached through `_propagate_event`,
-        # so its root filters are checked here, the same way
-        result, data = await self.update.check_root_filters(update, **kwargs)
-        if not result:
-            return UNHANDLED
-        kwargs.update(data)
-        return await self.update.trigger(update, **kwargs)
 
     async def feed_raw_update(self, bot: Bot, update: dict[str, Any], **kwargs: Any) -> Any:
         """
@@ -344,24 +335,8 @@ class Dispatcher(Router):
         :param kwargs:
         :return:
         """
-        try:
-            update_type = update.event_type
-            event = update.event
-        except UpdateTypeLookupError as e:
-            # Constant text: Python keeps every distinct warning text for the process lifetime
-            warnings.warn(
-                "Detected unknown update type.\n"
-                "Seems like Telegram Bot API was updated and you have "
-                "installed not latest version of aiogram framework",
-                RuntimeWarning,
-                stacklevel=2,
-            )
-            loggers.event.debug("Unknown update type: %r", update)
-            raise SkipHandler() from e
-
-        kwargs.update(event_update=update)
-
-        return await self.propagate_event(update_type=update_type, event=event, **kwargs)
+        table = compile_table(self, on_handler_result=self._on_handler_result)
+        return await route_update(table.by_event, update, kwargs)
 
     @classmethod
     async def silent_call_request(cls, bot: Bot, result: TelegramMethod[Any]) -> None:

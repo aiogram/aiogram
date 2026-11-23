@@ -796,7 +796,7 @@ title = "outer middlewares of routers without a matching handler are skipped"
 decisions = ["D111", "PD-19"]
 area = "middlewares"
 change = "behaviour"
-replacement = "dp.update outer middlewares for code that must see every update"
+replacement = "dp.update outer middlewares for code that must see every update; a router's outer middlewares for an event type (errors included) run only when the router or a router included in it has a handler for that type"
 detection = "manual"
 confidence = "medium"
 codemod = "none"
@@ -1019,6 +1019,22 @@ detection = "manual"
 confidence = "high"
 codemod = "none"
 suppress = "aiogram: ignore[AG4057]"
+gate = false
+generated = false
+warn_3x = { site = "none", target = "", since = "" }
+
+[[entry]]
+id = "AG4058"
+kind = "removal-4.0"
+title = "overrides of Router.propagate_event, TelegramEventObserver.trigger, check_root_filters and wrap_outer_middleware are not called when the Dispatcher routes an update"
+decisions = ["D111", "R09"]
+area = "dispatcher"
+change = "behaviour"
+replacement = "outer / inner middlewares or filters on the router's observers instead of overriding these methods; the methods still work when called directly, and Router._propagate_event is gone"
+detection = "heuristic"
+confidence = "medium"
+codemod = "none"
+suppress = "aiogram: ignore[AG4058]"
 gate = false
 generated = false
 warn_3x = { site = "none", target = "", since = "" }
