@@ -20,6 +20,10 @@ uv run python -m differential run --kind model --left pypi:aiogram==3.32.0 --rig
   `smoke` (A-07), `request` (A-09, see *Request kind*), `model` (A-08, see *Model kind*) and `routing`
   (A-10, see *Routing probes*).
 - A side is `pypi:<requirement>`, `git:<ref>` or `path:<dir>`.
+- `--adapter-right aiogram3|aiogram4` labels the right side with that adapter instead of the one its
+  `__version__` implies, so `when = "aiogram4"` entries are active for dev-4.x code that still
+  reports `3.x`. Only the label changes: the probe script is still `sides/<version's adapter>/<kind>.py`.
+  Without the flag nothing changes.
 - `--manifest` defaults to `differential/manifests/<kind>.toml`; `--corpus` to `benchmarks/corpus`.
 
 | Exit | Meaning |
