@@ -317,7 +317,8 @@ class TestSide:
             instance = side.Side(trace, wire, CORPUS, poison=False)
             async with instance.api.server:
                 session = instance.api.session()
-                session.middleware(Refuse())
+                with pytest.warns(DeprecationWarning, match="AG4062"):
+                    session.middleware(Refuse())
                 await instance.send("c", side.methods.GetMe(), session=session)
             return instance.records
 

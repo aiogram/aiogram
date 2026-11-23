@@ -9,10 +9,9 @@ from aiogram.client.session.middlewares import manager as manager_module
 from aiogram.client.session.middlewares.base import BaseRequestMiddleware
 from aiogram.client.session.middlewares.manager import RequestMiddlewareManager
 from aiogram.methods import GetMe
-from aiogram.types import User
-from tests.mocked_bot import MockedBot
+from tests.mocked_bot import MockedBot, bot_full_info
 
-ME = User(id=42, is_bot=True, first_name="Test")
+ME = bot_full_info()
 
 
 class Recorder(BaseRequestMiddleware):
