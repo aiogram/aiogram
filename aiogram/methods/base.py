@@ -15,6 +15,7 @@ from pydantic import BaseModel, ConfigDict
 from aiogram.client.context_controller import BotContextController
 
 from ..types import InputFile, ResponseParameters
+from ..types.base import rebuild_in_module
 
 if TYPE_CHECKING:
     from ..client.bot import Bot
@@ -61,6 +62,24 @@ class TelegramMethod(BotContextController, BaseModel, Generic[TelegramType], ABC
         @abstractmethod
         def __api_method__(self) -> str:
             pass
+
+    @classmethod
+    def model_rebuild(
+        cls,
+        *,
+        force: bool = False,
+        raise_errors: bool = True,
+        _parent_namespace_depth: int = 2,
+        _types_namespace: Any = None,
+    ) -> bool | None:
+        return rebuild_in_module(
+            cls,
+            super().model_rebuild,
+            force,
+            raise_errors,
+            _parent_namespace_depth,
+            _types_namespace,
+        )
 
     async def emit(self, bot: Bot) -> TelegramType:
         return await bot(self)

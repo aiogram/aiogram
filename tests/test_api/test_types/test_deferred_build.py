@@ -30,8 +30,10 @@ def test_import_builds_no_schema():
         for module in (types, methods):
             for name in module.__all__:
                 obj = getattr(module, name)
+                # Request and Response are plain models, built at import with ResponseParameters;
                 # the abstract TelegramMethod is built as the origin of TelegramMethod[...]
-                if hasattr(obj, "model_rebuild") and name not in {"Request", "Response", "TelegramMethod"}:
+                built = {"Request", "Response", "ResponseParameters", "TelegramMethod"}
+                if hasattr(obj, "model_rebuild") and name not in built:
                     if obj.__pydantic_complete__:
                         print(name)
         """
@@ -86,6 +88,88 @@ def test_never_built_type_nested_in_other_contexts():
             "id": 1, "is_bot": False, "first_name": "a",
         }, "message": message}
         assert MyQuery.model_validate(query).message.chat.id == 1
+        """
+    )
+
+
+def test_first_use_ignores_the_callers_names():
+    # A caller that defines its own ``Chat`` or ``User`` must not change what the type refers to.
+    for build in ("Message.model_validate(message)", "Box.model_validate({'m': message}).m"):
+        run_fresh(
+            f"""
+            from pydantic import BaseModel
+
+            from aiogram.types import Message
+
+            class Chat(BaseModel):
+                app_id: int
+
+            class User(BaseModel):
+                db_id: int
+
+            class Box(BaseModel):
+                m: Message
+
+            message = {{"message_id": 1, "date": 1, "chat": {{"id": 1, "type": "private"}}, "from": {{
+                "id": 1, "is_bot": False, "first_name": "a",
+            }}}}
+            assert {build}.chat.id == 1
+            """
+        )
+
+
+def test_first_use_inside_a_function_ignores_its_locals():
+    run_fresh(
+        """
+        from pydantic import BaseModel
+
+        from aiogram.types import Chat, Message
+
+        message = {"message_id": 1, "date": 1, "chat": {"id": 1, "type": "private"}}
+
+        def nested():
+            Chat = dict  # noqa: F841
+
+            class Box(BaseModel):
+                m: Message
+
+            return Box.model_validate({"m": message}).m
+
+        def direct():
+            Chat = dict  # noqa: F841
+            return Message.model_validate(message)
+
+        assert type(nested().chat) is Chat
+        assert type(direct().chat) is Chat
+        """
+    )
+
+
+def test_first_use_from_module_level():
+    out = run_fresh(
+        """
+        from aiogram.methods import GetMe
+        from aiogram.types import Chat
+
+        print(Chat.__pydantic_validator__.validate_python({"id": 1, "type": "private"}).id)
+        print(GetMe.__pydantic_validator__.validate_python({}).__api_method__)
+        """
+    )
+    assert out.split() == ["1", "getMe"]
+
+
+def test_user_model_hierarchy_with_forward_reference():
+    run_fresh(
+        """
+        from aiogram.types import TelegramObject
+
+        class Parent(TelegramObject):
+            child: "Child | None" = None
+
+        class Child(Parent):
+            pass
+
+        assert Parent(child=Child()).child == Child()
         """
     )
 
