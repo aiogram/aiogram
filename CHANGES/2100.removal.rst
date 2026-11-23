@@ -1,0 +1,5 @@
+Reworked the middleware data :code:`TypedDict`\ s: the 3.x :code:`FSMData` is renamed :class:`~aiogram.dispatcher.middlewares.data.FSMKeysData`,
+and :code:`DispatcherData`, :code:`UserContextData` and :code:`I18nData` are removed (use the new
+:class:`~aiogram.dispatcher.middlewares.data.OuterData` and :class:`~aiogram.dispatcher.middlewares.data.RouterOuterData`, or :class:`~aiogram.dispatcher.middlewares.data.MiddlewareData`).
+:class:`~aiogram.dispatcher.middlewares.data.MiddlewareData` no longer uses :code:`total=False`: the keys that are always set are required,
+it covers inner middlewares, filters and handlers of the event observers only, and :code:`bots` is typed :code:`tuple[Bot, ...]`, matching what polling passes.
