@@ -4,7 +4,7 @@ import logging
 from aiogram.client.session.middlewares.request_logging import RequestLogging
 from aiogram.methods import GetMe, SendMessage
 from aiogram.types import Chat, Message, User
-from tests.mocked_bot import MockedBot
+from tests.mocked_bot import MockedBot, bot_full_info
 
 
 class TestRequestLogging:
@@ -12,7 +12,7 @@ class TestRequestLogging:
         caplog.set_level(logging.INFO)
         bot.session.middleware(RequestLogging())
 
-        bot.add_result_for(GetMe, ok=True, result=User(id=42, is_bot=True, first_name="Test"))
+        bot.add_result_for(GetMe, ok=True, result=bot_full_info())
         assert await bot.get_me()
         assert "Make request with method='GetMe' by bot id=42" in caplog.text
 
@@ -20,7 +20,7 @@ class TestRequestLogging:
         caplog.set_level(logging.INFO)
         bot.session.middleware(RequestLogging(ignore_methods=[GetMe]))
 
-        bot.add_result_for(GetMe, ok=True, result=User(id=42, is_bot=True, first_name="Test"))
+        bot.add_result_for(GetMe, ok=True, result=bot_full_info())
         assert await bot.get_me()
         assert "Make request with method='GetMe' by bot id=42" not in caplog.text
 

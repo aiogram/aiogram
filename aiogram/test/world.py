@@ -17,6 +17,7 @@ from aiogram.enums import (
 from aiogram.types import (
     BotCommand,
     BotCommandScopeDefault,
+    BotFullInfo,
     BusinessBotRights,
     BusinessConnection,
     Chat,
@@ -1954,7 +1955,7 @@ class World:
             # must follow, or ``bot.me()`` and ``get_me()`` disagree.
             bot._me = self.bot_me()
 
-    def bot_me(self) -> User:
+    def bot_me(self) -> BotFullInfo:
         """
         The bot as ``getMe`` reports it.
 
@@ -1962,8 +1963,24 @@ class World:
         is off, which only ``getMe`` reports, so a message's sender
         lacks it.
         """
-        return self.bot_user.as_user().model_copy(
-            update={"can_read_all_group_messages": not self.bot_group_privacy},
+        user = self.bot_user
+        return BotFullInfo(
+            id=user.id,
+            is_bot=True,
+            first_name=user.first_name,
+            username=user.username,
+            can_join_groups=True,
+            can_read_all_group_messages=not self.bot_group_privacy,
+            supports_guest_queries=False,
+            supports_inline_queries=False,
+            needs_inline_query_location=False,
+            can_connect_to_business=False,
+            has_main_web_app=False,
+            has_topics_enabled=False,
+            allows_users_to_create_topics=False,
+            has_topic_sidebar=False,
+            can_manage_bots=False,
+            supports_join_request_queries=False,
         )
 
     def bind(self, bot: Bot) -> None:

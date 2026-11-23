@@ -1,0 +1,964 @@
+{
+  "schema": 1,
+  "records": [
+    {
+      "entity": "AnswerInlineQuery",
+      "kind": "method",
+      "field": "switch_pm_parameter",
+      "removed_in": "6.7",
+      "replacement": null
+    },
+    {
+      "entity": "AnswerInlineQuery",
+      "kind": "method",
+      "field": "switch_pm_text",
+      "removed_in": "6.7",
+      "replacement": null
+    },
+    {
+      "entity": "BusinessBotRights",
+      "kind": "type",
+      "field": "can_delete_outgoing_messages",
+      "removed_in": "9.1",
+      "replacement": null
+    },
+    {
+      "entity": "BusinessConnection",
+      "kind": "type",
+      "field": "can_reply",
+      "removed_in": "9.0",
+      "replacement": null
+    },
+    {
+      "entity": "Chat",
+      "kind": "type",
+      "field": "accent_color_id",
+      "removed_in": "7.3",
+      "replacement": "ChatFullInfo"
+    },
+    {
+      "entity": "Chat",
+      "kind": "type",
+      "field": "active_usernames",
+      "removed_in": "7.3",
+      "replacement": "ChatFullInfo"
+    },
+    {
+      "entity": "Chat",
+      "kind": "type",
+      "field": "available_reactions",
+      "removed_in": "7.3",
+      "replacement": "ChatFullInfo"
+    },
+    {
+      "entity": "Chat",
+      "kind": "type",
+      "field": "background_custom_emoji_id",
+      "removed_in": "7.3",
+      "replacement": "ChatFullInfo"
+    },
+    {
+      "entity": "Chat",
+      "kind": "type",
+      "field": "bio",
+      "removed_in": "7.3",
+      "replacement": "ChatFullInfo"
+    },
+    {
+      "entity": "Chat",
+      "kind": "type",
+      "field": "birthdate",
+      "removed_in": "7.3",
+      "replacement": "ChatFullInfo"
+    },
+    {
+      "entity": "Chat",
+      "kind": "type",
+      "field": "business_intro",
+      "removed_in": "7.3",
+      "replacement": "ChatFullInfo"
+    },
+    {
+      "entity": "Chat",
+      "kind": "type",
+      "field": "business_location",
+      "removed_in": "7.3",
+      "replacement": "ChatFullInfo"
+    },
+    {
+      "entity": "Chat",
+      "kind": "type",
+      "field": "business_opening_hours",
+      "removed_in": "7.3",
+      "replacement": "ChatFullInfo"
+    },
+    {
+      "entity": "Chat",
+      "kind": "type",
+      "field": "can_set_sticker_set",
+      "removed_in": "7.3",
+      "replacement": "ChatFullInfo"
+    },
+    {
+      "entity": "Chat",
+      "kind": "type",
+      "field": "custom_emoji_sticker_set_name",
+      "removed_in": "7.3",
+      "replacement": "ChatFullInfo"
+    },
+    {
+      "entity": "Chat",
+      "kind": "type",
+      "field": "description",
+      "removed_in": "7.3",
+      "replacement": "ChatFullInfo"
+    },
+    {
+      "entity": "Chat",
+      "kind": "type",
+      "field": "emoji_status_custom_emoji_id",
+      "removed_in": "7.3",
+      "replacement": "ChatFullInfo"
+    },
+    {
+      "entity": "Chat",
+      "kind": "type",
+      "field": "emoji_status_expiration_date",
+      "removed_in": "7.3",
+      "replacement": "ChatFullInfo"
+    },
+    {
+      "entity": "Chat",
+      "kind": "type",
+      "field": "has_aggressive_anti_spam_enabled",
+      "removed_in": "7.3",
+      "replacement": "ChatFullInfo"
+    },
+    {
+      "entity": "Chat",
+      "kind": "type",
+      "field": "has_hidden_members",
+      "removed_in": "7.3",
+      "replacement": "ChatFullInfo"
+    },
+    {
+      "entity": "Chat",
+      "kind": "type",
+      "field": "has_private_forwards",
+      "removed_in": "7.3",
+      "replacement": "ChatFullInfo"
+    },
+    {
+      "entity": "Chat",
+      "kind": "type",
+      "field": "has_protected_content",
+      "removed_in": "7.3",
+      "replacement": "ChatFullInfo"
+    },
+    {
+      "entity": "Chat",
+      "kind": "type",
+      "field": "has_restricted_voice_and_video_messages",
+      "removed_in": "7.3",
+      "replacement": "ChatFullInfo"
+    },
+    {
+      "entity": "Chat",
+      "kind": "type",
+      "field": "has_visible_history",
+      "removed_in": "7.3",
+      "replacement": "ChatFullInfo"
+    },
+    {
+      "entity": "Chat",
+      "kind": "type",
+      "field": "invite_link",
+      "removed_in": "7.3",
+      "replacement": "ChatFullInfo"
+    },
+    {
+      "entity": "Chat",
+      "kind": "type",
+      "field": "join_by_request",
+      "removed_in": "7.3",
+      "replacement": "ChatFullInfo"
+    },
+    {
+      "entity": "Chat",
+      "kind": "type",
+      "field": "join_to_send_messages",
+      "removed_in": "7.3",
+      "replacement": "ChatFullInfo"
+    },
+    {
+      "entity": "Chat",
+      "kind": "type",
+      "field": "linked_chat_id",
+      "removed_in": "7.3",
+      "replacement": "ChatFullInfo"
+    },
+    {
+      "entity": "Chat",
+      "kind": "type",
+      "field": "location",
+      "removed_in": "7.3",
+      "replacement": "ChatFullInfo"
+    },
+    {
+      "entity": "Chat",
+      "kind": "type",
+      "field": "message_auto_delete_time",
+      "removed_in": "7.3",
+      "replacement": "ChatFullInfo"
+    },
+    {
+      "entity": "Chat",
+      "kind": "type",
+      "field": "permissions",
+      "removed_in": "7.3",
+      "replacement": "ChatFullInfo"
+    },
+    {
+      "entity": "Chat",
+      "kind": "type",
+      "field": "personal_chat",
+      "removed_in": "7.3",
+      "replacement": "ChatFullInfo"
+    },
+    {
+      "entity": "Chat",
+      "kind": "type",
+      "field": "photo",
+      "removed_in": "7.3",
+      "replacement": "ChatFullInfo"
+    },
+    {
+      "entity": "Chat",
+      "kind": "type",
+      "field": "pinned_message",
+      "removed_in": "7.3",
+      "replacement": "ChatFullInfo"
+    },
+    {
+      "entity": "Chat",
+      "kind": "type",
+      "field": "profile_accent_color_id",
+      "removed_in": "7.3",
+      "replacement": "ChatFullInfo"
+    },
+    {
+      "entity": "Chat",
+      "kind": "type",
+      "field": "profile_background_custom_emoji_id",
+      "removed_in": "7.3",
+      "replacement": "ChatFullInfo"
+    },
+    {
+      "entity": "Chat",
+      "kind": "type",
+      "field": "slow_mode_delay",
+      "removed_in": "7.3",
+      "replacement": "ChatFullInfo"
+    },
+    {
+      "entity": "Chat",
+      "kind": "type",
+      "field": "sticker_set_name",
+      "removed_in": "7.3",
+      "replacement": "ChatFullInfo"
+    },
+    {
+      "entity": "Chat",
+      "kind": "type",
+      "field": "unrestrict_boost_count",
+      "removed_in": "7.3",
+      "replacement": "ChatFullInfo"
+    },
+    {
+      "entity": "ChatFullInfo",
+      "kind": "type",
+      "field": "can_send_gift",
+      "removed_in": "9.0",
+      "replacement": null
+    },
+    {
+      "entity": "CopyMessage",
+      "kind": "method",
+      "field": "allow_sending_without_reply",
+      "removed_in": "7.0",
+      "replacement": "reply_parameters"
+    },
+    {
+      "entity": "CopyMessage",
+      "kind": "method",
+      "field": "reply_to_message_id",
+      "removed_in": "7.0",
+      "replacement": "reply_parameters"
+    },
+    {
+      "entity": "CreateNewStickerSet",
+      "kind": "method",
+      "field": "sticker_format",
+      "removed_in": "7.2",
+      "replacement": null
+    },
+    {
+      "entity": "EditMessageText",
+      "kind": "method",
+      "field": "disable_web_page_preview",
+      "removed_in": "7.0",
+      "replacement": "link_preview_options"
+    },
+    {
+      "entity": "GetBusinessAccountGifts",
+      "kind": "method",
+      "field": "exclude_limited",
+      "removed_in": "9.3",
+      "replacement": null
+    },
+    {
+      "entity": "InlineQueryResultArticle",
+      "kind": "type",
+      "field": "hide_url",
+      "removed_in": "8.2",
+      "replacement": null
+    },
+    {
+      "entity": "InputRichBlockExpandableBlockQuotation",
+      "kind": "type",
+      "field": "text",
+      "removed_in": "10.5",
+      "replacement": null
+    },
+    {
+      "entity": "InputTextMessageContent",
+      "kind": "type",
+      "field": "disable_web_page_preview",
+      "removed_in": "7.0",
+      "replacement": "link_preview_options"
+    },
+    {
+      "entity": "KeyboardButton",
+      "kind": "type",
+      "field": "request_user",
+      "removed_in": "7.0",
+      "replacement": "request_users"
+    },
+    {
+      "entity": "KeyboardButtonRequestUser",
+      "kind": "type",
+      "field": null,
+      "removed_in": "7.0",
+      "replacement": "KeyboardButtonRequestUsers"
+    },
+    {
+      "entity": "Message",
+      "kind": "type",
+      "field": "forward_date",
+      "removed_in": "7.0",
+      "replacement": "forward_origin"
+    },
+    {
+      "entity": "Message",
+      "kind": "type",
+      "field": "forward_from",
+      "removed_in": "7.0",
+      "replacement": "forward_origin"
+    },
+    {
+      "entity": "Message",
+      "kind": "type",
+      "field": "forward_from_chat",
+      "removed_in": "7.0",
+      "replacement": "forward_origin"
+    },
+    {
+      "entity": "Message",
+      "kind": "type",
+      "field": "forward_from_message_id",
+      "removed_in": "7.0",
+      "replacement": "forward_origin"
+    },
+    {
+      "entity": "Message",
+      "kind": "type",
+      "field": "forward_sender_name",
+      "removed_in": "7.0",
+      "replacement": "forward_origin"
+    },
+    {
+      "entity": "Message",
+      "kind": "type",
+      "field": "forward_signature",
+      "removed_in": "7.0",
+      "replacement": "forward_origin"
+    },
+    {
+      "entity": "Message",
+      "kind": "type",
+      "field": "user_shared",
+      "removed_in": "7.0",
+      "replacement": "users_shared"
+    },
+    {
+      "entity": "Poll",
+      "kind": "type",
+      "field": "correct_option_id",
+      "removed_in": "9.6",
+      "replacement": null
+    },
+    {
+      "entity": "RichBlockExpandableBlockQuotation",
+      "kind": "type",
+      "field": "text",
+      "removed_in": "10.5",
+      "replacement": null
+    },
+    {
+      "entity": "SendAnimation",
+      "kind": "method",
+      "field": "allow_sending_without_reply",
+      "removed_in": "7.0",
+      "replacement": "reply_parameters"
+    },
+    {
+      "entity": "SendAnimation",
+      "kind": "method",
+      "field": "callback_query_id",
+      "removed_in": "10.3",
+      "replacement": null
+    },
+    {
+      "entity": "SendAnimation",
+      "kind": "method",
+      "field": "receiver_user_id",
+      "removed_in": "10.3",
+      "replacement": null
+    },
+    {
+      "entity": "SendAnimation",
+      "kind": "method",
+      "field": "reply_to_message_id",
+      "removed_in": "7.0",
+      "replacement": "reply_parameters"
+    },
+    {
+      "entity": "SendAudio",
+      "kind": "method",
+      "field": "allow_sending_without_reply",
+      "removed_in": "7.0",
+      "replacement": "reply_parameters"
+    },
+    {
+      "entity": "SendAudio",
+      "kind": "method",
+      "field": "callback_query_id",
+      "removed_in": "10.3",
+      "replacement": null
+    },
+    {
+      "entity": "SendAudio",
+      "kind": "method",
+      "field": "receiver_user_id",
+      "removed_in": "10.3",
+      "replacement": null
+    },
+    {
+      "entity": "SendAudio",
+      "kind": "method",
+      "field": "reply_to_message_id",
+      "removed_in": "7.0",
+      "replacement": "reply_parameters"
+    },
+    {
+      "entity": "SendContact",
+      "kind": "method",
+      "field": "allow_sending_without_reply",
+      "removed_in": "7.0",
+      "replacement": "reply_parameters"
+    },
+    {
+      "entity": "SendContact",
+      "kind": "method",
+      "field": "callback_query_id",
+      "removed_in": "10.3",
+      "replacement": null
+    },
+    {
+      "entity": "SendContact",
+      "kind": "method",
+      "field": "receiver_user_id",
+      "removed_in": "10.3",
+      "replacement": null
+    },
+    {
+      "entity": "SendContact",
+      "kind": "method",
+      "field": "reply_to_message_id",
+      "removed_in": "7.0",
+      "replacement": "reply_parameters"
+    },
+    {
+      "entity": "SendDice",
+      "kind": "method",
+      "field": "allow_sending_without_reply",
+      "removed_in": "7.0",
+      "replacement": "reply_parameters"
+    },
+    {
+      "entity": "SendDice",
+      "kind": "method",
+      "field": "reply_to_message_id",
+      "removed_in": "7.0",
+      "replacement": "reply_parameters"
+    },
+    {
+      "entity": "SendDocument",
+      "kind": "method",
+      "field": "allow_sending_without_reply",
+      "removed_in": "7.0",
+      "replacement": "reply_parameters"
+    },
+    {
+      "entity": "SendDocument",
+      "kind": "method",
+      "field": "callback_query_id",
+      "removed_in": "10.3",
+      "replacement": null
+    },
+    {
+      "entity": "SendDocument",
+      "kind": "method",
+      "field": "receiver_user_id",
+      "removed_in": "10.3",
+      "replacement": null
+    },
+    {
+      "entity": "SendDocument",
+      "kind": "method",
+      "field": "reply_to_message_id",
+      "removed_in": "7.0",
+      "replacement": "reply_parameters"
+    },
+    {
+      "entity": "SendGame",
+      "kind": "method",
+      "field": "allow_sending_without_reply",
+      "removed_in": "7.0",
+      "replacement": "reply_parameters"
+    },
+    {
+      "entity": "SendGame",
+      "kind": "method",
+      "field": "reply_to_message_id",
+      "removed_in": "7.0",
+      "replacement": "reply_parameters"
+    },
+    {
+      "entity": "SendInvoice",
+      "kind": "method",
+      "field": "allow_sending_without_reply",
+      "removed_in": "7.0",
+      "replacement": "reply_parameters"
+    },
+    {
+      "entity": "SendInvoice",
+      "kind": "method",
+      "field": "reply_to_message_id",
+      "removed_in": "7.0",
+      "replacement": "reply_parameters"
+    },
+    {
+      "entity": "SendLivePhoto",
+      "kind": "method",
+      "field": "callback_query_id",
+      "removed_in": "10.3",
+      "replacement": null
+    },
+    {
+      "entity": "SendLivePhoto",
+      "kind": "method",
+      "field": "receiver_user_id",
+      "removed_in": "10.3",
+      "replacement": null
+    },
+    {
+      "entity": "SendLocation",
+      "kind": "method",
+      "field": "allow_sending_without_reply",
+      "removed_in": "7.0",
+      "replacement": "reply_parameters"
+    },
+    {
+      "entity": "SendLocation",
+      "kind": "method",
+      "field": "callback_query_id",
+      "removed_in": "10.3",
+      "replacement": null
+    },
+    {
+      "entity": "SendLocation",
+      "kind": "method",
+      "field": "receiver_user_id",
+      "removed_in": "10.3",
+      "replacement": null
+    },
+    {
+      "entity": "SendLocation",
+      "kind": "method",
+      "field": "reply_to_message_id",
+      "removed_in": "7.0",
+      "replacement": "reply_parameters"
+    },
+    {
+      "entity": "SendMediaGroup",
+      "kind": "method",
+      "field": "allow_sending_without_reply",
+      "removed_in": "7.0",
+      "replacement": "reply_parameters"
+    },
+    {
+      "entity": "SendMediaGroup",
+      "kind": "method",
+      "field": "reply_to_message_id",
+      "removed_in": "7.0",
+      "replacement": "reply_parameters"
+    },
+    {
+      "entity": "SendMessage",
+      "kind": "method",
+      "field": "allow_sending_without_reply",
+      "removed_in": "7.0",
+      "replacement": "reply_parameters"
+    },
+    {
+      "entity": "SendMessage",
+      "kind": "method",
+      "field": "callback_query_id",
+      "removed_in": "10.3",
+      "replacement": null
+    },
+    {
+      "entity": "SendMessage",
+      "kind": "method",
+      "field": "disable_web_page_preview",
+      "removed_in": "7.0",
+      "replacement": "link_preview_options"
+    },
+    {
+      "entity": "SendMessage",
+      "kind": "method",
+      "field": "receiver_user_id",
+      "removed_in": "10.3",
+      "replacement": null
+    },
+    {
+      "entity": "SendMessage",
+      "kind": "method",
+      "field": "reply_to_message_id",
+      "removed_in": "7.0",
+      "replacement": "reply_parameters"
+    },
+    {
+      "entity": "SendPhoto",
+      "kind": "method",
+      "field": "allow_sending_without_reply",
+      "removed_in": "7.0",
+      "replacement": "reply_parameters"
+    },
+    {
+      "entity": "SendPhoto",
+      "kind": "method",
+      "field": "callback_query_id",
+      "removed_in": "10.3",
+      "replacement": null
+    },
+    {
+      "entity": "SendPhoto",
+      "kind": "method",
+      "field": "receiver_user_id",
+      "removed_in": "10.3",
+      "replacement": null
+    },
+    {
+      "entity": "SendPhoto",
+      "kind": "method",
+      "field": "reply_to_message_id",
+      "removed_in": "7.0",
+      "replacement": "reply_parameters"
+    },
+    {
+      "entity": "SendPoll",
+      "kind": "method",
+      "field": "allow_sending_without_reply",
+      "removed_in": "7.0",
+      "replacement": "reply_parameters"
+    },
+    {
+      "entity": "SendPoll",
+      "kind": "method",
+      "field": "correct_option_id",
+      "removed_in": "9.6",
+      "replacement": null
+    },
+    {
+      "entity": "SendPoll",
+      "kind": "method",
+      "field": "reply_to_message_id",
+      "removed_in": "7.0",
+      "replacement": "reply_parameters"
+    },
+    {
+      "entity": "SendSticker",
+      "kind": "method",
+      "field": "allow_sending_without_reply",
+      "removed_in": "7.0",
+      "replacement": "reply_parameters"
+    },
+    {
+      "entity": "SendSticker",
+      "kind": "method",
+      "field": "callback_query_id",
+      "removed_in": "10.3",
+      "replacement": null
+    },
+    {
+      "entity": "SendSticker",
+      "kind": "method",
+      "field": "receiver_user_id",
+      "removed_in": "10.3",
+      "replacement": null
+    },
+    {
+      "entity": "SendSticker",
+      "kind": "method",
+      "field": "reply_to_message_id",
+      "removed_in": "7.0",
+      "replacement": "reply_parameters"
+    },
+    {
+      "entity": "SendVenue",
+      "kind": "method",
+      "field": "allow_sending_without_reply",
+      "removed_in": "7.0",
+      "replacement": "reply_parameters"
+    },
+    {
+      "entity": "SendVenue",
+      "kind": "method",
+      "field": "callback_query_id",
+      "removed_in": "10.3",
+      "replacement": null
+    },
+    {
+      "entity": "SendVenue",
+      "kind": "method",
+      "field": "receiver_user_id",
+      "removed_in": "10.3",
+      "replacement": null
+    },
+    {
+      "entity": "SendVenue",
+      "kind": "method",
+      "field": "reply_to_message_id",
+      "removed_in": "7.0",
+      "replacement": "reply_parameters"
+    },
+    {
+      "entity": "SendVideo",
+      "kind": "method",
+      "field": "allow_sending_without_reply",
+      "removed_in": "7.0",
+      "replacement": "reply_parameters"
+    },
+    {
+      "entity": "SendVideo",
+      "kind": "method",
+      "field": "callback_query_id",
+      "removed_in": "10.3",
+      "replacement": null
+    },
+    {
+      "entity": "SendVideo",
+      "kind": "method",
+      "field": "receiver_user_id",
+      "removed_in": "10.3",
+      "replacement": null
+    },
+    {
+      "entity": "SendVideo",
+      "kind": "method",
+      "field": "reply_to_message_id",
+      "removed_in": "7.0",
+      "replacement": "reply_parameters"
+    },
+    {
+      "entity": "SendVideoNote",
+      "kind": "method",
+      "field": "allow_sending_without_reply",
+      "removed_in": "7.0",
+      "replacement": "reply_parameters"
+    },
+    {
+      "entity": "SendVideoNote",
+      "kind": "method",
+      "field": "callback_query_id",
+      "removed_in": "10.3",
+      "replacement": null
+    },
+    {
+      "entity": "SendVideoNote",
+      "kind": "method",
+      "field": "receiver_user_id",
+      "removed_in": "10.3",
+      "replacement": null
+    },
+    {
+      "entity": "SendVideoNote",
+      "kind": "method",
+      "field": "reply_to_message_id",
+      "removed_in": "7.0",
+      "replacement": "reply_parameters"
+    },
+    {
+      "entity": "SendVoice",
+      "kind": "method",
+      "field": "allow_sending_without_reply",
+      "removed_in": "7.0",
+      "replacement": "reply_parameters"
+    },
+    {
+      "entity": "SendVoice",
+      "kind": "method",
+      "field": "callback_query_id",
+      "removed_in": "10.3",
+      "replacement": null
+    },
+    {
+      "entity": "SendVoice",
+      "kind": "method",
+      "field": "receiver_user_id",
+      "removed_in": "10.3",
+      "replacement": null
+    },
+    {
+      "entity": "SendVoice",
+      "kind": "method",
+      "field": "reply_to_message_id",
+      "removed_in": "7.0",
+      "replacement": "reply_parameters"
+    },
+    {
+      "entity": "StickerSet",
+      "kind": "type",
+      "field": "is_animated",
+      "removed_in": "7.2",
+      "replacement": null
+    },
+    {
+      "entity": "StickerSet",
+      "kind": "type",
+      "field": "is_video",
+      "removed_in": "7.2",
+      "replacement": null
+    },
+    {
+      "entity": "StoryAreaPosition",
+      "kind": "type",
+      "field": null,
+      "removed_in": "10.4",
+      "replacement": null
+    },
+    {
+      "entity": "UniqueGiftInfo",
+      "kind": "type",
+      "field": "last_resale_star_count",
+      "removed_in": "9.3",
+      "replacement": null
+    },
+    {
+      "entity": "User",
+      "kind": "type",
+      "field": "allows_users_to_create_topics",
+      "removed_in": "10.5",
+      "replacement": null
+    },
+    {
+      "entity": "User",
+      "kind": "type",
+      "field": "can_connect_to_business",
+      "removed_in": "10.5",
+      "replacement": null
+    },
+    {
+      "entity": "User",
+      "kind": "type",
+      "field": "can_join_groups",
+      "removed_in": "10.5",
+      "replacement": null
+    },
+    {
+      "entity": "User",
+      "kind": "type",
+      "field": "can_manage_bots",
+      "removed_in": "10.5",
+      "replacement": null
+    },
+    {
+      "entity": "User",
+      "kind": "type",
+      "field": "can_read_all_group_messages",
+      "removed_in": "10.5",
+      "replacement": null
+    },
+    {
+      "entity": "User",
+      "kind": "type",
+      "field": "has_main_web_app",
+      "removed_in": "10.5",
+      "replacement": null
+    },
+    {
+      "entity": "User",
+      "kind": "type",
+      "field": "has_topics_enabled",
+      "removed_in": "10.5",
+      "replacement": null
+    },
+    {
+      "entity": "User",
+      "kind": "type",
+      "field": "supports_guest_queries",
+      "removed_in": "10.5",
+      "replacement": null
+    },
+    {
+      "entity": "User",
+      "kind": "type",
+      "field": "supports_inline_queries",
+      "removed_in": "10.5",
+      "replacement": null
+    },
+    {
+      "entity": "User",
+      "kind": "type",
+      "field": "supports_join_request_queries",
+      "removed_in": "10.5",
+      "replacement": null
+    },
+    {
+      "entity": "UserShared",
+      "kind": "type",
+      "field": null,
+      "removed_in": "7.0",
+      "replacement": "UsersShared"
+    },
+    {
+      "entity": "UsersShared",
+      "kind": "type",
+      "field": "user_ids",
+      "removed_in": "7.2",
+      "replacement": null
+    }
+  ]
+}

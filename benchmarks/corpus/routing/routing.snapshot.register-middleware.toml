@@ -1,0 +1,45 @@
+# D114: r1's outer middleware registers an inner middleware on r2 while handling the first update.
+# 3.x applies it to the same update (r2 is reached later); 4.0 from the next one.
+schema = 1
+bench = false  # an oracle scenario (A-10), not a bench topology
+
+[variants]
+fsm = ["on", "off"]
+
+[[router]]
+name = "dp"
+
+[[router]]
+name = "r1"
+parent = "dp"
+
+[[router.outer_middlewares]]
+id = "r1.m0"
+event = "message"
+kind = "register"
+register = { id = "late.m0", what = "inner_middleware", router = "r2", middleware = { id = "late.m0", event = "message", kind = "pass" } }
+
+[[router.handler]]
+id = "h1"
+event = "message"
+filters = [{ id = "h1.f0", kind = "async", result = false }]  # survives the rejectors, so 4.0 enters r1
+
+[[router]]
+name = "r2"
+parent = "dp"
+
+[[router.handler]]
+id = "h2"
+event = "message"
+filters = []
+
+[[event]]
+name = "first"
+update = "update.text.small"
+expect = "h2"
+
+[[event]]
+name = "second"
+update = "update.text.small"
+patch = { update_id = 10002, "message.message_id" = 2 }
+expect = "h2"

@@ -1,0 +1,42 @@
+# D48: a filter of r11's handler raises; errors handlers as in routing.errors.handler.
+schema = 1
+bench = false  # an oracle scenario (A-10), not a bench topology
+
+[variants]
+fsm = ["on", "off"]
+
+[[router]]
+name = "dp"
+
+[[router.error_handler]]
+id = "dp.e0"
+action = { kind = "unhandled" }
+
+[[router]]
+name = "r1"
+parent = "dp"
+
+[[router.error_handler]]
+id = "r1.e0"
+action = { kind = "unhandled" }
+
+[[router]]
+name = "r11"
+parent = "r1"
+
+[[router.handler]]
+id = "h1"
+event = "message"
+filters = [{ id = "h1.f0", kind = "raise", error = "filter failed" }]
+
+[[router]]
+name = "r2"
+parent = "dp"
+
+[[router.error_handler]]
+id = "r2.e0"
+
+[[event]]
+name = "first"
+update = "update.text.small"
+expect = "r2.e0"
