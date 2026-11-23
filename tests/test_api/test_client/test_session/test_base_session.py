@@ -30,7 +30,7 @@ from aiogram.exceptions import (
 from aiogram.methods import DeleteMessage, GetMe, TelegramMethod
 from aiogram.types import UNSET_PARSE_MODE, LinkPreviewOptions, User
 from aiogram.types.base import UNSET_DISABLE_WEB_PAGE_PREVIEW, UNSET_PROTECT_CONTENT
-from tests.mocked_bot import MockedBot
+from tests.mocked_bot import MockedBot, bot_full_info
 
 
 class CustomSession(BaseSession):
@@ -337,7 +337,7 @@ class TestBaseSession:
             finally:
                 flag_after = True
 
-        bot.add_result_for(GetMe, ok=True, result=User(id=42, is_bot=True, first_name="Test"))
+        bot.add_result_for(GetMe, ok=True, result=bot_full_info())
         assert await bot.get_me()
         assert flag_before
         assert flag_after

@@ -32,3 +32,9 @@ aiogram/_core*.so
 aiogram/_core*.pyd
 # benchmarks/record: unredacted recorder output, never committed
 benchmarks/record/raw/
+
+# benchmarks: exported trees and venvs of `python -m benchmarks compare`
+.benchmarks/
+
+# differential harness: side venvs, archived git sides, traces
+.differential/

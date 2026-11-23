@@ -231,6 +231,7 @@ from aiogram.methods import (
 from aiogram.types import (
     BotCommand,
     BotDescription,
+    BotFullInfo,
     BotName,
     BotShortDescription,
     BusinessConnection,
@@ -2801,7 +2802,7 @@ def handle_get_chat(env: BotTestEnvironment, method: GetChat) -> ChatFullInfo:
 
 
 @models(GetMe)
-def handle_get_me(env: BotTestEnvironment, method: GetMe) -> User:
+def handle_get_me(env: BotTestEnvironment, method: GetMe) -> BotFullInfo:
     return env.world.bot_me()
 
 
