@@ -307,6 +307,21 @@ class TestUpdateLevel:
 
         assert await dp.feed_update(bot, update()) == "old"
 
+    async def test_overridden_listen_update_still_runs(self, bot: MockedBot):
+        class MyDispatcher(Dispatcher):
+            async def _listen_update(self, update: Update, **kwargs: Any) -> Any:
+                return "custom"
+
+        assert await MyDispatcher().feed_update(bot, update()) == "custom"
+
+    async def test_another_dispatchers_listener_is_not_replaced(self, bot: MockedBot):
+        dp, child = Dispatcher(), Dispatcher()
+        dp.update.handlers.clear()
+        dp.update.register(child._listen_update)
+        child.message.register(recorder([], "child"))
+
+        assert await dp.feed_update(bot, update()) == "child"
+
     async def test_execute(self, bot: MockedBot):
         dp = Dispatcher()
         dp.message.register(recorder([], "h"))

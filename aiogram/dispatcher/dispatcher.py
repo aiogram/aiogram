@@ -119,7 +119,7 @@ class Dispatcher(Router):
         # Called with each handler's return value inside its middleware scope (see table.py)
         self._on_handler_result: HandlerResultHook | None = None
         # A precompiled table feed_update uses instead of compiling one per update (benchmarks);
-        # the routing snapshot lifecycle replaces it with a cache
+        # it freezes workflow_data too. The routing snapshot lifecycle replaces it with a cache
         self._table: DispatchTable | None = None
 
     def __getitem__(self, item: str) -> Any:

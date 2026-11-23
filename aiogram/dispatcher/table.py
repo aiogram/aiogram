@@ -2,8 +2,9 @@
 Compiled routing table and its executor (internal).
 
 :func:`compile_table` turns a dispatcher's router tree into an immutable :class:`DispatchTable`;
-:func:`execute` runs one update through it. The middleware chains are built once, at compile, so
-an update builds no ``functools.partial`` chain and no closure per router.
+:func:`execute` runs one update through it. The middleware chains are built at compile, so running
+a compiled table builds no ``functools.partial`` chain and no closure per router (until the routing
+snapshot cache lands, ``Dispatcher.feed_update`` compiles a table per update).
 
 Semantics are 3.x's (03 §3, R09), with one documented break (D111 / PD-19, breaking change 24): a
 router's outer middlewares for an event type run only when a router at or below it has a handler
@@ -339,11 +340,19 @@ def compile_table(
         plan = compile_plan(dispatcher, event_type, on_handler_result=on_handler_result)
         if plan is not None:  # pragma: no branch - event_types only holds types with a handler
             by_event[event_type] = plan
+    from .dispatcher import Dispatcher  # noqa: PLC0415 - dispatcher imports this module
+
+    builtin_listener = Dispatcher._listen_update
     plans = MappingProxyType(by_event)
     routing_stage = functools.partial(route_update, plans)
 
     def terminals(handler: HandlerObject) -> Chain:
-        if handler.callback == dispatcher._listen_update:
+        # The built-in listener only: a subclass override of _listen_update still runs as written
+        callback = handler.callback
+        if (
+            getattr(callback, "__func__", None) is builtin_listener
+            and getattr(callback, "__self__", None) is dispatcher
+        ):
             return routing_stage
         return _terminal(handler, on_handler_result)
 
