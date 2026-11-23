@@ -76,6 +76,9 @@ def _shortcuts() -> dict[str, dict[str, object]]:
 
 
 def build() -> dict[str, object]:
+    # field annotations stay forward references until a type's schema is built (defer_build)
+    for cls in _subclasses(TelegramObject):
+        cls.model_rebuild()
     constructors = {f"{cls.__name__}": _positional(cls) for cls in _subclasses(TelegramMethod)}
     constructors.update({cls.__name__: _positional(cls) for cls in _subclasses(TelegramObject)})
     collections = {

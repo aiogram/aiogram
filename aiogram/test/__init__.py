@@ -10,7 +10,10 @@ Nothing here imports :mod:`pytest`; the fixtures live in :mod:`aiogram.test.plug
 which pytest loads through the ``pytest11`` entry point (``-p no:aiogram`` turns it off).
 """
 
-from . import rejections
+from . import (
+    _schemas,  # noqa: F401  (side effect: builds every type before reflection)
+    rejections,
+)
 from .actors import UserActor, Withheld
 from .blueprint import (
     Blueprint,

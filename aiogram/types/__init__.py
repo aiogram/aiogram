@@ -967,11 +967,16 @@ _types_namespace = {
     **{name: globals()[name] for name in __all__},
 }
 
-for _entity_name in __all__:
-    _entity = globals()[_entity_name]
-    if hasattr(_entity, "model_rebuild"):
-        _entity.model_rebuild(_types_namespace=_types_namespace)
+# Types refer to each other through TYPE_CHECKING-only imports, so pydantic cannot resolve those
+# forward references from a type module's globals. Put the names there (the module's own names win)
+# instead of building all schemas here: TelegramObject sets defer_build, so each schema is built
+# on first use, and from any context (a user model or TypeAdapter that nests a type included).
+import sys  # noqa: E402
 
-del _entity
-del _entity_name
+for _module_name, _module in tuple(sys.modules.items()):
+    if _module_name.startswith(f"{__name__}."):
+        vars(_module).update(_types_namespace | vars(_module))
+
+del _module
+del _module_name
 del _types_namespace

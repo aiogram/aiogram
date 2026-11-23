@@ -50,6 +50,16 @@ class TelegramObject(BotContextController, BaseModel):
         _fail_fast_lists(schema, source)
         return schema
 
+    def __init_subclass__(cls, **kwargs: Any) -> None:
+        # Runs before pydantic collects the fields. A subclass copies the fields of a built base,
+        # and otherwise resolves them again in its own module, which lacks the names aiogram.types
+        # imports only under TYPE_CHECKING: build its bases first (a no-op for built ones).
+        if not cls.__module__.startswith("aiogram.types."):
+            for base in cls.__mro__[1:]:
+                if issubclass(base, TelegramObject):
+                    base.model_rebuild()
+        super().__init_subclass__(**kwargs)
+
 
 class MutableTelegramObject(TelegramObject):
     model_config = ConfigDict(
