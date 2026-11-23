@@ -146,6 +146,10 @@ These patterns repeatedly appeared in maintainer feedback and should be treated 
 - Keep test style consistent with existing suite; avoid introducing new dependencies for small tests.
 - Preserve framework contracts (e.g., dispatcher/workflow data passed to startup/shutdown callbacks).
 - When fixing generated API metadata/docs, update the source mapping in `.butcher` so future regenerations keep the fix.
+- `AiohttpSession.make_request` sends a request without files as an `application/json` body and keeps the form
+  (multipart, or urlencoded) for files or a session that overrides `prepare_value` / `build_form_data`. A test that
+  asserts form fields calls `build_form_data` directly; a test override must be a new function, since the check
+  compares function objects.
 - Pytest runs with `filterwarnings = ["error", ...]`: a new `warnings.warn(...)` in library code (e.g. a
   `DeprecationWarning`) fails every existing test that reaches it. Find those tests first, then either stop
   them from triggering it or assert it with `pytest.warns`.

@@ -1,9 +1,11 @@
 import asyncio
 import datetime
+import functools
 import json
 import traceback
 from collections.abc import AsyncGenerator, AsyncIterable
 from contextlib import suppress
+from enum import Enum
 from typing import (
     Any,
     AsyncContextManager,
@@ -64,6 +66,10 @@ def assert_no_token(exc: BaseException) -> None:
     for text in (str(exc), repr(exc), "".join(traceback.format_exception(exc))):
         assert SECRET not in text
     assert SECRET in repr(exc.original)
+
+
+class PlainEnum(Enum):
+    TYPING = "typing"
 
 
 class BareInputFile(InputFile):
@@ -263,6 +269,7 @@ class TestAiohttpSession:
             until_date=datetime.datetime(2030, 1, 1, tzinfo=datetime.UTC),
             future_text="",
             icon_color=TopicIconColor.BLUE,
+            action=PlainEnum.TYPING,
         )
         content_type, body = await self.sent(aresponses, method)
         assert content_type == "application/json"
@@ -273,6 +280,7 @@ class TestAiohttpSession:
             "reply_markup": {"inline_keyboard": [[{"text": "Так", "callback_data": "yes"}]]},
             "until_date": 1893456000,
             "icon_color": 7322096,
+            "action": "typing",
         }
 
     async def test_make_request_multipart_with_file(self, aresponses: ResponsesMockServer):
@@ -287,11 +295,15 @@ class TestAiohttpSession:
         assert b'filename="red.png"' in body
         assert b'filename="blue.png"' in body
 
+    @pytest.mark.parametrize("on_instance", [False, True])
     @pytest.mark.parametrize("override", ["prepare_value", "build_form_data"])
-    async def test_make_request_override_keeps_form(self, aresponses, override):
+    async def test_make_request_override_keeps_form(self, aresponses, override, on_instance):
         base = getattr(AiohttpSession, override)
         wrapper = lambda *a, **kw: base(*a, **kw)  # noqa: E731, PLW0108 - a distinct function
         session = type("Custom", (AiohttpSession,), {override: wrapper})()
+        if on_instance:
+            session = AiohttpSession()
+            setattr(session, override, functools.partial(base, session))
         content_type, body = await self.sent(
             aresponses, SendMessage(chat_id=42, text="hi"), session=session
         )

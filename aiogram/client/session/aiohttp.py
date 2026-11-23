@@ -223,8 +223,10 @@ class AiohttpSession(BaseSession):
 
         url = self.api.api_url(token=bot.token, method=method.__api_method__)
         body = None
-        if type(self).build_form_data is AiohttpSession.build_form_data:
+        if getattr(self.build_form_data, "__func__", None) is AiohttpSession.build_form_data:
             body = self._build_json_body(bot=bot, method=method)
+        # ponytail: a request with files is prepared twice (JSON attempt, then the form);
+        # pass the prepared fields along if that ever shows up next to the upload itself
         if body is None:  # files or an overridden form builder: multipart/urlencoded as before
             data: FormData | bytes = self.build_form_data(bot=bot, method=method)
             headers = None
