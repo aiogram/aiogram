@@ -5,6 +5,7 @@ use std::path::{Path, PathBuf};
 
 pub mod bundle;
 pub mod cli;
+pub mod dsl;
 pub mod fetch;
 pub mod ir;
 pub mod manifest;

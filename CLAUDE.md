@@ -39,6 +39,8 @@ they are the ones verified against this project's toolchain:
 - rtk mangles a plain `grep` inside a pipeline: with `\|` in the pattern, or when another command follows
   after `;` (`git status --short | grep -v '^A ' ; …` becomes a search of the whole repository for `^A `).
   Always write `grep -E` in a pipeline, or wrap the whole pipeline in `rtk proxy bash -c "…"`.
+- Right after a successful `git merge`, `rtk git log --oneline` and `rtk git status -sb` showed the pre-merge head
+  (C-07), as if no merge had happened. Read the head with `rtk proxy git log` / `rtk proxy git rev-parse HEAD`.
 
 ## graphify
 

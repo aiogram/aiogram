@@ -8,7 +8,8 @@ from types import MappingProxyType
 
 import pytest
 
-from aiogram.fsm.storage.base import StorageKey
+from aiogram.exceptions import DataNotDictLikeError
+from aiogram.fsm.storage.base import StorageKey, StorageWrite
 from aiogram.fsm.storage.memory import MemoryStorage, MemoryStorageRecord
 
 THREADS = 4
@@ -140,6 +141,74 @@ class TestNoUserCodeUnderLock:
         await storage.update_data(key, {"b": 2})
         assert data == {"a": 1}
         assert storage.storage[key].data == {"a": 1, "b": 2}
+
+
+class CountingLock:
+    def __init__(self) -> None:
+        self._lock = threading.Lock()
+        self.acquired = 0
+
+    def __enter__(self) -> None:
+        self._lock.acquire()
+        self.acquired += 1
+
+    def __exit__(self, *exc: object) -> None:
+        self._lock.release()
+
+
+class TestBatch:
+    async def test_one_lock_acquisition_per_call(self):
+        storage = MemoryStorage()
+        storage._lock = lock = CountingLock()  # type: ignore[assignment]
+        key, key2 = make_key(), make_key(1)
+
+        await storage.apply_writes(
+            StorageWrite(key, state="a"),
+            StorageWrite(key2, data={"x": 1}),
+            StorageWrite(key, data={"y": 2}),
+        )
+        assert lock.acquired == 1
+
+        await storage.get_records(key, key2)
+        assert lock.acquired == 2
+
+        await storage.apply_writes()
+        assert lock.acquired == 2
+
+    async def test_invalid_write_applies_nothing(self):
+        storage = MemoryStorage()
+        key = make_key()
+        with pytest.raises(DataNotDictLikeError):
+            await storage.apply_writes(
+                StorageWrite(key, state="a", data={"x": 1}),
+                StorageWrite(make_key(1), data=()),  # type: ignore[arg-type]
+            )
+        assert storage.storage == {}
+
+    async def test_cleared_record_is_dropped(self):
+        storage = MemoryStorage()
+        key = make_key()
+        await storage.apply_writes(StorageWrite(key, state="a", data={"x": 1}))
+        assert storage.storage == {key: MemoryStorageRecord(state="a", data={"x": 1})}
+        await storage.apply_writes(StorageWrite(key, state=None), StorageWrite(key, data={}))
+        assert storage.storage == {}
+
+    async def test_stores_plain_dict(self):
+        class LoudDict(dict):
+            def copy(self):
+                raise AssertionError("user code")
+
+        storage = MemoryStorage()
+        key = make_key()
+        await storage.apply_writes(StorageWrite(key, data=LoudDict(foo="bar")))
+        assert type(storage.storage[key].data) is dict
+        assert (await storage.get_records(key))[0].data == {"foo": "bar"}
+
+    async def test_shallow_copy_sees_batch_writes(self):
+        storage = MemoryStorage()
+        other = copy.copy(storage)
+        await other.apply_writes(StorageWrite(make_key(), state="a"))
+        assert (await storage.get_records(make_key()))[0].state == "a"
 
 
 class TestStorageKey:

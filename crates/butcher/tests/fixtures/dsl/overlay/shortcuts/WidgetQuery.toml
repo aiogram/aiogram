@@ -1,0 +1,6 @@
+# WidgetQuery: every 3.x shortcut of .butcher/types/WidgetQuery/aliases.yml, in the fill-DSL
+
+[answer]
+method = "answerWidgetQuery"
+[answer.fill]
+widget_query_id = "self.id"

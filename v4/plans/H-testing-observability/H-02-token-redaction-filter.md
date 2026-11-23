@@ -2,7 +2,7 @@
 
 | Field | Value |
 |---|---|
-| Status | `todo` |
+| Status | `done` |
 | Story | H — Testing & observability |
 | Target branch | `dev-4.x` |
 | Depends on | [H-01](H-01-logger-hierarchy.md), [D-03](../D-client/D-03-token-safe-network-errors.md) |

@@ -1,0 +1,146 @@
+# Chat: every 3.x shortcut of .butcher/types/Chat/aliases.yml, in the fill-DSL
+
+[ban_sender_chat]
+method = "banChatSenderChat"
+[ban_sender_chat.fill]
+chat_id = "self.id"
+
+[unban_sender_chat]
+method = "unbanChatSenderChat"
+[unban_sender_chat.fill]
+chat_id = "self.id"
+
+[get_administrators]
+method = "getChatAdministrators"
+[get_administrators.fill]
+chat_id = "self.id"
+
+[delete_message]
+method = "deleteMessage"
+[delete_message.fill]
+chat_id = "self.id"
+
+[revoke_invite_link]
+method = "revokeChatInviteLink"
+[revoke_invite_link.fill]
+chat_id = "self.id"
+
+[edit_invite_link]
+method = "editChatInviteLink"
+[edit_invite_link.fill]
+chat_id = "self.id"
+
+[create_invite_link]
+method = "createChatInviteLink"
+[create_invite_link.fill]
+chat_id = "self.id"
+
+[export_invite_link]
+method = "exportChatInviteLink"
+[export_invite_link.fill]
+chat_id = "self.id"
+
+[do]
+method = "sendChatAction"
+[do.fill]
+chat_id = "self.id"
+
+[delete_sticker_set]
+method = "deleteChatStickerSet"
+[delete_sticker_set.fill]
+chat_id = "self.id"
+
+[set_sticker_set]
+method = "setChatStickerSet"
+[set_sticker_set.fill]
+chat_id = "self.id"
+
+[get_member]
+method = "getChatMember"
+[get_member.fill]
+chat_id = "self.id"
+
+[get_member_count]
+method = "getChatMemberCount"
+[get_member_count.fill]
+chat_id = "self.id"
+
+[leave]
+method = "leaveChat"
+[leave.fill]
+chat_id = "self.id"
+
+[unpin_all_messages]
+method = "unpinAllChatMessages"
+[unpin_all_messages.fill]
+chat_id = "self.id"
+
+[unpin_message]
+method = "unpinChatMessage"
+[unpin_message.fill]
+chat_id = "self.id"
+
+[pin_message]
+method = "pinChatMessage"
+[pin_message.fill]
+chat_id = "self.id"
+
+[set_administrator_custom_title]
+method = "setChatAdministratorCustomTitle"
+[set_administrator_custom_title.fill]
+chat_id = "self.id"
+
+[set_member_tag]
+method = "setChatMemberTag"
+[set_member_tag.fill]
+chat_id = "self.id"
+
+[set_permissions]
+method = "setChatPermissions"
+[set_permissions.fill]
+chat_id = "self.id"
+
+[promote]
+method = "promoteChatMember"
+[promote.fill]
+chat_id = "self.id"
+
+[restrict]
+method = "restrictChatMember"
+[restrict.fill]
+chat_id = "self.id"
+
+[unban]
+method = "unbanChatMember"
+[unban.fill]
+chat_id = "self.id"
+
+[ban]
+method = "banChatMember"
+[ban.fill]
+chat_id = "self.id"
+
+[set_description]
+method = "setChatDescription"
+[set_description.fill]
+chat_id = "self.id"
+
+[set_title]
+method = "setChatTitle"
+[set_title.fill]
+chat_id = "self.id"
+
+[delete_photo]
+method = "deleteChatPhoto"
+[delete_photo.fill]
+chat_id = "self.id"
+
+[set_photo]
+method = "setChatPhoto"
+[set_photo.fill]
+chat_id = "self.id"
+
+[unpin_all_general_forum_topic_messages]
+method = "unpinAllGeneralForumTopicMessages"
+[unpin_all_general_forum_topic_messages.fill]
+chat_id = "self.id"

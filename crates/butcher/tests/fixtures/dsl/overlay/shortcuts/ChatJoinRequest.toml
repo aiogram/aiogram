@@ -1,0 +1,195 @@
+# ChatJoinRequest: every 3.x shortcut of .butcher/types/ChatJoinRequest/aliases.yml, in the fill-DSL
+
+[approve]
+method = "approveChatJoinRequest"
+[approve.fill]
+chat_id = "self.chat.id"
+user_id = "self.from_user.id"
+
+[decline]
+method = "declineChatJoinRequest"
+[decline.fill]
+chat_id = "self.chat.id"
+user_id = "self.from_user.id"
+
+[answer]
+method = "sendMessage"
+[answer.fill]
+chat_id = "self.chat.id"
+
+[answer_pm]
+method = "sendMessage"
+[answer_pm.fill]
+chat_id = "self.user_chat_id"
+
+[answer_animation]
+method = "sendAnimation"
+[answer_animation.fill]
+chat_id = "self.chat.id"
+
+[answer_animation_pm]
+method = "sendAnimation"
+[answer_animation_pm.fill]
+chat_id = "self.user_chat_id"
+
+[answer_audio]
+method = "sendAudio"
+[answer_audio.fill]
+chat_id = "self.chat.id"
+
+[answer_audio_pm]
+method = "sendAudio"
+[answer_audio_pm.fill]
+chat_id = "self.user_chat_id"
+
+[answer_contact]
+method = "sendContact"
+[answer_contact.fill]
+chat_id = "self.chat.id"
+
+[answer_contact_pm]
+method = "sendContact"
+[answer_contact_pm.fill]
+chat_id = "self.user_chat_id"
+
+[answer_document]
+method = "sendDocument"
+[answer_document.fill]
+chat_id = "self.chat.id"
+
+[answer_document_pm]
+method = "sendDocument"
+[answer_document_pm.fill]
+chat_id = "self.user_chat_id"
+
+[answer_game]
+method = "sendGame"
+[answer_game.fill]
+chat_id = "self.chat.id"
+
+[answer_game_pm]
+method = "sendGame"
+[answer_game_pm.fill]
+chat_id = "self.user_chat_id"
+
+[answer_invoice]
+method = "sendInvoice"
+[answer_invoice.fill]
+chat_id = "self.chat.id"
+
+[answer_invoice_pm]
+method = "sendInvoice"
+[answer_invoice_pm.fill]
+chat_id = "self.user_chat_id"
+
+[answer_location]
+method = "sendLocation"
+[answer_location.fill]
+chat_id = "self.chat.id"
+
+[answer_location_pm]
+method = "sendLocation"
+[answer_location_pm.fill]
+chat_id = "self.user_chat_id"
+
+[answer_media_group]
+method = "sendMediaGroup"
+[answer_media_group.fill]
+chat_id = "self.chat.id"
+
+[answer_media_group_pm]
+method = "sendMediaGroup"
+[answer_media_group_pm.fill]
+chat_id = "self.user_chat_id"
+
+[answer_photo]
+method = "sendPhoto"
+[answer_photo.fill]
+chat_id = "self.chat.id"
+
+[answer_photo_pm]
+method = "sendPhoto"
+[answer_photo_pm.fill]
+chat_id = "self.user_chat_id"
+
+[answer_poll]
+method = "sendPoll"
+[answer_poll.fill]
+chat_id = "self.chat.id"
+
+[answer_poll_pm]
+method = "sendPoll"
+[answer_poll_pm.fill]
+chat_id = "self.user_chat_id"
+
+[answer_dice]
+method = "sendDice"
+[answer_dice.fill]
+chat_id = "self.chat.id"
+
+[answer_dice_pm]
+method = "sendDice"
+[answer_dice_pm.fill]
+chat_id = "self.user_chat_id"
+
+[answer_sticker]
+method = "sendSticker"
+[answer_sticker.fill]
+chat_id = "self.chat.id"
+
+[answer_sticker_pm]
+method = "sendSticker"
+[answer_sticker_pm.fill]
+chat_id = "self.user_chat_id"
+
+[answer_venue]
+method = "sendVenue"
+[answer_venue.fill]
+chat_id = "self.chat.id"
+
+[answer_venue_pm]
+method = "sendVenue"
+[answer_venue_pm.fill]
+chat_id = "self.user_chat_id"
+
+[answer_video]
+method = "sendVideo"
+[answer_video.fill]
+chat_id = "self.chat.id"
+
+[answer_video_pm]
+method = "sendVideo"
+[answer_video_pm.fill]
+chat_id = "self.user_chat_id"
+
+[answer_video_note]
+method = "sendVideoNote"
+[answer_video_note.fill]
+chat_id = "self.chat.id"
+
+[answer_video_note_pm]
+method = "sendVideoNote"
+[answer_video_note_pm.fill]
+chat_id = "self.user_chat_id"
+
+[answer_voice]
+method = "sendVoice"
+[answer_voice.fill]
+chat_id = "self.chat.id"
+
+[answer_voice_pm]
+method = "sendVoice"
+[answer_voice_pm.fill]
+chat_id = "self.user_chat_id"
+
+[answer_query]
+method = "answerChatJoinRequestQuery"
+require = [{ path = "self.query_id", message = "This method can be used only if query_id is present in the chat join request." }]
+[answer_query.fill]
+chat_join_request_query_id = "self.query_id"
+
+[send_webapp]
+method = "sendChatJoinRequestWebApp"
+require = [{ path = "self.query_id", message = "This method can be used only if query_id is present in the chat join request." }]
+[send_webapp.fill]
+chat_join_request_query_id = "self.query_id"

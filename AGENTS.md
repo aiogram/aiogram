@@ -111,6 +111,9 @@ Suite strategy (4.0, D88):
 - `aiogram.test` deep-copies worlds, including their FSM storage (`tests/test_testing/test_world.py`). A
   `threading.Lock` cannot be copied, so a storage or isolation class that holds one needs `__getstate__` /
   `__setstate__` (the copy gets its own lock) and a `__copy__` that shares it (`MemoryStorage`, F-01).
+- `tests/test_fsm/storage/test_storages.py::TestStorages` also runs on `MinimalStorage` (`tests/conftest.py`), a
+  storage with only the abstract `BaseStorage` methods: a new non-abstract `BaseStorage` method needs a fallback that
+  passes there, and a new shared case must not rely on a built-in storage's extras.
 
 `MockedSession` builds the JSON wire envelope and runs it through `BaseSession.check_response`, so unit tests keep
 exercising the real error mapping (`TelegramBadRequest`, `TelegramRetryAfter`, ...). Its model-layer dependencies are
@@ -324,6 +327,10 @@ These patterns repeatedly appeared in maintainer feedback and should be treated 
   references into the IR. Completeness rules (every method has `idempotent`, ...) are `butcher check`'s (C-23), not the
   loader's. Avoid `#[serde(untagged)]` in schemas loaded through `serde_path_to_error`: it replaces the inner
   "unknown field" error with "did not match any variant" (the fill value has a hand-written `Deserialize` instead).
+- Fill-DSL (C-07, `src/dsl.rs`): `dsl::apply` resolves shortcut fills, guards and `events.toml` into `Ir.shortcuts` /
+  `Ir.events`; grammar and rules in `butcher/overlay/README.md`. Paths use Python names (`names.toml`), steps store
+  wire names. `tests/fixtures/dsl/` is the 3.x corpus (all 189 `aliases.yml` shortcuts); 3.x shared `ignore` anchors
+  list params some target methods lack, which C-06's check rejects, so a translator drops them.
 - `cargo test -p butcher <name>` filters by test name, not by file: `cargo test -p butcher overlay` skips most of
   `tests/overlay.rs`. Run a test file with `--test <file>`.
 - A new workspace crate stays out of the sdist and the wheel: maturin rewrites the sdist's `members` to
@@ -350,6 +357,11 @@ These patterns repeatedly appeared in maintainer feedback and should be treated 
   marked stale filters (`aiogram_framework_filter`), so a new framework filter needs the same marker.
 - A test `logging.Handler` subclass must not set `self.lock`: `Handler.handle()` holds it around `emit()`, and a
   plain `threading.Lock` there deadlocks the test.
+- Token masking has one pattern: `loggers._TOKEN_PATTERN` (H-02), also used by the CLI's `redact()`. It has no `\b`,
+  because in `/bot123456:...` no word boundary comes before the id. It keeps `(?<!\d)`: without it, `\d{5,}` retries
+  at every digit, and a long digit run with no colon takes quadratic time.
+- A test that walks `logging.Logger.manager.loggerDict` runs in a subprocess. The pytest process holds `aiogram.*`
+  loggers that other tests created with a plain `logging.getLogger`.
 
 ## Async generators and file IO
 

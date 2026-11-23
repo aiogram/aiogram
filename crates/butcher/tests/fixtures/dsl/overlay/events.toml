@@ -1,0 +1,20 @@
+# The 3.x event-context shapes (aiogram/dispatcher/middlewares/user_context.py) for a few update types.
+[message]
+user = "self.from_user"
+chat = "self.chat"
+thread_id = { expr = "self.message_thread_id", when = "self.is_topic_message" }
+business_connection_id = "self.business_connection_id"
+
+# `message` is MaybeInaccessibleMessage: `?.` reads a field that only `Message` has
+[callback_query]
+user = "self.from_user"
+chat = "self.message?.chat"
+thread_id = { expr = "self.message?.message_thread_id", when = "self.message?.is_topic_message" }
+business_connection_id = "self.message?.business_connection_id"
+
+[poll_answer]
+user = "self.user"
+chat = "self.voter_chat"
+
+[inline_query]
+user = "self.from_user"

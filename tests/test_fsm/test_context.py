@@ -1,7 +1,7 @@
 import pytest
 
 from aiogram.fsm.context import FSMContext
-from aiogram.fsm.storage.base import StorageKey
+from aiogram.fsm.storage.base import StorageKey, StorageRecord
 from aiogram.fsm.storage.memory import MemoryStorage, MemoryStorageRecord
 from tests.mocked_bot import MockedBot
 
@@ -51,3 +51,6 @@ class TestFSMContext:
         assert await state.get_data() == {}
 
         assert await state2.get_state() == "experiments"
+
+    async def test_get_record(self, state: FSMContext):
+        assert await state.get_record() == StorageRecord(state="test", data={"foo": "bar"})
