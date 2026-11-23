@@ -38,6 +38,13 @@ lifecycle, rejectors, errors, Runner) plugs into it.
   ```
 - `compile_table(dispatcher) -> DispatchTable` — a pure function over the current router graph (DFS == 3.x
   `sub_routers` order). Chains are prebuilt once per frame / candidate.
+- **Chain shape (the D-06 design, which E-06 makes the public router-middleware protocol):**
+  - a prebuilt chain is a tuple of middlewares plus a terminal (the frame body or the handler);
+  - the executor runs it through **one context object per chain invocation** that holds the event, the R09 scope
+    dict and the chain position (`await ctx.next()`), not through nested `partial`s;
+  - in this plan the public protocol is unchanged: the 3.x `(handler, event, data)` middlewares are called with a
+    `handler` that continues the same context;
+  - E-06 then switches the public protocol to `(ctx)`, with a 3.x adapter, without restructuring the executor.
 - Executor `execute(table, bot, update, data)` replacing `Router.propagate_event` / `_propagate_event` /
   `TelegramEventObserver.trigger` on the hot path. `Dispatcher.feed_update` calls it; `Router.propagate_event` stays as
   a thin public wrapper that compiles on demand (used by scenes and tests).
@@ -78,7 +85,8 @@ lifecycle, rejectors, errors, Runner) plugs into it.
 ## Checklist
 
 - [ ] `compile_table()` producing the frozen structures above; DFS order identical to 3.x.
-- [ ] Prebuilt outer chain per frame and inner chain per candidate (no per-update `partial`/`wraps`).
+- [ ] Prebuilt outer chain per frame and inner chain per candidate, run through one context per chain invocation
+  (no per-update `partial`/`wraps`; the shape E-06 builds on).
 - [ ] Dict-based event-type lookup and the Python `routing_keys` shim, cached per update.
 - [ ] Executor with the four data scopes (R09) and the commit points above.
 - [ ] Root filters per observer, including `dp.update.filter`.

@@ -21,7 +21,7 @@ multi-Runner tests — verified by [E-21](E-21-e-exit-gate.md).
 | [E-03](E-03-snapshot-lifecycle.md) | Snapshot lifecycle: epoch, cache, refresh, warning | E-02 | no | M |
 | [E-04](E-04-router-graph-multi-parent-flags.md) | Router graph: multi-parent, diamonds, router flags | E-02 | no | M |
 | [E-05](E-05-typed-observers-unknown-update.md) | Typed generated observers + `unknown_update` | C-16, E-03 | no | S |
-| [E-06](E-06-middleware-api.md) | Middleware anchors, per-handler middlewares, generic BaseMiddleware | E-02 | no | M |
+| [E-06](E-06-middleware-api.md) | Middleware context protocol, prebuilt chains, anchors, per-handler middlewares, generic BaseMiddleware | D-06, E-02 | no | L |
 | [E-07](E-07-sync-filter-execution.md) | Sync filter execution (`SyncFilterMode`) | 3x-03, E-02 | no | S |
 | [E-08](E-08-magic-filter-compile.md) | `F` compiled to closures | E-07 | no | M |
 | [E-09](E-09-routing-keys-compiled-rejectors.md) | Routing keys + compiled rejectors | B-05, B-13, C-16, C-19, E-02, E-08 | **yes** | L |

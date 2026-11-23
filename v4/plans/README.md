@@ -205,7 +205,7 @@ Verification method and results: [_VERIFICATION.md](_VERIFICATION.md).
 | [E-03](E-runtime/E-03-snapshot-lifecycle.md) | Routing snapshot lifecycle: topology epoch, caching, refresh, mutation warning | `todo` | no | M | E-02 |
 | [E-04](E-runtime/E-04-router-graph-multi-parent-flags.md) | Router graph: multiple parents, diamond check, router-level flags | `todo` | no | M | E-02 |
 | [E-05](E-runtime/E-05-typed-observers-unknown-update.md) | Generated typed observers and the `unknown_update` observer | `todo` | no | S | C-16, E-03 |
-| [E-06](E-runtime/E-06-middleware-api.md) | Middleware API: ordering anchors, per-handler middlewares, generic `BaseMiddleware` | `todo` | no | M | E-02 |
+| [E-06](E-runtime/E-06-middleware-api.md) | Middleware API: context protocol, prebuilt chains, ordering anchors, per-handler middlewares, generic `BaseMiddleware` | `todo` | no | L | D-06, E-02 |
 | [E-07](E-runtime/E-07-sync-filter-execution.md) | Sync filter execution: `SyncFilterMode`, `inline()` / `blocking()`, dict-overwrite warning | `todo` | no | S | 3x-03, E-02 |
 | [E-08](E-runtime/E-08-magic-filter-compile.md) | Compile `F` expressions to closures | `todo` | no | M | E-07 |
 | [E-09](E-runtime/E-09-routing-keys-compiled-rejectors.md) | Routing keys and compiled rejectors (prefilter, literal and command index) | `todo` | **yes** | L | B-05, B-13, C-16, C-19, E-02, E-08 |

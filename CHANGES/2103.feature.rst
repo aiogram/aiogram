@@ -5,5 +5,5 @@ Client session request middlewares now take one
 :code:`bot.session.middleware.register(...)` and the decorator accept :code:`before=` / :code:`after=`
 anchors (a middleware class or object) to place a middleware relative to another; a missing anchor
 or a cycle raises :code:`ValueError` naming it.
-The chain is built once and reused until the next :code:`register` / :code:`unregister`, so a call
-with three middlewares costs about 40% less.
+The chain is built once and reused until the next :code:`register` / :code:`unregister` instead of
+on every API call.
