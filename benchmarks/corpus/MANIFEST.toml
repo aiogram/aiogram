@@ -170,9 +170,9 @@ path = "wire/response.ok-null-result.json"
 sha256 = "32adcb5c91865620c27bc81d61ecdf31cf5240e511789592f10d8cd167a5486a"
 method = "sendMessage"
 status = 200
-on_3x = "ok"
+on_3x = "ClientDecodeError"
 provenance = { source = "hand", date = "2026-11-18", aiogram = "3.32.0", bot_api = "10.4", author = "JRoot Junior" }
-notes = "ok = true with result = null. 3.32.0: accepted, sendMessage returns None."
+notes = "ok = true with result = null. 3.32.0: accepted, sendMessage returns None. after 3.34.0: rejected with ClientDecodeError (no method returns None)."
 
 [[input]]
 id = "routing.1-handler"

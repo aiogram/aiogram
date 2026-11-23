@@ -19,9 +19,9 @@ async def my_handler(message: Message):
 async def test_something(bot: MockedBot):
     dp = Dispatcher()
     dp.include_router(issue_router)
-    bot.add_result_for(method=SendMessage, ok=True)
     chat = Chat(id=666, type=ChatType.PRIVATE)
     user = User(id=666, is_bot=False, first_name="User")
     msg = Message(message_id=1, date=datetime.now(), from_user=user, chat=chat, text="/test")
+    bot.add_result_for(method=SendMessage, ok=True, result=msg)
     result = await dp.feed_update(bot, Update(message=msg, update_id=1))
     assert result is True

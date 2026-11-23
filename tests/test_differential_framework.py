@@ -20,7 +20,12 @@ from differential.runner import Entry, HarnessError, Mismatch  # noqa: E402
 
 Record = dict[str, Any]
 # manifest entries that are active in 3.x-vs-3.x runs too (no `when`): (kind, decision)
-THREE_X_ENTRIES = {("request", "R18"), ("request", "PD-11"), ("model", "GHSA-hv98-r5fx-wc83")}
+THREE_X_ENTRIES = {
+    ("request", "R18"),
+    ("request", "PD-11"),
+    ("request", "3x-01"),
+    ("model", "GHSA-hv98-r5fx-wc83"),
+}
 
 
 def fake_side(poison: bool = False) -> list[Record]:
@@ -277,6 +282,7 @@ class TestManifest:
         }
         expected |= {"D34", "D28", "D114", "D12", "R18", "PD-08", "PD-11"}
         expected = (expected - {"D94"}) | {"D15", "R06", "GHSA-hv98-r5fx-wc83"}  # A-08
+        expected |= {"3x-01"}
         assert decisions == expected
 
     def test_stub_comparators_never_approve(self):

@@ -92,6 +92,33 @@ keeping a reference to that task, and returning without awaiting it.
     Handlers with side effects, such as handing over goods after a payment,
     still need to record their progress and to recognise an update they have already handled.
 
+.. _long-polling-undecodable-updates:
+
+Undecodable updates
+===================
+
+When :code:`getUpdates` returns a batch that can't be decoded, for example because one update
+carries a value added by a Bot API version newer than aiogram, polling validates its updates
+one by one instead of retrying the whole batch forever:
+
+- the valid updates are handled in their order;
+- an update that fails validation is skipped: it is logged once at :code:`ERROR` on
+  :code:`aiogram.dispatcher` with the number of validation errors and the first one
+  (the raw update goes to the same logger at :code:`DEBUG`), passed to the errors handlers
+  (see :ref:`invalid-updates`) and confirmed like a handled update.
+
+Skipping is deliberate data loss: Telegram does not send a confirmed update again,
+so delivery is best-effort. Errors handlers run inside the polling loop,
+before the next update of the batch.
+
+When an update that fails validation has no integer :code:`update_id`, or the response has no
+list of updates, polling fetches the updates one at a time (:code:`limit=1`) to find the one
+it can skip. If even that update has no :code:`update_id`, nothing can be confirmed safely:
+polling logs an :code:`ERROR` and retries with the usual backoff, as for network errors.
+
+A response with :code:`"ok": true` and no :code:`result` raises
+:class:`~aiogram.exceptions.ClientDecodeError` for every method.
+
 Example
 =======
 

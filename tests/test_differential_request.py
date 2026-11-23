@@ -183,6 +183,26 @@ class TestComparators:
         with pytest.raises(Mismatch, match=error):
             runner.COMPARATORS["json_body_without_files"](left, right)
 
+    def test_ok_without_result_holds(self):
+        class ClientDecodeError(Exception):  # only its name is recorded
+            pass
+
+        left = trace.ok("response.x", "decode", None)
+        right = trace.error("response.x", "decode", ClientDecodeError("x"))
+        assert self.judge("ok_without_result_rejected", left, right) == []
+        assert self.judge("ok_without_result_rejected", left, left) == []
+
+    @pytest.mark.parametrize(
+        ("left", "right", "error"),
+        [
+            (record(FORM), record(None, ok=False), "left did not return None"),
+            (record(None), record(None, ok=False), "right did not raise ClientDecodeError"),
+        ],
+    )
+    def test_ok_without_result_rejects(self, left, right, error):
+        with pytest.raises(Mismatch, match=error):
+            runner.COMPARATORS["ok_without_result_rejected"](left, right)
+
     def test_json_body_rest_differs(self):
         (outcome,) = self.judge(
             "json_body_without_files", record(FORM), record({**JSON, "fields": ["b"]})

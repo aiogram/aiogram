@@ -451,6 +451,19 @@ def nesting_limit_on_dict_path(left: Record, right: Record) -> tuple[Record, Rec
     return right, right
 
 
+@comparator("ok_without_result_rejected")
+def ok_without_result_rejected(left: Record, right: Record) -> tuple[Record, Record]:
+    """3x-01: ``ok: true`` without a ``result`` is no longer returned as ``None``.
+
+    Left returned ``None`` (3.34.0 and older); right raises ``ClientDecodeError`` instead.
+    """
+    if _core(left) == _core(right):
+        return left, right
+    _expect(_ok(left) and left.get("value") is None, "left did not return None")
+    _expect(_error_type(right) == "ClientDecodeError", "right did not raise ClientDecodeError")
+    return right, right
+
+
 @comparator("json_body_without_files")
 def json_body_without_files(left: Record, right: Record) -> tuple[Record, Record]:
     """R18 (3x-09, D-07 / D-08): a request without files may move from a form to a JSON body.

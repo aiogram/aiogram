@@ -218,6 +218,29 @@ class TestAiohttpSession:
             assert isinstance(result, int)
             assert result == 42
 
+    async def test_make_request_invalid_utf8(
+        self, bot: MockedBot, aresponses: ResponsesMockServer
+    ):
+        aresponses.add(
+            aresponses.ANY,
+            "/bot42:TEST/method",
+            "post",
+            aresponses.Response(
+                status=200,
+                body=b'{"ok": true, "result": "\xff"}',
+                headers={"Content-Type": "application/json; charset=utf-8"},
+            ),
+        )
+
+        async with AiohttpSession() as session:
+
+            class TestMethod(TelegramMethod[str]):
+                __returning__ = str
+                __api_method__ = "method"
+
+            # Undecodable bytes are replaced instead of failing the request
+            assert await session.make_request(bot, TestMethod()) == "\ufffd"
+
     @pytest.mark.parametrize("error", [ClientError("mocked"), asyncio.TimeoutError()])
     async def test_make_request_network_error(self, error):
         async def side_effect(*args, **kwargs):

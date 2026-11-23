@@ -183,6 +183,9 @@ class TelegramEntityTooLarge(TelegramNetworkError):
     url = "https://core.telegram.org/bots/api#sending-files"
 
 
+_MAX_ORIGINAL_LENGTH = 512
+
+
 class ClientDecodeError(AiogramError):
     """
     Exception raised when client can't decode response. (Malformed response, etc.)
@@ -195,10 +198,14 @@ class ClientDecodeError(AiogramError):
 
     def __str__(self) -> str:
         original_type = type(self.original)
+        original = str(self.original)
+        if len(original) > _MAX_ORIGINAL_LENGTH:
+            # One error per bad field: the text of a large batch grows without bound
+            original = f"{original[:_MAX_ORIGINAL_LENGTH]}... ({len(original)} characters)"
         return (
             f"{self.message}\n"
             f"Caused from error: "
-            f"{original_type.__module__}.{original_type.__name__}: {self.original}\n"
+            f"{original_type.__module__}.{original_type.__name__}: {original}\n"
             f"Content: {self.data}"
         )
 

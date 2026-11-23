@@ -26,3 +26,10 @@ class = "approved"
 decision = "R18"
 assert = "json_body_without_files"
 note = "JSON body when there are no files, multipart otherwise: 3x-09 for 3.x vs 3.x, D-07 / D-08 for 4.0"
+
+[[case]]
+match = "response.ok-null-result/decode"
+class = "approved"
+decision = "3x-01"
+assert = "ok_without_result_rejected"
+note = "ok = true without a result raises ClientDecodeError instead of returning None"

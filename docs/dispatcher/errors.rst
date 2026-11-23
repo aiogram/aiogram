@@ -28,6 +28,8 @@ If you specify errors handler for dispatcher - it will be used for all handlers 
         ...
 
 
+.. _invalid-updates:
+
 Updates that can't be validated
 -------------------------------
 
@@ -36,12 +38,15 @@ and :code:`Dispatcher.feed_webhook_update` as a dict) that fails validation is s
 the webhook answers it with 200 so Telegram does not redeliver it, and the update is lost.
 The skip is logged on :code:`aiogram.webhook` with the number of validation errors
 (the raw update goes to the same logger at :code:`DEBUG`).
+Polling skips such an update the same way and logs it on :code:`aiogram.dispatcher`,
+see :ref:`long-polling-undecodable-updates`.
 
 When the raw update has an integer :code:`update_id`, errors handlers also receive an
 :code:`ErrorEvent` with the :code:`pydantic.ValidationError` as :code:`event.exception`.
 Its :code:`event.update` carries only :code:`update_id`, so every event field
 (:code:`event.update.message` and the others) is :code:`None`.
-An exception raised by such an errors handler is logged and does not change the answer.
+An exception raised by such an errors handler is logged and does not change the answer
+(nor stop polling).
 
 .. code-block:: python
 

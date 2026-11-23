@@ -27,7 +27,7 @@ from aiogram.exceptions import (
     TelegramServerError,
     TelegramUnauthorizedError,
 )
-from aiogram.methods import DeleteMessage, GetMe, TelegramMethod
+from aiogram.methods import DeleteMessage, GetMe, GetUpdates, TelegramMethod
 from aiogram.types import UNSET_PARSE_MODE, LinkPreviewOptions, User
 from aiogram.types.base import UNSET_DISABLE_WEB_PAGE_PREVIEW, UNSET_PROTECT_CONTENT
 from tests.mocked_bot import MockedBot, bot_full_info
@@ -278,6 +278,30 @@ class TestBaseSession:
                 status_code=200,
                 content='{"ok": "test"}',
             )
+
+    @pytest.mark.parametrize("content", ['{"ok": true}', '{"ok": true, "result": null}'])
+    def test_check_response_ok_without_result(self, content: str):
+        session = CustomSession()
+        bot = MockedBot()
+        method = DeleteMessage(chat_id=42, message_id=42)
+
+        with pytest.raises(ClientDecodeError, match="result is missing") as exc_info:
+            session.check_response(bot=bot, method=method, status_code=200, content=content)
+        assert exc_info.value.data == content
+
+    def test_client_decode_error_text_is_bounded(self):
+        session = CustomSession()
+        bot = MockedBot()
+        bad = {"update_id": 1, "chat_member": {"date": "x" * 1000}}
+        content = json.dumps({"ok": True, "result": [bad] * 100})
+
+        with pytest.raises(ClientDecodeError) as exc_info:
+            session.check_response(bot=bot, method=GetUpdates(), status_code=200, content=content)
+        text = str(exc_info.value)
+        # The original error is cut, the content is kept in full for bug reports
+        assert len(str(exc_info.value.original)) > 512
+        assert f"... ({len(str(exc_info.value.original))} characters)" in text
+        assert text.endswith(f"Content: {content}")
 
     async def test_make_request(self):
         session = CustomSession()

@@ -109,6 +109,10 @@ class BaseSession(abc.ABC):
             raise ClientDecodeError(msg, e, content) from e
 
         if HTTPStatus.OK <= status_code <= HTTPStatus.IM_USED and response.ok:
+            if response.result is None:
+                # No method returns None: a success without a result can't be used
+                msg = "Failed to deserialize object"
+                raise ClientDecodeError(msg, ValueError("result is missing"), content)
             return response
 
         description = cast(str, response.description)

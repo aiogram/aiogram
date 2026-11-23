@@ -2,17 +2,19 @@ from __future__ import annotations
 
 import asyncio
 import contextvars
+import json
+import logging
 import signal
 import warnings
 from asyncio import CancelledError, Event, Future, Lock
-from collections.abc import AsyncGenerator, Awaitable
+from collections.abc import AsyncGenerator, Awaitable, Callable
 from contextlib import suppress
 from typing import TYPE_CHECKING, Any
 
 from pydantic import ValidationError
 
 from aiogram import loggers
-from aiogram.exceptions import TelegramAPIError
+from aiogram.exceptions import ClientDecodeError, TelegramAPIError
 from aiogram.fsm.middleware import FSMContextMiddleware
 from aiogram.fsm.storage.base import BaseEventIsolation, BaseStorage
 from aiogram.fsm.storage.memory import DisabledEventIsolation, MemoryStorage
@@ -227,11 +229,28 @@ class Dispatcher(Router):
             # Handled outside the except block, so that nothing raised later is chained to it
             error = e
 
+        update_id = self._log_invalid_update(loggers.webhook, bot, update, error)
+        if update_id is not None:
+            await self._report_invalid_update(bot, update_id, error, kwargs)
+        return None
+
+    @staticmethod
+    def _log_invalid_update(
+        logger: logging.Logger,
+        bot: Bot,
+        update: Any,
+        error: ValidationError,
+    ) -> int | None:
+        """
+        Log a raw update that is skipped because it can't be validated.
+
+        :return: its integer ``update_id``, or ``None`` when it has none
+        """
         update_id = update.get("update_id") if isinstance(update, dict) else None
         if type(update_id) is not int:
             update_id = None
         first = error.errors(include_url=False, include_context=False, include_input=False)[0]
-        loggers.webhook.error(
+        logger.error(
             "Update id=%s is skipped because it can't be validated by bot id=%d: "
             "%d validation errors, first: %s at %s",
             update_id,
@@ -240,10 +259,20 @@ class Dispatcher(Router):
             first["type"],
             first["loc"],
         )
-        loggers.webhook.debug("Skipped update: %r", update)
-        if update_id is None:
-            return None
+        logger.debug("Skipped update: %r", update)
+        return update_id
 
+    async def _report_invalid_update(
+        self,
+        bot: Bot,
+        update_id: int,
+        error: ValidationError,
+        kwargs: dict[str, Any],
+    ) -> None:
+        """
+        Pass a skipped update to the ``errors`` observers as an :class:`ErrorEvent`
+        whose update carries only ``update_id``.
+        """
         try:
             await self.propagate_event(
                 update_type="error",
@@ -252,13 +281,24 @@ class Dispatcher(Router):
             )
         except Exception:  # noqa: BLE001
             # The update is skipped anyway: a failing error handler must not turn it into
-            # a non-2xx answer that makes Telegram redeliver it
+            # a non-2xx webhook answer that makes Telegram redeliver it, nor stop polling
             loggers.event.exception(
                 "Error handler failed for skipped update id=%d by bot id=%d",
                 update_id,
                 bot.id,
             )
-        return None
+
+    @staticmethod
+    def _raw_updates(content: Any) -> list[Any] | None:
+        """
+        The ``result`` list of a raw ``getUpdates`` response, or ``None`` when it has none.
+        """
+        try:
+            response = json.loads(content)
+        except (TypeError, ValueError, RecursionError):
+            return None
+        result = response.get("result") if isinstance(response, dict) else None
+        return result if isinstance(result, list) else None
 
     @classmethod
     async def _listen_updates(
@@ -267,11 +307,20 @@ class Dispatcher(Router):
         polling_timeout: int = 30,
         backoff_config: BackoffConfig = DEFAULT_BACKOFF_CONFIG,
         allowed_updates: list[str] | None = None,
+        *,
+        on_invalid_update: Callable[[int, ValidationError], Awaitable[Any]] | None = None,
     ) -> AsyncGenerator[Update, None]:
         """
         Endless updates reader with correctly handling any server-side or connection errors.
 
         So you may not worry that the polling will stop working.
+
+        When a batch can't be decoded, its updates are validated one by one: the valid ones
+        are yielded in order, and an invalid one is logged, passed to ``on_invalid_update``
+        and confirmed, so that it does not stall polling. An invalid update without
+        an integer ``update_id`` (or a response without a ``result`` list) is isolated
+        by fetching updates one at a time; when that is still not enough, polling
+        backs off and retries, as for network errors.
         """
         backoff = Backoff(config=backoff_config)
         get_updates = GetUpdates(timeout=polling_timeout, allowed_updates=allowed_updates)
@@ -281,9 +330,18 @@ class Dispatcher(Router):
             # To prevent false-positive TimeoutError we should wait longer than polling timeout
             kwargs["request_timeout"] = int(bot.session.timeout + polling_timeout)
         failed = False
+        updates: list[Any] | None
         while True:
             try:
-                updates = await bot(get_updates, **kwargs)
+                fetched: list[Update] = await bot(get_updates, **kwargs)
+                updates = fetched
+            except ClientDecodeError as e:
+                loggers.dispatcher.warning(
+                    "Failed to decode updates (%s), validating them one by one (bot id = %d)",
+                    e.message,
+                    bot.id,
+                )
+                updates = cls._raw_updates(e.data)
             except Exception as e:  # noqa: BLE001
                 failed = True
                 # In cases when Telegram Bot API was inaccessible don't need to stop polling
@@ -299,24 +357,69 @@ class Dispatcher(Router):
                 await backoff.asleep()
                 continue
 
-            # In case when network connection was fixed let's reset the backoff
-            # to initial value and then process updates
-            if failed:
-                loggers.dispatcher.info(
-                    "Connection established (tryings = %d, bot id = %d)",
-                    backoff.counter,
-                    bot.id,
-                )
-                backoff.reset()
-                failed = False
-
-            for update in updates:
+            isolate = updates is None
+            for update in updates or ():
+                if not isinstance(update, Update):
+                    # Only a batch that failed to decode is validated update by update
+                    try:
+                        update = Update.model_validate(update, context={"bot": bot})  # noqa: PLW2901
+                        error = None
+                    except ValidationError as e:
+                        error = e
+                    if error is not None:
+                        update_id = cls._log_invalid_update(loggers.dispatcher, bot, update, error)
+                        if update_id is None:
+                            # Nothing to confirm it by: isolate it with limit=1
+                            isolate = True
+                            break
+                        if on_invalid_update is not None:
+                            await on_invalid_update(update_id, error)
+                        # Confirmed like any other update, so it is not fetched again:
+                        # it is lost, delivery is best-effort
+                        get_updates.offset = update_id + 1
+                        continue
                 yield update
                 # The getUpdates method returns the earliest 100 unconfirmed updates.
                 # To confirm an update, use the offset parameter when calling getUpdates
                 # All updates with update_id less than or equal to offset will be marked
                 # as confirmed on the server and will no longer be returned.
                 get_updates.offset = update.update_id + 1
+
+            if not isolate:
+                get_updates.limit = None
+                # In case when network connection was fixed let's reset the backoff
+                # to initial value
+                if failed:
+                    loggers.dispatcher.info(
+                        "Connection established (tryings = %d, bot id = %d)",
+                        backoff.counter,
+                        bot.id,
+                    )
+                    backoff.reset()
+                    failed = False
+            elif get_updates.limit != 1:
+                loggers.dispatcher.warning(
+                    "Fetching updates one at a time to skip the one that can't be validated "
+                    "(offset = %s, bot id = %d)",
+                    get_updates.offset,
+                    bot.id,
+                )
+                get_updates.limit = 1
+            else:
+                # Even a single update can't be confirmed: nothing can be skipped safely
+                failed = True
+                loggers.dispatcher.error(
+                    "Failed to skip an update that can't be validated (offset = %s, bot id = %d)",
+                    get_updates.offset,
+                    bot.id,
+                )
+                loggers.dispatcher.warning(
+                    "Sleep for %f seconds and try again... (tryings = %d, bot id = %d)",
+                    backoff.next_delay,
+                    backoff.counter,
+                    bot.id,
+                )
+                await backoff.asleep()
 
     async def _listen_update(self, update: Update, **kwargs: Any) -> Any:
         """
@@ -488,6 +591,12 @@ class Dispatcher(Router):
                 polling_timeout=polling_timeout,
                 backoff_config=backoff_config,
                 allowed_updates=allowed_updates,
+                on_invalid_update=lambda update_id, error: self._report_invalid_update(
+                    bot,
+                    update_id,
+                    error,
+                    kwargs,
+                ),
             ):
                 if handle_as_tasks and semaphore:
                     # Wait for capacity before creating the update coroutine.

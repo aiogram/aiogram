@@ -230,7 +230,7 @@ class AiohttpSession(BaseSession):
                 data=form,
                 timeout=ClientTimeout(total=self.timeout if timeout is None else timeout),
             ) as resp:
-                raw_result = await resp.text()
+                raw_result = await resp.text(errors="replace")
         except (TimeoutError, ClientError) as e:
             # `from None`: a traceback prints the chained error, and its URL holds the token
             message = (
