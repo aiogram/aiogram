@@ -1,0 +1,4 @@
+Request middlewares with the 3.x :code:`(make_request, bot, method)` signature still work for one
+deprecation window, with a :code:`DeprecationWarning` at registration: take one
+:code:`RequestContext` and call :code:`await ctx.next()` instead.
+:code:`RequestMiddlewareManager.wrap_middlewares` is removed.
