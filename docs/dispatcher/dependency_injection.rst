@@ -91,15 +91,21 @@ Keys become available at different points of an update's path, so
       - Use it in
       - Adds
     * - :class:`~aiogram.dispatcher.middlewares.data.OuterData`
-      - :code:`dp.update` outer middlewares
+      - :code:`dp.update` outer middlewares; also filters, inner middlewares and handlers registered
+        on :code:`dp.update` itself, and :code:`errors` handlers
       - :code:`dispatcher`, :code:`bot`, :code:`event_context`; :code:`bots` (polling only) and
         :code:`fsm_storage` (unless :code:`disable_fsm=True`) are optional
     * - :class:`~aiogram.dispatcher.middlewares.data.RouterOuterData`
       - router-level outer middlewares (:code:`router.message.outer_middleware`)
       - :code:`event_update`, :code:`event_router`; :code:`state` and :code:`raw_state` are optional
     * - :class:`~aiogram.dispatcher.middlewares.data.AiogramData`
-      - inner middlewares, filters and handlers
-      - :code:`handler`; :code:`i18n` and :code:`i18n_middleware` are optional (set by the i18n middleware)
+      - inner middlewares, filters and handlers of the event observers (:code:`router.message`, ...)
+      - :code:`handler`; :code:`i18n` and :code:`i18n_middleware` are optional (set by the i18n middleware with its default keys)
+
+The :code:`dp.update` observer runs before the update is routed, and :code:`errors` handlers receive the
+data of the failed update's outer middlewares, so neither gets :code:`event_update` (nor, on :code:`dp.update`,
+:code:`event_router`): annotate them with :class:`~aiogram.dispatcher.middlewares.data.OuterData` and read
+the other keys with :code:`.get`.
 
 Required keys are always there, so :code:`data["bot"]` type-checks without narrowing; optional keys are read
 with :code:`data.get(...)`. A key the type doesn't have is a type error, e.g. :code:`data["handler"]` in an
@@ -124,7 +130,7 @@ Extend the type with the keys your own middlewares add and use it through :pep:`
 
     @router.message(Command("start"))
     async def start(message: Message, **kw: Unpack[AppData]) -> None:
-        await kw["db"].touch(message.from_user.id)  # kw["bot"] is a Bot, kw["db"] a Database
+        await kw["db"].touch(message.chat.id)  # kw["bot"] is a Bot, kw["db"] a Database
 
 .. warning::
 

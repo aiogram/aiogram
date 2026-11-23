@@ -3,9 +3,12 @@ Typed views of the data that middlewares, filters and handlers receive (D31).
 
 Keys become available at different points of an update's path, so there is one type per point:
 
-- :class:`OuterData`: ``dp.update`` outer middlewares;
+- :class:`OuterData`: ``dp.update`` outer middlewares, and everything on the ``dp.update``
+  observer itself (its filters, inner middlewares and handlers) and ``errors`` handlers, which see
+  some routing keys but not all of them (read those with ``.get``);
 - :class:`RouterOuterData`: router-level outer middlewares (``router.message.outer_middleware``);
-- :class:`AiogramData`: inner middlewares, filters and handlers.
+- :class:`AiogramData`: inner middlewares, filters and handlers of the event observers
+  (``router.message``, ``router.callback_query``, ...).
 
 Extend the one you need with your own keys, e.g. ``class AppData(AiogramData): db: Database``,
 and use it as ``**kw: Unpack[AppData]`` in a handler. This module is typing only: nothing here
@@ -31,6 +34,9 @@ __all__ = ("AiogramData", "FSMKeysData", "OuterData", "RouterOuterData")
 class OuterData(TypedDict):
     """
     Data available to ``dp.update`` outer middlewares.
+
+    Also the type to use on the ``dp.update`` observer itself (filters, inner middlewares,
+    handlers) and in ``errors`` handlers: they never get ``event_update``.
     """
 
     dispatcher: "Dispatcher"
@@ -74,15 +80,18 @@ class RouterOuterData(OuterData, FSMKeysData):
 
 class AiogramData(RouterOuterData):
     """
-    Data available to inner middlewares, filters and handlers.
+    Data available to inner middlewares, filters and handlers of the event observers
+    (``router.message``, ``router.callback_query``, ...), not of ``dp.update``
+    (see :class:`OuterData`).
     """
 
     handler: "HandlerObject"
-    """Handler that is being checked or called."""
+    """Handler that is being checked or called. In a router's root filters
+    (``router.message.filter(...)``) it is still the dispatcher's internal update handler."""
     i18n: NotRequired["I18n"]
-    """I18n object. Set only when the i18n middleware is installed."""
+    """I18n object. Set only by the i18n middleware with the default ``i18n_key``."""
     i18n_middleware: NotRequired["I18nMiddleware"]
-    """The i18n middleware. Set only when it is installed."""
+    """The i18n middleware. Set only when it is installed with the default ``middleware_key``."""
 
 
 if TYPE_CHECKING:
