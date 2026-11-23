@@ -201,7 +201,7 @@ Verification method and results: [_VERIFICATION.md](_VERIFICATION.md).
 | [D-16](D-client/D-16-cancellation-resource-tests.md) | Cancellation and resource tests for uploads and downloads (D exit gate, part 2) | `todo` | yes | M | D-03, D-04, D-05, D-08, D-11 |
 | [D-17](D-client/D-17-rust-entity-rendering-kernel.md) | Rust entity-rendering kernel: UTF-16 offsets, HTML/MarkdownV2 unparse and quoting | `todo` | yes | L | 3x-17, B-01, B-10, B-13 |
 | [E-01](E-runtime/E-01-dispatcher-filter-removals.md) | Dispatcher and filter legacy removals | `done` | no | M | A-01, A-11 |
-| [E-02](E-runtime/E-02-dispatch-table-executor.md) | Compiled `DispatchTable` and executor | `todo` | no | L | A-01, A-07, A-10, H-01 |
+| [E-02](E-runtime/E-02-dispatch-table-executor.md) | Compiled `DispatchTable` and executor | `done` | no | L | A-01, A-07, A-10, H-01 |
 | [E-03](E-runtime/E-03-snapshot-lifecycle.md) | Routing snapshot lifecycle: topology epoch, caching, refresh, mutation warning | `todo` | no | M | E-02 |
 | [E-04](E-runtime/E-04-router-graph-multi-parent-flags.md) | Router graph: multiple parents, diamond check, router-level flags | `todo` | no | M | E-02 |
 | [E-05](E-runtime/E-05-typed-observers-unknown-update.md) | Generated typed observers and the `unknown_update` observer | `todo` | no | S | C-16, E-03 |

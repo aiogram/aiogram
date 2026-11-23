@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING, Any, Final
 from .event.bases import UNHANDLED
 from .event.event import EventObserver
 from .event.telegram import TelegramEventObserver
+from .table import compile_plan, enter_frame
 
 if TYPE_CHECKING:
     from aiogram.types import TelegramObject
@@ -164,48 +165,20 @@ class Router:
         return sorted(handlers_in_use)
 
     async def propagate_event(self, update_type: str, event: TelegramObject, **kwargs: Any) -> Any:
-        kwargs.update(event_router=self)
-        observer = self.observers.get(update_type)
+        """
+        Route ``event`` through this router and its sub-routers, compiling the plan on each call.
 
-        async def _wrapped(telegram_event: TelegramObject, **data: Any) -> Any:
-            return await self._propagate_event(
-                observer=observer,
-                update_type=update_type,
-                event=telegram_event,
-                **data,
-            )
-
-        if observer:
-            return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
-        return await _wrapped(event, **kwargs)
-
-    async def _propagate_event(
-        self,
-        observer: TelegramEventObserver | None,
-        update_type: str,
-        event: TelegramObject,
-        **kwargs: Any,
-    ) -> Any:
-        response = UNHANDLED
-        if observer:
-            # Check globally defined filters before any other handler will be checked.
-            # This check is placed here instead of `trigger` method to add possibility
-            # to pass context to handlers from global filters.
-            result, data = await observer.check_root_filters(event, **kwargs)
-            if not result:
-                return UNHANDLED
-            kwargs.update(data)
-
-            response = await observer.trigger(event, **kwargs)
-            if response is not UNHANDLED:
-                return response
-
-        for router in self.sub_routers:
-            response = await router.propagate_event(update_type=update_type, event=event, **kwargs)
-            if response is not UNHANDLED:
-                break
-
-        return response
+        The dispatcher's own path uses a precompiled table (:mod:`aiogram.dispatcher.table`).
+        """
+        root = self
+        for root in self.chain_head:  # noqa: B007 - the last one is the root
+            pass
+        plan = compile_plan(
+            self, update_type, on_handler_result=getattr(root, "_on_handler_result", None)
+        )
+        if plan is None:
+            return UNHANDLED
+        return await enter_frame(plan.frames[0], event, kwargs)
 
     @property
     def chain_head(self) -> Generator[Router, None, None]:

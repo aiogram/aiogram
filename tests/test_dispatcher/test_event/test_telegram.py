@@ -234,3 +234,29 @@ class TestTelegramEventObserver:
         r2.message.register(handler)
 
         assert await r1.message.trigger(None) is UNHANDLED
+
+    async def test_trigger_skips_to_the_next_handler(self):
+        router = Router()
+        router.message.register(skip_my_handler)
+        router.message.register(my_handler)
+
+        assert await router.message.trigger(42) == 42
+
+    async def test_check_root_filters(self):
+        router = Router()
+        router.message.filter(lambda evt: {"root": evt})
+
+        assert await router.message.check_root_filters(42) == (True, {"root": 42})
+
+    async def test_wrap_outer_middleware(self):
+        router = Router()
+
+        @router.message.outer_middleware()
+        async def middleware(handler, event, data):
+            data["outer"] = True
+            return await handler(event, data)
+
+        async def target(event, **data):
+            return event, data
+
+        assert await router.message.wrap_outer_middleware(target, 42, {}) == (42, {"outer": True})

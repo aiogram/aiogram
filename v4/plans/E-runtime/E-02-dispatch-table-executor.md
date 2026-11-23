@@ -2,7 +2,7 @@
 
 | Field | Value |
 |---|---|
-| Status | `todo` |
+| Status | `done` |
 | Story | E — Routing & runtime |
 | Target branch | `dev-4.x` |
 | Depends on | [A-01](../A-contracts/A-01-bootstrap-dev-4x.md), [A-07](../A-contracts/A-07-differential-framework.md), [A-10](../A-contracts/A-10-routing-oracle.md), [H-01](../H-testing-observability/H-01-logger-hierarchy.md) |
