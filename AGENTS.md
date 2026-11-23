@@ -146,6 +146,8 @@ These patterns repeatedly appeared in maintainer feedback and should be treated 
 - Keep test style consistent with existing suite; avoid introducing new dependencies for small tests.
 - Preserve framework contracts (e.g., dispatcher/workflow data passed to startup/shutdown callbacks).
 - When fixing generated API metadata/docs, update the source mapping in `.butcher` so future regenerations keep the fix.
+- `check_response` rejects `"ok": true` without a `result` (`ClientDecodeError`), so `MockedBot.add_result_for(...,
+  ok=True)` needs a real `result` (`True`, a model): the default `result=None` makes the call raise.
 - Pytest runs with `filterwarnings = ["error", ...]`: a new `warnings.warn(...)` in library code (e.g. a
   `DeprecationWarning`) fails every existing test that reaches it. Find those tests first, then either stop
   them from triggering it or assert it with `pytest.warns`.
@@ -171,7 +173,10 @@ These patterns repeatedly appeared in maintainer feedback and should be treated 
 - A new top-level dev directory is linted only if it is added to the Makefile `lint` paths and the pre-commit ruff `files` regex, and shipped unless it is in the hatch sdist `exclude`; `differential/` is in all three.
 - Side scripts (`differential/sides/<adapter>/<kind>.py`) run under `python -I` in their own venv: stdlib + aiogram (and its runtime dependencies, such as pydantic) only, `differential/trace.py` (and `wire.py`, its sibling) loaded by path. Do not import other repository code from them.
 - Side venvs live in the gitignored `.differential/`; `pypi:`/`git:` venvs are reused, so delete it to pick up a new release.
-- A manifest entry without `when` is active in 3.x-vs-3.x runs too; list it in `THREE_X_ENTRIES` of `tests/test_differential_framework.py`, which otherwise requires `when = "aiogram4"`.
+- A manifest entry without `when` is active in 3.x-vs-3.x runs too; list it in `THREE_X_ENTRIES` of `tests/test_differential_framework.py`, which otherwise requires `when = "aiogram4"`, and add its `decision` to the expected set of `test_seeded_entries` in the same file.
+- A change to what `check_response` accepts also changes the `request` kind (`response.*/decode`) against
+  `pypi:aiogram<4`: the PR CI runs it whenever `benchmarks/corpus/**` changes, and the corpus `on_3x` update does.
+  Add the approved entry (with its comparator) to `differential/manifests/request.toml` in the same PR.
 - A probe compared against `pypi:aiogram<4` must not record every optional field (`model_dump()` / `model_dump_json()`
   with their `None`s): after a Bot API bump the tree has fields the release lacks, and the weekly run fails until the
   next release. Record `exclude_unset` / `exclude_none` dumps, or strip the nulls. A new corpus input of kind `update`

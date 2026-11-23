@@ -111,10 +111,12 @@ Skipping is deliberate data loss: Telegram does not send a confirmed update agai
 so delivery is best-effort. Errors handlers run inside the polling loop,
 before the next update of the batch.
 
-When an update that fails validation has no integer :code:`update_id`, or the response has no
-list of updates, polling fetches the updates one at a time (:code:`limit=1`) to find the one
-it can skip. If even that update has no :code:`update_id`, nothing can be confirmed safely:
-polling logs an :code:`ERROR` and retries with the usual backoff, as for network errors.
+When an update that fails validation has no integer :code:`update_id`, polling fetches
+the updates one at a time (:code:`limit=1`) to find the one it can skip. If even that update
+has no :code:`update_id`, nothing can be confirmed safely: polling logs an :code:`ERROR`
+and retries with the usual backoff. A response that is not a successful one with a list
+of updates (for example an HTML error page from a proxy) is retried with the usual backoff,
+as for network errors.
 
 A response with :code:`"ok": true` and no :code:`result` raises
 :class:`~aiogram.exceptions.ClientDecodeError` for every method.

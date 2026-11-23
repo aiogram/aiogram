@@ -182,6 +182,7 @@ class TestPollingInvalidUpdates:
         assert requested(session) == [(None, None), (None, 1), (None, 1), (None, 1), (2, None)]
         assert asleep.await_count == 2
         assert caplog.text.count("Failed to skip an update that can't be validated") == 2
+        assert "is skipped" not in caplog.text
         assert caplog.text.count("Connection established") == 1
 
     @pytest.mark.parametrize(
@@ -190,14 +191,26 @@ class TestPollingInvalidUpdates:
             "<html>Bad Gateway</html>",
             '{"ok": true}',
             '{"ok": true, "result": {"update_id": 1}}',
+            '{"result": []}',
+            '{"ok": false, "result": [], "error_code": "x"}',
             "[" * 100_000,
         ],
     )
-    async def test_unreadable_envelope(self, asleep, body):
+    async def test_unreadable_response(self, asleep, caplog, body):
         bot, session = make_bot(body, body, batch(message(1)))
 
         assert await listen(bot) == [1]
-        # Isolated with limit=1 until a response decodes
+        # Not a list of updates: back off as for network errors, nothing is isolated
+        assert requested(session) == [(None, None), (None, None), (None, None), (2, None)]
+        assert asleep.await_count == 2
+        assert caplog.text.count("Failed to fetch updates - ClientDecodeError") == 2
+
+    async def test_invalid_envelope_only(self, asleep):
+        # Every update is valid, the envelope is not: nothing to skip
+        body = '{"ok": true, "result": [], "description": 1}'
+        bot, session = make_bot(body, body, batch(message(1)))
+
+        assert await listen(bot) == [1]
         assert requested(session) == [(None, None), (None, 1), (None, 1), (2, None)]
         asleep.assert_awaited_once()
 
@@ -209,5 +222,26 @@ class TestPollingInvalidUpdates:
         assert requested(session) == [(None, None), (None, None), (2, None)]
         asleep.assert_awaited_once()
 
-    def test_raw_updates_rejects_non_text(self):
-        assert Dispatcher._raw_updates(None) is None
+    async def test_custom_json_loads(self):
+        def loads(content: str) -> Any:
+            # A loader that normalises the payload: recovery must decode the same way
+            return json.loads(content.replace('"text": "m1"', '"text": "loaded"'))
+
+        bot, session = make_bot(batch(message(1), unknown_status(2)))
+        session.json_loads = loads
+        texts = []
+        with pytest.raises(asyncio.CancelledError):
+            async for update in Dispatcher._listen_updates(bot):
+                texts.append(update.message.text)
+        assert texts == ["loaded"]
+
+    async def test_custom_json_loads_failing(self, asleep):
+        def loads(content: str) -> Any:
+            raise RuntimeError
+
+        bot, session = make_bot("x", "x")
+        session.json_loads = loads
+
+        assert await listen(bot) == []
+        assert requested(session) == [(None, None), (None, None), (None, None)]
+        assert asleep.await_count == 2

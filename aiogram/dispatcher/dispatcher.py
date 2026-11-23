@@ -229,26 +229,27 @@ class Dispatcher(Router):
             # Handled outside the except block, so that nothing raised later is chained to it
             error = e
 
-        update_id = self._log_invalid_update(loggers.webhook, bot, update, error)
+        update_id = self._update_id(update)
+        self._log_invalid_update(loggers.webhook, bot, update_id, update, error)
         if update_id is not None:
             await self._report_invalid_update(bot, update_id, error, kwargs)
         return None
 
     @staticmethod
+    def _update_id(update: Any) -> int | None:
+        """The integer ``update_id`` of a raw update, or ``None`` when it has none."""
+        update_id = update.get("update_id") if isinstance(update, dict) else None
+        return update_id if type(update_id) is int else None
+
+    @staticmethod
     def _log_invalid_update(
         logger: logging.Logger,
         bot: Bot,
+        update_id: int | None,
         update: Any,
         error: ValidationError,
-    ) -> int | None:
-        """
-        Log a raw update that is skipped because it can't be validated.
-
-        :return: its integer ``update_id``, or ``None`` when it has none
-        """
-        update_id = update.get("update_id") if isinstance(update, dict) else None
-        if type(update_id) is not int:
-            update_id = None
+    ) -> None:
+        """Log a raw update that is skipped because it can't be validated."""
         first = error.errors(include_url=False, include_context=False, include_input=False)[0]
         logger.error(
             "Update id=%s is skipped because it can't be validated by bot id=%d: "
@@ -260,7 +261,6 @@ class Dispatcher(Router):
             first["loc"],
         )
         logger.debug("Skipped update: %r", update)
-        return update_id
 
     async def _report_invalid_update(
         self,
@@ -289,15 +289,19 @@ class Dispatcher(Router):
             )
 
     @staticmethod
-    def _raw_updates(content: Any) -> list[Any] | None:
+    def _raw_updates(content: Any, loads: Callable[..., Any]) -> list[Any] | None:
         """
-        The ``result`` list of a raw ``getUpdates`` response, or ``None`` when it has none.
+        The ``result`` list of a raw successful ``getUpdates`` response,
+        or ``None`` when it has none.
         """
         try:
-            response = json.loads(content)
-        except (TypeError, ValueError, RecursionError):
+            response = loads(content)
+        except Exception:  # noqa: BLE001
+            # A custom loader can raise anything
             return None
-        result = response.get("result") if isinstance(response, dict) else None
+        if not isinstance(response, dict) or response.get("ok") is not True:
+            return None
+        result = response.get("result")
         return result if isinstance(result, list) else None
 
     @classmethod
@@ -318,9 +322,10 @@ class Dispatcher(Router):
         When a batch can't be decoded, its updates are validated one by one: the valid ones
         are yielded in order, and an invalid one is logged, passed to ``on_invalid_update``
         and confirmed, so that it does not stall polling. An invalid update without
-        an integer ``update_id`` (or a response without a ``result`` list) is isolated
+        an integer ``update_id`` (or a batch whose updates are all valid) is isolated
         by fetching updates one at a time; when that is still not enough, polling
-        backs off and retries, as for network errors.
+        backs off and retries. A response that is not a successful one with a list of
+        updates backs off and retries, as for network errors.
         """
         backoff = Backoff(config=backoff_config)
         get_updates = GetUpdates(timeout=polling_timeout, allowed_updates=allowed_updates)
@@ -330,35 +335,58 @@ class Dispatcher(Router):
             # To prevent false-positive TimeoutError we should wait longer than polling timeout
             kwargs["request_timeout"] = int(bot.session.timeout + polling_timeout)
         failed = False
+        loads = bot.session.json_loads or json.loads
         updates: list[Any] | None
         while True:
             try:
                 fetched: list[Update] = await bot(get_updates, **kwargs)
                 updates = fetched
-            except ClientDecodeError as e:
-                loggers.dispatcher.warning(
-                    "Failed to decode updates (%s), validating them one by one (bot id = %d)",
-                    e.message,
-                    bot.id,
-                )
-                updates = cls._raw_updates(e.data)
             except Exception as e:  # noqa: BLE001
-                failed = True
-                # In cases when Telegram Bot API was inaccessible don't need to stop polling
-                # process because some developers can't make auto-restarting of the script
-                loggers.dispatcher.error("Failed to fetch updates - %s: %s", type(e).__name__, e)
-                # And also backoff timeout is best practice to retry any network activity
+                # A batch that can't be decoded, but is a successful response with a list
+                # of updates, is validated update by update below
+                updates = (
+                    cls._raw_updates(e.data, loads) if isinstance(e, ClientDecodeError) else None
+                )
+                if updates is None:
+                    failed = True
+                    # In cases when Telegram Bot API was inaccessible don't need to stop polling
+                    # process because some developers can't make auto-restarting of the script
+                    loggers.dispatcher.error(
+                        "Failed to fetch updates - %s: %s",
+                        type(e).__name__,
+                        e,
+                    )
+                    # And also backoff timeout is best practice to retry any network activity
+                    loggers.dispatcher.warning(
+                        "Sleep for %f seconds and try again... (tryings = %d, bot id = %d)",
+                        backoff.next_delay,
+                        backoff.counter,
+                        bot.id,
+                    )
+                    await backoff.asleep()
+                    continue
                 loggers.dispatcher.warning(
-                    "Sleep for %f seconds and try again... (tryings = %d, bot id = %d)",
-                    backoff.next_delay,
-                    backoff.counter,
+                    "Failed to decode updates, validating them one by one (bot id = %d)",
                     bot.id,
                 )
-                await backoff.asleep()
-                continue
+                decoded = False
+            else:
+                decoded = True
+                # In case when network connection was fixed let's reset the backoff
+                # to initial value and then process updates
+                if failed:
+                    loggers.dispatcher.info(
+                        "Connection established (tryings = %d, bot id = %d)",
+                        backoff.counter,
+                        bot.id,
+                    )
+                    backoff.reset()
+                    failed = False
 
-            isolate = updates is None
-            for update in updates or ():
+            # A batch that failed to decode with no invalid update in it: the response itself
+            # is invalid, so it must not be fetched again at once
+            isolate = not decoded
+            for update in updates:
                 if not isinstance(update, Update):
                     # Only a batch that failed to decode is validated update by update
                     try:
@@ -367,11 +395,14 @@ class Dispatcher(Router):
                     except ValidationError as e:
                         error = e
                     if error is not None:
-                        update_id = cls._log_invalid_update(loggers.dispatcher, bot, update, error)
+                        isolate = False
+                        update_id = cls._update_id(update)
                         if update_id is None:
                             # Nothing to confirm it by: isolate it with limit=1
+                            loggers.dispatcher.debug("Update without update_id: %r", update)
                             isolate = True
                             break
+                        cls._log_invalid_update(loggers.dispatcher, bot, update_id, update, error)
                         if on_invalid_update is not None:
                             await on_invalid_update(update_id, error)
                         # Confirmed like any other update, so it is not fetched again:
@@ -387,16 +418,6 @@ class Dispatcher(Router):
 
             if not isolate:
                 get_updates.limit = None
-                # In case when network connection was fixed let's reset the backoff
-                # to initial value
-                if failed:
-                    loggers.dispatcher.info(
-                        "Connection established (tryings = %d, bot id = %d)",
-                        backoff.counter,
-                        bot.id,
-                    )
-                    backoff.reset()
-                    failed = False
             elif get_updates.limit != 1:
                 loggers.dispatcher.warning(
                     "Fetching updates one at a time to skip the one that can't be validated "
