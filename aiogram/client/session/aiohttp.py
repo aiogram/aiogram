@@ -17,7 +17,7 @@ from aiohttp import (
     RequestInfo,
     TCPConnector,
 )
-from aiohttp.hdrs import USER_AGENT
+from aiohttp.hdrs import CONTENT_TYPE, USER_AGENT
 from aiohttp.http import SERVER_SOFTWARE
 from multidict import CIMultiDict, CIMultiDictProxy, MultiMapping
 from yarl import URL
@@ -222,12 +222,20 @@ class AiohttpSession(BaseSession):
         session = await self.create_session()
 
         url = self.api.api_url(token=bot.token, method=method.__api_method__)
-        form = self.build_form_data(bot=bot, method=method)
+        body = None
+        if type(self).build_form_data is AiohttpSession.build_form_data:
+            body = self._build_json_body(bot=bot, method=method)
+        if body is None:  # files or an overridden form builder: multipart/urlencoded as before
+            data: FormData | bytes = self.build_form_data(bot=bot, method=method)
+            headers = None
+        else:
+            data, headers = body.encode(), {CONTENT_TYPE: "application/json"}
 
         try:
             async with session.post(
                 url,
-                data=form,
+                data=data,
+                headers=headers,
                 timeout=ClientTimeout(total=self.timeout if timeout is None else timeout),
             ) as resp:
                 raw_result = await resp.text()

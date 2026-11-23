@@ -1,6 +1,9 @@
 import asyncio
+import datetime
+import json
 import traceback
 from collections.abc import AsyncGenerator, AsyncIterable
+from contextlib import suppress
 from typing import (
     Any,
     AsyncContextManager,
@@ -24,14 +27,20 @@ from multidict import CIMultiDict, CIMultiDictProxy
 from yarl import URL
 
 from aiogram import Bot
-from aiogram.client.default import Default
+from aiogram.client.default import Default, DefaultBotProperties
 from aiogram.client.session import aiohttp
 from aiogram.client.session.aiohttp import AiohttpSession
-from aiogram.exceptions import TelegramNetworkError
-from aiogram.methods import TelegramMethod
-from aiogram.types import InputFile
+from aiogram.enums import TopicIconColor
+from aiogram.exceptions import ClientDecodeError, TelegramNetworkError
+from aiogram.methods import SendMediaGroup, SendMessage, SendPhoto, TelegramMethod
+from aiogram.types import (
+    BufferedInputFile,
+    InlineKeyboardButton,
+    InlineKeyboardMarkup,
+    InputFile,
+    InputMediaPhoto,
+)
 from tests.mocked_bot import MockedBot
-
 
 TOKEN = "123456:" + "A" * 35
 SECRET = TOKEN.partition(":")[2]
@@ -217,6 +226,85 @@ class TestAiohttpSession:
             result = await session.make_request(bot, call)
             assert isinstance(result, int)
             assert result == 42
+
+    @staticmethod
+    async def sent(aresponses: ResponsesMockServer, method: TelegramMethod[Any], **kwargs):
+        """Send ``method`` and return the content type and body the server got."""
+        seen = {}
+
+        async def handler(request):
+            seen.update(content_type=request.content_type, body=await request.read())
+            return aresponses.Response(text='{"ok": true, "result": true}')
+
+        aresponses.add(aresponses.ANY, aresponses.ANY, "post", handler)
+        session = kwargs.pop("session", None) or AiohttpSession(**kwargs)
+        bot = Bot("42:TEST", session=session, default=DefaultBotProperties(parse_mode="HTML"))
+        async with session:
+            with suppress(ClientDecodeError):  # only the request matters, not the reply
+                await session.make_request(bot, method)
+        return seen["content_type"], seen["body"]
+
+    def media(self) -> SendMediaGroup:
+        return SendMediaGroup(
+            chat_id=42,
+            media=[
+                InputMediaPhoto(media=BufferedInputFile(b"red", "red.png")),
+                InputMediaPhoto(media=BufferedInputFile(b"blue", "blue.png"), caption="blue"),
+            ],
+        )
+
+    async def test_make_request_json_without_files(self, aresponses: ResponsesMockServer):
+        method = SendMessage(
+            chat_id=42,
+            text="hi",
+            reply_markup=InlineKeyboardMarkup(
+                inline_keyboard=[[InlineKeyboardButton(text="Так", callback_data="yes")]]
+            ),
+            until_date=datetime.datetime(2030, 1, 1, tzinfo=datetime.UTC),
+            future_text="",
+            icon_color=TopicIconColor.BLUE,
+        )
+        content_type, body = await self.sent(aresponses, method)
+        assert content_type == "application/json"
+        assert json.loads(body) == {
+            "chat_id": 42,
+            "text": "hi",
+            "parse_mode": "HTML",
+            "reply_markup": {"inline_keyboard": [[{"text": "Так", "callback_data": "yes"}]]},
+            "until_date": 1893456000,
+            "icon_color": 7322096,
+        }
+
+    async def test_make_request_multipart_with_file(self, aresponses: ResponsesMockServer):
+        method = SendPhoto(chat_id=42, photo=BufferedInputFile(b"red", "red.png"))
+        content_type, body = await self.sent(aresponses, method)
+        assert content_type == "multipart/form-data"
+        assert b'filename="red.png"' in body
+
+    async def test_make_request_multipart_with_nested_files(self, aresponses):
+        content_type, body = await self.sent(aresponses, self.media())
+        assert content_type == "multipart/form-data"
+        assert b'filename="red.png"' in body
+        assert b'filename="blue.png"' in body
+
+    @pytest.mark.parametrize("override", ["prepare_value", "build_form_data"])
+    async def test_make_request_override_keeps_form(self, aresponses, override):
+        base = getattr(AiohttpSession, override)
+        wrapper = lambda *a, **kw: base(*a, **kw)  # noqa: E731, PLW0108 - a distinct function
+        session = type("Custom", (AiohttpSession,), {override: wrapper})()
+        content_type, body = await self.sent(
+            aresponses, SendMessage(chat_id=42, text="hi"), session=session
+        )
+        assert content_type == "application/x-www-form-urlencoded"
+        assert body == b"chat_id=42&text=hi&parse_mode=HTML"
+
+    async def test_make_request_custom_json_dumps(self, aresponses: ResponsesMockServer):
+        def dumps(obj: Any) -> str:
+            return json.dumps({**obj, "mark": 1} if isinstance(obj, dict) else obj)
+
+        method = SendMessage(chat_id=42, text="hi", link_preview_options={"is_disabled": True})
+        _, body = await self.sent(aresponses, method, json_dumps=dumps)
+        assert json.loads(body)["link_preview_options"] == {"is_disabled": True, "mark": 1}
 
     @pytest.mark.parametrize("error", [ClientError("mocked"), asyncio.TimeoutError()])
     async def test_make_request_network_error(self, error):
