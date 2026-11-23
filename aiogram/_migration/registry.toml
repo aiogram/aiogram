@@ -1038,3 +1038,36 @@ suppress = "aiogram: ignore[AG4059]"
 gate = false
 generated = false
 warn_3x = { site = "none", target = "", since = "" }
+
+[[entry]]
+id = "AG4062"
+kind = "deprecation-4.x"
+title = "request middlewares with the 3.x (make_request, bot, method) signature are deprecated"
+decisions = ["D39", "D71", "PD-17"]
+area = "middlewares"
+change = "signature"
+replacement = "async def middleware(ctx: RequestContext) that reads ctx.bot / ctx.method and returns await ctx.next()"
+detection = "definite"
+confidence = "high"
+codemod = "partial"
+suppress = "aiogram: ignore[AG4062]"
+gate = false
+generated = false
+warn_3x = { site = "none", target = "", since = "" }
+removal = { deprecated_in = "4.0", earliest_removal = "4.2" }
+
+[[entry]]
+id = "AG4063"
+kind = "removal-4.0"
+title = "RequestMiddlewareManager.wrap_middlewares is removed"
+decisions = ["D39"]
+area = "middlewares"
+change = "removed"
+replacement = "call the bot or the session; the request middleware chain is built and cached by the session"
+detection = "definite"
+confidence = "high"
+codemod = "none"
+suppress = "aiogram: ignore[AG4063]"
+gate = false
+generated = false
+warn_3x = { site = "none", target = "", since = "" }

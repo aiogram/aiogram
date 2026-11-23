@@ -188,7 +188,7 @@ Verification method and results: [_VERIFICATION.md](_VERIFICATION.md).
 | [D-03](D-client/D-03-token-safe-network-errors.md) | Token-safe network errors (`from None`, `.original`, redacted URLs) | `done` | no | S | A-01, A-11 |
 | [D-04](D-client/D-04-drop-aiofiles-input-file-replayable.md) | Drop `aiofiles`; add `InputFile.replayable` | `done` | no | S | A-01, A-11 |
 | [D-05](D-client/D-05-download-lifecycle.md) | Download lifecycle: per-phase timeouts, `bot.stream()`, typed overloads | `done` | no | M | D-03, D-04 |
-| [D-06](D-client/D-06-request-middleware-manager.md) | Request middleware manager: prebuilt chain, `before=`/`after=` anchors, per-call request context | `todo` | no | S | A-01, H-01 |
+| [D-06](D-client/D-06-request-middleware-manager.md) | Request middleware manager: prebuilt chain, `before=`/`after=` anchors, per-call request context | `done` | no | S | A-01, H-01 |
 | [D-07](D-client/D-07-rust-encoder-json.md) | Rust encoder: JSON request body, `Default` resolution, value rules | `todo` | yes | L | B-01, B-09, B-13, C-20, C-21, D-01 |
 | [D-08](D-client/D-08-rust-encoder-multipart.md) | Rust encoder: multipart bodies and file extraction | `todo` | yes | M | B-01, B-09, B-13, C-20, D-04, D-07 |
 | [D-09](D-client/D-09-response-decoder.md) | Response decoder: `Response[T]` without pydantic, `getUpdates` per-update isolation | `todo` | yes | L | B-01, B-09, B-13, B-14, C-18, C-19, C-20, D-02 |
@@ -205,7 +205,7 @@ Verification method and results: [_VERIFICATION.md](_VERIFICATION.md).
 | [E-03](E-runtime/E-03-snapshot-lifecycle.md) | Routing snapshot lifecycle: topology epoch, caching, refresh, mutation warning | `todo` | no | M | E-02 |
 | [E-04](E-runtime/E-04-router-graph-multi-parent-flags.md) | Router graph: multiple parents, diamond check, router-level flags | `todo` | no | M | E-02 |
 | [E-05](E-runtime/E-05-typed-observers-unknown-update.md) | Generated typed observers and the `unknown_update` observer | `todo` | no | S | C-16, E-03 |
-| [E-06](E-runtime/E-06-middleware-api.md) | Middleware API: ordering anchors, per-handler middlewares, generic `BaseMiddleware` | `todo` | no | M | E-02 |
+| [E-06](E-runtime/E-06-middleware-api.md) | Middleware API: context protocol, prebuilt chains, ordering anchors, per-handler middlewares, generic `BaseMiddleware` | `todo` | no | L | D-06, E-02 |
 | [E-07](E-runtime/E-07-sync-filter-execution.md) | Sync filter execution: `SyncFilterMode`, `inline()` / `blocking()`, dict-overwrite warning | `todo` | no | S | 3x-03, E-02 |
 | [E-08](E-runtime/E-08-magic-filter-compile.md) | Compile `F` expressions to closures | `todo` | no | M | E-07 |
 | [E-09](E-runtime/E-09-routing-keys-compiled-rejectors.md) | Routing keys and compiled rejectors (prefilter, literal and command index) | `todo` | **yes** | L | B-05, B-13, C-16, C-19, E-02, E-08 |

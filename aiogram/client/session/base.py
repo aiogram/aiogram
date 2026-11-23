@@ -36,6 +36,7 @@ from aiogram.methods import Response, TelegramMethod
 from aiogram.methods.base import TelegramType
 from aiogram.types import InputFile, TelegramObject
 
+from .middlewares.base import RequestContext
 from .middlewares.manager import RequestMiddlewareManager
 
 if TYPE_CHECKING:
@@ -358,8 +359,7 @@ class BaseSession(abc.ABC):
         method: TelegramMethod[TelegramType],
         timeout: int | None = None,
     ) -> TelegramType:
-        middleware = self.middleware.wrap_middlewares(self.make_request, timeout=timeout)
-        return cast(TelegramType, await middleware(bot, method))
+        return await RequestContext(self, bot, method, timeout).next()
 
     async def __aenter__(self) -> Self:
         return self

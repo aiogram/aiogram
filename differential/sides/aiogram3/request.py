@@ -26,6 +26,7 @@ import platform
 import sys
 import time
 import tomllib
+import warnings
 from pathlib import Path
 from types import ModuleType
 from typing import Any
@@ -143,7 +144,8 @@ class PrepareValueSession(AiohttpSession):
 class RewriteText(BaseRequestMiddleware):
     """Hook (b): a request middleware that rewrites a param."""
 
-    async def __call__(self, make_request: Any, bot: Bot, method: Any) -> Any:
+    # 3.x signature on purpose: the 4.x base class takes a RequestContext (AG4062)
+    async def __call__(self, make_request: Any, bot: Bot, method: Any) -> Any:  # type: ignore[override]
         return await make_request(bot, method.model_copy(update={"text": "hello from middleware"}))
 
 
@@ -299,7 +301,10 @@ class Side:
             "request.hooks.prepare_value", method(), session=self.api.session(PrepareValueSession)
         )
         session = self.api.session()
-        session.middleware(RewriteText())
+        with warnings.catch_warnings():
+            # the 3.x signature is the point of this side; 4.x runs it with AG4062
+            warnings.simplefilter("ignore", DeprecationWarning)
+            session.middleware(RewriteText())
         await self.send("request.hooks.middleware", method(), session=session)
         await self.send(
             "request.hooks.json_dumps", method(), session=self.api.session(json_dumps=hooked_dumps)
