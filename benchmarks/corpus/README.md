@@ -84,6 +84,55 @@ Filter kinds: `command` (`commands`: names without the slash), `text_eq` (`value
 equals it). Middleware kinds: `pass` (calls the next handler, does nothing else). New kinds are
 added here first, with the plan that needs them.
 
+Added by A-10 (routing oracle). Every component may carry an `id`; one without gets a positional id.
+A top-level `bench = false` marks an oracle scenario: the A-05 bench skips it, because its adapter builds only
+the kinds above (`command`, `text_eq`, `pass`). Every A-10 scenario carries it.
+
+- **Filter kinds.**
+  - `magic_eq` (`attr`, `value`: the event attribute equals it) and `magic_true` (`attr`: the attribute is truthy).
+    Like `command` and `text_eq`, these name filters the framework compiles.
+  - User filters: `sync` / `async` (`result`: a bool, or a dict of data to pass on), `data` (`returns`: a dict),
+    `raise` (`error`: the message of the exception it raises) and `flags` (`flags`: handler flags the filter adds).
+  - A `sync` or `async` filter may also take `work = n` (loop iterations before it answers) and
+    `mutate = { key = { .. } }` (it updates a dict already in the data, in place).
+- **Middleware kinds:**
+  - `short_circuit` (`value`: returned without calling the next handler) and `call_twice`.
+  - `write` (`key`, `value`: put into the data) and `skip_after_write` (`key`, `value`, `handler`: write, then skip
+    that handler).
+  - `replace` (`patch`: the event passed on is a patched copy) and `raise` (`error`).
+  - `get_flag` (`name`: read a handler flag).
+  - `register` (`register`: add components while handling, once; see below).
+- **Handler keys:**
+  - `action` is `{ kind = "return" }` by default, which returns the handler id or `value`. Other kinds:
+    - `skip`: the handler skips itself.
+    - `raise` (`error`).
+    - `unhandled`: declines, so propagation goes on.
+    - `reply` (`text`: returns a sendMessage to the event's chat, the webhook reply).
+    - `get_flag` (`name`).
+    - `await_yield` (`yields`: yields to the loop that many times).
+    - `register`.
+    - `scene_enter` (`scene`), and in scenes only: `scene_goto` (`scene`), `scene_leave`, `scene_back`,
+      `scene_exit`.
+  - `sync = true`: a plain function.
+  - `params = ["event_from_user"]`: takes only that argument, by name.
+  - `flags = { .. }`.
+- **Router keys:**
+  - `root_filters` (`[{ event, kind, .. }]`): router-level filters for one event type.
+  - `[[router.error_handler]]`: a handler of the router's `errors` observer, same keys as a handler.
+  - A middleware with `event = "update"` on the root router wraps the whole update.
+- **Late registration** (`register = { id, what, .. }`) adds components while an update is being handled. `what` is
+  one of:
+  - `inner_middleware` or `outer_middleware` (`router`, `middleware`).
+  - `handler` (`router`, `handler`).
+  - `router` (`router`: a router table with `parent`).
+- **`[variants]`** also takes `feed = ["polling", "webhook"]` (default: polling only). The default `fsm` is `["on"]`, as in the
+  A-05 bench.
+- **`[[event]]`:** events with the same `group` that follow one another are fed concurrently.
+- **`[[scene]]`** (`name`, which is also its state):
+  - `[[scene.handler]]` uses the handler keys, with `event`.
+  - `[[scene.action]]` (`event`, `on = "enter" | "leave" | "exit" | "back"`) is a scene action for that event type.
+  - Scenes attach to the root router and need `fsm = ["on"]`.
+
 ## `requests/*.toml`
 
 ```toml

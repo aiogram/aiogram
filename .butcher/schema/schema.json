@@ -1,7 +1,7 @@
 {
   "api": {
-    "version": "10.4",
-    "release_date": "2026-11-09"
+    "version": "10.5",
+    "release_date": "2026-11-22"
   },
   "items": [
     {
@@ -121,9 +121,9 @@
             },
             {
               "type": "ChosenInlineResult",
-              "description": "The result of an inline query that was chosen by a user and sent to their chat partner. Please see our documentation on the feedback collecting for details on how to enable these updates for your bot.",
-              "html_description": "<td><em>Optional</em>. The result of an <a href=\"#inline-mode\">inline</a> query that was chosen by a user and sent to their chat partner. Please see our documentation on the <a href=\"/bots/inline#collecting-feedback\">feedback collecting</a> for details on how to enable these updates for your bot.</td>",
-              "rst_description": "*Optional*. The result of an `inline <https://core.telegram.org/bots/api#inline-mode>`_ query that was chosen by a user and sent to their chat partner. Please see our documentation on the `feedback collecting <https://core.telegram.org/bots/inline#collecting-feedback>`_ for details on how to enable these updates for your bot.\n",
+              "description": "The result of an inline query that was chosen by a user and sent to their chat partner. Please see our documentation on the feedback collecting for details on how to enable these updates for your bot. The updates can also be enabled using the parameter inline_feedback_share_denominator of the method setMySettings.",
+              "html_description": "<td><em>Optional</em>. The result of an <a href=\"#inline-mode\">inline</a> query that was chosen by a user and sent to their chat partner. Please see our documentation on the <a href=\"/bots/inline#collecting-feedback\">feedback collecting</a> for details on how to enable these updates for your bot. The updates can also be enabled using the parameter <em>inline_feedback_share_denominator</em> of the method <a href=\"#setmysettings\">setMySettings</a>.</td>",
+              "rst_description": "*Optional*. The result of an `inline <https://core.telegram.org/bots/api#inline-mode>`_ query that was chosen by a user and sent to their chat partner. Please see our documentation on the `feedback collecting <https://core.telegram.org/bots/inline#collecting-feedback>`_ for details on how to enable these updates for your bot. The updates can also be enabled using the parameter *inline_feedback_share_denominator* of the method :class:`aiogram.methods.set_my_settings.SetMySettings`.\n",
               "name": "chosen_inline_result",
               "required": false
             },
@@ -483,6 +483,160 @@
       "anchor": "available-types",
       "children": [
         {
+          "anchor": "botfullinfo",
+          "name": "BotFullInfo",
+          "description": "This object contains full information about the bot itself.",
+          "html_description": "<p>This object contains full information about the bot itself.</p>",
+          "rst_description": "This object contains full information about the bot itself.",
+          "annotations": [
+            {
+              "type": "Integer",
+              "description": "Unique identifier for this bot. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a 64-bit integer or double-precision float type are safe for storing this identifier.",
+              "html_description": "<td>Unique identifier for this bot. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a 64-bit integer or double-precision float type are safe for storing this identifier.</td>",
+              "rst_description": "Unique identifier for this bot. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a 64-bit integer or double-precision float type are safe for storing this identifier.\n",
+              "name": "id",
+              "required": true
+            },
+            {
+              "type": "True",
+              "description": "Always True",
+              "html_description": "<td>Always <em>True</em></td>",
+              "rst_description": "Always :code:`True`\n",
+              "name": "is_bot",
+              "required": true
+            },
+            {
+              "type": "String",
+              "description": "Bot's first name",
+              "html_description": "<td>Bot's first name</td>",
+              "rst_description": "Bot's first name\n",
+              "name": "first_name",
+              "required": true
+            },
+            {
+              "type": "String",
+              "description": "Bot's username",
+              "html_description": "<td><em>Optional</em>. Bot's username</td>",
+              "rst_description": "*Optional*. Bot's username\n",
+              "name": "username",
+              "required": false
+            },
+            {
+              "type": "Array of String",
+              "description": "If non-empty, the list of all active usernames of the bot",
+              "html_description": "<td><em>Optional</em>. If non-empty, the list of all <a href=\"https://telegram.org/blog/topics-in-groups-collectible-usernames#collectible-usernames\">active usernames</a> of the bot</td>",
+              "rst_description": "*Optional*. If non-empty, the list of all `active usernames <https://telegram.org/blog/topics-in-groups-collectible-usernames#collectible-usernames>`_ of the bot\n",
+              "name": "active_usernames",
+              "required": false
+            },
+            {
+              "type": "Boolean",
+              "description": "True, if the bot can be added to groups",
+              "html_description": "<td><em>True</em>, if the bot can be added to groups</td>",
+              "rst_description": ":code:`True`, if the bot can be added to groups\n",
+              "name": "can_join_groups",
+              "required": true
+            },
+            {
+              "type": "Boolean",
+              "description": "True, if privacy mode is disabled for the bot",
+              "html_description": "<td><em>True</em>, if <a href=\"/bots/features#privacy-mode\">privacy mode</a> is disabled for the bot</td>",
+              "rst_description": ":code:`True`, if `privacy mode <https://core.telegram.org/bots/features#privacy-mode>`_ is disabled for the bot\n",
+              "name": "can_read_all_group_messages",
+              "required": true
+            },
+            {
+              "type": "Boolean",
+              "description": "True, if the bot supports guest queries from chats it is not a member of",
+              "html_description": "<td><em>True</em>, if the bot supports guest queries from chats it is not a member of</td>",
+              "rst_description": ":code:`True`, if the bot supports guest queries from chats it is not a member of\n",
+              "name": "supports_guest_queries",
+              "required": true
+            },
+            {
+              "type": "Boolean",
+              "description": "True, if the bot supports inline queries",
+              "html_description": "<td><em>True</em>, if the bot supports inline queries</td>",
+              "rst_description": ":code:`True`, if the bot supports inline queries\n",
+              "name": "supports_inline_queries",
+              "required": true
+            },
+            {
+              "type": "String",
+              "description": "Placeholder for inline queries, which is shown in the input field after the bot's username; omitted if the default placeholder is used",
+              "html_description": "<td><em>Optional</em>. Placeholder for inline queries, which is shown in the input field after the bot's username; omitted if the default placeholder is used</td>",
+              "rst_description": "*Optional*. Placeholder for inline queries, which is shown in the input field after the bot's username; omitted if the default placeholder is used\n",
+              "name": "inline_query_placeholder",
+              "required": false
+            },
+            {
+              "type": "Boolean",
+              "description": "True, if the bot requests the location of the user with every inline query",
+              "html_description": "<td><em>True</em>, if the bot requests the location of the user with every inline query</td>",
+              "rst_description": ":code:`True`, if the bot requests the location of the user with every inline query\n",
+              "name": "needs_inline_query_location",
+              "required": true
+            },
+            {
+              "type": "Boolean",
+              "description": "True, if the bot can be connected to a user account to manage it",
+              "html_description": "<td><em>True</em>, if the bot can be connected to a user account to manage it</td>",
+              "rst_description": ":code:`True`, if the bot can be connected to a user account to manage it\n",
+              "name": "can_connect_to_business",
+              "required": true
+            },
+            {
+              "type": "Boolean",
+              "description": "True, if the bot has a main Web App",
+              "html_description": "<td><em>True</em>, if the bot has a main Web App</td>",
+              "rst_description": ":code:`True`, if the bot has a main Web App\n",
+              "name": "has_main_web_app",
+              "required": true
+            },
+            {
+              "type": "Boolean",
+              "description": "True, if the bot has forum topic mode enabled in private chats",
+              "html_description": "<td><em>True</em>, if the bot has forum topic mode enabled in private chats</td>",
+              "rst_description": ":code:`True`, if the bot has forum topic mode enabled in private chats\n",
+              "name": "has_topics_enabled",
+              "required": true
+            },
+            {
+              "type": "Boolean",
+              "description": "True, if the bot allows users to create and delete topics in private chats",
+              "html_description": "<td><em>True</em>, if the bot allows users to create and delete topics in private chats</td>",
+              "rst_description": ":code:`True`, if the bot allows users to create and delete topics in private chats\n",
+              "name": "allows_users_to_create_topics",
+              "required": true
+            },
+            {
+              "type": "Boolean",
+              "description": "True, if topics in private chats with the bot are shown in a sidebar",
+              "html_description": "<td><em>True</em>, if topics in private chats with the bot are shown in a sidebar</td>",
+              "rst_description": ":code:`True`, if topics in private chats with the bot are shown in a sidebar\n",
+              "name": "has_topic_sidebar",
+              "required": true
+            },
+            {
+              "type": "Boolean",
+              "description": "True, if other bots can be created to be controlled by the bot",
+              "html_description": "<td><em>True</em>, if other bots can be created to be controlled by the bot</td>",
+              "rst_description": ":code:`True`, if other bots can be created to be controlled by the bot\n",
+              "name": "can_manage_bots",
+              "required": true
+            },
+            {
+              "type": "Boolean",
+              "description": "True, if the bot supports join request queries and can be assigned to process them",
+              "html_description": "<td><em>True</em>, if the bot supports join request queries and can be assigned to process them</td>",
+              "rst_description": ":code:`True`, if the bot supports join request queries and can be assigned to process them\n",
+              "name": "supports_join_request_queries",
+              "required": true
+            }
+          ],
+          "category": "types"
+        },
+        {
           "anchor": "user",
           "name": "User",
           "description": "This object represents a Telegram user or bot.",
@@ -551,86 +705,6 @@
               "html_description": "<td><em>Optional</em>. <em>True</em>, if this user added the bot to the attachment menu</td>",
               "rst_description": "*Optional*. :code:`True`, if this user added the bot to the attachment menu\n",
               "name": "added_to_attachment_menu",
-              "required": false
-            },
-            {
-              "type": "Boolean",
-              "description": "True, if the bot can be invited to groups. Returned only in getMe.",
-              "html_description": "<td><em>Optional</em>. <em>True</em>, if the bot can be invited to groups. Returned only in <a href=\"#getme\">getMe</a>.</td>",
-              "rst_description": "*Optional*. :code:`True`, if the bot can be invited to groups. Returned only in :class:`aiogram.methods.get_me.GetMe`.\n",
-              "name": "can_join_groups",
-              "required": false
-            },
-            {
-              "type": "Boolean",
-              "description": "True, if privacy mode is disabled for the bot. Returned only in getMe.",
-              "html_description": "<td><em>Optional</em>. <em>True</em>, if <a href=\"/bots/features#privacy-mode\">privacy mode</a> is disabled for the bot. Returned only in <a href=\"#getme\">getMe</a>.</td>",
-              "rst_description": "*Optional*. :code:`True`, if `privacy mode <https://core.telegram.org/bots/features#privacy-mode>`_ is disabled for the bot. Returned only in :class:`aiogram.methods.get_me.GetMe`.\n",
-              "name": "can_read_all_group_messages",
-              "required": false
-            },
-            {
-              "type": "Boolean",
-              "description": "True, if the bot supports guest queries from chats it is not a member of. Returned only in getMe.",
-              "html_description": "<td><em>Optional</em>. <em>True</em>, if the bot supports guest queries from chats it is not a member of. Returned only in <a href=\"#getme\">getMe</a>.</td>",
-              "rst_description": "*Optional*. :code:`True`, if the bot supports guest queries from chats it is not a member of. Returned only in :class:`aiogram.methods.get_me.GetMe`.\n",
-              "name": "supports_guest_queries",
-              "required": false
-            },
-            {
-              "type": "Boolean",
-              "description": "True, if the bot supports inline queries. Returned only in getMe.",
-              "html_description": "<td><em>Optional</em>. <em>True</em>, if the bot supports inline queries. Returned only in <a href=\"#getme\">getMe</a>.</td>",
-              "rst_description": "*Optional*. :code:`True`, if the bot supports inline queries. Returned only in :class:`aiogram.methods.get_me.GetMe`.\n",
-              "name": "supports_inline_queries",
-              "required": false
-            },
-            {
-              "type": "Boolean",
-              "description": "True, if the bot can be connected to a user account to manage it. Returned only in getMe.",
-              "html_description": "<td><em>Optional</em>. <em>True</em>, if the bot can be connected to a user account to manage it. Returned only in <a href=\"#getme\">getMe</a>.</td>",
-              "rst_description": "*Optional*. :code:`True`, if the bot can be connected to a user account to manage it. Returned only in :class:`aiogram.methods.get_me.GetMe`.\n",
-              "name": "can_connect_to_business",
-              "required": false
-            },
-            {
-              "type": "Boolean",
-              "description": "True, if the bot has a main Web App. Returned only in getMe.",
-              "html_description": "<td><em>Optional</em>. <em>True</em>, if the bot has a main Web App. Returned only in <a href=\"#getme\">getMe</a>.</td>",
-              "rst_description": "*Optional*. :code:`True`, if the bot has a main Web App. Returned only in :class:`aiogram.methods.get_me.GetMe`.\n",
-              "name": "has_main_web_app",
-              "required": false
-            },
-            {
-              "type": "Boolean",
-              "description": "True, if the bot has forum topic mode enabled in private chats. Returned only in getMe.",
-              "html_description": "<td><em>Optional</em>. <em>True</em>, if the bot has forum topic mode enabled in private chats. Returned only in <a href=\"#getme\">getMe</a>.</td>",
-              "rst_description": "*Optional*. :code:`True`, if the bot has forum topic mode enabled in private chats. Returned only in :class:`aiogram.methods.get_me.GetMe`.\n",
-              "name": "has_topics_enabled",
-              "required": false
-            },
-            {
-              "type": "Boolean",
-              "description": "True, if the bot allows users to create and delete topics in private chats. Returned only in getMe.",
-              "html_description": "<td><em>Optional</em>. <em>True</em>, if the bot allows users to create and delete topics in private chats. Returned only in <a href=\"#getme\">getMe</a>.</td>",
-              "rst_description": "*Optional*. :code:`True`, if the bot allows users to create and delete topics in private chats. Returned only in :class:`aiogram.methods.get_me.GetMe`.\n",
-              "name": "allows_users_to_create_topics",
-              "required": false
-            },
-            {
-              "type": "Boolean",
-              "description": "True, if other bots can be created to be controlled by the bot. Returned only in getMe.",
-              "html_description": "<td><em>Optional</em>. <em>True</em>, if other bots can be created to be controlled by the bot. Returned only in <a href=\"#getme\">getMe</a>.</td>",
-              "rst_description": "*Optional*. :code:`True`, if other bots can be created to be controlled by the bot. Returned only in :class:`aiogram.methods.get_me.GetMe`.\n",
-              "name": "can_manage_bots",
-              "required": false
-            },
-            {
-              "type": "Boolean",
-              "description": "True, if the bot supports join request queries and can be assigned to process them. Returned only in getMe.",
-              "html_description": "<td><em>Optional</em>. <em>True</em>, if the bot supports join request queries and can be assigned to process them. Returned only in <a href=\"#getme\">getMe</a>.</td>",
-              "rst_description": "*Optional*. :code:`True`, if the bot supports join request queries and can be assigned to process them. Returned only in :class:`aiogram.methods.get_me.GetMe`.\n",
-              "name": "supports_join_request_queries",
               "required": false
             }
           ],
@@ -1849,9 +1923,9 @@
             },
             {
               "type": "WriteAccessAllowed",
-              "description": "Service message: the user allowed the bot to write messages after adding it to the attachment or side menu, launching a Web App from a link, or accepting an explicit request from a Web App sent by the method requestWriteAccess",
-              "html_description": "<td><em>Optional</em>. Service message: the user allowed the bot to write messages after adding it to the attachment or side menu, launching a Web App from a link, or accepting an explicit request from a Web App sent by the method <a href=\"/bots/webapps#initializing-mini-apps\">requestWriteAccess</a></td>",
-              "rst_description": "*Optional*. Service message: the user allowed the bot to write messages after adding it to the attachment or side menu, launching a Web App from a link, or accepting an explicit request from a Web App sent by the method `requestWriteAccess <https://core.telegram.org/bots/webapps#initializing-mini-apps>`_\n",
+              "description": "Service message: the user allowed the bot to write messages after adding it to the attachment or side menu, launching a Web App from a link, or accepting an explicit request from a Web App sent by the method requestWriteAccess, or the user was invited to the private chat with the bot by the owner of the bot",
+              "html_description": "<td><em>Optional</em>. Service message: the user allowed the bot to write messages after adding it to the attachment or side menu, launching a Web App from a link, or accepting an explicit request from a Web App sent by the method <a href=\"/bots/webapps#initializing-mini-apps\">requestWriteAccess</a>, or the user was invited to the private chat with the bot by the owner of the bot</td>",
+              "rst_description": "*Optional*. Service message: the user allowed the bot to write messages after adding it to the attachment or side menu, launching a Web App from a link, or accepting an explicit request from a Web App sent by the method `requestWriteAccess <https://core.telegram.org/bots/webapps#initializing-mini-apps>`_, or the user was invited to the private chat with the bot by the owner of the bot\n",
               "name": "write_access_allowed",
               "required": false
             },
@@ -5537,9 +5611,9 @@
         {
           "anchor": "writeaccessallowed",
           "name": "WriteAccessAllowed",
-          "description": "This object represents a service message about a user allowing a bot to write messages after adding it to the attachment menu, launching a Web App from a link, or accepting an explicit request from a Web App sent by the method requestWriteAccess.",
-          "html_description": "<p>This object represents a service message about a user allowing a bot to write messages after adding it to the attachment menu, launching a Web App from a link, or accepting an explicit request from a Web App sent by the method <a href=\"/bots/webapps#initializing-mini-apps\">requestWriteAccess</a>.</p>",
-          "rst_description": "This object represents a service message about a user allowing a bot to write messages after adding it to the attachment menu, launching a Web App from a link, or accepting an explicit request from a Web App sent by the method `requestWriteAccess <https://core.telegram.org/bots/webapps#initializing-mini-apps>`_.",
+          "description": "This object represents a service message about a user allowing a bot to write messages after adding it to the attachment menu, launching a Web App from a link, or accepting an explicit request from a Web App sent by the method requestWriteAccess, or about a user being invited to the private chat with the bot by the owner of the bot.",
+          "html_description": "<p>This object represents a service message about a user allowing a bot to write messages after adding it to the attachment menu, launching a Web App from a link, or accepting an explicit request from a Web App sent by the method <a href=\"/bots/webapps#initializing-mini-apps\">requestWriteAccess</a>, or about a user being invited to the private chat with the bot by the owner of the bot.</p>",
+          "rst_description": "This object represents a service message about a user allowing a bot to write messages after adding it to the attachment menu, launching a Web App from a link, or accepting an explicit request from a Web App sent by the method `requestWriteAccess <https://core.telegram.org/bots/webapps#initializing-mini-apps>`_, or about a user being invited to the private chat with the bot by the owner of the bot.",
           "annotations": [
             {
               "type": "Boolean",
@@ -5563,6 +5637,14 @@
               "html_description": "<td><em>Optional</em>. <em>True</em>, if the access was granted when the bot was added to the attachment or side menu</td>",
               "rst_description": "*Optional*. :code:`True`, if the access was granted when the bot was added to the attachment or side menu\n",
               "name": "from_attachment_menu",
+              "required": false
+            },
+            {
+              "type": "User",
+              "description": "The owner of the bot, if the access was granted when the owner invited the user to the private chat with the bot. Bot owners can invite up to 10 users at once by pressing the link https://t.me/botinvite/<bot_username>.",
+              "html_description": "<td><em>Optional</em>. The owner of the bot, if the access was granted when the owner invited the user to the private chat with the bot. Bot owners can invite up to 10 users at once by pressing the link <code>https://t.me/botinvite/&lt;bot_username&gt;</code>.</td>",
+              "rst_description": "*Optional*. The owner of the bot, if the access was granted when the owner invited the user to the private chat with the bot. Bot owners can invite up to 10 users at once by pressing the link :code:`https://t.me/botinvite/<bot_username>`.\n",
+              "name": "inviter",
               "required": false
             }
           ],
@@ -6517,9 +6599,9 @@
             },
             {
               "type": "KeyboardButtonRequestManagedBot",
-              "description": "If specified, pressing the button will ask the user to create and share a bot that will be managed by the current bot. Available for bots that enabled management of other bots in the @BotFather Mini App. Available in private chats only.",
-              "html_description": "<td><em>Optional</em>. If specified, pressing the button will ask the user to create and share a bot that will be managed by the current bot. Available for bots that enabled management of other bots in the <a href=\"https://t.me/BotFather\">@BotFather</a> Mini App. Available in private chats only.</td>",
-              "rst_description": "*Optional*. If specified, pressing the button will ask the user to create and share a bot that will be managed by the current bot. Available for bots that enabled management of other bots in the `@BotFather <https://t.me/BotFather>`_ Mini App. Available in private chats only.\n",
+              "description": "If specified, pressing the button will ask the user to create and share a bot that will be managed by the current bot. Available for bots that enabled management of other bots in the @BotFather Mini App or using the parameter can_manage_bots of the method setMySettings. Available in private chats only.",
+              "html_description": "<td><em>Optional</em>. If specified, pressing the button will ask the user to create and share a bot that will be managed by the current bot. Available for bots that enabled management of other bots in the <a href=\"https://t.me/BotFather\">@BotFather</a> Mini App or using the parameter <em>can_manage_bots</em> of the method <a href=\"#setmysettings\">setMySettings</a>. Available in private chats only.</td>",
+              "rst_description": "*Optional*. If specified, pressing the button will ask the user to create and share a bot that will be managed by the current bot. Available for bots that enabled management of other bots in the `@BotFather <https://t.me/BotFather>`_ Mini App or using the parameter *can_manage_bots* of the method :class:`aiogram.methods.set_my_settings.SetMySettings`. Available in private chats only.\n",
               "name": "request_managed_bot",
               "required": false
             },
@@ -7070,9 +7152,9 @@
         {
           "anchor": "callbackquery",
           "name": "CallbackQuery",
-          "description": "This object represents an incoming callback query from a callback button in an inline keyboard. If the button that originated the query was attached to a message sent by the bot, the field message will be present. If the button was attached to a message sent via the bot (in inline mode), the field inline_message_id will be present. Exactly one of the fields data or game_short_name will be present.\nNOTE: After the user presses a callback button, Telegram clients will display a progress bar until you call answerCallbackQuery. It is, therefore, necessary to react by calling answerCallbackQuery even if no notification to the user is needed (e.g., without specifying any of the optional parameters).",
-          "html_description": "<p>This object represents an incoming callback query from a callback button in an <a href=\"/bots/features#inline-keyboards\">inline keyboard</a>. If the button that originated the query was attached to a message sent by the bot, the field <em>message</em> will be present. If the button was attached to a message sent via the bot (in <a href=\"#inline-mode\">inline mode</a>), the field <em>inline_message_id</em> will be present. Exactly one of the fields <em>data</em> or <em>game_short_name</em> will be present.</p><blockquote>\n<p><strong>NOTE:</strong> After the user presses a callback button, Telegram clients will display a progress bar until you call <a href=\"#answercallbackquery\">answerCallbackQuery</a>. It is, therefore, necessary to react by calling <a href=\"#answercallbackquery\">answerCallbackQuery</a> even if no notification to the user is needed (e.g., without specifying any of the optional parameters).</p>\n</blockquote>",
-          "rst_description": "This object represents an incoming callback query from a callback button in an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_. If the button that originated the query was attached to a message sent by the bot, the field *message* will be present. If the button was attached to a message sent via the bot (in `inline mode <https://core.telegram.org/bots/api#inline-mode>`_), the field *inline_message_id* will be present. Exactly one of the fields *data* or *game_short_name* will be present.\n\n **NOTE:** After the user presses a callback button, Telegram clients will display a progress bar until you call :class:`aiogram.methods.answer_callback_query.AnswerCallbackQuery`. It is, therefore, necessary to react by calling :class:`aiogram.methods.answer_callback_query.AnswerCallbackQuery` even if no notification to the user is needed (e.g., without specifying any of the optional parameters).",
+          "description": "This object represents an incoming callback query from a callback button in an inline keyboard or in a rich message. If the button that originated the query belongs to a message sent by the bot, the field message will be present, unless the field inline_message_id is used instead as specified by the parameter callback_query_mode of the method setMySettings. If the button belongs to a message sent via the bot (in inline mode), the field inline_message_id will be present. Exactly one of the fields data or game_short_name will be present.\nNOTE: After the user presses a callback button, Telegram clients will display a progress bar until you call answerCallbackQuery. It is, therefore, necessary to react by calling answerCallbackQuery even if no notification to the user is needed (e.g., without specifying any of the optional parameters).",
+          "html_description": "<p>This object represents an incoming callback query from a callback button in an <a href=\"/bots/features#inline-keyboards\">inline keyboard</a> or in a <a href=\"#richmessage\">rich message</a>. If the button that originated the query belongs to a message sent by the bot, the field <em>message</em> will be present, unless the field <em>inline_message_id</em> is used instead as specified by the parameter <em>callback_query_mode</em> of the method <a href=\"#setmysettings\">setMySettings</a>. If the button belongs to a message sent via the bot (in <a href=\"#inline-mode\">inline mode</a>), the field <em>inline_message_id</em> will be present. Exactly one of the fields <em>data</em> or <em>game_short_name</em> will be present.</p><blockquote>\n<p><strong>NOTE:</strong> After the user presses a callback button, Telegram clients will display a progress bar until you call <a href=\"#answercallbackquery\">answerCallbackQuery</a>. It is, therefore, necessary to react by calling <a href=\"#answercallbackquery\">answerCallbackQuery</a> even if no notification to the user is needed (e.g., without specifying any of the optional parameters).</p>\n</blockquote>",
+          "rst_description": "This object represents an incoming callback query from a callback button in an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_ or in a `rich message <https://core.telegram.org/bots/api#richmessage>`_. If the button that originated the query belongs to a message sent by the bot, the field *message* will be present, unless the field *inline_message_id* is used instead as specified by the parameter *callback_query_mode* of the method :class:`aiogram.methods.set_my_settings.SetMySettings`. If the button belongs to a message sent via the bot (in `inline mode <https://core.telegram.org/bots/api#inline-mode>`_), the field *inline_message_id* will be present. Exactly one of the fields *data* or *game_short_name* will be present.\n\n **NOTE:** After the user presses a callback button, Telegram clients will display a progress bar until you call :class:`aiogram.methods.answer_callback_query.AnswerCallbackQuery`. It is, therefore, necessary to react by calling :class:`aiogram.methods.answer_callback_query.AnswerCallbackQuery` even if no notification to the user is needed (e.g., without specifying any of the optional parameters).",
           "annotations": [
             {
               "type": "String",
@@ -7100,9 +7182,9 @@
             },
             {
               "type": "String",
-              "description": "Identifier of the message sent via the bot in inline mode, that originated the query",
-              "html_description": "<td><em>Optional</em>. Identifier of the message sent via the bot in inline mode, that originated the query</td>",
-              "rst_description": "*Optional*. Identifier of the message sent via the bot in inline mode, that originated the query\n",
+              "description": "Identifier of the message sent via the bot in inline mode, that originated the query. Can also be present for messages sent by the bot, depending on the parameter callback_query_mode of the method setMySettings.",
+              "html_description": "<td><em>Optional</em>. Identifier of the message sent via the bot in inline mode, that originated the query. Can also be present for messages sent by the bot, depending on the parameter <em>callback_query_mode</em> of the method <a href=\"#setmysettings\">setMySettings</a>.</td>",
+              "rst_description": "*Optional*. Identifier of the message sent via the bot in inline mode, that originated the query. Can also be present for messages sent by the bot, depending on the parameter *callback_query_mode* of the method :class:`aiogram.methods.set_my_settings.SetMySettings`.\n",
               "name": "inline_message_id",
               "required": false
             },
@@ -12730,9 +12812,9 @@
         {
           "anchor": "getme",
           "name": "getMe",
-          "description": "A simple method for testing your bot's authentication token. Requires no parameters. Returns basic information about the bot in form of a User object.",
-          "html_description": "<p>A simple method for testing your bot's authentication token. Requires no parameters. Returns basic information about the bot in form of a <a href=\"#user\">User</a> object.</p>",
-          "rst_description": "A simple method for testing your bot's authentication token. Requires no parameters. Returns basic information about the bot in form of a :class:`aiogram.types.user.User` object.",
+          "description": "A simple method for testing your bot's authentication token. Requires no parameters. Returns information about the bot in form of a BotFullInfo object.",
+          "html_description": "<p>A simple method for testing your bot's authentication token. Requires no parameters. Returns information about the bot in form of a <a href=\"#botfullinfo\">BotFullInfo</a> object.</p>",
+          "rst_description": "A simple method for testing your bot's authentication token. Requires no parameters. Returns information about the bot in form of a :class:`aiogram.types.bot_full_info.BotFullInfo` object.",
           "annotations": [],
           "category": "methods"
         },
@@ -17783,9 +17865,9 @@
         {
           "anchor": "answercallbackquery",
           "name": "answerCallbackQuery",
-          "description": "Use this method to send answers to callback queries sent from inline keyboards. The answer will be displayed to the user as a notification at the top of the chat screen or as an alert. On success, True is returned.\nAlternatively, the user can be redirected to the specified Game URL. For this option to work, you must first create a game for your bot via @BotFather and accept the terms. Otherwise, you may use links like t.me/your_bot?start=XXXX that open your bot with a parameter.",
-          "html_description": "<p>Use this method to send answers to callback queries sent from <a href=\"/bots/features#inline-keyboards\">inline keyboards</a>. The answer will be displayed to the user as a notification at the top of the chat screen or as an alert. On success, <em>True</em> is returned.</p><blockquote>\n<p>Alternatively, the user can be redirected to the specified Game URL. For this option to work, you must first create a game for your bot via <a href=\"https://t.me/botfather\">@BotFather</a> and accept the terms. Otherwise, you may use links like <code>t.me/your_bot?start=XXXX</code> that open your bot with a parameter.</p>\n</blockquote>",
-          "rst_description": "Use this method to send answers to callback queries sent from `inline keyboards <https://core.telegram.org/bots/features#inline-keyboards>`_. The answer will be displayed to the user as a notification at the top of the chat screen or as an alert. On success, :code:`True` is returned.\n\n Alternatively, the user can be redirected to the specified Game URL. For this option to work, you must first create a game for your bot via `@BotFather <https://t.me/botfather>`_ and accept the terms. Otherwise, you may use links like :code:`t.me/your_bot?start=XXXX` that open your bot with a parameter.",
+          "description": "Use this method to send answers to callback queries sent from inline keyboards or rich messages. The answer will be displayed to the user as a notification at the top of the chat screen or as an alert. On success, True is returned.\nAlternatively, the user can be redirected to the specified Game URL. For this option to work, you must first create a game for your bot via @BotFather and accept the terms. Otherwise, you may use links like t.me/your_bot?start=XXXX that open your bot with a parameter.",
+          "html_description": "<p>Use this method to send answers to callback queries sent from <a href=\"/bots/features#inline-keyboards\">inline keyboards</a> or <a href=\"#richmessage\">rich messages</a>. The answer will be displayed to the user as a notification at the top of the chat screen or as an alert. On success, <em>True</em> is returned.</p><blockquote>\n<p>Alternatively, the user can be redirected to the specified Game URL. For this option to work, you must first create a game for your bot via <a href=\"https://t.me/botfather\">@BotFather</a> and accept the terms. Otherwise, you may use links like <code>t.me/your_bot?start=XXXX</code> that open your bot with a parameter.</p>\n</blockquote>",
+          "rst_description": "Use this method to send answers to callback queries sent from `inline keyboards <https://core.telegram.org/bots/features#inline-keyboards>`_ or `rich messages <https://core.telegram.org/bots/api#richmessage>`_. The answer will be displayed to the user as a notification at the top of the chat screen or as an alert. On success, :code:`True` is returned.\n\n Alternatively, the user can be redirected to the specified Game URL. For this option to work, you must first create a game for your bot via `@BotFather <https://t.me/botfather>`_ and accept the terms. Otherwise, you may use links like :code:`t.me/your_bot?start=XXXX` that open your bot with a parameter.",
           "annotations": [
             {
               "type": "String",
@@ -18010,6 +18092,136 @@
               "html_description": "<td>A JSON-serialized list of up to 10 identifiers of users who will have access to the bot in addition to its owner. Ignored if <em>is_access_restricted</em> is <em>False</em>.</td>",
               "rst_description": "A JSON-serialized list of up to 10 identifiers of users who will have access to the bot in addition to its owner. Ignored if *is_access_restricted* is :code:`False`.\n",
               "name": "added_user_ids"
+            }
+          ],
+          "category": "methods"
+        },
+        {
+          "anchor": "setmysettings",
+          "name": "setMySettings",
+          "description": "Use this method to change settings of the bot. Settings that aren't specified remain unchanged. Returns True on success.",
+          "html_description": "<p>Use this method to change settings of the bot. Settings that aren't specified remain unchanged. Returns <em>True</em> on success.</p>",
+          "rst_description": "Use this method to change settings of the bot. Settings that aren't specified remain unchanged. Returns :code:`True` on success.",
+          "annotations": [
+            {
+              "type": "Boolean",
+              "required": false,
+              "description": "Pass True to enable inline mode for the bot or False to disable it",
+              "html_description": "<td>Pass <em>True</em> to enable <a href=\"#inline-mode\">inline mode</a> for the bot or <em>False</em> to disable it</td>",
+              "rst_description": "Pass :code:`True` to enable `inline mode <https://core.telegram.org/bots/api#inline-mode>`_ for the bot or :code:`False` to disable it\n",
+              "name": "supports_inline_queries"
+            },
+            {
+              "type": "String",
+              "required": false,
+              "description": "New placeholder for inline queries, which is shown in the input field after the bot's username. Pass an empty string to use the default placeholder.",
+              "html_description": "<td>New placeholder for inline queries, which is shown in the input field after the bot's username. Pass an empty string to use the default placeholder.</td>",
+              "rst_description": "New placeholder for inline queries, which is shown in the input field after the bot's username. Pass an empty string to use the default placeholder.\n",
+              "name": "inline_query_placeholder"
+            },
+            {
+              "type": "Boolean",
+              "required": false,
+              "description": "Pass True to request the location of the user with every inline query to the bot or False to stop requesting it",
+              "html_description": "<td>Pass <em>True</em> to request the location of the user with every inline query to the bot or <em>False</em> to stop requesting it</td>",
+              "rst_description": "Pass :code:`True` to request the location of the user with every inline query to the bot or :code:`False` to stop requesting it\n",
+              "name": "needs_inline_query_location"
+            },
+            {
+              "type": "Integer",
+              "required": false,
+              "description": "Denominator of the share of chosen inline results received by the bot; the bot receives 1 out of inline_feedback_share_denominator chosen results. Must be one of 1, 10, 100, or 1000. Pass 0 to stop receiving chosen inline results.",
+              "html_description": "<td>Denominator of the share of <a href=\"#choseninlineresult\">chosen inline results</a> received by the bot; the bot receives 1 out of <em>inline_feedback_share_denominator</em> chosen results. Must be one of 1, 10, 100, or 1000. Pass 0 to stop receiving chosen inline results.</td>",
+              "rst_description": "Denominator of the share of `chosen inline results <https://core.telegram.org/bots/api#choseninlineresult>`_ received by the bot; the bot receives 1 out of *inline_feedback_share_denominator* chosen results. Must be one of 1, 10, 100, or 1000. Pass 0 to stop receiving chosen inline results.\n",
+              "name": "inline_feedback_share_denominator"
+            },
+            {
+              "type": "Boolean",
+              "required": false,
+              "description": "Pass True to allow adding the bot to groups or False to disallow it",
+              "html_description": "<td>Pass <em>True</em> to allow adding the bot to groups or <em>False</em> to disallow it</td>",
+              "rst_description": "Pass :code:`True` to allow adding the bot to groups or :code:`False` to disallow it\n",
+              "name": "can_join_groups"
+            },
+            {
+              "type": "Boolean",
+              "required": false,
+              "description": "Pass True to disable privacy mode for the bot or False to enable it",
+              "html_description": "<td>Pass <em>True</em> to disable <a href=\"/bots/features#privacy-mode\">privacy mode</a> for the bot or <em>False</em> to enable it</td>",
+              "rst_description": "Pass :code:`True` to disable `privacy mode <https://core.telegram.org/bots/features#privacy-mode>`_ for the bot or :code:`False` to enable it\n",
+              "name": "can_read_all_group_messages"
+            },
+            {
+              "type": "Boolean",
+              "required": false,
+              "description": "Pass True to allow connecting the bot to user accounts to manage them or False to disallow it",
+              "html_description": "<td>Pass <em>True</em> to allow connecting the bot to user accounts to manage them or <em>False</em> to disallow it</td>",
+              "rst_description": "Pass :code:`True` to allow connecting the bot to user accounts to manage them or :code:`False` to disallow it\n",
+              "name": "can_connect_to_business"
+            },
+            {
+              "type": "Boolean",
+              "required": false,
+              "description": "Pass True to allow creating other bots that will be controlled by the bot or False to disallow it",
+              "html_description": "<td>Pass <em>True</em> to allow creating other bots that will be controlled by the bot or <em>False</em> to disallow it</td>",
+              "rst_description": "Pass :code:`True` to allow creating other bots that will be controlled by the bot or :code:`False` to disallow it\n",
+              "name": "can_manage_bots"
+            },
+            {
+              "type": "Boolean",
+              "required": false,
+              "description": "Pass True to allow guest queries to the bot from chats it isn't a member of or False to disallow them",
+              "html_description": "<td>Pass <em>True</em> to allow guest queries to the bot from chats it isn't a member of or <em>False</em> to disallow them</td>",
+              "rst_description": "Pass :code:`True` to allow guest queries to the bot from chats it isn't a member of or :code:`False` to disallow them\n",
+              "name": "supports_guest_queries"
+            },
+            {
+              "type": "Boolean",
+              "required": false,
+              "description": "Pass True to allow assigning the bot to process join request queries or False to disallow it",
+              "html_description": "<td>Pass <em>True</em> to allow assigning the bot to process join request queries or <em>False</em> to disallow it</td>",
+              "rst_description": "Pass :code:`True` to allow assigning the bot to process join request queries or :code:`False` to disallow it\n",
+              "name": "supports_join_request_queries"
+            },
+            {
+              "type": "Boolean",
+              "required": false,
+              "description": "Pass True to enable forum topic mode in private chats with the bot or False to disable it",
+              "html_description": "<td>Pass <em>True</em> to enable forum topic mode in private chats with the bot or <em>False</em> to disable it</td>",
+              "rst_description": "Pass :code:`True` to enable forum topic mode in private chats with the bot or :code:`False` to disable it\n",
+              "name": "has_topics_enabled"
+            },
+            {
+              "type": "Boolean",
+              "required": false,
+              "description": "Pass True to allow users to create and delete topics in private chats with the bot or False to disallow it",
+              "html_description": "<td>Pass <em>True</em> to allow users to create and delete topics in private chats with the bot or <em>False</em> to disallow it</td>",
+              "rst_description": "Pass :code:`True` to allow users to create and delete topics in private chats with the bot or :code:`False` to disallow it\n",
+              "name": "allows_users_to_create_topics"
+            },
+            {
+              "type": "Boolean",
+              "required": false,
+              "description": "Pass True to show topics in private chats with the bot in a sidebar or False to stop showing them in a sidebar",
+              "html_description": "<td>Pass <em>True</em> to show topics in private chats with the bot in a sidebar or <em>False</em> to stop showing them in a sidebar</td>",
+              "rst_description": "Pass :code:`True` to show topics in private chats with the bot in a sidebar or :code:`False` to stop showing them in a sidebar\n",
+              "name": "has_topic_sidebar"
+            },
+            {
+              "type": "Boolean",
+              "required": false,
+              "description": "Pass True to allow the bot to communicate with other bots in groups, private chats, and through business accounts or False to disallow it",
+              "html_description": "<td>Pass <em>True</em> to allow the bot to communicate with other bots in groups, private chats, and through business accounts or <em>False</em> to disallow it</td>",
+              "rst_description": "Pass :code:`True` to allow the bot to communicate with other bots in groups, private chats, and through business accounts or :code:`False` to disallow it\n",
+              "name": "can_communicate_with_bots"
+            },
+            {
+              "type": "String",
+              "required": false,
+              "description": "Mode in which the bot receives callback queries from buttons in messages sent by the bot. Must be one of 'default' (the field message is always used and contains an InaccessibleMessage if the message is inaccessible to the bot), 'auto' (the field inline_message_id is used instead of the field message if the message is inaccessible to the bot; the field message can still contain an inaccessible message if the message has just been deleted), or 'inline' (the field inline_message_id is always used instead of the field message).",
+              "html_description": "<td>Mode in which the bot receives <a href=\"#callbackquery\">callback queries</a> from buttons in messages sent by the bot. Must be one of &#8220;default&#8221; (the field <em>message</em> is always used and contains an <a href=\"#inaccessiblemessage\">InaccessibleMessage</a> if the message is inaccessible to the bot), &#8220;auto&#8221; (the field <em>inline_message_id</em> is used instead of the field <em>message</em> if the message is inaccessible to the bot; the field <em>message</em> can still contain an inaccessible message if the message has just been deleted), or &#8220;inline&#8221; (the field <em>inline_message_id</em> is always used instead of the field <em>message</em>).</td>",
+              "rst_description": "Mode in which the bot receives `callback queries <https://core.telegram.org/bots/api#callbackquery>`_ from buttons in messages sent by the bot. Must be one of 'default' (the field *message* is always used and contains an :class:`aiogram.types.inaccessible_message.InaccessibleMessage` if the message is inaccessible to the bot), 'auto' (the field *inline_message_id* is used instead of the field *message* if the message is inaccessible to the bot; the field *message* can still contain an inaccessible message if the message has just been deleted), or 'inline' (the field *inline_message_id* is always used instead of the field *message*).\n",
+              "name": "callback_query_mode"
             }
           ],
           "category": "methods"
@@ -23229,11 +23441,11 @@
               "required": true
             },
             {
-              "type": "RichText",
+              "type": "Array of RichBlock",
               "description": "Content of the block",
               "html_description": "<td>Content of the block</td>",
               "rst_description": "Content of the block\n",
-              "name": "text",
+              "name": "blocks",
               "required": true
             },
             {
@@ -24120,11 +24332,11 @@
               "required": true
             },
             {
-              "type": "RichText",
+              "type": "Array of InputRichBlock",
               "description": "Content of the block",
               "html_description": "<td>Content of the block</td>",
               "rst_description": "Content of the block\n",
-              "name": "text",
+              "name": "blocks",
               "required": true
             },
             {
@@ -24718,9 +24930,9 @@
             },
             {
               "type": "Location",
-              "description": "Sender location, only for bots that request user location",
-              "html_description": "<td><em>Optional</em>. Sender location, only for bots that request user location</td>",
-              "rst_description": "*Optional*. Sender location, only for bots that request user location\n",
+              "description": "Sender location, only for bots that enabled user location requests via @BotFather or using the parameter needs_inline_query_location of the method setMySettings",
+              "html_description": "<td><em>Optional</em>. Sender location, only for bots that enabled user location requests via <a href=\"https://t.me/botfather\">@BotFather</a> or using the parameter <em>needs_inline_query_location</em> of the method <a href=\"#setmysettings\">setMySettings</a></td>",
+              "rst_description": "*Optional*. Sender location, only for bots that enabled user location requests via `@BotFather <https://t.me/botfather>`_ or using the parameter *needs_inline_query_location* of the method :class:`aiogram.methods.set_my_settings.SetMySettings`\n",
               "name": "location",
               "required": false
             }
@@ -27384,9 +27596,9 @@
         {
           "anchor": "choseninlineresult",
           "name": "ChosenInlineResult",
-          "description": "Represents a result of an inline query that was chosen by the user and sent to their chat partner.\nNote: It is necessary to enable inline feedback via @BotFather in order to receive these objects in updates.",
-          "html_description": "<p>Represents a <a href=\"#inlinequeryresult\">result</a> of an inline query that was chosen by the user and sent to their chat partner.</p><p><strong>Note:</strong> It is necessary to enable <a href=\"/bots/inline#collecting-feedback\">inline feedback</a> via <a href=\"https://t.me/botfather\">@BotFather</a> in order to receive these objects in updates.</p>",
-          "rst_description": "Represents a `result <https://core.telegram.org/bots/api#inlinequeryresult>`_ of an inline query that was chosen by the user and sent to their chat partner.\n**Note:** It is necessary to enable `inline feedback <https://core.telegram.org/bots/inline#collecting-feedback>`_ via `@BotFather <https://t.me/botfather>`_ in order to receive these objects in updates.",
+          "description": "Represents a result of an inline query that was chosen by the user and sent to their chat partner.\nNote: It is necessary to enable inline feedback via @BotFather or using the parameter inline_feedback_share_denominator of the method setMySettings in order to receive these objects in updates.",
+          "html_description": "<p>Represents a <a href=\"#inlinequeryresult\">result</a> of an inline query that was chosen by the user and sent to their chat partner.</p><p><strong>Note:</strong> It is necessary to enable <a href=\"/bots/inline#collecting-feedback\">inline feedback</a> via <a href=\"https://t.me/botfather\">@BotFather</a> or using the parameter <em>inline_feedback_share_denominator</em> of the method <a href=\"#setmysettings\">setMySettings</a> in order to receive these objects in updates.</p>",
+          "rst_description": "Represents a `result <https://core.telegram.org/bots/api#inlinequeryresult>`_ of an inline query that was chosen by the user and sent to their chat partner.\n**Note:** It is necessary to enable `inline feedback <https://core.telegram.org/bots/inline#collecting-feedback>`_ via `@BotFather <https://t.me/botfather>`_ or using the parameter *inline_feedback_share_denominator* of the method :class:`aiogram.methods.set_my_settings.SetMySettings` in order to receive these objects in updates.",
           "annotations": [
             {
               "type": "String",
@@ -27406,9 +27618,9 @@
             },
             {
               "type": "Location",
-              "description": "Sender location, only for bots that require user location",
-              "html_description": "<td><em>Optional</em>. Sender location, only for bots that require user location</td>",
-              "rst_description": "*Optional*. Sender location, only for bots that require user location\n",
+              "description": "Sender location, only for bots that enabled user location requests via @BotFather or using the parameter needs_inline_query_location of the method setMySettings",
+              "html_description": "<td><em>Optional</em>. Sender location, only for bots that enabled user location requests via <a href=\"https://t.me/botfather\">@BotFather</a> or using the parameter <em>needs_inline_query_location</em> of the method <a href=\"#setmysettings\">setMySettings</a></td>",
+              "rst_description": "*Optional*. Sender location, only for bots that enabled user location requests via `@BotFather <https://t.me/botfather>`_ or using the parameter *needs_inline_query_location* of the method :class:`aiogram.methods.set_my_settings.SetMySettings`\n",
               "name": "location",
               "required": false
             },
@@ -27432,7 +27644,7 @@
           "category": "types"
         }
       ],
-      "description": "The following methods and objects allow your bot to work in inline mode.\nPlease see our Introduction to Inline bots for more details.\nTo enable this option, send the /setinline command to @BotFather and provide the placeholder text that the user will see in the input field after typing your bot's name."
+      "description": "The following methods and objects allow your bot to work in inline mode.\nPlease see our Introduction to Inline bots for more details.\nTo enable this option, send the /setinline command to @BotFather and provide the placeholder text that the user will see in the input field after typing your bot's name, or use the parameters supports_inline_queries and inline_query_placeholder of the method setMySettings."
     },
     {
       "title": "Payments",

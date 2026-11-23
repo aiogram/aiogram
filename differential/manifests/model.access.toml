@@ -1,0 +1,108 @@
+# Attribute paths read by the `access` probe of the model kind (A-08), one list per corpus input of
+# kind "update". Python attribute names, as user code reads them: `a.b`, `a.items[0].c`. Every side
+# adapter reads this file; tests/test_differential_model.py checks that every update input has a list.
+# Append-only, like the corpus: a changed path list changes the recorded case.
+
+[access]
+"update.text.small" = [
+    "update_id",
+    "message.message_id",
+    "message.text",
+    "message.from_user.id",
+    "message.from_user.username",
+    "message.chat.id",
+    "message.chat.type",
+    "message.date",
+    "message.entities",
+]
+"update.realistic" = [
+    "message.message_thread_id",
+    "message.from_user.id",
+    "message.chat.type",
+    "message.chat.is_forum",
+    "message.reply_to_message.message_id",
+    "message.reply_to_message.from_user.id",
+    "message.quote.text",
+    "message.photo[0].file_id",
+    "message.photo[-1].width",
+    "message.caption",
+    "message.caption_entities[0].type",
+    "message.caption_entities[0].offset",
+    "message.reply_markup.inline_keyboard[0][0].text",
+    "message.reply_markup.inline_keyboard[2][1].callback_data",
+]
+"update.message.wide-sparse" = [
+    "message.direct_messages_topic.topic_id",
+    "message.sender_boost_count",
+    "message.edit_date",
+    "message.via_bot.username",
+    "message.link_preview_options.is_disabled",
+    "message.suggested_post_info.state",
+    "message.reply_to_story.id",
+    "message.animation.file_id",
+    "message.animation.duration",
+    "message.caption",
+]
+"update.media.large" = [
+    "channel_post.sender_chat.title",
+    "channel_post.chat.type",
+    "channel_post.author_signature",
+    "channel_post.photo[9].file_size",
+    "channel_post.caption_entities[0].type",
+    "channel_post.caption_entities[119].length",
+    "channel_post.from_user",
+]
+"update.richtext" = [
+    "message.rich_message.blocks[0].type",
+    "message.rich_message.blocks[0].text",
+    "message.rich_message.blocks[1].type",
+    "message.rich_message.blocks[1].text[1].type",
+    "message.rich_message.blocks[2].type",
+]
+"update.callback" = [
+    "callback_query.id",
+    "callback_query.from_user.id",
+    "callback_query.data",
+    "callback_query.chat_instance",
+    "callback_query.message.message_id",
+    "callback_query.message.chat.id",
+    "callback_query.message.reply_markup.inline_keyboard[0][0].callback_data",
+]
+"update.inline-query" = [
+    "inline_query.id",
+    "inline_query.from_user.id",
+    "inline_query.query",
+    "inline_query.chat_type",
+    "inline_query.location.latitude",
+    "inline_query.location.longitude",
+]
+"update.unknown-tag" = [
+    "chat_member.chat.id",
+    "chat_member.old_chat_member.status",
+    "chat_member.new_chat_member.status",
+    "chat_member.new_chat_member.user.id",
+]
+"update.unknown-type" = [
+    "update_id",
+    "future_update",
+]
+"update.unknown-field" = [
+    "message.text",
+    "message.from_user.id",
+    "message.future_message_field",
+    "message.from_user.future_user_field",
+]
+"update.unknown-enum" = [
+    "message.refunded_payment.currency",
+    "message.refunded_payment.total_amount",
+]
+"update.malformed-member" = [
+    "message.text",
+    "message.forward_origin.type",
+    "message.forward_origin.date",
+]
+"update.deep-nesting" = [
+    "update_id",
+    "message.message_id",
+    "message.pinned_message.message_id",
+]

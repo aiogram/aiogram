@@ -53,9 +53,9 @@
       },
       {
         "type": "KeyboardButtonRequestManagedBot",
-        "description": "If specified, pressing the button will ask the user to create and share a bot that will be managed by the current bot. Available for bots that enabled management of other bots in the @BotFather Mini App. Available in private chats only.",
-        "html_description": "<td><em>Optional</em>. If specified, pressing the button will ask the user to create and share a bot that will be managed by the current bot. Available for bots that enabled management of other bots in the <a href=\"https://t.me/BotFather\">@BotFather</a> Mini App. Available in private chats only.</td>",
-        "rst_description": "*Optional*. If specified, pressing the button will ask the user to create and share a bot that will be managed by the current bot. Available for bots that enabled management of other bots in the `@BotFather <https://t.me/BotFather>`_ Mini App. Available in private chats only.\n",
+        "description": "If specified, pressing the button will ask the user to create and share a bot that will be managed by the current bot. Available for bots that enabled management of other bots in the @BotFather Mini App or using the parameter can_manage_bots of the method setMySettings. Available in private chats only.",
+        "html_description": "<td><em>Optional</em>. If specified, pressing the button will ask the user to create and share a bot that will be managed by the current bot. Available for bots that enabled management of other bots in the <a href=\"https://t.me/BotFather\">@BotFather</a> Mini App or using the parameter <em>can_manage_bots</em> of the method <a href=\"#setmysettings\">setMySettings</a>. Available in private chats only.</td>",
+        "rst_description": "*Optional*. If specified, pressing the button will ask the user to create and share a bot that will be managed by the current bot. Available for bots that enabled management of other bots in the `@BotFather <https://t.me/BotFather>`_ Mini App or using the parameter *can_manage_bots* of the method :class:`aiogram.methods.set_my_settings.SetMySettings`. Available in private chats only.\n",
         "name": "request_managed_bot",
         "required": false
       },
