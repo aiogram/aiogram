@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 
 class CallbackQuery(TelegramObject):
     """
-    This object represents an incoming callback query from a callback button in an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_. If the button that originated the query was attached to a message sent by the bot, the field *message* will be present. If the button was attached to a message sent via the bot (in `inline mode <https://core.telegram.org/bots/api#inline-mode>`_), the field *inline_message_id* will be present. Exactly one of the fields *data* or *game_short_name* will be present.
+    This object represents an incoming callback query from a callback button in an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_ or in a `rich message <https://core.telegram.org/bots/api#richmessage>`_. If the button that originated the query belongs to a message sent by the bot, the field *message* will be present, unless the field *inline_message_id* is used instead as specified by the parameter *callback_query_mode* of the method :class:`aiogram.methods.set_my_settings.SetMySettings`. If the button belongs to a message sent via the bot (in `inline mode <https://core.telegram.org/bots/api#inline-mode>`_), the field *inline_message_id* will be present. Exactly one of the fields *data* or *game_short_name* will be present.
 
      **NOTE:** After the user presses a callback button, Telegram clients will display a progress bar until you call :class:`aiogram.methods.answer_callback_query.AnswerCallbackQuery`. It is, therefore, necessary to react by calling :class:`aiogram.methods.answer_callback_query.AnswerCallbackQuery` even if no notification to the user is needed (e.g., without specifying any of the optional parameters).
 
@@ -30,7 +30,7 @@ class CallbackQuery(TelegramObject):
     message: MaybeInaccessibleMessageUnion | None = None
     """*Optional*. Message sent by the bot with the callback button that originated the query"""
     inline_message_id: str | None = None
-    """*Optional*. Identifier of the message sent via the bot in inline mode, that originated the query"""
+    """*Optional*. Identifier of the message sent via the bot in inline mode, that originated the query. Can also be present for messages sent by the bot, depending on the parameter *callback_query_mode* of the method :class:`aiogram.methods.set_my_settings.SetMySettings`"""
     data: str | None = None
     """*Optional*. Data associated with the callback button. Be aware that the message originated the query can contain no callback buttons with this data"""
     game_short_name: str | None = None
@@ -81,7 +81,7 @@ class CallbackQuery(TelegramObject):
 
         - :code:`callback_query_id`
 
-        Use this method to send answers to callback queries sent from `inline keyboards <https://core.telegram.org/bots/features#inline-keyboards>`_. The answer will be displayed to the user as a notification at the top of the chat screen or as an alert. On success, :code:`True` is returned.
+        Use this method to send answers to callback queries sent from `inline keyboards <https://core.telegram.org/bots/features#inline-keyboards>`_ or `rich messages <https://core.telegram.org/bots/api#richmessage>`_. The answer will be displayed to the user as a notification at the top of the chat screen or as an alert. On success, :code:`True` is returned.
 
          Alternatively, the user can be redirected to the specified Game URL. For this option to work, you must first create a game for your bot via `@BotFather <https://t.me/botfather>`_ and accept the terms. Otherwise, you may use links like :code:`t.me/your_bot?start=XXXX` that open your bot with a parameter.
 

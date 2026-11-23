@@ -1,0 +1,44 @@
+# R09 acceptance: router-level filter data, a partially passing chain, a False return, a nested
+# mutable value shared through the shallow copies, and a sibling router that sees none of it.
+schema = 1
+bench = false  # an oracle scenario (A-10), not a bench topology
+
+[variants]
+fsm = ["on", "off"]
+
+[[router]]
+name = "dp"
+outer_middlewares = [{ id = "dp.m0", event = "message", kind = "write", key = "bag", value = { from = "dp.m0" } }]
+
+[[router]]
+name = "r1"
+parent = "dp"
+root_filters = [{ id = "r1.root", event = "message", kind = "data", returns = { scope = "r1" } }]
+
+[[router.handler]]
+id = "h1"
+event = "message"
+filters = [
+    { id = "h1.f0", kind = "data", returns = { a = 1 } },
+    { id = "h1.f1", kind = "sync", result = { b = 2 }, mutate = { bag = { by = "h1.f1" } } },
+    { id = "h1.f2", kind = "sync", result = false },
+]
+
+[[router.handler]]
+id = "h2"
+event = "message"
+filters = [{ id = "h2.f0", kind = "async", result = false }]
+
+[[router]]
+name = "r2"
+parent = "dp"
+
+[[router.handler]]
+id = "h3"
+event = "message"
+filters = []
+
+[[event]]
+name = "first"
+update = "update.text.small"
+expect = "h3"

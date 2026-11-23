@@ -23,7 +23,7 @@ from aiogram.webhook.aiohttp_server import (
     setup_application,
 )
 from aiogram.webhook.security import IPFilter
-from tests.mocked_bot import MockedBot
+from tests.mocked_bot import MockedBot, bot_full_info
 
 
 class TestAiohttpServer:
@@ -380,11 +380,11 @@ class TestTokenBasedRequestHandler:
         handler = TokenBasedRequestHandler(dispatcher=dispatcher)
 
         bot1 = handler.bots["42:TEST"] = MockedBot(token="42:TEST")
-        bot1.add_result_for(GetMe, ok=True, result=User(id=42, is_bot=True, first_name="Test"))
+        bot1.add_result_for(GetMe, ok=True, result=bot_full_info())
         assert await bot1.get_me()
         assert not bot1.session.closed
         bot2 = handler.bots["1337:TEST"] = MockedBot(token="1337:TEST")
-        bot2.add_result_for(GetMe, ok=True, result=User(id=1337, is_bot=True, first_name="Test"))
+        bot2.add_result_for(GetMe, ok=True, result=bot_full_info(id=1337))
         assert await bot2.get_me()
         assert not bot2.session.closed
 

@@ -1,0 +1,27 @@
+# R09 acceptance: a filter returns data, the next one raises; the exception escapes feed_update.
+schema = 1
+bench = false  # an oracle scenario (A-10), not a bench topology
+
+[variants]
+fsm = ["on", "off"]
+
+[[router]]
+name = "dp"
+
+[[router.handler]]
+id = "h1"
+event = "message"
+filters = [
+    { id = "h1.f0", kind = "data", returns = { a = 1 } },
+    { id = "h1.f1", kind = "raise", error = "filter failed" },
+]
+
+[[router.handler]]
+id = "h2"
+event = "message"
+filters = []
+
+[[event]]
+name = "first"
+update = "update.text.small"
+expect = "raised"

@@ -10,8 +10,8 @@ they are the ones verified against this project's toolchain:
 | Task | Command |
 |---|---|
 | Tests | `rtk test uv run pytest tests -q` |
-| Lint | `rtk proxy uv run ruff check --show-fixes --preview aiogram examples` |
-| Format | `rtk proxy uv run ruff format aiogram tests scripts examples` |
+| Lint | `rtk proxy uv run ruff check --show-fixes --preview aiogram examples benchmarks differential` |
+| Format | `rtk proxy uv run ruff format aiogram tests scripts examples benchmarks differential` |
 | Types | `rtk proxy make lint` (runs both mypy passes exactly as CI) |
 | Workflow lint | `rtk proxy make lint-workflows` |
 | git / gh | `rtk git <sub>` / `rtk gh <sub>` |
@@ -25,7 +25,8 @@ they are the ones verified against this project's toolchain:
   `uv` venv: `rtk ruff` fails with "Failed to run ruff", and `rtk mypy aiogram` printed
   "No issues found" for an error that `make lint` (strict, project config) reports.
 - The rtk hook rewrites `cat a b c` and `… | grep pat` into its own read/grep commands. A multi-file `cat` then
-  fails (`read: not a valid identifier`), and `unzip -l x.whl | grep pat` greps the whole repository. Use the
+  fails (`read: not a valid identifier`), and any `<cmd> | grep pat` (`unzip -l x.whl`, `/usr/bin/time …`) greps
+  the whole repository instead of the command's output. Use the
   Read tool, or `rtk proxy` on each stage of the pipe, e.g. for the wheel check:
   `rtk proxy unzip -l dist/*.whl > out.txt; rtk proxy awk '/registry.toml/' out.txt`.
 - `rtk mypy` truncates the error text after `file:line: error:`. When you need the full

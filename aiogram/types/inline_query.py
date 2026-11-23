@@ -32,7 +32,7 @@ class InlineQuery(TelegramObject):
     chat_type: str | None = None
     """*Optional*. Type of the chat from which the inline query was sent. Can be either 'sender' for a private chat with the inline query sender, 'private', 'group', 'supergroup', or 'channel'. The chat type should be always known for requests sent from official clients and most third-party clients, unless the request was sent from a secret chat"""
     location: Location | None = None
-    """*Optional*. Sender location, only for bots that request user location"""
+    """*Optional*. Sender location, only for bots that enabled user location requests via `@BotFather <https://t.me/botfather>`_ or using the parameter *needs_inline_query_location* of the method :class:`aiogram.methods.set_my_settings.SetMySettings`"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!
