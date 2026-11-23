@@ -2,7 +2,7 @@
 
 | Field | Value |
 |---|---|
-| Status | `todo` |
+| Status | `done` |
 | Story | E — Routing & runtime |
 | Target branch | `dev-4.x` |
 | Depends on | [E-01](E-01-dispatcher-filter-removals.md) |

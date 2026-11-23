@@ -162,7 +162,7 @@ Verification method and results: [_VERIFICATION.md](_VERIFICATION.md).
 | [C-04](C-butcher/C-04-openapi-adapter.md) | OpenAPI 3.2 adapter | `todo` | no | L | C-01 |
 | [C-05](C-butcher/C-05-errors-json-adapter.md) | `errors.json` adapter | `done` | no | S | C-01 |
 | [C-06](C-butcher/C-06-overlay-schema-loader.md) | Overlay schema and loader | `done` | no | M | C-01 |
-| [C-07](C-butcher/C-07-fill-dsl.md) | Fill-DSL for shortcuts | `todo` | no | M | C-06 |
+| [C-07](C-butcher/C-07-fill-dsl.md) | Fill-DSL for shortcuts | `done` | no | M | C-06 |
 | [C-08](C-butcher/C-08-merge-cross-check.md) | Merge and cross-check | `todo` | no | L | C-03, C-04, C-05, C-06 |
 | [C-09](C-butcher/C-09-resolution-passes.md) | Resolution passes: D18 twins, D109 names, union classification | `todo` | no | M | C-08 |
 | [C-10](C-butcher/C-10-ledger-diff.md) | Compat ledger and `butcher diff` | `todo` | no | M | A-11, C-01, C-08 |
@@ -188,7 +188,7 @@ Verification method and results: [_VERIFICATION.md](_VERIFICATION.md).
 | [D-03](D-client/D-03-token-safe-network-errors.md) | Token-safe network errors (`from None`, `.original`, redacted URLs) | `done` | no | S | A-01, A-11 |
 | [D-04](D-client/D-04-drop-aiofiles-input-file-replayable.md) | Drop `aiofiles`; add `InputFile.replayable` | `done` | no | S | A-01, A-11 |
 | [D-05](D-client/D-05-download-lifecycle.md) | Download lifecycle: per-phase timeouts, `bot.stream()`, typed overloads | `done` | no | M | D-03, D-04 |
-| [D-06](D-client/D-06-request-middleware-manager.md) | Request middleware manager: prebuilt chain, `before=`/`after=` anchors, per-call request context | `todo` | no | S | A-01, H-01 |
+| [D-06](D-client/D-06-request-middleware-manager.md) | Request middleware manager: prebuilt chain, `before=`/`after=` anchors, per-call request context | `done` | no | S | A-01, H-01 |
 | [D-07](D-client/D-07-rust-encoder-json.md) | Rust encoder: JSON request body, `Default` resolution, value rules | `todo` | yes | L | B-01, B-09, B-13, C-20, C-21, D-01 |
 | [D-08](D-client/D-08-rust-encoder-multipart.md) | Rust encoder: multipart bodies and file extraction | `todo` | yes | M | B-01, B-09, B-13, C-20, D-04, D-07 |
 | [D-09](D-client/D-09-response-decoder.md) | Response decoder: `Response[T]` without pydantic, `getUpdates` per-update isolation | `todo` | yes | L | B-01, B-09, B-13, B-14, C-18, C-19, C-20, D-02 |
@@ -205,7 +205,7 @@ Verification method and results: [_VERIFICATION.md](_VERIFICATION.md).
 | [E-03](E-runtime/E-03-snapshot-lifecycle.md) | Routing snapshot lifecycle: topology epoch, caching, refresh, mutation warning | `todo` | no | M | E-02 |
 | [E-04](E-runtime/E-04-router-graph-multi-parent-flags.md) | Router graph: multiple parents, diamond check, router-level flags | `todo` | no | M | E-02 |
 | [E-05](E-runtime/E-05-typed-observers-unknown-update.md) | Generated typed observers and the `unknown_update` observer | `todo` | no | S | C-16, E-03 |
-| [E-06](E-runtime/E-06-middleware-api.md) | Middleware API: ordering anchors, per-handler middlewares, generic `BaseMiddleware` | `todo` | no | M | E-02 |
+| [E-06](E-runtime/E-06-middleware-api.md) | Middleware API: context protocol, prebuilt chains, ordering anchors, per-handler middlewares, generic `BaseMiddleware` | `todo` | no | L | D-06, E-02 |
 | [E-07](E-runtime/E-07-sync-filter-execution.md) | Sync filter execution: `SyncFilterMode`, `inline()` / `blocking()`, dict-overwrite warning | `todo` | no | S | 3x-03, E-02 |
 | [E-08](E-runtime/E-08-magic-filter-compile.md) | Compile `F` expressions to closures | `todo` | no | M | E-07 |
 | [E-09](E-runtime/E-09-routing-keys-compiled-rejectors.md) | Routing keys and compiled rejectors (prefilter, literal and command index) | `todo` | **yes** | L | B-05, B-13, C-16, C-19, E-02, E-08 |
@@ -219,7 +219,7 @@ Verification method and results: [_VERIFICATION.md](_VERIFICATION.md).
 | [E-17](E-runtime/E-17-asgi-app.md) | ASGI webhook app | `todo` | no | S | D-14, E-14, E-16 |
 | [E-18](E-runtime/E-18-compat-wrappers.md) | 3.x entry points as Runner wrappers | `todo` | no | S | E-15, E-16 |
 | [E-19](E-runtime/E-19-multi-runner-free-threading-sharding.md) | Multi-Runner over one Dispatcher and free-threading | `todo` | no | M | E-03, E-13, E-15, E-23, F-02 |
-| [E-20](E-runtime/E-20-typed-di-typeddicts.md) | Typed DI: base `TypedDict`s for handler and middleware data | `todo` | no | S | E-01 |
+| [E-20](E-runtime/E-20-typed-di-typeddicts.md) | Typed DI: base `TypedDict`s for handler and middleware data | `done` | no | S | E-01 |
 | [E-21](E-runtime/E-21-e-exit-gate.md) | Milestone E exit gate: routing differential, benchmarks, lifecycle and multi-Runner matrices | `todo` | partial | M | A-05, A-06, A-07, A-10, E-01, E-02, E-03, E-04, E-05, E-06, E-07, E-08, E-09, E-10, E-11, E-12, E-13, E-14, E-15, E-16, E-17, E-18, E-19, E-20, E-22, E-23 |
 | [E-22](E-runtime/E-22-single-bot-sharding.md) | Single-bot thread sharding (ingress Poller, per-worker queues) | `todo` | no | M | E-15, E-19, F-02, F-04 |
 | [E-23](E-runtime/E-23-bot-registry.md) | Runner bot registry: `add_bot` / `remove_bot`, `bot_added` / `bot_removed`, shared-FSM ownership | `todo` | no | M | E-12, E-13 |
@@ -227,7 +227,7 @@ Verification method and results: [_VERIFICATION.md](_VERIFICATION.md).
 | [F-02](F-fsm/F-02-isolation-lock-table-default-on.md) | Cross-thread, cross-loop isolation lock table, on by default (D28) | `todo` | no | L | A-01, A-05, A-06, A-11, H-01 |
 | [F-03](F-fsm/F-03-release-isolation-warn-after.md) | `state.release_isolation()`, `isolation_warn_after`, release hooks, re-entrancy error | `todo` | no | M | A-11, F-02, H-01 |
 | [F-04](F-fsm/F-04-fsm-hot-paths-statefilter.md) | FSM hot paths, StateFilter introspection, public isolation-key function | `done` | no | S | A-01, A-05 |
-| [F-05](F-fsm/F-05-storage-record-batch-api.md) | Storage record and batch API (`get_records` / `apply_writes`) with fallbacks | `todo` | no | M | F-01 |
+| [F-05](F-fsm/F-05-storage-record-batch-api.md) | Storage record and batch API (`get_records` / `apply_writes`) with fallbacks | `done` | no | M | F-01 |
 | [F-06](F-fsm/F-06-redis-storage-legacy-layout.md) | `RedisStorage`: 3.x layout, pipelined reads/writes, single-loop detection | `todo` | no | M | A-11, F-05 |
 | [F-07](F-fsm/F-07-mongo-remove-motor-key-validation.md) | Mongo: remove motor `MongoStorage`; `PyMongoStorage` key validation, batching, single-loop | `todo` | no | M | A-11, F-05 |
 | [F-08](F-fsm/F-08-shared-converter-core.md) | Shared converter core (FSMData + CallbackData) | `done` | no | L | A-01 |
@@ -262,7 +262,7 @@ Verification method and results: [_VERIFICATION.md](_VERIFICATION.md).
 | [G-20](G-features/G-20-aiogram-i18n-final-release.md) | `aiogram_i18n` → core mapping, and the final `aiogram_i18n` release | `todo` | no | S | G-03, G-04, G-05, G-06, G-07, G-09 |
 | [G-21](G-features/G-21-aiogram-cli-final-release.md) | Final `aiogram-cli` release | `todo` | no | S | G-15, G-19 |
 | [H-01](H-testing-observability/H-01-logger-hierarchy.md) | Logger hierarchy + structured log context | `done` | no | M | A-01, A-11 |
-| [H-02](H-testing-observability/H-02-token-redaction-filter.md) | Token redaction filter | `todo` | no | M | D-03, H-01 |
+| [H-02](H-testing-observability/H-02-token-redaction-filter.md) | Token redaction filter | `done` | no | M | D-03, H-01 |
 | [H-04](H-testing-observability/H-04-access-log-redaction.md) | Access-log redaction wiring | `todo` | no | S | E-16, E-17, H-02 |
 | [H-05](H-testing-observability/H-05-trace-hook-core.md) | Trace hook core (protocol, calling rules, adapter) | `done` | no | M | A-01 |
 | [H-06](H-testing-observability/H-06-tracing-in-executor.md) | Tracing in the snapshot executor | `todo` | no | L | A-05, E-02, E-03, G-02, H-01, H-05 |

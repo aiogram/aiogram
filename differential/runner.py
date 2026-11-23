@@ -805,7 +805,15 @@ def adapter_for(version: str) -> str:
     return adapter
 
 
-def run_side(side: Side, kind: str, corpus: Path, out: Path, *, poison: bool) -> Trace:
+def run_side(
+    side: Side,
+    kind: str,
+    corpus: Path,
+    out: Path,
+    *,
+    poison: bool,
+    adapter_override: str | None = None,
+) -> Trace:
     python, commit = prepare(side)
     version = (
         _run([str(python), "-I", "-c", "import aiogram; print(aiogram.__version__)"])
@@ -819,7 +827,9 @@ def run_side(side: Side, kind: str, corpus: Path, out: Path, *, poison: bool) ->
         raise HarnessError(msg)
     header = {
         "side": side.spec,
-        "adapter": adapter,
+        # the override only labels the side (it selects ``when`` manifest entries); the probe
+        # script still comes from the version, so it needs no ``sides/<override>/`` directory
+        "adapter": adapter_override or adapter,
         "commit": commit,
         "kind": kind,
         "poison": poison,
@@ -866,6 +876,12 @@ def build_parser() -> argparse.ArgumentParser:
     run.add_argument("--left", required=True, help="pypi:<requirement> | git:<ref> | path:<dir>")
     run.add_argument("--right", required=True, help="pypi:<requirement> | git:<ref> | path:<dir>")
     run.add_argument(
+        "--adapter-right",
+        choices=ADAPTERS,
+        help="label the right side with this adapter instead of the one its version implies, "
+        "e.g. dev-4.x code that still reports 3.x; the probe script is unchanged",
+    )
+    run.add_argument(
         "--poison", choices=("left", "right"), help="corrupt that side; expect mismatches"
     )
     run.add_argument("--corpus", type=Path, default=REPO / "benchmarks" / "corpus")
@@ -883,7 +899,12 @@ def main(argv: list[str] | None = None) -> int:
         out_dir = Path(tempfile.mkdtemp(prefix=f"{args.kind}-", dir=STATE / "traces"))
         traces = [
             run_side(
-                side, args.kind, args.corpus, out_dir / f"{name}.jsonl", poison=args.poison == name
+                side,
+                args.kind,
+                args.corpus,
+                out_dir / f"{name}.jsonl",
+                poison=args.poison == name,
+                adapter_override=args.adapter_right if name == "right" else None,
             )
             for name, side in (("left", left), ("right", right))
         ]

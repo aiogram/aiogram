@@ -1,0 +1,265 @@
+# InaccessibleMessage: every 3.x shortcut of .butcher/types/InaccessibleMessage/aliases.yml, in the fill-DSL
+
+[answer]
+method = "sendMessage"
+require = [{ path = "self.chat", message = "This method can be used only if chat is present in the message." }]
+[answer.fill]
+chat_id = "self.chat.id"
+
+[reply]
+method = "sendMessage"
+require = [{ path = "self.chat", message = "This method can be used only if chat is present in the message." }]
+ignore = ["reply_to_message_id"]
+[reply.fill]
+chat_id = "self.chat.id"
+reply_parameters = "self.as_reply_parameters()"
+
+[answer_rich]
+method = "sendRichMessage"
+require = [{ path = "self.chat", message = "This method can be used only if chat is present in the message." }]
+[answer_rich.fill]
+chat_id = "self.chat.id"
+
+[reply_rich]
+method = "sendRichMessage"
+require = [{ path = "self.chat", message = "This method can be used only if chat is present in the message." }]
+[reply_rich.fill]
+chat_id = "self.chat.id"
+reply_parameters = "self.as_reply_parameters()"
+
+[answer_animation]
+method = "sendAnimation"
+require = [{ path = "self.chat", message = "This method can be used only if chat is present in the message." }]
+[answer_animation.fill]
+chat_id = "self.chat.id"
+
+[reply_animation]
+method = "sendAnimation"
+require = [{ path = "self.chat", message = "This method can be used only if chat is present in the message." }]
+ignore = ["reply_to_message_id"]
+[reply_animation.fill]
+chat_id = "self.chat.id"
+reply_parameters = "self.as_reply_parameters()"
+
+[answer_audio]
+method = "sendAudio"
+require = [{ path = "self.chat", message = "This method can be used only if chat is present in the message." }]
+[answer_audio.fill]
+chat_id = "self.chat.id"
+
+[reply_audio]
+method = "sendAudio"
+require = [{ path = "self.chat", message = "This method can be used only if chat is present in the message." }]
+ignore = ["reply_to_message_id"]
+[reply_audio.fill]
+chat_id = "self.chat.id"
+reply_parameters = "self.as_reply_parameters()"
+
+[answer_contact]
+method = "sendContact"
+require = [{ path = "self.chat", message = "This method can be used only if chat is present in the message." }]
+[answer_contact.fill]
+chat_id = "self.chat.id"
+
+[reply_contact]
+method = "sendContact"
+require = [{ path = "self.chat", message = "This method can be used only if chat is present in the message." }]
+ignore = ["reply_to_message_id"]
+[reply_contact.fill]
+chat_id = "self.chat.id"
+reply_parameters = "self.as_reply_parameters()"
+
+[answer_document]
+method = "sendDocument"
+require = [{ path = "self.chat", message = "This method can be used only if chat is present in the message." }]
+[answer_document.fill]
+chat_id = "self.chat.id"
+
+[reply_document]
+method = "sendDocument"
+require = [{ path = "self.chat", message = "This method can be used only if chat is present in the message." }]
+ignore = ["reply_to_message_id"]
+[reply_document.fill]
+chat_id = "self.chat.id"
+reply_parameters = "self.as_reply_parameters()"
+
+[answer_game]
+method = "sendGame"
+require = [{ path = "self.chat", message = "This method can be used only if chat is present in the message." }]
+[answer_game.fill]
+chat_id = "self.chat.id"
+
+[reply_game]
+method = "sendGame"
+require = [{ path = "self.chat", message = "This method can be used only if chat is present in the message." }]
+ignore = ["reply_to_message_id"]
+[reply_game.fill]
+chat_id = "self.chat.id"
+reply_parameters = "self.as_reply_parameters()"
+
+[answer_invoice]
+method = "sendInvoice"
+require = [{ path = "self.chat", message = "This method can be used only if chat is present in the message." }]
+[answer_invoice.fill]
+chat_id = "self.chat.id"
+
+[reply_invoice]
+method = "sendInvoice"
+require = [{ path = "self.chat", message = "This method can be used only if chat is present in the message." }]
+ignore = ["reply_to_message_id"]
+[reply_invoice.fill]
+chat_id = "self.chat.id"
+reply_parameters = "self.as_reply_parameters()"
+
+[answer_location]
+method = "sendLocation"
+require = [{ path = "self.chat", message = "This method can be used only if chat is present in the message." }]
+[answer_location.fill]
+chat_id = "self.chat.id"
+
+[reply_location]
+method = "sendLocation"
+require = [{ path = "self.chat", message = "This method can be used only if chat is present in the message." }]
+ignore = ["reply_to_message_id"]
+[reply_location.fill]
+chat_id = "self.chat.id"
+reply_parameters = "self.as_reply_parameters()"
+
+[answer_media_group]
+method = "sendMediaGroup"
+require = [{ path = "self.chat", message = "This method can be used only if chat is present in the message." }]
+[answer_media_group.fill]
+chat_id = "self.chat.id"
+
+[reply_media_group]
+method = "sendMediaGroup"
+require = [{ path = "self.chat", message = "This method can be used only if chat is present in the message." }]
+ignore = ["reply_to_message_id"]
+[reply_media_group.fill]
+chat_id = "self.chat.id"
+reply_parameters = "self.as_reply_parameters()"
+
+[answer_photo]
+method = "sendPhoto"
+require = [{ path = "self.chat", message = "This method can be used only if chat is present in the message." }]
+[answer_photo.fill]
+chat_id = "self.chat.id"
+
+[reply_photo]
+method = "sendPhoto"
+require = [{ path = "self.chat", message = "This method can be used only if chat is present in the message." }]
+ignore = ["reply_to_message_id"]
+[reply_photo.fill]
+chat_id = "self.chat.id"
+reply_parameters = "self.as_reply_parameters()"
+
+[answer_poll]
+method = "sendPoll"
+require = [{ path = "self.chat", message = "This method can be used only if chat is present in the message." }]
+[answer_poll.fill]
+chat_id = "self.chat.id"
+
+[reply_poll]
+method = "sendPoll"
+require = [{ path = "self.chat", message = "This method can be used only if chat is present in the message." }]
+ignore = ["reply_to_message_id"]
+[reply_poll.fill]
+chat_id = "self.chat.id"
+reply_parameters = "self.as_reply_parameters()"
+
+[answer_dice]
+method = "sendDice"
+require = [{ path = "self.chat", message = "This method can be used only if chat is present in the message." }]
+[answer_dice.fill]
+chat_id = "self.chat.id"
+
+[reply_dice]
+method = "sendDice"
+require = [{ path = "self.chat", message = "This method can be used only if chat is present in the message." }]
+ignore = ["reply_to_message_id"]
+[reply_dice.fill]
+chat_id = "self.chat.id"
+reply_parameters = "self.as_reply_parameters()"
+
+[answer_sticker]
+method = "sendSticker"
+require = [{ path = "self.chat", message = "This method can be used only if chat is present in the message." }]
+[answer_sticker.fill]
+chat_id = "self.chat.id"
+
+[reply_sticker]
+method = "sendSticker"
+require = [{ path = "self.chat", message = "This method can be used only if chat is present in the message." }]
+ignore = ["reply_to_message_id"]
+[reply_sticker.fill]
+chat_id = "self.chat.id"
+reply_parameters = "self.as_reply_parameters()"
+
+[answer_venue]
+method = "sendVenue"
+require = [{ path = "self.chat", message = "This method can be used only if chat is present in the message." }]
+[answer_venue.fill]
+chat_id = "self.chat.id"
+
+[reply_venue]
+method = "sendVenue"
+require = [{ path = "self.chat", message = "This method can be used only if chat is present in the message." }]
+ignore = ["reply_to_message_id"]
+[reply_venue.fill]
+chat_id = "self.chat.id"
+reply_parameters = "self.as_reply_parameters()"
+
+[answer_video]
+method = "sendVideo"
+require = [{ path = "self.chat", message = "This method can be used only if chat is present in the message." }]
+[answer_video.fill]
+chat_id = "self.chat.id"
+
+[reply_video]
+method = "sendVideo"
+require = [{ path = "self.chat", message = "This method can be used only if chat is present in the message." }]
+ignore = ["reply_to_message_id"]
+[reply_video.fill]
+chat_id = "self.chat.id"
+reply_parameters = "self.as_reply_parameters()"
+
+[answer_video_note]
+method = "sendVideoNote"
+require = [{ path = "self.chat", message = "This method can be used only if chat is present in the message." }]
+[answer_video_note.fill]
+chat_id = "self.chat.id"
+
+[reply_video_note]
+method = "sendVideoNote"
+require = [{ path = "self.chat", message = "This method can be used only if chat is present in the message." }]
+ignore = ["reply_to_message_id"]
+[reply_video_note.fill]
+chat_id = "self.chat.id"
+reply_parameters = "self.as_reply_parameters()"
+
+[answer_voice]
+method = "sendVoice"
+require = [{ path = "self.chat", message = "This method can be used only if chat is present in the message." }]
+[answer_voice.fill]
+chat_id = "self.chat.id"
+
+[reply_voice]
+method = "sendVoice"
+require = [{ path = "self.chat", message = "This method can be used only if chat is present in the message." }]
+ignore = ["reply_to_message_id"]
+[reply_voice.fill]
+chat_id = "self.chat.id"
+reply_parameters = "self.as_reply_parameters()"
+
+[answer_paid_media]
+method = "sendPaidMedia"
+require = [{ path = "self.chat", message = "This method can be used only if chat is present in the message." }]
+[answer_paid_media.fill]
+chat_id = "self.chat.id"
+
+[reply_paid_media]
+method = "sendPaidMedia"
+require = [{ path = "self.chat", message = "This method can be used only if chat is present in the message." }]
+[reply_paid_media.fill]
+chat_id = "self.chat.id"
+reply_parameters = "self.as_reply_parameters()"

@@ -1,0 +1,6 @@
+# InlineQuery: every 3.x shortcut of .butcher/types/InlineQuery/aliases.yml, in the fill-DSL
+
+[answer]
+method = "answerInlineQuery"
+[answer.fill]
+inline_query_id = "self.id"

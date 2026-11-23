@@ -104,6 +104,8 @@ pub fn from_str(text: &str, path: &Path) -> Result<Parsed, Error> {
         enums: vec![],
         unions: vec![],
         errors,
+        shortcuts: vec![],
+        events: vec![],
     };
     Ok(Parsed { ir, warnings })
 }

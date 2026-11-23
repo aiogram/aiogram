@@ -1,0 +1,6 @@
+Framework loggers now mask bot tokens by default: anything shaped like a token
+(``123456:AA...``) in a record's message, arguments, exception traceback, ``stack_info`` or
+``extra=`` fields is written as ``123456:***``. Records without a token are unchanged.
+Attach :class:`aiogram.loggers.TokenRedactingFilter` to your own handlers to cover root and
+third-party records, and call ``aiogram.loggers.redact_tokens(False)`` to turn redaction off.
+The ``aiogram`` CLI now also masks a token inside a URL (``/bot<token>/``) in its error output.

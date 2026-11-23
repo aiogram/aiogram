@@ -8,8 +8,8 @@ Hand-written facts on top of the IR (v4/research/02 §3), loaded by `crates/butc
   entry names must exist. The error names the file, the key path and the closest IR name.
 - **Absence is not an error here.** A missing file is an empty kind. Rules like "every method has an `idempotent`
   decision" belong to `butcher check` (C-23).
-- **Names.** Keys are wire names (`from`, `sendMessage`). A fill value is fill-DSL text (C-07), either a string or
-  `{ expr = "...", when = "..." }`. It is stored unparsed.
+- **Names.** Keys are wire names (`from`, `sendMessage`). A fill value is fill-DSL text, either a string or
+  `{ expr = "...", when = "..." }`. The loader stores it unparsed; `dsl::apply` resolves it (see *Fill-DSL* below).
 - **Digest.** The manifest's `overlay_sha256` hashes every `*.toml` here, sorted by relative path; this README is not
   part of it.
 
@@ -90,7 +90,29 @@ ignore = ["reply_to_message_id"]
 [answer.fill]
 chat_id = "self.chat.id"
 message_thread_id = { expr = "self.message_thread_id", when = "self.is_topic_message" }
+direct_messages_topic_id = "self.direct_messages_topic?.topic_id"
+reply_parameters = "self.as_reply_parameters()"
 ```
+
+*Fill-DSL* (`crates/butcher/src/dsl.rs`), resolved for shortcut fills and guards and for `events.toml` (the
+`content.toml` `copy.fill` text is not resolved yet; C-20 owns `send_copy`):
+```text
+expr  := path | "self." ident "()" | "None"
+when  := path                        (truthiness; false omits the param)
+path  := "self." ident (("." | "?.") ident)*
+```
+- Names are **Python** names, after the `names.toml` renames: `self.from_user`, not `self.from`. No whitespace, no
+  other literal; a guard path takes no `?.`.
+- Every step must be a field of the type (or, through a union, of every member; `?.` also accepts a field some
+  members lack and gives `None` for the others).
+- A step after an optional field needs `?.` or an earlier `require` guard on that exact path.
+- The value must be assignable to the param: integer widths mix, `True` fits `Boolean`, a member fits its union.
+  A value that may be `None` (optional, `?.`, a `when`, `None`) cannot fill a required param.
+- `self.<helper>()` is a hand-written zero-argument helper declared for the type (`*_ext.pyi`); it never returns
+  `None`.
+- A `forbid` path must be able to be `None`, and an ignored param must be optional.
+- A failed guard raises `ShortcutUnavailableError(AiogramError, ValueError)` with its message, raised explicitly so
+  `python -O` keeps it (C-20).
 
 **6. `unions.toml`: decoding undiscriminated unions.** How an undiscriminated union is decoded (D85, D107). Each
 union gets exactly one of two forms:
@@ -184,11 +206,12 @@ caption = "self.caption"
 ```
 
 **15. `events.toml`: event context.** Event-context paths per update type: `user`, `chat`, `thread_id`,
-`business_connection_id`, each as fill text. An empty table is a valid entry.
+`business_connection_id`, each as fill text on the update's type (a `User`, a `Chat`, an integer, a string). An
+empty table is a valid entry.
 
 ```toml
 [message]
-user = "self.from"
+user = "self.from_user"
 chat = "self.chat"
 thread_id = { expr = "self.message_thread_id", when = "self.is_topic_message" }
 [poll]

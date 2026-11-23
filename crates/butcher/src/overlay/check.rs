@@ -649,7 +649,10 @@ fn holds_string(r: &TypeRef) -> bool {
 }
 
 /// The candidate within edit distance `max(2, len / 3)` of `name`, nearest first, ties by name.
-fn closest<'n>(name: &str, candidates: impl Iterator<Item = &'n str>) -> Option<&'n str> {
+pub(crate) fn closest<'n>(
+    name: &str,
+    candidates: impl Iterator<Item = &'n str>,
+) -> Option<&'n str> {
     let limit = (name.chars().count() / 3).max(2);
     candidates
         .map(|c| (levenshtein(name, c), c))

@@ -367,6 +367,13 @@ class TestToken:
         _token.resolve_token(self.parse())
         assert _output.redact("x opaque y") == "x *** y"
 
+    def test_redact_token_in_url(self, monkeypatch: pytest.MonkeyPatch):
+        # The bot id follows ``bot`` with no word boundary in between
+        monkeypatch.setattr(_output, "_hidden", set())
+        bot_id = FAKE_TOKEN.partition(":")[0]
+        url = f"https://api.telegram.org/bot{FAKE_TOKEN}/getMe"
+        assert _output.redact(url) == f"https://api.telegram.org/bot{bot_id}:***/getMe"
+
 
 class TTY(io.StringIO):
     def isatty(self) -> bool:

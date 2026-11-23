@@ -1,0 +1,6 @@
+# CallbackQuery: every 3.x shortcut of .butcher/types/CallbackQuery/aliases.yml, in the fill-DSL
+
+[answer]
+method = "answerCallbackQuery"
+[answer.fill]
+callback_query_id = "self.id"

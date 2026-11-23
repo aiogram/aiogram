@@ -111,6 +111,9 @@ Suite strategy (4.0, D88):
 - `aiogram.test` deep-copies worlds, including their FSM storage (`tests/test_testing/test_world.py`). A
   `threading.Lock` cannot be copied, so a storage or isolation class that holds one needs `__getstate__` /
   `__setstate__` (the copy gets its own lock) and a `__copy__` that shares it (`MemoryStorage`, F-01).
+- `tests/test_fsm/storage/test_storages.py::TestStorages` also runs on `MinimalStorage` (`tests/conftest.py`), a
+  storage with only the abstract `BaseStorage` methods: a new non-abstract `BaseStorage` method needs a fallback that
+  passes there, and a new shared case must not rely on a built-in storage's extras.
 
 `MockedSession` builds the JSON wire envelope and runs it through `BaseSession.check_response`, so unit tests keep
 exercising the real error mapping (`TelegramBadRequest`, `TelegramRetryAfter`, ...). Its model-layer dependencies are
@@ -171,6 +174,9 @@ These patterns repeatedly appeared in maintainer feedback and should be treated 
 - Pytest runs with `filterwarnings = ["error", ...]`: a new `warnings.warn(...)` in library code (e.g. a
   `DeprecationWarning`) fails every existing test that reaches it. Find those tests first, then either stop
   them from triggering it or assert it with `pytest.warns`.
+- A deprecation warning reached through several public entry points (a method, `__call__`, a decorator) needs
+  the same stack depth on each, or Python's default filters drop it: route them through one private function
+  with a fixed `stacklevel`, and test `record[0].filename == __file__` for every form (D-06).
 
 ## Benchmark corpus (`benchmarks/corpus/`)
 
@@ -193,6 +199,9 @@ These patterns repeatedly appeared in maintainer feedback and should be treated 
 - A new top-level dev directory is linted only if it is added to the Makefile `lint` paths and the pre-commit ruff `files` regex, and shipped unless it is in the hatch sdist `exclude`; `differential/` is in all three.
 - Side scripts (`differential/sides/<adapter>/<kind>.py`) run under `python -I` in their own venv: stdlib + aiogram (and its runtime dependencies, such as pydantic) only, `differential/trace.py` (and `wire.py`, its sibling) loaded by path. Do not import other repository code from them.
 - Side venvs live in the gitignored `.differential/`; `pypi:`/`git:` venvs are reused, so delete it to pick up a new release.
+- `differential/sides/aiogram3/` is the 3.x reference and keeps 3.x APIs that 4.x deprecates: where the side uses
+  one, silence that one warning at the call (`warnings.catch_warnings()`) and add a commented `type: ignore` rather
+  than port the side; `tests/test_differential_*.py` run it in-process against this checkout (D-06, AG4062).
 - A manifest entry without `when` is active in 3.x-vs-3.x runs too; list it in `THREE_X_ENTRIES` of `tests/test_differential_framework.py`, which otherwise requires `when = "aiogram4"`.
 - A probe compared against `pypi:aiogram<4` must not record every optional field (`model_dump()` / `model_dump_json()`
   with their `None`s): after a Bot API bump the tree has fields the release lacks, and the weekly run fails until the
@@ -209,8 +218,8 @@ These patterns repeatedly appeared in maintainer feedback and should be treated 
   removed the D12 keys), and `tests/test_differential_routing.py` skips the checks that need a 3.x record there.
   With the compiled dispatch table (E-02, `aiogram/dispatcher/table.py`) a router or handler registered while an
   update runs applies from the next update (D114), so the late-registration checks there key on `COMPILED`, not on
-  `ON_4X`. Run the routing kind on dev-4.x by hand with the dev-3.x right-side adapter override (aiogram4) to activate the
-  4.0 entries; the D48 / BC13 / D28 / D34 entries then mismatch until E-11 / E-09 / F-02 / E-07 land.
+  `ON_4X`. Run the routing kind on dev-4.x by hand with `--adapter-right aiogram4` to activate the 4.0 entries;
+  the D48 / BC13 / D28 / D34 entries then mismatch until E-11 / E-09 / F-02 / E-07 land.
 - Dispatch on dev-4.x: `Dispatcher.feed_update` compiles a `DispatchTable` per call (E-03 caches it). A router's
   outer middlewares for an event type run only if its subtree has a handler for that type (D111): a test that puts
   an outer middleware on a router also registers a handler there.
@@ -325,6 +334,10 @@ These patterns repeatedly appeared in maintainer feedback and should be treated 
   references into the IR. Completeness rules (every method has `idempotent`, ...) are `butcher check`'s (C-23), not the
   loader's. Avoid `#[serde(untagged)]` in schemas loaded through `serde_path_to_error`: it replaces the inner
   "unknown field" error with "did not match any variant" (the fill value has a hand-written `Deserialize` instead).
+- Fill-DSL (C-07, `src/dsl.rs`): `dsl::apply` resolves shortcut fills, guards and `events.toml` into `Ir.shortcuts` /
+  `Ir.events`; grammar and rules in `butcher/overlay/README.md`. Paths use Python names (`names.toml`), steps store
+  wire names. `tests/fixtures/dsl/` is the 3.x corpus (all 189 `aliases.yml` shortcuts); 3.x shared `ignore` anchors
+  list params some target methods lack, which C-06's check rejects, so a translator drops them.
 - `cargo test -p butcher <name>` filters by test name, not by file: `cargo test -p butcher overlay` skips most of
   `tests/overlay.rs`. Run a test file with `--test <file>`.
 - A new workspace crate stays out of the sdist and the wheel: maturin rewrites the sdist's `members` to
@@ -351,6 +364,11 @@ These patterns repeatedly appeared in maintainer feedback and should be treated 
   marked stale filters (`aiogram_framework_filter`), so a new framework filter needs the same marker.
 - A test `logging.Handler` subclass must not set `self.lock`: `Handler.handle()` holds it around `emit()`, and a
   plain `threading.Lock` there deadlocks the test.
+- Token masking has one pattern: `loggers._TOKEN_PATTERN` (H-02), also used by the CLI's `redact()`. It has no `\b`,
+  because in `/bot123456:...` no word boundary comes before the id. It keeps `(?<!\d)`: without it, `\d{5,}` retries
+  at every digit, and a long digit run with no colon takes quadratic time.
+- A test that walks `logging.Logger.manager.loggerDict` runs in a subprocess. The pytest process holds `aiogram.*`
+  loggers that other tests created with a plain `logging.getLogger`.
 
 ## Async generators and file IO
 
