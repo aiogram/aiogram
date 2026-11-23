@@ -402,6 +402,83 @@ class TestEvaluate:
         code, _ = runner.evaluate(left, right, entries, poison=None)
         assert code == runner.EXIT_MISMATCH  # active: left did not fail
 
+    @pytest.mark.parametrize(
+        ("flag", "when", "code"),
+        [
+            ([], "aiogram4", runner.EXIT_OK),  # both sides are aiogram3: inactive
+            (["--adapter-right", "aiogram4"], "aiogram4", runner.EXIT_MISMATCH),
+            ([], "aiogram3", runner.EXIT_MISMATCH),
+            (["--adapter-right", "aiogram4"], "aiogram3", runner.EXIT_MISMATCH),
+        ],
+    )
+    def test_adapter_right_override(self, tmp_path, monkeypatch, capsys, flag, when, code):
+        """``--adapter-right`` labels only the right side; it flips ``when = "aiogram4"`` entries."""
+        seen = []
+
+        def fake_run_side(side, kind, corpus, out, *, poison, adapter_override=None):
+            seen.append(adapter_override)
+            return as_trace(fake_side(), adapter=adapter_override or "aiogram3")
+
+        monkeypatch.setattr(runner, "run_side", fake_run_side)
+        monkeypatch.setattr(runner, "STATE", tmp_path)
+        manifest = write_manifest(
+            tmp_path,
+            f"""
+            [[case]]
+            match = "*"
+            class = "new"
+            decision = "D10"
+            when = "{when}"
+            """,
+        )
+        argv = ["run", "--kind", "smoke", "--left", "path:.", "--right", "path:.", "--manifest"]
+        assert runner.main([*argv, str(manifest), *flag]) == code
+        assert seen == [None, flag[1] if flag else None]  # the left side is never overridden
+        capsys.readouterr()
+
+    def test_adapter_right_must_differ(self, tmp_path, monkeypatch, capsys):
+        """The same ``when = "aiogram4"`` manifest gives different exit codes with and without it."""
+        monkeypatch.setattr(
+            runner,
+            "run_side",
+            lambda *a, adapter_override=None, **k: as_trace(
+                fake_side(), adapter=adapter_override or "aiogram3"
+            ),
+        )
+        monkeypatch.setattr(runner, "STATE", tmp_path)
+        manifest = write_manifest(
+            tmp_path,
+            """
+            [[case]]
+            match = "*"
+            class = "new"
+            decision = "D10"
+            when = "aiogram4"
+            """,
+        )
+        argv = ["run", "--kind", "smoke", "--left", "path:.", "--right", "path:.", "--manifest"]
+        plain = runner.main([*argv, str(manifest)])
+        overridden = runner.main([*argv, str(manifest), "--adapter-right", "aiogram4"])
+        assert plain != overridden
+        capsys.readouterr()
+
+    def test_adapter_right_rejects_unknown(self):
+        with pytest.raises(SystemExit) as exc:
+            runner.build_parser().parse_args(
+                [
+                    "run",
+                    "--kind",
+                    "smoke",
+                    "--left",
+                    "a:b",
+                    "--right",
+                    "a:b",
+                    "--adapter-right",
+                    "x",
+                ]
+            )
+        assert exc.value.code == runner.EXIT_HARNESS_ERROR
+
 
 class TestSides:
     @pytest.mark.parametrize(
