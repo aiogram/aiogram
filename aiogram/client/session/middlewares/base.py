@@ -40,6 +40,20 @@ class RequestContext(Generic[TelegramType]):
         self._chain = session.middleware.chain
         self._index = 0
 
+    def _fork(
+        self, bot: Bot, method: TelegramMethod[TelegramType]
+    ) -> RequestContext[TelegramType]:
+        """A copy at the same chain position, for one call of a 3.x ``make_request``."""
+        fork = object.__new__(RequestContext)
+        fork.bot = bot
+        fork.method = method
+        fork.timeout = self.timeout
+        fork.attempt = self.attempt
+        fork._session = self._session
+        fork._chain = self._chain
+        fork._index = self._index
+        return fork
+
     async def next(self) -> TelegramType:
         """
         Run the rest of the chain, then the request itself.

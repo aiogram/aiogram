@@ -69,8 +69,10 @@ The request context
     :members: bot, method, timeout, attempt, next
 
 A retrying middleware calls :code:`ctx.next()` once per attempt and sets :code:`ctx.attempt`
-before each call; inner middlewares read it. Calling :code:`ctx.next()` concurrently on one
-context is not supported.
+before each call; inner middlewares read it. A :code:`ctx.method` assigned by a middleware stays
+for the rest of the call, later attempts included, so a middleware that rewrites the method derives
+the new one from what it first received, not from the previous rewrite. Calling
+:code:`ctx.next()` concurrently on one context is not supported.
 
 
 Example

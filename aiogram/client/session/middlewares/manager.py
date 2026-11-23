@@ -34,10 +34,10 @@ class _LegacyMiddleware:
         self.middleware = middleware
 
     async def __call__(self, ctx: RequestContext[Any]) -> Any:
+        # Each call gets its own context, as each 3.x partial was its own call: concurrent
+        # calls each run the inner chain, and a rewrite does not outlive its call.
         async def make_request(bot: Bot, method: TelegramMethod[Any]) -> Any:
-            ctx.bot = bot
-            ctx.method = method
-            return await ctx.next()
+            return await ctx._fork(bot, method).next()
 
         return await self.middleware(make_request, ctx.bot, ctx.method)
 
@@ -64,12 +64,12 @@ def _adapt(middleware: Any) -> RequestMiddlewareType:
                 "(make_request, bot, method); take one RequestContext instead: "
                 "`async def middleware(ctx)` and `await ctx.next()`.",
                 DeprecationWarning,
-                stacklevel=3,
+                stacklevel=4,  # _adapt, _register, register / __call__ / decorator, caller
             )
             return _LegacyMiddleware(middleware)
     msg = (
         f"request middleware {_name(middleware)} must take one positional argument, "
-        "the RequestContext: `async def middleware(ctx)`"
+        "the RequestContext: `async def middleware(ctx)` (a wrapper needs functools.wraps)"
     )
     raise TypeError(msg)
 
@@ -166,6 +166,9 @@ class RequestMiddlewareManager(Sequence[Any]):
         Anchors are resolved at the next API call: a missing anchor or a cycle raises
         :class:`ValueError` there.
         """
+        return self._register(middleware, before, after)
+
+    def _register(self, middleware: M, before: Anchor | None, after: Anchor | None) -> M:
         self._entries.append(_Entry(middleware, _adapt(middleware), before, after))
         self._order = self._chain = None
         return middleware
@@ -205,8 +208,8 @@ class RequestMiddlewareManager(Sequence[Any]):
         after: Anchor | None = None,
     ) -> Any:
         if middleware is None:
-            return lambda m: self.register(m, before=before, after=after)
-        return self.register(middleware, before=before, after=after)
+            return lambda m: self._register(m, before, after)
+        return self._register(middleware, before, after)
 
     def _resolved(self) -> list[_Entry]:
         if self._order is None:

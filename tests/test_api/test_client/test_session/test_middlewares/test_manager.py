@@ -286,3 +286,54 @@ class TestLegacy:
             assert await bot.get_me() is ME
         assert log == ["GetMe", "fn"]
         assert request.await_args.args[1] is replacement
+
+    def test_warning_points_at_the_caller(self):
+        async def legacy(make_request, bot, method):
+            return await make_request(bot, method)
+
+        manager = RequestMiddlewareManager()
+        for register in (manager.register, manager, manager()):
+            with pytest.warns(DeprecationWarning, match="AG4062") as record:
+                register(legacy)
+            assert record[0].filename == __file__
+
+    async def test_concurrent_make_request_each_runs_the_inner_chain(self, bot: MockedBot):
+        seen: list[str] = []
+
+        async def fan(make_request, bot, method):
+            first, _ = await asyncio.gather(make_request(bot, GetMe()), make_request(bot, GetMe()))
+            return first
+
+        async def inner(ctx):
+            seen.append(type(ctx.method).__name__)
+            await asyncio.sleep(0)
+            return await ctx.next()
+
+        with pytest.warns(DeprecationWarning, match="AG4062"):
+            bot.session.middleware(fan)
+        bot.session.middleware(inner)
+        with patch.object(bot.session, "make_request", AsyncMock(return_value=ME)) as request:
+            await bot.get_me()
+        assert seen == ["GetMe", "GetMe"]
+        assert request.await_count == 2
+
+    async def test_rewrite_does_not_stack_on_retry(self, bot: MockedBot):
+        sent: list[str] = []
+
+        async def retry(ctx):
+            await ctx.next()
+            return await ctx.next()
+
+        async def rewrite(make_request, bot, method):
+            return await make_request(bot, method.model_copy(update={"text": method.text + "!"}))
+
+        async def record(bot, method, timeout=None):
+            sent.append(method.text)
+            return ME
+
+        bot.session.middleware(retry)
+        with pytest.warns(DeprecationWarning, match="AG4062"):
+            bot.session.middleware(rewrite)
+        with patch.object(bot.session, "make_request", record):
+            await bot.send_message(chat_id=1, text="hi")
+        assert sent == ["hi!", "hi!"]

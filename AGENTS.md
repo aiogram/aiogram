@@ -171,6 +171,9 @@ These patterns repeatedly appeared in maintainer feedback and should be treated 
 - Pytest runs with `filterwarnings = ["error", ...]`: a new `warnings.warn(...)` in library code (e.g. a
   `DeprecationWarning`) fails every existing test that reaches it. Find those tests first, then either stop
   them from triggering it or assert it with `pytest.warns`.
+- A deprecation warning reached through several public entry points (a method, `__call__`, a decorator) needs
+  the same stack depth on each, or Python's default filters drop it: route them through one private function
+  with a fixed `stacklevel`, and test `record[0].filename == __file__` for every form (D-06).
 
 ## Benchmark corpus (`benchmarks/corpus/`)
 
@@ -193,6 +196,9 @@ These patterns repeatedly appeared in maintainer feedback and should be treated 
 - A new top-level dev directory is linted only if it is added to the Makefile `lint` paths and the pre-commit ruff `files` regex, and shipped unless it is in the hatch sdist `exclude`; `differential/` is in all three.
 - Side scripts (`differential/sides/<adapter>/<kind>.py`) run under `python -I` in their own venv: stdlib + aiogram (and its runtime dependencies, such as pydantic) only, `differential/trace.py` (and `wire.py`, its sibling) loaded by path. Do not import other repository code from them.
 - Side venvs live in the gitignored `.differential/`; `pypi:`/`git:` venvs are reused, so delete it to pick up a new release.
+- `differential/sides/aiogram3/` is the 3.x reference and keeps 3.x APIs that 4.x deprecates: where the side uses
+  one, silence that one warning at the call (`warnings.catch_warnings()`) and add a commented `type: ignore` rather
+  than port the side; `tests/test_differential_*.py` run it in-process against this checkout (D-06, AG4062).
 - A manifest entry without `when` is active in 3.x-vs-3.x runs too; list it in `THREE_X_ENTRIES` of `tests/test_differential_framework.py`, which otherwise requires `when = "aiogram4"`.
 - A probe compared against `pypi:aiogram<4` must not record every optional field (`model_dump()` / `model_dump_json()`
   with their `None`s): after a Bot API bump the tree has fields the release lacks, and the weekly run fails until the
