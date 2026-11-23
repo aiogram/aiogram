@@ -195,8 +195,15 @@ class CallbackQueryFilter(Filter):
     async def __call__(self, query: CallbackQuery) -> Literal[False] | dict[str, Any]:
         if not isinstance(query, CallbackQuery) or not query.data:
             return False
+        # Cheap prefix check before the split and the pydantic validation in unpack().
+        # The prefix never contains the separator (see CallbackData.__init_subclass__),
+        # so unpack() can only accept data equal to the prefix or starting with prefix + sep.
+        data = query.data
+        prefix = self.callback_data.__prefix__
+        if data != prefix and not data.startswith(prefix + self.callback_data.__separator__):
+            return False
         try:
-            callback_data = self.callback_data.unpack(query.data)
+            callback_data = self.callback_data.unpack(data)
         except (TypeError, ValueError):
             return False
 
