@@ -344,6 +344,11 @@ These patterns repeatedly appeared in maintainer feedback and should be treated 
   marked stale filters (`aiogram_framework_filter`), so a new framework filter needs the same marker.
 - A test `logging.Handler` subclass must not set `self.lock`: `Handler.handle()` holds it around `emit()`, and a
   plain `threading.Lock` there deadlocks the test.
+- Token masking has one pattern: `loggers._TOKEN_PATTERN` (H-02), also used by the CLI's `redact()`. It has no `\b`,
+  because in `/bot123456:...` no word boundary comes before the id. It keeps `(?<!\d)`: without it, `\d{5,}` retries
+  at every digit, and a long digit run with no colon takes quadratic time.
+- A test that walks `logging.Logger.manager.loggerDict` runs in a subprocess. The pytest process holds `aiogram.*`
+  loggers that other tests created with a plain `logging.getLogger`.
 
 ## Async generators and file IO
 

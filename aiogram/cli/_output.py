@@ -1,11 +1,11 @@
 from __future__ import annotations
 
 import os
-import re
 import sys
 from typing import TextIO
 
 from aiogram.cli._spec import PROG
+from aiogram.loggers import _TOKEN_PATTERN
 
 _STYLES = {"bold": "1", "red": "31", "yellow": "33"}
 
@@ -13,16 +13,15 @@ _STYLES = {"bold": "1", "red": "31", "yellow": "33"}
 # masked in every warning and error (D66). The mask is a constant, so no printed text is
 # derived from a token.
 _hidden: set[str] = set()
-# Anything shaped like a bot token, for text holding a token the CLI never resolved
-# (an argparse diagnostic quoting a misplaced --token value, a plugin's exception)
-_TOKEN_SHAPE = re.compile(r"\b(\d{5,}):[A-Za-z0-9_-]{30,}")
 
 
 def redact(text: str) -> str:
     """Replace every resolved or token-shaped string in ``text`` with ``<bot id>:***``."""
     for value in _hidden:
         text = text.replace(value, "***")
-    return _TOKEN_SHAPE.sub(r"\1:***", text)
+    # Anything shaped like a bot token, for text holding a token the CLI never resolved
+    # (an argparse diagnostic quoting a misplaced --token value, a plugin's exception)
+    return _TOKEN_PATTERN.sub(r"\1:***", text)
 
 
 class CliError(Exception):
