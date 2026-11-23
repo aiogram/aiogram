@@ -134,12 +134,12 @@ Verification method and results: [_VERIFICATION.md](_VERIFICATION.md).
 | [A-02](A-contracts/A-02-apply-resolutions.md) | Apply the review resolutions (19) and planning decisions (PD-01..PD-34) to the research pages | `done` | no | M | A-01 |
 | [A-03](A-contracts/A-03-poison-update-decision.md) | Decision record: 3.x poison-update boundaries (owner sign-off required) | `done` | no | S | — |
 | [A-04](A-contracts/A-04-pinned-corpus.md) | Pinned corpus and payload manifest | `done` | no | M | — |
-| [A-05](A-contracts/A-05-bench-harness.md) | Benchmark harness and method | `todo` | no | M | A-04 |
+| [A-05](A-contracts/A-05-bench-harness.md) | Benchmark harness and method | `done` | no | M | A-04 |
 | [A-06](A-contracts/A-06-record-3x-baselines.md) | Record the 3.x baselines (stock + "optimised 3.x" tag) | `todo` | no | S | 3x-01, 3x-03, 3x-07, 3x-08, 3x-09, 3x-11, 3x-12, 3x-14, A-04, A-05 |
-| [A-07](A-contracts/A-07-differential-framework.md) | Differential harness framework (two venvs, canonical traces, difference manifests, poison control) | `todo` | no | M | A-04 |
-| [A-08](A-contracts/A-08-model-oracle.md) | Model oracle, 3.x side | `todo` | no | M | A-04, A-07 |
-| [A-09](A-contracts/A-09-request-oracle.md) | Request/response oracle, 3.x side | `todo` | no | M | A-04, A-07 |
-| [A-10](A-contracts/A-10-routing-oracle.md) | Routing oracle, 3.x side | `todo` | no | L | A-04, A-07 |
+| [A-07](A-contracts/A-07-differential-framework.md) | Differential harness framework (two venvs, canonical traces, difference manifests, poison control) | `done` | no | M | A-04 |
+| [A-08](A-contracts/A-08-model-oracle.md) | Model oracle, 3.x side | `done` | no | M | A-04, A-07 |
+| [A-09](A-contracts/A-09-request-oracle.md) | Request/response oracle, 3.x side | `done` | no | M | A-04, A-07 |
+| [A-10](A-contracts/A-10-routing-oracle.md) | Routing oracle, 3.x side | `done` | no | L | A-04, A-07 |
 | [A-11](A-contracts/A-11-migration-registry.md) | Migration registry: `registry.toml` schema, id allocation, seed | `done` | no | M | A-01 |
 | [B-00](B-spike/B-00-freeze-gate-spec.md) | Freeze the gate spec | `todo` | no | M | A-04, A-05, A-06 |
 | [B-01](B-spike/B-01-crate-maturin-skeleton.md) | Crate + maturin skeleton + minimal CI | `done` | no | M | A-01 |
@@ -181,7 +181,7 @@ Verification method and results: [_VERIFICATION.md](_VERIFICATION.md).
 | [C-23](C-butcher/C-23-check-offline-determinism.md) | `butcher check`, offline determinism and the PR CI job | `todo` | no | M | C-10, C-12, C-13, C-15, C-16, C-17, I-05 |
 | [C-24](C-butcher/C-24-scheduled-online-reextract.md) | Scheduled online re-extract job | `todo` | no | S | C-02, C-08, C-11 |
 | [C-25](C-butcher/C-25-historical-scenario-tests.md) | Historical diff and scenario tests (milestone C exit gate) | `todo` | partial: the `send_copy` and generated-runtime scenarios need C-20/C-21 | M | C-08, C-09, C-10, C-11, C-20, C-21, C-23 |
-| [C-26](C-butcher/C-26-removal-inventory-signature-table.md) | 4.0 removal inventory and 3.x signature table | `todo` | no | S | A-11 |
+| [C-26](C-butcher/C-26-removal-inventory-signature-table.md) | 4.0 removal inventory and 3.x signature table | `done` | no | S | A-11 |
 | [C-27](C-butcher/C-27-port-ext-helpers.md) | Port the remaining hand-written type helpers to `*_ext.rs` | `todo` | yes | M | B-10, B-13, C-18, D-17 |
 | [D-01](D-client/D-01-default-bot-properties-and-bot-cleanup.md) | Frozen `DefaultBotProperties`, `Bot` cleanup, `Bot.__repr__` | `todo` | no | S | A-01, A-11, C-15 |
 | [D-02](D-client/D-02-exceptions-error-reason-restarting-removal.md) | Exceptions: `ErrorReason` on `e.reason`, `RestartingTelegram` removal, `ClientDecodeError.raw` | `todo` | no | M | A-01, A-11, C-12 |

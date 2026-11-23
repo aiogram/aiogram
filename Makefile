@@ -5,7 +5,8 @@ tests_dir := tests
 scripts_dir := scripts
 examples_dir := examples
 benchmarks_dir := benchmarks
-code_dir := $(package_dir) $(tests_dir) $(scripts_dir) $(examples_dir) $(benchmarks_dir)
+differential_dir := differential
+code_dir := $(package_dir) $(tests_dir) $(scripts_dir) $(examples_dir) $(benchmarks_dir) $(differential_dir)
 reports_dir := reports
 
 redis_connection := redis://localhost:6379
@@ -42,12 +43,14 @@ lint: lint-python lint-rust
 
 .PHONY: lint-python
 lint-python:
-	uv run ruff format --check --diff $(package_dir) $(tests_dir) $(scripts_dir) $(examples_dir) $(benchmarks_dir)
-	uv run ruff check --show-fixes --preview $(package_dir) $(examples_dir) $(benchmarks_dir)
+	uv run ruff format --check --diff $(package_dir) $(tests_dir) $(scripts_dir) $(examples_dir) $(benchmarks_dir) $(differential_dir)
+	uv run ruff check --show-fixes --preview $(package_dir) $(examples_dir) $(benchmarks_dir) $(differential_dir)
 	uv run mypy --native-parser --num-workers 8 $(package_dir)
 	# aiogram/types/custom.py has a `sys.platform == "win32"` branch that mypy prunes as
 	# unreachable on Linux; this second pass type-checks it.
 	uv run mypy --native-parser --num-workers 8 --platform win32 $(package_dir)
+	# side scripts share names across adapters (sides/aiogram3/smoke.py, sides/aiogram4/smoke.py)
+	uv run mypy --native-parser --explicit-package-bases $(differential_dir)
 	$(MAKE) stubtest
 	$(MAKE) typing
 	uv run pre-commit run --all-files --show-diff-on-failure
@@ -106,6 +109,17 @@ test-coverage-view:
 	uv run python -c "import webbrowser; webbrowser.open('file://$(shell pwd)/reports/coverage/index.html')"
 
 # =================================================================================================
+# Benchmarks
+# =================================================================================================
+
+# a release build of the native extension, then every case; extra flags go through args,
+# e.g. `make bench args="--out benchmarks/results/local.json"`
+.PHONY: bench
+bench:
+	uvx --from 'maturin>=1.14,<2' maturin develop --uv --release
+	uv run --no-sync python -m benchmarks run --cases all $(args)
+
+# =================================================================================================
 # Docs
 # =================================================================================================
 
@@ -131,14 +145,10 @@ $(locale_targets): docs-serve-%:
 # Project
 # =================================================================================================
 
-# the native extension (crates/aiogram-core): `dev` is a fast debug build, `bench` the release one
+# the native extension (crates/aiogram-core): `dev` is a fast debug build (`bench` builds the release one)
 .PHONY: dev
 dev:
 	uvx --from 'maturin>=1.14,<2' maturin develop --uv
-
-.PHONY: bench
-bench:
-	uvx --from 'maturin>=1.14,<2' maturin develop --uv --release
 
 .PHONY: build
 build: clean

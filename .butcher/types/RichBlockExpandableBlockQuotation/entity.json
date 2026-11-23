@@ -20,11 +20,11 @@
         "required": true
       },
       {
-        "type": "RichText",
+        "type": "Array of RichBlock",
         "description": "Content of the block",
         "html_description": "<td>Content of the block</td>",
         "rst_description": "Content of the block\n",
-        "name": "text",
+        "name": "blocks",
         "required": true
       },
       {
@@ -34,6 +34,18 @@
         "rst_description": "*Optional*. Credit of the block\n",
         "name": "credit",
         "required": false
+      },
+      {
+        "type": "RichText",
+        "description": "Content of the block",
+        "html_description": "<td>Content of the block</td>",
+        "rst_description": "Content of the block\n",
+        "name": "text",
+        "required": false,
+        "deprecated": {
+          "version": "10.5",
+          "release_date": "2026-11-22"
+        }
       }
     ],
     "category": "types"

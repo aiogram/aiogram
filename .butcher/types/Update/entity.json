@@ -117,9 +117,9 @@
       },
       {
         "type": "ChosenInlineResult",
-        "description": "The result of an inline query that was chosen by a user and sent to their chat partner. Please see our documentation on the feedback collecting for details on how to enable these updates for your bot.",
-        "html_description": "<td><em>Optional</em>. The result of an <a href=\"#inline-mode\">inline</a> query that was chosen by a user and sent to their chat partner. Please see our documentation on the <a href=\"/bots/inline#collecting-feedback\">feedback collecting</a> for details on how to enable these updates for your bot.</td>",
-        "rst_description": "*Optional*. The result of an `inline <https://core.telegram.org/bots/api#inline-mode>`_ query that was chosen by a user and sent to their chat partner. Please see our documentation on the `feedback collecting <https://core.telegram.org/bots/inline#collecting-feedback>`_ for details on how to enable these updates for your bot.\n",
+        "description": "The result of an inline query that was chosen by a user and sent to their chat partner. Please see our documentation on the feedback collecting for details on how to enable these updates for your bot. The updates can also be enabled using the parameter inline_feedback_share_denominator of the method setMySettings.",
+        "html_description": "<td><em>Optional</em>. The result of an <a href=\"#inline-mode\">inline</a> query that was chosen by a user and sent to their chat partner. Please see our documentation on the <a href=\"/bots/inline#collecting-feedback\">feedback collecting</a> for details on how to enable these updates for your bot. The updates can also be enabled using the parameter <em>inline_feedback_share_denominator</em> of the method <a href=\"#setmysettings\">setMySettings</a>.</td>",
+        "rst_description": "*Optional*. The result of an `inline <https://core.telegram.org/bots/api#inline-mode>`_ query that was chosen by a user and sent to their chat partner. Please see our documentation on the `feedback collecting <https://core.telegram.org/bots/inline#collecting-feedback>`_ for details on how to enable these updates for your bot. The updates can also be enabled using the parameter *inline_feedback_share_denominator* of the method :class:`aiogram.methods.set_my_settings.SetMySettings`.\n",
         "name": "chosen_inline_result",
         "required": false
       },

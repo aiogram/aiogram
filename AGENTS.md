@@ -41,12 +41,19 @@ Prefer Serena's symbol tools over `Read`/`Grep` for source code exploration. Onl
 
 Code style/lint in this repository is enforced via Ruff (`ruff check` + `ruff format`).
 
+Run `ruff check --fix` only on the files you touched: on `tests` or `aiogram` it also rewrites unrelated
+files (it did to `tests/test_api/test_client/test_session/test_aiohttp_session.py`); check `git status` after it.
+
 Quick loop (recommended for most PR iterations). `make lint` runs ruff, both mypy passes and the pre-commit hooks exactly as CI does. The pre-commit hooks include fixers (`trailing-whitespace`, `end-of-file-fixer`, `ruff-format`), so `make lint` may modify files in the working tree; review `git diff` afterwards. `pre-commit run --all-files` only sees files git tracks: `git add` new files before `make lint`, or the hooks (`check-json`, `check-toml`, ruff) skip them.
 
 ```bash
 make lint
 uv run pytest tests
 ```
+
+The CI test jobs sync with `--no-group dev`, but your local `.venv` has the `dev` group: a test that imports a dev-only
+package (PyYAML, for one) passes locally and fails in CI with `ModuleNotFoundError`. Import only runtime, extra or
+`test`-group packages in `tests/`.
 
 When touching `.github/**`, also run:
 
@@ -109,9 +116,9 @@ Suite strategy (4.0, D88):
   passes there, and a new shared case must not rely on a built-in storage's extras.
 
 `MockedSession` builds the JSON wire envelope and runs it through `BaseSession.check_response`, so unit tests keep
-exercising the real error mapping (`TelegramBadRequest`, `TelegramRetryAfter`, ...). Its only model-layer dependency is
-the `_wire_default` helper. `tests/mocked_bot.py` must not mention `pydantic` at all, not even in a comment: a guard
-test (`tests/test_mocked_bot.py`) greps the source.
+exercising the real error mapping (`TelegramBadRequest`, `TelegramRetryAfter`, ...). Its model-layer dependencies are
+the `_wire_default` helper and `bot_full_info` (`model_fields`). `tests/mocked_bot.py` must not mention `pydantic`
+at all, not even in a comment: a guard test (`tests/test_mocked_bot.py`) greps the source.
 
 ## Changelog rules (CI-gated)
 
@@ -139,6 +146,7 @@ uv run butcher apply all
   separate [aiogram/butcher](https://github.com/aiogram/butcher) repo. Install it into its own
   environment and run it from this repository root (`python -m butcher.shell.main apply all`).
   A fix that needs new generator behaviour lands in butcher first, then in `.butcher` config here.
+  The build commands are in `.claude/skills/bot-api-bump/SKILL.md`, step 1.
 - butcher formats with black, the repository with ruff, so raw `apply all` output differs from the
   committed files. Run `ruff check --fix aiogram/types aiogram/methods` (import order) and
   `ruff format aiogram` afterwards; on a clean tree that sequence yields an empty `git diff`, which
@@ -173,6 +181,35 @@ These patterns repeatedly appeared in maintainer feedback and should be treated 
 - Append-only: never edit a pinned file, add a new id. Every file needs a `MANIFEST.toml` entry with its sha256; `tests/test_corpus_manifest.py` enforces this and rejects anything matching a bot-token pattern. Corpus files are `-text` in `.gitattributes` so Windows checkouts keep the hashed bytes; keep new corpus paths under that rule rather than normalising line endings in the hash.
 - `on_3x` records whether current 3.x decodes each update/response input. A change that makes 3.x accept or reject one (e.g. a forward-compat fallback) updates that field in the same PR.
 - Real traces: record with `benchmarks/record/recorder.py` into the gitignored `benchmarks/record/raw/`, commit only the output of `benchmarks/record/redact.py`, after a manual review.
+- Harness (A-05): `uv run python -m benchmarks run|compare|report`; the method, the CLI and how to read `compare` are
+  in `benchmarks/README.md`. Cases are keyed by corpus ids and reach aiogram only through
+  `benchmarks/adapters/aiogram3.py`. `compare` caches exported trees and venvs per sha in the gitignored `.benchmarks/`
+  (delete it to rebuild), and `make bench` runs every case (about 10 minutes).
+- The bench builds every `routing/*.toml` topology, and its adapter knows only `command`, `text_eq` and `pass`. A
+  topology using any other kind (all the A-10 oracle scenarios) carries `bench = false`;
+  `tests/test_differential_routing.py` enforces both sides. The PR CI does not run the bench, so a missed key only
+  shows in the weekly Benchmarks run.
+
+## Differential harness (`differential/`)
+
+- `uv run python -m differential run --kind <smoke|model|request|routing> --left <side> --right <side> [--poison right]` compares two aiogram installs case by case; concepts, manifest schema and how to add an approved difference are in `differential/README.md`. Dev tooling: excluded from the sdist, never imported by `aiogram`.
+- A new top-level dev directory is linted only if it is added to the Makefile `lint` paths and the pre-commit ruff `files` regex, and shipped unless it is in the hatch sdist `exclude`; `differential/` is in all three.
+- Side scripts (`differential/sides/<adapter>/<kind>.py`) run under `python -I` in their own venv: stdlib + aiogram (and its runtime dependencies, such as pydantic) only, `differential/trace.py` (and `wire.py`, its sibling) loaded by path. Do not import other repository code from them.
+- Side venvs live in the gitignored `.differential/`; `pypi:`/`git:` venvs are reused, so delete it to pick up a new release.
+- A manifest entry without `when` is active in 3.x-vs-3.x runs too; list it in `THREE_X_ENTRIES` of `tests/test_differential_framework.py`, which otherwise requires `when = "aiogram4"`.
+- A probe compared against `pypi:aiogram<4` must not record every optional field (`model_dump()` / `model_dump_json()`
+  with their `None`s): after a Bot API bump the tree has fields the release lacks, and the weekly run fails until the
+  next release. Record `exclude_unset` / `exclude_none` dumps, or strip the nulls. A new corpus input of kind `update`
+  needs an access list in `differential/manifests/model.access.toml` (`tests/test_differential_model.py`).
+- A comparator decides on what the left side (the 3.x reference) records in `meta`, never on "what the right side
+  did". The routing side puts its reference facts there (surviving candidates, raise paths, same-case
+  registrations), and that is how its comparators stay narrow. A record matches one manifest entry, so a difference
+  that holds everywhere (D12, D34, D111) is applied inside every comparator of the kind, not by a second entry.
+- A concurrent routing case (`group`) must not depend on thread timing: a sync filter hops to `asyncio.to_thread`,
+  so use `command` (async) filters there.
+- A dev-4.x tree still reports a 3.x `__version__`, so both sides get the `aiogram3` adapter and the
+  `when = "aiogram4"` entries stay inert. The routing kind therefore runs only for dev-3.x (E-01 already
+  removed the D12 keys), and `tests/test_differential_routing.py` skips the checks that need a 3.x record there.
 
 ## 4.0 planning tree (`v4/`)
 
@@ -189,8 +226,8 @@ These patterns repeatedly appeared in maintainer feedback and should be treated 
 - The build backend is maturin: `crates/aiogram-core` builds `aiogram._core`, so `uv sync` needs `rustup`
   (`rust-toolchain.toml` pins the toolchain). `uv run` rebuilds it (release profile) when a `*.rs` or `Cargo.toml`
   under `crates/aiogram-core`, the workspace `Cargo.toml`, `Cargo.lock` or `.cargo/config.toml` changes; `make dev`
-  installs a fast debug build, `make bench` a release one. Nothing on the 3.x import path loads `_core`
-  (`tests/test_core/test_build.py` checks it).
+  installs a fast debug build, `make bench` a release one (then runs the benchmark cases). Nothing on the 3.x
+  import path loads `_core` (`tests/test_core/test_build.py` checks it).
 - Rust checks: `cargo fmt --all --check`, `cargo clippy --workspace --all-targets -- -D warnings` (`unwrap`,
   `expect`, `panic!`, `todo!`, `unimplemented!` are denied), `cargo test --workspace`. `make lint` runs fmt and
   clippy too (`lint-rust`; CI runs `lint-python` in Lint and `lint-rust` in Rust).

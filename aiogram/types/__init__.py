@@ -30,6 +30,7 @@ from .bot_command_scope_chat_member import BotCommandScopeChatMember
 from .bot_command_scope_default import BotCommandScopeDefault
 from .bot_command_scope_union import BotCommandScopeUnion
 from .bot_description import BotDescription
+from .bot_full_info import BotFullInfo
 from .bot_name import BotName
 from .bot_short_description import BotShortDescription
 from .business_bot_rights import BusinessBotRights
@@ -363,6 +364,7 @@ __all__ = (
     "BotCommandScopeDefault",
     "BotCommandScopeUnion",
     "BotDescription",
+    "BotFullInfo",
     "BotName",
     "BotShortDescription",
     "BotSubscriptionUpdated",
