@@ -60,7 +60,7 @@ def _adapt(middleware: Any) -> RequestMiddlewareType:
         if required == _LEGACY_ARGUMENTS:
             # ponytail: plain DeprecationWarning until I-12's AiogramDeprecationWarning lands
             warnings.warn(
-                f"request middleware {_name(middleware)} takes the 3.x arguments "
+                f"AG4062: request middleware {_name(middleware)} takes the 3.x arguments "
                 "(make_request, bot, method); take one RequestContext instead: "
                 "`async def middleware(ctx)` and `await ctx.next()`.",
                 DeprecationWarning,

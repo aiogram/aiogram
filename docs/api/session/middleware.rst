@@ -108,7 +108,7 @@ Migrating from aiogram 3.x
 ==========================
 
 A 3.x middleware takes :code:`(make_request, bot, method)`. It still works for one deprecation
-window, with a :code:`DeprecationWarning` at registration:
+window, with a :code:`DeprecationWarning` at registration (AG4062):
 
 .. code-block:: python
 
@@ -121,4 +121,4 @@ window, with a :code:`DeprecationWarning` at registration:
         return await ctx.next()
 
 Replace a method by assigning :code:`ctx.method` before :code:`await ctx.next()`.
-:code:`RequestMiddlewareManager.wrap_middlewares` is removed: call the bot or the session instead.
+:code:`RequestMiddlewareManager.wrap_middlewares` is removed (AG4063): call the bot or the session instead.
