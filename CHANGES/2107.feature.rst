@@ -1,0 +1,5 @@
+Requests without files are now sent as a JSON body (:code:`application/json`) instead of
+:code:`application/x-www-form-urlencoded`; requests with files stay :code:`multipart/form-data`.
+The parameters are the same, and a custom :code:`json_dumps` is still used for nested values.
+A custom Bot API server or a proxy that reads form bodies must accept JSON bodies too; a session
+that overrides :code:`prepare_value` or :code:`build_form_data` keeps sending forms.

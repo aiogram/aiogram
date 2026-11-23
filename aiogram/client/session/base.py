@@ -258,6 +258,33 @@ class BaseSession(abc.ABC):
             return self.json_dumps(value)
         return value
 
+    def _build_json_body(self, bot: Bot, method: TelegramMethod[TelegramType]) -> str | None:
+        """
+        The request params as one JSON object, or ``None`` when they must go as a form:
+        the request has files, or a subclass overrides :meth:`prepare_value`.
+
+        Each field is the value :meth:`prepare_value` makes for a form field, so the params
+        and the :code:`json_dumps` calls stay the same; only text fields are quoted here.
+        """
+        if getattr(self.prepare_value, "__func__", None) is not BaseSession.prepare_value:
+            return None  # the override may rely on building form fields
+        files: dict[str, InputFile] = {}
+        fields = []
+        for key, value in method.model_dump(warnings=False, exclude_none=True).items():
+            if isinstance(value, Default):
+                value = bot.default[value.name]
+            if isinstance(value, Enum):
+                value = value.value
+            prepared = self.prepare_value(value, bot=bot, files=files)
+            if not prepared:
+                continue
+            if isinstance(value, str):  # the only form values that are not JSON already
+                prepared = json.dumps(prepared)
+            fields.append(f"{json.dumps(key)}:{prepared}")
+        if files:
+            return None
+        return "{" + ",".join(fields) + "}"
+
     async def __call__(
         self,
         bot: Bot,
