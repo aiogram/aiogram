@@ -11,7 +11,9 @@ from redis.asyncio.connection import parse_url as parse_redis_url
 from redis.exceptions import ConnectionError
 
 from aiogram import Dispatcher
-from aiogram.fsm.storage.base import StorageKey
+from aiogram.exceptions import DataNotDictLikeError
+from aiogram.fsm.state import State
+from aiogram.fsm.storage.base import BaseStorage, StateType, StorageKey
 from aiogram.fsm.storage.memory import (
     DisabledEventIsolation,
     MemoryStorage,
@@ -164,6 +166,36 @@ async def memory_storage():
         yield storage
     finally:
         await storage.close()
+
+
+class MinimalStorage(BaseStorage):
+    """A third-party storage: only the abstract methods, so every other method is the fallback."""
+
+    def __init__(self) -> None:
+        self.states: dict[StorageKey, str | None] = {}
+        self.datas: dict[StorageKey, dict] = {}
+
+    async def set_state(self, key: StorageKey, state: StateType = None) -> None:
+        self.states[key] = state.state if isinstance(state, State) else state
+
+    async def get_state(self, key: StorageKey) -> str | None:
+        return self.states.get(key)
+
+    async def set_data(self, key: StorageKey, data) -> None:
+        if not isinstance(data, dict):
+            raise DataNotDictLikeError(type(data).__name__)
+        self.datas[key] = dict(data)
+
+    async def get_data(self, key: StorageKey) -> dict:
+        return dict(self.datas.get(key, {}))
+
+    async def close(self) -> None:
+        pass
+
+
+@pytest.fixture()
+async def minimal_storage():
+    return MinimalStorage()
 
 
 @pytest.fixture()

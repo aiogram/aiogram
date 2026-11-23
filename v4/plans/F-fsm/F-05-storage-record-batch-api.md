@@ -2,7 +2,7 @@
 
 | Field | Value |
 |---|---|
-| Status | `todo` |
+| Status | `done` |
 | Story | F — FSM & scenes |
 | Target branch | `dev-4.x` |
 | Depends on | [F-01](F-01-thread-safe-memory-storage.md) |

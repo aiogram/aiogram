@@ -1,7 +1,7 @@
 from collections.abc import Mapping
 from typing import Any, overload
 
-from aiogram.fsm.storage.base import BaseStorage, StateType, StorageKey
+from aiogram.fsm.storage.base import BaseStorage, StateType, StorageKey, StorageRecord
 
 
 class FSMContext:
@@ -20,6 +20,11 @@ class FSMContext:
 
     async def get_data(self) -> dict[str, Any]:
         return await self.storage.get_data(key=self.key)
+
+    async def get_record(self) -> StorageRecord:
+        """State and data of this context's key (see :meth:`BaseStorage.get_records`)."""
+        (record,) = await self.storage.get_records(self.key)
+        return record
 
     @overload
     async def get_value(self, key: str) -> Any | None: ...
