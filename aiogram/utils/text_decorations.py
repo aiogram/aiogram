@@ -349,7 +349,8 @@ class MarkdownDecoration(TextDecoration):
 
     def expandable_blockquote(self, value: str) -> str:
         quoted, newline = self._quote_lines(value)
-        return quoted + "||" + newline
+        # "**" on the first line is the expandability mark
+        return ("**" if quoted else "") + quoted + "||" + newline
 
     def date_time(
         self,
