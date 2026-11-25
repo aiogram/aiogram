@@ -98,7 +98,13 @@ class SimpleI18nMiddleware(I18nMiddleware):
     """
     Simple I18n middleware.
 
-    Chooses language code from the User object received in event
+    Chooses language code from the User object received in event.
+
+    The Telegram ``language_code`` is matched against the translation directories
+    from the most specific form to the bare language: ``pt-br`` tries ``pt_BR``,
+    then ``pt``; ``zh-hans`` tries ``zh_Hans``, then ``zh``; ``zh-cn`` tries
+    ``zh_Hans_CN``, ``zh_CN``, ``zh_Hans``, then ``zh``. Unknown or malformed codes
+    resolve to the default locale.
     """
 
     def __init__(
@@ -131,17 +137,24 @@ class SimpleI18nMiddleware(I18nMiddleware):
             return self.i18n.default_locale
         try:
             locale = Locale.parse(event_from_user.language_code, sep="-")
-        except UnknownLocaleError:
+        except (UnknownLocaleError, ValueError):
             return self.i18n.default_locale
 
-        # Telegram sends codes like "pt-br" (lowercased), while translation
-        # directories are usually named with the full territory form ("pt_BR").
-        # Prefer the most specific available locale, then the bare language.
+        # Telegram sends codes like "pt-br" or "zh-hans" (lowercased), while translation
+        # directories are usually named with the full territory ("pt_BR") or script
+        # ("zh_Hans") form. Try the most specific form first, then the territory-qualified
+        # one, then the script-qualified one, and finally the bare language. The territory
+        # goes before the script because Babel infers a script that the user never sent
+        # ("zh-cn" is parsed as "zh_Hans_CN"), while the territory is usually explicit.
         candidates = [str(locale)]
         if locale.territory:
-            candidates.append(locale.language)
+            candidates.append(f"{locale.language}_{locale.territory}")
+        if locale.script:
+            candidates.append(f"{locale.language}_{locale.script}")
+        candidates.append(locale.language)
+        locales = self.i18n.locales
         for candidate in candidates:
-            if candidate in self.i18n.available_locales:
+            if candidate in locales:
                 return candidate
         return self.i18n.default_locale
 
