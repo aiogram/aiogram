@@ -70,8 +70,6 @@ class ContextInstanceMixin(Generic[ContextInstance]):
         cls,
         no_error: bool = True,
     ) -> ContextInstance | None:  # pragma: no cover
-        cls.__context_instance = cls.__context_instance
-
         try:
             current: ContextInstance | None = cls.__context_instance.get()
         except LookupError:
