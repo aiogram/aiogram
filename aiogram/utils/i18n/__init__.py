@@ -1,4 +1,14 @@
-from .context import get_i18n, gettext, lazy_gettext, lazy_ngettext, ngettext
+from .context import (
+    get_i18n,
+    gettext,
+    lazy_gettext,
+    lazy_ngettext,
+    lazy_npgettext,
+    lazy_pgettext,
+    ngettext,
+    npgettext,
+    pgettext,
+)
 from .core import I18n
 from .middleware import (
     ConstI18nMiddleware,
@@ -17,5 +27,9 @@ __all__ = (
     "gettext",
     "lazy_gettext",
     "lazy_ngettext",
+    "lazy_npgettext",
+    "lazy_pgettext",
     "ngettext",
+    "npgettext",
+    "pgettext",
 )
