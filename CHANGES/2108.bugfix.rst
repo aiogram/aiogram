@@ -1,0 +1,1 @@
+Fixed slicing of :class:`aiogram.utils.formatting.Text`: plain string parts are now measured and cut in UTF-16 code units, the same units as ``len()`` and entity offsets, so text with emoji is no longer cut at the wrong place, and non-string parts like numbers no longer raise :code:`TypeError`. A slice bound that falls inside an emoji drops that emoji instead of splitting it.

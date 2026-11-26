@@ -21,6 +21,12 @@ def sizeof(value: str) -> int:
     return len(value.encode("utf-16-le")) // 2
 
 
+def _slice_utf16(value: str, start: int, stop: int) -> str:
+    # Slice by UTF-16 code units, like Telegram offsets and ``sizeof``.
+    # A character cut in half by the bounds is dropped.
+    return add_surrogates(value)[start * 2 : stop * 2].decode("utf-16-le", errors="ignore")
+
+
 class Text(Iterable[NodeType]):
     """
     Simple text element
@@ -272,7 +278,9 @@ class Text(Iterable[NodeType]):
         position = 0
 
         for node in self._body:
-            node_size = len(node)
+            if not isinstance(node, Text):
+                node = str(node)
+            node_size = len(node) if isinstance(node, Text) else sizeof(node)
             current_position = position
             position += node_size
             if position < start:
@@ -281,7 +289,7 @@ class Text(Iterable[NodeType]):
                 break
             a = max((0, start - current_position))
             b = min((node_size, stop - current_position))
-            new_node = node[a:b]
+            new_node = node[a:b] if isinstance(node, Text) else _slice_utf16(node, a, b)
             if not new_node:
                 continue
             nodes.append(new_node)
