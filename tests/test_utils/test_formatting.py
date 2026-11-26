@@ -308,6 +308,30 @@ class TestNode:
         assert text == "!"
         assert not entities
 
+    def test_getitem_slice_counts_utf16_units(self):
+        # "😀" is 2 UTF-16 code units, the same unit as len() and entity offsets
+        node = Text("😀ab", Bold("cd"))
+        assert len(node) == 6
+
+        text, entities = node[0:4].render()
+        assert text == "😀ab"
+        assert not entities
+
+        text, entities = node[3:6].render()
+        assert text == "bcd"
+        assert entities == [MessageEntity(type=MessageEntityType.BOLD, offset=1, length=2)]
+
+    def test_getitem_slice_does_not_split_surrogate_pair(self):
+        node = Text("a😀b")
+        assert node[0:2].render() == ("a", [])
+        assert node[2:4].render() == ("b", [])
+
+    def test_getitem_slice_non_string_node(self):
+        node = Text("Total: ", 42, Bold("!"))
+        text, entities = node[5:10].render()
+        assert text == ": 42!"
+        assert entities == [MessageEntity(type=MessageEntityType.BOLD, offset=4, length=1)]
+
     def test_from_entities(self):
         # Most of the cases covered by text_decorations module
 
