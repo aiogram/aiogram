@@ -328,7 +328,7 @@ class Message(MaybeInaccessibleMessage):
     connected_website: str | None = None
     """*Optional*. The domain name of the website on which the user has logged in. `More about Telegram Login » <https://core.telegram.org/widgets/login>`_"""
     write_access_allowed: WriteAccessAllowed | None = None
-    """*Optional*. Service message: the user allowed the bot to write messages after adding it to the attachment or side menu, launching a Web App from a link, or accepting an explicit request from a Web App sent by the method `requestWriteAccess <https://core.telegram.org/bots/webapps#initializing-mini-apps>`_"""
+    """*Optional*. Service message: the user allowed the bot to write messages after adding it to the attachment or side menu, launching a Web App from a link, or accepting an explicit request from a Web App sent by the method `requestWriteAccess <https://core.telegram.org/bots/webapps#initializing-mini-apps>`_, or the user was invited to the private chat with the bot by the owner of the bot"""
     passport_data: PassportData | None = None
     """*Optional*. Telegram Passport data"""
     proximity_alert_triggered: ProximityAlertTriggered | None = None

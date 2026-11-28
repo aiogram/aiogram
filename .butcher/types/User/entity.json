@@ -81,7 +81,11 @@
         "html_description": "<td><em>Optional</em>. <em>True</em>, if the bot can be invited to groups. Returned only in <a href=\"#getme\">getMe</a>.</td>",
         "rst_description": "*Optional*. :code:`True`, if the bot can be invited to groups. Returned only in :class:`aiogram.methods.get_me.GetMe`.\n",
         "name": "can_join_groups",
-        "required": false
+        "required": false,
+        "deprecated": {
+          "version": "10.5",
+          "release_date": "2026-11-22"
+        }
       },
       {
         "type": "Boolean",
@@ -89,7 +93,11 @@
         "html_description": "<td><em>Optional</em>. <em>True</em>, if <a href=\"/bots/features#privacy-mode\">privacy mode</a> is disabled for the bot. Returned only in <a href=\"#getme\">getMe</a>.</td>",
         "rst_description": "*Optional*. :code:`True`, if `privacy mode <https://core.telegram.org/bots/features#privacy-mode>`_ is disabled for the bot. Returned only in :class:`aiogram.methods.get_me.GetMe`.\n",
         "name": "can_read_all_group_messages",
-        "required": false
+        "required": false,
+        "deprecated": {
+          "version": "10.5",
+          "release_date": "2026-11-22"
+        }
       },
       {
         "type": "Boolean",
@@ -97,7 +105,11 @@
         "html_description": "<td><em>Optional</em>. <em>True</em>, if the bot supports guest queries from chats it is not a member of. Returned only in <a href=\"#getme\">getMe</a>.</td>",
         "rst_description": "*Optional*. :code:`True`, if the bot supports guest queries from chats it is not a member of. Returned only in :class:`aiogram.methods.get_me.GetMe`.\n",
         "name": "supports_guest_queries",
-        "required": false
+        "required": false,
+        "deprecated": {
+          "version": "10.5",
+          "release_date": "2026-11-22"
+        }
       },
       {
         "type": "Boolean",
@@ -105,7 +117,11 @@
         "html_description": "<td><em>Optional</em>. <em>True</em>, if the bot supports inline queries. Returned only in <a href=\"#getme\">getMe</a>.</td>",
         "rst_description": "*Optional*. :code:`True`, if the bot supports inline queries. Returned only in :class:`aiogram.methods.get_me.GetMe`.\n",
         "name": "supports_inline_queries",
-        "required": false
+        "required": false,
+        "deprecated": {
+          "version": "10.5",
+          "release_date": "2026-11-22"
+        }
       },
       {
         "type": "Boolean",
@@ -113,7 +129,11 @@
         "html_description": "<td><em>Optional</em>. <em>True</em>, if the bot can be connected to a user account to manage it. Returned only in <a href=\"#getme\">getMe</a>.</td>",
         "rst_description": "*Optional*. :code:`True`, if the bot can be connected to a user account to manage it. Returned only in :class:`aiogram.methods.get_me.GetMe`.\n",
         "name": "can_connect_to_business",
-        "required": false
+        "required": false,
+        "deprecated": {
+          "version": "10.5",
+          "release_date": "2026-11-22"
+        }
       },
       {
         "type": "Boolean",
@@ -121,7 +141,11 @@
         "html_description": "<td><em>Optional</em>. <em>True</em>, if the bot has a main Web App. Returned only in <a href=\"#getme\">getMe</a>.</td>",
         "rst_description": "*Optional*. :code:`True`, if the bot has a main Web App. Returned only in :class:`aiogram.methods.get_me.GetMe`.\n",
         "name": "has_main_web_app",
-        "required": false
+        "required": false,
+        "deprecated": {
+          "version": "10.5",
+          "release_date": "2026-11-22"
+        }
       },
       {
         "type": "Boolean",
@@ -129,7 +153,11 @@
         "html_description": "<td><em>Optional</em>. <em>True</em>, if the bot has forum topic mode enabled in private chats. Returned only in <a href=\"#getme\">getMe</a>.</td>",
         "rst_description": "*Optional*. :code:`True`, if the bot has forum topic mode enabled in private chats. Returned only in :class:`aiogram.methods.get_me.GetMe`.\n",
         "name": "has_topics_enabled",
-        "required": false
+        "required": false,
+        "deprecated": {
+          "version": "10.5",
+          "release_date": "2026-11-22"
+        }
       },
       {
         "type": "Boolean",
@@ -137,7 +165,11 @@
         "html_description": "<td><em>Optional</em>. <em>True</em>, if the bot allows users to create and delete topics in private chats. Returned only in <a href=\"#getme\">getMe</a>.</td>",
         "rst_description": "*Optional*. :code:`True`, if the bot allows users to create and delete topics in private chats. Returned only in :class:`aiogram.methods.get_me.GetMe`.\n",
         "name": "allows_users_to_create_topics",
-        "required": false
+        "required": false,
+        "deprecated": {
+          "version": "10.5",
+          "release_date": "2026-11-22"
+        }
       },
       {
         "type": "Boolean",
@@ -145,7 +177,11 @@
         "html_description": "<td><em>Optional</em>. <em>True</em>, if other bots can be created to be controlled by the bot. Returned only in <a href=\"#getme\">getMe</a>.</td>",
         "rst_description": "*Optional*. :code:`True`, if other bots can be created to be controlled by the bot. Returned only in :class:`aiogram.methods.get_me.GetMe`.\n",
         "name": "can_manage_bots",
-        "required": false
+        "required": false,
+        "deprecated": {
+          "version": "10.5",
+          "release_date": "2026-11-22"
+        }
       },
       {
         "type": "Boolean",
@@ -153,7 +189,11 @@
         "html_description": "<td><em>Optional</em>. <em>True</em>, if the bot supports join request queries and can be assigned to process them. Returned only in <a href=\"#getme\">getMe</a>.</td>",
         "rst_description": "*Optional*. :code:`True`, if the bot supports join request queries and can be assigned to process them. Returned only in :class:`aiogram.methods.get_me.GetMe`.\n",
         "name": "supports_join_request_queries",
-        "required": false
+        "required": false,
+        "deprecated": {
+          "version": "10.5",
+          "release_date": "2026-11-22"
+        }
       }
     ],
     "category": "types"

@@ -53,9 +53,9 @@
       },
       {
         "type": "Location",
-        "description": "Sender location, only for bots that request user location",
-        "html_description": "<td><em>Optional</em>. Sender location, only for bots that request user location</td>",
-        "rst_description": "*Optional*. Sender location, only for bots that request user location\n",
+        "description": "Sender location, only for bots that enabled user location requests via @BotFather or using the parameter needs_inline_query_location of the method setMySettings",
+        "html_description": "<td><em>Optional</em>. Sender location, only for bots that enabled user location requests via <a href=\"https://t.me/botfather\">@BotFather</a> or using the parameter <em>needs_inline_query_location</em> of the method <a href=\"#setmysettings\">setMySettings</a></td>",
+        "rst_description": "*Optional*. Sender location, only for bots that enabled user location requests via `@BotFather <https://t.me/botfather>`_ or using the parameter *needs_inline_query_location* of the method :class:`aiogram.methods.set_my_settings.SetMySettings`\n",
         "name": "location",
         "required": false
       }

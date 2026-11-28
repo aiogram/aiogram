@@ -97,6 +97,13 @@ class CallbackData(BaseModel):
                 raise ValueError(msg)
             result.append(encoded)
         callback_data = self.__separator__.join(result)
+        # A multi-character separator can be formed across the border of two values
+        if len(self.__separator__) > 1 and callback_data.split(self.__separator__) != result:
+            msg = (
+                f"Separator symbol {self.__separator__!r} can not be formed "
+                f"across the values in {callback_data!r}"
+            )
+            raise ValueError(msg)
         if len(callback_data.encode()) > MAX_CALLBACK_LENGTH:
             msg = (
                 f"Resulted callback data is too long! "
@@ -188,8 +195,15 @@ class CallbackQueryFilter(Filter):
     async def __call__(self, query: CallbackQuery) -> Literal[False] | dict[str, Any]:
         if not isinstance(query, CallbackQuery) or not query.data:
             return False
+        # Cheap prefix check before the split and the pydantic validation in unpack().
+        # The prefix never contains the separator (see CallbackData.__init_subclass__),
+        # so unpack() can only accept data equal to the prefix or starting with prefix + sep.
+        data = query.data
+        prefix = self.callback_data.__prefix__
+        if data != prefix and not data.startswith(prefix + self.callback_data.__separator__):
+            return False
         try:
-            callback_data = self.callback_data.unpack(query.data)
+            callback_data = self.callback_data.unpack(data)
         except (TypeError, ValueError):
             return False
 

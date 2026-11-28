@@ -9,6 +9,8 @@ from collections.abc import AsyncGenerator, Awaitable
 from contextlib import suppress
 from typing import TYPE_CHECKING, Any
 
+from pydantic import ValidationError
+
 from aiogram import loggers
 from aiogram.exceptions import TelegramAPIError
 from aiogram.fsm.middleware import FSMContextMiddleware
@@ -16,7 +18,7 @@ from aiogram.fsm.storage.base import BaseEventIsolation, BaseStorage
 from aiogram.fsm.storage.memory import DisabledEventIsolation, MemoryStorage
 from aiogram.fsm.strategy import FSMStrategy
 from aiogram.methods import GetUpdates, TelegramMethod
-from aiogram.types import Update, User
+from aiogram.types import ErrorEvent, Update, User
 from aiogram.types.base import UNSET, UNSET_TYPE
 from aiogram.types.update import UpdateTypeLookupError
 from aiogram.utils.backoff import Backoff, BackoffConfig
@@ -166,7 +168,7 @@ class Dispatcher(Router):
 
         try:
             response = await self.update.wrap_outer_middleware(
-                self.update.trigger,
+                self._trigger_update,
                 update,
                 {
                     "dispatcher": self,
@@ -188,6 +190,15 @@ class Dispatcher(Router):
                 bot.id,
             )
 
+    async def _trigger_update(self, update: Update, **kwargs: Any) -> Any:
+        # `dp.update` is not reached through `_propagate_event`,
+        # so its root filters are checked here, the same way
+        result, data = await self.update.check_root_filters(update, **kwargs)
+        if not result:
+            return UNHANDLED
+        kwargs.update(data)
+        return await self.update.trigger(update, **kwargs)
+
     async def feed_raw_update(self, bot: Bot, update: dict[str, Any], **kwargs: Any) -> Any:
         """
         Main entry point for incoming updates with automatic Dict->Update serializer
@@ -196,8 +207,58 @@ class Dispatcher(Router):
         :param update:
         :param kwargs:
         """
-        parsed_update = Update.model_validate(update, context={"bot": bot})
+        parsed_update = await self._validate_update(bot, update, **kwargs)
+        if parsed_update is None:
+            return UNHANDLED
         return await self._feed_webhook_update(bot=bot, update=parsed_update, **kwargs)
+
+    async def _validate_update(self, bot: Bot, update: Any, **kwargs: Any) -> Update | None:
+        """
+        Validate a raw update, or skip it when it can't be validated.
+
+        Telegram would redeliver such an update forever, so it is dropped: logged with the
+        error count only (rendering every error of a large update blocks the event loop)
+        and reported to the ``errors`` observers as an :class:`ErrorEvent` whose update
+        carries only ``update_id``. Delivery is best-effort: the update is lost.
+        """
+        try:
+            return Update.model_validate(update, context={"bot": bot})
+        except ValidationError as e:
+            # Handled outside the except block, so that nothing raised later is chained to it
+            error = e
+
+        update_id = update.get("update_id") if isinstance(update, dict) else None
+        if type(update_id) is not int:
+            update_id = None
+        first = error.errors(include_url=False, include_context=False, include_input=False)[0]
+        loggers.webhook.error(
+            "Update id=%s is skipped because it can't be validated by bot id=%d: "
+            "%d validation errors, first: %s at %s",
+            update_id,
+            bot.id,
+            error.error_count(),
+            first["type"],
+            first["loc"],
+        )
+        loggers.webhook.debug("Skipped update: %r", update)
+        if update_id is None:
+            return None
+
+        try:
+            await self.propagate_event(
+                update_type="error",
+                event=ErrorEvent(update=Update(update_id=update_id), exception=error),
+                **{"dispatcher": self, **self.workflow_data, **kwargs, "bot": bot},
+            )
+        except Exception:  # noqa: BLE001
+            # The update is skipped anyway: a failing error handler must not turn it into
+            # a non-2xx answer that makes Telegram redeliver it
+            loggers.event.exception(
+                "Error handler failed for skipped update id=%d by bot id=%d",
+                update_id,
+                bot.id,
+            )
+        return None
 
     @classmethod
     async def _listen_updates(
@@ -273,14 +334,15 @@ class Dispatcher(Router):
             update_type = update.event_type
             event = update.event
         except UpdateTypeLookupError as e:
+            # Constant text: Python keeps every distinct warning text for the process lifetime
             warnings.warn(
                 "Detected unknown update type.\n"
                 "Seems like Telegram Bot API was updated and you have "
-                "installed not latest version of aiogram framework"
-                f"\nUpdate: {update.model_dump_json(exclude_unset=True)}",
+                "installed not latest version of aiogram framework",
                 RuntimeWarning,
                 stacklevel=2,
             )
+            loggers.event.debug("Unknown update type: %r", update)
             raise SkipHandler() from e
 
         kwargs.update(event_update=update)
@@ -407,7 +469,7 @@ class Dispatcher(Router):
         :param kwargs:
         :return:
         """
-        user: User = await bot.me()
+        user = await bot.me()
         loggers.dispatcher.info(
             "Run polling for bot @%s id=%d - %r",
             user.username,
@@ -474,9 +536,6 @@ class Dispatcher(Router):
         _timeout: float = 55,
         **kwargs: Any,
     ) -> TelegramMethod[TelegramType] | None:
-        if not isinstance(update, Update):  # Allow to use raw updates
-            update = Update.model_validate(update, context={"bot": bot})
-
         ctx = contextvars.copy_context()
         loop = asyncio.get_running_loop()
         waiter = loop.create_future()
@@ -487,8 +546,12 @@ class Dispatcher(Router):
 
         timeout_handle = loop.call_later(_timeout, release_waiter)
 
+        # Raw updates are validated inside the timed task: the errors handlers of an invalid
+        # update must not hold the answer past the deadline either
         process_updates: Future[Any] = asyncio.ensure_future(
-            self._feed_webhook_update(bot=bot, update=update, **kwargs),
+            self._feed_webhook_update(bot=bot, update=update, **kwargs)
+            if isinstance(update, Update)
+            else self.feed_raw_update(bot=bot, update=update, **kwargs),
         )
         process_updates.add_done_callback(release_waiter, context=ctx)
 

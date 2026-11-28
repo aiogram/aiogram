@@ -91,6 +91,31 @@ class TestCallbackData:
 
         assert MyCallback(foo="test", bar=42).pack() == "test:test:42"
 
+    @pytest.mark.parametrize(
+        "sep,values",
+        [
+            ["--", {"note": "rent-", "amount": "50"}],
+            ["::", {"note": "bob:", "amount": "user"}],
+            ["-=-", {"note": "x-=", "amount": "y"}],
+        ],
+    )
+    def test_pack_multichar_separator_across_values(self, sep, values):
+        class Withdraw(CallbackData, prefix="withdraw", sep=sep):
+            note: str
+            amount: str
+
+        with pytest.raises(ValueError, match="can not be formed across the values"):
+            Withdraw(**values).pack()
+
+    def test_pack_multichar_separator_roundtrip(self):
+        class Withdraw(CallbackData, prefix="withdraw", sep="--"):
+            note: str
+            amount: int
+
+        packed = Withdraw(note="a-b", amount=-5).pack()
+        assert packed == "withdraw--a-b---5"
+        assert Withdraw.unpack(packed) == Withdraw(note="a-b", amount=-5)
+
     def test_pack_uuid(self):
         class MyCallbackWithUUID(CallbackData, prefix="test"):
             foo: str
@@ -255,6 +280,36 @@ class TestCallbackDataFilter:
 
         filter_object = MyCallback.filter(rule)
         assert await filter_object(callback_query) == result
+
+    @pytest.mark.parametrize("sep", [":", "|", "::", "<>"])
+    @pytest.mark.parametrize("prefix", ["p", "pre", "p-q", "é"])
+    @pytest.mark.parametrize("n_fields", [0, 1, 2])
+    async def test_prefix_fast_fail_equals_unpack(self, sep, prefix, n_fields):
+        namespace = {"__annotations__": {f"f{i}": str for i in range(n_fields)}}
+        cls = type("Generated", (CallbackData,), namespace, prefix=prefix, sep=sep)
+        pieces = [prefix, prefix + prefix, prefix[:-1], "", "x", prefix.upper(), "a"]
+        data = {""}
+        for head in pieces:
+            data.add(head)
+            for tail in ("", "a", "a" + sep + "b", "a" + sep + "b" + sep + "c"):
+                data.add(head + sep + tail)
+                data.add(head + tail)
+            data.add(head + sep)
+        data |= {prefix + sep[0], prefix + sep[:1] + "a" + sep}
+
+        flt = cls.filter()
+        for value in sorted(data):
+            query = CallbackQuery(
+                id="1",
+                from_user=User(id=42, is_bot=False, first_name="test"),
+                data=value,
+                chat_instance="test",
+            )
+            try:
+                expected = {"callback_data": cls.unpack(value)} if value else False
+            except (TypeError, ValueError):
+                expected = False
+            assert await flt(query) == expected, value
 
     async def test_invalid_call(self):
         filter_object = MyCallback.filter(F.test)

@@ -16,6 +16,130 @@ Changelog
 
 .. towncrier release notes start
 
+3.34.0 (2026-11-22)
+====================
+
+Features
+--------
+
+- Added full support for `Bot API 10.5 <https://core.telegram.org/bots/api-changelog#november-22-2026>`_
+
+  **Bot Settings**
+
+  *New types and methods:*
+
+  - Added :class:`aiogram.methods.set_my_settings.SetMySettings` method (:code:`Bot.set_my_settings`) - changes the bot settings: inline mode, privacy mode, adding to groups, forum topic mode in private chats, topic sidebar and the callback query mode
+  - Added :class:`aiogram.types.bot_full_info.BotFullInfo` type, the new return type of :class:`aiogram.methods.get_me.GetMe`, with the new fields :code:`active_usernames`, :code:`inline_query_placeholder`, :code:`needs_inline_query_location` and :code:`has_topic_sidebar`
+
+  *Changed:*
+
+  - :class:`aiogram.methods.get_me.GetMe` (and :code:`Bot.get_me()`) now returns :class:`aiogram.types.bot_full_info.BotFullInfo`; the fields that were returned only by getMe are deprecated in :class:`aiogram.types.user.User`. :code:`Bot.me()` returns the cached :class:`aiogram.types.bot_full_info.BotFullInfo` as well. It has :code:`full_name`, :code:`url`, :code:`mention_html()` and :code:`mention_markdown()` like :class:`aiogram.types.user.User`, but no :code:`last_name` and no other :code:`User` fields; code that annotates :code:`me()` as :code:`User` needs the annotation changed
+  - :meth:`aiogram.client.bot.Bot.usernames` is now built from :code:`username` and :code:`active_usernames` of the cached :code:`Bot.me()` instead of a :code:`getChat` request; the :code:`getChat` fallback, its warning and the :code:`USERNAMES_RETRY_AFTER` constant are removed. A Bot API server older than 10.5 that returns no :code:`active_usernames` gives only the main username
+  - :class:`aiogram.types.callback_query.CallbackQuery` can carry :code:`inline_message_id` instead of :code:`message` for messages sent by the bot, depending on the :code:`callback_query_mode` parameter of :code:`set_my_settings`
+
+  **General**
+
+  - Added the field :code:`inviter` to :class:`aiogram.types.write_access_allowed.WriteAccessAllowed` for users invited to the private chat with the bot by its owner
+  - Replaced the field :code:`text` with :code:`blocks` in :class:`aiogram.types.rich_block_expandable_block_quotation.RichBlockExpandableBlockQuotation` and :class:`aiogram.types.input_rich_block_expandable_block_quotation.InputRichBlockExpandableBlockQuotation`; :code:`text` is deprecated
+  `#2087 <https://github.com/aiogram/aiogram/issues/2087>`_
+
+
+3.33.0 (2026-11-19)
+====================
+
+Security
+--------
+
+- :code:`CallbackData.pack()` now refuses values that would not unpack back unchanged with a self-overlapping multi-character separator (such as :code:`"--"`), instead of letting the end of one value shift into the next field. Reported by the Anthropic OSS Scanner (ANT-2026-0M5J1VQ7).
+  `GHSA-fvpw-9jw8-rj3h <https://github.com/aiogram/aiogram/security/advisories/GHSA-fvpw-9jw8-rj3h>`__
+
+- :code:`MaybeInaccessibleMessageUnion` is now discriminated by :code:`date` (:code:`0` means :class:`aiogram.types.inaccessible_message.InaccessibleMessage`), so nested messages are validated once instead of once per member, which took time exponential in the nesting depth.
+  Reported by the Anthropic OSS Scanner (ANT-2026-IOHAUKLG).
+  `GHSA-hv98-r5fx-wc83 <https://github.com/aiogram/aiogram/security/advisories/GHSA-hv98-r5fx-wc83>`__
+
+- :code:`StateFilter(Group)`, :code:`Group()` and :code:`"..." in Group` now match the states of a :code:`StatesGroup` nested three or more levels deep. Reported by the Anthropic OSS Scanner (ANT-2026-664Y7GWN).
+  `GHSA-fvpw-9jw8-rj3h <https://github.com/aiogram/aiogram/security/advisories/GHSA-fvpw-9jw8-rj3h>`__
+
+- :code:`Update.event_type` no longer keeps the last 128 updates alive in a process-wide cache; :code:`aiogram.utils.mypy_hacks` is removed.
+  Reported by the Anthropic OSS Scanner (ANT-2026-PX6H5HDK).
+  `GHSA-hv98-r5fx-wc83 <https://github.com/aiogram/aiogram/security/advisories/GHSA-hv98-r5fx-wc83>`__
+
+- :code:`and_f(...)` now passes the data returned by a filter on to the next filters, as filters registered in a row already do. Previously a later filter in :code:`and_f` did not see it, and a negated check on that value always passed. Reported by the Anthropic OSS Scanner (ANT-2026-RO3G83HJ).
+  `GHSA-fvpw-9jw8-rj3h <https://github.com/aiogram/aiogram/security/advisories/GHSA-fvpw-9jw8-rj3h>`__
+
+- A filter that returns a coroutine or another awaitable instead of a result, such as a synchronous function or :code:`lambda` that calls an async function, an :code:`async def` wrapper around a synchronous function built with :code:`functools.wraps`, or :code:`functools.partial` over a :class:`Filter` instance, now raises :code:`TypeError` instead of passing for every update. aiogram does not await such results: declare async filters with :code:`async def`. Reported by the Anthropic OSS Scanner (ANT-2026-IYO3AS6K).
+  `GHSA-fvpw-9jw8-rj3h <https://github.com/aiogram/aiogram/security/advisories/GHSA-fvpw-9jw8-rj3h>`__
+
+- Fixed the bot token appearing in network errors.
+  :class:`aiogram.exceptions.TelegramNetworkError` and the :code:`aiohttp` errors raised by :code:`Bot.download_file()` / :code:`Bot.download()` now show the token as :code:`<bot id>:***` in their message and traceback, and keep their type, so existing :code:`except` clauses still catch them.
+  The original exception is available as :code:`.original` and may contain the token.
+  Reported by the Anthropic OSS Scanner (ANT-2026-4GL80S7S).
+  `GHSA-52j5-qrwv-2vf2 <https://github.com/aiogram/aiogram/security/advisories/GHSA-52j5-qrwv-2vf2>`__
+
+- List fields of Telegram objects, including nested rich text arrays, now stop validation at the first invalid item instead of collecting one error per item, so a validation error reports only the first invalid item of a list. The minimum supported pydantic version is now 2.8.0.
+  Reported by the Anthropic OSS Scanner (ANT-2026-NM3LC5D1).
+  `GHSA-hv98-r5fx-wc83 <https://github.com/aiogram/aiogram/security/advisories/GHSA-hv98-r5fx-wc83>`__
+
+- Passing filters to a Scene entry point, :code:`on.<event>.enter(...)`, now emits a :code:`DeprecationWarning`: these filters were never checked when entering the scene. Put access checks on the handler that enters the scene instead. Reported by the Anthropic OSS Scanner (ANT-2026-9QFTXU7P).
+  `GHSA-fvpw-9jw8-rj3h <https://github.com/aiogram/aiogram/security/advisories/GHSA-fvpw-9jw8-rj3h>`__
+
+- Root filters registered with :code:`dp.update.filter(...)` are now checked before the update is dispatched: a rejected update is reported as not handled, and the data a root filter returns is passed to the handlers. Previously these filters were silently ignored, so **existing** :code:`dp.update.filter(...)` **registrations start being enforced** after upgrading. Reported by the Anthropic OSS Scanner (ANT-2026-EZKREY5K).
+  `GHSA-fvpw-9jw8-rj3h <https://github.com/aiogram/aiogram/security/advisories/GHSA-fvpw-9jw8-rj3h>`__
+
+- The "Detected unknown update type" warning no longer includes the update, so Python's warning registry no longer keeps a copy of every such update; the update is logged on :code:`aiogram.event` at :code:`DEBUG`.
+  Reported by the Anthropic OSS Scanner (ANT-2026-PI9G2NGU).
+  `GHSA-hv98-r5fx-wc83 <https://github.com/aiogram/aiogram/security/advisories/GHSA-hv98-r5fx-wc83>`__
+
+- The webhook handlers now decode the request body as UTF-8 and ignore the charset of the request, which could select a slow codec.
+  Reported by the Anthropic OSS Scanner (ANT-2026-HL9BRR9S).
+  `GHSA-hv98-r5fx-wc83 <https://github.com/aiogram/aiogram/security/advisories/GHSA-hv98-r5fx-wc83>`__
+
+- Undecodable updates are now skipped and reported: an update that fails validation on the webhook path (both modes of :code:`SimpleRequestHandler` and :code:`TokenBasedRequestHandler`, :code:`Dispatcher.feed_raw_update` and :code:`Dispatcher.feed_webhook_update` with a dict) is answered with 200 so Telegram stops redelivering it, logged once on :code:`aiogram.webhook` with the number of validation errors instead of the full error text, and passed to the errors handlers as an :code:`ErrorEvent` whose update carries only :code:`update_id`. Before, background mode lost the error in an unawaited task that rendered it in full on the event loop, and inline mode answered 500.
+  Reported by the Anthropic OSS Scanner (ANT-2026-KMKQCARC).
+  `GHSA-hv98-r5fx-wc83 <https://github.com/aiogram/aiogram/security/advisories/GHSA-hv98-r5fx-wc83>`__
+
+
+
+Features
+--------
+
+- Added :mod:`aiogram.test`, an **experimental** integration testing toolkit for bots,
+  installed with the ``aiogram[test]`` extra.
+
+  Updates go through your real :class:`aiogram.dispatcher.dispatcher.Dispatcher`, so filters,
+  middlewares, dependency injection, FSM and Scenes run as they do in production. A stateful
+  fake Telegram answers every Bot API call and applies it to an isolated in-memory world.
+
+  - Declare chats, users, memberships, forum topics, business connections, communities and
+    invite links with :class:`aiogram.test.Blueprint`.
+  - Drive the world through actors (``await user.send("/start")``,
+    ``await user.click(button)``, ``await user.follow_deep_link()``, …). Every
+    :class:`aiogram.types.Update` variant has a trigger.
+  - Assert on the resulting chat state, on the recorded calls, or on which handler and
+    router handled an update.
+  - The world models messages, polls and reactions, chat administration and membership, the
+    bot's own rights and profile, forum topics, rich and ephemeral messages, sticker sets,
+    Telegram Stars and gifts, file uploads and downloads, flood control and a clock the test
+    controls. Calls the toolkit does not model are recorded and answered with a result
+    synthesized from their return type. ``BotTestEnvironment.on()`` overrides any call per
+    test.
+
+  The pytest plugin loads on its own through a ``pytest11`` entry point; ``-p no:aiogram``
+  turns it off.
+
+  The API is provisional and may change incompatibly in minor releases. The parts intended
+  to stay stable are listed in :ref:`the toolkit documentation <testing-toolkit>`.
+  `#1887 <https://github.com/aiogram/aiogram/issues/1887>`_
+
+
+Misc
+----
+
+- The source distribution no longer includes the contributor tooling directories ``.claude/``,
+  ``openspec/`` and ``.oss-scanner/``.
+  `#2032 <https://github.com/aiogram/aiogram/issues/2032>`_
+
+
 3.32.0 (2026-11-15)
 ====================
 

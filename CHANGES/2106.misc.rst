@@ -1,0 +1,1 @@
+Sped up ``CallbackData.filter()`` for callback queries whose data does not start with the class prefix: they are now rejected before the data is split and validated, with the same result as before.

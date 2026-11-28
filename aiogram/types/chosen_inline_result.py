@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 class ChosenInlineResult(TelegramObject):
     """
     Represents a `result <https://core.telegram.org/bots/api#inlinequeryresult>`_ of an inline query that was chosen by the user and sent to their chat partner.
-    **Note:** It is necessary to enable `inline feedback <https://core.telegram.org/bots/inline#collecting-feedback>`_ via `@BotFather <https://t.me/botfather>`_ in order to receive these objects in updates.
+    **Note:** It is necessary to enable `inline feedback <https://core.telegram.org/bots/inline#collecting-feedback>`_ via `@BotFather <https://t.me/botfather>`_ or using the parameter *inline_feedback_share_denominator* of the method :class:`aiogram.methods.set_my_settings.SetMySettings` in order to receive these objects in updates.
 
     Source: https://core.telegram.org/bots/api#choseninlineresult
     """
@@ -26,7 +26,7 @@ class ChosenInlineResult(TelegramObject):
     query: str
     """The query that was used to obtain the result"""
     location: Location | None = None
-    """*Optional*. Sender location, only for bots that require user location"""
+    """*Optional*. Sender location, only for bots that enabled user location requests via `@BotFather <https://t.me/botfather>`_ or using the parameter *needs_inline_query_location* of the method :class:`aiogram.methods.set_my_settings.SetMySettings`"""
     inline_message_id: str | None = None
     """*Optional*. Identifier of the sent inline message. Available only if there is an `inline keyboard <https://core.telegram.org/bots/api#inlinekeyboardmarkup>`_ attached to the message. Will be also received in `callback queries <https://core.telegram.org/bots/api#callbackquery>`_ and can be used to `edit <https://core.telegram.org/bots/api#updating-messages>`_ the message"""
 

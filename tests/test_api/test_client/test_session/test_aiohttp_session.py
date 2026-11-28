@@ -1,5 +1,11 @@
 import asyncio
+import datetime
+import functools
+import json
+import traceback
 from collections.abc import AsyncGenerator, AsyncIterable
+from contextlib import suppress
+from enum import Enum
 from typing import (
     Any,
     AsyncContextManager,
@@ -8,17 +14,62 @@ from unittest.mock import AsyncMock, patch
 
 import aiohttp_socks
 import pytest
-from aiohttp import ClientError
+from aiohttp import (
+    ClientError,
+    ClientOSError,
+    ClientResponseError,
+    ConnectionTimeoutError,
+    InvalidURL,
+    RequestInfo,
+    SocketTimeoutError,
+    TooManyRedirects,
+)
 from aresponses import ResponsesMockServer
+from multidict import CIMultiDict, CIMultiDictProxy
+from yarl import URL
 
 from aiogram import Bot
-from aiogram.client.default import Default
+from aiogram.client.default import Default, DefaultBotProperties
 from aiogram.client.session import aiohttp
 from aiogram.client.session.aiohttp import AiohttpSession
-from aiogram.exceptions import TelegramNetworkError
-from aiogram.methods import TelegramMethod
-from aiogram.types import InputFile
+from aiogram.enums import TopicIconColor
+from aiogram.exceptions import ClientDecodeError, TelegramNetworkError
+from aiogram.methods import SendMediaGroup, SendMessage, SendPhoto, TelegramMethod
+from aiogram.types import (
+    BufferedInputFile,
+    InlineKeyboardButton,
+    InlineKeyboardMarkup,
+    InputFile,
+    InputMediaPhoto,
+)
 from tests.mocked_bot import MockedBot
+
+TOKEN = "123456:" + "A" * 35
+SECRET = TOKEN.partition(":")[2]
+
+
+def url_errors(url: str) -> list[ClientError]:
+    headers = CIMultiDictProxy(CIMultiDict({"Location": url}))
+    info = RequestInfo(URL(url), "GET", headers, URL(url))
+    return [
+        ClientOSError(2, f"Can not write request body for {url}"),
+        ClientResponseError(info, (), status=404, message=f"Not Found {TOKEN}", headers=headers),
+        TooManyRedirects(info, ()),
+        ConnectionTimeoutError(f"Connection timeout to host {url}"),
+        InvalidURL(url, f"bad {TOKEN}"),
+    ]
+
+
+def assert_no_token(exc: BaseException) -> None:
+    assert exc.__cause__ is None
+    assert exc.__suppress_context__
+    for text in (str(exc), repr(exc), "".join(traceback.format_exception(exc))):
+        assert SECRET not in text
+    assert SECRET in repr(exc.original)
+
+
+class PlainEnum(Enum):
+    TYPING = "typing"
 
 
 class BareInputFile(InputFile):
@@ -182,6 +233,91 @@ class TestAiohttpSession:
             assert isinstance(result, int)
             assert result == 42
 
+    @staticmethod
+    async def sent(aresponses: ResponsesMockServer, method: TelegramMethod[Any], **kwargs):
+        """Send ``method`` and return the content type and body the server got."""
+        seen = {}
+
+        async def handler(request):
+            seen.update(content_type=request.content_type, body=await request.read())
+            return aresponses.Response(text='{"ok": true, "result": true}')
+
+        aresponses.add(aresponses.ANY, aresponses.ANY, "post", handler)
+        session = kwargs.pop("session", None) or AiohttpSession(**kwargs)
+        bot = Bot("42:TEST", session=session, default=DefaultBotProperties(parse_mode="HTML"))
+        async with session:
+            with suppress(ClientDecodeError):  # only the request matters, not the reply
+                await session.make_request(bot, method)
+        return seen["content_type"], seen["body"]
+
+    def media(self) -> SendMediaGroup:
+        return SendMediaGroup(
+            chat_id=42,
+            media=[
+                InputMediaPhoto(media=BufferedInputFile(b"red", "red.png")),
+                InputMediaPhoto(media=BufferedInputFile(b"blue", "blue.png"), caption="blue"),
+            ],
+        )
+
+    async def test_make_request_json_without_files(self, aresponses: ResponsesMockServer):
+        method = SendMessage(
+            chat_id=42,
+            text="hi",
+            reply_markup=InlineKeyboardMarkup(
+                inline_keyboard=[[InlineKeyboardButton(text="Так", callback_data="yes")]]
+            ),
+            until_date=datetime.datetime(2030, 1, 1, tzinfo=datetime.UTC),
+            future_text="",
+            icon_color=TopicIconColor.BLUE,
+            action=PlainEnum.TYPING,
+        )
+        content_type, body = await self.sent(aresponses, method)
+        assert content_type == "application/json"
+        assert json.loads(body) == {
+            "chat_id": 42,
+            "text": "hi",
+            "parse_mode": "HTML",
+            "reply_markup": {"inline_keyboard": [[{"text": "Так", "callback_data": "yes"}]]},
+            "until_date": 1893456000,
+            "icon_color": 7322096,
+            "action": "typing",
+        }
+
+    async def test_make_request_multipart_with_file(self, aresponses: ResponsesMockServer):
+        method = SendPhoto(chat_id=42, photo=BufferedInputFile(b"red", "red.png"))
+        content_type, body = await self.sent(aresponses, method)
+        assert content_type == "multipart/form-data"
+        assert b'filename="red.png"' in body
+
+    async def test_make_request_multipart_with_nested_files(self, aresponses):
+        content_type, body = await self.sent(aresponses, self.media())
+        assert content_type == "multipart/form-data"
+        assert b'filename="red.png"' in body
+        assert b'filename="blue.png"' in body
+
+    @pytest.mark.parametrize("on_instance", [False, True])
+    @pytest.mark.parametrize("override", ["prepare_value", "build_form_data"])
+    async def test_make_request_override_keeps_form(self, aresponses, override, on_instance):
+        base = getattr(AiohttpSession, override)
+        wrapper = lambda *a, **kw: base(*a, **kw)  # noqa: E731, PLW0108 - a distinct function
+        session = type("Custom", (AiohttpSession,), {override: wrapper})()
+        if on_instance:
+            session = AiohttpSession()
+            setattr(session, override, functools.partial(base, session))
+        content_type, body = await self.sent(
+            aresponses, SendMessage(chat_id=42, text="hi"), session=session
+        )
+        assert content_type == "application/x-www-form-urlencoded"
+        assert body == b"chat_id=42&text=hi&parse_mode=HTML"
+
+    async def test_make_request_custom_json_dumps(self, aresponses: ResponsesMockServer):
+        def dumps(obj: Any) -> str:
+            return json.dumps({**obj, "mark": 1} if isinstance(obj, dict) else obj)
+
+        method = SendMessage(chat_id=42, text="hi", link_preview_options={"is_disabled": True})
+        _, body = await self.sent(aresponses, method, json_dumps=dumps)
+        assert json.loads(body)["link_preview_options"] == {"is_disabled": True, "mark": 1}
+
     @pytest.mark.parametrize("error", [ClientError("mocked"), asyncio.TimeoutError()])
     async def test_make_request_network_error(self, error):
         async def side_effect(*args, **kwargs):
@@ -239,6 +375,96 @@ class TestAiohttpSession:
             with pytest.raises(ClientError):
                 async for _ in stream:
                     ...
+
+    @pytest.mark.parametrize("index", range(len(url_errors(""))))
+    async def test_make_request_network_error_hides_token(self, index: int):
+        async def side_effect(method: str, url: str, *args: Any, **kwargs: Any):
+            raise url_errors(url)[index]
+
+        async with Bot(TOKEN).context() as bot:
+            with patch(
+                "aiohttp.client.ClientSession._request",
+                new_callable=AsyncMock,
+                side_effect=side_effect,
+            ):
+                with pytest.raises(TelegramNetworkError) as exc_info:
+                    await bot.get_me()
+
+        assert_no_token(exc_info.value)
+        assert isinstance(exc_info.value.original, ClientError)
+
+    @pytest.mark.parametrize("index", range(len(url_errors(""))))
+    async def test_stream_content_error_hides_token(self, index: int):
+        async def side_effect(method: str, url: str, *args: Any, **kwargs: Any):
+            raise url_errors(url)[index]
+
+        async with Bot(TOKEN).context() as bot:
+            with patch(
+                "aiohttp.client.ClientSession._request",
+                new_callable=AsyncMock,
+                side_effect=side_effect,
+            ):
+                with pytest.raises(ClientError) as exc_info:
+                    await bot.download_file("documents/file.pdf")
+
+        error = exc_info.value
+        assert_no_token(error)
+        assert type(error) is type(error.original)
+        assert str(error) == aiohttp._redact(str(error.original))
+        assert error.args != error.original.args
+        if isinstance(error, ClientResponseError):
+            assert error.status == error.original.status
+            assert str(error.request_info.real_url).endswith(
+                "/file/bot123456:***/documents/file.pdf"
+            )
+        if isinstance(error, OSError):
+            assert error.errno == error.original.errno
+
+    async def test_download_file_404_hides_token(self, aresponses: ResponsesMockServer):
+        aresponses.add(
+            aresponses.ANY,
+            f"/file/bot{TOKEN}/documents/file.pdf",
+            "get",
+            aresponses.Response(status=404),
+        )
+
+        async with Bot(TOKEN).context() as bot:
+            with pytest.raises(ClientResponseError) as exc_info:
+                await bot.download_file("documents/file.pdf")
+
+        assert exc_info.value.status == 404
+        assert_no_token(exc_info.value)
+
+    async def test_make_request_timeout_hides_token(self):
+        async def side_effect(*args: Any, **kwargs: Any):
+            raise asyncio.TimeoutError(TOKEN)
+
+        async with Bot(TOKEN).context() as bot:
+            with patch(
+                "aiohttp.client.ClientSession._request",
+                new_callable=AsyncMock,
+                side_effect=side_effect,
+            ):
+                with pytest.raises(TelegramNetworkError) as exc_info:
+                    await bot.get_me()
+
+        assert_no_token(exc_info.value)
+
+    @pytest.mark.parametrize(
+        "error",
+        [
+            ClientOSError("connection lost"),
+            ConnectionTimeoutError("Connection timeout to host"),
+            SocketTimeoutError("Timeout on reading data from socket"),
+        ],
+    )
+    def test_redact_error_keeps_message_only_os_error(self, error: ClientError):
+        assert str(aiohttp._redact_error(error)) == str(error)
+
+    def test_redact(self):
+        assert aiohttp._redact(f"https://x/bot42:TEST/getMe {TOKEN} 127.0.0.1:8080") == (
+            "https://x/bot42:***/getMe 123456:*** 127.0.0.1:8080"
+        )
 
     async def test_context_manager(self):
         async with AiohttpSession() as session:

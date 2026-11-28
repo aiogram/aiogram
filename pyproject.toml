@@ -43,15 +43,27 @@ classifiers = [
 dependencies = [
     "magic-filter>=1.0.12,<1.1",
     "aiohttp>=3.9.0,<3.15",
-    "pydantic>=2.7.0,<2.15",
+    "pydantic>=2.8.0,<2.15",
     "aiofiles>=23.2.1,<26.0",
     "certifi>=2023.7.22",
-    "typing-extensions>=4.7.0,<=5.0",
+    "typing-extensions>=4.12.1,<=5.0",
 ]
 dynamic = ["version"]
 
 [tool.hatch.version]
 path = "aiogram/__meta__.py"
+
+[tool.hatch.build.targets.sdist]
+exclude = [
+    "/.claude",
+    "/.oss-scanner",
+    "/design",
+    "/openspec",
+    "/orca.yaml",
+    "/benchmarks",
+    "/differential",
+    "/v4",
+]
 
 [project.optional-dependencies]
 fast = [
@@ -77,6 +89,9 @@ cli = [
 ]
 signature = [
     "cryptography>=46.0.0",
+]
+test = [
+    "pytest>=8,<10",
 ]
 docs = [
     "Sphinx~=8.0.2",
@@ -112,6 +127,9 @@ test = [
     "pytz>=2026,<2027",
     "pycryptodomex==3.23.0",
 ]
+
+[project.entry-points.pytest11]
+aiogram = "aiogram.test._autoload"
 
 [project.urls]
 Homepage = "https://aiogram.dev/"
@@ -202,6 +220,9 @@ known-first-party = [
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
+# The pytest11 entry point would import aiogram before coverage starts, leaving it
+# unmeasured; tests/conftest.py enables the plugin instead, after coverage starts.
+addopts = "-p no:aiogram"
 testpaths = [
     "tests",
 ]
@@ -287,6 +308,11 @@ ignore = [
 
 [[tool.towncrier.section]]
 path = ""
+
+[[tool.towncrier.type]]
+directory = "security"
+name = "Security"
+showcontent = true
 
 [[tool.towncrier.type]]
 directory = "feature"
